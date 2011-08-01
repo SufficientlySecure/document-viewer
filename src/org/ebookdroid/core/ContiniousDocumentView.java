@@ -2,6 +2,7 @@ package org.ebookdroid.core;
 
 import android.graphics.Canvas;
 import android.graphics.RectF;
+import android.util.Log;
 
 public class ContiniousDocumentView extends AbstractDocumentView {
     public ContiniousDocumentView(IViewerActivity base) {
@@ -75,9 +76,9 @@ public class ContiniousDocumentView extends AbstractDocumentView {
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-    	int page = -1;
-    	if(changed)
-    		page = getCurrentPage();
+      	int page = -1;
+      	if(changed)
+      		page = getCurrentPage();
         super.onLayout(changed, left, top, right, bottom);
   
         invalidatePageSizes();

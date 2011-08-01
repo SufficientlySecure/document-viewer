@@ -128,7 +128,7 @@ public class AppSettings
         {
             String rotationStr = prefs.getString("rotation", RotationType.AUTOMATIC.getResValue());
             rotation = RotationType.getByResValue(rotationStr);
-            if (rotationStr == null)
+            if (rotation == null)
             {
                 rotation = RotationType.AUTOMATIC;
             }

@@ -16,8 +16,6 @@ public class DocumentModel extends CurrentPageModel {
 
     private final Map<Integer, Page> pages = new TreeMap<Integer, Page>();
 
-    private int pagesInMemory = 0;
-
     public DocumentModel(DecodeService decodeService) {
         super();
         this.decodeService = decodeService;
@@ -122,19 +120,5 @@ public class DocumentModel extends CurrentPageModel {
                     pages.put(index++, page2);
             }
         }
-    }
-
-    public int getPagesInMemory() {
-        return pagesInMemory;
-    }
-
-    /**
-     * Sets the number of pages stored in memory.
-     *
-     * @param pages
-     *            the number of pages stored in memory.
-     */
-    public void setPagesInMemory(int pages) {
-        this.pagesInMemory = pages;
     }
 }

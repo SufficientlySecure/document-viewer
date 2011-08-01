@@ -26,6 +26,7 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
     public AbstractDocumentView(IViewerActivity baseActivity) {
         super(baseActivity.getContext());
         this.base = baseActivity;
+        this.align = base.getAppSettings().getPageAlign();
         setKeepScreenOn(true);
         scroller = new Scroller(getContext());
         setFocusable(true);

@@ -53,10 +53,11 @@ public class Page {
     }
 
     public void draw(Canvas canvas) {
-        if (!isVisible()) {
-            return;
-        }
+      draw(canvas, false);
+    }
 
+    public void draw(Canvas canvas, boolean drawInvisible) {
+      if (drawInvisible || isVisible()) {
         PagePaint paint = base.getAppSettings().getNightMode() ? PagePaint.NIGHT : PagePaint.DAY;
 
         canvas.drawRect(getBounds(), paint.getFillPaint());
@@ -65,7 +66,8 @@ public class Page {
         node.draw(canvas, paint);
         canvas.drawLine(getBounds().left, getBounds().top, getBounds().right, getBounds().top, paint.getStrokePaint());
         canvas.drawLine(getBounds().left, getBounds().bottom, getBounds().right, getBounds().bottom, paint.getStrokePaint());
-    }
+      }
+  }
 
     public float getAspectRatio() {
         return aspectRatio;

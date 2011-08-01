@@ -7,21 +7,20 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Message;
 import android.view.MotionEvent;
 
 /**
  * The Class SinglePageCurler.
- * 
+ *
  * Used for drawing page curl animation
- * 
+ *
  * @author Moritz 'Moss' Wundke (b.thax.dcg@gmail.com)
  *
  */
 public class SinglePageCurler {
-    
+
     /**
      * Inner class used to represent a 2D point.
      */
@@ -178,13 +177,13 @@ public class SinglePageCurler {
 
     /** Enable input after the next draw event */
     private boolean bEnableInputAfterDraw = false;
-    
+
     private final SinglePageDocumentView view;
 
 	private int foreIndex = -1;
 
 	private int backIndex = -1;
-    
+
     public SinglePageCurler(SinglePageDocumentView singlePageDocumentView) {
         this.view = singlePageDocumentView;
     }
@@ -241,7 +240,7 @@ public class SinglePageCurler {
                     // Set the right movement flag
                     bFlipRight = true;
                     nextView();
-                    
+
                 } else {
                     // Set the left movement flag
                     bFlipRight = false;
@@ -353,7 +352,7 @@ public class SinglePageCurler {
             } else {
                 view.goToPageImpl(foreIndex);
             }
-            
+
             ResetClipEdge();
 
             // Create values
@@ -416,7 +415,7 @@ public class SinglePageCurler {
 
     /**
      * Called on the first draw event of the view
-     * 
+     *
      * @param canvas
      */
     protected void onFirstDrawEvent(Canvas canvas) {
@@ -469,7 +468,7 @@ public class SinglePageCurler {
 
     /**
      * See if the current curl mode is dynamic
-     * 
+     *
      * @return TRUE if the mode is CURLMODE_DYNAMIC, FALSE otherwise
      */
     public boolean IsCurlModeDynamic() {
@@ -573,7 +572,7 @@ public class SinglePageCurler {
 
     /**
      * Draw the foreground
-     * 
+     *
      * @param canvas
      * @param rect
      * @param paint
@@ -584,13 +583,16 @@ public class SinglePageCurler {
         	page = view.getBase().getDocumentModel().getCurrentPageObject();
         }
         if (page != null) {
-            page.draw(canvas);
+            canvas.save();
+            canvas.clipRect(page.getBounds());
+            page.draw(canvas, true);
+            canvas.restore();
         }
     }
 
     /**
      * Draw the background image.
-     * 
+     *
      * @param canvas
      * @param rect
      * @param paint
@@ -598,21 +600,20 @@ public class SinglePageCurler {
     private void drawBackground(Canvas canvas) {
         Path mask = createBackgroundPath();
 
-        // Save current canvas so we do not mess it up
-        canvas.save();
-        canvas.clipPath(mask);
-
         Page page = view.getBase().getDocumentModel().getPageObject(backIndex);
         if (page != null) {
-            page.draw(canvas);
+            // Save current canvas so we do not mess it up
+            canvas.save();
+            canvas.clipPath(mask);
+            page.draw(canvas, true);
+            canvas.restore();
         }
 
-        canvas.restore();
     }
 
     /**
      * Create a Path used as a mask to draw the background page
-     * 
+     *
      * @return
      */
     private Path createBackgroundPath() {
@@ -627,7 +628,7 @@ public class SinglePageCurler {
 
     /**
      * Creates a path used to draw the curl edge in.
-     * 
+     *
      * @return
      */
     private Path createCurlEdgePath() {
@@ -642,7 +643,7 @@ public class SinglePageCurler {
 
     /**
      * Draw the curl page edge
-     * 
+     *
      * @param canvas
      */
     private void drawCurlEdge(Canvas canvas) {
@@ -665,4 +666,12 @@ public class SinglePageCurler {
 		foreIndex = backIndex = -1;
 	}
 
+  public int getForeIndex() {
+    return foreIndex;
+  }
+
+
+  public int getBackIndex() {
+    return backIndex;
+  }
 }

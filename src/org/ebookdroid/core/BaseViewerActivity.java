@@ -325,9 +325,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
         if (documentController != null)
         {
-          if (oldSettings.getPagesInMemory() != newSettings.getPagesInMemory()) {
-            documentModel.setPagesInMemory(newSettings.getPagesInMemory());
-          }
           if (oldSettings.getUseAnimation() != newSettings.getUseAnimation()) {
             documentController.updateUseAnimation();
           }

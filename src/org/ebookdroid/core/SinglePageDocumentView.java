@@ -4,7 +4,6 @@ import org.ebookdroid.core.curl.SinglePageCurler;
 
 import android.graphics.Canvas;
 import android.graphics.RectF;
-import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 
@@ -20,7 +19,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     /** The use curler flag. */
     private boolean useCurler = true;
-    
+
 	/**
      * Instantiates a new single page document view.
      *
@@ -33,7 +32,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     /**
 	 * Checks if is the use curler flag set.
-	 * 
+	 *
 	 * @return the use curler flag
 	 */
     public boolean isUseCurler() {
@@ -129,14 +128,12 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     @Override
     public void scrollTo(int x, int y) {
-//        if (getZoomModel().getZoom() == 1.0f)
-//            return;
         super.scrollTo(Math.min(Math.max(x, getLeftLimit()), getRightLimit()), Math.min(Math.max(y, getTopLimit()), getBottomLimit()));
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (getAlign() != PageAlign.AUTO || getBase().getZoomModel().getZoom() != 1.0f || !useCurler || curler == null) {
+        if (isCurlerDisabled()) {
             return super.onTouchEvent(event);
         } else {
             if (getBase().getMultiTouchZoom() != null) {
@@ -159,9 +156,15 @@ public class SinglePageDocumentView extends AbstractDocumentView {
         }
     }
 
+    private boolean isCurlerDisabled() {
+      PageAlign align = getAlign();
+      float zoom = getBase().getZoomModel().getZoom();
+      return align != PageAlign.AUTO || zoom != 1.0f || !useCurler || curler == null;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
-        if (getAlign() != PageAlign.AUTO || getBase().getZoomModel().getZoom() != 1.0f || !useCurler || curler == null) {
+        if (isCurlerDisabled()) {
             Page page = getBase().getDocumentModel().getCurrentPageObject();
             if (page != null) {
                 page.draw(canvas);
@@ -215,13 +218,13 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     @Override
     public boolean isPageTreeNodeVisible(PageTreeNode pageTreeNode) {
-        return ((pageTreeNode.getParent() == null)&&(Math.abs(pageTreeNode.getPageIndex() - getCurrentPage()) <= getBase().getDocumentModel().getPagesInMemory()))
+        return ((pageTreeNode.getParent() == null)&&(Math.abs(pageTreeNode.getPageIndex() - getCurrentPage()) <= getBase().getAppSettings().getPagesInMemory()))
         ||((pageTreeNode.getPageIndex() == getCurrentPage()) && (RectF.intersects(getViewRect(), pageTreeNode.getTargetRectF())));
     }
 
     @Override
     public boolean isPageVisible(Page page) {
-        return (Math.abs(page.getIndex() - getCurrentPage()) <= getBase().getDocumentModel().getPagesInMemory());
+        return (Math.abs(page.getIndex() - getCurrentPage()) <= getBase().getAppSettings().getPagesInMemory());
     }
 
 	@Override

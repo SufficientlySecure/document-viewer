@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+	<string-array name="list_rotation" translatable="false">
+		<item>@string/list_rotation_auto</item>
+		<item>@string/list_rotation_land</item>
+		<item>@string/list_rotation_port</item>
+	</string-array>
+
+	<string-array name="list_rotation_values" translatable="false">
+		<item>Default</item>
+		<item>Force landscape</item>
+		<item>Force portrait</item>
+		<item>Automatic</item>
+	</string-array>
+
+	<string-array name="list_align" translatable="false">
+		<item>@string/list_align_by_width</item>
+		<item>@string/list_align_by_height</item>
+		<item>@string/list_align_auto</item>
+	</string-array>
+	
+	<string-array name="list_align_values" translatable="false">
+		<item>By Width</item>
+		<item>By Height</item>
+		<item>Auto</item>
+	</string-array>
+</resources>

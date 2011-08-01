@@ -75,10 +75,16 @@ public class ContiniousDocumentView extends AbstractDocumentView {
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    	int page = -1;
+    	if(changed)
+    		page = getCurrentPage();
         super.onLayout(changed, left, top, right, bottom);
+  
         invalidatePageSizes();
         invalidateScroll();
         commitZoom();
+        if(page > 0)
+        	goToPage(page);
     }
 
     /**

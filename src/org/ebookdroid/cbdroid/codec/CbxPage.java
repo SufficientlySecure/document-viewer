@@ -3,7 +3,6 @@ package org.ebookdroid.cbdroid.codec;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.utils.archives.ArchiveEntry;
-import org.ebookdroid.core.utils.archives.ArchiveFile;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,29 +16,26 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class CbxPage<ArchiveType extends ArchiveFile<ArchiveEntryType>, ArchiveEntryType extends ArchiveEntry>
-        implements CodecPage {
+public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage {
 
     private static final String LCTX = "CbxPage";
 
-    private final ArchiveType archive;
     private final ArchiveEntryType entry;
 
     private CodecPageInfo pageInfo;
 
-    public CbxPage(final ArchiveType file, final ArchiveEntryType zipEntry) {
-        this.archive = file;
-        this.entry = zipEntry;
+    public CbxPage(final ArchiveEntryType entry) {
+        this.entry = entry;
     }
 
     private Bitmap decode(final boolean onlyBounds) {
-        if (archive == null || entry == null) {
+        if (entry == null) {
             return null;
         }
 
+        Log.d(LCTX, "Starting " + (onlyBounds ? " partial" : "full") + " decompressing: " + entry.getName());
         try {
-            Log.d(LCTX, "Starting decompressing: " + entry.getName());
-            final InputStream is = archive.open(entry);
+            final InputStream is = entry.open();
             try {
                 final Options opts = new Options();
                 opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
@@ -59,7 +55,7 @@ public class CbxPage<ArchiveType extends ArchiveFile<ArchiveEntryType>, ArchiveE
                     is.close();
                 } catch (final IOException ex) {
                 }
-                Log.d(LCTX, "Finishing decompressing: " + entry.getName());
+                Log.d(LCTX, "Finishing" + (onlyBounds ? " partial" : "full") + " decompressing: " + entry.getName());
             }
         } catch (final Throwable e) {
             Log.d(LCTX, "Can not decompress page: " + e.getMessage());

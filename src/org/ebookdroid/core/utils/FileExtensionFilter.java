@@ -7,9 +7,6 @@ import java.io.FileFilter;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.zip.ZipEntry;
-
-import de.innosystec.unrar.rarfile.FileHeader;
 
 public class FileExtensionFilter implements FileFilter {
 

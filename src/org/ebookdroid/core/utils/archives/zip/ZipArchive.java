@@ -25,15 +25,18 @@ public class ZipArchive implements ArchiveFile<ZipArchiveEntry> {
     }
 
     /**
-     * @return ZIP file instance
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.utils.archives.ArchiveFile#randomAccessAllowed()
      */
-    public ZipFile getZipfile() {
-        return zipfile;
+    @Override
+    public boolean randomAccessAllowed() {
+        return true;
     }
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.utils.archives.ArchiveFile#entries()
      */
     @Override
@@ -49,24 +52,24 @@ public class ZipArchive implements ArchiveFile<ZipArchiveEntry> {
 
             @Override
             public ZipArchiveEntry nextElement() {
-                return new ZipArchiveEntry(en.nextElement());
+                return new ZipArchiveEntry(ZipArchive.this, en.nextElement());
             }
         };
     }
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.utils.archives.ArchiveFile#open(org.ebookdroid.core.utils.archives.ArchiveEntry)
      */
     @Override
     public InputStream open(final ZipArchiveEntry entry) throws IOException {
-        return zipfile.getInputStream(entry.getEntry());
+        return zipfile.getInputStream(entry.entry);
     }
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.utils.archives.ArchiveFile#close()
      */
     @Override

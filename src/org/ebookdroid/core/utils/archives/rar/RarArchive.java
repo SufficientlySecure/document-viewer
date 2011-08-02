@@ -15,7 +15,7 @@ import de.innosystec.unrar.rarfile.FileHeader;
 
 public class RarArchive implements ArchiveFile<RarArchiveEntry> {
 
-    private final Archive rarfile;
+    final Archive rarfile;
 
     /**
      * Constructor.
@@ -35,12 +35,17 @@ public class RarArchive implements ArchiveFile<RarArchiveEntry> {
         }
     }
 
+
     /**
-     * @return RAR file instance
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.utils.archives.ArchiveFile#randomAccessAllowed()
      */
-    public Archive getRarfile() {
-        return rarfile;
+    @Override
+    public boolean randomAccessAllowed() {
+        return false;
     }
+
 
     /**
      * {@inheritDoc}
@@ -58,7 +63,7 @@ public class RarArchive implements ArchiveFile<RarArchiveEntry> {
                 if (entry == null) {
                     FileHeader nextFileHeader = rarfile.nextFileHeader();
                     if (nextFileHeader != null) {
-                        entry = new RarArchiveEntry(nextFileHeader);
+                        entry = new RarArchiveEntry(RarArchive.this, nextFileHeader);
                     }
                 }
                 return entry != null;
@@ -82,7 +87,7 @@ public class RarArchive implements ArchiveFile<RarArchiveEntry> {
     public InputStream open(final RarArchiveEntry entry) throws IOException {
         try {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            rarfile.extractFile(entry.getFileHeader(), baos);
+            rarfile.extractFile(entry.fileHeader, baos);
             baos.close();
             return new ByteArrayInputStream(baos.toByteArray());
         } catch (final RarException ex) {

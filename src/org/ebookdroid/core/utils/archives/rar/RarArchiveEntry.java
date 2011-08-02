@@ -2,26 +2,24 @@ package org.ebookdroid.core.utils.archives.rar;
 
 import org.ebookdroid.core.utils.archives.ArchiveEntry;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import de.innosystec.unrar.rarfile.FileHeader;
 
 public class RarArchiveEntry implements ArchiveEntry {
 
-    private final FileHeader fileHeader;
+    final RarArchive archive;
+    final FileHeader fileHeader;
 
-    RarArchiveEntry(final FileHeader fh) {
+    RarArchiveEntry(final RarArchive archive, final FileHeader fh) {
+        this.archive = archive;
         this.fileHeader = fh;
     }
 
     /**
-     * @return RAR arhive entry header
-     */
-    public FileHeader getFileHeader() {
-        return fileHeader;
-    }
-
-    /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.core.utils.archives.ArchiveEntry#getName()
      */
     @Override
@@ -31,11 +29,21 @@ public class RarArchiveEntry implements ArchiveEntry {
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.core.utils.archives.ArchiveEntry#isDirectory()
      */
     @Override
     public boolean isDirectory() {
         return fileHeader.isDirectory();
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.utils.archives.ArchiveEntry#open()
+     */
+    @Override
+    public InputStream open() throws IOException {
+        return archive.open(this);
     }
 }

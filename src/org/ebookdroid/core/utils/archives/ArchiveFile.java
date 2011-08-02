@@ -6,6 +6,8 @@ import java.util.Enumeration;
 
 public interface ArchiveFile<ArchiveEntryType extends ArchiveEntry> {
 
+    boolean randomAccessAllowed();
+
     Enumeration<ArchiveEntryType> entries();
 
     InputStream open(ArchiveEntryType entry) throws IOException;

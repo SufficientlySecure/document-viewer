@@ -19,6 +19,7 @@ import de.innosystec.unrar.Archive;
 import de.innosystec.unrar.exception.RarException;
 import de.innosystec.unrar.rarfile.FileHeader;
 
+@Deprecated
 public class CbrPage implements CodecPage {
 
     private final FileHeader fh;

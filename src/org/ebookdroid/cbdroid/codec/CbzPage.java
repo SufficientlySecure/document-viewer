@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+@Deprecated
 public class CbzPage implements CodecPage {
 
     private final ZipEntry zipEntry;

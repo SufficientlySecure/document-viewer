@@ -86,14 +86,16 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         final DecodeService decodeService = createDecodeService();
 
         final ViewerPreferences viewerPreferences = new ViewerPreferences(this);
-        Uri uri = getIntent().getData();
+        final Uri uri = getIntent().getData();
         try {
-            String fileName = PathFromUri.retrieve(getContentResolver(), uri);
+            final String fileName = PathFromUri.retrieve(getContentResolver(), uri);
             decodeService.open(fileName, password);
         } catch (final Exception e) {
-            viewerPreferences.delRecent(uri);
+            Log.e(getClass().getSimpleName(), e.getMessage(), e);
 
-            if (e.getMessage().equals("PDF needs a password!")) {
+            viewerPreferences.delRecent(uri);
+            final String msg = e.getMessage();
+            if ("PDF needs a password!".equals(msg)) {
                 setContentView(R.layout.password);
                 final Button ok = (Button) findViewById(R.id.pass_ok);
                 ok.setOnClickListener(new View.OnClickListener() {
@@ -115,7 +117,11 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
             } else {
                 setContentView(R.layout.error);
                 final TextView errortext = (TextView) findViewById(R.id.error_text);
-                errortext.setText(e.getMessage());
+                if (msg != null && msg.length() > 0) {
+                    errortext.setText(msg);
+                } else {
+                    errortext.setText("Unexpected error occured!");
+                }
                 final Button cancel = (Button) findViewById(R.id.error_close);
                 cancel.setOnClickListener(new View.OnClickListener() {
 
@@ -326,7 +332,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Called on creation options menu
-     *
+     * 
      * @param menu
      *            the main menu
      * @return true, if successful
@@ -418,7 +424,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the zoom model.
-     *
+     * 
      * @return the zoom model
      */
     @Override
@@ -428,7 +434,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the multi touch zoom.
-     *
+     * 
      * @return the multi touch zoom
      */
     @Override
@@ -443,7 +449,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the decoding progress model.
-     *
+     * 
      * @return the decoding progress model
      */
     @Override

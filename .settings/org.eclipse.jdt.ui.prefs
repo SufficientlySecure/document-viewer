@@ -1,4 +1,4 @@
-#Mon Aug 01 18:13:45 MSD 2011
+#Tue Aug 02 15:54:37 MSD 2011
 cleanup.add_default_serial_version_id=false
 cleanup.add_generated_serial_version_id=true
 cleanup.add_missing_annotations=true
@@ -55,3 +55,7 @@ cleanup_settings_version=2
 eclipse.preferences.version=1
 formatter_profile=_EBookDroid
 formatter_settings_version=11
+org.eclipse.jdt.ui.ignorelowercasenames=true
+org.eclipse.jdt.ui.importorder=org.ebookdroid;android;java;javax;org;com;
+org.eclipse.jdt.ui.ondemandthreshold=99
+org.eclipse.jdt.ui.staticondemandthreshold=99

@@ -1,30 +1,17 @@
 package org.ebookdroid.cbdroid.codec;
 
-import org.ebookdroid.core.codec.CodecContext;
+import org.ebookdroid.core.codec.AbstractCodecContext;
 import org.ebookdroid.core.codec.CodecDocument;
 
-import android.content.ContentResolver;
+public class CbrContext extends AbstractCodecContext {
 
-public class CbrContext implements CodecContext {
-
-    @Override
-    public long getContextHandle() {
-        return 0;
-    }
-
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.codec.CodecContext#openDocument(java.lang.String, java.lang.String)
+     */
     @Override
     public CodecDocument openDocument(final String fileName, final String password) {
         return CbrDocument.openDocument(fileName);
     }
-
-    @Override
-    public void recycle() {
-
-    }
-
-    @Override
-    public void setContentResolver(final ContentResolver contentResolver) {
-
-    }
-
 }

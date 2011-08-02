@@ -1,25 +1,23 @@
 package org.ebookdroid.djvudroid.codec;
 
 import org.ebookdroid.core.VuDroidLibraryLoader;
-import org.ebookdroid.core.codec.CodecContext;
+import org.ebookdroid.core.codec.AbstractCodecContext;
 
-import android.content.ContentResolver;
 import android.util.Log;
 
 import java.util.concurrent.Semaphore;
 
-public class DjvuContext implements Runnable, CodecContext {
+public class DjvuContext extends AbstractCodecContext implements Runnable {
 
     static {
         VuDroidLibraryLoader.load();
     }
 
-    private long contextHandle;
     private static final String DJVU_DROID_CODEC_LIBRARY = "DjvuDroidCodecLibrary";
     private final Semaphore docSemaphore = new Semaphore(0);
 
     public DjvuContext() {
-        this.contextHandle = create();
+        super(create());
         new Thread(this).start();
     }
 
@@ -35,11 +33,6 @@ public class DjvuContext implements Runnable, CodecContext {
     }
 
     @Override
-    public long getContextHandle() {
-        return contextHandle;
-    }
-
-    @Override
     public void run() {
         for (;;) {
             try {
@@ -47,7 +40,7 @@ public class DjvuContext implements Runnable, CodecContext {
                     if (isRecycled()) {
                         return;
                     }
-                    handleMessage(contextHandle);
+                    handleMessage(getContextHandle());
                     wait(200);
                 }
             } catch (final Exception e) {
@@ -56,13 +49,8 @@ public class DjvuContext implements Runnable, CodecContext {
         }
     }
 
-    @SuppressWarnings({ "UnusedDeclaration" })
     private void handleDocInfo() {
         docSemaphore.release();
-    }
-
-    @Override
-    public void setContentResolver(final ContentResolver contentResolver) {
     }
 
     @Override
@@ -76,12 +64,11 @@ public class DjvuContext implements Runnable, CodecContext {
         if (isRecycled()) {
             return;
         }
-        free(contextHandle);
-        contextHandle = 0;
-    }
-
-    private boolean isRecycled() {
-        return contextHandle == 0;
+        try {
+            free(getContextHandle());
+        } finally {
+            super.recycle();
+        }
     }
 
     private static native long create();

@@ -4,12 +4,9 @@ import org.ebookdroid.core.codec.CodecContext;
 import org.ebookdroid.core.codec.CodecDocument;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
-import org.ebookdroid.core.utils.PathFromUri;
 
-import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
-import android.net.Uri;
 import android.util.Log;
 
 import java.io.IOException;
@@ -43,7 +40,6 @@ public class DecodeServiceBase implements DecodeService {
 
     private CodecDocument document;
     private final HashMap<Integer, SoftReference<CodecPage>> pages = new HashMap<Integer, SoftReference<CodecPage>>();
-    private ContentResolver contentResolver;
     private final Queue<Integer> pageEvictionQueue = new LinkedList<Integer>();
     private final AtomicBoolean isRecycled = new AtomicBoolean();
 
@@ -52,14 +48,8 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     @Override
-    public void setContentResolver(final ContentResolver contentResolver) {
-        this.contentResolver = contentResolver;
-        codecContext.setContentResolver(contentResolver);
-    }
-
-    @Override
-    public void open(final Uri fileUri, final String password) {
-        document = codecContext.openDocument(PathFromUri.retrieve(contentResolver, fileUri), password);
+    public void open(final String fileName, final String password) {
+        document = codecContext.openDocument(fileName, password);
     }
 
     @Override
@@ -135,14 +125,6 @@ public class DecodeServiceBase implements DecodeService {
     private void finishDecoding(final DecodeTask currentDecodeTask, final Bitmap bitmap) {
         stopDecoding(currentDecodeTask.node, "complete");
         updateImage(currentDecodeTask, bitmap);
-    }
-
-    private void preloadNextPage(final int pageNumber) throws IOException {
-        final int nextPage = pageNumber + 1;
-        if (nextPage >= getPageCount()) {
-            return;
-        }
-        getPage(nextPage);
     }
 
     private CodecPage getPage(final int pageIndex) {

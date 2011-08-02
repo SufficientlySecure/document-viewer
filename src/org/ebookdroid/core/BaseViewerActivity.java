@@ -8,6 +8,7 @@ import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.models.ZoomModel;
 import org.ebookdroid.core.multitouch.MultiTouchZoom;
 import org.ebookdroid.core.settings.AppSettings;
+import org.ebookdroid.core.utils.PathFromUri;
 import org.ebookdroid.core.views.PageViewZoomControls;
 
 import android.app.Activity;
@@ -84,12 +85,13 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     private void initView(final String password) {
         final DecodeService decodeService = createDecodeService();
 
-        decodeService.setContentResolver(getContentResolver());
         final ViewerPreferences viewerPreferences = new ViewerPreferences(this);
+        Uri uri = getIntent().getData();
         try {
-            decodeService.open(getIntent().getData(), password);
+            String fileName = PathFromUri.retrieve(getContentResolver(), uri);
+            decodeService.open(fileName, password);
         } catch (final Exception e) {
-            viewerPreferences.delRecent(getIntent().getData());
+            viewerPreferences.delRecent(uri);
 
             if (e.getMessage().equals("PDF needs a password!")) {
                 setContentView(R.layout.password);
@@ -137,7 +139,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         progressModel = new DecodingProgressModel();
         progressModel.addEventListener(this);
 
-        viewerPreferences.addRecent(getIntent().getData());
+        viewerPreferences.addRecent(uri);
 
         createDocumentView();
 
@@ -324,7 +326,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Called on creation options menu
-     * 
+     *
      * @param menu
      *            the main menu
      * @return true, if successful
@@ -416,7 +418,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the zoom model.
-     * 
+     *
      * @return the zoom model
      */
     @Override
@@ -426,7 +428,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the multi touch zoom.
-     * 
+     *
      * @return the multi touch zoom
      */
     @Override
@@ -441,7 +443,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the decoding progress model.
-     * 
+     *
      * @return the decoding progress model
      */
     @Override

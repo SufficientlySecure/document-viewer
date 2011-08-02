@@ -1,14 +1,31 @@
 package org.ebookdroid.core.codec;
 
-import android.content.ContentResolver;
-
 public interface CodecContext {
 
+    /**
+     * Open appropriate document
+     *
+     * @param fileName
+     *            document file name
+     * @param password
+     *            optional document password
+     * @return an instance of a document
+     */
     CodecDocument openDocument(String fileName, String password);
 
-    void setContentResolver(ContentResolver contentResolver);
+    /**
+     * @return context handler
+     */
+    long getContextHandle();
 
+    /**
+     * Recycle instance.
+     */
     void recycle();
 
-    long getContextHandle();
+    /**
+     * @return <code>true</code> if instance has been recycled
+     */
+    boolean isRecycled();
+
 }

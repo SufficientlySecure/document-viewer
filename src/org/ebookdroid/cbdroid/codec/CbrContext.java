@@ -7,24 +7,24 @@ import android.content.ContentResolver;
 
 public class CbrContext implements CodecContext {
 
-	@Override
-	public long getContextHandle() {
-		return 0;
-	}
+    @Override
+    public long getContextHandle() {
+        return 0;
+    }
 
-	@Override
-	public CodecDocument openDocument(String fileName, String password) {
-		return CbrDocument.openDocument(fileName);
-	}
+    @Override
+    public CodecDocument openDocument(final String fileName, final String password) {
+        return CbrDocument.openDocument(fileName);
+    }
 
-	@Override
-	public void recycle() {
+    @Override
+    public void recycle() {
 
-	}
+    }
 
-	@Override
-	public void setContentResolver(ContentResolver contentResolver) {
+    @Override
+    public void setContentResolver(final ContentResolver contentResolver) {
 
-	}
+    }
 
 }

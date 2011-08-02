@@ -5,8 +5,7 @@ import android.graphics.Paint;
 import android.graphics.PixelXorXfermode;
 import android.text.TextPaint;
 
-public enum PagePaint
-{
+public enum PagePaint {
     DAY(Color.BLACK, Color.WHITE, false),
 
     NIGHT(Color.WHITE, Color.BLACK, true);
@@ -16,7 +15,7 @@ public enum PagePaint
     private final Paint fillPaint = new Paint();
     private final Paint strokePaint = new Paint();
 
-    private PagePaint(int textColor, int fillColor, boolean invert) {
+    private PagePaint(final int textColor, final int fillColor, final boolean invert) {
         if (invert) {
             bitmapPaint = new Paint();
             bitmapPaint.setXfermode(new PixelXorXfermode(-1));
@@ -37,20 +36,19 @@ public enum PagePaint
         strokePaint.setStrokeWidth(2);
     }
 
-    public Paint getBitmapPaint()
-    {
+    public Paint getBitmapPaint() {
         return bitmapPaint;
     }
-    public TextPaint getTextPaint()
-    {
+
+    public TextPaint getTextPaint() {
         return textPaint;
     }
-    public Paint getFillPaint()
-    {
+
+    public Paint getFillPaint() {
         return fillPaint;
     }
-    public Paint getStrokePaint()
-    {
+
+    public Paint getStrokePaint() {
         return strokePaint;
     }
 }

@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Scroller;
 
 public abstract class AbstractDocumentView extends View implements ZoomListener, IDocumentViewController {
+
     private final IViewerActivity base;
     private boolean isInitialized = false;
     private int pageToGoTo;
@@ -23,7 +24,7 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
     private static final int DOUBLE_TAP_TIME = 500;
     private PageAlign align;
 
-    public AbstractDocumentView(IViewerActivity baseActivity) {
+    public AbstractDocumentView(final IViewerActivity baseActivity) {
         super(baseActivity.getContext());
         this.base = baseActivity;
         this.align = base.getAppSettings().getPageAlign();
@@ -33,10 +34,12 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
         setFocusableInTouchMode(true);
     }
 
+    @Override
     public View getView() {
         return this;
     }
 
+    @Override
     public IViewerActivity getBase() {
         return base;
     }
@@ -60,7 +63,7 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
     protected abstract void goToPageImpl(final int toPage);
 
     @Override
-    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+    protected void onScrollChanged(final int l, final int t, final int oldl, final int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
 
         onScrollChanged();
@@ -73,28 +76,35 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
         }
         // on scrollChanged can be called from scrollTo just after new layout applied so we should wait for relayout
         post(new Runnable() {
+
+            @Override
             public void run() {
                 updatePageVisibility();
             }
         });
     }
 
+    @Override
     public void updatePageVisibility() {
-        for (Page page : getBase().getDocumentModel().getPages().values()) {
+        for (final Page page : getBase().getDocumentModel().getPages().values()) {
             page.updateVisibility();
         }
     }
 
+    @Override
     public void commitZoom() {
-        for (Page page : getBase().getDocumentModel().getPages().values()) {
+        for (final Page page : getBase().getDocumentModel().getPages().values()) {
             page.invalidate();
         }
         inZoom = false;
     }
 
+    @Override
     public void showDocument() {
         // use post to ensure that document view has width and height before decoding begin
         post(new Runnable() {
+
+            @Override
             public void run() {
                 init();
                 updatePageVisibility();
@@ -102,7 +112,8 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
         });
     }
 
-    public void goToPage(int toPage) {
+    @Override
+    public void goToPage(final int toPage) {
         if (isInitialized) {
             goToPageImpl(toPage);
         } else {
@@ -112,17 +123,19 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
 
     public abstract int getCurrentPage();
 
-    public void zoomChanged(float newZoom, float oldZoom) {
+    @Override
+    public void zoomChanged(final float newZoom, final float oldZoom) {
         inZoom = true;
         stopScroller();
         final float ratio = newZoom / oldZoom;
         invalidatePageSizes();
-        scrollTo((int) ((getScrollX() + getWidth() / 2) * ratio - getWidth() / 2), (int) ((getScrollY() + getHeight() / 2) * ratio - getHeight() / 2));
+        scrollTo((int) ((getScrollX() + getWidth() / 2) * ratio - getWidth() / 2),
+                (int) ((getScrollY() + getHeight() / 2) * ratio - getHeight() / 2));
         postInvalidate();
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
+    public boolean onTouchEvent(final MotionEvent ev) {
         super.onTouchEvent(ev);
 
         if (getBase().getMultiTouchZoom() != null) {
@@ -142,73 +155,74 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
         velocityTracker.addMovement(ev);
 
         switch (ev.getAction()) {
-        case MotionEvent.ACTION_DOWN:
-            stopScroller();
-            setLastPosition(ev);
-            if (ev.getEventTime() - lastDownEventTime < DOUBLE_TAP_TIME) {
-                // zoomModel.toggleZoomControls();
-            } else {
-                lastDownEventTime = ev.getEventTime();
-            }
-            break;
-        case MotionEvent.ACTION_MOVE:
-            scrollBy((int) (lastX - ev.getX()), (int) (lastY - ev.getY()));
-            setLastPosition(ev);
-            break;
-        case MotionEvent.ACTION_UP:
-            velocityTracker.computeCurrentVelocity(1000);
-            getScroller().fling(getScrollX(), getScrollY(), (int) -velocityTracker.getXVelocity(), (int) -velocityTracker.getYVelocity(), getLeftLimit(),
-                    getRightLimit(), getTopLimit(), getBottomLimit());
-            velocityTracker.recycle();
-            velocityTracker = null;
-            if (base.getAppSettings().getTapScroll()) {
-                int tapsize = base.getAppSettings().getTapSize();
-
-                float ts = (float)tapsize / 100;
-                if (ts > 0.5) {
-                	ts = 0.5f;
+            case MotionEvent.ACTION_DOWN:
+                stopScroller();
+                setLastPosition(ev);
+                if (ev.getEventTime() - lastDownEventTime < DOUBLE_TAP_TIME) {
+                    // zoomModel.toggleZoomControls();
+                } else {
+                    lastDownEventTime = ev.getEventTime();
                 }
+                break;
+            case MotionEvent.ACTION_MOVE:
+                scrollBy((int) (lastX - ev.getX()), (int) (lastY - ev.getY()));
+                setLastPosition(ev);
+                break;
+            case MotionEvent.ACTION_UP:
+                velocityTracker.computeCurrentVelocity(1000);
+                getScroller().fling(getScrollX(), getScrollY(), (int) -velocityTracker.getXVelocity(),
+                        (int) -velocityTracker.getYVelocity(), getLeftLimit(), getRightLimit(), getTopLimit(),
+                        getBottomLimit());
+                velocityTracker.recycle();
+                velocityTracker = null;
+                if (base.getAppSettings().getTapScroll()) {
+                    final int tapsize = base.getAppSettings().getTapSize();
 
-                if (ev.getY() / getHeight() < ts) {
-                    verticalConfigScroll(-1);
-                } else if (ev.getY() / getHeight() > (1 - ts)) {
-                    verticalConfigScroll(1);
+                    float ts = (float) tapsize / 100;
+                    if (ts > 0.5) {
+                        ts = 0.5f;
+                    }
+
+                    if (ev.getY() / getHeight() < ts) {
+                        verticalConfigScroll(-1);
+                    } else if (ev.getY() / getHeight() > (1 - ts)) {
+                        verticalConfigScroll(1);
+                    }
                 }
-            }
-            break;
+                break;
         }
         return true;
     }
 
-    protected void setLastPosition(MotionEvent ev) {
+    protected void setLastPosition(final MotionEvent ev) {
         lastX = ev.getX();
         lastY = ev.getY();
     }
 
     @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
+    public boolean dispatchKeyEvent(final KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             switch (event.getKeyCode()) {
-            case KeyEvent.KEYCODE_DPAD_DOWN:
-                verticalDpadScroll(1);
-                return true;
-            case KeyEvent.KEYCODE_DPAD_UP:
-                verticalDpadScroll(-1);
-                return true;
+                case KeyEvent.KEYCODE_DPAD_DOWN:
+                    verticalDpadScroll(1);
+                    return true;
+                case KeyEvent.KEYCODE_DPAD_UP:
+                    verticalDpadScroll(-1);
+                    return true;
 
-            case KeyEvent.KEYCODE_VOLUME_UP:
-                verticalConfigScroll(-1);
-                return true;
-            case KeyEvent.KEYCODE_VOLUME_DOWN:
-                verticalConfigScroll(1);
-                return true;
+                case KeyEvent.KEYCODE_VOLUME_UP:
+                    verticalConfigScroll(-1);
+                    return true;
+                case KeyEvent.KEYCODE_VOLUME_DOWN:
+                    verticalConfigScroll(1);
+                    return true;
             }
         }
         if (event.getAction() == KeyEvent.ACTION_UP) {
             switch (event.getKeyCode()) {
-            case KeyEvent.KEYCODE_VOLUME_DOWN:
-            case KeyEvent.KEYCODE_VOLUME_UP:
-                return true;
+                case KeyEvent.KEYCODE_VOLUME_DOWN:
+                case KeyEvent.KEYCODE_VOLUME_UP:
+                    return true;
             }
         }
         return super.dispatchKeyEvent(event);
@@ -227,8 +241,9 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
     protected abstract int getRightLimit();
 
     @Override
-    public void scrollTo(int x, int y) {
-        super.scrollTo(Math.min(Math.max(x, getLeftLimit()), getRightLimit()), Math.min(Math.max(y, getTopLimit()), getBottomLimit()));
+    public void scrollTo(final int x, final int y) {
+        super.scrollTo(Math.min(Math.max(x, getLeftLimit()), getRightLimit()),
+                Math.min(Math.max(y, getTopLimit()), getBottomLimit()));
         viewRect = null;
     }
 
@@ -247,7 +262,7 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
     }
 
     @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(final boolean changed, final int left, final int top, final int right, final int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         invalidatePageSizes();
         invalidateScroll();
@@ -257,6 +272,7 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
     /**
      * Invalidate page sizes.
      */
+    @Override
     public abstract void invalidatePageSizes();
 
     protected void invalidateScroll() {
@@ -264,7 +280,7 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
             return;
         }
         stopScroller();
-        float scrollScaleRatio = getScrollScaleRatio();
+        final float scrollScaleRatio = getScrollScaleRatio();
         scrollTo((int) (getScrollX() * scrollScaleRatio), (int) (getScrollY() * scrollScaleRatio));
     }
 
@@ -285,11 +301,12 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
 
     /**
      * Sets the page align flag.
-     *
+     * 
      * @param align
      *            the new flag indicating align
      */
-    public void setAlign(PageAlign align) {
+    @Override
+    public void setAlign(final PageAlign align) {
         if (align == null) {
             this.align = PageAlign.WIDTH;
         } else {
@@ -306,15 +323,17 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
 
     /**
      * Checks if view is initialized.
-     *
+     * 
      * @return true, if is initialized
      */
     protected boolean isInitialized() {
         return isInitialized;
     }
 
+    @Override
     public abstract boolean isPageTreeNodeVisible(PageTreeNode pageTreeNode);
 
+    @Override
     public abstract boolean isPageVisible(Page page);
 
 }

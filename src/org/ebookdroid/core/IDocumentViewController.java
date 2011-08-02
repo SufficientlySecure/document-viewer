@@ -3,6 +3,7 @@ package org.ebookdroid.core;
 import android.view.View;
 
 public interface IDocumentViewController {
+
     /* Page related methods */
     void goToPage(int page);
 
@@ -24,5 +25,5 @@ public interface IDocumentViewController {
 
     View getView();
 
-	void updateUseAnimation();
+    void updateUseAnimation();
 }

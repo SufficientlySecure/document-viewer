@@ -1,34 +1,34 @@
 package org.ebookdroid.xpsdroid.codec;
 
-import android.content.ContentResolver;
-
 import org.ebookdroid.core.VuDroidLibraryLoader;
 import org.ebookdroid.core.codec.CodecContext;
 import org.ebookdroid.core.codec.CodecDocument;
 
-public class XpsContext implements CodecContext
-{
-    static
-    {
+import android.content.ContentResolver;
+
+public class XpsContext implements CodecContext {
+
+    static {
         VuDroidLibraryLoader.load();
     }
 
-    public CodecDocument openDocument(String fileName, String password)
-    {
+    @Override
+    public CodecDocument openDocument(final String fileName, final String password) {
         return XpsDocument.openDocument(fileName);
     }
 
-    public void setContentResolver(ContentResolver contentResolver)
-    {
-        //TODO
-    }
-    
-    public void recycle() {
-   
+    @Override
+    public void setContentResolver(final ContentResolver contentResolver) {
+        // TODO
     }
 
-	@Override
-	public long getContextHandle() {
-		return 0;
-	}
+    @Override
+    public void recycle() {
+
+    }
+
+    @Override
+    public long getContextHandle() {
+        return 0;
+    }
 }

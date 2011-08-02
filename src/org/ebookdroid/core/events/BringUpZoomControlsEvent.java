@@ -1,10 +1,9 @@
 package org.ebookdroid.core.events;
 
-public class BringUpZoomControlsEvent extends SafeEvent<BringUpZoomControlsListener>
-{
+public class BringUpZoomControlsEvent extends SafeEvent<BringUpZoomControlsListener> {
+
     @Override
-    public void dispatchSafely(BringUpZoomControlsListener listener)
-    {
+    public void dispatchSafely(final BringUpZoomControlsListener listener) {
         listener.toggleZoomControls();
     }
 }

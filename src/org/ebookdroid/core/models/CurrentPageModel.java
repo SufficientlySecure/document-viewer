@@ -5,14 +5,12 @@ import org.ebookdroid.core.events.EventDispatcher;
 
 import android.util.Log;
 
-public class CurrentPageModel extends EventDispatcher
-{
+public class CurrentPageModel extends EventDispatcher {
+
     private int currentPageIndex;
 
-    public void setCurrentPageIndex(int currentPageIndex)
-    {
-        if (this.currentPageIndex != currentPageIndex)
-        {
+    public void setCurrentPageIndex(final int currentPageIndex) {
+        if (this.currentPageIndex != currentPageIndex) {
             Log.d("DocModel", "Current page changed: " + this.currentPageIndex + " -> " + currentPageIndex);
             this.currentPageIndex = currentPageIndex;
             dispatch(new CurrentPageListener.CurrentPageChangedEvent(currentPageIndex));

@@ -5,11 +5,10 @@ import org.ebookdroid.core.DecodeService;
 import org.ebookdroid.core.DecodeServiceBase;
 import org.ebookdroid.pdfdroid.codec.PdfContext;
 
-public class PdfViewerActivity extends BaseViewerActivity
-{
+public class PdfViewerActivity extends BaseViewerActivity {
+
     @Override
-    protected DecodeService createDecodeService()
-    {
+    protected DecodeService createDecodeService() {
         return new DecodeServiceBase(new PdfContext());
     }
 }

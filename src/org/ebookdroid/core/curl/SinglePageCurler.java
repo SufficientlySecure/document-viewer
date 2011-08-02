@@ -13,11 +13,11 @@ import android.view.MotionEvent;
 
 /**
  * The Class SinglePageCurler.
- *
+ * 
  * Used for drawing page curl animation
- *
+ * 
  * @author Moritz 'Moss' Wundke (b.thax.dcg@gmail.com)
- *
+ * 
  */
 public class SinglePageCurler {
 
@@ -25,9 +25,10 @@ public class SinglePageCurler {
      * Inner class used to represent a 2D point.
      */
     private class Vector2D {
+
         public float x, y;
 
-        public Vector2D(float x, float y) {
+        public Vector2D(final float x, final float y) {
             this.x = x;
             this.y = y;
         }
@@ -45,9 +46,10 @@ public class SinglePageCurler {
             return (x * x) + (y * y);
         }
 
-        public boolean equals(Object o) {
+        @Override
+        public boolean equals(final Object o) {
             if (o instanceof Vector2D) {
-                Vector2D p = (Vector2D) o;
+                final Vector2D p = (Vector2D) o;
                 return p.x == x && p.y == y;
             }
             return false;
@@ -57,47 +59,47 @@ public class SinglePageCurler {
             return new Vector2D(-x, -y);
         }
 
-        public Vector2D sum(Vector2D b) {
+        public Vector2D sum(final Vector2D b) {
             return new Vector2D(x + b.x, y + b.y);
         }
 
-        public Vector2D sub(Vector2D b) {
+        public Vector2D sub(final Vector2D b) {
             return new Vector2D(x - b.x, y - b.y);
         }
 
-        public float dot(Vector2D vec) {
+        public float dot(final Vector2D vec) {
             return (x * vec.x) + (y * vec.y);
         }
 
-        public float cross(Vector2D a, Vector2D b) {
+        public float cross(final Vector2D a, final Vector2D b) {
             return a.cross(b);
         }
 
-        public float cross(Vector2D vec) {
+        public float cross(final Vector2D vec) {
             return x * vec.y - y * vec.x;
         }
 
-        public float distanceSquared(Vector2D other) {
-            float dx = other.x - x;
-            float dy = other.y - y;
+        public float distanceSquared(final Vector2D other) {
+            final float dx = other.x - x;
+            final float dy = other.y - y;
 
             return (dx * dx) + (dy * dy);
         }
 
-        public float distance(Vector2D other) {
+        public float distance(final Vector2D other) {
             return (float) Math.sqrt(distanceSquared(other));
         }
 
-        public float dotProduct(Vector2D other) {
+        public float dotProduct(final Vector2D other) {
             return other.x * x + other.y * y;
         }
 
         public Vector2D normalize() {
-            float magnitude = (float) Math.sqrt(dotProduct(this));
+            final float magnitude = (float) Math.sqrt(dotProduct(this));
             return new Vector2D(x / magnitude, y / magnitude);
         }
 
-        public Vector2D mult(float scalar) {
+        public Vector2D mult(final float scalar) {
             return new Vector2D(x * scalar, y * scalar);
         }
     }
@@ -106,17 +108,17 @@ public class SinglePageCurler {
      * Inner class used to make a fixed timed animation of the curl effect.
      */
     private class FlipAnimationHandler extends Handler {
+
         @Override
-        public void handleMessage(Message msg) {
+        public void handleMessage(final Message msg) {
             SinglePageCurler.this.FlipAnimationStep();
         }
 
-        public void sleep(long millis) {
+        public void sleep(final long millis) {
             this.removeMessages(0);
             sendMessageDelayed(obtainMessage(0), millis);
         }
     }
-
 
     /** Px / Draw call */
     private int mCurlSpeed;
@@ -180,11 +182,11 @@ public class SinglePageCurler {
 
     private final SinglePageDocumentView view;
 
-	private int foreIndex = -1;
+    private int foreIndex = -1;
 
-	private int backIndex = -1;
+    private int backIndex = -1;
 
-    public SinglePageCurler(SinglePageDocumentView singlePageDocumentView) {
+    public SinglePageCurler(final SinglePageDocumentView singlePageDocumentView) {
         this.view = singlePageDocumentView;
     }
 
@@ -218,76 +220,77 @@ public class SinglePageCurler {
 
     }
 
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(final MotionEvent event) {
         if (!bBlockTouchInput) {
 
             // Get our finger position
             mFinger.x = event.getX();
             mFinger.y = event.getY();
-            int width = view.getWidth();
+            final int width = view.getWidth();
 
             // Depending on the action do what we need to
             switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mOldMovement.x = mFinger.x;
-                mOldMovement.y = mFinger.y;
+                case MotionEvent.ACTION_DOWN:
+                    mOldMovement.x = mFinger.x;
+                    mOldMovement.y = mFinger.y;
 
-                // If we moved over the half of the display flip to next
-                if (mOldMovement.x > (width >> 1)) {
-                    mMovement.x = mInitialEdgeOffset;
-                    mMovement.y = mInitialEdgeOffset;
+                    // If we moved over the half of the display flip to next
+                    if (mOldMovement.x > (width >> 1)) {
+                        mMovement.x = mInitialEdgeOffset;
+                        mMovement.y = mInitialEdgeOffset;
 
-                    // Set the right movement flag
-                    bFlipRight = true;
-                    nextView();
+                        // Set the right movement flag
+                        bFlipRight = true;
+                        nextView();
 
-                } else {
-                    // Set the left movement flag
-                    bFlipRight = false;
+                    } else {
+                        // Set the left movement flag
+                        bFlipRight = false;
 
-                    // go to next previous page
-                    previousView();
+                        // go to next previous page
+                        previousView();
 
-                    // Set new movement
-                    mMovement.x = IsCurlModeDynamic() ? width << 1 : width;
-                    mMovement.y = mInitialEdgeOffset;
-                }
+                        // Set new movement
+                        mMovement.x = IsCurlModeDynamic() ? width << 1 : width;
+                        mMovement.y = mInitialEdgeOffset;
+                    }
 
-                break;
-            case MotionEvent.ACTION_UP:
-            	if (bUserMoves) {
-	                bUserMoves = false;
-	                bFlipping = true;
-	                FlipAnimationStep();
-            	}
-                break;
-            case MotionEvent.ACTION_MOVE:
-                bUserMoves = true;
+                    break;
+                case MotionEvent.ACTION_UP:
+                    if (bUserMoves) {
+                        bUserMoves = false;
+                        bFlipping = true;
+                        FlipAnimationStep();
+                    }
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    bUserMoves = true;
 
-                // Get movement
-                mMovement.x -= mFinger.x - mOldMovement.x;
-                mMovement.y -= mFinger.y - mOldMovement.y;
-                mMovement = CapMovement(mMovement, true);
+                    // Get movement
+                    mMovement.x -= mFinger.x - mOldMovement.x;
+                    mMovement.y -= mFinger.y - mOldMovement.y;
+                    mMovement = CapMovement(mMovement, true);
 
-                // Make sure the y value get's locked at a nice level
-                if (mMovement.y <= 1)
-                    mMovement.y = 1;
+                    // Make sure the y value get's locked at a nice level
+                    if (mMovement.y <= 1) {
+                        mMovement.y = 1;
+                    }
 
-                // Get movement direction
-                if (mFinger.x < mOldMovement.x) {
-                    bFlipRight = true;
-                } else {
-                    bFlipRight = false;
-                }
+                    // Get movement direction
+                    if (mFinger.x < mOldMovement.x) {
+                        bFlipRight = true;
+                    } else {
+                        bFlipRight = false;
+                    }
 
-                // Save old movement values
-                mOldMovement.x = mFinger.x;
-                mOldMovement.y = mFinger.y;
+                    // Save old movement values
+                    mOldMovement.x = mFinger.x;
+                    mOldMovement.y = mFinger.y;
 
-                // Force a new draw call
-                DoPageCurl();
-                view.invalidate();
-                break;
+                    // Force a new draw call
+                    DoPageCurl();
+                    view.invalidate();
+                    break;
             }
 
         }
@@ -296,7 +299,7 @@ public class SinglePageCurler {
         return true;
     }
 
-    public void onDraw(Canvas canvas) {
+    public void onDraw(final Canvas canvas) {
         // Always refresh offsets
         mCurrentLeft = view.getLeft();
         mCurrentTop = view.getTop();
@@ -320,22 +323,25 @@ public class SinglePageCurler {
             bEnableInputAfterDraw = false;
         }
     }
+
     /**
      * Execute a step of the flip animation
      */
     public void FlipAnimationStep() {
-        if (!bFlipping)
+        if (!bFlipping) {
             return;
+        }
 
-        int width = view.getWidth();
+        final int width = view.getWidth();
 
         // No input when flipping
         bBlockTouchInput = true;
 
         // Handle speed
         float curlSpeed = mCurlSpeed;
-        if (!bFlipRight)
+        if (!bFlipRight) {
             curlSpeed *= -1;
+        }
 
         // Move us
         mMovement.x += curlSpeed;
@@ -380,7 +386,7 @@ public class SinglePageCurler {
         if (backIndex >= view.getBase().getDocumentModel().getPageCount()) {
             backIndex = 0;
         }
-//        view.goToPageImpl(foreIndex);
+        // view.goToPageImpl(foreIndex);
     }
 
     /**
@@ -392,10 +398,10 @@ public class SinglePageCurler {
         if (foreIndex < 0) {
             foreIndex = view.getBase().getDocumentModel().getPages().size() - 1;
         }
-//        view.goToPageImpl(foreIndex);
+        // view.goToPageImpl(foreIndex);
     }
 
-    private Vector2D CapMovement(Vector2D point, boolean bMaintainMoveDir) {
+    private Vector2D CapMovement(Vector2D point, final boolean bMaintainMoveDir) {
         // Make sure we never ever move too much
         if (point.distance(mOrigin) > mFlipRadius) {
             if (bMaintainMoveDir) {
@@ -403,10 +409,11 @@ public class SinglePageCurler {
                 point = mOrigin.sum(point.sub(mOrigin).normalize().mult(mFlipRadius));
             } else {
                 // Change direction
-                if (point.x > (mOrigin.x + mFlipRadius))
+                if (point.x > (mOrigin.x + mFlipRadius)) {
                     point.x = (mOrigin.x + mFlipRadius);
-                else if (point.x < (mOrigin.x - mFlipRadius))
+                } else if (point.x < (mOrigin.x - mFlipRadius)) {
                     point.x = (mOrigin.x - mFlipRadius);
+                }
                 point.y = (float) (Math.sin(Math.acos(Math.abs(point.x - mOrigin.x) / mFlipRadius)) * mFlipRadius);
             }
         }
@@ -415,10 +422,10 @@ public class SinglePageCurler {
 
     /**
      * Called on the first draw event of the view
-     *
+     * 
      * @param canvas
      */
-    protected void onFirstDrawEvent(Canvas canvas) {
+    protected void onFirstDrawEvent(final Canvas canvas) {
         mFlipRadius = view.getWidth();
 
         ResetClipEdge();
@@ -453,22 +460,24 @@ public class SinglePageCurler {
      */
     private void DoPageCurl() {
         if (bFlipping) {
-            if (IsCurlModeDynamic())
+            if (IsCurlModeDynamic()) {
                 doDynamicCurl();
-            else
+            } else {
                 doSimpleCurl();
+            }
 
         } else {
-            if (IsCurlModeDynamic())
+            if (IsCurlModeDynamic()) {
                 doDynamicCurl();
-            else
+            } else {
                 doSimpleCurl();
+            }
         }
     }
 
     /**
      * See if the current curl mode is dynamic
-     *
+     * 
      * @return TRUE if the mode is CURLMODE_DYNAMIC, FALSE otherwise
      */
     public boolean IsCurlModeDynamic() {
@@ -479,8 +488,8 @@ public class SinglePageCurler {
      * Do a simple page curl effect
      */
     private void doSimpleCurl() {
-        int width = view.getWidth();
-        int height = view.getHeight();
+        final int width = view.getWidth();
+        final int height = view.getHeight();
 
         // Calculate point A
         mA.x = width - mMovement.x;
@@ -499,9 +508,9 @@ public class SinglePageCurler {
 
         // Now calculate E and F taking into account that the line
         // AD is perpendicular to FB and EC. B and C are fixed points.
-        double angle = Math.atan((height - mD.y) / (mD.x + mMovement.x - width));
-        double _cos = Math.cos(2 * angle);
-        double _sin = Math.sin(2 * angle);
+        final double angle = Math.atan((height - mD.y) / (mD.x + mMovement.x - width));
+        final double _cos = Math.cos(2 * angle);
+        final double _sin = Math.sin(2 * angle);
 
         // And get F
         mF.x = (float) (width - mMovement.x + _cos * mMovement.x);
@@ -518,12 +527,13 @@ public class SinglePageCurler {
             mE.y = (float) -(_sin * (width - mD.x));
         }
     }
+
     /**
      * Calculate the dynamic effect, that one that follows the users finger
      */
     private void doDynamicCurl() {
-        int width = view.getWidth();
-        int height = view.getHeight();
+        final int width = view.getWidth();
+        final int height = view.getHeight();
 
         // F will follow the finger, we add a small displacement
         // So that we can see the edge
@@ -537,14 +547,14 @@ public class SinglePageCurler {
         }
 
         // Get diffs
-        float deltaX = width - mF.x;
-        float deltaY = height - mF.y;
+        final float deltaX = width - mF.x;
+        final float deltaY = height - mF.y;
 
-        float BH = (float) (Math.sqrt(deltaX * deltaX + deltaY * deltaY) / 2);
-        double tangAlpha = deltaY / deltaX;
-        double alpha = Math.atan(deltaY / deltaX);
-        double _cos = Math.cos(alpha);
-        double _sin = Math.sin(alpha);
+        final float BH = (float) (Math.sqrt(deltaX * deltaX + deltaY * deltaY) / 2);
+        final double tangAlpha = deltaY / deltaX;
+        final double alpha = Math.atan(deltaY / deltaX);
+        final double _cos = Math.cos(alpha);
+        final double _sin = Math.sin(alpha);
 
         mA.x = (float) (width - (BH / _cos));
         mA.y = height;
@@ -572,15 +582,15 @@ public class SinglePageCurler {
 
     /**
      * Draw the foreground
-     *
+     * 
      * @param canvas
      * @param rect
      * @param paint
      */
-    private void drawForeground(Canvas canvas) {
+    private void drawForeground(final Canvas canvas) {
         Page page = view.getBase().getDocumentModel().getPageObject(foreIndex);
         if (page == null) {
-        	page = view.getBase().getDocumentModel().getCurrentPageObject();
+            page = view.getBase().getDocumentModel().getCurrentPageObject();
         }
         if (page != null) {
             canvas.save();
@@ -592,15 +602,15 @@ public class SinglePageCurler {
 
     /**
      * Draw the background image.
-     *
+     * 
      * @param canvas
      * @param rect
      * @param paint
      */
-    private void drawBackground(Canvas canvas) {
-        Path mask = createBackgroundPath();
+    private void drawBackground(final Canvas canvas) {
+        final Path mask = createBackgroundPath();
 
-        Page page = view.getBase().getDocumentModel().getPageObject(backIndex);
+        final Page page = view.getBase().getDocumentModel().getPageObject(backIndex);
         if (page != null) {
             // Save current canvas so we do not mess it up
             canvas.save();
@@ -613,11 +623,11 @@ public class SinglePageCurler {
 
     /**
      * Create a Path used as a mask to draw the background page
-     *
+     * 
      * @return
      */
     private Path createBackgroundPath() {
-        Path path = new Path();
+        final Path path = new Path();
         path.moveTo(mA.x, mA.y);
         path.lineTo(mB.x, mB.y);
         path.lineTo(mC.x, mC.y);
@@ -628,11 +638,11 @@ public class SinglePageCurler {
 
     /**
      * Creates a path used to draw the curl edge in.
-     *
+     * 
      * @return
      */
     private Path createCurlEdgePath() {
-        Path path = new Path();
+        final Path path = new Path();
         path.moveTo(mA.x, mA.y);
         path.lineTo(mD.x, mD.y);
         path.lineTo(mE.x, mE.y);
@@ -643,15 +653,15 @@ public class SinglePageCurler {
 
     /**
      * Draw the curl page edge
-     *
+     * 
      * @param canvas
      */
-    private void drawCurlEdge(Canvas canvas) {
-        Path path = createCurlEdgePath();
+    private void drawCurlEdge(final Canvas canvas) {
+        final Path path = createCurlEdgePath();
         canvas.drawPath(path, mCurlEdgePaint);
     }
 
-    public void setViewDrawn(boolean bViewDrawn) {
+    public void setViewDrawn(final boolean bViewDrawn) {
         this.bViewDrawn = bViewDrawn;
     }
 
@@ -659,19 +669,18 @@ public class SinglePageCurler {
         return bViewDrawn;
     }
 
-	/**
-	 * Reset page indexes.
-	 */
-	public void resetPageIndexes() {
-		foreIndex = backIndex = -1;
-	}
+    /**
+     * Reset page indexes.
+     */
+    public void resetPageIndexes() {
+        foreIndex = backIndex = -1;
+    }
 
-  public int getForeIndex() {
-    return foreIndex;
-  }
+    public int getForeIndex() {
+        return foreIndex;
+    }
 
-
-  public int getBackIndex() {
-    return backIndex;
-  }
+    public int getBackIndex() {
+        return backIndex;
+    }
 }

@@ -10,24 +10,24 @@ import android.util.Log;
 
 public class SettingsActivity extends PreferenceActivity {
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		try {
-			addPreferencesFromResource(R.xml.preferences);
-		} catch (ClassCastException e) {
-			Log.e("VuDroidSettings", "Shared preferences are corrupt! Resetting to default values.");
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        try {
+            addPreferencesFromResource(R.xml.preferences);
+        } catch (final ClassCastException e) {
+            Log.e("VuDroidSettings", "Shared preferences are corrupt! Resetting to default values.");
 
-			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-			SharedPreferences.Editor editor = preferences.edit();
-			editor.clear();
-			editor.commit();
+            final SharedPreferences.Editor editor = preferences.edit();
+            editor.clear();
+            editor.commit();
 
-			PreferenceManager.setDefaultValues(this, R.xml.preferences, true);
-			addPreferencesFromResource(R.xml.preferences);
-		}
+            PreferenceManager.setDefaultValues(this, R.xml.preferences, true);
+            addPreferencesFromResource(R.xml.preferences);
+        }
 
-	}
+    }
 
 }

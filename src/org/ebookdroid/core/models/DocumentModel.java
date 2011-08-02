@@ -12,11 +12,12 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class DocumentModel extends CurrentPageModel {
+
     private DecodeService decodeService;
 
     private final Map<Integer, Page> pages = new TreeMap<Integer, Page>();
 
-    public DocumentModel(DecodeService decodeService) {
+    public DocumentModel(final DecodeService decodeService) {
         super();
         this.decodeService = decodeService;
     }
@@ -40,13 +41,13 @@ public class DocumentModel extends CurrentPageModel {
         pages.clear();
     }
 
-    public Page getPageObject(int page) {
+    public Page getPageObject(final int page) {
         return pages.get(page);
     }
 
     /**
      * Gets the current page object.
-     *
+     * 
      * @return the current page object
      */
     public Page getCurrentPageObject() {
@@ -55,7 +56,7 @@ public class DocumentModel extends CurrentPageModel {
 
     /**
      * Gets the next page object.
-     *
+     * 
      * @return the next page object
      */
     public Page getNextPageObject() {
@@ -64,7 +65,7 @@ public class DocumentModel extends CurrentPageModel {
 
     /**
      * Gets the prev page object.
-     *
+     * 
      * @return the prev page object
      */
     public Page getPrevPageObject() {
@@ -73,7 +74,7 @@ public class DocumentModel extends CurrentPageModel {
 
     /**
      * Gets the last page object.
-     *
+     * 
      * @return the last page object
      */
     public Page getLastPageObject() {
@@ -82,7 +83,7 @@ public class DocumentModel extends CurrentPageModel {
 
     public int getFirstVisiblePage() {
         int result = 0;
-        for (Page page : pages.values()) {
+        for (final Page page : pages.values()) {
             if (page.isVisible()) {
                 result = page.getIndex();
                 break;
@@ -96,28 +97,28 @@ public class DocumentModel extends CurrentPageModel {
         setCurrentPageIndex(getFirstVisiblePage());
     }
 
-    public void initPages(IViewerActivity base) {
+    public void initPages(final IViewerActivity base) {
         pages.clear();
-        boolean splitPages = base.getAppSettings().getSplitPages();
+        final boolean splitPages = base.getAppSettings().getSplitPages();
 
         final int width = base.getView().getWidth();
         final int height = base.getView().getHeight();
 
         int index = 0;
 
-        for(int i = 0; i < getDecodeService().getPageCount(); i++) {
-            CodecPageInfo cpi = getDecodeService().getPageInfo(i);
+        for (int i = 0; i < getDecodeService().getPageCount(); i++) {
+            final CodecPageInfo cpi = getDecodeService().getPageInfo(i);
             if (!splitPages || cpi == null || (cpi.getWidth() < cpi.getHeight())) {
-                    Page page = new Page(base, index, i, PageType.FULL_PAGE);
-                    page.setAspectRatio(width, height);
-                    pages.put(index++, page);
+                final Page page = new Page(base, index, i, PageType.FULL_PAGE);
+                page.setAspectRatio(width, height);
+                pages.put(index++, page);
             } else {
-                    Page page1 = new Page(base, index, i, PageType.LEFT_PAGE);
-                    page1.setAspectRatio(width, height);
-                    pages.put(index++, page1);
-                    Page page2 = new Page(base, index, i, PageType.RIGHT_PAGE);
-                    page2.setAspectRatio(width, height);
-                    pages.put(index++, page2);
+                final Page page1 = new Page(base, index, i, PageType.LEFT_PAGE);
+                page1.setAspectRatio(width, height);
+                pages.put(index++, page1);
+                final Page page2 = new Page(base, index, i, PageType.RIGHT_PAGE);
+                page2.setAspectRatio(width, height);
+                pages.put(index++, page2);
             }
         }
     }

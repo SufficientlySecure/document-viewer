@@ -2,8 +2,7 @@ package org.ebookdroid.core;
 
 import android.content.pm.ActivityInfo;
 
-public enum RotationType
-{
+public enum RotationType {
     /**
      *
      */
@@ -21,25 +20,21 @@ public enum RotationType
 
     private final int orientation;
 
-    private RotationType(String resValue, int orientation)
-    {
+    private RotationType(final String resValue, final int orientation) {
         this.resValue = resValue;
         this.orientation = orientation;
     }
 
-    public String getResValue()
-    {
+    public String getResValue() {
         return resValue;
     }
 
-    public int getOrientation()
-    {
+    public int getOrientation() {
         return orientation;
     }
 
-    public static RotationType getByResValue(String rotationStr)
-    {
-        for(RotationType rt : values()){
+    public static RotationType getByResValue(final String rotationStr) {
+        for (final RotationType rt : values()) {
             if (rt.getResValue().equalsIgnoreCase(rotationStr)) {
                 return rt;
             }

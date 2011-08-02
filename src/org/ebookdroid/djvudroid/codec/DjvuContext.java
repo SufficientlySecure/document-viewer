@@ -1,97 +1,92 @@
 package org.ebookdroid.djvudroid.codec;
 
-import android.content.ContentResolver;
-import android.util.Log;
-
 import org.ebookdroid.core.VuDroidLibraryLoader;
 import org.ebookdroid.core.codec.CodecContext;
 
+import android.content.ContentResolver;
+import android.util.Log;
+
 import java.util.concurrent.Semaphore;
 
-public class DjvuContext implements Runnable, CodecContext
-{
-    static
-    {
-        VuDroidLibraryLoader.load();        
+public class DjvuContext implements Runnable, CodecContext {
+
+    static {
+        VuDroidLibraryLoader.load();
     }
 
     private long contextHandle;
     private static final String DJVU_DROID_CODEC_LIBRARY = "DjvuDroidCodecLibrary";
     private final Semaphore docSemaphore = new Semaphore(0);
 
-    public DjvuContext()
-    {
+    public DjvuContext() {
         this.contextHandle = create();
         new Thread(this).start();
     }
 
-    public DjvuDocument openDocument(String fileName, String password)
-    {
+    @Override
+    public DjvuDocument openDocument(final String fileName, final String password) {
         final DjvuDocument djvuDocument = DjvuDocument.openDocument(fileName, this);
-        try
-        {
+        try {
             docSemaphore.acquire();
-        } catch (InterruptedException e)
-        {
+        } catch (final InterruptedException e) {
             throw new RuntimeException(e);
         }
         return djvuDocument;
     }
 
-    public long getContextHandle()
-    {
+    @Override
+    public long getContextHandle() {
         return contextHandle;
     }
 
-    public void run()
-    {
-        for(;;)
-        {
-            try
-            {
+    @Override
+    public void run() {
+        for (;;) {
+            try {
                 synchronized (this) {
-                	if (isRecycled()) return;
-                	handleMessage(contextHandle);
-                	wait(200);
+                    if (isRecycled()) {
+                        return;
+                    }
+                    handleMessage(contextHandle);
+                    wait(200);
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (final Exception e) {
                 Log.e(DJVU_DROID_CODEC_LIBRARY, "Codec error", e);
             }
         }
     }
 
-    @SuppressWarnings({"UnusedDeclaration"})
-    private void handleDocInfo()
-    {
+    @SuppressWarnings({ "UnusedDeclaration" })
+    private void handleDocInfo() {
         docSemaphore.release();
     }
 
-    public void setContentResolver(ContentResolver contentResolver)
-    {
+    @Override
+    public void setContentResolver(final ContentResolver contentResolver) {
     }
 
     @Override
-    protected void finalize() throws Throwable
-    {
+    protected void finalize() throws Throwable {
         recycle();
         super.finalize();
     }
+
+    @Override
     public synchronized void recycle() {
-    	if (isRecycled()) {
-    		return;
-    	}
-    	free(contextHandle);
-    	contextHandle = 0;
-	 }
-    
+        if (isRecycled()) {
+            return;
+        }
+        free(contextHandle);
+        contextHandle = 0;
+    }
+
     private boolean isRecycled() {
-    	return contextHandle == 0;
-	}
-    
-    
+        return contextHandle == 0;
+    }
+
     private static native long create();
+
     private static native void free(long contextHandle);
+
     private native void handleMessage(long contextHandle);
 }

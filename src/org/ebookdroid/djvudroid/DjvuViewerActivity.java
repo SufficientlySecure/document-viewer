@@ -5,11 +5,10 @@ import org.ebookdroid.core.DecodeService;
 import org.ebookdroid.core.DecodeServiceBase;
 import org.ebookdroid.djvudroid.codec.DjvuContext;
 
-public class DjvuViewerActivity extends BaseViewerActivity
-{
+public class DjvuViewerActivity extends BaseViewerActivity {
+
     @Override
-    protected DecodeService createDecodeService()
-    {
+    protected DecodeService createDecodeService() {
         return new DecodeServiceBase(new DjvuContext());
     }
 }

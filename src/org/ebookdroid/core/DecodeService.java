@@ -1,15 +1,15 @@
 package org.ebookdroid.core;
 
+import org.ebookdroid.core.codec.CodecPageInfo;
+
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
 import java.util.List;
 
-import org.ebookdroid.core.codec.CodecPageInfo;
+public interface DecodeService {
 
-public interface DecodeService
-{
     void setContentResolver(ContentResolver contentResolver);
 
     void open(Uri fileUri, String password);
@@ -34,8 +34,8 @@ public interface DecodeService
 
     void recycle();
 
-    public interface DecodeCallback
-    {
+    public interface DecodeCallback {
+
         void decodeComplete(Bitmap bitmap);
     }
 }

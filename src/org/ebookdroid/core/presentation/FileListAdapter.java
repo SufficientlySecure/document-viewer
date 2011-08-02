@@ -1,12 +1,5 @@
 package org.ebookdroid.core.presentation;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-
 import org.ebookdroid.R;
 
 import android.content.Context;
@@ -17,146 +10,161 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class FileListAdapter extends BaseExpandableListAdapter 
-{
-    	private final Context context;
-    	private final FileFilter filter;
-        ArrayList<File> dirsdata = new ArrayList<File>();
-        ArrayList< ArrayList<File>> data = new ArrayList<ArrayList<File>>();
-        
-        
-        public FileListAdapter(Context context, FileFilter filter)
-        {
-            this.context = context;
-            this.filter = filter;
-        }
-        
+import java.io.File;
+import java.io.FileFilter;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
-        public File getChild(int groupPosition, int childPosition) {
-            return data.get(groupPosition).get(childPosition);
+public class FileListAdapter extends BaseExpandableListAdapter {
+
+    private final Context context;
+    private final FileFilter filter;
+    ArrayList<File> dirsdata = new ArrayList<File>();
+    ArrayList<ArrayList<File>> data = new ArrayList<ArrayList<File>>();
+
+    public FileListAdapter(final Context context, final FileFilter filter) {
+        this.context = context;
+        this.filter = filter;
+    }
+
+    @Override
+    public File getChild(final int groupPosition, final int childPosition) {
+        return data.get(groupPosition).get(childPosition);
+    }
+
+    @Override
+    public long getChildId(final int groupPosition, final int childPosition) {
+        return childPosition;
+    }
+
+    @Override
+    public int getChildrenCount(final int groupPosition) {
+        return data.get(groupPosition).size();
+    }
+
+    private String getFileSize(final long size) {
+
+        if (size > 1073741824) {
+            return String.format("%.2f", size / 1073741824.0) + " GB";
+        } else if (size > 1048576) {
+            return String.format("%.2f", size / 1048576.0) + " MB";
+        } else if (size > 1024) {
+            return String.format("%.2f", size / 1024.0) + " KB";
+        } else {
+            return size + " B";
         }
 
-        public long getChildId(int groupPosition, int childPosition) {
-            return childPosition;
-        }
+    }
 
-        public int getChildrenCount(int groupPosition) {
-            return data.get(groupPosition).size();
-        }
-        
-        private String getFileSize( long size) 
-        {
+    @Override
+    public View getChildView(final int groupPosition, final int childPosition, final boolean isLastChild,
+            View convertView, final ViewGroup parent) {
 
-            if (size > 1073741824) {
-                return String.format("%.2f",size / 1073741824.0) + " GB";
-            } else if (size > 1048576) {
-                return String.format("%.2f",size / 1048576.0) + " MB";
-            } else if (size > 1024) {
-                return String.format("%.2f",size / 1024.0) + " KB";
-            } else {
-                return size + " B";
+        if (convertView == null) {
+            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.browseritem, parent, false);
+        }
+        final ImageView imageView = (ImageView) convertView.findViewById(R.id.browserItemIcon);
+        final File file = getChild(groupPosition, childPosition);
+        final TextView textView = (TextView) convertView.findViewById(R.id.browserItemText);
+        textView.setText(file.getName());
+
+        imageView.setImageResource(R.drawable.book);
+        final TextView info = (TextView) convertView.findViewById(R.id.browserItemInfo);
+        info.setText(new SimpleDateFormat("dd MMM yyyy").format(file.lastModified()));
+
+        final TextView fileSize = (TextView) convertView.findViewById(R.id.browserItemfileSize);
+        fileSize.setText(getFileSize(file.length()));
+        return convertView;
+    }
+
+    @Override
+    public View getGroupView(final int groupPosition, final boolean isExpanded, View convertView, final ViewGroup parent) {
+
+        if (convertView == null) {
+            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.browseritem, parent, false);
+        }
+        final ImageView imageView = (ImageView) convertView.findViewById(R.id.browserItemIcon);
+        final File file = getGroup(groupPosition);
+        final TextView textView = (TextView) convertView.findViewById(R.id.browserItemText);
+        textView.setText(file.getName());
+
+        imageView.setImageResource(R.drawable.folderopen);
+        final File[] listOfFiles = file.listFiles(filter);
+        int books = 0;
+        if (listOfFiles != null) {
+            for (int i1 = 0; i1 < listOfFiles.length; i1++) {
+                if (!listOfFiles[i1].isDirectory()) {
+                    books++;
+                }
             }
-
-        }
-        
-
-        public View getChildView(int groupPosition, int childPosition, boolean isLastChild,
-                View convertView, ViewGroup parent) {
-        	
-        		if (convertView == null) 
-        			convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.browseritem, parent, false);
-        		final ImageView imageView = (ImageView) convertView.findViewById(R.id.browserItemIcon);
-        		final File file = getChild(groupPosition, childPosition);
-        		final TextView textView = (TextView) convertView.findViewById(R.id.browserItemText);
-        		textView.setText(file.getName());
-       
-        		imageView.setImageResource(R.drawable.book);
-        		final TextView info = (TextView) convertView.findViewById(R.id.browserItemInfo);
-        		info.setText(new SimpleDateFormat("dd MMM yyyy").format(file.lastModified()));
-                  
-        		final TextView fileSize = (TextView) convertView.findViewById(R.id.browserItemfileSize);
-        		fileSize.setText(getFileSize(file.length()));
-        		return convertView;
-        }
-        
-        
-        public View getGroupView(int groupPosition, boolean isExpanded, View convertView,
-                ViewGroup parent) {
-        	
-        	if (convertView == null) 
-        		convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.browseritem, parent, false);
-            final ImageView imageView = (ImageView) convertView.findViewById(R.id.browserItemIcon);
-            final File file = getGroup(groupPosition);
-            final TextView textView = (TextView) convertView.findViewById(R.id.browserItemText);
-            textView.setText(file.getName());
-     
-            imageView.setImageResource(R.drawable.folderopen);
-            File[] listOfFiles = file.listFiles(filter);
-            int books = 0;
-            if(listOfFiles!=null)
-                for (int i1 = 0; i1 < listOfFiles.length; i1++)
-                  	if(!listOfFiles[i1].isDirectory())
-                   		books++;
-
-            final TextView info = (TextView) convertView.findViewById(R.id.browserItemInfo);
-            info.setText("Books: "+ books);
-
-            return convertView;
         }
 
-        public File getGroup(int groupPosition) {
-            return dirsdata.get(groupPosition);
-        }
+        final TextView info = (TextView) convertView.findViewById(R.id.browserItemInfo);
+        info.setText("Books: " + books);
 
-        public int getGroupCount() {
-            return dirsdata.size();
-        }
+        return convertView;
+    }
 
-        public long getGroupId(int groupPosition) {
-            return groupPosition;
-        }
+    @Override
+    public File getGroup(final int groupPosition) {
+        return dirsdata.get(groupPosition);
+    }
 
-       
+    @Override
+    public int getGroupCount() {
+        return dirsdata.size();
+    }
 
-        public boolean isChildSelectable(int groupPosition, int childPosition) {
-            return true;
-        }
+    @Override
+    public long getGroupId(final int groupPosition) {
+        return groupPosition;
+    }
 
-        public boolean hasStableIds() {
-            return false;
+    @Override
+    public boolean isChildSelectable(final int groupPosition, final int childPosition) {
+        return true;
+    }
+
+    @Override
+    public boolean hasStableIds() {
+        return false;
+    }
+
+    public void addFile(final File file) {
+        if (file.isDirectory()) {
+            return;
         }
-        
-        public void addFile(File file)
-        {
-        	if(file.isDirectory())
-        		return;
-        	File parent = file.getParentFile();
-        	if(!dirsdata.contains(parent))
-        		dirsdata.add(parent);	
-        	int pos = dirsdata.indexOf(parent);
-        	if(data.size()<= pos)
-        	{
-        		ArrayList<File> a= new  ArrayList<File>();
-        		data.add(pos,a);
-        	}
-        	data.get(pos).add(file);
-        	Collections.sort(data.get(pos), new Comparator<File>()
-          	        {
-          	            public int compare(File o1, File o2)
-          	            {
-          	                if (o1.isDirectory() && o2.isFile()) return -1;
-          	                if (o1.isFile() && o2.isDirectory()) return 1;
-          	                return o1.getName().compareTo(o2.getName());
-          	            }
-          	        });
+        final File parent = file.getParentFile();
+        if (!dirsdata.contains(parent)) {
+            dirsdata.add(parent);
         }
-        
-        public void clearData()
-        {
-        	dirsdata.clear();
-        	data.clear();
-        	notifyDataSetInvalidated();
+        final int pos = dirsdata.indexOf(parent);
+        if (data.size() <= pos) {
+            final ArrayList<File> a = new ArrayList<File>();
+            data.add(pos, a);
         }
+        data.get(pos).add(file);
+        Collections.sort(data.get(pos), new Comparator<File>() {
+
+            @Override
+            public int compare(final File o1, final File o2) {
+                if (o1.isDirectory() && o2.isFile()) {
+                    return -1;
+                }
+                if (o1.isFile() && o2.isDirectory()) {
+                    return 1;
+                }
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+    }
+
+    public void clearData() {
+        dirsdata.clear();
+        data.clear();
+        notifyDataSetInvalidated();
+    }
 
 }
-	

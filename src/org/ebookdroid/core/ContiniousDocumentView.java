@@ -2,10 +2,10 @@ package org.ebookdroid.core;
 
 import android.graphics.Canvas;
 import android.graphics.RectF;
-import android.util.Log;
 
 public class ContiniousDocumentView extends AbstractDocumentView {
-    public ContiniousDocumentView(IViewerActivity base) {
+
+    public ContiniousDocumentView(final IViewerActivity base) {
         super(base);
     }
 
@@ -24,6 +24,8 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     @Override
     protected void onScrollChanged() {
         post(new Runnable() {
+
+            @Override
             public void run() {
                 getBase().getDocumentModel().setCurrentPageByFirstVisible();
             }
@@ -32,15 +34,16 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    protected void verticalConfigScroll(int direction) {
-        int scrollheight = getBase().getAppSettings().getScrollHeight();
-        getScroller().startScroll(getScrollX(), getScrollY(), 0, (int) (direction * getHeight() * (scrollheight / 100.0)));
+    protected void verticalConfigScroll(final int direction) {
+        final int scrollheight = getBase().getAppSettings().getScrollHeight();
+        getScroller().startScroll(getScrollX(), getScrollY(), 0,
+                (int) (direction * getHeight() * (scrollheight / 100.0)));
 
         invalidate();
     }
 
     @Override
-    protected void verticalDpadScroll(int direction) {
+    protected void verticalDpadScroll(final int direction) {
         getScroller().startScroll(getScrollX(), getScrollY(), 0, direction * getHeight() / 2);
 
         invalidate();
@@ -67,25 +70,27 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(final Canvas canvas) {
         super.onDraw(canvas);
-        for (Page page : getBase().getDocumentModel().getPages().values()) {
+        for (final Page page : getBase().getDocumentModel().getPages().values()) {
             page.draw(canvas);
         }
     }
 
     @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-      	int page = -1;
-      	if(changed)
-      		page = getCurrentPage();
+    protected void onLayout(final boolean changed, final int left, final int top, final int right, final int bottom) {
+        int page = -1;
+        if (changed) {
+            page = getCurrentPage();
+        }
         super.onLayout(changed, left, top, right, bottom);
-  
+
         invalidatePageSizes();
         invalidateScroll();
         commitZoom();
-        if(page > 0)
-        	goToPage(page);
+        if (page > 0) {
+            goToPage(page);
+        }
     }
 
     /**
@@ -98,31 +103,31 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         }
         float heightAccum = 0;
 
-        int width = getWidth();
-        float zoom = getBase().getZoomModel().getZoom();
+        final int width = getWidth();
+        final float zoom = getBase().getZoomModel().getZoom();
 
         for (int i = 0; i < getBase().getDocumentModel().getPages().size(); i++) {
-            Page page = getBase().getDocumentModel().getPages().get(i);
+            final Page page = getBase().getDocumentModel().getPages().get(i);
 
-            float pageHeight = page.getPageHeight(width, zoom);
+            final float pageHeight = page.getPageHeight(width, zoom);
             page.setBounds(new RectF(0, heightAccum, width * zoom, heightAccum + pageHeight));
             heightAccum += pageHeight;
         }
     }
 
     @Override
-    public boolean isPageTreeNodeVisible(PageTreeNode pageTreeNode) {
+    public boolean isPageTreeNodeVisible(final PageTreeNode pageTreeNode) {
         return RectF.intersects(getViewRect(), pageTreeNode.getTargetRectF());
     }
 
     @Override
-    public boolean isPageVisible(Page page) {
+    public boolean isPageVisible(final Page page) {
         return RectF.intersects(getViewRect(), page.getBounds());
     }
 
-	@Override
-	public void updateUseAnimation() {
-		// This mode do not use animation
+    @Override
+    public void updateUseAnimation() {
+        // This mode do not use animation
 
-	}
+    }
 }

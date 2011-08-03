@@ -29,6 +29,10 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
     }
 
     private Bitmap decode(final boolean onlyBounds) {
+        return decode(onlyBounds, 0);
+    }
+
+    private Bitmap decode(final boolean onlyBounds, final int scale) {
         if (entry == null) {
             return null;
         }
@@ -40,6 +44,8 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
                 final Options opts = new Options();
                 opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
                 opts.inJustDecodeBounds = onlyBounds;
+                opts.inSampleSize = scale;
+
                 final Bitmap bitmap = BitmapFactory.decodeStream(is, null, opts);
                 pageInfo = new CodecPageInfo();
                 if (onlyBounds) {
@@ -79,15 +85,36 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
 
     @Override
     public Bitmap renderBitmap(final int width, final int height, final RectF pageSliceBounds) {
-        final Bitmap bitmap = decode(false);
-        if (bitmap == null) {
+        pageInfo = null;
+        if (getPageInfo() == null) {
             return null;
         }
+        Bitmap bitmap = null;
         try {
             final Matrix matrix = new Matrix();
             matrix.postScale((float) width / getWidth(), (float) height / getHeight());
             matrix.postTranslate(-pageSliceBounds.left * width, -pageSliceBounds.top * height);
             matrix.postScale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height());
+
+            float requiredWidth = (float) width / pageSliceBounds.width();
+            float requiredHeight = (float) height / pageSliceBounds.height();
+
+            int scale = 1;
+            int widthTmp = getWidth();
+            int heightTmp = getWidth();
+            while (true) {
+                if (widthTmp / 2 < requiredWidth || heightTmp / 2 < requiredHeight) {
+                    break;
+                }
+                widthTmp /= 2;
+                heightTmp /= 2;
+
+                scale *= 2;
+            }
+            bitmap = decode(false, scale);
+            if (bitmap == null) {
+                return null;
+            }
 
             final Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
 
@@ -100,7 +127,9 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
 
             return bmp;
         } finally {
-            bitmap.recycle();
+            if (bitmap != null) {
+                bitmap.recycle();
+            }
         }
     }
 

@@ -12,6 +12,6 @@ public class XpsContext extends  AbstractCodecContext {
 
     @Override
     public CodecDocument openDocument(final String fileName, final String password) {
-        return XpsDocument.openDocument(fileName);
+        return new XpsDocument(this, fileName);
     }
 }

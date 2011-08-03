@@ -281,7 +281,9 @@ public class DecodeServiceBase implements DecodeService {
                                 page.recycle();
                             }
                         }
-                        document.recycle();
+                        if (document != null) {
+                            document.recycle();
+                        }
                         codecContext.recycle();
                         executorService.shutdown();
                     }
@@ -380,7 +382,7 @@ public class DecodeServiceBase implements DecodeService {
 
     @Override
     public CodecPageInfo getPageInfo(final int pageIndex) {
-        return document.getPageInfo(pageIndex, codecContext);
+        return document.getPageInfo(pageIndex);
     }
 
 }

@@ -2,23 +2,16 @@ package org.ebookdroid.djvudroid.codec;
 
 import org.ebookdroid.core.OutlineLink;
 import org.ebookdroid.core.PageLink;
-import org.ebookdroid.core.codec.CodecContext;
-import org.ebookdroid.core.codec.CodecDocument;
+import org.ebookdroid.core.codec.AbstractCodecDocument;
 import org.ebookdroid.core.codec.CodecPageInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DjvuDocument implements CodecDocument {
+public class DjvuDocument extends AbstractCodecDocument {
 
-    private long documentHandle;
-
-    private DjvuDocument(final long documentHandle) {
-        this.documentHandle = documentHandle;
-    }
-
-    static DjvuDocument openDocument(final String fileName, final DjvuContext djvuContext) {
-        return new DjvuDocument(open(djvuContext.getContextHandle(), fileName));
+    DjvuDocument(final DjvuContext djvuContext, final String fileName) {
+        super(djvuContext, open(djvuContext.getContextHandle(), fileName));
     }
 
     @Override
@@ -26,16 +19,6 @@ public class DjvuDocument implements CodecDocument {
         final DjvuOutline ou = new DjvuOutline();
         return ou.getOutline(documentHandle);
     }
-
-    private native static long open(long contextHandle, String fileName);
-
-    private native static long getPage(long docHandle, int pageNumber);
-
-    private native static int getPageCount(long docHandle);
-
-    private native static void free(long pageHandle);
-
-    private native static ArrayList<PageLink> getPageLinks(long docHandle, int pageNumber);
 
     @Override
     public ArrayList<PageLink> getPageLinks(final int pageNumber) {
@@ -53,30 +36,31 @@ public class DjvuDocument implements CodecDocument {
     }
 
     @Override
-    protected void finalize() throws Throwable {
-        recycle();
-        super.finalize();
-    }
-
-    @Override
-    public synchronized void recycle() {
-        if (documentHandle == 0) {
-            return;
-        }
-        free(documentHandle);
-        documentHandle = 0;
-    }
-
-    private native static int getPageInfo(long docHandle, int pageNumber, long contextHandle, CodecPageInfo cpi);
-
-    @Override
-    public CodecPageInfo getPageInfo(final int pageNumber, final CodecContext ctx) {
+    public CodecPageInfo getPageInfo(final int pageNumber) {
         final CodecPageInfo info = new CodecPageInfo();
-        final int res = getPageInfo(documentHandle, pageNumber, ctx.getContextHandle(), info);
+        final int res = getPageInfo(documentHandle, pageNumber, context.getContextHandle(), info);
         if (res == -1) {
             return null;
         } else {
             return info;
         }
     }
+
+    @Override
+    protected void freeDocument() {
+        free(documentHandle);
+    }
+
+    private native static int getPageInfo(long docHandle, int pageNumber, long contextHandle, CodecPageInfo cpi);
+
+    private native static long open(long contextHandle, String fileName);
+
+    private native static long getPage(long docHandle, int pageNumber);
+
+    private native static int getPageCount(long docHandle);
+
+    private native static void free(long pageHandle);
+
+    private native static ArrayList<PageLink> getPageLinks(long docHandle, int pageNumber);
+
 }

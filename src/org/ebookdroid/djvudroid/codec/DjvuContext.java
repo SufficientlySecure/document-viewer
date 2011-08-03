@@ -23,7 +23,7 @@ public class DjvuContext extends AbstractCodecContext implements Runnable {
 
     @Override
     public DjvuDocument openDocument(final String fileName, final String password) {
-        final DjvuDocument djvuDocument = DjvuDocument.openDocument(fileName, this);
+        final DjvuDocument djvuDocument = new DjvuDocument(this, fileName);
         try {
             docSemaphore.acquire();
         } catch (final InterruptedException e) {
@@ -54,20 +54,10 @@ public class DjvuContext extends AbstractCodecContext implements Runnable {
     }
 
     @Override
-    protected void finalize() throws Throwable {
-        recycle();
-        super.finalize();
-    }
-
-    @Override
-    public synchronized void recycle() {
-        if (isRecycled()) {
-            return;
-        }
+    protected void freeContext() {
         try {
             free(getContextHandle());
-        } finally {
-            super.recycle();
+        } catch (Throwable th) {
         }
     }
 

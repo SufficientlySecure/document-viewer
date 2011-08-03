@@ -20,17 +20,17 @@ public class CbxContext<ArchiveEntryType extends ArchiveEntry> extends AbstractC
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.codec.CodecContext#openDocument(java.lang.String, java.lang.String)
      */
     @Override
     public CodecDocument openDocument(final String fileName, final String password) {
         try {
             final ArchiveFile<ArchiveEntryType> archive = factory.create(new File(fileName), password);
-            return new CbxDocument<ArchiveEntryType>(archive);
+            return new CbxDocument<ArchiveEntryType>(this, archive);
         } catch (final IOException e) {
             Log.d(CbxDocument.LCTX, "IO error: " + e.getMessage());
-            return new CbxDocument<ArchiveEntryType>(null);
+            return new CbxDocument<ArchiveEntryType>(this, null);
         }
     }
 }

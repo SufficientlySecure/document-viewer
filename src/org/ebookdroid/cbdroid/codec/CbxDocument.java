@@ -1,9 +1,6 @@
 package org.ebookdroid.cbdroid.codec;
 
-import org.ebookdroid.core.OutlineLink;
-import org.ebookdroid.core.PageLink;
-import org.ebookdroid.core.codec.CodecContext;
-import org.ebookdroid.core.codec.CodecDocument;
+import org.ebookdroid.core.codec.AbstractCodecDocument;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.core.utils.archives.ArchiveEntry;
@@ -18,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class CbxDocument<ArchiveEntryType extends ArchiveEntry> implements CodecDocument {
+public class CbxDocument<ArchiveEntryType extends ArchiveEntry> extends AbstractCodecDocument {
 
     public static final String LCTX = "CbxDocument";
 
@@ -34,7 +31,8 @@ public class CbxDocument<ArchiveEntryType extends ArchiveEntry> implements Codec
      * @param fileName
      *            archive file name
      */
-    public CbxDocument(final ArchiveFile<ArchiveEntryType> archive) {
+    public CbxDocument(final CbxContext<ArchiveEntryType> context, final ArchiveFile<ArchiveEntryType> archive) {
+        super(context, context.getContextHandle());
         this.archive = archive;
 
         if (archive != null) {
@@ -76,40 +74,15 @@ public class CbxDocument<ArchiveEntryType extends ArchiveEntry> implements Codec
     /**
      * {@inheritDoc}
      *
-     * @see org.ebookdroid.core.codec.CodecDocument#getPageInfo(int, org.ebookdroid.core.codec.CodecContext)
+     * @see org.ebookdroid.core.codec.CodecDocument#getPageInfo(int)
      */
     @Override
-    public CodecPageInfo getPageInfo(final int pageIndex, final CodecContext codecContext) {
+    public CodecPageInfo getPageInfo(final int pageIndex) {
         return archive.randomAccessAllowed() ? getPage(pageIndex).getPageInfo() : null;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.ebookdroid.core.codec.CodecDocument#getOutline()
-     */
     @Override
-    public List<OutlineLink> getOutline() {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.ebookdroid.core.codec.CodecDocument#getPageLinks(int)
-     */
-    @Override
-    public List<PageLink> getPageLinks(final int pageNuber) {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.ebookdroid.core.codec.CodecDocument#recycle()
-     */
-    @Override
-    public final void recycle() {
+    protected void freeDocument() {
         try {
             pages.clear();
             archive.close();

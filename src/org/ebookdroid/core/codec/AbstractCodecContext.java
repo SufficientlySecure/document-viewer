@@ -1,6 +1,10 @@
 package org.ebookdroid.core.codec;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 public abstract class AbstractCodecContext implements CodecContext {
+
+    private static final AtomicLong SEQ = new AtomicLong();
 
     private long contextHandle;
 
@@ -8,7 +12,7 @@ public abstract class AbstractCodecContext implements CodecContext {
      * Constructor.
      */
     protected AbstractCodecContext() {
-        this(0);
+        this(SEQ.incrementAndGet());
     }
 
     /**
@@ -21,14 +25,26 @@ public abstract class AbstractCodecContext implements CodecContext {
         this.contextHandle = contextHandle;
     }
 
+    @Override
+    protected final void finalize() throws Throwable {
+        recycle();
+        super.finalize();
+    }
+
     /**
      * {@inheritDoc}
      *
      * @see org.ebookdroid.core.codec.CodecContext#recycle()
      */
     @Override
-    public void recycle() {
-        contextHandle = -1;
+    public final void recycle() {
+        if (!isRecycled()) {
+            freeContext();
+            contextHandle = 0;
+        }
+    }
+
+    protected void freeContext() {
     }
 
     /**
@@ -38,7 +54,7 @@ public abstract class AbstractCodecContext implements CodecContext {
      */
     @Override
     public final boolean isRecycled() {
-        return contextHandle == -1;
+        return contextHandle == 0;
     }
 
     /**

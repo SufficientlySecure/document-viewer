@@ -10,7 +10,8 @@ public class PdfContext extends AbstractCodecContext {
         VuDroidLibraryLoader.load();
     }
 
-    public CodecDocument openDocument(String fileName, String password) {
-        return PdfDocument.openDocument(fileName, password);
+    @Override
+    public CodecDocument openDocument(final String fileName, final String password) {
+        return new PdfDocument(this, fileName, password);
     }
 }

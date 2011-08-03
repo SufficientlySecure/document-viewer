@@ -1,51 +1,47 @@
 package org.ebookdroid.pdfdroid.codec;
 
+import org.ebookdroid.core.OutlineLink;
+import org.ebookdroid.core.PageLink;
+import org.ebookdroid.core.codec.AbstractCodecDocument;
+import org.ebookdroid.core.codec.CodecPage;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.ebookdroid.core.OutlineLink;
-import org.ebookdroid.core.PageLink;
-import org.ebookdroid.core.codec.CodecContext;
-import org.ebookdroid.core.codec.CodecDocument;
-import org.ebookdroid.core.codec.CodecPage;
-import org.ebookdroid.core.codec.CodecPageInfo;
+public class PdfDocument extends AbstractCodecDocument {
 
-public class PdfDocument implements CodecDocument
-{
-    private long docHandle;
     private static final int FITZMEMORY = 512 * 1024;
 
-    private PdfDocument(long docHandle)
-    {
-        this.docHandle = docHandle;        
-    }
-    
-    public List<OutlineLink> getOutline()
-    {
-    	PdfOutline ou = new PdfOutline();
-        return ou.getOutline(docHandle);    
-    }
-    
-    public ArrayList<PageLink> getPageLinks(int pageNumber)
-    {
-    	return getPageLinks(docHandle, pageNumber);
+    PdfDocument(final PdfContext context, final String fname, final String pwd) {
+        super(context, open(FITZMEMORY, fname, pwd));
     }
 
-    public CodecPage getPage(int pageNumber)
-    {
-        return PdfPage.createPage(docHandle, pageNumber + 1);
+    @Override
+    public List<OutlineLink> getOutline() {
+        final PdfOutline ou = new PdfOutline();
+        return ou.getOutline(documentHandle);
     }
 
-    public int getPageCount()
-    {
-        return getPageCount(docHandle);
+    @Override
+    public ArrayList<PageLink> getPageLinks(final int pageNumber) {
+        return getPageLinks(documentHandle, pageNumber);
     }
-    
-    static PdfDocument openDocument(String fname, String pwd)
-    {
-        return new PdfDocument(open(FITZMEMORY, fname, pwd));
+
+    @Override
+    public CodecPage getPage(final int pageNumber) {
+        return PdfPage.createPage(documentHandle, pageNumber + 1);
     }
-    
+
+    @Override
+    public int getPageCount() {
+        return getPageCount(documentHandle);
+    }
+
+    @Override
+    protected void freeDocument() {
+        free(documentHandle);
+    }
+
     private native static ArrayList<PageLink> getPageLinks(long docHandle, int pageNumber);
 
     private static native long open(int fitzmemory, String fname, String pwd);
@@ -54,22 +50,5 @@ public class PdfDocument implements CodecDocument
 
     private static native int getPageCount(long handle);
 
-    @Override
-    protected void finalize() throws Throwable
-    {
-        recycle();
-        super.finalize();
-    }
-    public synchronized void recycle() {
-    	if (docHandle != 0) {
-    		free(docHandle);
-    		docHandle = 0;
-    	}
-    }
 
-	@Override
-	public CodecPageInfo getPageInfo(int pageIndex, CodecContext codecContext) {
-		// TODO Fill info for PDF
-		return null;
-	}
 }

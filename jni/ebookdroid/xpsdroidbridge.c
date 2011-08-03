@@ -116,6 +116,60 @@ JNIEXPORT void JNICALL
 	}
 }
 
+
+JNIEXPORT jint JNICALL
+	Java_org_ebookdroid_xpsdroid_codec_XpsDocument_getPageInfo(JNIEnv *env,
+                                    jclass cls,
+                                    jlong handle,
+                                    jint pageNumber,
+                                    jobject cpi)
+{
+
+	renderdocument_t *doc = (renderdocument_t*) (long)handle;
+
+	DEBUG("XpsDocument.getPageInfo = %p", doc);
+
+	xps_page *page = NULL;
+	
+	jclass clazz;
+	jfieldID fid;
+
+
+	fz_error* error = xps_load_page(&page, doc->ctx, pageNumber - 1);
+
+
+	if(!error && page) 
+	{
+	    clazz = (*env)->GetObjectClass(env,cpi);
+	    if (0 == clazz)
+	    {
+		return(-1);
+	    }
+	    
+	    fid = (*env)->GetFieldID(env,clazz,"width","I");
+	    (*env)->SetIntField(env,cpi,fid,page->width);
+	    
+	    fid = (*env)->GetFieldID(env,clazz,"height","I");
+	    (*env)->SetIntField(env,cpi,fid,page->height);
+
+	    fid = (*env)->GetFieldID(env,clazz,"dpi","I");
+	    (*env)->SetIntField(env,cpi,fid,0);
+
+	    fid = (*env)->GetFieldID(env,clazz,"rotation","I");
+	    (*env)->SetIntField(env,cpi,fid,0);
+
+	    fid = (*env)->GetFieldID(env,clazz,"version","I");
+	    (*env)->SetIntField(env,cpi,fid,0);
+
+    	    xps_free_page(doc->ctx, page);
+    	    return 0;
+	}
+	return(-1);
+}
+
+
+
+
 static void
 xps_run_page(xps_context *ctx, xps_page *page, fz_device *dev, fz_matrix ctm)
 {
@@ -175,20 +229,21 @@ cleanup:
 
 JNIEXPORT void JNICALL
 	Java_org_ebookdroid_xpsdroid_codec_XpsPage_free
-	(JNIEnv *env, jclass clazz, jlong handle)
+	(JNIEnv *env, jclass clazz, jlong docHandle, jlong handle)
 {
 
+	renderdocument_t *doc = (renderdocument_t*) (long)docHandle;
 	renderpage_t *page = (renderpage_t*) (long)handle;
+
 	DEBUG("XpsPage_free(%p)",page);
 
 	if(page) {
-//TOTO: fix
-//		if (page->page)
-		    //xps_free_page(xps_context *ctx, page->page);
-//New draw page
+		if (page->page)
+		    xps_free_page(doc->ctx, page->page);
+		    
 		if (page->pageList)
 		    fz_free_display_list(page->pageList);
-//
+
 		fz_free(page);
 	}
 }

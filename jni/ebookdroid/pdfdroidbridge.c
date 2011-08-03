@@ -173,6 +173,56 @@ JNIEXPORT void JNICALL
 	}
 }
 
+JNIEXPORT jint JNICALL
+	Java_org_ebookdroid_pdfdroid_codec_PdfDocument_getPageInfo(JNIEnv *env,
+                                    jclass cls,
+                                    jlong handle,
+                                    jint pageNumber,
+                                    jobject cpi)
+{
+
+	renderdocument_t *doc = (renderdocument_t*) (long)handle;
+
+	DEBUG("PdfDocument.getPageInfo = %p", doc);
+
+	pdf_page *page = NULL;
+	
+	jclass clazz;
+	jfieldID fid;
+
+
+	fz_error* error = pdf_load_page(&page, doc->xref, pageNumber - 1);
+
+	if(!error && page) 
+	{
+	    clazz = (*env)->GetObjectClass(env,cpi);
+	    if (0 == clazz)
+	    {
+		return(-1);
+	    }
+	    
+	    fid = (*env)->GetFieldID(env,clazz,"width","I");
+	    (*env)->SetIntField(env,cpi,fid,page->mediabox.x1 - page->mediabox.x0);
+
+	    fid = (*env)->GetFieldID(env,clazz,"height","I");
+	    (*env)->SetIntField(env,cpi,fid,page->mediabox.y1 - page->mediabox.y0);
+
+	    fid = (*env)->GetFieldID(env,clazz,"dpi","I");
+	    (*env)->SetIntField(env,cpi,fid,0);
+
+	    fid = (*env)->GetFieldID(env,clazz,"rotation","I");
+	    (*env)->SetIntField(env,cpi,fid,page->rotate);
+
+	    fid = (*env)->GetFieldID(env,clazz,"version","I");
+	    (*env)->SetIntField(env,cpi,fid,0);
+	        	
+    	    pdf_free_page(page);
+    	    return 0;
+	}
+	return(-1);
+}
+
+
 JNIEXPORT jobject JNICALL
 	Java_org_ebookdroid_pdfdroid_codec_PdfDocument_getPageLinks
 	(JNIEnv *env, jclass clazz, jlong handle, jint pageno)

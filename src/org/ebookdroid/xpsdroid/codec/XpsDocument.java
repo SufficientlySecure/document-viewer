@@ -2,6 +2,7 @@ package org.ebookdroid.xpsdroid.codec;
 
 import org.ebookdroid.core.codec.AbstractCodecDocument;
 import org.ebookdroid.core.codec.CodecPage;
+import org.ebookdroid.core.codec.CodecPageInfo;
 
 public class XpsDocument extends AbstractCodecDocument {
 
@@ -22,9 +23,22 @@ public class XpsDocument extends AbstractCodecDocument {
     }
 
     @Override
+    public CodecPageInfo getPageInfo(final int pageNumber) {
+        final CodecPageInfo info = new CodecPageInfo();
+        final int res = getPageInfo(documentHandle, pageNumber, info);
+        if (res == -1) {
+            return null;
+        } else {
+            return info;
+        }
+    }
+
+    @Override
     protected void freeDocument() {
         free(documentHandle);
     }
+
+    private native static int getPageInfo(long docHandle, int pageNumber, CodecPageInfo cpi);
 
     private static native long open(int fitzmemory, String fname);
 

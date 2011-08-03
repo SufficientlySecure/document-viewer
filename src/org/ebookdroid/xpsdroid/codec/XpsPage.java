@@ -49,7 +49,7 @@ public class XpsPage implements CodecPage {
     @Override
     public synchronized void recycle() {
         if (pageHandle != 0) {
-            free(pageHandle);
+            free(docHandle, pageHandle);
             pageHandle = 0;
         }
     }
@@ -82,7 +82,7 @@ public class XpsPage implements CodecPage {
 
     private static native int getPageHeight(long handle);
 
-    private static native void free(long handle);
+    private static native void free(long dochandle, long handle);
 
     private static native long open(long dochandle, int pageno);
 

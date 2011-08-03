@@ -13,6 +13,17 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     // private static final int SLICE_SIZE = 65535;
     private static final int SLICE_SIZE = 131070;
+
+    private static RectF[] splitMasks = {
+            // Left Top
+            new RectF(0, 0, 0.5f, 0.5f),
+            // Right top
+            new RectF(0.5f, 0, 1.0f, 0.5f),
+            // Left Bottom
+            new RectF(0, 0.5f, 0.5f, 1.0f),
+            // Right Bottom
+            new RectF(0.5f, 0.5f, 1.0f, 1.0f), };
+
     private Bitmap bitmap;
     private SoftReference<Bitmap> bitmapWeakReference;
     private final AtomicBoolean decodingNow = new AtomicBoolean();
@@ -44,7 +55,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     /**
      * Gets the parent node.
-     * 
+     *
      * @return the parent node
      */
     public PageTreeNode getParent() {
@@ -132,12 +143,10 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     private void invalidateChildren() {
         if (thresholdHit() && children == null && isVisible()) {
             final float newThreshold = childrenZoomThreshold * 2;
-            children = new PageTreeNode[] {
-                    new PageTreeNode(base, new RectF(0, 0, 0.5f, 0.5f), page, newThreshold, this, slice_limit),
-                    new PageTreeNode(base, new RectF(0.5f, 0, 1.0f, 0.5f), page, newThreshold, this, slice_limit),
-                    new PageTreeNode(base, new RectF(0, 0.5f, 0.5f, 1.0f), page, newThreshold, this, slice_limit),
-                    new PageTreeNode(base, new RectF(0.5f, 0.5f, 1.0f, 1.0f), page, newThreshold, this, slice_limit) };
-
+            children = new PageTreeNode[splitMasks.length];
+            for (int i = 0; i < children.length; i++) {
+                children[i] = new PageTreeNode(base, splitMasks[i], page, newThreshold, this, slice_limit);
+            }
         }
         if (!thresholdHit() && getBitmap() != null || !isVisible()) {
             recycleChildren();

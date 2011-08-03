@@ -110,14 +110,18 @@ public class DocumentModel extends CurrentPageModel {
             final CodecPageInfo cpi = getDecodeService().getPageInfo(i);
             if (!splitPages || cpi == null || (cpi.getWidth() < cpi.getHeight())) {
                 final Page page = new Page(base, index, i, PageType.FULL_PAGE);
-                page.setAspectRatio(width, height);
+                if (cpi != null) {
+                    page.setAspectRatio(cpi.getWidth(), cpi.getHeight());
+                } else {
+                    page.setAspectRatio(width, height);
+                }
                 pages.put(index++, page);
             } else {
                 final Page page1 = new Page(base, index, i, PageType.LEFT_PAGE);
-                page1.setAspectRatio(width, height);
+                page1.setAspectRatio(cpi.getWidth() / 2, cpi.getHeight());
                 pages.put(index++, page1);
                 final Page page2 = new Page(base, index, i, PageType.RIGHT_PAGE);
-                page2.setAspectRatio(width, height);
+                page2.setAspectRatio(cpi.getWidth() / 2, cpi.getHeight());
                 pages.put(index++, page2);
             }
         }

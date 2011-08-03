@@ -141,7 +141,8 @@ public class Page {
         buf.append("bounds").append("=").append(bounds);
         buf.append(", ");
         buf.append("aspectRatio").append("=").append(aspectRatio);
-
+        buf.append(", ");
+        buf.append("type").append("=").append(pageType.name());
         buf.append("]");
         return buf.toString();
     }

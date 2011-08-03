@@ -29,7 +29,7 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
     }
 
     private Bitmap decode(final boolean onlyBounds) {
-        return decode(onlyBounds, 0);
+        return decode(onlyBounds, 1);
     }
 
     private Bitmap decode(final boolean onlyBounds, final int scale) {
@@ -49,11 +49,11 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
                 final Bitmap bitmap = BitmapFactory.decodeStream(is, null, opts);
                 pageInfo = new CodecPageInfo();
                 if (onlyBounds) {
-                    pageInfo.setHeight(opts.outHeight);
-                    pageInfo.setWidth(opts.outWidth);
+                    pageInfo.setHeight(opts.outHeight * scale);
+                    pageInfo.setWidth(opts.outWidth * scale);
                 } else {
-                    pageInfo.setHeight(bitmap.getHeight());
-                    pageInfo.setWidth(bitmap.getWidth());
+                    pageInfo.setHeight(bitmap.getHeight() * scale);
+                    pageInfo.setWidth(bitmap.getWidth() * scale);
                 }
                 return bitmap;
             } finally {
@@ -85,23 +85,18 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
 
     @Override
     public Bitmap renderBitmap(final int width, final int height, final RectF pageSliceBounds) {
-        pageInfo = null;
         if (getPageInfo() == null) {
             return null;
         }
         Bitmap bitmap = null;
         try {
-            final Matrix matrix = new Matrix();
-            matrix.postScale((float) width / getWidth(), (float) height / getHeight());
-            matrix.postTranslate(-pageSliceBounds.left * width, -pageSliceBounds.top * height);
-            matrix.postScale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height());
 
             float requiredWidth = (float) width / pageSliceBounds.width();
             float requiredHeight = (float) height / pageSliceBounds.height();
 
             int scale = 1;
             int widthTmp = getWidth();
-            int heightTmp = getWidth();
+            int heightTmp = getHeight();
             while (true) {
                 if (widthTmp / 2 < requiredWidth || heightTmp / 2 < requiredHeight) {
                     break;
@@ -111,10 +106,16 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
 
                 scale *= 2;
             }
+            
             bitmap = decode(false, scale);
             if (bitmap == null) {
                 return null;
             }
+            
+            final Matrix matrix = new Matrix();
+            matrix.postScale((float) width / bitmap.getWidth(), (float) height / bitmap.getHeight());
+            matrix.postTranslate(-pageSliceBounds.left * width, -pageSliceBounds.top * height);
+            matrix.postScale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height());
 
             final Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
 
@@ -123,7 +124,7 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
             paint.setFilterBitmap(true);
             paint.setAntiAlias(true);
             paint.setDither(true);
-            c.drawBitmap(bitmap, matrix, null);
+            c.drawBitmap(bitmap, matrix, paint);
 
             return bmp;
         } finally {

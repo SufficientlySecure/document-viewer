@@ -25,7 +25,7 @@ public class XpsDocument extends AbstractCodecDocument {
     @Override
     public CodecPageInfo getPageInfo(final int pageNumber) {
         final CodecPageInfo info = new CodecPageInfo();
-        final int res = getPageInfo(documentHandle, pageNumber, info);
+        final int res = getPageInfo(documentHandle, pageNumber + 1, info);
         if (res == -1) {
             return null;
         } else {

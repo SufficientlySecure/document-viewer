@@ -15,7 +15,7 @@
          android:title="@string/menu_zoom" />
    <item android:id="@+id/mainmenu_nightmode"
          android:alphabeticShortcut="n" 
-         android:title="@string/pref_nightmode_title"/>
+         android:title="@string/menu_nightmode"/>
    <item android:id="@+id/mainmenu_settings"
          android:alphabeticShortcut="s"
          android:title="@string/menu_settings" /> 

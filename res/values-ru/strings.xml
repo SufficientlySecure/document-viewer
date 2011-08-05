@@ -41,6 +41,7 @@
 	<string name="menu_goto_page">Страница</string>
 	<string name="menu_outline">Оглавление</string>
 	<string name="menu_zoom">Увеличение</string>
+	<string name="menu_nightmode">День/Ночь</string>
 	<string name="menu_settings">Настройки</string>
 	<string name="tab_recent">Недавние</string>
 	<string name="tab_browse">Просмотр</string>

@@ -1,6 +1,6 @@
 #include "fitz.h"
 
-#define SLOWCMYK
+//#define SLOWCMYK
 
 fz_colorspace *
 fz_new_colorspace(char *name, int n)

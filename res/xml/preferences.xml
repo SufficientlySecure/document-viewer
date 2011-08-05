@@ -31,6 +31,7 @@
 			android:title="@string/pref_pageintitle_title"
 			android:summary="@string/pref_pageintitle_summary"
 			android:defaultValue="true"
+			android:dependency="title"
 			/>
 		<CheckBoxPreference
 			android:key="tapscroll"
@@ -38,7 +39,7 @@
 			android:summary="@string/pref_tap_summary"
 			android:defaultValue="false"
 			/>
-		<EditTextPreference 
+		<EditTextPreference
 			android:key="tapsize"
 			android:title="@string/pref_tapsize_title"
 			android:summary="@string/pref_tapsize_summary"
@@ -74,7 +75,7 @@
 			android:summary="@string/pref_singlepage_summary"
 			android:defaultValue="false"
 			/>
-			
+
 		<CheckBoxPreference
 			android:key="useanimation"
 			android:title="@string/pref_useanimation_title"

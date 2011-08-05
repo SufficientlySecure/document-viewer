@@ -41,8 +41,8 @@ public class AppSettings {
     private Boolean splitPages;
 
     private Boolean pageInTitle;
-    
-    
+
+
     public AppSettings(final Context context) {
         this.context = context;
         this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -128,7 +128,7 @@ public class AppSettings {
 
     public boolean getShowTitle() {
         if (showTitle == null) {
-            showTitle = prefs.getBoolean("title", false);
+            showTitle = prefs.getBoolean("title", true);
         }
         return showTitle;
     }

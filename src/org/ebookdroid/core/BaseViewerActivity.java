@@ -235,7 +235,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     }
 
     private void setShowTitle() {
-        if (getAppSettings().getShowTitle()) {
+        if (!getAppSettings().getShowTitle()) {
             getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         } else {
             // Android 3.0+ you need both progress!!!
@@ -341,7 +341,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Called on creation options menu
-     * 
+     *
      * @param menu
      *            the main menu
      * @return true, if successful
@@ -433,7 +433,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the zoom model.
-     * 
+     *
      * @return the zoom model
      */
     @Override
@@ -443,7 +443,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the multi touch zoom.
-     * 
+     *
      * @return the multi touch zoom
      */
     @Override
@@ -458,7 +458,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the decoding progress model.
-     * 
+     *
      * @return the decoding progress model
      */
     @Override

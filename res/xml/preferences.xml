@@ -2,8 +2,9 @@
 
 <PreferenceScreen xmlns:vudroid="http://schemas.android.com/apk/res/vudroid" xmlns:android="http://schemas.android.com/apk/res/android">
 
-	<PreferenceCategory
-		android:title="@string/pref_ui_category">
+	<PreferenceScreen
+		android:title="@string/pref_ui_category"
+		android:summary="@string/pref_ui_category_summary">
 
 		<ListPreference
 			android:key="rotation"
@@ -24,6 +25,12 @@
 			android:title="@string/pref_title_title"
 			android:summary="@string/pref_title_summary"
 			android:defaultValue="false"
+			/>
+		<CheckBoxPreference
+			android:key="pageintitle"
+			android:title="@string/pref_pageintitle_title"
+			android:summary="@string/pref_pageintitle_summary"
+			android:defaultValue="true"
 			/>
 		<CheckBoxPreference
 			android:key="tapscroll"
@@ -48,10 +55,11 @@
 			android:defaultValue="50"
 			android:numeric="integer"
 			/>
-	</PreferenceCategory>
+	</PreferenceScreen>
 
-	<PreferenceCategory
-		android:title="@string/pref_render_category">
+	<PreferenceScreen
+		android:title="@string/pref_render_category"
+		android:summary="@string/pref_render_category_summary">
 
 		<CheckBoxPreference
 			android:key="nightmode"
@@ -109,17 +117,19 @@
 			android:defaultValue="true"
 			/>
 
-	</PreferenceCategory>
+	</PreferenceScreen>
 
-	<PreferenceCategory
-		android:title="@string/pref_browser_category">
+	<PreferenceScreen
+		android:key="browserscreen"
+		android:title="@string/pref_browser_category"
+		android:summary="@string/pref_browser_category_summary">
 
 		<EditTextPreference
 			android:key="brautoscandir"
 			android:title="@string/pref_brautoscandir_title"
 			android:summary="@string/pref_brautoscandir_summary"
 			android:defaultValue="/sdcard"/>
-		<PreferenceScreen
+		<PreferenceCategory
                 android:key="brfiletypesscreen"
                 android:title="@string/pref_brbrfiletypesscreen_title"
                 android:summary="@string/pref_brbrfiletypesscreen_summary">
@@ -159,7 +169,7 @@
 						android:summary="@string/pref_brfiletypecbr_summary"
 						android:defaultValue="true"
 				/>
-        </PreferenceScreen>
+        </PreferenceCategory>
 
-	</PreferenceCategory>
+	</PreferenceScreen>
 </PreferenceScreen>

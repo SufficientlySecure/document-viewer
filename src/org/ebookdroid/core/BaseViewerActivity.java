@@ -58,6 +58,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     private MultiTouchZoom multiTouchZoom;
 
     private DocumentModel documentModel;
+    private String currentFilename;
 
     /**
      * Instantiates a new base viewer activity.
@@ -205,25 +206,32 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     @Override
     public void currentPageChanged(final int pageIndex) {
         final String pageText = (pageIndex + 1) + "/" + documentModel.getPageCount();
-        if (pageNumberToast != null) {
-            pageNumberToast.setText(pageText);
+        String prefix = "";
+        if (getAppSettings().getPageInTitle()) {
+            prefix = "("+pageText+") ";
         } else {
-            pageNumberToast = Toast.makeText(this, pageText, 300);
+            if (pageNumberToast != null) {
+                pageNumberToast.setText(pageText);
+            } else {
+                pageNumberToast = Toast.makeText(this, pageText, 300);
+            }
+            pageNumberToast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+            pageNumberToast.show();
         }
-        pageNumberToast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
-        pageNumberToast.show();
+        getWindow().setTitle(prefix + currentFilename);
         saveCurrentPage();
     }
 
     private void setWindowTitle() {
-        final String name = getIntent().getData().getLastPathSegment();
-        getWindow().setTitle(name);
+        currentFilename = getIntent().getData().getLastPathSegment();
+        getWindow().setTitle(currentFilename);
     }
 
     @Override
     protected void onPostCreate(final Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setWindowTitle();
+        currentPageChanged(documentModel.getCurrentPageIndex());
     }
 
     private void setShowTitle() {
@@ -290,6 +298,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         setAlign(oldSettings, newSettings);
         setOrientation(oldSettings, newSettings);
         setFullScreen(oldSettings, newSettings);
+        currentPageChanged(documentModel.getCurrentPageIndex());
     }
 
     private void setAlign(final AppSettings oldSettings, final AppSettings newSettings) {

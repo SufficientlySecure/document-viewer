@@ -70,4 +70,9 @@
 	<string name="password_text">"Введите пароль"</string>
 	<string name="password_ok">"OK"</string>
 	<string name="password_cancel">"Отмена"</string>
+	<string name="pref_ui_category_summary">Настройки пользовательского интерфейса</string>
+	<string name="pref_pageintitle_title">Страница в заголовке</string>
+	<string name="pref_pageintitle_summary">Показывать номер текущей странице в заголовке</string>
+	<string name="pref_render_category_summary">Настройки отрисовки</string>
+	<string name="pref_browser_category_summary">Настройки браузера и поддерживаемые типы файлов</string>
 </resources>

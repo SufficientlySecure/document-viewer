@@ -70,4 +70,9 @@
 	<string name="password_text">"Enter password"</string>
 	<string name="password_ok">"OK"</string>
 	<string name="password_cancel">"Cancel"</string>
+	<string name="pref_ui_category_summary">User interface settings</string>
+	<string name="pref_pageintitle_title">Page in title</string>
+	<string name="pref_pageintitle_summary">Show page number in title bar</string>
+	<string name="pref_render_category_summary">Rendering settings</string>
+	<string name="pref_browser_category_summary">File browser and file types settings</string>
 </resources>

@@ -40,9 +40,19 @@ public class AppSettings {
 
     private Boolean splitPages;
 
+    private Boolean pageInTitle;
+    
+    
     public AppSettings(final Context context) {
         this.context = context;
         this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    }
+
+    public boolean getPageInTitle() {
+        if (pageInTitle == null) {
+            pageInTitle = prefs.getBoolean("pageintitle", true);
+        }
+        return pageInTitle;
     }
 
     public boolean getTapScroll() {

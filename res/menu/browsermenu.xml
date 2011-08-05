@@ -3,8 +3,12 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
    <item android:id="@+id/browsermenu_cleanrecent"
          android:alphabeticShortcut="c"
-         android:title="@string/brmenu_cleanrecent" />
+         android:title="@string/brmenu_cleanrecent"
+         android:icon="@drawable/clear"
+         />
    <item android:id="@+id/browsermenu_settings"
          android:alphabeticShortcut="s"
-         android:title="@string/brmenu_settings" />
+         android:title="@string/brmenu_settings"
+         android:icon="@drawable/settings"
+         />
 </menu>

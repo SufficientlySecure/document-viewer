@@ -127,7 +127,7 @@ JNIEXPORT jint JNICALL
 
 	renderdocument_t *doc = (renderdocument_t*) (long)handle;
 
-	DEBUG("XpsDocument.getPageInfo = %p", doc);
+//	DEBUG("XpsDocument.getPageInfo = %p", doc);
 
 	xps_page *page = NULL;
 	

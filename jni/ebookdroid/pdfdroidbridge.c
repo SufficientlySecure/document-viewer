@@ -183,7 +183,7 @@ JNIEXPORT jint JNICALL
 
 	renderdocument_t *doc = (renderdocument_t*) (long)handle;
 
-	DEBUG("PdfDocument.getPageInfo = %p", doc);
+//	DEBUG("PdfDocument.getPageInfo = %p", doc);
 
 	pdf_page *page = NULL;
 	

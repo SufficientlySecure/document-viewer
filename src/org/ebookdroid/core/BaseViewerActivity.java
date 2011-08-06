@@ -231,7 +231,8 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     protected void onPostCreate(final Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setWindowTitle();
-        currentPageChanged(documentModel.getCurrentPageIndex());
+        if(documentModel != null)
+            currentPageChanged(documentModel.getCurrentPageIndex());
     }
 
     private void setShowTitle() {
@@ -288,9 +289,10 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     @Override
     public void onResume() {
         super.onResume();
-
-        final AppSettings oldSettings = settings.getAndSet((new AppSettings(this)));
-        onAppSettingsChanged(oldSettings, getAppSettings());
+        if(documentModel != null){
+            final AppSettings oldSettings = settings.getAndSet((new AppSettings(this)));
+            onAppSettingsChanged(oldSettings, getAppSettings());
+        }
     }
 
     protected void onAppSettingsChanged(final AppSettings oldSettings, final AppSettings newSettings) {

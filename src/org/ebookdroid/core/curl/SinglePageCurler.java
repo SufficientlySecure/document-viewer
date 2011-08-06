@@ -1,6 +1,7 @@
 package org.ebookdroid.core.curl;
 
 import org.ebookdroid.core.Page;
+import org.ebookdroid.core.PagePaint;
 import org.ebookdroid.core.SinglePageDocumentView;
 
 import android.graphics.Canvas;
@@ -615,6 +616,11 @@ public class SinglePageCurler {
             // Save current canvas so we do not mess it up
             canvas.save();
             canvas.clipPath(mask);
+            
+            final PagePaint paint = !(view.getBase().getAppSettings().getNightMode()) ? PagePaint.NIGHT : PagePaint.DAY;
+
+            canvas.drawRect(canvas.getClipBounds(), paint.getFillPaint());
+            
             page.draw(canvas, true);
             canvas.restore();
         }

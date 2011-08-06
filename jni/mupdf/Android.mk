@@ -236,8 +236,7 @@ MY_MUPDF_SRC_FILES := \
 	mupdf/fitz/dev_list.c \
 	mupdf/fitz/dev_null.c \
 	mupdf/fitz/dev_text.c \
-	mupdf/fitz/dev_bbox.c \
-	mupdf/fitz/dev_trace.c \
+	mupdf/fitz/dev_bbox.c
 
 # omit this when building w/o CJK support:
 #	fonts/font_cjk.c

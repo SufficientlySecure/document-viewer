@@ -78,7 +78,8 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
         frameLayout = createMainContainer();
 
-        setShowTitle();
+        initActivity();
+
         initView("");
 
     }
@@ -93,47 +94,14 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
             decodeService.open(fileName, password);
         } catch (final Exception e) {
             Log.e(getClass().getSimpleName(), e.getMessage(), e);
-
             viewerPreferences.delRecent(uri);
             final String msg = e.getMessage();
+
             if ("PDF needs a password!".equals(msg)) {
-                setContentView(R.layout.password);
-                final Button ok = (Button) findViewById(R.id.pass_ok);
-                ok.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(final View v) {
-                        final EditText te = (EditText) findViewById(R.id.pass_req);
-                        initView(te.getText().toString());
-                    }
-                });
-                final Button cancel = (Button) findViewById(R.id.pass_cancel);
-                cancel.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(final View v) {
-                        finish();
-                    }
-                });
+                askPassword();
             } else {
-                setContentView(R.layout.error);
-                final TextView errortext = (TextView) findViewById(R.id.error_text);
-                if (msg != null && msg.length() > 0) {
-                    errortext.setText(msg);
-                } else {
-                    errortext.setText("Unexpected error occured!");
-                }
-                final Button cancel = (Button) findViewById(R.id.error_close);
-                cancel.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(final View v) {
-                        finish();
-                    }
-                });
-
+                showErrorDlg(msg);
             }
-            // Toast.makeText(this, e.getMessage(), 300).show();
             return;
         }
 
@@ -153,6 +121,45 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         frameLayout.addView(createZoomControls(zoomModel));
         setContentView(frameLayout);
         setProgressBarIndeterminateVisibility(false);
+    }
+
+    private void askPassword() {
+        setContentView(R.layout.password);
+        final Button ok = (Button) findViewById(R.id.pass_ok);
+        ok.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(final View v) {
+                final EditText te = (EditText) findViewById(R.id.pass_req);
+                initView(te.getText().toString());
+            }
+        });
+        final Button cancel = (Button) findViewById(R.id.pass_cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(final View v) {
+                finish();
+            }
+        });
+    }
+
+    private void showErrorDlg(final String msg) {
+        setContentView(R.layout.error);
+        final TextView errortext = (TextView) findViewById(R.id.error_text);
+        if (msg != null && msg.length() > 0) {
+            errortext.setText(msg);
+        } else {
+            errortext.setText("Unexpected error occured!");
+        }
+        final Button cancel = (Button) findViewById(R.id.error_close);
+        cancel.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(final View v) {
+                finish();
+            }
+        });
     }
 
     private void initMultiTouchZoomIfAvailable() {
@@ -235,7 +242,9 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
             currentPageChanged(documentModel.getCurrentPageIndex());
     }
 
-    private void setShowTitle() {
+    private void initActivity() {
+        setRequestedOrientation(getAppSettings().getRotation().getOrientation());
+
         if (!getAppSettings().getShowTitle()) {
             getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         } else {

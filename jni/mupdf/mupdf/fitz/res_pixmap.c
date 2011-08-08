@@ -37,7 +37,9 @@ fz_new_pixmap_with_data(fz_colorspace *colorspace, int w, int h, unsigned char *
 		fz_memory_used += pix->w * pix->h * pix->n;
 		pix->samples = fz_calloc(pix->h, pix->w * pix->n);
 		pix->free_samples = 1;
-	}
+
+		fz_warn("PIXMAP allocated: %d, %d", pix->samples, (pix->w * pix->h * pix->n));
+	} 
 
 	return pix;
 }
@@ -94,13 +96,15 @@ fz_drop_pixmap(fz_pixmap *pix)
 {
 	if (pix && --pix->refs == 0)
 	{
-		fz_memory_used -= pix->w * pix->h * pix->n;
 		if (pix->mask)
 			fz_drop_pixmap(pix->mask);
 		if (pix->colorspace)
 			fz_drop_colorspace(pix->colorspace);
-		if (pix->free_samples)
+		if (pix->free_samples) {
+			fz_memory_used -= pix->w * pix->h * pix->n;
+			fz_warn("PIXMAP free: %d", pix->samples);
 			fz_free(pix->samples);
+		}
 		fz_free(pix);
 	}
 }

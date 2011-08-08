@@ -13,10 +13,8 @@ import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -31,7 +29,6 @@ public class DecodeServiceBase implements DecodeService {
 
     public static final String DECODE_SERVICE = "ViewDroidDecodeService";
 
-    private static final int PAGE_POOL_SIZE = 16;
     private static final AtomicLong TASK_ID_SEQ = new AtomicLong();
 
     private final CodecContext codecContext;
@@ -39,8 +36,9 @@ public class DecodeServiceBase implements DecodeService {
     private final Executor executor = new Executor();
 
     private CodecDocument document;
-    private final HashMap<Integer, SoftReference<CodecPage>> pages = new HashMap<Integer, SoftReference<CodecPage>>();
-    private final Queue<Integer> pageEvictionQueue = new LinkedList<Integer>();
+    private int currentPageIdx = -1;
+    private SoftReference<CodecPage> currentPage;
+    
     private final AtomicBoolean isRecycled = new AtomicBoolean();
 
     public DecodeServiceBase(final CodecContext codecContext) {
@@ -128,19 +126,15 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     private CodecPage getPage(final int pageIndex) {
-        if (!pages.containsKey(pageIndex) || pages.get(pageIndex).get() == null) {
-            pages.put(pageIndex, new SoftReference<CodecPage>(document.getPage(pageIndex)));
-            pageEvictionQueue.remove(pageIndex);
-            pageEvictionQueue.offer(pageIndex);
-            if (pageEvictionQueue.size() > PAGE_POOL_SIZE) {
-                final Integer evictedPageIndex = pageEvictionQueue.poll();
-                final CodecPage evictedPage = pages.remove(evictedPageIndex).get();
-                if (evictedPage != null) {
-                    evictedPage.recycle();
-                }
-            }
+        if (pageIndex == currentPageIdx && currentPage != null && currentPage.get() != null) {
+            return currentPage.get();
         }
-        return pages.get(pageIndex).get();
+        currentPageIdx = pageIndex;
+        if (currentPage != null && currentPage.get() != null) {
+            currentPage.get().recycle();
+        }
+        currentPage = new SoftReference<CodecPage>(document.getPage(pageIndex));
+        return currentPage.get();
     }
 
     @Override
@@ -275,11 +269,8 @@ public class DecodeServiceBase implements DecodeService {
 
                     @Override
                     public void run() {
-                        for (final SoftReference<CodecPage> codecPageSoftReference : pages.values()) {
-                            final CodecPage page = codecPageSoftReference.get();
-                            if (page != null) {
-                                page.recycle();
-                            }
+                        if (currentPage != null && currentPage.get() != null) {
+                            currentPage.get().recycle();
                         }
                         if (document != null) {
                             document.recycle();

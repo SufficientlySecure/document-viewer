@@ -19,17 +19,15 @@ public class BookSettings implements CurrentPageListener {
 
     boolean splitPages;
 
-    public BookSettings(final String fileName) {
+    BookSettings(final String fileName) {
         this(fileName, null);
     }
 
-    public BookSettings(final String fileName, AppSettings appSettings) {
+    BookSettings(final String fileName, AppSettings appSettings) {
         this.fileName = fileName;
         this.lastUpdated = System.currentTimeMillis();
         if (appSettings != null) {
-            singlePage = appSettings.getSinglePage();
-            pageAlign = appSettings.getPageAlign();
-            splitPages = appSettings.getSplitPages();
+            appSettings.fillBookSettings(this);
         }
     }
 

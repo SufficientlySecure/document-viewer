@@ -120,6 +120,7 @@ public class MainBrowserActivity extends Activity {
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.browser);
         final ListView browseList = initBrowserListView();
         final ListView recentListView = initRecentListView();
@@ -229,7 +230,7 @@ public class MainBrowserActivity extends Activity {
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.browsermenu_cleanrecent:
-                SettingsManager.getInstance(this).clearAllBookSettings();
+                SettingsManager.getInstance(this).deleteAllBookSettings();
                 recentAdapter.setFiles(Collections.<File>emptyList());
                 return true;
             case R.id.browsermenu_settings:
@@ -349,6 +350,9 @@ public class MainBrowserActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        SettingsManager.getInstance(this).clearCurrentBookSettings();
+
         Map<String, BookSettings> all = SettingsManager.getInstance(this).getAllBooksSettings();
         List<File> files = new ArrayList<File>(all.size());
         for(BookSettings bs : all.values()) {

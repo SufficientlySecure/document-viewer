@@ -266,16 +266,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     protected abstract DecodeService createDecodeService();
 
     @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         if (documentModel != null) {

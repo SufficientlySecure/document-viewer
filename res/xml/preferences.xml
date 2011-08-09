@@ -147,7 +147,7 @@
 			android:entries="@array/list_align"
 			android:entryValues="@array/list_align_values"
 			android:defaultValue="By Width"
-			android:dependency="singlepage"
+			android:dependency="book_singlepage"
 			android:key="book_align"
 			/>
 

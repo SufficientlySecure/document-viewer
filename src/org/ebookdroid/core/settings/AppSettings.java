@@ -40,7 +40,7 @@ public class AppSettings {
 
     private Boolean pageInTitle;
 
-    public AppSettings(final Context context) {
+    AppSettings(final Context context) {
         this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
@@ -157,7 +157,7 @@ public class AppSettings {
         return splitPages;
     }
 
-    public void clearBookSettings() {
+    void clearPseudoBookSettings() {
         final Editor editor = prefs.edit();
         editor.remove("book");
         editor.remove("book_align");
@@ -166,7 +166,7 @@ public class AppSettings {
         editor.commit();
     }
 
-    public void updateBookSettings(final BookSettings bs) {
+    void updatePseudoBookSettings(final BookSettings bs) {
         final Editor editor = prefs.edit();
         editor.putString("book", bs.getFileName());
         editor.putString("book_align", bs.getPageAlign().getResValue());
@@ -175,7 +175,7 @@ public class AppSettings {
         editor.commit();
     }
 
-    public void fillBookSettings(final BookSettings bs) {
+    void fillBookSettings(final BookSettings bs) {
         bs.pageAlign = PageAlign.getByResValue(prefs.getString("book_align", getPageAlign().getResValue()));
         if (bs.pageAlign == null) {
             bs.pageAlign = PageAlign.WIDTH;

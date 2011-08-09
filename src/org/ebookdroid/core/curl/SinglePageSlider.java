@@ -4,10 +4,13 @@ import org.ebookdroid.core.Page;
 import org.ebookdroid.core.PagePaint;
 import org.ebookdroid.core.SinglePageDocumentView;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.MotionEvent;
 
 /**
@@ -18,7 +21,7 @@ import android.view.MotionEvent;
  * @author Moritz 'Moss' Wundke (b.thax.dcg@gmail.com)
  * 
  */
-public class SinglePageCurler implements PageAnimator {
+public class SinglePageSlider implements PageAnimator {
 
     /** Px / Draw call */
     private int mCurlSpeed;
@@ -29,21 +32,8 @@ public class SinglePageCurler implements PageAnimator {
     /** The initial offset for x and y axis movements */
     private int mInitialEdgeOffset;
 
-    /** The mode we will use */
-    private int mCurlMode;
-
-    /** Simple curl mode. Curl target will move only in one axis. */
-    private static final int CURLMODE_SIMPLE = 0;
-
-    /** Dynamic curl mode. Curl target will move on both X and Y axis. */
-    private static final int CURLMODE_DYNAMIC = 1;
-
     /** Handler used to auto flip time based */
     private FlipAnimationHandler mAnimationHandler;
-
-    /** Maximum radius a page can be flipped, by default it's the width of the view */
-    private float mFlipRadius;
-
     /** Point used to move */
     private Vector2D mMovement;
 
@@ -52,15 +42,6 @@ public class SinglePageCurler implements PageAnimator {
 
     /** Movement point form the last frame */
     private Vector2D mOldMovement;
-
-    /** Page curl edge */
-    private Paint mCurlEdgePaint;
-
-    /** Our points used to define the current clipping paths in our draw call */
-    private Vector2D mA, mB, mC, mD, mE, mF, mOldF, mOrigin;
-
-    /** Left and top offset to be applied when drawing */
-    private int mCurrentLeft, mCurrentTop;
 
     /** If false no draw call has been done */
     private boolean bViewDrawn;
@@ -86,7 +67,9 @@ public class SinglePageCurler implements PageAnimator {
 
     private int backIndex = -1;
 
-    public SinglePageCurler(final SinglePageDocumentView singlePageDocumentView) {
+    private Vector2D mA;
+
+    public SinglePageSlider(final SinglePageDocumentView singlePageDocumentView) {
         this.view = singlePageDocumentView;
     }
 
@@ -105,18 +88,10 @@ public class SinglePageCurler implements PageAnimator {
         // Create our curl animation handler
         mAnimationHandler = new FlipAnimationHandler(this);
 
-        // Create our edge paint
-        mCurlEdgePaint = new Paint();
-        mCurlEdgePaint.setColor(Color.WHITE);
-        mCurlEdgePaint.setAntiAlias(true);
-        mCurlEdgePaint.setStyle(Paint.Style.FILL);
-        mCurlEdgePaint.setShadowLayer(10, -5, 5, 0x99000000);
-
         // Set the default props
         mCurlSpeed = 30;
         mUpdateRate = 33;
-        mInitialEdgeOffset = 20;
-        mCurlMode = CURLMODE_SIMPLE;
+        mInitialEdgeOffset = 0;
 
     }
 
@@ -151,7 +126,7 @@ public class SinglePageCurler implements PageAnimator {
                         previousView();
 
                         // Set new movement
-                        mMovement.x = IsCurlModeDynamic() ? width << 1 : width;
+                        mMovement.x = width;
                         mMovement.y = mInitialEdgeOffset;
                     }
 
@@ -169,7 +144,6 @@ public class SinglePageCurler implements PageAnimator {
                     // Get movement
                     mMovement.x -= mFinger.x - mOldMovement.x;
                     mMovement.y -= mFinger.y - mOldMovement.y;
-                    mMovement = CapMovement(mMovement, true);
 
                     // Make sure the y value get's locked at a nice level
                     if (mMovement.y <= 1) {
@@ -188,7 +162,7 @@ public class SinglePageCurler implements PageAnimator {
                     mOldMovement.y = mFinger.y;
 
                     // Force a new draw call
-                    DoPageCurl();
+                    updateValues();
                     view.invalidate();
                     break;
             }
@@ -200,10 +174,6 @@ public class SinglePageCurler implements PageAnimator {
     }
 
     public void onDraw(final Canvas canvas) {
-        // Always refresh offsets
-        mCurrentLeft = view.getLeft();
-        mCurrentTop = view.getTop();
-
         // We need to initialize all size data when we first draw the view
         if (!isViewDrawn()) {
             setViewDrawn(true);
@@ -215,7 +185,6 @@ public class SinglePageCurler implements PageAnimator {
         // Draw our elements
         drawForeground(canvas);
         drawBackground(canvas);
-        drawCurlEdge(canvas);
 
         // Check if we can re-enable input
         if (bEnableInputAfterDraw) {
@@ -245,10 +214,9 @@ public class SinglePageCurler implements PageAnimator {
 
         // Move us
         mMovement.x += curlSpeed;
-        mMovement = CapMovement(mMovement, false);
 
         // Create values
-        DoPageCurl();
+        updateValues();
 
         // Check for endings :D
         if (mA.x < 1 || mA.x > width - 1) {
@@ -262,7 +230,7 @@ public class SinglePageCurler implements PageAnimator {
             ResetClipEdge();
 
             // Create values
-            DoPageCurl();
+            updateValues();
 
             // Enable touch input after the next draw event
             bEnableInputAfterDraw = true;
@@ -301,35 +269,14 @@ public class SinglePageCurler implements PageAnimator {
         // view.goToPageImpl(foreIndex);
     }
 
-    private Vector2D CapMovement(Vector2D point, final boolean bMaintainMoveDir) {
-        // Make sure we never ever move too much
-        if (point.distance(mOrigin) > mFlipRadius) {
-            if (bMaintainMoveDir) {
-                // Maintain the direction
-                point = mOrigin.sum(point.sub(mOrigin).normalize().mult(mFlipRadius));
-            } else {
-                // Change direction
-                if (point.x > (mOrigin.x + mFlipRadius)) {
-                    point.x = (mOrigin.x + mFlipRadius);
-                } else if (point.x < (mOrigin.x - mFlipRadius)) {
-                    point.x = (mOrigin.x - mFlipRadius);
-                }
-                point.y = (float) (Math.sin(Math.acos(Math.abs(point.x - mOrigin.x) / mFlipRadius)) * mFlipRadius);
-            }
-        }
-        return point;
-    }
-
     /**
      * Called on the first draw event of the view
      * 
      * @param canvas
      */
     protected void onFirstDrawEvent(final Canvas canvas) {
-        mFlipRadius = view.getWidth();
-
         ResetClipEdge();
-        DoPageCurl();
+        updateValues();
     }
 
     /**
@@ -344,142 +291,21 @@ public class SinglePageCurler implements PageAnimator {
 
         // Now set the points
         mA = new Vector2D(mInitialEdgeOffset, 0);
-        mB = new Vector2D(view.getWidth(), view.getHeight());
-        mC = new Vector2D(view.getWidth(), 0);
-        mD = new Vector2D(0, 0);
-        mE = new Vector2D(0, 0);
-        mF = new Vector2D(0, 0);
-        mOldF = new Vector2D(0, 0);
-
-        // The movement origin point
-        mOrigin = new Vector2D(view.getWidth(), 0);
     }
 
     /**
      * Do the page curl depending on the methods we are using
      */
-    private void DoPageCurl() {
-        if (bFlipping) {
-            if (IsCurlModeDynamic()) {
-                doDynamicCurl();
-            } else {
-                doSimpleCurl();
-            }
-
-        } else {
-            if (IsCurlModeDynamic()) {
-                doDynamicCurl();
-            } else {
-                doSimpleCurl();
-            }
-        }
-    }
-
-    /**
-     * See if the current curl mode is dynamic
-     * 
-     * @return TRUE if the mode is CURLMODE_DYNAMIC, FALSE otherwise
-     */
-    public boolean IsCurlModeDynamic() {
-        return mCurlMode == CURLMODE_DYNAMIC;
-    }
-
-    /**
-     * Do a simple page curl effect
-     */
-    private void doSimpleCurl() {
+    private void updateValues() {
         final int width = view.getWidth();
         final int height = view.getHeight();
 
         // Calculate point A
-        mA.x = width - mMovement.x;
+        mA.x = mMovement.x;
         mA.y = height;
-
-        // Calculate point D
-        mD.x = 0;
-        mD.y = 0;
-        if (mA.x > width / 2) {
-            mD.x = width;
-            mD.y = height - (width - mA.x) * height / mA.x;
-        } else {
-            mD.x = 2 * mA.x;
-            mD.y = 0;
-        }
-
-        // Now calculate E and F taking into account that the line
-        // AD is perpendicular to FB and EC. B and C are fixed points.
-        final double angle = Math.atan((height - mD.y) / (mD.x + mMovement.x - width));
-        final double _cos = Math.cos(2 * angle);
-        final double _sin = Math.sin(2 * angle);
-
-        // And get F
-        mF.x = (float) (width - mMovement.x + _cos * mMovement.x);
-        mF.y = (float) (height - _sin * mMovement.x);
-
-        // If the x position of A is above half of the page we are still not
-        // folding the upper-right edge and so E and D are equal.
-        if (mA.x > width / 2) {
-            mE.x = mD.x;
-            mE.y = mD.y;
-        } else {
-            // So get E
-            mE.x = (float) (mD.x + _cos * (width - mD.x));
-            mE.y = (float) -(_sin * (width - mD.x));
-        }
     }
 
-    /**
-     * Calculate the dynamic effect, that one that follows the users finger
-     */
-    private void doDynamicCurl() {
-        final int width = view.getWidth();
-        final int height = view.getHeight();
-
-        // F will follow the finger, we add a small displacement
-        // So that we can see the edge
-        mF.x = width - mMovement.x + 0.1f;
-        mF.y = height - mMovement.y + 0.1f;
-
-        // Set min points
-        if (mA.x == 0) {
-            mF.x = Math.min(mF.x, mOldF.x);
-            mF.y = Math.max(mF.y, mOldF.y);
-        }
-
-        // Get diffs
-        final float deltaX = width - mF.x;
-        final float deltaY = height - mF.y;
-
-        final float BH = (float) (Math.sqrt(deltaX * deltaX + deltaY * deltaY) / 2);
-        final double tangAlpha = deltaY / deltaX;
-        final double alpha = Math.atan(deltaY / deltaX);
-        final double _cos = Math.cos(alpha);
-        final double _sin = Math.sin(alpha);
-
-        mA.x = (float) (width - (BH / _cos));
-        mA.y = height;
-
-        mD.y = (float) (height - (BH / _sin));
-        mD.x = width;
-
-        mA.x = Math.max(0, mA.x);
-        if (mA.x == 0) {
-            mOldF.x = mF.x;
-            mOldF.y = mF.y;
-        }
-
-        // Get W
-        mE.x = mD.x;
-        mE.y = mD.y;
-
-        // Correct
-        if (mD.y < 0) {
-            mD.x = width + (float) (tangAlpha * mD.y);
-            mE.y = 0;
-            mE.x = width + (float) (Math.tan(2 * alpha) * mD.y);
-        }
-    }
-
+ 
     /**
      * Draw the foreground
      * 
@@ -493,10 +319,20 @@ public class SinglePageCurler implements PageAnimator {
             page = view.getBase().getDocumentModel().getCurrentPageObject();
         }
         if (page != null) {
-            canvas.save();
-            canvas.clipRect(page.getBounds());
-            page.draw(canvas, true);
-            canvas.restore();
+            Bitmap fore = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.RGB_565);
+            Canvas tmp = new Canvas(fore);
+            page.draw(tmp, true);
+            
+            Rect src = new Rect((int)mA.x, 0, view.getWidth(), view.getHeight());
+            RectF dst = new RectF(0, 0, view.getWidth() - mA.x, view.getHeight());
+//            Rect src = new Rect(0, 0, view.getWidth(), view.getHeight());
+//            RectF dst = new RectF(0, 0, view.getWidth() - mA.x, view.getHeight());
+            final Paint paint = new Paint();
+            paint.setFilterBitmap(true);
+            paint.setAntiAlias(true);
+            paint.setDither(true);
+            canvas.drawBitmap(fore, src, dst, paint);
+            fore.recycle();
         }
     }
 
@@ -508,63 +344,26 @@ public class SinglePageCurler implements PageAnimator {
      * @param paint
      */
     private void drawBackground(final Canvas canvas) {
-        final Path mask = createBackgroundPath();
-
         final Page page = view.getBase().getDocumentModel().getPageObject(backIndex);
         if (page != null) {
-            // Save current canvas so we do not mess it up
-            canvas.save();
-            canvas.clipPath(mask);
+            Bitmap back = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.RGB_565);
+            Canvas tmp = new Canvas(back);
+            page.draw(tmp, true);
             
-            final PagePaint paint = !(view.getBase().getAppSettings().getNightMode()) ? PagePaint.NIGHT : PagePaint.DAY;
-
-            canvas.drawRect(canvas.getClipBounds(), paint.getFillPaint());
-            
-            page.draw(canvas, true);
-            canvas.restore();
+//            Rect src = new Rect(0, 0, view.getWidth(), view.getHeight());
+//            RectF dst = new RectF(view.getWidth() - mA.x, 0, view.getWidth(), view.getHeight());
+            final Paint paint = new Paint();
+            paint.setFilterBitmap(true);
+            paint.setAntiAlias(true);
+            paint.setDither(true);
+            Rect src = new Rect(0, 0, (int)mA.x, view.getHeight());
+            RectF dst = new RectF(view.getWidth() - mA.x, 0, view.getWidth(), view.getHeight());
+            canvas.drawBitmap(back, src, dst, paint );
+            back.recycle();
         }
 
     }
 
-    /**
-     * Create a Path used as a mask to draw the background page
-     * 
-     * @return
-     */
-    private Path createBackgroundPath() {
-        final Path path = new Path();
-        path.moveTo(mA.x, mA.y);
-        path.lineTo(mB.x, mB.y);
-        path.lineTo(mC.x, mC.y);
-        path.lineTo(mD.x, mD.y);
-        path.lineTo(mA.x, mA.y);
-        return path;
-    }
-
-    /**
-     * Creates a path used to draw the curl edge in.
-     * 
-     * @return
-     */
-    private Path createCurlEdgePath() {
-        final Path path = new Path();
-        path.moveTo(mA.x, mA.y);
-        path.lineTo(mD.x, mD.y);
-        path.lineTo(mE.x, mE.y);
-        path.lineTo(mF.x, mF.y);
-        path.lineTo(mA.x, mA.y);
-        return path;
-    }
-
-    /**
-     * Draw the curl page edge
-     * 
-     * @param canvas
-     */
-    private void drawCurlEdge(final Canvas canvas) {
-        final Path path = createCurlEdgePath();
-        canvas.drawPath(path, mCurlEdgePaint);
-    }
 
     public void setViewDrawn(final boolean bViewDrawn) {
         this.bViewDrawn = bViewDrawn;

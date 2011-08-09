@@ -1,6 +1,8 @@
 package org.ebookdroid.core;
 
+import org.ebookdroid.core.curl.PageAnimator;
 import org.ebookdroid.core.curl.SinglePageCurler;
+import org.ebookdroid.core.curl.SinglePageSlider;
 
 import android.graphics.Canvas;
 import android.graphics.RectF;
@@ -15,7 +17,7 @@ import android.view.VelocityTracker;
 public class SinglePageDocumentView extends AbstractDocumentView {
 
     /** The curler. */
-    private SinglePageCurler curler;
+    private PageAnimator curler;
 
     /** The use curler flag. */
     private boolean useCurler = true;

@@ -5,6 +5,9 @@ import org.ebookdroid.cbdroid.CbrViewerActivity;
 import org.ebookdroid.cbdroid.CbzViewerActivity;
 import org.ebookdroid.core.presentation.BrowserAdapter;
 import org.ebookdroid.core.presentation.FileListAdapter;
+import org.ebookdroid.core.settings.BookSettings;
+import org.ebookdroid.core.settings.SettingsActivity;
+import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.djvudroid.DjvuViewerActivity;
 import org.ebookdroid.pdfdroid.PdfViewerActivity;
 import org.ebookdroid.xpsdroid.XpsViewerActivity;
@@ -32,14 +35,16 @@ import android.widget.TabHost.OnTabChangeListener;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MainBrowserActivity extends Activity {
 
     private BrowserAdapter adapter;
     private BrowserAdapter recentAdapter;
     private FileListAdapter libraryAdapter;
-    private ViewerPreferences viewerPreferences;
     protected final FileFilter filter;
     private TabHost tabHost;
     private static final String CURRENT_DIRECTORY = "currentDirectory";
@@ -116,7 +121,6 @@ public class MainBrowserActivity extends Activity {
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.browser);
-        viewerPreferences = new ViewerPreferences(this);
         final ListView browseList = initBrowserListView();
         final ListView recentListView = initRecentListView();
         tabHost = (TabHost) findViewById(R.id.browserTabHost);
@@ -225,8 +229,8 @@ public class MainBrowserActivity extends Activity {
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.browsermenu_cleanrecent:
-                viewerPreferences.clearRecent();
-                recentAdapter.setFiles(viewerPreferences.getRecent());
+                SettingsManager.getInstance(this).clearAllBookSettings();
+                recentAdapter.setFiles(Collections.<File>emptyList());
                 return true;
             case R.id.browsermenu_settings:
                 scan = false;
@@ -345,8 +349,12 @@ public class MainBrowserActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        recentAdapter.setFiles(viewerPreferences.getRecent());
-        // tabHost.setCurrentTabByTag("Recent");
+        Map<String, BookSettings> all = SettingsManager.getInstance(this).getAllBooksSettings();
+        List<File> files = new ArrayList<File>(all.size());
+        for(BookSettings bs : all.values()) {
+            files.add(new File(bs.getFileName()));
+        }
+        recentAdapter.setFiles(files);
 
         if (scan == false) {
             scan = true;

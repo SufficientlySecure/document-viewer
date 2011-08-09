@@ -11,7 +11,6 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.lang.ref.SoftReference;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -186,7 +185,7 @@ public class DecodeServiceBase implements DecodeService {
         }
     }
 
-    private class Executor implements RejectedExecutionHandler, Comparator<Runnable> {
+    private class Executor implements RejectedExecutionHandler {
 
         private final Map<PageTreeNode, DecodeTask> decodingTasks = new HashMap<PageTreeNode, DecodeTask>();
         private final Map<Long, Future<?>> decodingFutures = new HashMap<Long, Future<?>>();
@@ -197,7 +196,7 @@ public class DecodeServiceBase implements DecodeService {
         private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
         public Executor() {
-            queue = new LinkedBlockingQueue<Runnable>(); // new PriorityBlockingQueue<Runnable>(16, this);
+            queue = new LinkedBlockingQueue<Runnable>();
             executorService = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, queue);
             executorService.setRejectedExecutionHandler(this);
         }
@@ -291,29 +290,6 @@ public class DecodeServiceBase implements DecodeService {
             } finally {
                 lock.writeLock().unlock();
             }
-        }
-
-        @Override
-        public int compare(final Runnable r1, final Runnable r2) {
-            final boolean isTask1 = r1 instanceof DecodeTask;
-            final boolean isTask2 = r2 instanceof DecodeTask;
-
-            if (isTask1 != isTask2) {
-                return isTask1 ? -1 : 1;
-            }
-
-            if (!isTask1) {
-                return 0;
-            }
-
-            final DecodeTask t1 = (DecodeTask) r1;
-            final DecodeTask t2 = (DecodeTask) r2;
-
-            final int currentPageIndex = t1.node.getBase().getDocumentModel().getCurrentPageIndex();
-
-            final int d1 = Math.abs(t1.node.getPageIndex() - currentPageIndex);
-            final int d2 = Math.abs(t2.node.getPageIndex() - currentPageIndex);
-            return d1 < d2 ? -1 : d1 > d2 ? +1 : 0;
         }
     }
 

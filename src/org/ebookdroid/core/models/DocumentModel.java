@@ -6,7 +6,6 @@ import org.ebookdroid.core.Page;
 import org.ebookdroid.core.PageType;
 import org.ebookdroid.core.codec.CodecPageInfo;
 
-import android.util.Log;
 import android.view.View;
 
 import java.util.Map;
@@ -52,7 +51,7 @@ public class DocumentModel extends CurrentPageModel {
      * @return the current page object
      */
     public Page getCurrentPageObject() {
-        return pages.get(getCurrentPageIndex());
+        return pages.get(getCurrentViewPageIndex());
     }
 
     /**
@@ -61,7 +60,7 @@ public class DocumentModel extends CurrentPageModel {
      * @return the next page object
      */
     public Page getNextPageObject() {
-        return pages.get(getCurrentPageIndex() + 1);
+        return pages.get(getCurrentViewPageIndex() + 1);
     }
 
     /**
@@ -70,7 +69,7 @@ public class DocumentModel extends CurrentPageModel {
      * @return the prev page object
      */
     public Page getPrevPageObject() {
-        return pages.get(getCurrentPageIndex() - 1);
+        return pages.get(getCurrentViewPageIndex() - 1);
     }
 
     /**
@@ -90,7 +89,6 @@ public class DocumentModel extends CurrentPageModel {
                 break;
             }
         }
-//        Log.d("DocModel", "First visible page: " + result);
         return result;
     }
 
@@ -107,12 +105,13 @@ public class DocumentModel extends CurrentPageModel {
                 }
             }
         }
-//        Log.d("DocModel", "Last visible page: " + result);
         return result;
     }
-    
+
     public void setCurrentPageByFirstVisible() {
-        setCurrentPageIndex(getFirstVisiblePage());
+        int index = getFirstVisiblePage();
+        Page page = pages.get(index);
+        setCurrentPageIndex(page.getDocumentPageIndex(), page.getIndex());
     }
 
     public void initPages(final IViewerActivity base) {

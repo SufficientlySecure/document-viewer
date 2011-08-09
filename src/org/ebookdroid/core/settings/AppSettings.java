@@ -10,8 +10,6 @@ import android.preference.PreferenceManager;
 
 public class AppSettings {
 
-    private final Context context;
-
     private final SharedPreferences prefs;
 
     private Boolean tapScroll;
@@ -42,9 +40,7 @@ public class AppSettings {
 
     private Boolean pageInTitle;
 
-
     public AppSettings(final Context context) {
-        this.context = context;
         this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
@@ -159,6 +155,34 @@ public class AppSettings {
             splitPages = prefs.getBoolean("splitpages", false);
         }
         return splitPages;
+    }
+
+    public void clearBookSettings() {
+        final Editor editor = prefs.edit();
+        editor.remove("book");
+        editor.remove("book_align");
+        editor.remove("book_singlepage");
+        editor.remove("book_splitpages");
+        editor.commit();
+    }
+
+    public void updateBookSettings(final BookSettings bs) {
+        final Editor editor = prefs.edit();
+        editor.putString("book", bs.getFileName());
+        editor.putString("book_align", bs.getPageAlign().toString());
+        editor.putBoolean("book_singlepage", bs.getSinglePage());
+        editor.putBoolean("book_splitpages", bs.getSplitPages());
+        editor.commit();
+    }
+
+    public void fillBookSettings(final BookSettings bs) {
+        bs.pageAlign = PageAlign.getByResValue(prefs.getString("book_align", getPageAlign().toString()));
+        if (bs.pageAlign == null) {
+            bs.pageAlign = PageAlign.WIDTH;
+        }
+
+        bs.singlePage = prefs.getBoolean("book_singlepage", getSinglePage());
+        bs.splitPages = prefs.getBoolean("book_splitpages", getSplitPages());
     }
 
     private int getIntValue(final String key, final int defaultValue) {

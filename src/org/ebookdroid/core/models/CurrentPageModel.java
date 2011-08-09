@@ -7,17 +7,28 @@ import android.util.Log;
 
 public class CurrentPageModel extends EventDispatcher {
 
-    private int currentPageIndex;
+    private int currentDocPageIndex;
 
-    public void setCurrentPageIndex(final int currentPageIndex) {
-        if (this.currentPageIndex != currentPageIndex) {
-            Log.d("DocModel", "Current page changed: " + this.currentPageIndex + " -> " + currentPageIndex);
-            this.currentPageIndex = currentPageIndex;
-            dispatch(new CurrentPageListener.CurrentPageChangedEvent(currentPageIndex));
+    private int currentViewPageIndex;
+
+    public void setCurrentPageIndex(final int currentDocPageIndex, final int currentViewPageIndex) {
+        if (this.currentViewPageIndex != currentViewPageIndex) {
+            Log.d("DocModel", "Current page changed: " + "[" + this.currentDocPageIndex + ", "
+                    + this.currentViewPageIndex + "]" + " -> " + "[" + currentDocPageIndex + ", "
+                    + currentViewPageIndex + "]");
+
+            this.currentDocPageIndex = currentDocPageIndex;
+            this.currentViewPageIndex = currentViewPageIndex;
+
+            dispatch(new CurrentPageListener.CurrentPageChangedEvent(currentDocPageIndex, currentViewPageIndex));
         }
     }
 
-    public int getCurrentPageIndex() {
-        return this.currentPageIndex;
+    public int getCurrentViewPageIndex() {
+        return this.currentViewPageIndex;
+    }
+
+    public int getCurrentDocPageIndex() {
+        return currentDocPageIndex;
     }
 }

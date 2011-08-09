@@ -9,7 +9,7 @@ import android.view.VelocityTracker;
 
 /**
  * The Class SinglePageDocumentView.
- * 
+ *
  * Used in single page view mode
  */
 public class SinglePageDocumentView extends AbstractDocumentView {
@@ -22,7 +22,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     /**
      * Instantiates a new single page document view.
-     * 
+     *
      * @param baseActivity
      *            the base activity
      */
@@ -33,7 +33,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     /**
      * Checks if is the use curler flag set.
-     * 
+     *
      * @return the use curler flag
      */
     public boolean isUseCurler() {
@@ -42,7 +42,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     /**
      * Sets the use curler flag.
-     * 
+     *
      * @param useCurler
      *            the new use curler flag
      */
@@ -55,7 +55,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     /**
      * Inits the view.
-     * 
+     *
      * @see org.ebookdroid.core.AbstractDocumentView#init()
      */
     @Override
@@ -77,7 +77,8 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     @Override
     public void goToPageImpl(final int toPage) {
         if (toPage >= 0 && toPage <= getBase().getDocumentModel().getPageCount()) {
-            getBase().getDocumentModel().setCurrentPageIndex(toPage);
+            Page page = getBase().getDocumentModel().getPageObject(toPage);
+            getBase().getDocumentModel().setCurrentPageIndex(page.getDocumentPageIndex(), page.getIndex());
             updatePageVisibility();
         }
         if (useCurler) {
@@ -87,19 +88,19 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     @Override
     public int getCurrentPage() {
-        return getBase().getDocumentModel().getCurrentPageIndex();
+        return getBase().getDocumentModel().getCurrentViewPageIndex();
     }
 
     @Override
     protected void verticalConfigScroll(final int direction) {
-        goToPageImpl(getBase().getDocumentModel().getCurrentPageIndex() + direction);
+        goToPageImpl(getBase().getDocumentModel().getCurrentViewPageIndex() + direction);
 
         invalidate();
     }
 
     @Override
     protected void verticalDpadScroll(final int direction) {
-        goToPageImpl(getBase().getDocumentModel().getCurrentPageIndex() + direction);
+        goToPageImpl(getBase().getDocumentModel().getCurrentViewPageIndex() + direction);
         invalidate();
     }
 

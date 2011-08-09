@@ -494,9 +494,8 @@ JNIEXPORT jlong JNICALL
 	(JNIEnv *env, jclass clazz, jlong dochandle)
 {
 	renderdocument_t *doc = (renderdocument_t*) (long)dochandle;
-	
-	doc->outline = pdf_load_outline(doc->xref);
-
+	if(!doc->outline)
+	    doc->outline = pdf_load_outline(doc->xref);
 	DEBUG("PdfOutline.open(): return handle = %p", doc->outline);
 	return (jlong) (long)doc->outline;
 }

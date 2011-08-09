@@ -1,8 +1,11 @@
 package org.ebookdroid.xpsdroid.codec;
 
+import org.ebookdroid.core.OutlineLink;
 import org.ebookdroid.core.codec.AbstractCodecDocument;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
+
+import java.util.List;
 
 public class XpsDocument extends AbstractCodecDocument {
 
@@ -10,6 +13,12 @@ public class XpsDocument extends AbstractCodecDocument {
 
     XpsDocument(final XpsContext context, final String fname) {
         super(context, open(FITZMEMORY, fname));
+    }
+    
+    @Override
+    public List<OutlineLink> getOutline() {
+        final XpsOutline ou = new XpsOutline();
+        return ou.getOutline(documentHandle);
     }
 
     @Override

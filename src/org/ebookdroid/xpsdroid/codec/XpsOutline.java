@@ -1,4 +1,4 @@
-package org.ebookdroid.pdfdroid.codec;
+package org.ebookdroid.xpsdroid.codec;
 
 import org.ebookdroid.core.OutlineLink;
 
@@ -7,7 +7,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PdfOutline {
+public class XpsOutline {
 
     private long docHandle;
 
@@ -26,7 +26,7 @@ public class PdfOutline {
             final String title = getTitle(outline);
             final String link = getLink(outline, docHandle);
             if (title != null) {
-                Log.d("PdfOutline", title);
+                Log.d("XpsOutline", title);
                 ls.add(new OutlineLink(title, link));
             }
 

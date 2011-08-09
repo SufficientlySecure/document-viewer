@@ -184,6 +184,7 @@ MY_MUPDF_SRC_FILES := \
 	mupdf/xps/xps_gradient.c \
 	mupdf/xps/xps_image.c \
 	mupdf/xps/xps_jpeg.c \
+	mupdf/xps/xps_outline.c \
 	mupdf/xps/xps_path.c \
 	mupdf/xps/xps_png.c \
 	mupdf/xps/xps_resource.c \

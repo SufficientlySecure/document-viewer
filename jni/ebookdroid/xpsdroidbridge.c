@@ -349,9 +349,12 @@ JNIEXPORT jlong JNICALL
 	(JNIEnv *env, jclass clazz, jlong dochandle)
 {
 	renderdocument_t *doc = (renderdocument_t*) (long)dochandle;
-	
-	doc->outline = xps_parse_outline(doc->ctx);
-	doc->dests = xps_parse_named_dests(doc->ctx);	        
+
+	if(!doc->outline)
+	    doc->outline = xps_parse_outline(doc->ctx);
+		
+	if(!doc->dests)
+	    doc->dests = xps_parse_named_dests(doc->ctx);	        
 
 	DEBUG("XpsOutline.open(): return handle = %p", doc->outline);
 	return (jlong) (long)doc->outline;

@@ -73,7 +73,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 child.updateVisibility();
             }
         }
-        if (isVisible()) {
+        if (isKeptInMemory()) {
             if (!thresholdHit()) {
                 if (getBitmap() != null && !invalidateFlag) {
                     restoreBitmapReference();
@@ -127,10 +127,10 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         }
     }
 
-    private boolean isVisible() {
-        final boolean pageTreeNodeVisible = base.getDocumentController().isPageTreeNodeVisible(this);
+    private boolean isKeptInMemory() {
+        final boolean pageTreeNodeKeptInMemory = base.getDocumentController().shouldKeptInMemory(this);
         // Log.d("DocModel", "Node visibility: " + this + " -> " + pageTreeNodeVisible);
-        return pageTreeNodeVisible;
+        return pageTreeNodeKeptInMemory;
     }
 
     public RectF getTargetRectF() {
@@ -141,14 +141,14 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     private void invalidateChildren() {
-        if (thresholdHit() && children == null && isVisible()) {
+        if (thresholdHit() && children == null && isKeptInMemory()) {
             final float newThreshold = childrenZoomThreshold * 2;
             children = new PageTreeNode[splitMasks.length];
             for (int i = 0; i < children.length; i++) {
                 children[i] = new PageTreeNode(base, splitMasks[i], page, newThreshold, this, slice_limit);
             }
         }
-        if (!thresholdHit() && getBitmap() != null || !isVisible()) {
+        if (!thresholdHit() && getBitmap() != null || !isKeptInMemory()) {
             recycleChildren();
         }
     }
@@ -308,7 +308,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     private boolean isVisibleAndNotHiddenByChildren() {
-        return isVisible() && !isHiddenByChildren();
+        return isKeptInMemory() && !isHiddenByChildren();
     }
 
     public int getPageIndex() {

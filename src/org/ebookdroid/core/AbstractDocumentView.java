@@ -330,8 +330,19 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
         return isInitialized;
     }
 
-    @Override
-    public abstract boolean isPageTreeNodeVisible(PageTreeNode pageTreeNode);
+    /**
+     * Returns if given page tree node should be kept in memory.
+     *
+     * @param pageTreeNode the page tree node
+     * @return true, if successful
+     * @see org.ebookdroid.core.IDocumentViewController#shouldKeptInMemory(org.ebookdroid.core.PageTreeNode)
+     */
+    public final boolean shouldKeptInMemory(final PageTreeNode pageTreeNode) {
+        return (pageTreeNode.getPageIndex() >= getBase().getDocumentModel().getFirstVisiblePage()
+                - getBase().getAppSettings().getPagesInMemory())
+                && (pageTreeNode.getPageIndex() <= getBase().getDocumentModel().getLastVisiblePage()
+                        + getBase().getAppSettings().getPagesInMemory());
+    }
 
     @Override
     public abstract boolean isPageVisible(Page page);

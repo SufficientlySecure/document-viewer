@@ -98,7 +98,6 @@
 			android:maxLength="3"
 			android:defaultValue="0"
 			android:numeric="integer"
-			android:dependency="singlepage"
 			/>
 
 		<ListPreference

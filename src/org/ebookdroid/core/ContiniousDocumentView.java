@@ -115,10 +115,6 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         }
     }
 
-    @Override
-    public boolean isPageTreeNodeVisible(final PageTreeNode pageTreeNode) {
-        return RectF.intersects(getViewRect(), pageTreeNode.getTargetRectF());
-    }
 
     @Override
     public boolean isPageVisible(final Page page) {

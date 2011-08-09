@@ -90,10 +90,27 @@ public class DocumentModel extends CurrentPageModel {
                 break;
             }
         }
-        Log.d("DocModel", "First visible page: " + result);
+//        Log.d("DocModel", "First visible page: " + result);
         return result;
     }
 
+    public int getLastVisiblePage() {
+        int result = 0;
+        boolean foundVisible = false;
+        for (final Page page : pages.values()) {
+            if (page.isVisible()) {
+                foundVisible = true;
+                result = page.getIndex();
+            } else {
+                if (foundVisible) {
+                    break;
+                }
+            }
+        }
+//        Log.d("DocModel", "Last visible page: " + result);
+        return result;
+    }
+    
     public void setCurrentPageByFirstVisible() {
         setCurrentPageIndex(getFirstVisiblePage());
     }

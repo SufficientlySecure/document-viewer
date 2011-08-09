@@ -221,16 +221,8 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    public boolean isPageTreeNodeVisible(final PageTreeNode pageTreeNode) {
-        return ((pageTreeNode.getParent() == null) && (Math.abs(pageTreeNode.getPageIndex() - getCurrentPage()) <= getBase()
-                .getAppSettings().getPagesInMemory()))
-                || ((pageTreeNode.getPageIndex() == getCurrentPage()) && (RectF.intersects(getViewRect(),
-                        pageTreeNode.getTargetRectF())));
-    }
-
-    @Override
     public boolean isPageVisible(final Page page) {
-        return (Math.abs(page.getIndex() - getCurrentPage()) <= getBase().getAppSettings().getPagesInMemory());
+        return page.getIndex() == getCurrentPage();
     }
 
     @Override

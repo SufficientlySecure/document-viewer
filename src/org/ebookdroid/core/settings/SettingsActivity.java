@@ -32,9 +32,11 @@ public class SettingsActivity extends PreferenceActivity {
         }
 
         if (SettingsManager.getInstance(this).getBookSettings() == null) {
-            Preference somePreference = findPreference("book_render");
-            PreferenceScreen preferenceScreen = getPreferenceScreen();
-            preferenceScreen.removePreference(somePreference);
+            Preference bookPrefs = findPreference("book_prefs");
+            if (bookPrefs != null) {
+                PreferenceScreen preferenceScreen = getPreferenceScreen();
+                preferenceScreen.removePreference(bookPrefs);
+            }
         }
     }
 

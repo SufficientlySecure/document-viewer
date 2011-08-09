@@ -51,7 +51,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".core.SettingsActivity" android:configChanges="keyboardHidden|orientation" />
+        <activity android:name=".core.settings.SettingsActivity" android:configChanges="keyboardHidden|orientation" />
 
     </application>
 </manifest>

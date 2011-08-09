@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<PreferenceScreen xmlns:vudroid="http://schemas.android.com/apk/res/vudroid" xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+	xmlns:vudroid="http://schemas.android.com/apk/res/vudroid"
+	xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<PreferenceScreen
 		android:title="@string/pref_ui_category"
@@ -120,56 +122,91 @@
 	</PreferenceScreen>
 
 	<PreferenceScreen
+		android:key="book_prefs"
+		android:title="@string/pref_book_category"
+		android:summary="@string/pref_book_category_summary"
+		>
+
+		<CheckBoxPreference
+			android:title="@string/pref_singlepage_title"
+			android:summary="@string/pref_singlepage_summary"
+			android:defaultValue="false"
+			android:key=""
+			/>
+
+		<CheckBoxPreference
+			android:title="@string/pref_splitpages_title"
+			android:summary="@string/pref_splitpages_summary"
+			android:defaultValue="false"
+			android:key="book_splitpages"
+			/>
+
+		<ListPreference
+			android:title="@string/pref_align_title"
+			android:summary="@string/pref_align_summary"
+			android:entries="@array/list_align"
+			android:entryValues="@array/list_align_values"
+			android:defaultValue="By Width"
+			android:dependency="singlepage"
+			android:key="book_align"
+			/>
+
+	</PreferenceScreen>
+
+	<PreferenceScreen
 		android:key="browserscreen"
 		android:title="@string/pref_browser_category"
-		android:summary="@string/pref_browser_category_summary">
+		android:summary="@string/pref_browser_category_summary"
+		>
 
 		<EditTextPreference
 			android:key="brautoscandir"
 			android:title="@string/pref_brautoscandir_title"
 			android:summary="@string/pref_brautoscandir_summary"
-			android:defaultValue="/sdcard"/>
+			android:defaultValue="/sdcard"
+			/>
 		<PreferenceCategory
-                android:key="brfiletypesscreen"
-                android:title="@string/pref_brbrfiletypesscreen_title"
-                android:summary="@string/pref_brbrfiletypesscreen_summary">
-				<CheckBoxPreference
-						android:key="brfiletypedjvu"
-						android:title="@string/pref_brfiletypedjvu_title"
-						android:summary="@string/pref_brfiletypedjvu_summary"
-						android:defaultValue="true"
+			android:key="brfiletypesscreen"
+			android:title="@string/pref_brbrfiletypesscreen_title"
+			android:summary="@string/pref_brbrfiletypesscreen_summary">
+			<CheckBoxPreference
+				android:key="brfiletypedjvu"
+				android:title="@string/pref_brfiletypedjvu_title"
+				android:summary="@string/pref_brfiletypedjvu_summary"
+				android:defaultValue="true"
 				/>
-				<CheckBoxPreference
-						android:key="brfiletypedjv"
-						android:title="@string/pref_brfiletypedjv_title"
-						android:summary="@string/pref_brfiletypedjv_summary"
-						android:defaultValue="true"
+			<CheckBoxPreference
+				android:key="brfiletypedjv"
+				android:title="@string/pref_brfiletypedjv_title"
+				android:summary="@string/pref_brfiletypedjv_summary"
+				android:defaultValue="true"
 				/>
-				<CheckBoxPreference
-						android:key="brfiletypepdf"
-						android:title="@string/pref_brfiletypepdf_title"
-						android:summary="@string/pref_brfiletypepdf_summary"
-						android:defaultValue="true"
+			<CheckBoxPreference
+				android:key="brfiletypepdf"
+				android:title="@string/pref_brfiletypepdf_title"
+				android:summary="@string/pref_brfiletypepdf_summary"
+				android:defaultValue="true"
 				/>
-				<CheckBoxPreference
-						android:key="brfiletypexps"
-						android:title="@string/pref_brfiletypexps_title"
-						android:summary="@string/pref_brfiletypexps_summary"
-						android:defaultValue="true"
+			<CheckBoxPreference
+				android:key="brfiletypexps"
+				android:title="@string/pref_brfiletypexps_title"
+				android:summary="@string/pref_brfiletypexps_summary"
+				android:defaultValue="true"
 				/>
-				<CheckBoxPreference
-						android:key="brfiletypecbz"
-						android:title="@string/pref_brfiletypecbz_title"
-						android:summary="@string/pref_brfiletypecbz_summary"
-						android:defaultValue="true"
+			<CheckBoxPreference
+				android:key="brfiletypecbz"
+				android:title="@string/pref_brfiletypecbz_title"
+				android:summary="@string/pref_brfiletypecbz_summary"
+				android:defaultValue="true"
 				/>
-				<CheckBoxPreference
-						android:key="brfiletypecbr"
-						android:title="@string/pref_brfiletypecbr_title"
-						android:summary="@string/pref_brfiletypecbr_summary"
-						android:defaultValue="true"
+			<CheckBoxPreference
+				android:key="brfiletypecbr"
+				android:title="@string/pref_brfiletypecbr_title"
+				android:summary="@string/pref_brfiletypecbr_summary"
+				android:defaultValue="true"
 				/>
-        </PreferenceCategory>
+		</PreferenceCategory>
 
 	</PreferenceScreen>
+
 </PreferenceScreen>

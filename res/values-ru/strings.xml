@@ -75,4 +75,6 @@
 	<string name="pref_pageintitle_summary">Показывать номер текущей странице в заголовке</string>
 	<string name="pref_render_category_summary">Настройки отрисовки</string>
 	<string name="pref_browser_category_summary">Настройки браузера и поддерживаемые типы файлов</string>
+	<string name="pref_book_category">"Настройки книги"</string>
+	<string name="pref_book_category_summary">Настройки отрисовки для текушей книги</string>
 </resources>

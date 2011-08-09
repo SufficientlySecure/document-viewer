@@ -25,7 +25,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DB_1_BOOK_STORE = "INSERT OR REPLACE INTO book_settings (book, last_updated, doc_page, view_page, single_page, page_align, split_pages) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-    private static final String DB_1_BOOK_DEL_ALL = "DELETE * FROM book_settings";
+    private static final String DB_1_BOOK_DEL_ALL = "DELETE FROM book_settings";
 
     public DBHelper(final Context context) {
         super(context, context.getPackageName() + ".settings", null, DB_VERSION);
@@ -139,7 +139,7 @@ public class DBHelper extends SQLiteOpenHelper {
             try {
                 db.beginTransaction();
 
-                db.execSQL(DB_1_BOOK_DEL_ALL, null);
+                db.execSQL(DB_1_BOOK_DEL_ALL, new Object[] {});
 
                 db.setTransactionSuccessful();
 

@@ -12,11 +12,11 @@ import android.view.MotionEvent;
 
 /**
  * The Class SinglePageCurler.
- * 
+ *
  * Used for drawing page curl animation
- * 
+ *
  * @author Moritz 'Moss' Wundke (b.thax.dcg@gmail.com)
- * 
+ *
  */
 public class SinglePageCurler implements PageAnimator {
 
@@ -58,9 +58,6 @@ public class SinglePageCurler implements PageAnimator {
 
     /** Our points used to define the current clipping paths in our draw call */
     private Vector2D mA, mB, mC, mD, mE, mF, mOldF, mOrigin;
-
-    /** Left and top offset to be applied when drawing */
-    private int mCurrentLeft, mCurrentTop;
 
     /** If false no draw call has been done */
     private boolean bViewDrawn;
@@ -200,10 +197,6 @@ public class SinglePageCurler implements PageAnimator {
     }
 
     public void onDraw(final Canvas canvas) {
-        // Always refresh offsets
-        mCurrentLeft = view.getLeft();
-        mCurrentTop = view.getTop();
-
         // We need to initialize all size data when we first draw the view
         if (!isViewDrawn()) {
             setViewDrawn(true);
@@ -322,7 +315,7 @@ public class SinglePageCurler implements PageAnimator {
 
     /**
      * Called on the first draw event of the view
-     * 
+     *
      * @param canvas
      */
     protected void onFirstDrawEvent(final Canvas canvas) {
@@ -377,7 +370,7 @@ public class SinglePageCurler implements PageAnimator {
 
     /**
      * See if the current curl mode is dynamic
-     * 
+     *
      * @return TRUE if the mode is CURLMODE_DYNAMIC, FALSE otherwise
      */
     public boolean IsCurlModeDynamic() {
@@ -482,7 +475,7 @@ public class SinglePageCurler implements PageAnimator {
 
     /**
      * Draw the foreground
-     * 
+     *
      * @param canvas
      * @param rect
      * @param paint
@@ -502,7 +495,7 @@ public class SinglePageCurler implements PageAnimator {
 
     /**
      * Draw the background image.
-     * 
+     *
      * @param canvas
      * @param rect
      * @param paint
@@ -515,11 +508,11 @@ public class SinglePageCurler implements PageAnimator {
             // Save current canvas so we do not mess it up
             canvas.save();
             canvas.clipPath(mask);
-            
+
             final PagePaint paint = !(view.getBase().getAppSettings().getNightMode()) ? PagePaint.NIGHT : PagePaint.DAY;
 
             canvas.drawRect(canvas.getClipBounds(), paint.getFillPaint());
-            
+
             page.draw(canvas, true);
             canvas.restore();
         }
@@ -528,7 +521,7 @@ public class SinglePageCurler implements PageAnimator {
 
     /**
      * Create a Path used as a mask to draw the background page
-     * 
+     *
      * @return
      */
     private Path createBackgroundPath() {
@@ -543,7 +536,7 @@ public class SinglePageCurler implements PageAnimator {
 
     /**
      * Creates a path used to draw the curl edge in.
-     * 
+     *
      * @return
      */
     private Path createCurlEdgePath() {
@@ -558,7 +551,7 @@ public class SinglePageCurler implements PageAnimator {
 
     /**
      * Draw the curl page edge
-     * 
+     *
      * @param canvas
      */
     private void drawCurlEdge(final Canvas canvas) {

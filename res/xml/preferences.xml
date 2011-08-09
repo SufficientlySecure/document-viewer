@@ -78,11 +78,13 @@
 			android:defaultValue="false"
 			/>
 
-		<CheckBoxPreference
-			android:key="useanimation"
-			android:title="@string/pref_useanimation_title"
-			android:summary="@string/pref_useanimation_summary"
-			android:defaultValue="true"
+		<ListPreference
+			android:key="animationType"
+			android:title="@string/pref_animationtype_title"
+			android:summary="@string/pref_animationtype_summary"
+			android:entries="@array/list_animation"
+			android:entryValues="@array/list_animation_values"
+			android:defaultValue="None"
 			android:dependency="singlepage"
 			/>
 
@@ -125,7 +127,7 @@
 		android:key="book_prefs"
 		android:title="@string/pref_book_category"
 		android:summary="@string/pref_book_category_summary"
-		>
+	>
 
 		<CheckBoxPreference
 			android:title="@string/pref_singlepage_title"
@@ -157,7 +159,7 @@
 		android:key="browserscreen"
 		android:title="@string/pref_browser_category"
 		android:summary="@string/pref_browser_category_summary"
-		>
+	>
 
 		<EditTextPreference
 			android:key="brautoscandir"

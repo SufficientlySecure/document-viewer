@@ -155,8 +155,8 @@ public class SettingsManager implements CurrentPageListener {
         if (dc == null) {
             return;
         }
-        if (oldSettings.getUseAnimation() != newSettings.getUseAnimation()) {
-            dc.updateUseAnimation();
+        if (oldSettings.getAnimationType() != newSettings.getAnimationType()) {
+            dc.updateAnimationType();
         }
     }
 

@@ -25,5 +25,5 @@ public interface IDocumentViewController {
 
     View getView();
 
-    void updateUseAnimation();
+    void updateAnimationType();
 }

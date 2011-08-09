@@ -122,7 +122,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    public void updateUseAnimation() {
+    public void updateAnimationType() {
         // This mode do not use animation
 
     }

@@ -2,6 +2,7 @@ package org.ebookdroid.core.settings;
 
 import org.ebookdroid.core.PageAlign;
 import org.ebookdroid.core.RotationType;
+import org.ebookdroid.core.curl.PageAnimationType;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -34,7 +35,7 @@ public class AppSettings {
 
     private Boolean sliceLimit;
 
-    private Boolean useAnimation;
+    private PageAnimationType animationType;
 
     private Boolean splitPages;
 
@@ -95,10 +96,10 @@ public class AppSettings {
 
     public PageAlign getPageAlign() {
         if (pageAlign == null) {
-            final String align = prefs.getString("align", PageAlign.WIDTH.getResValue());
+            final String align = prefs.getString("align", PageAlign.AUTO.getResValue());
             pageAlign = PageAlign.getByResValue(align);
             if (pageAlign == null) {
-                pageAlign = PageAlign.WIDTH;
+                pageAlign = PageAlign.AUTO;
             }
         }
         return pageAlign;
@@ -143,11 +144,11 @@ public class AppSettings {
         return sliceLimit;
     }
 
-    public boolean getUseAnimation() {
-        if (useAnimation == null) {
-            useAnimation = prefs.getBoolean("useanimation", true);
+    public PageAnimationType getAnimationType() {
+        if (animationType == null) {
+            animationType = PageAnimationType.get(prefs.getString("animationType", null));
         }
-        return useAnimation;
+        return animationType;
     }
 
     public boolean getSplitPages() {
@@ -178,7 +179,7 @@ public class AppSettings {
     void fillBookSettings(final BookSettings bs) {
         bs.pageAlign = PageAlign.getByResValue(prefs.getString("book_align", getPageAlign().getResValue()));
         if (bs.pageAlign == null) {
-            bs.pageAlign = PageAlign.WIDTH;
+            bs.pageAlign = PageAlign.AUTO;
         }
 
         bs.singlePage = prefs.getBoolean("book_singlepage", getSinglePage());

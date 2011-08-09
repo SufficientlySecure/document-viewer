@@ -169,14 +169,14 @@ public class AppSettings {
     public void updateBookSettings(final BookSettings bs) {
         final Editor editor = prefs.edit();
         editor.putString("book", bs.getFileName());
-        editor.putString("book_align", bs.getPageAlign().toString());
+        editor.putString("book_align", bs.getPageAlign().getResValue());
         editor.putBoolean("book_singlepage", bs.getSinglePage());
         editor.putBoolean("book_splitpages", bs.getSplitPages());
         editor.commit();
     }
 
     public void fillBookSettings(final BookSettings bs) {
-        bs.pageAlign = PageAlign.getByResValue(prefs.getString("book_align", getPageAlign().toString()));
+        bs.pageAlign = PageAlign.getByResValue(prefs.getString("book_align", getPageAlign().getResValue()));
         if (bs.pageAlign == null) {
             bs.pageAlign = PageAlign.WIDTH;
         }

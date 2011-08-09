@@ -268,7 +268,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     @Override
     protected void onStop() {
         super.onStop();
-        SettingsManager.getInstance(this).clearBookSettings();
     }
 
     @Override

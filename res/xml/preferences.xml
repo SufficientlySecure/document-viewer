@@ -24,7 +24,7 @@
 			android:key="title"
 			android:title="@string/pref_title_title"
 			android:summary="@string/pref_title_summary"
-			android:defaultValue="false"
+			android:defaultValue="true"
 			/>
 		<CheckBoxPreference
 			android:key="pageintitle"

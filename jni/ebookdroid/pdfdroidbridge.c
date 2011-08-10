@@ -36,13 +36,6 @@ struct renderpage_s
 //
 };
 
-JNI_OnLoad(JavaVM *jvm, void *reserved)
-{
-	DEBUG("initializing PdfRender JNI library based on MuPDF");
-	fz_accelerate();
-	return JNI_VERSION_1_2;
-}
-
 #define RUNTIME_EXCEPTION "java/lang/RuntimeException"
 
 void throw_exception(JNIEnv *env, char *message)
@@ -55,6 +48,35 @@ void throw_exception(JNIEnv *env, char *message)
 	}
 	(*env)->ThrowNew(env, new_exception, message);
 }
+
+
+static void pdf_free_document(renderdocument_t* doc)
+{
+    if(doc) 
+    {
+	if(doc->outline)
+	    pdf_free_outline(doc->outline);
+	doc->outline = NULL;		                          
+			
+	if (doc->drawcache) 
+	    fz_free_glyph_cache(doc->drawcache);
+	doc->drawcache = NULL;
+		
+	if(doc->xref)
+	{
+	    if(doc->xref->store)
+		pdf_free_store(doc->xref->store);
+	    doc->xref->store = NULL;
+
+	    pdf_free_xref(doc->xref);
+	}
+	doc->xref = NULL;
+		
+	fz_free(doc);
+	doc = NULL;
+    }
+}
+
 
 
 JNIEXPORT jlong JNICALL
@@ -80,12 +102,16 @@ JNIEXPORT jlong JNICALL
 		throw_exception(env, "Out of Memory");
 		goto cleanup;
 	}
+	doc->xref = NULL;
+	doc->outline = NULL;
+	doc->drawcache = NULL;
 
 	/* initialize renderer */
 
 	doc->drawcache = fz_new_glyph_cache();
 	if (!doc->drawcache) 
 	{
+		pdf_free_document(doc);
 		throw_exception(env, "Cannot create new renderer");
 		goto cleanup;
 	}
@@ -93,11 +119,11 @@ JNIEXPORT jlong JNICALL
 	/*
 	 * Open PDF and load xref table
 	 */
-//	error = pdf_open_xref(&(doc->xref), filename, password);
 	error = pdf_open_xref(&(doc->xref), filename, NULL);
 
 	if (error || (!doc->xref)) 
 	{
+		pdf_free_document(doc);
 		throw_exception(env, "PDF file not found or corrupted");
 		goto cleanup;
 	}
@@ -113,27 +139,26 @@ JNIEXPORT jlong JNICALL
 			int ok = pdf_authenticate_password(doc->xref, password);
 			if(!ok) 
 			{
+				pdf_free_document(doc);
 				throw_exception(env, "Wrong password given");
 				goto cleanup;
 			}
 		} 
 		else 
 		{
+			pdf_free_document(doc);
 			throw_exception(env, "PDF needs a password!");
 			goto cleanup;
 		}
 	}
-//	doc->outline = pdf_load_outline(doc->xref);
-	doc->outline = NULL;
 
 	error = pdf_load_page_tree(doc->xref);
 	if (error) 
 	{
+		pdf_free_document(doc);
     	    	throw_exception(env, "error loading pagetree");
 		goto cleanup;
 	}
-	
-//	dd_debugoutline(doc->outline, 0);
 
 cleanup:
 
@@ -149,28 +174,7 @@ JNIEXPORT void JNICALL
 	(JNIEnv *env, jclass clazz, jlong handle)
 {
 	renderdocument_t *doc = (renderdocument_t*) (long)handle;
-
-	if(doc) 
-	{
-		if(doc->outline)
-		      pdf_free_outline(doc->outline);
-		doc->outline = NULL;
-		                          
-		if(doc->xref->store)
-		    pdf_free_store(doc->xref->store);
-		doc->xref->store = NULL;
-			
-		if (doc->drawcache) 
-		    fz_free_glyph_cache(doc->drawcache);
-		doc->drawcache = NULL;
-		
-		if(doc->xref)
-		    pdf_free_xref(doc->xref);
-		doc->xref = NULL;
-		
-		fz_free(doc);
-		doc = NULL;
-	}
+	pdf_free_document(doc);
 }
 
 JNIEXPORT jint JNICALL

@@ -51,6 +51,32 @@ void xps_throw_exception(JNIEnv *env, char *message)
 }
 
 
+static void xps_free_document(renderdocument_t* doc)
+{
+    if(doc) 
+    {
+    	if(doc->outline)
+	    xps_free_outline(doc->outline);
+	doc->outline = NULL;
+		
+	if(doc->dests)
+    	    xps_free_named_dest(doc->dests);
+    	doc->dests = NULL;
+		
+	if (doc->drawcache) 
+	    fz_free_glyph_cache(doc->drawcache);
+	doc->drawcache = NULL;
+		
+	if(doc->ctx)
+	    xps_free_context(doc->ctx);		
+	doc->ctx = NULL;
+		
+	fz_free(doc);
+	doc = NULL;
+    }
+}
+
+
 JNIEXPORT jlong JNICALL
 	Java_org_ebookdroid_xpsdroid_codec_XpsDocument_open
 	(JNIEnv *env, jclass clazz,
@@ -72,24 +98,27 @@ JNIEXPORT jlong JNICALL
 		xps_throw_exception(env, "Out of Memory");
 		goto cleanup;
 	}
+	doc->ctx = NULL;
+	doc->drawcache = NULL;
 	doc->outline = NULL;
 	doc->dests = NULL;
 
 
 	/* initialize renderer */
-
 	doc->drawcache = fz_new_glyph_cache();
 	if (!doc->drawcache) 
 	{
-		xps_throw_exception(env, "Cannot create new renderer");
-		goto cleanup;
+	    xps_free_document(doc);
+	    xps_throw_exception(env, "Cannot create new renderer");
+	    goto cleanup;
 	}
 
 	error = xps_open_file(&(doc->ctx), filename);
 	if (error || (!doc->ctx)) 
 	{
-		xps_throw_exception(env, "XPS file not found or corrupted");
-		goto cleanup;
+	    xps_free_document(doc);
+	    xps_throw_exception(env, "XPS file not found or corrupted");
+	    goto cleanup;
 	}
 
 cleanup:
@@ -106,27 +135,7 @@ JNIEXPORT void JNICALL
 {
 	renderdocument_t *doc = (renderdocument_t*) (long)handle;
 
-	if(doc) 
-	{
-		if(doc->outline)
-		    xps_free_outline(doc->outline);
-		doc->outline = NULL;
-		
-		if(doc->dests)
-    		    xps_free_named_dest(doc->dests);
-    		doc->dests = NULL;
-			
-		if (doc->drawcache) 
-		    fz_free_glyph_cache(doc->drawcache);
-		doc->drawcache = NULL;
-		
-		if(doc->ctx)
-		    xps_free_context(doc->ctx);		
-		doc->ctx = NULL;
-		
-		fz_free(doc);
-		doc = NULL;
-	}
+	xps_free_document(doc);
 }
 
 

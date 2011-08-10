@@ -10,6 +10,7 @@ LOCAL_ARM_MODE := arm
 LOCAL_CFLAGS := -DHAVE_CONFIG_H -DTHREADMODEL=NOTHREADS -DDEBUGLVL=0
 
 LOCAL_SRC_FILES := \
+	ebookdroidjni.c \
 	pdfdroidbridge.c \
 	xpsdroidbridge.c \
 	DjvuDroidBridge.cpp

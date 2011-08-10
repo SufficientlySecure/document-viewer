@@ -79,9 +79,9 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     }
 
     private void initActivity() {
-        SettingsManager.getInstance(this).applyAppSettings(this);
+        getSettings().applyAppSettings(this);
     }
-    
+
     private void initView(final String password) {
         final DecodeService decodeService = createDecodeService();
 
@@ -89,7 +89,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         try {
             final String fileName = PathFromUri.retrieve(getContentResolver(), uri);
 
-            SettingsManager.getInstance(this).init(fileName);
+            getSettings().init(fileName);
 
             decodeService.open(fileName, password);
 
@@ -116,10 +116,11 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         progressModel = new DecodingProgressModel();
         progressModel.addEventListener(this);
 
+        getSettings().applyBookSettings(this);
+
         frameLayout.addView(createZoomControls(zoomModel));
         setContentView(frameLayout);
-
-        SettingsManager.getInstance(this).applyBookSettings(this);
+        setProgressBarIndeterminateVisibility(false);
     }
 
     private void askPassword() {
@@ -229,7 +230,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
         getWindow().setTitle(prefix + currentFilename);
 
-        SettingsManager.getInstance(this).currentPageChanged(docPageIndex, viewPageIndex);
+        getSettings().currentPageChanged(docPageIndex, viewPageIndex);
     }
 
     private void setWindowTitle() {
@@ -263,7 +264,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     public void onResume() {
         super.onResume();
         if (documentModel != null) {
-            SettingsManager.getInstance(this).onAppSettingsChanged(this);
+            getSettings().onAppSettingsChanged(this);
         }
     }
 
@@ -433,13 +434,18 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     }
 
     @Override
+    public SettingsManager getSettings() {
+        return SettingsManager.getInstance(this);
+    }
+
+    @Override
     public AppSettings getAppSettings() {
-        return SettingsManager.getInstance(this).getAppSettings();
+        return getSettings().getAppSettings();
     }
 
     @Override
     public BookSettings getBookSettings() {
-        return SettingsManager.getInstance(this).getBookSettings();
+        return getSettings().getBookSettings();
     }
 
     @Override

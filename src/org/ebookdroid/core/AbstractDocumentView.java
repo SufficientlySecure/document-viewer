@@ -93,6 +93,8 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
 
     @Override
     public void commitZoom() {
+        base.getSettings().zoomChanged(base.getZoomModel().getZoom());
+
         for (final Page page : getBase().getDocumentModel().getPages().values()) {
             page.invalidate();
         }
@@ -125,6 +127,9 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
 
     @Override
     public void zoomChanged(final float newZoom, final float oldZoom) {
+        if (!isInitialized) {
+            return;
+        }
         inZoom = true;
         stopScroller();
         final float ratio = newZoom / oldZoom;

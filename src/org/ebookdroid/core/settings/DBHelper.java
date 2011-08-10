@@ -25,6 +25,8 @@ public class DBHelper extends SQLiteOpenHelper {
             + "doc_page integer not null, "
             // Current view page - dependent on view mode
             + "view_page integer not null, "
+            // Page zoom
+            + "zoom integer not null, "
             // Single page mode on/off
             + "single_page integer not null, "
             // Page align
@@ -36,11 +38,11 @@ public class DBHelper extends SQLiteOpenHelper {
             // ...
             ");";
 
-    private static final String DB_1_BOOK_GET_ALL = "SELECT book, last_updated, doc_page, view_page, single_page, page_align, page_animation, split_pages FROM book_settings order by last_updated DESC";
+    private static final String DB_1_BOOK_GET_ALL = "SELECT book, last_updated, doc_page, view_page, zoom, single_page, page_align, page_animation, split_pages FROM book_settings order by last_updated DESC";
 
-    private static final String DB_1_BOOK_GET_ONE = "SELECT book, last_updated, doc_page, view_page, single_page, page_align, page_animation, split_pages FROM book_settings WHERE book=?";
+    private static final String DB_1_BOOK_GET_ONE = "SELECT book, last_updated, doc_page, view_page, zoom, single_page, page_align, page_animation, split_pages FROM book_settings WHERE book=?";
 
-    private static final String DB_1_BOOK_STORE = "INSERT OR REPLACE INTO book_settings (book, last_updated, doc_page, view_page, single_page, page_align, page_animation, split_pages) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String DB_1_BOOK_STORE = "INSERT OR REPLACE INTO book_settings (book, last_updated, doc_page, view_page, zoom, single_page, page_align, page_animation, split_pages) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String DB_1_BOOK_DEL_ALL = "DROP TABLE book_settings";
 
@@ -135,6 +137,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         bs.currentDocPage,
                         // Current view page
                         bs.currentViewPage,
+                        // Current page zoom
+                        bs.zoom,
                         // Single page on/off
                         bs.singlePage ? 1 : 0,
                         // Page align
@@ -200,6 +204,7 @@ public class DBHelper extends SQLiteOpenHelper {
         bs.lastUpdated = c.getLong(index++);
         bs.currentDocPage = c.getInt(index++);
         bs.currentViewPage = c.getInt(index++);
+        bs.zoom = c.getInt(index++);
         bs.singlePage = c.getInt(index++) != 0;
         bs.pageAlign = PageAlign.values()[c.getInt(index++)];
         bs.animationType = PageAnimationType.values()[c.getInt(index++)];

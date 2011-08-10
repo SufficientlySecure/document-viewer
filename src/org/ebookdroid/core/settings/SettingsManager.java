@@ -96,9 +96,6 @@ public class SettingsManager implements CurrentPageListener {
     public BookSettings getBookSettings() {
         lock.readLock().lock();
         try {
-            if (bookSettings == null) {
-                Log.e("SettingsManager", "", new Exception("No book settings defined"));
-            }
             return bookSettings;
         } finally {
             lock.readLock().unlock();
@@ -115,6 +112,18 @@ public class SettingsManager implements CurrentPageListener {
         try {
             bookSettings.currentPageChanged(docPageIndex, viewPageIndex);
             db.storeBookSettings(bookSettings);
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    public void zoomChanged(final float zoom) {
+        lock.readLock().lock();
+        try {
+            if (bookSettings != null) {
+                bookSettings.setZoom(zoom);
+                db.storeBookSettings(bookSettings);
+            }
         } finally {
             lock.readLock().unlock();
         }
@@ -163,7 +172,7 @@ public class SettingsManager implements CurrentPageListener {
 
     protected void applyAppSettingsChanges(final IViewerActivity base, final AppSettings oldSettings,
             final AppSettings newSettings) {
-        AppSettings.Diff diff = new AppSettings.Diff(oldSettings, newSettings);
+        final AppSettings.Diff diff = new AppSettings.Diff(oldSettings, newSettings);
 
         if (diff.isRotationChanged()) {
             base.getActivity().setRequestedOrientation(newSettings.getRotation().getOrientation());
@@ -196,10 +205,14 @@ public class SettingsManager implements CurrentPageListener {
         if (newSettings == null) {
             return;
         }
-        BookSettings.Diff diff = new BookSettings.Diff(oldSettings, newSettings);
+        final BookSettings.Diff diff = new BookSettings.Diff(oldSettings, newSettings);
 
         if (diff.isSinglePageChanged()) {
             base.createDocumentView();
+        }
+
+        if (diff.isZoomChanged() && oldSettings == null) {
+            base.getZoomModel().setZoom(newSettings.getZoom());
         }
 
         final IDocumentViewController dc = base.getDocumentController();

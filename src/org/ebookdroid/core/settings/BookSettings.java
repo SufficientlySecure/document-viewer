@@ -14,6 +14,8 @@ public class BookSettings implements CurrentPageListener {
 
     int currentViewPage;
 
+    int zoom = 100;
+
     boolean splitPages;
 
     boolean singlePage;
@@ -52,6 +54,14 @@ public class BookSettings implements CurrentPageListener {
         return currentViewPage;
     }
 
+    public float getZoom() {
+        return zoom / 100.0f;
+    }
+
+    void setZoom(float zoom) {
+        this.zoom = Math.round(zoom * 100);
+    }
+
     public boolean getSinglePage() {
         return singlePage;
     }
@@ -72,10 +82,11 @@ public class BookSettings implements CurrentPageListener {
 
         private static final short D_CurrentDocPage = 0x0001 << 0;
         private static final short D_CurrentViewPage = 0x0001 << 1;
-        private static final short D_SplitPages = 0x0001 << 2;
-        private static final short D_SinglePage = 0x0001 << 3;
-        private static final short D_PageAlign = 0x0001 << 4;
-        private static final short D_AnimationType = 0x0001 << 5;
+        private static final short D_Zoom = 0x0001 << 2;
+        private static final short D_SplitPages = 0x0001 << 3;
+        private static final short D_SinglePage = 0x0001 << 4;
+        private static final short D_PageAlign = 0x0001 << 5;
+        private static final short D_AnimationType = 0x0001 << 6;
 
         private short mask;
 
@@ -86,6 +97,9 @@ public class BookSettings implements CurrentPageListener {
                 }
                 if (olds == null || olds.getCurrentViewPage() != news.getCurrentViewPage()) {
                     mask |= D_CurrentViewPage;
+                }
+                if (olds == null || olds.getZoom() != news.getZoom()) {
+                    mask |= D_Zoom;
                 }
                 if (olds == null || olds.getSplitPages() != news.getSplitPages()) {
                     mask |= D_SplitPages;
@@ -108,6 +122,10 @@ public class BookSettings implements CurrentPageListener {
 
         public boolean isCurrentViewPageChanged() {
             return 0 != (mask & D_CurrentViewPage);
+        }
+
+        public boolean isZoomChanged() {
+            return 0 != (mask & D_Zoom);
         }
 
         public boolean isSplitPagesChanged() {

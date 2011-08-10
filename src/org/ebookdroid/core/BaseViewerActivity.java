@@ -286,7 +286,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Called on creation options menu
-     *
+     * 
      * @param menu
      *            the main menu
      * @return true, if successful
@@ -298,6 +298,50 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.mainmenu, menu);
         return true;
+    }
+
+    private void showOutline() {
+        final List<OutlineLink> outline = documentModel.getDecodeService().getOutline();
+        if ((outline != null) && (outline.size() > 0)) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            final CharSequence[] items = outline.toArray(new CharSequence[outline.size()]);
+            builder.setTitle("Outline");
+            builder.setItems(items, new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(final DialogInterface dialog, final int item) {
+                    // Toast.makeText(getApplicationContext(), outline[item].getLink(),
+                    // Toast.LENGTH_SHORT).show();
+                    final String link = outline.get(item).getLink();
+                    Log.d("VuDroid", "Link: " + link);
+                    if (link.startsWith("#")) {
+                        int pageNumber = 0;
+                        try {
+                            pageNumber = Integer.parseInt(link.substring(1).replace(" ", ""));
+                        } catch (final Exception e) {
+                            pageNumber = 0;
+                        }
+                        if (pageNumber < 1 || pageNumber > documentModel.getPageCount()) {
+                            Toast.makeText(
+                                    getApplicationContext(),
+                                    "Page number out of range. Valid range: 1-"
+                                            + documentModel.getDecodeService().getPageCount(), 2000).show();
+                            return;
+                        }
+                        documentController.goToPage(pageNumber - 1);
+                    } else if (link.startsWith("http:")) {
+                        final Intent i = new Intent(Intent.ACTION_VIEW);
+                        i.setData(Uri.parse(link));
+                        startActivity(i);
+                    }
+                }
+            });
+            final AlertDialog alert = builder.create();
+            alert.show();
+        } else {
+            Toast.makeText(getApplicationContext(), "Document without Outline", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     @Override
@@ -313,46 +357,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
                 zoomModel.toggleZoomControls();
                 return true;
             case R.id.mainmenu_outline:
-                final List<OutlineLink> outline = documentModel.getDecodeService().getOutline();
-                if ((outline != null) && (outline.size() > 0)) {
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    final CharSequence[] items = outline.toArray(new CharSequence[outline.size()]);
-                    builder.setTitle("Outline");
-                    builder.setItems(items, new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(final DialogInterface dialog, final int item) {
-                            // Toast.makeText(getApplicationContext(), outline[item].getLink(),
-                            // Toast.LENGTH_SHORT).show();
-                            final String link = outline.get(item).getLink();
-                            Log.d("VuDroid", "Link: " + link);
-                            if (link.startsWith("#")) {
-                                int pageNumber = 0;
-                                try {
-                                    pageNumber = Integer.parseInt(link.substring(1).replace(" ", ""));
-                                } catch (final Exception e) {
-                                    pageNumber = 0;
-                                }
-                                if (pageNumber < 1 || pageNumber > documentModel.getPageCount()) {
-                                    Toast.makeText(
-                                            getApplicationContext(),
-                                            "Page number out of range. Valid range: 1-"
-                                                    + documentModel.getDecodeService().getPageCount(), 2000).show();
-                                    return;
-                                }
-                                documentController.goToPage(pageNumber - 1);
-                            } else if (link.startsWith("http:")) {
-                                final Intent i = new Intent(Intent.ACTION_VIEW);
-                                i.setData(Uri.parse(link));
-                                startActivity(i);
-                            }
-                        }
-                    });
-                    final AlertDialog alert = builder.create();
-                    alert.show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Document without Outline", Toast.LENGTH_SHORT).show();
-                }
+                showOutline();
                 return true;
             case R.id.mainmenu_settings:
                 final Intent i = new Intent(BaseViewerActivity.this, SettingsActivity.class);
@@ -363,7 +368,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
                 getView().invalidate();
                 return true;
         }
-        // return false;
         return super.onOptionsItemSelected(item);
     }
 
@@ -378,7 +382,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the zoom model.
-     *
+     * 
      * @return the zoom model
      */
     @Override
@@ -388,7 +392,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the multi touch zoom.
-     *
+     * 
      * @return the multi touch zoom
      */
     @Override
@@ -403,7 +407,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the decoding progress model.
-     *
+     * 
      * @return the decoding progress model
      */
     @Override

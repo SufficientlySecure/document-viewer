@@ -85,6 +85,7 @@
 	<string name="list_animation_curler_dynamic">"Динамическое перелистывание"</string>
 	<string name="list_animation_slider">"Сдвиг"</string>
 	<string name="list_animation_fader">"Проявление"</string>
+	<string name="list_animation_squeezer">"Сжатие"</string>
 	<string name="pref_scroll_category">"Прокрутка"</string>
 	<string name="pref_scroll_category_summary">"Настройки прокрутки"</string>
 	<string name="pref_singlepage_category">"Одностраничный режим"</string>

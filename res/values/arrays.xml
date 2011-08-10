@@ -41,6 +41,7 @@
 		<item>@string/list_animation_curler_dynamic</item>
 		<item>@string/list_animation_slider</item>
 		<item>@string/list_animation_fader</item>
+		<item>@string/list_animation_squeezer</item>
 	</string-array>
 
 	<string-array
@@ -51,6 +52,7 @@
 		<item>Dynamic curler</item>
 		<item>Slider</item>
 		<item>Fade in</item>
+		<item>Squeeze</item>
 	</string-array>
 
 </resources>

@@ -12,7 +12,9 @@ public enum PageAnimationType {
 
     SLIDER("Slider"),
 
-    FADER("Fade in");
+    FADER("Fade in"),
+    
+    SQUEEZER("Squeeze");
 
     /** The resource value. */
     private final String resValue;
@@ -59,6 +61,8 @@ public enum PageAnimationType {
                     return new SinglePageSlider(singlePageDocumentView);
                 case FADER:
                     return new SinglePageFader(singlePageDocumentView);
+                case SQUEEZER:
+                    return new SinglePageSqueezer(singlePageDocumentView);
                 default:
                     break;
             }

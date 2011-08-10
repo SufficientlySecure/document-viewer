@@ -82,6 +82,7 @@
 	<string name="list_animation_curler_dynamic">"Dynamic curler"</string>
 	<string name="list_animation_slider">"Slider"</string>
 	<string name="list_animation_fader">"Fade in"</string>
+	<string name="list_animation_squeezer">"Squeeze"</string>
 	<string name="pref_scroll_category">"Scrolling"</string>
 	<string name="pref_scroll_category_summary">"Scrolling preferences"</string>
 	<string name="pref_singlepage_category">"Single page settings"</string>

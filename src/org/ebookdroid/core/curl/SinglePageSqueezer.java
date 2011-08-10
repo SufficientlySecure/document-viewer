@@ -9,10 +9,10 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-public class SinglePageSlider extends AbstractPageSlider {
+public class SinglePageSqueezer extends AbstractPageSlider {
 
 
-    public SinglePageSlider(final SinglePageDocumentView singlePageDocumentView) {
+    public SinglePageSqueezer(final SinglePageDocumentView singlePageDocumentView) {
         super(singlePageDocumentView);
     }
 
@@ -34,10 +34,8 @@ public class SinglePageSlider extends AbstractPageSlider {
             Canvas tmp = new Canvas(fore);
             page.draw(tmp, true);
 
-            Rect src = new Rect((int) mA.x, 0, view.getWidth(), view.getHeight());
+            Rect src = new Rect(0, 0, view.getWidth(), view.getHeight());
             RectF dst = new RectF(0, 0, view.getWidth() - mA.x, view.getHeight());
-            // Rect src = new Rect(0, 0, view.getWidth(), view.getHeight());
-            // RectF dst = new RectF(0, 0, view.getWidth() - mA.x, view.getHeight());
             final Paint paint = new Paint();
             paint.setFilterBitmap(true);
             paint.setAntiAlias(true);
@@ -61,14 +59,12 @@ public class SinglePageSlider extends AbstractPageSlider {
             Canvas tmp = new Canvas(back);
             page.draw(tmp, true);
 
-            // Rect src = new Rect(0, 0, view.getWidth(), view.getHeight());
-            // RectF dst = new RectF(view.getWidth() - mA.x, 0, view.getWidth(), view.getHeight());
+            Rect src = new Rect(0, 0, view.getWidth(), view.getHeight());
+            RectF dst = new RectF(view.getWidth() - mA.x, 0, view.getWidth(), view.getHeight());
             final Paint paint = new Paint();
             paint.setFilterBitmap(true);
             paint.setAntiAlias(true);
             paint.setDither(true);
-            Rect src = new Rect(0, 0, (int) mA.x, view.getHeight());
-            RectF dst = new RectF(view.getWidth() - mA.x, 0, view.getWidth(), view.getHeight());
             canvas.drawBitmap(back, src, dst, paint);
         }
 

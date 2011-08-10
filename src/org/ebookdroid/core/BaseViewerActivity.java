@@ -236,7 +236,9 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     protected void onPostCreate(final Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setWindowTitle();
-        currentPageChanged(getBookSettings().getCurrentDocPage(), getBookSettings().getCurrentViewPage());
+        if (documentModel != null) {
+            currentPageChanged(getBookSettings().getCurrentDocPage(), getBookSettings().getCurrentViewPage());
+        }
     }
 
     private void initActivity() {

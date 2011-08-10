@@ -129,7 +129,6 @@ extern "C" {
               miniexp.h and related functions.
      15    Added:
               ddjvu_document_get_pageinfo()
-              ddjvu_document_print()
      14    Initial version.
 */
 
@@ -1312,54 +1311,6 @@ struct ddjvu_message_progress_s {
   ddjvu_status_t status;
   int percent;
 };
-
-/* ddjvu_document_print ---
-   Converts specified pages of a djvu document into postscript.  
-   This function works asynchronously in a separate thread.
-   You can use the following idiom for synchronous operation:
-
-     ddjvu_job_t *job = ddjvu_document_print(....);
-     while (! ddjvu_job_done(job) )
-       handle_ddjvu_messages(context, TRUE);
-       
-   The postscript data is written to stdio file <output>.
-   Arguments <optc> and <optv> specify printing options.
-   All options described on the <djvups> man page are 
-   recognized, except <"-help"> and <"-verbose">.
-*/
-
-DDJVUAPI ddjvu_job_t *
-ddjvu_document_print(ddjvu_document_t *document, FILE *output,
-                     int optc, const char * const * optv);
-
-
-/* ddjvu_document_save ---
-   Saves the djvu document as a bundled djvu file.
-   This function works asynchronously in a separate thread.
-   You can use the following idiom for synchronous operation:
-
-     ddjvu_job_t *job = ddjvu_document_save(....);
-     while (! ddjvu_job_done(job) )
-       handle_ddjvu_messages(context, TRUE);
-     
-   The bundled djvu data is written to file <output>
-   which must be seekable. Arguments <optc> and <optv>
-   can be used to pass the following options:
-   * Option "-pages=<pagespec>" specify a subset of pages
-     using the same syntax as program <ddjvu>.
-     Reordering or duplicating pages is prohibited. 
-   * Option "-indirect=<filename>" causes the creation
-     of an indirect document with index file <filename>
-     and auxiliary files in the same directory.
-     When this option is specified, the argument <output>
-     is ignored and should be NULL.
-*/
-DDJVUAPI ddjvu_job_t *
-ddjvu_document_save(ddjvu_document_t *document, FILE *output, 
-                    int optc, const char * const * optv);
-
-
-
 
 /* -------------------------------------------------- */
 /* S-EXPRESSIONS                                      */

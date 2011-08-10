@@ -5,6 +5,7 @@ import org.ebookdroid.cbdroid.CbrViewerActivity;
 import org.ebookdroid.cbdroid.CbzViewerActivity;
 import org.ebookdroid.core.presentation.BrowserAdapter;
 import org.ebookdroid.core.presentation.FileListAdapter;
+import org.ebookdroid.core.presentation.RecentAdapter;
 import org.ebookdroid.core.settings.BookSettings;
 import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
@@ -28,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
+import android.widget.Gallery;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
@@ -45,6 +47,7 @@ public class MainBrowserActivity extends Activity {
     private BrowserAdapter adapter;
     private BrowserAdapter recentAdapter;
     private FileListAdapter libraryAdapter;
+    private RecentAdapter rAdapter;
     protected final FileFilter filter;
     private TabHost tabHost;
     private static final String CURRENT_DIRECTORY = "currentDirectory";
@@ -124,6 +127,8 @@ public class MainBrowserActivity extends Activity {
         setContentView(R.layout.browser);
         final ListView browseList = initBrowserListView();
         final ListView recentListView = initRecentListView();
+        
+        rAdapter = new RecentAdapter(this, filter);
         tabHost = (TabHost) findViewById(R.id.browserTabHost);
         tabHost.setup();
         tabHost.addTab(tabHost.newTabSpec("Recent").setIndicator(getString(R.string.tab_recent))
@@ -151,6 +156,17 @@ public class MainBrowserActivity extends Activity {
                     @Override
                     public View createTabContent(final String s) {
                         return libraryListView;
+                    }
+                }));
+        
+        tabHost.addTab(tabHost.newTabSpec("Recent2").setIndicator(getString(R.string.tab_recent))
+                .setContent(new TabHost.TabContentFactory() {
+
+                    @Override
+                    public View createTabContent(final String s) {
+                        Gallery gallery = new Gallery(MainBrowserActivity.this);
+                        gallery.setAdapter(rAdapter);
+                        return gallery;
                     }
                 }));
 
@@ -359,6 +375,8 @@ public class MainBrowserActivity extends Activity {
             files.add(new File(bs.getFileName()));
         }
         recentAdapter.setFiles(files);
+        
+        rAdapter.setFiles(files);
 
         if (scan == false) {
             scan = true;

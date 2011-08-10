@@ -10,7 +10,9 @@ public enum PageAnimationType {
 
     CURLER_DYNAMIC("Dynamic curler"),
 
-    SLIDER("Slider");
+    SLIDER("Slider"),
+
+    FADER("Fade in");
 
     /** The resource value. */
     private final String resValue;
@@ -55,6 +57,8 @@ public enum PageAnimationType {
                     return new SinglePageDynamicCurler(singlePageDocumentView);
                 case SLIDER:
                     return new SinglePageSlider(singlePageDocumentView);
+                case FADER:
+                    return new SinglePageFader(singlePageDocumentView);
                 default:
                     break;
             }

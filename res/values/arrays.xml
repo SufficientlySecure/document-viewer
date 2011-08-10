@@ -40,6 +40,7 @@
 		<item>@string/list_animation_curler_simple</item>
 		<item>@string/list_animation_curler_dynamic</item>
 		<item>@string/list_animation_slider</item>
+		<item>@string/list_animation_fader</item>
 	</string-array>
 
 	<string-array
@@ -49,6 +50,7 @@
 		<item>Simple curler</item>
 		<item>Dynamic curler</item>
 		<item>Slider</item>
+		<item>Fade in</item>
 	</string-array>
 
 </resources>

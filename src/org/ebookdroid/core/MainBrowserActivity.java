@@ -21,18 +21,23 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
 import android.widget.Gallery;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -164,9 +169,34 @@ public class MainBrowserActivity extends Activity {
 
                     @Override
                     public View createTabContent(final String s) {
-                        Gallery gallery = new Gallery(MainBrowserActivity.this);
+                        
+                        final LayoutInflater li = LayoutInflater.from(MainBrowserActivity.this);
+                        final View recent = li.inflate(R.layout.recent, null);
+                        final Gallery gallery = (Gallery) recent.findViewById(R.id.gallery);
+                            //new Gallery(MainBrowserActivity.this);
                         gallery.setAdapter(rAdapter);
-                        return gallery;
+                        gallery.setOnItemSelectedListener(new OnItemSelectedListener() {
+                               @Override
+                               public void onItemSelected(AdapterView parent, View view, int position, long id) {
+                                // TODO Auto-generated method stub
+                                   final TextView bookinfo = (TextView) recent.findViewById(R.id.bookinfo);
+                                   bookinfo.setText(rAdapter.getItem(position).getPath());
+                                   //Toast.makeText(MainBrowserActivity.this, "Position=" + position, Toast.LENGTH_SHORT).show();
+                               }
+                               @Override
+                               public void onNothingSelected(AdapterView parent) {
+
+                               }
+                              });
+
+                        gallery.setOnItemClickListener(new OnItemClickListener() {
+                            public void onItemClick(AdapterView parent, View v, int position, long id) {
+                            // Displaying the position when the gallery item in clicked
+                                Toast.makeText(MainBrowserActivity.this, "Position=" + position, Toast.LENGTH_SHORT).show();
+                            }
+                            });
+                        //return gallery;
+                        return recent;
                     }
                 }));
 

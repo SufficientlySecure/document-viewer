@@ -78,6 +78,10 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         initView("");
     }
 
+    private void initActivity() {
+        SettingsManager.getInstance(this).applyAppSettings(this);
+    }
+    
     private void initView(final String password) {
         final DecodeService decodeService = createDecodeService();
 
@@ -106,15 +110,16 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         documentModel.addEventListener(this);
 
         zoomModel = new ZoomModel();
+
         initMultiTouchZoomIfAvailable();
+
         progressModel = new DecodingProgressModel();
         progressModel.addEventListener(this);
 
-        createDocumentView();
-
         frameLayout.addView(createZoomControls(zoomModel));
         setContentView(frameLayout);
-        setProgressBarIndeterminateVisibility(false);
+
+        SettingsManager.getInstance(this).applyBookSettings(this);
     }
 
     private void askPassword() {
@@ -241,19 +246,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         }
     }
 
-    private void initActivity() {
-        setRequestedOrientation(getAppSettings().getRotation().getOrientation());
-
-        if (!getAppSettings().getShowTitle()) {
-            getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        } else {
-            // Android 3.0+ you need both progress!!!
-            getWindow().requestFeature(Window.FEATURE_PROGRESS);
-            getWindow().requestFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-            setProgressBarIndeterminate(true);
-        }
-    }
-
     private PageViewZoomControls createZoomControls(final ZoomModel zoomModel) {
         final PageViewZoomControls controls = new PageViewZoomControls(this, zoomModel);
         controls.setGravity(Gravity.RIGHT | Gravity.BOTTOM);
@@ -286,7 +278,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Called on creation options menu
-     * 
+     *
      * @param menu
      *            the main menu
      * @return true, if successful
@@ -382,7 +374,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the zoom model.
-     * 
+     *
      * @return the zoom model
      */
     @Override
@@ -392,7 +384,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the multi touch zoom.
-     * 
+     *
      * @return the multi touch zoom
      */
     @Override
@@ -407,7 +399,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the decoding progress model.
-     * 
+     *
      * @return the decoding progress model
      */
     @Override

@@ -120,14 +120,31 @@ public class SettingsManager implements CurrentPageListener {
         }
     }
 
+    public void applyAppSettings(final IViewerActivity base) {
+        lock.readLock().lock();
+        try {
+            applyAppSettingsChanges(base, null, appSettings);
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    public void applyBookSettings(final IViewerActivity base) {
+        lock.readLock().lock();
+        try {
+            applyBookSettingsChanges(base, null, bookSettings);
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
     public void onAppSettingsChanged(final IViewerActivity base) {
         lock.writeLock().lock();
         try {
             final AppSettings oldSettings = appSettings;
             appSettings = new AppSettings(base.getContext());
 
-            setOrientation(base, oldSettings, appSettings);
-            setFullScreen(base, oldSettings, appSettings);
+            applyAppSettingsChanges(base, oldSettings, appSettings);
 
             final BookSettings oldBS = bookSettings;
             if (oldBS != null) {
@@ -135,12 +152,7 @@ public class SettingsManager implements CurrentPageListener {
                 appSettings.fillBookSettings(bookSettings);
                 db.storeBookSettings(bookSettings);
 
-                setUseAnimation(base, oldBS, bookSettings);
-                setDocumentView(base, oldBS, bookSettings);
-                setAlign(base, oldBS, bookSettings);
-
-                final DocumentModel dm = base.getDocumentModel();
-                currentPageChanged(dm.getCurrentDocPageIndex(), dm.getCurrentViewPageIndex());
+                applyBookSettingsChanges(base, oldBS, bookSettings);
             } else {
                 appSettings.clearPseudoBookSettings();
             }
@@ -149,44 +161,15 @@ public class SettingsManager implements CurrentPageListener {
         }
     }
 
-    protected void setUseAnimation(final IViewerActivity base, final BookSettings oldSettings,
-            final BookSettings newSettings) {
-        final IDocumentViewController dc = base.getDocumentController();
-        if (dc == null) {
-            return;
-        }
-        if (oldSettings.getAnimationType() != newSettings.getAnimationType()) {
-            dc.updateAnimationType();
-        }
-    }
-
-    protected void setDocumentView(final IViewerActivity base, final BookSettings oldSettings,
-            final BookSettings newSettings) {
-        if (oldSettings.getSinglePage() != newSettings.getSinglePage()) {
-            base.createDocumentView();
-        }
-    }
-
-    protected void setAlign(final IViewerActivity base, final BookSettings oldSettings, final BookSettings newSettings) {
-        final IDocumentViewController dc = base.getDocumentController();
-        if (dc == null) {
-            return;
-        }
-        if (oldSettings.getPageAlign() != newSettings.getPageAlign()) {
-            dc.setAlign(newSettings.getPageAlign());
-        }
-    }
-
-    protected void setOrientation(final IViewerActivity base, final AppSettings oldSettings,
+    protected void applyAppSettingsChanges(final IViewerActivity base, final AppSettings oldSettings,
             final AppSettings newSettings) {
-        if (oldSettings.getRotation() != newSettings.getRotation()) {
+        AppSettings.Diff diff = new AppSettings.Diff(oldSettings, newSettings);
+
+        if (diff.isRotationChanged()) {
             base.getActivity().setRequestedOrientation(newSettings.getRotation().getOrientation());
         }
-    }
 
-    protected void setFullScreen(final IViewerActivity base, final AppSettings oldSettings,
-            final AppSettings newSettings) {
-        if (oldSettings.getFullScreen() != newSettings.getFullScreen()) {
+        if (diff.isFullScreenChanged()) {
             final Window window = base.getActivity().getWindow();
             if (newSettings.getFullScreen()) {
                 window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -194,6 +177,44 @@ public class SettingsManager implements CurrentPageListener {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             }
         }
+
+        if (diff.isShowTitleChanged()) {
+            final Window window = base.getActivity().getWindow();
+            if (!getAppSettings().getShowTitle()) {
+                window.requestFeature(Window.FEATURE_NO_TITLE);
+            } else {
+                // Android 3.0+ you need both progress!!!
+                window.requestFeature(Window.FEATURE_PROGRESS);
+                window.requestFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+                base.getActivity().setProgressBarIndeterminate(true);
+            }
+        }
     }
 
+    protected void applyBookSettingsChanges(final IViewerActivity base, final BookSettings oldSettings,
+            final BookSettings newSettings) {
+        if (newSettings == null) {
+            return;
+        }
+        BookSettings.Diff diff = new BookSettings.Diff(oldSettings, newSettings);
+
+        if (diff.isSinglePageChanged()) {
+            base.createDocumentView();
+        }
+
+        final IDocumentViewController dc = base.getDocumentController();
+        if (dc != null) {
+
+            if (diff.isPageAlignChanged()) {
+                dc.setAlign(newSettings.getPageAlign());
+            }
+
+            if (diff.isAnimationTypeChanged()) {
+                dc.updateAnimationType();
+            }
+        }
+
+        final DocumentModel dm = base.getDocumentModel();
+        currentPageChanged(dm.getCurrentDocPageIndex(), dm.getCurrentViewPageIndex());
+    }
 }

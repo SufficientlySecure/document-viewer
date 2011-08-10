@@ -45,6 +45,45 @@ public class AppSettings {
         this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
+    public boolean getNightMode() {
+        if (nightMode == null) {
+            nightMode = prefs.getBoolean("nightmode", false);
+        }
+        return nightMode;
+    }
+
+    public void switchNightMode() {
+        nightMode = !nightMode;
+        final Editor edit = prefs.edit();
+        edit.putBoolean("nightmode", nightMode);
+        edit.commit();
+    }
+
+    public RotationType getRotation() {
+        if (rotation == null) {
+            final String rotationStr = prefs.getString("rotation", RotationType.AUTOMATIC.getResValue());
+            rotation = RotationType.getByResValue(rotationStr);
+            if (rotation == null) {
+                rotation = RotationType.AUTOMATIC;
+            }
+        }
+        return rotation;
+    }
+
+    public boolean getFullScreen() {
+        if (fullScreen == null) {
+            fullScreen = prefs.getBoolean("fullscreen", false);
+        }
+        return fullScreen;
+    }
+
+    public boolean getShowTitle() {
+        if (showTitle == null) {
+            showTitle = prefs.getBoolean("title", true);
+        }
+        return showTitle;
+    }
+
     public boolean getPageInTitle() {
         if (pageInTitle == null) {
             pageInTitle = prefs.getBoolean("pageintitle", true);
@@ -66,11 +105,11 @@ public class AppSettings {
         return tapSize.intValue();
     }
 
-    boolean getSinglePage() {
-        if (singlePage == null) {
-            singlePage = prefs.getBoolean("singlepage", false);
+    public int getScrollHeight() {
+        if (scrollHeight == null) {
+            scrollHeight = getIntValue("scrollheight", 50);
         }
-        return singlePage;
+        return scrollHeight.intValue();
     }
 
     public int getPagesInMemory() {
@@ -80,18 +119,25 @@ public class AppSettings {
         return pagesInMemory.intValue();
     }
 
-    public boolean getNightMode() {
-        if (nightMode == null) {
-            nightMode = prefs.getBoolean("nightmode", false);
+    public Boolean getSliceLimit() {
+        if (sliceLimit == null) {
+            sliceLimit = prefs.getBoolean("slicelimit", true);
         }
-        return nightMode;
+        return sliceLimit;
     }
 
-    public void switchNightMode() {
-        nightMode = !nightMode;
-        final Editor edit = prefs.edit();
-        edit.putBoolean("nightmode", nightMode);
-        edit.commit();
+    boolean getSplitPages() {
+        if (splitPages == null) {
+            splitPages = prefs.getBoolean("splitpages", false);
+        }
+        return splitPages;
+    }
+
+    boolean getSinglePage() {
+        if (singlePage == null) {
+            singlePage = prefs.getBoolean("singlepage", false);
+        }
+        return singlePage;
     }
 
     PageAlign getPageAlign() {
@@ -105,57 +151,11 @@ public class AppSettings {
         return pageAlign;
     }
 
-    public boolean getFullScreen() {
-        if (fullScreen == null) {
-            fullScreen = prefs.getBoolean("fullscreen", false);
-        }
-        return fullScreen;
-    }
-
-    public RotationType getRotation() {
-        if (rotation == null) {
-            final String rotationStr = prefs.getString("rotation", RotationType.AUTOMATIC.getResValue());
-            rotation = RotationType.getByResValue(rotationStr);
-            if (rotation == null) {
-                rotation = RotationType.AUTOMATIC;
-            }
-        }
-        return rotation;
-    }
-
-    public boolean getShowTitle() {
-        if (showTitle == null) {
-            showTitle = prefs.getBoolean("title", true);
-        }
-        return showTitle;
-    }
-
-    public int getScrollHeight() {
-        if (scrollHeight == null) {
-            scrollHeight = getIntValue("scrollheight", 50);
-        }
-        return scrollHeight.intValue();
-    }
-
-    public Boolean getSliceLimit() {
-        if (sliceLimit == null) {
-            sliceLimit = prefs.getBoolean("slicelimit", true);
-        }
-        return sliceLimit;
-    }
-
     PageAnimationType getAnimationType() {
         if (animationType == null) {
             animationType = PageAnimationType.get(prefs.getString("animationType", null));
         }
         return animationType;
-    }
-
-    boolean getSplitPages() {
-        if (splitPages == null) {
-            splitPages = prefs.getBoolean("splitpages", false);
-        }
-        return splitPages;
     }
 
     void clearPseudoBookSettings() {
@@ -186,7 +186,8 @@ public class AppSettings {
         if (bs.pageAlign == null) {
             bs.pageAlign = PageAlign.AUTO;
         }
-        bs.animationType = PageAnimationType.get(prefs.getString("book_animationType", getAnimationType().getResValue()));
+        bs.animationType = PageAnimationType.get(prefs
+                .getString("book_animationType", getAnimationType().getResValue()));
         if (bs.animationType == null) {
             bs.animationType = PageAnimationType.NONE;
         }
@@ -201,6 +202,97 @@ public class AppSettings {
         } catch (final NumberFormatException e) {
         }
         return value;
+    }
+
+    public static class Diff {
+
+        private static final short D_NightMode = 0x0001 << 0;
+        private static final short D_Rotation = 0x0001 << 1;
+        private static final short D_FullScreen = 0x0001 << 2;
+        private static final short D_ShowTitle = 0x0001 << 3;
+        private static final short D_PageInTitle = 0x0001 << 4;
+        private static final short D_TapScroll = 0x0001 << 5;
+        private static final short D_TapSize = 0x0001 << 6;
+        private static final short D_ScrollHeight = 0x0001 << 7;
+        private static final short D_PagesInMemory = 0x0001 << 8;
+        private static final short D_SliceLimit = 0x0001 << 9;
+
+        private short mask;
+
+        public Diff(AppSettings olds, AppSettings news) {
+            if (news != null) {
+                if (olds == null || olds.getNightMode() != news.getNightMode()) {
+                    mask |= D_NightMode;
+                }
+                if (olds == null || olds.getRotation() != news.getRotation()) {
+                    mask |= D_Rotation;
+                }
+                if (olds == null || olds.getFullScreen() != news.getFullScreen()) {
+                    mask |= D_FullScreen;
+                }
+                if (olds == null || olds.getShowTitle() != news.getShowTitle()) {
+                    mask |= D_ShowTitle;
+                }
+                if (olds == null || olds.getPageInTitle() != news.getPageInTitle()) {
+                    mask |= D_PageInTitle;
+                }
+                if (olds == null || olds.getTapScroll() != news.getTapScroll()) {
+                    mask |= D_TapScroll;
+                }
+                if (olds == null || olds.getTapSize() != news.getTapSize()) {
+                    mask |= D_TapSize;
+                }
+                if (olds == null || olds.getScrollHeight() != news.getScrollHeight()) {
+                    mask |= D_ScrollHeight;
+                }
+                if (olds == null || olds.getPagesInMemory() != news.getPagesInMemory()) {
+                    mask |= D_PagesInMemory;
+                }
+                if (olds == null || olds.getSliceLimit() != news.getSliceLimit()) {
+                    mask |= D_SliceLimit;
+                }
+            }
+        }
+
+        public boolean isNightModeChanged() {
+            return 0 != (mask & D_NightMode);
+        }
+
+        public boolean isRotationChanged() {
+            return 0 != (mask & D_Rotation);
+        }
+
+        public boolean isFullScreenChanged() {
+            return 0 != (mask & D_FullScreen);
+        }
+
+        public boolean isShowTitleChanged() {
+            return 0 != (mask & D_ShowTitle);
+        }
+
+        public boolean isPageInTitleChanged() {
+            return 0 != (mask & D_PageInTitle);
+        }
+
+        public boolean isTapScrollChanged() {
+            return 0 != (mask & D_TapScroll);
+        }
+
+        public boolean isTapSizeChanged() {
+            return 0 != (mask & D_TapSize);
+        }
+
+        public boolean isScrollHeightChanged() {
+            return 0 != (mask & D_ScrollHeight);
+        }
+
+        public boolean isPagesInMemoryChanged() {
+            return 0 != (mask & D_PagesInMemory);
+        }
+
+        public boolean isSliceLimitChanged() {
+            return 0 != (mask & D_SliceLimit);
+        }
     }
 
 }

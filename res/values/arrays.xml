@@ -44,7 +44,7 @@
 	<string-array
 		name="list_animation_values"
 		translatable="false">
-		<item></item>
+		<item>None</item>
 		<item>Curler</item>
 		<item>Slider</item>
 	</string-array>

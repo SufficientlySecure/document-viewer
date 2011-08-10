@@ -11,16 +11,6 @@ public enum PageAlign {
     /** AUTO. */
     AUTO("Auto");
 
-    /**
-     * Instantiates a new page align object.
-     * 
-     * @param resValue
-     *            the res value
-     */
-    private PageAlign(final String resValue) {
-        this.resValue = resValue;
-    }
-
     /** The resource value. */
     private final String resValue;
 
@@ -28,8 +18,27 @@ public enum PageAlign {
     private static PageAlign[] _values = values();
 
     /**
+     * Instantiates a new page align object.
+     *
+     * @param resValue
+     *            the res value
+     */
+    private PageAlign(final String resValue) {
+        this.resValue = resValue;
+    }
+
+    /**
+     * Gets the resource value.
+     *
+     * @return the resource value
+     */
+    public String getResValue() {
+        return resValue;
+    }
+
+    /**
      * Gets the by resource value.
-     * 
+     *
      * @param resValue
      *            the resource value
      * @return the enum value or @null
@@ -41,15 +50,6 @@ public enum PageAlign {
             }
         }
         return null;
-    }
-
-    /**
-     * Gets the resource value.
-     * 
-     * @return the resource value
-     */
-    public String getResValue() {
-        return resValue;
     }
 
 }

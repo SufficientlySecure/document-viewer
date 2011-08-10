@@ -27,7 +27,7 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
     public AbstractDocumentView(final IViewerActivity baseActivity) {
         super(baseActivity.getContext());
         this.base = baseActivity;
-        this.align = base.getAppSettings().getPageAlign();
+        this.align = base.getBookSettings().getPageAlign();
         setKeepScreenOn(true);
         scroller = new Scroller(getContext());
         setFocusable(true);
@@ -301,7 +301,7 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
 
     /**
      * Sets the page align flag.
-     * 
+     *
      * @param align
      *            the new flag indicating align
      */
@@ -323,7 +323,7 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
 
     /**
      * Checks if view is initialized.
-     * 
+     *
      * @return true, if is initialized
      */
     protected boolean isInitialized() {

@@ -126,7 +126,6 @@ public class SettingsManager implements CurrentPageListener {
             final AppSettings oldSettings = appSettings;
             appSettings = new AppSettings(base.getContext());
 
-            setUseAnimation(base, oldSettings, appSettings);
             setOrientation(base, oldSettings, appSettings);
             setFullScreen(base, oldSettings, appSettings);
 
@@ -136,6 +135,7 @@ public class SettingsManager implements CurrentPageListener {
                 appSettings.fillBookSettings(bookSettings);
                 db.storeBookSettings(bookSettings);
 
+                setUseAnimation(base, oldBS, bookSettings);
                 setDocumentView(base, oldBS, bookSettings);
                 setAlign(base, oldBS, bookSettings);
 
@@ -149,8 +149,8 @@ public class SettingsManager implements CurrentPageListener {
         }
     }
 
-    protected void setUseAnimation(final IViewerActivity base, final AppSettings oldSettings,
-            final AppSettings newSettings) {
+    protected void setUseAnimation(final IViewerActivity base, final BookSettings oldSettings,
+            final BookSettings newSettings) {
         final IDocumentViewController dc = base.getDocumentController();
         if (dc == null) {
             return;

@@ -83,4 +83,10 @@
 	<string name="list_animation_none">"None"</string>
 	<string name="list_animation_curler">"Curler"</string>
 	<string name="list_animation_slider">"Slider"</string>
+	<string name="pref_scroll_category">"Scrolling"</string>
+	<string name="pref_scroll_category_summary">"Scrolling preferences"</string>
+	<string name="pref_singlepage_category">"Single page settings"</string>
+	<string name="pref_singlepage_category_summary">"Settings actual for single page mode"</string>
+	<string name="pref_memory_category">"Memory usage settings"</string>
+	<string name="pref_memory_category_summary">"Settings affected to memory usage"</string>
 </resources>

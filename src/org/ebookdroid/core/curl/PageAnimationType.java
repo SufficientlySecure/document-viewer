@@ -4,15 +4,40 @@ import org.ebookdroid.core.SinglePageDocumentView;
 
 public enum PageAnimationType {
 
-    NONE,
+    NONE("None"),
 
-    CURLER,
+    CURLER("Curler"),
 
-    SLIDER;
+    SLIDER("Slider");
 
-    public static PageAnimationType get(final String name) {
-        for (final PageAnimationType t : values()) {
-            if (t.name().equalsIgnoreCase(name)) {
+    /** The resource value. */
+    private final String resValue;
+
+    /** The _values. */
+    private static PageAnimationType[] _values = values();
+
+    /**
+     * Instantiates a new page animation type.
+     *
+     * @param resValue
+     *            the res value
+     */
+    private PageAnimationType(final String resValue) {
+        this.resValue = resValue;
+    }
+
+    /**
+     * Gets the resource value.
+     *
+     * @return the resource value
+     */
+    public String getResValue() {
+        return resValue;
+    }
+
+    public static PageAnimationType get(final String resValue) {
+        for (final PageAnimationType t : _values) {
+            if (t.getResValue().equalsIgnoreCase(resValue)) {
                 return t;
             }
         }

@@ -10,7 +10,7 @@ import android.view.VelocityTracker;
 
 /**
  * The Class SinglePageDocumentView.
- * 
+ *
  * Used in single page view mode
  */
 public class SinglePageDocumentView extends AbstractDocumentView {
@@ -20,7 +20,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     /**
      * Instantiates a new single page document view.
-     * 
+     *
      * @param baseActivity
      *            the base activity
      */
@@ -182,7 +182,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     @Override
     public void updateAnimationType() {
-        curler = PageAnimationType.create(getBase().getAppSettings().getAnimationType(), this);
+        curler = PageAnimationType.create(getBase().getBookSettings().getAnimationType(), this);
         if (curler != null) {
             curler.init();
         }

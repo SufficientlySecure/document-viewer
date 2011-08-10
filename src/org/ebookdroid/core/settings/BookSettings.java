@@ -1,6 +1,7 @@
 package org.ebookdroid.core.settings;
 
 import org.ebookdroid.core.PageAlign;
+import org.ebookdroid.core.curl.PageAnimationType;
 import org.ebookdroid.core.events.CurrentPageListener;
 
 public class BookSettings implements CurrentPageListener {
@@ -13,11 +14,13 @@ public class BookSettings implements CurrentPageListener {
 
     int currentViewPage;
 
+    boolean splitPages;
+
     boolean singlePage;
 
-    PageAlign pageAlign;
+    PageAlign pageAlign = PageAlign.AUTO;
 
-    boolean splitPages;
+    PageAnimationType animationType = PageAnimationType.NONE;
 
     BookSettings(final String fileName) {
         this(fileName, null);
@@ -59,5 +62,9 @@ public class BookSettings implements CurrentPageListener {
 
     public boolean getSplitPages() {
         return splitPages;
+    }
+
+    public PageAnimationType getAnimationType() {
+        return animationType;
     }
 }

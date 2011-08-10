@@ -117,7 +117,7 @@ public class DocumentModel extends CurrentPageModel {
     public void initPages(final IViewerActivity base) {
         pages.clear();
 
-        final boolean splitPages = base.getAppSettings().getSplitPages();
+        final boolean splitPages = base.getBookSettings().getSplitPages();
         final View view = base.getView();
 
         final CodecPageInfo defCpi = new CodecPageInfo();

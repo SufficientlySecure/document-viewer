@@ -1,6 +1,7 @@
 package org.ebookdroid.core.settings;
 
 import org.ebookdroid.core.PageAlign;
+import org.ebookdroid.core.curl.PageAnimationType;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -15,17 +16,33 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static final int DB_VERSION = 1;
 
-    private static final String DB_1_CREATE = "create table book_settings (" + "book varchar(1024) primary key, "
-            + "last_updated integer not null, " + "doc_page integer not null, " + "view_page integer not null,"
-            + "single_page integer not null," + "page_align integer not null," + "split_pages integer not null" + ");";
+    private static final String DB_1_CREATE = "create table book_settings ("
+    // Book file path
+            + "book varchar(1024) primary key, "
+            // Last update time
+            + "last_updated integer not null, "
+            // Current document page
+            + "doc_page integer not null, "
+            // Current view page - dependent on view mode
+            + "view_page integer not null, "
+            // Single page mode on/off
+            + "single_page integer not null, "
+            // Page align
+            + "page_align integer not null, "
+            // Page animation type
+            + "page_animation integer not null, "
+            // Split pages on/off
+            + "split_pages integer not null" +
+            // ...
+            ");";
 
-    private static final String DB_1_BOOK_GET_ALL = "SELECT book, last_updated, doc_page, view_page, single_page, page_align, split_pages FROM book_settings order by last_updated DESC";
+    private static final String DB_1_BOOK_GET_ALL = "SELECT book, last_updated, doc_page, view_page, single_page, page_align, page_animation, split_pages FROM book_settings order by last_updated DESC";
 
-    private static final String DB_1_BOOK_GET_ONE = "SELECT book, last_updated, doc_page, view_page, single_page, page_align, split_pages FROM book_settings WHERE book=?";
+    private static final String DB_1_BOOK_GET_ONE = "SELECT book, last_updated, doc_page, view_page, single_page, page_align, page_animation, split_pages FROM book_settings WHERE book=?";
 
-    private static final String DB_1_BOOK_STORE = "INSERT OR REPLACE INTO book_settings (book, last_updated, doc_page, view_page, single_page, page_align, split_pages) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private static final String DB_1_BOOK_STORE = "INSERT OR REPLACE INTO book_settings (book, last_updated, doc_page, view_page, single_page, page_align, page_animation, split_pages) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-    private static final String DB_1_BOOK_DEL_ALL = "DELETE FROM book_settings";
+    private static final String DB_1_BOOK_DEL_ALL = "DROP TABLE book_settings";
 
     public DBHelper(final Context context) {
         super(context, context.getPackageName() + ".settings", null, DB_VERSION);
@@ -109,8 +126,23 @@ public class DBHelper extends SQLiteOpenHelper {
 
                 bs.lastUpdated = System.currentTimeMillis();
 
-                Object[] args = new Object[] { bs.fileName, bs.lastUpdated, bs.currentDocPage, bs.currentViewPage,
-                        bs.singlePage ? 1 : 0, bs.pageAlign.ordinal(), bs.splitPages ? 1 : 0 };
+                Object[] args = new Object[] {
+                        // File name
+                        bs.fileName,
+                        // Last update
+                        bs.lastUpdated,
+                        // Current document page
+                        bs.currentDocPage,
+                        // Current view page
+                        bs.currentViewPage,
+                        // Single page on/off
+                        bs.singlePage ? 1 : 0,
+                        // Page align
+                        bs.pageAlign.ordinal(),
+                        // Page animation type
+                        bs.animationType.ordinal(),
+                        // Split pages on/off
+                        bs.splitPages ? 1 : 0 };
 
                 db.execSQL(DB_1_BOOK_STORE, args);
 
@@ -140,6 +172,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 db.beginTransaction();
 
                 db.execSQL(DB_1_BOOK_DEL_ALL, new Object[] {});
+                db.execSQL(DB_1_CREATE, new Object[] {});
 
                 db.setTransactionSuccessful();
 
@@ -169,6 +202,7 @@ public class DBHelper extends SQLiteOpenHelper {
         bs.currentViewPage = c.getInt(index++);
         bs.singlePage = c.getInt(index++) != 0;
         bs.pageAlign = PageAlign.values()[c.getInt(index++)];
+        bs.animationType = PageAnimationType.values()[c.getInt(index++)];
         bs.splitPages = c.getInt(index++) != 0;
 
         return bs;

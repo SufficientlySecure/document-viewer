@@ -66,7 +66,7 @@ public class AppSettings {
         return tapSize.intValue();
     }
 
-    public boolean getSinglePage() {
+    boolean getSinglePage() {
         if (singlePage == null) {
             singlePage = prefs.getBoolean("singlepage", false);
         }
@@ -94,7 +94,7 @@ public class AppSettings {
         edit.commit();
     }
 
-    public PageAlign getPageAlign() {
+    PageAlign getPageAlign() {
         if (pageAlign == null) {
             final String align = prefs.getString("align", PageAlign.AUTO.getResValue());
             pageAlign = PageAlign.getByResValue(align);
@@ -144,14 +144,14 @@ public class AppSettings {
         return sliceLimit;
     }
 
-    public PageAnimationType getAnimationType() {
+    PageAnimationType getAnimationType() {
         if (animationType == null) {
             animationType = PageAnimationType.get(prefs.getString("animationType", null));
         }
         return animationType;
     }
 
-    public boolean getSplitPages() {
+    boolean getSplitPages() {
         if (splitPages == null) {
             splitPages = prefs.getBoolean("splitpages", false);
         }
@@ -161,29 +161,36 @@ public class AppSettings {
     void clearPseudoBookSettings() {
         final Editor editor = prefs.edit();
         editor.remove("book");
-        editor.remove("book_align");
-        editor.remove("book_singlepage");
         editor.remove("book_splitpages");
+        editor.remove("book_singlepage");
+        editor.remove("book_align");
+        editor.remove("book_animationType");
         editor.commit();
     }
 
     void updatePseudoBookSettings(final BookSettings bs) {
         final Editor editor = prefs.edit();
         editor.putString("book", bs.getFileName());
-        editor.putString("book_align", bs.getPageAlign().getResValue());
-        editor.putBoolean("book_singlepage", bs.getSinglePage());
         editor.putBoolean("book_splitpages", bs.getSplitPages());
+        editor.putBoolean("book_singlepage", bs.getSinglePage());
+        editor.putString("book_align", bs.getPageAlign().getResValue());
+        editor.putString("book_animationType", bs.getAnimationType().getResValue());
         editor.commit();
     }
 
     void fillBookSettings(final BookSettings bs) {
+        bs.splitPages = prefs.getBoolean("book_splitpages", getSplitPages());
+        bs.singlePage = prefs.getBoolean("book_singlepage", getSinglePage());
+
         bs.pageAlign = PageAlign.getByResValue(prefs.getString("book_align", getPageAlign().getResValue()));
         if (bs.pageAlign == null) {
             bs.pageAlign = PageAlign.AUTO;
         }
+        bs.animationType = PageAnimationType.get(prefs.getString("book_animationType", getAnimationType().getResValue()));
+        if (bs.animationType == null) {
+            bs.animationType = PageAnimationType.NONE;
+        }
 
-        bs.singlePage = prefs.getBoolean("book_singlepage", getSinglePage());
-        bs.splitPages = prefs.getBoolean("book_splitpages", getSplitPages());
     }
 
     private int getIntValue(final String key, final int defaultValue) {

@@ -17,5 +17,4 @@ public interface PageAnimator {
     void setViewDrawn(boolean b);
 
     void FlipAnimationStep();
-
 }

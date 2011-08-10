@@ -98,7 +98,6 @@ public class SinglePageDocumentView extends AbstractDocumentView {
                 if (getBase().getMultiTouchZoom().onTouchEvent(event)) {
                     return true;
                 }
-
                 if (getBase().getMultiTouchZoom().isResetLastPointAfterZoom()) {
                     setLastPosition(event);
                     getBase().getMultiTouchZoom().setResetLastPointAfterZoom(false);

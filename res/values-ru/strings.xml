@@ -76,17 +76,18 @@
 	<string name="pref_render_category_summary">Настройки отрисовки</string>
 	<string name="pref_browser_category_summary">Настройки браузера и поддерживаемые типы файлов</string>
 	<string name="pref_book_category">"Настройки книги"</string>
-	<string name="pref_book_category_summary">Настройки отрисовки для текушей книги</string>
+	<string name="pref_book_category_summary">Настройки отрисовки для текущей книги</string>
 	<!-- TODO Translate to Russian -->
-	<string name="pref_animationtype_title">Animation type</string>
-	<string name="pref_animationtype_summary">"Select type of transition animation"</string>
-	<string name="list_animation_none">"None"</string>
-	<string name="list_animation_curler">"Curler"</string>
-	<string name="list_animation_slider">"Slider"</string>
-	<string name="pref_scroll_category">"Scrolling"</string>
-	<string name="pref_scroll_category_summary">"Scrolling preferences"</string>
-	<string name="pref_singlepage_category">"Single page settings"</string>
-	<string name="pref_singlepage_category_summary">"Settings actual for single page mode"</string>
-	<string name="pref_memory_category">"Memory usage settings"</string>
-	<string name="pref_memory_category_summary">"Settings affected to memory usage"</string>
+	<string name="pref_animationtype_title">Анимация</string>
+	<string name="pref_animationtype_summary">"Выберите тип анимации перелистывания"</string>
+	<string name="list_animation_none">"Отключена"</string>
+	<string name="list_animation_curler_simple">"Простое перелистывание"</string>
+	<string name="list_animation_curler_dynamic">"Динамическое перелистывание"</string>
+	<string name="list_animation_slider">"Сдвиг"</string>
+	<string name="pref_scroll_category">"Прокрутка"</string>
+	<string name="pref_scroll_category_summary">"Настройки прокрутки"</string>
+	<string name="pref_singlepage_category">"Одностраничный режим"</string>
+	<string name="pref_singlepage_category_summary">"Настройки для одностраничного режима"</string>
+	<string name="pref_memory_category">"Использование памяти"</string>
+	<string name="pref_memory_category_summary">"Настройки использования памяти"</string>
 </resources>

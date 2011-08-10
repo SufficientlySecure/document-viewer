@@ -37,7 +37,8 @@
 		name="list_animation"
 		translatable="false">
 		<item>@string/list_animation_none</item>
-		<item>@string/list_animation_curler</item>
+		<item>@string/list_animation_curler_simple</item>
+		<item>@string/list_animation_curler_dynamic</item>
 		<item>@string/list_animation_slider</item>
 	</string-array>
 
@@ -45,7 +46,8 @@
 		name="list_animation_values"
 		translatable="false">
 		<item>None</item>
-		<item>Curler</item>
+		<item>Simple curler</item>
+		<item>Dynamic curler</item>
 		<item>Slider</item>
 	</string-array>
 

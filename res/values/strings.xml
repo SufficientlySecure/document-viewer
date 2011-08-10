@@ -78,7 +78,8 @@
 	<string name="pref_animationtype_title">Animation type</string>
 	<string name="pref_animationtype_summary">"Select type of transition animation"</string>
 	<string name="list_animation_none">"None"</string>
-	<string name="list_animation_curler">"Curler"</string>
+	<string name="list_animation_curler_simple">"Simple curler"</string>
+	<string name="list_animation_curler_dynamic">"Dynamic curler"</string>
 	<string name="list_animation_slider">"Slider"</string>
 	<string name="pref_scroll_category">"Scrolling"</string>
 	<string name="pref_scroll_category_summary">"Scrolling preferences"</string>

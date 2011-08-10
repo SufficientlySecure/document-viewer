@@ -6,7 +6,9 @@ public enum PageAnimationType {
 
     NONE("None"),
 
-    CURLER("Curler"),
+    CURLER("Simple curler"),
+
+    CURLER_DYNAMIC("Dynamic curler"),
 
     SLIDER("Slider");
 
@@ -48,7 +50,9 @@ public enum PageAnimationType {
         if (type != null) {
             switch (type) {
                 case CURLER:
-                    return new SinglePageCurler(singlePageDocumentView);
+                    return new SinglePageSimpleCurler(singlePageDocumentView);
+                case CURLER_DYNAMIC:
+                    return new SinglePageDynamicCurler(singlePageDocumentView);
                 case SLIDER:
                     return new SinglePageSlider(singlePageDocumentView);
                 default:

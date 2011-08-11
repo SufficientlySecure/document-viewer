@@ -125,7 +125,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         if (brightness < 100) {
             Paint p = new Paint();
             p.setColor(Color.BLACK);
-            p.setAlpha(brightness * 255 / 100);
+            p.setAlpha(255 - brightness * 255 / 100);
             canvas.drawRect(getTargetRect(), p);
         }
         if (children == null) {

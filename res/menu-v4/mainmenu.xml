@@ -16,7 +16,6 @@
          android:alphabeticShortcut="o"
          android:title="@string/menu_outline"
          android:icon="@drawable/outline"
-         android:showAsAction="ifRoom"
          />
    <item android:id="@+id/mainmenu_zoom"
          android:alphabeticShortcut="z"

@@ -191,7 +191,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
             
         }
         if (version >= 11) {
-          int layerType = View.LAYER_TYPE_SOFTWARE;
+          int layerType = View.LAYER_TYPE_HARDWARE;
           if (getBase().getBookSettings().getAnimationType() == PageAnimationType.CURLER ||
                   getBase().getBookSettings().getAnimationType() == PageAnimationType.CURLER_DYNAMIC) {
               layerType = View.LAYER_TYPE_SOFTWARE;

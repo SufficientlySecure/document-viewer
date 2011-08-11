@@ -9,8 +9,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 
-
 public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
+
     /** Maximum radius a page can be flipped, by default it's the width of the view */
     protected float mFlipRadius;
 
@@ -20,11 +20,10 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
     /** Our points used to define the current clipping paths in our draw call */
     protected Vector2D mB, mC, mD, mE, mF, mOldF, mOrigin;
 
-
-    public AbstractSinglePageCurler(SinglePageDocumentView singlePageDocumentView) {
-        super(singlePageDocumentView);
+    public AbstractSinglePageCurler(final PageAnimationType type, final SinglePageDocumentView singlePageDocumentView) {
+        super(type, singlePageDocumentView);
     }
-    
+
     /**
      * Initialize the view
      */
@@ -61,7 +60,6 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
         }
         return point;
     }
-    
 
     /**
      * Called on the first draw event of the view
@@ -79,6 +77,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
     /**
      * Reset points to it's initial clip edge state
      */
+    @Override
     protected void resetClipEdge() {
         // Set our base movement
         mMovement.x = mInitialEdgeOffset;
@@ -187,5 +186,5 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
         final Path path = createCurlEdgePath();
         canvas.drawPath(path, mCurlEdgePaint);
     }
-    
+
 }

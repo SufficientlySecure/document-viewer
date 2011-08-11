@@ -225,46 +225,48 @@ public class AppSettings {
         private static final short D_ScrollHeight = 0x0001 << 7;
         private static final short D_PagesInMemory = 0x0001 << 8;
         private static final short D_SliceLimit = 0x0001 << 9;
-        private static final short D_Brightness = 0x0001 << 10;
 
         private short mask;
+        private final boolean firstTime;
 
         public Diff(AppSettings olds, AppSettings news) {
+            firstTime = olds == null;
             if (news != null) {
-                if (olds == null || olds.getNightMode() != news.getNightMode()) {
+                if (firstTime || olds.getNightMode() != news.getNightMode()) {
                     mask |= D_NightMode;
                 }
-                if (olds == null || olds.getRotation() != news.getRotation()) {
+                if (firstTime || olds.getRotation() != news.getRotation()) {
                     mask |= D_Rotation;
                 }
-                if (olds == null || olds.getFullScreen() != news.getFullScreen()) {
+                if (firstTime || olds.getFullScreen() != news.getFullScreen()) {
                     mask |= D_FullScreen;
                 }
-                if (olds == null || olds.getShowTitle() != news.getShowTitle()) {
+                if (firstTime || olds.getShowTitle() != news.getShowTitle()) {
                     mask |= D_ShowTitle;
                 }
-                if (olds == null || olds.getPageInTitle() != news.getPageInTitle()) {
+                if (firstTime || olds.getPageInTitle() != news.getPageInTitle()) {
                     mask |= D_PageInTitle;
                 }
-                if (olds == null || olds.getTapScroll() != news.getTapScroll()) {
+                if (firstTime || olds.getTapScroll() != news.getTapScroll()) {
                     mask |= D_TapScroll;
                 }
-                if (olds == null || olds.getTapSize() != news.getTapSize()) {
+                if (firstTime || olds.getTapSize() != news.getTapSize()) {
                     mask |= D_TapSize;
                 }
-                if (olds == null || olds.getScrollHeight() != news.getScrollHeight()) {
+                if (firstTime || olds.getScrollHeight() != news.getScrollHeight()) {
                     mask |= D_ScrollHeight;
                 }
-                if (olds == null || olds.getPagesInMemory() != news.getPagesInMemory()) {
+                if (firstTime || olds.getPagesInMemory() != news.getPagesInMemory()) {
                     mask |= D_PagesInMemory;
                 }
-                if (olds == null || olds.getSliceLimit() != news.getSliceLimit()) {
+                if (firstTime || olds.getSliceLimit() != news.getSliceLimit()) {
                     mask |= D_SliceLimit;
                 }
-                if (olds == null || olds.getBrightness() != news.getBrightness()) {
-                    mask |= D_Brightness;
-                }
             }
+        }
+
+        public boolean isFirstTime() {
+            return firstTime;
         }
 
         public boolean isNightModeChanged() {

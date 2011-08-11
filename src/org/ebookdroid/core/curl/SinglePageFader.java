@@ -12,12 +12,12 @@ import android.graphics.RectF;
 public class SinglePageFader extends AbstractPageSlider {
 
     public SinglePageFader(final SinglePageDocumentView singlePageDocumentView) {
-        super(singlePageDocumentView);
+        super(PageAnimationType.FADER, singlePageDocumentView);
     }
 
     /**
      * Draw the foreground
-     * 
+     *
      * @param canvas
      * @param rect
      * @param paint
@@ -35,7 +35,7 @@ public class SinglePageFader extends AbstractPageSlider {
 
     /**
      * Draw the background image.
-     * 
+     *
      * @param canvas
      * @param rect
      * @param paint
@@ -44,21 +44,20 @@ public class SinglePageFader extends AbstractPageSlider {
     protected void drawBackground(final Canvas canvas) {
         final Page page = view.getBase().getDocumentModel().getPageObject(backIndex);
         if (page != null) {
-            Bitmap back = getBitmap(canvas);
-            Canvas tmp = new Canvas(back);
+            final Bitmap back = getBitmap(canvas);
+            final Canvas tmp = new Canvas(back);
             page.draw(tmp, true);
 
             final Paint paint = new Paint();
             paint.setFilterBitmap(true);
             paint.setAntiAlias(true);
             paint.setDither(true);
-            paint.setAlpha(255 * (int)mA.x / view.getWidth());
-            Rect src = new Rect(0, 0, view.getWidth(), view.getHeight());
-            RectF dst = new RectF(0, 0, view.getWidth(), view.getHeight());
+            paint.setAlpha(255 * (int) mA.x / view.getWidth());
+            final Rect src = new Rect(0, 0, view.getWidth(), view.getHeight());
+            final RectF dst = new RectF(0, 0, view.getWidth(), view.getHeight());
             canvas.drawBitmap(back, src, dst, paint);
         }
 
     }
-
 
 }

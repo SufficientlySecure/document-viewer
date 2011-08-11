@@ -6,6 +6,8 @@ import android.view.MotionEvent;
 
 public interface PageAnimator {
 
+    PageAnimationType getType();
+
     void init();
 
     void resetPageIndexes();

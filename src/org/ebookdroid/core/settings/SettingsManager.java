@@ -6,7 +6,6 @@ import org.ebookdroid.core.events.CurrentPageListener;
 import org.ebookdroid.core.models.DocumentModel;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -129,11 +128,12 @@ public class SettingsManager implements CurrentPageListener {
     }
 
     public void applyAppSettings(final IViewerActivity base) {
-        lock.readLock().lock();
+        lock.writeLock().lock();
         try {
+            appSettings = new AppSettings(base.getContext());
             applyAppSettingsChanges(base, null, appSettings);
         } finally {
-            lock.readLock().unlock();
+            lock.writeLock().unlock();
         }
     }
 
@@ -186,7 +186,7 @@ public class SettingsManager implements CurrentPageListener {
             }
         }
 
-        if (diff.isShowTitleChanged()) {
+        if (diff.isShowTitleChanged() && diff.isFirstTime()) {
             final Window window = base.getActivity().getWindow();
             if (!getAppSettings().getShowTitle()) {
                 window.requestFeature(Window.FEATURE_NO_TITLE);
@@ -210,7 +210,7 @@ public class SettingsManager implements CurrentPageListener {
             base.createDocumentView();
         }
 
-        if (diff.isZoomChanged() && oldSettings == null) {
+        if (diff.isZoomChanged() && diff.isFirstTime()) {
             base.getZoomModel().setZoom(newSettings.getZoom());
         }
 

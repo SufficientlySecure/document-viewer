@@ -11,14 +11,13 @@ import android.graphics.RectF;
 
 public class SinglePageSlider extends AbstractPageSlider {
 
-
     public SinglePageSlider(final SinglePageDocumentView singlePageDocumentView) {
-        super(singlePageDocumentView);
+        super(PageAnimationType.SLIDER, singlePageDocumentView);
     }
 
     /**
      * Draw the foreground
-     * 
+     *
      * @param canvas
      * @param rect
      * @param paint
@@ -30,12 +29,12 @@ public class SinglePageSlider extends AbstractPageSlider {
             page = view.getBase().getDocumentModel().getCurrentPageObject();
         }
         if (page != null) {
-            Bitmap fore = getBitmap(canvas);
-            Canvas tmp = new Canvas(fore);
+            final Bitmap fore = getBitmap(canvas);
+            final Canvas tmp = new Canvas(fore);
             page.draw(tmp, true);
 
-            Rect src = new Rect((int) mA.x, 0, view.getWidth(), view.getHeight());
-            RectF dst = new RectF(0, 0, view.getWidth() - mA.x, view.getHeight());
+            final Rect src = new Rect((int) mA.x, 0, view.getWidth(), view.getHeight());
+            final RectF dst = new RectF(0, 0, view.getWidth() - mA.x, view.getHeight());
             // Rect src = new Rect(0, 0, view.getWidth(), view.getHeight());
             // RectF dst = new RectF(0, 0, view.getWidth() - mA.x, view.getHeight());
             final Paint paint = new Paint();
@@ -48,7 +47,7 @@ public class SinglePageSlider extends AbstractPageSlider {
 
     /**
      * Draw the background image.
-     * 
+     *
      * @param canvas
      * @param rect
      * @param paint
@@ -57,8 +56,8 @@ public class SinglePageSlider extends AbstractPageSlider {
     protected void drawBackground(final Canvas canvas) {
         final Page page = view.getBase().getDocumentModel().getPageObject(backIndex);
         if (page != null) {
-            Bitmap back = getBitmap(canvas);
-            Canvas tmp = new Canvas(back);
+            final Bitmap back = getBitmap(canvas);
+            final Canvas tmp = new Canvas(back);
             page.draw(tmp, true);
 
             // Rect src = new Rect(0, 0, view.getWidth(), view.getHeight());
@@ -67,8 +66,8 @@ public class SinglePageSlider extends AbstractPageSlider {
             paint.setFilterBitmap(true);
             paint.setAntiAlias(true);
             paint.setDither(true);
-            Rect src = new Rect(0, 0, (int) mA.x, view.getHeight());
-            RectF dst = new RectF(view.getWidth() - mA.x, 0, view.getWidth(), view.getHeight());
+            final Rect src = new Rect(0, 0, (int) mA.x, view.getHeight());
+            final RectF dst = new RectF(view.getWidth() - mA.x, 0, view.getWidth(), view.getHeight());
             canvas.drawBitmap(back, src, dst, paint);
         }
 

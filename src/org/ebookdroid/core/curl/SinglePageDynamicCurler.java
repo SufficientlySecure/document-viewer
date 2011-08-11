@@ -13,7 +13,7 @@ import org.ebookdroid.core.SinglePageDocumentView;
 public class SinglePageDynamicCurler extends AbstractSinglePageCurler {
 
     public SinglePageDynamicCurler(final SinglePageDocumentView singlePageDocumentView) {
-        super(singlePageDocumentView);
+        super(PageAnimationType.CURLER_DYNAMIC, singlePageDocumentView);
     }
 
     @Override

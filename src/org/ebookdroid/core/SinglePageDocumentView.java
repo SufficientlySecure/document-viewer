@@ -2,10 +2,10 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.core.curl.PageAnimationType;
 import org.ebookdroid.core.curl.PageAnimator;
+import org.ebookdroid.core.utils.AndroidVersion;
 
 import android.graphics.Canvas;
 import android.graphics.RectF;
-import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -34,7 +34,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     @Override
     public void goToPageImpl(final int toPage) {
         if (toPage >= 0 && toPage <= getBase().getDocumentModel().getPageCount()) {
-            Page page = getBase().getDocumentModel().getPageObject(toPage);
+            final Page page = getBase().getDocumentModel().getPageObject(toPage);
             getBase().getDocumentModel().setCurrentPageIndex(page.getDocumentPageIndex(), page.getIndex());
             updatePageVisibility();
         }
@@ -183,21 +183,14 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     @Override
     public void updateAnimationType() {
-        curler = PageAnimationType.create(getBase().getBookSettings().getAnimationType(), this);
-        int version = 3;
-        try {
-            version = Integer.parseInt(android.os.Build.VERSION.SDK);
-        } catch (Throwable th) {
-            
+        final PageAnimationType type = getBase().getBookSettings().getAnimationType();
+        curler = PageAnimationType.create(type, this);
+
+        if (!AndroidVersion.lessThan3x) {
+            final int layerType = type.isHardwareAccelSupported() ? View.LAYER_TYPE_HARDWARE : View.LAYER_TYPE_SOFTWARE;
+            this.setLayerType(layerType, null);
         }
-        if (version >= 11) {
-          int layerType = View.LAYER_TYPE_HARDWARE;
-          if (getBase().getBookSettings().getAnimationType() == PageAnimationType.CURLER ||
-                  getBase().getBookSettings().getAnimationType() == PageAnimationType.CURLER_DYNAMIC) {
-              layerType = View.LAYER_TYPE_SOFTWARE;
-          }
-          this.setLayerType(layerType, null);  
-        }
+
         if (curler != null) {
             curler.init();
         }

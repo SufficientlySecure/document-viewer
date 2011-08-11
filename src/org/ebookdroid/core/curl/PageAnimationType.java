@@ -4,23 +4,25 @@ import org.ebookdroid.core.SinglePageDocumentView;
 
 public enum PageAnimationType {
 
-    NONE("None"),
+    NONE("None", true),
 
-    CURLER("Simple curler"),
+    CURLER("Simple curler", false),
 
-    CURLER_DYNAMIC("Dynamic curler"),
+    CURLER_DYNAMIC("Dynamic curler", false),
 
-    SLIDER("Slider"),
+    SLIDER("Slider", true),
 
-    FADER("Fade in"),
-    
-    SQUEEZER("Squeeze");
+    FADER("Fade in", true),
+
+    SQUEEZER("Squeeze", true);
+
+    /** The _values. */
+    private static PageAnimationType[] _values = values();
 
     /** The resource value. */
     private final String resValue;
 
-    /** The _values. */
-    private static PageAnimationType[] _values = values();
+    private final boolean hardwareAccelSupported;
 
     /**
      * Instantiates a new page animation type.
@@ -28,8 +30,9 @@ public enum PageAnimationType {
      * @param resValue
      *            the res value
      */
-    private PageAnimationType(final String resValue) {
+    private PageAnimationType(final String resValue, final boolean hardwareAccelSupported) {
         this.resValue = resValue;
+        this.hardwareAccelSupported = hardwareAccelSupported;
     }
 
     /**
@@ -39,6 +42,10 @@ public enum PageAnimationType {
      */
     public String getResValue() {
         return resValue;
+    }
+
+    public boolean isHardwareAccelSupported() {
+        return hardwareAccelSupported;
     }
 
     public static PageAnimationType get(final String resValue) {

@@ -8,15 +8,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-
 public abstract class AbstractPageSlider extends AbstractPageAnimator {
 
     protected Bitmap bitmap;
     protected Bitmap arrowsBitmap;
 
-    
-    public AbstractPageSlider(SinglePageDocumentView singlePageDocumentView) {
-        super(singlePageDocumentView);
+    public AbstractPageSlider(final PageAnimationType type, final SinglePageDocumentView singlePageDocumentView) {
+        super(type, singlePageDocumentView);
     }
 
     /**
@@ -31,9 +29,10 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
 
     /**
      * Called on the first draw event of the view
-     * 
+     *
      * @param canvas
      */
+    @Override
     protected void onFirstDrawEvent(final Canvas canvas) {
         resetClipEdge();
         updateValues();
@@ -42,6 +41,7 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
     /**
      * Reset points to it's initial clip edge state
      */
+    @Override
     protected void resetClipEdge() {
         // Set our base movement
         mMovement.x = mInitialEdgeOffset;
@@ -56,6 +56,7 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
     /**
      * Do the page curl depending on the methods we are using
      */
+    @Override
     protected void updateValues() {
         // Calculate point A
         mA.x = mMovement.x;
@@ -73,17 +74,18 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
     }
 
     @Override
-    protected void drawExtraObjects(Canvas canvas) {
+    protected void drawExtraObjects(final Canvas canvas) {
         final Paint paint = new Paint();
         paint.setFilterBitmap(true);
         paint.setAntiAlias(true);
         paint.setDither(true);
-        canvas.drawBitmap(arrowsBitmap, view.getWidth() - arrowsBitmap.getWidth(), view.getHeight() - arrowsBitmap.getHeight(), paint);
+        canvas.drawBitmap(arrowsBitmap, view.getWidth() - arrowsBitmap.getWidth(),
+                view.getHeight() - arrowsBitmap.getHeight(), paint);
     }
 
     @Override
-    protected Vector2D fixMovement(Vector2D movement, boolean bMaintainMoveDir) {
+    protected Vector2D fixMovement(final Vector2D movement, final boolean bMaintainMoveDir) {
         return movement;
     }
-    
+
 }

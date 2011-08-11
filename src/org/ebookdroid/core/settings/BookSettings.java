@@ -89,31 +89,37 @@ public class BookSettings implements CurrentPageListener {
         private static final short D_AnimationType = 0x0001 << 6;
 
         private short mask;
+        private final boolean firstTime;
 
         public Diff(BookSettings olds, BookSettings news) {
+            firstTime = olds == null;
             if (news != null) {
-                if (olds == null || olds.getCurrentDocPage() != news.getCurrentDocPage()) {
+                if (firstTime || olds.getCurrentDocPage() != news.getCurrentDocPage()) {
                     mask |= D_CurrentDocPage;
                 }
-                if (olds == null || olds.getCurrentViewPage() != news.getCurrentViewPage()) {
+                if (firstTime || olds.getCurrentViewPage() != news.getCurrentViewPage()) {
                     mask |= D_CurrentViewPage;
                 }
-                if (olds == null || olds.getZoom() != news.getZoom()) {
+                if (firstTime || olds.getZoom() != news.getZoom()) {
                     mask |= D_Zoom;
                 }
-                if (olds == null || olds.getSplitPages() != news.getSplitPages()) {
+                if (firstTime || olds.getSplitPages() != news.getSplitPages()) {
                     mask |= D_SplitPages;
                 }
-                if (olds == null || olds.getSinglePage() != news.getSinglePage()) {
+                if (firstTime || olds.getSinglePage() != news.getSinglePage()) {
                     mask |= D_SinglePage;
                 }
-                if (olds == null || olds.getPageAlign() != news.getPageAlign()) {
+                if (firstTime || olds.getPageAlign() != news.getPageAlign()) {
                     mask |= D_PageAlign;
                 }
-                if (olds == null || olds.getAnimationType() != news.getAnimationType()) {
+                if (firstTime || olds.getAnimationType() != news.getAnimationType()) {
                     mask |= D_AnimationType;
                 }
             }
+        }
+
+        public boolean isFirstTime() {
+            return firstTime;
         }
 
         public boolean isCurrentDocPageChanged() {

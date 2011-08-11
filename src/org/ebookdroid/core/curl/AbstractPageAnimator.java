@@ -8,6 +8,8 @@ import android.view.MotionEvent;
 
 public abstract class AbstractPageAnimator implements PageAnimator {
 
+    private final PageAnimationType type;
+
     /** If false no draw call has been done */
     boolean bViewDrawn;
     protected int foreIndex = -1;
@@ -38,12 +40,18 @@ public abstract class AbstractPageAnimator implements PageAnimator {
     protected Vector2D mOldMovement;
     /** TRUE if the user moves the pages */
     protected boolean bUserMoves;
-    
 
-    public AbstractPageAnimator(SinglePageDocumentView singlePageDocumentView) {
+    public AbstractPageAnimator(final PageAnimationType type, final SinglePageDocumentView singlePageDocumentView) {
+        this.type = type;
         this.view = singlePageDocumentView;
     }
 
+    @Override
+    public final PageAnimationType getType() {
+        return type;
+    }
+
+    @Override
     public void init() {
         // The focus flags are needed
         view.setFocusable(true);
@@ -61,6 +69,7 @@ public abstract class AbstractPageAnimator implements PageAnimator {
         mUpdateRate = 33;
     }
 
+    @Override
     public void setViewDrawn(final boolean bViewDrawn) {
         this.bViewDrawn = bViewDrawn;
     }
@@ -72,6 +81,7 @@ public abstract class AbstractPageAnimator implements PageAnimator {
     /**
      * Reset page indexes.
      */
+    @Override
     public void resetPageIndexes() {
         foreIndex = backIndex = -1;
     }
@@ -112,6 +122,7 @@ public abstract class AbstractPageAnimator implements PageAnimator {
     /**
      * Execute a step of the flip animation
      */
+    @Override
     public void FlipAnimationStep() {
         if (!bFlipping) {
             return;
@@ -176,9 +187,10 @@ public abstract class AbstractPageAnimator implements PageAnimator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.ebookdroid.core.curl.PageAnimator#onDraw(android.graphics.Canvas)
      */
+    @Override
     public void onDraw(final Canvas canvas) {
         // We need to initialize all size data when we first draw the view
         if (!isViewDrawn()) {
@@ -202,6 +214,7 @@ public abstract class AbstractPageAnimator implements PageAnimator {
 
     protected abstract void onFirstDrawEvent(Canvas canvas);
 
+    @Override
     public boolean onTouchEvent(final MotionEvent event) {
         if (!bBlockTouchInput) {
 
@@ -231,18 +244,18 @@ public abstract class AbstractPageAnimator implements PageAnimator {
                             if (mOldMovement.x > (width >> 1)) {
                                 mMovement.x = mInitialEdgeOffset;
                                 mMovement.y = mInitialEdgeOffset;
-    
+
                                 // Set the right movement flag
                                 bFlipRight = true;
                                 nextView();
-    
+
                             } else {
                                 // Set the left movement flag
                                 bFlipRight = false;
-    
+
                                 // go to next previous page
                                 previousView();
-    
+
                                 // Set new movement
                                 mMovement.x = getInitialXForBackFlip(width);
                                 mMovement.y = mInitialEdgeOffset;
@@ -286,7 +299,7 @@ public abstract class AbstractPageAnimator implements PageAnimator {
         return true;
     }
 
-    protected int getInitialXForBackFlip(int width) {
+    protected int getInitialXForBackFlip(final int width) {
         return width;
     }
 }

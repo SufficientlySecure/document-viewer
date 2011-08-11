@@ -5,10 +5,12 @@
          android:alphabeticShortcut="c"
          android:title="@string/brmenu_cleanrecent"
          android:icon="@drawable/clear"
+         android:showAsAction="ifRoom"
          />
    <item android:id="@+id/browsermenu_settings"
          android:alphabeticShortcut="s"
          android:title="@string/brmenu_settings"
          android:icon="@drawable/settings"
+         android:showAsAction="ifRoom"
          />
 </menu>

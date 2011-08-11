@@ -10,11 +10,13 @@
          android:alphabeticShortcut="g"
          android:title="@string/menu_goto_page"
          android:icon="@drawable/gotopage"
+         android:showAsAction="ifRoom"
          />
    <item android:id="@+id/mainmenu_outline"
          android:alphabeticShortcut="o"
          android:title="@string/menu_outline"
          android:icon="@drawable/outline"
+         android:showAsAction="ifRoom"
          />
    <item android:id="@+id/mainmenu_zoom"
          android:alphabeticShortcut="z"
@@ -25,10 +27,12 @@
          android:alphabeticShortcut="n"
          android:title="@string/menu_nightmode"
          android:icon="@drawable/daynight"
+         android:showAsAction="ifRoom"
          />
    <item android:id="@+id/mainmenu_settings"
          android:alphabeticShortcut="s"
          android:title="@string/menu_settings"
          android:icon="@drawable/settings"
+         android:showAsAction="ifRoom"
          />
 </menu>

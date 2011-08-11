@@ -6,6 +6,7 @@ import org.ebookdroid.cbdroid.CbrViewerActivity;
 import org.ebookdroid.cbdroid.CbzViewerActivity;
 import org.ebookdroid.core.presentation.RecentAdapter;
 import org.ebookdroid.core.settings.BookSettings;
+import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.djvudroid.DjvuViewerActivity;
 import org.ebookdroid.pdfdroid.PdfViewerActivity;
@@ -15,6 +16,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -24,6 +28,7 @@ import android.widget.ViewFlipper;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,8 +61,6 @@ public class RecentActivity extends Activity {
         }
     };
     
-    
-    
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +70,29 @@ public class RecentActivity extends Activity {
         viewflipper=(ViewFlipper)findViewById(R.id.recentflip);
         viewflipper.addView(recentListView);
 
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+
+        final MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.browsermenu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.browsermenu_cleanrecent:
+                SettingsManager.getInstance(this).deleteAllBookSettings();
+                recentAdapter.setBooks(Collections.<BookSettings>emptyList());
+                return true;
+            case R.id.browsermenu_settings:
+                final Intent i = new Intent(RecentActivity.this, SettingsActivity.class);
+                startActivity(i);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
     
     private ListView initListView(final RecentAdapter adapter) {
@@ -111,6 +137,7 @@ public class RecentActivity extends Activity {
         }
         recentAdapter.setBooks(books);
     }
+    
     public void goLibrary(View view)
     {
         //TODO: change 

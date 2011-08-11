@@ -215,28 +215,7 @@ public abstract class AbstractPageAnimator implements PageAnimator {
                 case MotionEvent.ACTION_DOWN:
                     mOldMovement.x = mFinger.x;
                     mOldMovement.y = mFinger.y;
-
-                    // If we moved over the half of the display flip to next
-                    if (mOldMovement.x > (width >> 1)) {
-                        mMovement.x = mInitialEdgeOffset;
-                        mMovement.y = mInitialEdgeOffset;
-
-                        // Set the right movement flag
-                        bFlipRight = true;
-                        nextView();
-
-                    } else {
-                        // Set the left movement flag
-                        bFlipRight = false;
-
-                        // go to next previous page
-                        previousView();
-
-                        // Set new movement
-                        mMovement.x = getInitialXForBackFlip(width);
-                        mMovement.y = mInitialEdgeOffset;
-                    }
-
+                    bUserMoves = false;
                     break;
                 case MotionEvent.ACTION_UP:
                     if (bUserMoves) {
@@ -246,7 +225,33 @@ public abstract class AbstractPageAnimator implements PageAnimator {
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    bUserMoves = true;
+                    if (mFinger.distanceSquared(mOldMovement) > 625) {
+                        if (!bUserMoves) {
+                            // If we moved over the half of the display flip to next
+                            if (mOldMovement.x > (width >> 1)) {
+                                mMovement.x = mInitialEdgeOffset;
+                                mMovement.y = mInitialEdgeOffset;
+    
+                                // Set the right movement flag
+                                bFlipRight = true;
+                                nextView();
+    
+                            } else {
+                                // Set the left movement flag
+                                bFlipRight = false;
+    
+                                // go to next previous page
+                                previousView();
+    
+                                // Set new movement
+                                mMovement.x = getInitialXForBackFlip(width);
+                                mMovement.y = mInitialEdgeOffset;
+                            }
+                        }
+                        bUserMoves = true;
+                    } else {
+                        break;
+                    }
 
                     // Get movement
                     mMovement.x -= mFinger.x - mOldMovement.x;

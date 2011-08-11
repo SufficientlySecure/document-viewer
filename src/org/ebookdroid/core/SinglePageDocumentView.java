@@ -5,8 +5,10 @@ import org.ebookdroid.core.curl.PageAnimator;
 
 import android.graphics.Canvas;
 import android.graphics.RectF;
+import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
+import android.view.View;
 
 /**
  * The Class SinglePageDocumentView.
@@ -182,6 +184,20 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     @Override
     public void updateAnimationType() {
         curler = PageAnimationType.create(getBase().getBookSettings().getAnimationType(), this);
+        int version = 3;
+        try {
+            version = Integer.parseInt(android.os.Build.VERSION.SDK);
+        } catch (Throwable th) {
+            
+        }
+        if (version >= 11) {
+          int layerType = View.LAYER_TYPE_SOFTWARE;
+          if (getBase().getBookSettings().getAnimationType() == PageAnimationType.CURLER ||
+                  getBase().getBookSettings().getAnimationType() == PageAnimationType.CURLER_DYNAMIC) {
+              layerType = View.LAYER_TYPE_SOFTWARE;
+          }
+          this.setLayerType(layerType, null);  
+        }
         if (curler != null) {
             curler.init();
         }

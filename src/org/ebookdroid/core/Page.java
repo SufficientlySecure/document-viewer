@@ -75,6 +75,9 @@ public class Page {
     public void updateAspectRatio() {
         Log.d("DocModel", "Start update aspect ratio for page: " + this);
         try {
+            if (base == null || base.getDocumentModel() == null) {
+                return;
+            }
             final DecodeService decodeService = base.getDocumentModel().getDecodeService();
             this.setAspectRatio(decodeService.getPageWidth(documentPage), decodeService.getPageHeight(documentPage));
         } finally {

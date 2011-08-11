@@ -92,4 +92,6 @@
 	<string name="pref_singlepage_category_summary">"Настройки для одностраничного режима"</string>
 	<string name="pref_memory_category">"Использование памяти"</string>
 	<string name="pref_memory_category_summary">"Настройки использования памяти"</string>
+	<string name="pref_brightness_title">"Яркость"</string>
+	<string name="pref_brightness_summary">"Настройки общей яркости картинки (0-100)"</string>
 </resources>

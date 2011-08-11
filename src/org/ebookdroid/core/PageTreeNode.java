@@ -2,7 +2,9 @@ package org.ebookdroid.core;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
@@ -118,6 +120,13 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         if (getBitmap() != null) {
             canvas.drawRect(getTargetRect(), paint.getFillPaint());
             canvas.drawBitmap(getBitmap(), null, getTargetRect(), paint.getBitmapPaint());
+        }
+        int brightness = getBase().getAppSettings().getBrightness();
+        if (brightness < 100) {
+            Paint p = new Paint();
+            p.setColor(Color.BLACK);
+            p.setAlpha(brightness * 255 / 100);
+            canvas.drawRect(getTargetRect(), p);
         }
         if (children == null) {
             return;

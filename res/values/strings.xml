@@ -89,4 +89,6 @@
 	<string name="pref_singlepage_category_summary">"Settings actual for single page mode"</string>
 	<string name="pref_memory_category">"Memory usage settings"</string>
 	<string name="pref_memory_category_summary">"Settings affected to memory usage"</string>
+	<string name="pref_brightness_title">"Brightness"</string>
+	<string name="pref_brightness_summary">"Set the overall image brightness (0-100)"</string>
 </resources>

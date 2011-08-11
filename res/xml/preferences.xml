@@ -13,6 +13,14 @@
 			android:title="@string/pref_nightmode_title"
 			android:summary="@string/pref_nightmode_summary"
 			android:defaultValue="false" />
+		<EditTextPreference
+			android:key="brightness"
+			android:title="@string/pref_brightness_title"
+			android:summary="@string/pref_brightness_summary"
+			android:maxLength="3"
+			android:defaultValue="100"
+			android:numeric="integer" />
+			
 		<ListPreference
 			android:key="rotation"
 			android:title="@string/pref_rotation_title"

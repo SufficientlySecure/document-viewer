@@ -41,8 +41,17 @@ public class AppSettings {
 
     private Boolean pageInTitle;
 
+    private Integer brightness;
+    
     AppSettings(final Context context) {
         this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    }
+
+    public int getBrightness() {
+        if (brightness == null) {
+            brightness = getIntValue("brightness", 100);
+        }
+        return brightness;
     }
 
     public boolean getNightMode() {
@@ -216,6 +225,7 @@ public class AppSettings {
         private static final short D_ScrollHeight = 0x0001 << 7;
         private static final short D_PagesInMemory = 0x0001 << 8;
         private static final short D_SliceLimit = 0x0001 << 9;
+        private static final short D_Brightness = 0x0001 << 10;
 
         private short mask;
 
@@ -250,6 +260,9 @@ public class AppSettings {
                 }
                 if (olds == null || olds.getSliceLimit() != news.getSliceLimit()) {
                     mask |= D_SliceLimit;
+                }
+                if (olds == null || olds.getBrightness() != news.getBrightness()) {
+                    mask |= D_Brightness;
                 }
             }
         }

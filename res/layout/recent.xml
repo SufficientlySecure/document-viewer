@@ -1,18 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/mainscreen" android:layout_width="fill_parent"
-	android:layout_height="fill_parent" android:layout_gravity="center">
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/mainscreen"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:layout_gravity="center">
+
 	<LinearLayout style="@style/action_bar">
 		<ImageView style="@style/action_bar_icon" />
 		<View style="@style/action_bar_separator" />
 		<TextView style="@style/action_bar_title" />
-		<ImageView style="@style/action_bar_action" android:src="@drawable/actionbar_library"
+
+		<ImageView
+			style="@style/action_bar_action"
+			android:src="@drawable/actionbar_library"
 			android:onClick="goLibrary" />
 		<View style="@style/action_bar_separator" />
-		<ImageView style="@style/action_bar_action" android:src="@drawable/actionbar_open"
+		<ImageView
+
+			style="@style/action_bar_action"
+			android:src="@drawable/actionbar_open"
 			android:onClick="goFileBrowser" />
+
 	</LinearLayout>
-	<ViewFlipper android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:layout_marginTop="@dimen/actionbar_height"
-		android:gravity="center" android:orientation="vertical" android:id="@+id/recentflip" />
+
+	<ViewFlipper
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/actionbar_height"
+		android:gravity="center"
+		android:orientation="vertical"
+		android:id="@+id/recentflip" />
+
 </RelativeLayout>

@@ -12,10 +12,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
 
 public class RecentAdapter extends BaseAdapter {
 
@@ -56,13 +58,15 @@ public class RecentAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(final int i,View view, final ViewGroup viewGroup) {
-        if (view == null)
+    public View getView(final int i, View view, final ViewGroup viewGroup) {
+        if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.recentitem, viewGroup, false);
+        }
         final ImageView imageView = (ImageView) view.findViewById(R.id.recentItemIcon);
+
         final BookSettings bs = books.get(i);
-        final File file = new File(bs.getFileName()); 
-        
+        final File file = new File(bs.getFileName());
+
         final TextView name = (TextView) view.findViewById(R.id.recentItemName);
         name.setText(file.getName());
 
@@ -75,8 +79,22 @@ public class RecentAdapter extends BaseAdapter {
         return view;
     }
 
-    public void setBooks(final List<BookSettings> books) {
-        this.books = books;
+    public void clearBooks() {
+        this.books = Collections.emptyList();
+    }
+
+    public void setBooks(final Collection<BookSettings> books, final FileFilter filter) {
+        if (filter != null) {
+            this.books = new ArrayList<BookSettings>(books.size());
+            for (final BookSettings bs : books) {
+                final File f = new File(bs.getFileName());
+                if (filter.accept(f)) {
+                    this.books.add(bs);
+                }
+            }
+        } else {
+            this.books = new ArrayList<BookSettings>(books);
+        }
         notifyDataSetInvalidated();
     }
 }

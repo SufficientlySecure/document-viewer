@@ -3,11 +3,16 @@ package org.ebookdroid.core.settings;
 import org.ebookdroid.core.PageAlign;
 import org.ebookdroid.core.RotationType;
 import org.ebookdroid.core.curl.PageAnimationType;
+import org.ebookdroid.core.utils.FileExtensionFilter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
+
+import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 public class AppSettings {
 
@@ -42,9 +47,32 @@ public class AppSettings {
     private Boolean pageInTitle;
 
     private Integer brightness;
-    
+
+    private String[] autoScanDirs;
+
     AppSettings(final Context context) {
         this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    }
+
+    public String[] getAutoScanDirs() {
+        if (autoScanDirs == null) {
+            autoScanDirs = prefs.getString("brautoscandir", "/sdcard").split(File.pathSeparator);
+        }
+        return autoScanDirs;
+    }
+
+    public FileExtensionFilter getAllowedFileTypes(final Set<String> fileTypes) {
+        final Set<String> res = new HashSet<String>();
+        for (final String ext : fileTypes) {
+            if (isFileTypeAllowed(ext)) {
+                res.add(ext);
+            }
+        }
+        return new FileExtensionFilter(res);
+    }
+
+    public boolean isFileTypeAllowed(String ext) {
+        return prefs.getBoolean("brfiletype" + ext, true);
     }
 
     public int getBrightness() {
@@ -229,7 +257,7 @@ public class AppSettings {
         private short mask;
         private final boolean firstTime;
 
-        public Diff(AppSettings olds, AppSettings news) {
+        public Diff(final AppSettings olds, final AppSettings news) {
             firstTime = olds == null;
             if (news != null) {
                 if (firstTime || olds.getNightMode() != news.getNightMode()) {

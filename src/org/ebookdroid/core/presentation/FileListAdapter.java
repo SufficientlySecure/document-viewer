@@ -1,6 +1,8 @@
 package org.ebookdroid.core.presentation;
 
 import org.ebookdroid.R;
+import org.ebookdroid.core.IBrowserActivity;
+import org.ebookdroid.core.settings.SettingsManager;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -16,17 +18,23 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public class FileListAdapter extends BaseExpandableListAdapter {
+public class FileListAdapter extends BaseExpandableListAdapter implements Comparator<File> {
 
-    private final Context context;
-    private final FileFilter filter;
-    ArrayList<File> dirsdata = new ArrayList<File>();
-    ArrayList<ArrayList<File>> data = new ArrayList<ArrayList<File>>();
+    final IBrowserActivity base;
+    final Context context;
+    final AtomicBoolean inScan = new AtomicBoolean();
 
-    public FileListAdapter(final Context context, final FileFilter filter) {
-        this.context = context;
-        this.filter = filter;
+    final List<File> dirsdata = new ArrayList<File>();
+    final List<ArrayList<File>> data = new ArrayList<ArrayList<File>>();
+
+    public FileListAdapter(final IBrowserActivity base) {
+        this.base = base;
+        this.context = base.getContext();
     }
 
     @Override
@@ -91,13 +99,13 @@ public class FileListAdapter extends BaseExpandableListAdapter {
         textView.setText(file.getName());
 
         imageView.setImageResource(R.drawable.folderopen);
-        final File[] listOfFiles = file.listFiles(filter);
+
         int books = 0;
-        if (listOfFiles != null) {
-            for (int i1 = 0; i1 < listOfFiles.length; i1++) {
-                if (!listOfFiles[i1].isDirectory()) {
-                    books++;
-                }
+        int index = dirsdata.indexOf(file);
+        if (index >= 0) {
+            ArrayList<File> files = data.get(index);
+            if (files != null) {
+                books = files.size();
             }
         }
 
@@ -146,25 +154,103 @@ public class FileListAdapter extends BaseExpandableListAdapter {
             data.add(pos, a);
         }
         data.get(pos).add(file);
-        Collections.sort(data.get(pos), new Comparator<File>() {
+        Collections.sort(data.get(pos), this);
+    }
 
-            @Override
-            public int compare(final File o1, final File o2) {
-                if (o1.isDirectory() && o2.isFile()) {
-                    return -1;
-                }
-                if (o1.isFile() && o2.isDirectory()) {
-                    return 1;
-                }
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
+    @Override
+    public int compare(final File o1, final File o2) {
+        if (o1.isDirectory() && o2.isFile()) {
+            return -1;
+        }
+        if (o1.isFile() && o2.isDirectory()) {
+            return 1;
+        }
+        return o1.getName().compareTo(o2.getName());
     }
 
     public void clearData() {
         dirsdata.clear();
         data.clear();
         notifyDataSetInvalidated();
+    }
+
+    public void startScan(FileFilter filter) {
+        if (inScan.compareAndSet(false, true)) {
+            clearData();
+            new Thread(new ScanTask(filter)).start();
+        }
+    }
+
+    public void stopScan() {
+        inScan.set(false);
+    }
+
+    private class ScanTask implements Runnable {
+
+        private final FileFilter filter;
+
+        private final Queue<File> currFiles = new ConcurrentLinkedQueue<File>();
+
+        private final AtomicBoolean inUI = new AtomicBoolean();
+
+        public ScanTask(FileFilter filter) {
+            this.filter = filter;
+        }
+
+        public void run() {
+            // Checks if we started to update adapter data
+            if (!currFiles.isEmpty()) {
+                // Add files from queue to adapter
+                for (File f = currFiles.poll(); f != null && inScan.get(); f = currFiles.poll()) {
+                    addFile(f);
+                }
+                // Clear flag
+                inUI.set(false);
+                // Finish UI part
+                return;
+            }
+
+            // Retrieves paths to scan
+            String[] paths = SettingsManager.getInstance(context).getAppSettings().getAutoScanDirs();
+            for (String path : paths) {
+                // Scan each valid folder
+                File dir = new File(path);
+                if (dir.isDirectory()) {
+                    scanDir(dir);
+                }
+            }
+
+            // Check if queued files are available and no UI task started
+            if (!currFiles.isEmpty() && inScan.get() && inUI.compareAndSet(false, true)) {
+                // Start final UI task
+                base.getActivity().runOnUiThread(this);
+            }
+        }
+
+        private void scanDir(final File file) {
+            // Checks if scan should be continued
+            if (!inScan.get()) {
+                return;
+            }
+            // Checks parameter type
+            if (file.isFile()) {
+                // Add file to queue
+                currFiles.add(file);
+                if (inUI.compareAndSet(false, true)) {
+                    // Start UI task if required
+                    base.getActivity().runOnUiThread(this);
+                }
+            } else if (file.isDirectory()) {
+                // Retrieves files from current directory
+                final File[] listOfFiles = file.listFiles(filter);
+                if (listOfFiles != null && inScan.get()) {
+                    for (int i = 0; i < listOfFiles.length; i++) {
+                        // Recursively processing found file
+                        scanDir(listOfFiles[i]);
+                    }
+                }
+            }
+        }
     }
 
 }

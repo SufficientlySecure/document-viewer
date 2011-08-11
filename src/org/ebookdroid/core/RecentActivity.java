@@ -1,18 +1,21 @@
 package org.ebookdroid.core;
 
-
 import org.ebookdroid.R;
 import org.ebookdroid.cbdroid.CbrViewerActivity;
 import org.ebookdroid.cbdroid.CbzViewerActivity;
+import org.ebookdroid.core.presentation.FileListAdapter;
 import org.ebookdroid.core.presentation.RecentAdapter;
-import org.ebookdroid.core.settings.BookSettings;
 import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
+import org.ebookdroid.core.utils.DirectoryOrFileFilter;
+import org.ebookdroid.core.views.LibraryView;
+import org.ebookdroid.core.views.RecentBooksView;
 import org.ebookdroid.djvudroid.DjvuViewerActivity;
 import org.ebookdroid.pdfdroid.PdfViewerActivity;
 import org.ebookdroid.xpsdroid.XpsViewerActivity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,26 +23,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.ViewFlipper;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-
-
-public class RecentActivity extends Activity {
+public class RecentActivity extends Activity implements IBrowserActivity {
 
     private RecentAdapter recentAdapter;
+    private FileListAdapter libraryAdapter;
+
     private ViewFlipper viewflipper;
-    
+
     private final static HashMap<String, Class<? extends Activity>> extensionToActivity = new HashMap<String, Class<? extends Activity>>();
 
     static {
@@ -50,28 +44,20 @@ public class RecentActivity extends Activity {
         extensionToActivity.put("cbz", CbzViewerActivity.class);
         extensionToActivity.put("cbr", CbrViewerActivity.class);
     }
-    
-    private final AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
 
-        @Override
-        @SuppressWarnings({ "unchecked" })
-        public void onItemClick(final AdapterView<?> adapterView, final View view, final int i, final long l) {
-            final BookSettings bs = ((AdapterView<RecentAdapter>) adapterView).getAdapter().getItem(i);
-            showDocument(new File(bs.getFileName()));
-        }
-    };
-    
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.recent);      
-        final ListView recentListView = initRecentListView();
-        
-        viewflipper=(ViewFlipper)findViewById(R.id.recentflip);
-        viewflipper.addView(recentListView);
+        setContentView(R.layout.recent);
 
+        recentAdapter = new RecentAdapter(this);
+        libraryAdapter = new FileListAdapter(this);
+
+        viewflipper = (ViewFlipper) findViewById(R.id.recentflip);
+        viewflipper.addView(new RecentBooksView(this, recentAdapter));
+        viewflipper.addView(new LibraryView(this, libraryAdapter));
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
 
@@ -84,72 +70,63 @@ public class RecentActivity extends Activity {
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.browsermenu_cleanrecent:
-                SettingsManager.getInstance(this).deleteAllBookSettings();
-                recentAdapter.setBooks(Collections.<BookSettings>emptyList());
+                getSettings().deleteAllBookSettings();
+                recentAdapter.clearBooks();
                 return true;
             case R.id.browsermenu_settings:
+                libraryAdapter.stopScan();
                 final Intent i = new Intent(RecentActivity.this, SettingsActivity.class);
                 startActivity(i);
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
-    
-    private ListView initListView(final RecentAdapter adapter) {
-        final ListView listView = new ListView(this);
-        listView.setAdapter(adapter);
-        listView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
-        listView.setOnItemClickListener(onItemClickListener);
 
-        listView.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
-                ViewGroup.LayoutParams.FILL_PARENT));
-        return listView;
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        getSettings().clearCurrentBookSettings();
+
+        DirectoryOrFileFilter filter = new DirectoryOrFileFilter(getSettings().getAppSettings().getAllowedFileTypes(extensionToActivity.keySet()));
+
+        recentAdapter.setBooks(getSettings().getAllBooksSettings().values(), filter);
+
+        libraryAdapter.startScan(filter);
     }
-    
-    private ListView initRecentListView() {
-        recentAdapter = new RecentAdapter(this);
-        return initListView(recentAdapter);
+
+    @Override
+    public Context getContext() {
+        return this;
     }
-    
-    private void showDocument(final File file) {
-        showDocument(Uri.fromFile(file));
+
+    @Override
+    public Activity getActivity() {
+        return this;
     }
-    
-    protected void showDocument(final Uri uri) {
+
+    @Override
+    public SettingsManager getSettings() {
+        return SettingsManager.getInstance(this);
+    }
+
+    @Override
+    public void showDocument(final Uri uri) {
         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         final String uriString = uri.toString();
         final String extension = uriString.substring(uriString.lastIndexOf('.') + 1);
         intent.setClass(this, extensionToActivity.get(extension.toLowerCase()));
         startActivity(intent);
     }
-    
-    
-    @Override
-    protected void onResume() {
-        super.onResume();
 
-        SettingsManager.getInstance(this).clearCurrentBookSettings();
-
-        Map<String, BookSettings> all = SettingsManager.getInstance(this).getAllBooksSettings();
-        List<BookSettings> books = new ArrayList<BookSettings>(all.size());
-        for(BookSettings bs : all.values()) {
-            books.add(bs);
-        }
-        recentAdapter.setBooks(books);
+    public void goLibrary(final View view) {
+        // TODO: change
+        viewflipper.showNext();
     }
-    
-    public void goLibrary(View view)
-    {
-        //TODO: change 
-        Intent myIntent = new Intent(RecentActivity.this, MainBrowserActivity.class);
+
+    public void goFileBrowser(final View view) {
+        // TODO: change
+        final Intent myIntent = new Intent(RecentActivity.this, MainBrowserActivity.class);
         startActivity(myIntent);
     }
-    
-    public void goFileBrowser(View view)
-    {
-        //TODO: change 
-        Intent myIntent = new Intent(RecentActivity.this, MainBrowserActivity.class);
-        startActivity(myIntent);
-    }
-
 }

@@ -8,17 +8,18 @@ import org.ebookdroid.core.presentation.FileListAdapter;
 import org.ebookdroid.core.settings.BookSettings;
 import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
+import org.ebookdroid.core.utils.DirectoryOrFileFilter;
 import org.ebookdroid.djvudroid.DjvuViewerActivity;
 import org.ebookdroid.pdfdroid.PdfViewerActivity;
 import org.ebookdroid.xpsdroid.XpsViewerActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,7 +33,6 @@ import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 
-
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainBrowserActivity extends Activity {
+public class MainBrowserActivity extends Activity implements IBrowserActivity {
 
     private BrowserAdapter adapter;
     private BrowserAdapter recentAdapter;
@@ -49,10 +49,6 @@ public class MainBrowserActivity extends Activity {
     protected final FileFilter filter;
     private TabHost tabHost;
     private static final String CURRENT_DIRECTORY = "currentDirectory";
-
-    private ArrayList<File> currFiles = null;
-
-    private boolean scan = true;
 
     private final static HashMap<String, Class<? extends Activity>> extensionToActivity = new HashMap<String, Class<? extends Activity>>();
 
@@ -102,20 +98,19 @@ public class MainBrowserActivity extends Activity {
     }
 
     protected FileFilter createFileFilter() {
-        return new FileFilter() {
+        return new DirectoryOrFileFilter(new FileFilter() {
 
             @Override
             public boolean accept(final File pathname) {
                 for (final String s : extensionToActivity.keySet()) {
                     if (pathname.getName().toLowerCase().endsWith("." + s)
-                            && PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getBoolean(
-                                    "brfiletype" + s, true)) {
+                            && getSettings().getAppSettings().isFileTypeAllowed(s)) {
                         return true;
                     }
                 }
-                return pathname.isDirectory();
+                return false;
             }
-        };
+        });
     }
 
     @Override
@@ -166,41 +161,12 @@ public class MainBrowserActivity extends Activity {
                     getWindow().setTitle(adapter.getCurrentDirectory().getAbsolutePath());
                 } else if (tabId.equals("Library")) {
                     getWindow().setTitle(getString(R.string.tab_files));
-                    libraryAdapter.clearData();
-                    final Thread thread = new Thread(null, loadListItems);
-                    thread.start();
+                    libraryAdapter.startScan(filter);
                 }
             }
         });
 
     }
-
-    // Runnable to load the items
-    private final Runnable loadListItems = new Runnable() {
-
-        @Override
-        public void run() {
-            currFiles = new ArrayList<File>();
-            scanDir(new File(PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getString("brautoscandir",
-                    "/sdcard")));
-        }
-    };
-
-    private final Runnable returnRes = new Runnable() {
-
-        @Override
-        public void run() {
-            synchronized (MainBrowserActivity.this) {
-                if (currFiles != null && currFiles.size() > 0) {
-                    for (int i = 0; i < currFiles.size(); i++) {
-                        libraryAdapter.addFile(currFiles.get(i));
-                        currFiles.remove(i);
-                    }
-                    libraryAdapter.notifyDataSetChanged();
-                }
-            }
-        }
-    };
 
     @Override
     protected void onPostCreate(final Bundle savedInstanceState) {
@@ -234,10 +200,10 @@ public class MainBrowserActivity extends Activity {
         switch (item.getItemId()) {
             case R.id.browsermenu_cleanrecent:
                 SettingsManager.getInstance(this).deleteAllBookSettings();
-                recentAdapter.setFiles(Collections.<File>emptyList());
+                recentAdapter.setFiles(Collections.<File> emptyList());
                 return true;
             case R.id.browsermenu_settings:
-                scan = false;
+                libraryAdapter.stopScan();
                 final Intent i = new Intent(MainBrowserActivity.this, SettingsActivity.class);
                 startActivity(i);
                 return true;
@@ -295,7 +261,7 @@ public class MainBrowserActivity extends Activity {
 
     private ExpandableListView initLibraryListView() {
         final ExpandableListView libraryListView = new ExpandableListView(this);
-        libraryAdapter = new FileListAdapter(this, filter);
+        libraryAdapter = new FileListAdapter(this);
         libraryListView.setAdapter(libraryAdapter);
         // TODO: create correct group indicator
         // libraryListView.setGroupIndicator(getResources().getDrawable(R.drawable.group_indicator));
@@ -308,7 +274,8 @@ public class MainBrowserActivity extends Activity {
         showDocument(Uri.fromFile(file));
     }
 
-    protected void showDocument(final Uri uri) {
+    @Override
+    public void showDocument(final Uri uri) {
         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         final String uriString = uri.toString();
         final String extension = uriString.substring(uriString.lastIndexOf('.') + 1);
@@ -319,29 +286,6 @@ public class MainBrowserActivity extends Activity {
     private void setCurrentDir(final File newDir) {
         adapter.setCurrentDirectory(newDir);
         getWindow().setTitle(newDir.getAbsolutePath());
-    }
-
-    private void scanDir(final File file) {
-        if (file.isFile()) {
-            synchronized (MainBrowserActivity.this) {
-                currFiles.add(file);
-            }
-            runOnUiThread(returnRes);
-            /*
-             * try {
-             * Thread.sleep(1000); // Added for test. Remove in release
-             * } catch (InterruptedException e) {
-             * e.printStackTrace();
-             * }
-             */
-        } else if (file.isDirectory()) {
-            final File[] listOfFiles = file.listFiles(filter);
-            if (listOfFiles != null) {
-                for (int i = 0; i < listOfFiles.length; i++) {
-                    scanDir(listOfFiles[i]);
-                }
-            }
-        }
     }
 
     @Override
@@ -356,19 +300,14 @@ public class MainBrowserActivity extends Activity {
 
         SettingsManager.getInstance(this).clearCurrentBookSettings();
 
-        Map<String, BookSettings> all = SettingsManager.getInstance(this).getAllBooksSettings();
-        List<File> files = new ArrayList<File>(all.size());
-        for(BookSettings bs : all.values()) {
+        final Map<String, BookSettings> all = SettingsManager.getInstance(this).getAllBooksSettings();
+        final List<File> files = new ArrayList<File>(all.size());
+        for (final BookSettings bs : all.values()) {
             files.add(new File(bs.getFileName()));
         }
         recentAdapter.setFiles(files);
 
-        if (scan == false) {
-            scan = true;
-            libraryAdapter.clearData();
-            final Thread thread = new Thread(null, loadListItems);
-            thread.start();
-        }
+        libraryAdapter.startScan(filter);
     }
 
     @Override
@@ -386,4 +325,18 @@ public class MainBrowserActivity extends Activity {
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    public Context getContext() {
+        return this;
+    }
+
+    @Override
+    public Activity getActivity() {
+        return this;
+    }
+
+    @Override
+    public SettingsManager getSettings() {
+        return SettingsManager.getInstance(this);
+    }
 }

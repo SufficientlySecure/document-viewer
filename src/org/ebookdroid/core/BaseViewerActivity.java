@@ -288,9 +288,8 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
 
-        int version = Integer.parseInt(android.os.Build.VERSION.SDK);
         final MenuInflater inflater = getMenuInflater();
-        inflater.inflate(version >= 5 ? R.menu.mainmenu : R.menu.mainmenu_1_5, menu);
+        inflater.inflate(R.menu.mainmenu, menu);
         return true;
     }
 

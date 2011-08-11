@@ -20,7 +20,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -268,9 +267,8 @@ public class MainBrowserActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
 
-        int version = Integer.parseInt(android.os.Build.VERSION.SDK);
         final MenuInflater inflater = getMenuInflater();
-        inflater.inflate(version >= 5 ? R.menu.browsermenu : R.menu.browsermenu_1_5, menu);
+        inflater.inflate(R.menu.browsermenu, menu);
 
         return true;
     }

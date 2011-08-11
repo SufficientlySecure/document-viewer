@@ -59,7 +59,6 @@ public class SettingsManager implements CurrentPageListener {
         try {
             getAppSettings().clearPseudoBookSettings();
             bookSettings = null;
-            Log.d("SettingsManager", "", new Exception("Book settings cleared"));
         } finally {
             lock.writeLock().unlock();
         }

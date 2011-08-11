@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+   <item android:id="@+id/browsermenu_cleanrecent"
+         android:alphabeticShortcut="c"
+         android:title="@string/brmenu_cleanrecent"
+         />
+   <item android:id="@+id/browsermenu_settings"
+         android:alphabeticShortcut="s"
+         android:title="@string/brmenu_settings"
+         />
+</menu>

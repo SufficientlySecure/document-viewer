@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -132,7 +133,7 @@ public class MainBrowserActivity extends Activity {
         setContentView(R.layout.browser);
         final ListView browseList = initBrowserListView();
         final ListView recentListView = initRecentListView();
-        
+
         rAdapter = new RecentAdapter(this, filter);
         tabHost = (TabHost) findViewById(R.id.browserTabHost);
         tabHost.setup();
@@ -163,13 +164,13 @@ public class MainBrowserActivity extends Activity {
                         return libraryListView;
                     }
                 }));
-        
+
         tabHost.addTab(tabHost.newTabSpec("Recent2").setIndicator(getString(R.string.tab_recent))
                 .setContent(new TabHost.TabContentFactory() {
 
                     @Override
                     public View createTabContent(final String s) {
-                        
+
                         final LayoutInflater li = LayoutInflater.from(MainBrowserActivity.this);
                         final View recent = li.inflate(R.layout.recent, null);
                         final Gallery gallery = (Gallery) recent.findViewById(R.id.gallery);
@@ -267,8 +268,10 @@ public class MainBrowserActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
 
+        int version = Integer.parseInt(android.os.Build.VERSION.SDK);
         final MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.browsermenu, menu);
+        inflater.inflate(version >= 5 ? R.menu.browsermenu : R.menu.browsermenu_1_5, menu);
+
         return true;
     }
 
@@ -405,7 +408,7 @@ public class MainBrowserActivity extends Activity {
             files.add(new File(bs.getFileName()));
         }
         recentAdapter.setFiles(files);
-        
+
         rAdapter.setFiles(files);
 
         if (scan == false) {

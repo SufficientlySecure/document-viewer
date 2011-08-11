@@ -1,6 +1,7 @@
 package org.ebookdroid.core.presentation;
 
 import org.ebookdroid.R;
+import org.ebookdroid.core.settings.BookSettings;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,35 +12,28 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 
 public class RecentAdapter extends BaseAdapter {
 
     private final Context context;
-    private File currentDirectory;
-    private List<File> files = Collections.emptyList();
-    private final FileFilter filter;
+    private List<BookSettings> books = Collections.emptyList();
 
-    public RecentAdapter(final Context context, final FileFilter filter) {
+    public RecentAdapter(final Context context) {
         this.context = context;
-        this.filter = filter;
     }
 
     @Override
     public int getCount() {
-        return files.size();
+        return books.size();
     }
 
     @Override
-    public File getItem(final int i) {
-        return files.get(i);
+    public BookSettings getItem(final int i) {
+        return books.get(i);
     }
 
     @Override
@@ -62,50 +56,27 @@ public class RecentAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(final int i, final View view, final ViewGroup viewGroup) {
-        final View browserItem = LayoutInflater.from(context).inflate(R.layout.recentitem, viewGroup, false);
+    public View getView(final int i,View view, final ViewGroup viewGroup) {
+        if (view == null)
+            view = LayoutInflater.from(context).inflate(R.layout.recentitem, viewGroup, false);
+        final ImageView imageView = (ImageView) view.findViewById(R.id.recentItemIcon);
+        final BookSettings bs = books.get(i);
+        final File file = new File(bs.getFileName()); 
         
-       
-        final ImageView imageView = (ImageView) browserItem.findViewById(R.id.recentItemImage);
-        final File file = files.get(i);
-        final TextView textView = (TextView) browserItem.findViewById(R.id.recentItemText);
-        textView.setText(file.getName());
+        final TextView name = (TextView) view.findViewById(R.id.recentItemName);
+        name.setText(file.getName());
 
         imageView.setImageResource(R.drawable.book);
+        final TextView info = (TextView) view.findViewById(R.id.recentItemInfo);
+        info.setText(new SimpleDateFormat("dd MMM yyyy").format(file.lastModified()));
 
-        return browserItem;
+        final TextView fileSize = (TextView) view.findViewById(R.id.recentItemfileSize);
+        fileSize.setText(getFileSize(file.length()));
+        return view;
     }
 
-    public void setCurrentDirectory(final File currentDirectory) {
-        final File[] fileArray = currentDirectory.listFiles(filter);
-        final ArrayList<File> files = new ArrayList<File>(fileArray != null ? Arrays.asList(fileArray)
-                : Collections.<File> emptyList());
-        this.currentDirectory = currentDirectory;
-        Collections.sort(files, new Comparator<File>() {
-
-            @Override
-            public int compare(final File o1, final File o2) {
-                if (o1.isDirectory() && o2.isFile()) {
-                    return -1;
-                }
-                if (o1.isFile() && o2.isDirectory()) {
-                    return 1;
-                }
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
-        if (currentDirectory.getParentFile() != null) {
-            files.add(0, currentDirectory.getParentFile());
-        }
-        setFiles(files);
-    }
-
-    public void setFiles(final List<File> files) {
-        this.files = files;
+    public void setBooks(final List<BookSettings> books) {
+        this.books = books;
         notifyDataSetInvalidated();
-    }
-
-    public File getCurrentDirectory() {
-        return currentDirectory;
     }
 }

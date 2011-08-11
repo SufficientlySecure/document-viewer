@@ -5,7 +5,6 @@ import org.ebookdroid.cbdroid.CbrViewerActivity;
 import org.ebookdroid.cbdroid.CbzViewerActivity;
 import org.ebookdroid.core.presentation.BrowserAdapter;
 import org.ebookdroid.core.presentation.FileListAdapter;
-import org.ebookdroid.core.presentation.RecentAdapter;
 import org.ebookdroid.core.settings.BookSettings;
 import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
@@ -21,23 +20,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
-import android.widget.Gallery;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
-import android.widget.TextView;
-import android.widget.Toast;
+
 
 import java.io.File;
 import java.io.FileFilter;
@@ -52,7 +46,6 @@ public class MainBrowserActivity extends Activity {
     private BrowserAdapter adapter;
     private BrowserAdapter recentAdapter;
     private FileListAdapter libraryAdapter;
-    private RecentAdapter rAdapter;
     protected final FileFilter filter;
     private TabHost tabHost;
     private static final String CURRENT_DIRECTORY = "currentDirectory";
@@ -133,7 +126,6 @@ public class MainBrowserActivity extends Activity {
         final ListView browseList = initBrowserListView();
         final ListView recentListView = initRecentListView();
 
-        rAdapter = new RecentAdapter(this, filter);
         tabHost = (TabHost) findViewById(R.id.browserTabHost);
         tabHost.setup();
         tabHost.addTab(tabHost.newTabSpec("Recent").setIndicator(getString(R.string.tab_recent))
@@ -161,42 +153,6 @@ public class MainBrowserActivity extends Activity {
                     @Override
                     public View createTabContent(final String s) {
                         return libraryListView;
-                    }
-                }));
-
-        tabHost.addTab(tabHost.newTabSpec("Recent2").setIndicator(getString(R.string.tab_recent))
-                .setContent(new TabHost.TabContentFactory() {
-
-                    @Override
-                    public View createTabContent(final String s) {
-
-                        final LayoutInflater li = LayoutInflater.from(MainBrowserActivity.this);
-                        final View recent = li.inflate(R.layout.recent, null);
-                        final Gallery gallery = (Gallery) recent.findViewById(R.id.gallery);
-                            //new Gallery(MainBrowserActivity.this);
-                        gallery.setAdapter(rAdapter);
-                        gallery.setOnItemSelectedListener(new OnItemSelectedListener() {
-                               @Override
-                               public void onItemSelected(AdapterView parent, View view, int position, long id) {
-                                // TODO Auto-generated method stub
-                                   final TextView bookinfo = (TextView) recent.findViewById(R.id.bookinfo);
-                                   bookinfo.setText(rAdapter.getItem(position).getPath());
-                                   //Toast.makeText(MainBrowserActivity.this, "Position=" + position, Toast.LENGTH_SHORT).show();
-                               }
-                               @Override
-                               public void onNothingSelected(AdapterView parent) {
-
-                               }
-                              });
-
-                        gallery.setOnItemClickListener(new OnItemClickListener() {
-                            public void onItemClick(AdapterView parent, View v, int position, long id) {
-                            // Displaying the position when the gallery item in clicked
-                                Toast.makeText(MainBrowserActivity.this, "Position=" + position, Toast.LENGTH_SHORT).show();
-                            }
-                            });
-                        //return gallery;
-                        return recent;
                     }
                 }));
 
@@ -406,8 +362,6 @@ public class MainBrowserActivity extends Activity {
             files.add(new File(bs.getFileName()));
         }
         recentAdapter.setFiles(files);
-
-        rAdapter.setFiles(files);
 
         if (scan == false) {
             scan = true;

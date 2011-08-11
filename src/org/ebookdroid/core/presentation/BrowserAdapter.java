@@ -61,11 +61,13 @@ public class BrowserAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(final int i, final View view, final ViewGroup viewGroup) {
-        final View browserItem = LayoutInflater.from(context).inflate(R.layout.browseritem, viewGroup, false);
-        final ImageView imageView = (ImageView) browserItem.findViewById(R.id.browserItemIcon);
+    public View getView(final int i, View view, final ViewGroup viewGroup) {
+        
+        if (view == null)
+            view = LayoutInflater.from(context).inflate(R.layout.browseritem, viewGroup, false);
+        final ImageView imageView = (ImageView) view.findViewById(R.id.browserItemIcon);
         final File file = files.get(i);
-        final TextView textView = (TextView) browserItem.findViewById(R.id.browserItemText);
+        final TextView textView = (TextView) view.findViewById(R.id.browserItemText);
         textView.setText(file.getName());
 
         if (currentDirectory != null && file.equals(currentDirectory.getParentFile())) {
@@ -86,17 +88,17 @@ public class BrowserAdapter extends BaseAdapter {
                 }
             }
 
-            final TextView info = (TextView) browserItem.findViewById(R.id.browserItemInfo);
+            final TextView info = (TextView) view.findViewById(R.id.browserItemInfo);
             info.setText("Folders: " + folders + " Books: " + books);
         } else {
             imageView.setImageResource(R.drawable.book);
-            final TextView info = (TextView) browserItem.findViewById(R.id.browserItemInfo);
+            final TextView info = (TextView) view.findViewById(R.id.browserItemInfo);
             info.setText(new SimpleDateFormat("dd MMM yyyy").format(file.lastModified()));
 
-            final TextView fileSize = (TextView) browserItem.findViewById(R.id.browserItemfileSize);
+            final TextView fileSize = (TextView) view.findViewById(R.id.browserItemfileSize);
             fileSize.setText(getFileSize(file.length()));
         }
-        return browserItem;
+        return view;
     }
 
     public void setCurrentDirectory(final File currentDirectory) {

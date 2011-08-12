@@ -236,7 +236,7 @@ public class FileListAdapter extends BaseExpandableListAdapter implements Compar
             if (file.isFile()) {
                 // Add file to queue
                 currFiles.add(file);
-                if (inUI.compareAndSet(false, true)) {
+                if (currFiles.size() > 10 && inUI.compareAndSet(false, true)) {
                     // Start UI task if required
                     base.getActivity().runOnUiThread(this);
                 }

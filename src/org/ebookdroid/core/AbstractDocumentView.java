@@ -23,6 +23,7 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
     private long lastDownEventTime;
     private static final int DOUBLE_TAP_TIME = 500;
     private PageAlign align;
+    private boolean touchInTapZone = false;
 
     public AbstractDocumentView(final IViewerActivity baseActivity) {
         super(baseActivity.getContext());
@@ -159,6 +160,19 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
         }
         velocityTracker.addMovement(ev);
 
+        boolean inTap = false;
+        float ts = 0;
+        if (base.getAppSettings().getTapScroll()) {
+            final int tapsize = base.getAppSettings().getTapSize();
+
+            ts = (float) tapsize / 100;
+            if (ts > 0.5) {
+                ts = 0.5f;
+            }
+            if ((ev.getY() / getHeight() < ts) || (ev.getY() / getHeight() > (1 - ts))) {
+                inTap = true;
+            }
+        }        
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 stopScroller();
@@ -168,6 +182,8 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
                 } else {
                     lastDownEventTime = ev.getEventTime();
                 }
+                touchInTapZone = inTap;
+                
                 break;
             case MotionEvent.ACTION_MOVE:
                 scrollBy((int) (lastX - ev.getX()), (int) (lastY - ev.getY()));
@@ -180,14 +196,8 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
                         getBottomLimit());
                 velocityTracker.recycle();
                 velocityTracker = null;
-                if (base.getAppSettings().getTapScroll()) {
-                    final int tapsize = base.getAppSettings().getTapSize();
-
-                    float ts = (float) tapsize / 100;
-                    if (ts > 0.5) {
-                        ts = 0.5f;
-                    }
-
+                
+                if (inTap && touchInTapZone) {
                     if (ev.getY() / getHeight() < ts) {
                         verticalConfigScroll(-1);
                     } else if (ev.getY() / getHeight() > (1 - ts)) {

@@ -13,6 +13,7 @@
 
 		<ImageView
 			style="@style/action_bar_action"
+			android:id="@+id/recentlibrary"
 			android:src="@drawable/actionbar_library"
 			android:onClick="goLibrary" />
 		<View style="@style/action_bar_separator" />

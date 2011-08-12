@@ -19,20 +19,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ViewFlipper;
 
 import java.util.HashMap;
 
 public class RecentActivity extends Activity implements IBrowserActivity {
+    
+    private int VIEW_RECENT = 0;
+    private int VIEW_LIBRARY = 1;
 
     private RecentAdapter recentAdapter;
     private FileListAdapter libraryAdapter;
 
     private ViewFlipper viewflipper;
+    private ImageView library;
 
     private final static HashMap<String, Class<? extends Activity>> extensionToActivity = new HashMap<String, Class<? extends Activity>>();
 
@@ -53,9 +59,11 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         recentAdapter = new RecentAdapter(this);
         libraryAdapter = new FileListAdapter(this);
 
+        library = (ImageView) findViewById(R.id.recentlibrary);
+        
         viewflipper = (ViewFlipper) findViewById(R.id.recentflip);
-        viewflipper.addView(new RecentBooksView(this, recentAdapter));
-        viewflipper.addView(new LibraryView(this, libraryAdapter));
+        viewflipper.addView(new RecentBooksView(this, recentAdapter), VIEW_RECENT);
+        viewflipper.addView(new LibraryView(this, libraryAdapter), VIEW_LIBRARY);
     }
 
     @Override
@@ -118,10 +126,24 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         intent.setClass(this, extensionToActivity.get(extension.toLowerCase()));
         startActivity(intent);
     }
+    
+    private void changeLibraryView()
+    {
+        Log.i("www","Curr view " + viewflipper.getDisplayedChild());
+        if(viewflipper.getDisplayedChild() == VIEW_RECENT)
+        {
+            viewflipper.setDisplayedChild(VIEW_LIBRARY);
+            library.setImageResource(R.drawable.actionbar_recent);
+        }
+        else
+        {
+            viewflipper.setDisplayedChild(VIEW_RECENT);
+            library.setImageResource(R.drawable.actionbar_library);
+        }
+    }
 
     public void goLibrary(final View view) {
-        // TODO: change
-        viewflipper.showNext();
+        changeLibraryView();
     }
 
     public void goFileBrowser(final View view) {

@@ -70,18 +70,18 @@ public class RecentActivity extends Activity implements IBrowserActivity {
     public boolean onCreateOptionsMenu(final Menu menu) {
 
         final MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.browsermenu, menu);
+        inflater.inflate(R.menu.recentmenu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.browsermenu_cleanrecent:
+            case R.id.recentmenu_cleanrecent:
                 getSettings().deleteAllBookSettings();
                 recentAdapter.clearBooks();
                 return true;
-            case R.id.browsermenu_settings:
+            case R.id.recentmenu_settings:
                 libraryAdapter.stopScan();
                 final Intent i = new Intent(RecentActivity.this, SettingsActivity.class);
                 startActivity(i);

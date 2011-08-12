@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
-   <item android:id="@+id/browsermenu_settings"
+   <item android:id="@+id/recentmenu_cleanrecent"
+         android:alphabeticShortcut="c"
+         android:title="@string/menu_cleanrecent"
+         android:icon="@drawable/clear"
+         android:showAsAction="ifRoom"
+         />
+   <item android:id="@+id/recentmenu_settings"
          android:alphabeticShortcut="s"
          android:title="@string/menu_settings"
          android:icon="@drawable/settings"

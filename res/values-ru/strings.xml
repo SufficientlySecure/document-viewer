@@ -43,11 +43,7 @@
 	<string name="menu_zoom">Увеличение</string>
 	<string name="menu_nightmode">День/Ночь</string>
 	<string name="menu_settings">Настройки</string>
-	<string name="tab_recent">Недавние</string>
-	<string name="tab_browse">Просмотр</string>
-	<string name="tab_files">Файлы</string>
-	<string name="brmenu_cleanrecent">Очистить Недавние</string>
-	<string name="brmenu_settings">Настройки</string>
+	<string name="menu_cleanrecent">Очистить Недавние</string>
 	<string name="dialog_title_goto_page">Страница</string>
 	<string name="button_goto_page">Перейти</string>
 	<string name="text_page">Страница</string>

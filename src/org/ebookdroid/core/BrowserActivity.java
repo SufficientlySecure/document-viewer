@@ -132,9 +132,6 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.browsermenu_cleanrecent:
-                SettingsManager.getInstance(this).deleteAllBookSettings();
-                return true;
             case R.id.browsermenu_settings:
                 final Intent i = new Intent(BrowserActivity.this, SettingsActivity.class);
                 startActivity(i);

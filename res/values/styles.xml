@@ -18,7 +18,6 @@
 		<item name="android:padding">4dip</item>
 		<item name="android:gravity">center</item>
 		<item name="android:scaleType">center</item>
-		<item name="android:src">@drawable/icon</item>
 	</style>
 
 	<style name="action_bar_action">
@@ -27,7 +26,6 @@
 		<item name="android:padding">2dip</item>
 		<item name="android:gravity">center</item>
 		<item name="android:scaleType">center</item>
-		<item name="android:src">@drawable/actionbar_open</item>
 	</style>
 
 	<style name="action_bar_separator">

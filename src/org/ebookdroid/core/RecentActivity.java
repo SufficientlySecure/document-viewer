@@ -30,7 +30,7 @@ import android.widget.ViewFlipper;
 import java.util.HashMap;
 
 public class RecentActivity extends Activity implements IBrowserActivity {
-    
+
     private int VIEW_RECENT = 0;
     private int VIEW_LIBRARY = 1;
 
@@ -60,7 +60,7 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         libraryAdapter = new FileListAdapter(this);
 
         library = (ImageView) findViewById(R.id.recentlibrary);
-        
+
         viewflipper = (ViewFlipper) findViewById(R.id.recentflip);
         viewflipper.addView(new RecentBooksView(this, recentAdapter), VIEW_RECENT);
         viewflipper.addView(new LibraryView(this, libraryAdapter), VIEW_LIBRARY);
@@ -96,7 +96,8 @@ public class RecentActivity extends Activity implements IBrowserActivity {
 
         getSettings().clearCurrentBookSettings();
 
-        DirectoryOrFileFilter filter = new DirectoryOrFileFilter(getSettings().getAppSettings().getAllowedFileTypes(extensionToActivity.keySet()));
+        DirectoryOrFileFilter filter = new DirectoryOrFileFilter(getSettings().getAppSettings().getAllowedFileTypes(
+                extensionToActivity.keySet()));
 
         recentAdapter.setBooks(getSettings().getAllBooksSettings().values(), filter);
 
@@ -126,17 +127,13 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         intent.setClass(this, extensionToActivity.get(extension.toLowerCase()));
         startActivity(intent);
     }
-    
-    private void changeLibraryView()
-    {
-        Log.i("www","Curr view " + viewflipper.getDisplayedChild());
-        if(viewflipper.getDisplayedChild() == VIEW_RECENT)
-        {
+
+    private void changeLibraryView() {
+        Log.i("www", "Curr view " + viewflipper.getDisplayedChild());
+        if (viewflipper.getDisplayedChild() == VIEW_RECENT) {
             viewflipper.setDisplayedChild(VIEW_LIBRARY);
             library.setImageResource(R.drawable.actionbar_recent);
-        }
-        else
-        {
+        } else {
             viewflipper.setDisplayedChild(VIEW_RECENT);
             library.setImageResource(R.drawable.actionbar_library);
         }
@@ -148,7 +145,7 @@ public class RecentActivity extends Activity implements IBrowserActivity {
 
     public void goFileBrowser(final View view) {
         // TODO: change
-        final Intent myIntent = new Intent(RecentActivity.this, MainBrowserActivity.class);
+        final Intent myIntent = new Intent(RecentActivity.this, BrowserActivity.class);
         startActivity(myIntent);
     }
 }

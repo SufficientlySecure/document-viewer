@@ -4,8 +4,6 @@ import org.ebookdroid.R;
 import org.ebookdroid.cbdroid.CbrViewerActivity;
 import org.ebookdroid.cbdroid.CbzViewerActivity;
 import org.ebookdroid.core.presentation.BrowserAdapter;
-import org.ebookdroid.core.presentation.FileListAdapter;
-import org.ebookdroid.core.settings.BookSettings;
 import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.utils.DirectoryOrFileFilter;
@@ -27,28 +25,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.TabHost;
-import android.widget.TabHost.OnTabChangeListener;
+import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-public class MainBrowserActivity extends Activity implements IBrowserActivity {
+
+public class BrowserActivity extends Activity implements IBrowserActivity {
 
     private BrowserAdapter adapter;
-    private BrowserAdapter recentAdapter;
-    private FileListAdapter libraryAdapter;
     protected final FileFilter filter;
-    private TabHost tabHost;
     private static final String CURRENT_DIRECTORY = "currentDirectory";
+    
+    private ViewFlipper viewflipper;
+    private TextView header;
 
     private final static HashMap<String, Class<? extends Activity>> extensionToActivity = new HashMap<String, Class<? extends Activity>>();
 
@@ -75,24 +69,7 @@ public class MainBrowserActivity extends Activity implements IBrowserActivity {
         }
     };
 
-    private final ExpandableListView.OnChildClickListener onChildClickListener = new ExpandableListView.OnChildClickListener() {
-
-        @Override
-        public boolean onChildClick(final ExpandableListView parent, final View v, final int groupPosition,
-                final int childPosition, final long id) {
-            // TODO: review this
-            final File file = libraryAdapter.getChild(groupPosition, childPosition);
-            if (file.isDirectory()) {
-                setCurrentDir(file);
-            } else {
-                showDocument(file);
-            }
-            return false;
-        }
-
-    };
-
-    public MainBrowserActivity() {
+    public BrowserActivity() {
         this.filter = createFileFilter();
 
     }
@@ -119,53 +96,10 @@ public class MainBrowserActivity extends Activity implements IBrowserActivity {
 
         setContentView(R.layout.browser);
         final ListView browseList = initBrowserListView();
-        final ListView recentListView = initRecentListView();
-
-        tabHost = (TabHost) findViewById(R.id.browserTabHost);
-        tabHost.setup();
-        tabHost.addTab(tabHost.newTabSpec("Recent").setIndicator(getString(R.string.tab_recent))
-                .setContent(new TabHost.TabContentFactory() {
-
-                    @Override
-                    public View createTabContent(final String s) {
-                        return recentListView;
-                    }
-                }));
-        tabHost.addTab(tabHost.newTabSpec("Browse").setIndicator(getString(R.string.tab_browse))
-                .setContent(new TabHost.TabContentFactory() {
-
-                    @Override
-                    public View createTabContent(final String s) {
-                        return browseList;
-                    }
-                }));
-
-        final ExpandableListView libraryListView = initLibraryListView();
-
-        tabHost.addTab(tabHost.newTabSpec("Library").setIndicator(getString(R.string.tab_files))
-                .setContent(new TabHost.TabContentFactory() {
-
-                    @Override
-                    public View createTabContent(final String s) {
-                        return libraryListView;
-                    }
-                }));
-
-        tabHost.setOnTabChangedListener(new OnTabChangeListener() {
-
-            @Override
-            public void onTabChanged(final String tabId) {
-                if (tabId.equals("Recent")) {
-                    getWindow().setTitle(getString(R.string.tab_recent));
-                } else if (tabId.equals("Browse")) {
-                    getWindow().setTitle(adapter.getCurrentDirectory().getAbsolutePath());
-                } else if (tabId.equals("Library")) {
-                    getWindow().setTitle(getString(R.string.tab_files));
-                    libraryAdapter.startScan(filter);
-                }
-            }
-        });
-
+        
+        header = (TextView) findViewById(R.id.browsertext);
+        viewflipper = (ViewFlipper) findViewById(R.id.browserflip);
+        viewflipper.addView(browseList);
     }
 
     @Override
@@ -200,11 +134,9 @@ public class MainBrowserActivity extends Activity implements IBrowserActivity {
         switch (item.getItemId()) {
             case R.id.browsermenu_cleanrecent:
                 SettingsManager.getInstance(this).deleteAllBookSettings();
-                recentAdapter.setFiles(Collections.<File> emptyList());
                 return true;
             case R.id.browsermenu_settings:
-                libraryAdapter.stopScan();
-                final Intent i = new Intent(MainBrowserActivity.this, SettingsActivity.class);
+                final Intent i = new Intent(BrowserActivity.this, SettingsActivity.class);
                 startActivity(i);
                 return true;
         }
@@ -254,21 +186,6 @@ public class MainBrowserActivity extends Activity implements IBrowserActivity {
         return initListView(adapter);
     }
 
-    private ListView initRecentListView() {
-        recentAdapter = new BrowserAdapter(this, filter);
-        return initListView(recentAdapter);
-    }
-
-    private ExpandableListView initLibraryListView() {
-        final ExpandableListView libraryListView = new ExpandableListView(this);
-        libraryAdapter = new FileListAdapter(this);
-        libraryListView.setAdapter(libraryAdapter);
-        // TODO: create correct group indicator
-        // libraryListView.setGroupIndicator(getResources().getDrawable(R.drawable.group_indicator));
-        libraryListView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
-        libraryListView.setOnChildClickListener(onChildClickListener);
-        return libraryListView;
-    }
 
     private void showDocument(final File file) {
         showDocument(Uri.fromFile(file));
@@ -285,7 +202,7 @@ public class MainBrowserActivity extends Activity implements IBrowserActivity {
 
     private void setCurrentDir(final File newDir) {
         adapter.setCurrentDirectory(newDir);
-        getWindow().setTitle(newDir.getAbsolutePath());
+        header.setText(newDir.getAbsolutePath());
     }
 
     @Override
@@ -297,23 +214,11 @@ public class MainBrowserActivity extends Activity implements IBrowserActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        SettingsManager.getInstance(this).clearCurrentBookSettings();
-
-        final Map<String, BookSettings> all = SettingsManager.getInstance(this).getAllBooksSettings();
-        final List<File> files = new ArrayList<File>(all.size());
-        for (final BookSettings bs : all.values()) {
-            files.add(new File(bs.getFileName()));
-        }
-        recentAdapter.setFiles(files);
-
-        libraryAdapter.startScan(filter);
     }
 
     @Override
     public boolean onKeyDown(final int keyCode, final KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0
-                && tabHost.getCurrentTabTag().equals("Browse")) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             final File parent = adapter.getCurrentDirectory().getParentFile();
             if (parent != null) {
                 adapter.setCurrentDirectory(parent);
@@ -323,6 +228,11 @@ public class MainBrowserActivity extends Activity implements IBrowserActivity {
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+    
+    public void goRecent(final View view) {
+        final Intent myIntent = new Intent(BrowserActivity.this, RecentActivity.class);
+        startActivity(myIntent);
     }
 
     @Override

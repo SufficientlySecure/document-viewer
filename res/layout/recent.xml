@@ -7,7 +7,7 @@
 	android:layout_gravity="center">
 
 	<LinearLayout style="@style/action_bar">
-		<ImageView style="@style/action_bar_icon" />
+		<ImageView style="@style/action_bar_icon" android:src="@drawable/icon"/>
 		<View style="@style/action_bar_separator" />
 		<TextView style="@style/action_bar_title" />
 

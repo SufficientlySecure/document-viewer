@@ -28,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import java.io.File;
@@ -168,7 +169,26 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
             @SuppressWarnings({ "unchecked" })
             public boolean onItemLongClick(final AdapterView<?> adapterView, final View view, final int i, final long l) {
                 final File file = ((AdapterView<BrowserAdapter>) adapterView).getAdapter().getItem(i);
-                showDialog("Path: " + file.getParent() + "\nFile: " + file.getName());
+                
+                if(file.isDirectory())
+                {
+                    //TODO: change app settings. 
+                    final CharSequence[] items = {"Set as scan directory"};
+                
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(BrowserActivity.this);
+                    builder.setTitle(file.getName());
+                    builder.setItems(items, new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(final DialogInterface dialog, final int item) {
+                            Toast.makeText(getApplicationContext(), items[item], Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    final AlertDialog alert = builder.create();
+                    alert.show();
+                }
+                else
+                    showDialog("Path: " + file.getParent() + "\nFile: " + file.getName());
                 return false;
             }
         });

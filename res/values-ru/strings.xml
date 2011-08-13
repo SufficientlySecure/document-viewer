@@ -30,6 +30,8 @@
 	<string name="pref_brfiletypepdf_summary">"Показывать PDF файлы"</string>
 	<string name="pref_brfiletypexps_title">".xps"</string>
 	<string name="pref_brfiletypexps_summary">"Показывать XPS файлы"</string>
+	<string name="pref_brfiletypeoxps_title">".oxps"</string>
+	<string name="pref_brfiletypeoxps_summary">"Показывать OXPS файлы"</string>	
 	<string name="pref_brfiletypecbz_title">".cbz"</string>
 	<string name="pref_brfiletypecbz_summary">"Показывать CBZ файлы"</string>
 	<string name="pref_brfiletypecbr_title">".cbr"</string>

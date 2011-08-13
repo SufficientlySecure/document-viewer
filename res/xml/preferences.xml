@@ -210,6 +210,11 @@
 				android:summary="@string/pref_brfiletypexps_summary"
 				android:defaultValue="true" />
 			<CheckBoxPreference
+				android:key="brfiletypeoxps"
+				android:title="@string/pref_brfiletypeoxps_title"
+				android:summary="@string/pref_brfiletypeoxps_summary"
+				android:defaultValue="true" />
+			<CheckBoxPreference
 				android:key="brfiletypecbz"
 				android:title="@string/pref_brfiletypecbz_title"
 				android:summary="@string/pref_brfiletypecbz_summary"

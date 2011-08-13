@@ -47,6 +47,7 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         extensionToActivity.put("djvu", DjvuViewerActivity.class);
         extensionToActivity.put("djv", DjvuViewerActivity.class);
         extensionToActivity.put("xps", XpsViewerActivity.class);
+        extensionToActivity.put("oxps", XpsViewerActivity.class);
         extensionToActivity.put("cbz", CbzViewerActivity.class);
         extensionToActivity.put("cbr", CbrViewerActivity.class);
     }

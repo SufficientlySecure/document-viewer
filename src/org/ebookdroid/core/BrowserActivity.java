@@ -1,15 +1,10 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.R;
-import org.ebookdroid.cbdroid.CbrViewerActivity;
-import org.ebookdroid.cbdroid.CbzViewerActivity;
 import org.ebookdroid.core.presentation.BrowserAdapter;
 import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.utils.DirectoryOrFileFilter;
-import org.ebookdroid.djvudroid.DjvuViewerActivity;
-import org.ebookdroid.pdfdroid.PdfViewerActivity;
-import org.ebookdroid.xpsdroid.XpsViewerActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -33,7 +28,6 @@ import android.widget.ViewFlipper;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.HashMap;
 
 
 public class BrowserActivity extends Activity implements IBrowserActivity {
@@ -41,21 +35,9 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
     private BrowserAdapter adapter;
     protected final FileFilter filter;
     private static final String CURRENT_DIRECTORY = "currentDirectory";
-    
+
     private ViewFlipper viewflipper;
     private TextView header;
-
-    private final static HashMap<String, Class<? extends Activity>> extensionToActivity = new HashMap<String, Class<? extends Activity>>();
-
-    static {
-        extensionToActivity.put("pdf", PdfViewerActivity.class);
-        extensionToActivity.put("djvu", DjvuViewerActivity.class);
-        extensionToActivity.put("djv", DjvuViewerActivity.class);
-        extensionToActivity.put("xps", XpsViewerActivity.class);
-        extensionToActivity.put("oxps", XpsViewerActivity.class);
-        extensionToActivity.put("cbz", CbzViewerActivity.class);
-        extensionToActivity.put("cbr", CbrViewerActivity.class);
-    }
 
     private final AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
 
@@ -81,7 +63,7 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
 
             @Override
             public boolean accept(final File pathname) {
-                for (final String s : extensionToActivity.keySet()) {
+                for (final String s : Activities.getAllExtensions()) {
                     if (pathname.getName().toLowerCase().endsWith("." + s)
                             && getSettings().getAppSettings().isFileTypeAllowed(s)) {
                         return true;
@@ -98,7 +80,7 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
 
         setContentView(R.layout.browser);
         final ListView browseList = initBrowserListView();
-        
+
         header = (TextView) findViewById(R.id.browsertext);
         viewflipper = (ViewFlipper) findViewById(R.id.browserflip);
         viewflipper.addView(browseList);
@@ -170,12 +152,12 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
             @SuppressWarnings({ "unchecked" })
             public boolean onItemLongClick(final AdapterView<?> adapterView, final View view, final int i, final long l) {
                 final File file = ((AdapterView<BrowserAdapter>) adapterView).getAdapter().getItem(i);
-                
+
                 if(file.isDirectory())
                 {
-                    //TODO: change app settings. 
+                    //TODO: change app settings.
                     final CharSequence[] items = {"Set as scan directory"};
-                
+
                     final AlertDialog.Builder builder = new AlertDialog.Builder(BrowserActivity.this);
                     builder.setTitle(file.getName());
                     builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -212,9 +194,7 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
     @Override
     public void showDocument(final Uri uri) {
         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-        final String uriString = uri.toString();
-        final String extension = uriString.substring(uriString.lastIndexOf('.') + 1);
-        intent.setClass(this, extensionToActivity.get(extension.toLowerCase()));
+         intent.setClass(this, Activities.getByUri(uri));
         startActivity(intent);
     }
 
@@ -247,7 +227,7 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
-    
+
     public void goRecent(final View view) {
         final Intent myIntent = new Intent(BrowserActivity.this, RecentActivity.class);
         startActivity(myIntent);

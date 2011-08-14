@@ -117,11 +117,15 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.browsermenu_settings:
-                final Intent i = new Intent(BrowserActivity.this, SettingsActivity.class);
-                startActivity(i);
+                showSettings(null);
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void showSettings(final View view) {
+        final Intent i = new Intent(BrowserActivity.this, SettingsActivity.class);
+        startActivity(i);
     }
 
     private void showDialog(final String msg) {

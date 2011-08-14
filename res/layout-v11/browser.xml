@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/mainscreen"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:layout_gravity="center">
+
+	<LinearLayout style="@style/action_bar">
+		<ImageView
+			style="@style/action_bar_icon"
+			android:src="@drawable/actionbar_open" />
+
+		<View style="@style/action_bar_separator" />
+
+		<TextView
+			style="@style/action_bar_title"
+			android:id="@+id/browsertext" />
+
+		<View style="@style/action_bar_separator" />
+
+		<ImageView
+			style="@style/action_bar_action"
+			android:src="@drawable/actionbar_recent"
+			android:onClick="goRecent" />
+
+		<View style="@style/action_bar_separator" />
+
+		<ImageView
+			style="@style/action_bar_action"
+			android:src="@drawable/settings"
+			android:onClick="showSettings" />
+
+	</LinearLayout>
+
+	<ViewFlipper
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/actionbar_height"
+		android:gravity="center"
+		android:orientation="vertical"
+		android:id="@+id/browserflip" />
+
+</RelativeLayout>

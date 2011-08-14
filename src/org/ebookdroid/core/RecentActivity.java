@@ -60,17 +60,26 @@ public class RecentActivity extends Activity implements IBrowserActivity {
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.recentmenu_cleanrecent:
-                getSettings().deleteAllBookSettings();
-                recentAdapter.clearBooks();
+                clearRecent(null);
                 return true;
             case R.id.recentmenu_settings:
-                libraryAdapter.stopScan();
-                final Intent i = new Intent(RecentActivity.this, SettingsActivity.class);
-                startActivity(i);
+                showSettings(null);
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void clearRecent(final View view) {
+        getSettings().deleteAllBookSettings();
+        recentAdapter.clearBooks();
+    }
+
+    public void showSettings(final View view) {
+        libraryAdapter.stopScan();
+        final Intent i = new Intent(RecentActivity.this, SettingsActivity.class);
+        startActivity(i);
+    }
+
 
     @Override
     protected void onResume() {

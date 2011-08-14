@@ -1,11 +1,11 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.R;
+import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
 
 import android.graphics.Canvas;
 import android.graphics.RectF;
-import android.util.Log;
 
 public class Page {
 
@@ -17,7 +17,8 @@ public class Page {
     private final int documentPage;
     private final PageType pageType;
 
-    public Page(final IViewerActivity base, final int index, final int documentPage, final PageType pt, CodecPageInfo cpi) {
+    public Page(final IViewerActivity base, final int index, final int documentPage, final PageType pt,
+            final CodecPageInfo cpi) {
         this.base = base;
         this.index = index;
         this.documentPage = documentPage;
@@ -72,16 +73,9 @@ public class Page {
         }
     }
 
-    public void updateAspectRatio() {
-        Log.d("DocModel", "Start update aspect ratio for page: " + this);
-        try {
-            if (base == null || base.getDocumentModel() == null) {
-                return;
-            }
-            final DecodeService decodeService = base.getDocumentModel().getDecodeService();
-            this.setAspectRatio(decodeService.getPageWidth(documentPage), decodeService.getPageHeight(documentPage));
-        } finally {
-            Log.d("DocModel", "Finish update aspect ratio for page: " + this);
+    public void setAspectRatio(final CodecPage page) {
+        if (page != null) {
+            this.setAspectRatio(page.getWidth(), page.getHeight());
         }
     }
 

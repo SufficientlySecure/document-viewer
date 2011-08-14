@@ -1,5 +1,6 @@
 package org.ebookdroid.core;
 
+import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
 
 import android.graphics.Bitmap;
@@ -14,24 +15,16 @@ public interface DecodeService {
 
     void stopDecoding(PageTreeNode node, String reason);
 
-    int getEffectivePagesWidth(int targetWidth);
-
-    int getEffectivePagesHeight(int targetWidth);
-
     int getPageCount();
 
-    public List<OutlineLink> getOutline();
-
-    int getPageWidth(int pageIndex);
+    List<OutlineLink> getOutline();
 
     CodecPageInfo getPageInfo(int pageIndex);
-
-    int getPageHeight(int pageIndex);
 
     void recycle();
 
     public interface DecodeCallback {
 
-        void decodeComplete(Bitmap bitmap);
+        void decodeComplete(CodecPage page, Bitmap bitmap);
     }
 }

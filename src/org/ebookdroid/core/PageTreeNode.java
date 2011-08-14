@@ -1,5 +1,7 @@
 package org.ebookdroid.core;
 
+import org.ebookdroid.core.codec.CodecPage;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -190,7 +192,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     @Override
-    public void decodeComplete(final Bitmap bitmap) {
+    public void decodeComplete(final CodecPage codecPage, final Bitmap bitmap) {
         base.getView().post(new Runnable() {
 
             @Override
@@ -199,7 +201,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 invalidateFlag = false;
                 setDecodingNow(false);
 
-                page.updateAspectRatio();
+                page.setAspectRatio(codecPage);
 
                 invalidateChildren();
             }

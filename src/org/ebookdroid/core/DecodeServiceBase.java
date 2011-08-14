@@ -12,10 +12,9 @@ import android.util.Log;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -30,17 +29,36 @@ public class DecodeServiceBase implements DecodeService {
 
     public static final String DECODE_SERVICE = "ViewDroidDecodeService";
 
-    private static final int PAGE_POOL_SIZE = 16;
-    private static final AtomicLong TASK_ID_SEQ = new AtomicLong();
+    static final int PAGE_POOL_SIZE = 16;
 
-    private final CodecContext codecContext;
+    static final AtomicLong TASK_ID_SEQ = new AtomicLong();
 
-    private final Executor executor = new Executor();
+    final CodecContext codecContext;
 
-    private CodecDocument document;
-    private final HashMap<Integer, SoftReference<CodecPage>> pages = new HashMap<Integer, SoftReference<CodecPage>>();
-    private final Queue<Integer> pageEvictionQueue = new LinkedList<Integer>();
-    private final AtomicBoolean isRecycled = new AtomicBoolean();
+    final Executor executor = new Executor();
+
+    final AtomicBoolean isRecycled = new AtomicBoolean();
+
+    CodecDocument document;
+
+    final Map<Integer, SoftReference<CodecPage>> pages = new LinkedHashMap<Integer, SoftReference<CodecPage>>() {
+
+        private static final long serialVersionUID = -8845124816503128098L;
+
+        @Override
+        protected boolean removeEldestEntry(final Entry<Integer, SoftReference<CodecPage>> eldest) {
+            if (this.size() > PAGE_POOL_SIZE) {
+                final CodecPage codecPage = eldest.getValue().get();
+                if (codecPage != null) {
+                    Log.d(DECODE_SERVICE, "Recycling old page: " + codecPage);
+                    codecPage.recycle();
+                }
+                return true;
+            }
+            return false;
+        }
+
+    };
 
     public DecodeServiceBase(final CodecContext codecContext) {
         this.codecContext = codecContext;
@@ -78,7 +96,6 @@ public class DecodeServiceBase implements DecodeService {
         Log.d(DECODE_SERVICE, "Task " + task.id + ": Starting decoding");
 
         final CodecPage vuPage = getPage(task.pageNumber);
-        // preloadNextPage(task.pageNumber);
 
         if (executor.isTaskDead(task)) {
             Log.d(DECODE_SERVICE, "Task " + task.id + ": Abort dead decode task");
@@ -98,7 +115,7 @@ public class DecodeServiceBase implements DecodeService {
         }
 
         Log.d(DECODE_SERVICE, "Task " + task.id + ": Finish decoding task");
-        finishDecoding(task, bitmap);
+        finishDecoding(task, vuPage, bitmap);
     }
 
     private int getScaledHeight(final DecodeTask currentDecodeTask, final CodecPage vuPage, final float scale) {
@@ -121,51 +138,23 @@ public class DecodeServiceBase implements DecodeService {
         return 1.0f * targetWidth / codecPage.getWidth();
     }
 
-    private void finishDecoding(final DecodeTask currentDecodeTask, final Bitmap bitmap) {
+    private void finishDecoding(final DecodeTask currentDecodeTask, final CodecPage page, final Bitmap bitmap) {
         stopDecoding(currentDecodeTask.node, "complete");
-        updateImage(currentDecodeTask, bitmap);
+        updateImage(currentDecodeTask, page, bitmap);
     }
 
     private CodecPage getPage(final int pageIndex) {
-        if (!pages.containsKey(pageIndex) || pages.get(pageIndex).get() == null) {
-            pages.put(pageIndex, new SoftReference<CodecPage>(document.getPage(pageIndex)));
-            pageEvictionQueue.remove(pageIndex);
-            pageEvictionQueue.offer(pageIndex);
-            if (pageEvictionQueue.size() > PAGE_POOL_SIZE) {
-                final Integer evictedPageIndex = pageEvictionQueue.poll();
-                final CodecPage evictedPage = pages.remove(evictedPageIndex).get();
-                if (evictedPage != null) {
-                    evictedPage.recycle();
-                }
-            }
+        final SoftReference<CodecPage> ref = pages.get(pageIndex);
+        CodecPage page = ref != null ? ref.get() : null;
+        if (page == null) {
+            page = document.getPage(pageIndex);
+            pages.put(pageIndex, new SoftReference<CodecPage>(page));
         }
-        return pages.get(pageIndex).get();
+        return page;
     }
 
-    @Override
-    public int getEffectivePagesWidth(final int targetWidth) {
-        final CodecPage page = getPage(0);
-        return getScaledWidth(page, calculateScale(page, targetWidth));
-    }
-
-    @Override
-    public int getEffectivePagesHeight(final int targetWidth) {
-        final CodecPage page = getPage(0);
-        return getScaledHeight(page, calculateScale(page, targetWidth));
-    }
-
-    @Override
-    public int getPageWidth(final int pageIndex) {
-        return getPage(pageIndex).getWidth();
-    }
-
-    @Override
-    public int getPageHeight(final int pageIndex) {
-        return getPage(pageIndex).getHeight();
-    }
-
-    private void updateImage(final DecodeTask currentDecodeTask, final Bitmap bitmap) {
-        currentDecodeTask.decodeCallback.decodeComplete(bitmap);
+    private void updateImage(final DecodeTask currentDecodeTask, final CodecPage page, final Bitmap bitmap) {
+        currentDecodeTask.decodeCallback.decodeComplete(page, bitmap);
     }
 
     @Override
@@ -187,13 +176,13 @@ public class DecodeServiceBase implements DecodeService {
 
     private class Executor implements RejectedExecutionHandler {
 
-        private final Map<PageTreeNode, DecodeTask> decodingTasks = new HashMap<PageTreeNode, DecodeTask>();
-        private final Map<Long, Future<?>> decodingFutures = new HashMap<Long, Future<?>>();
+        final Map<PageTreeNode, DecodeTask> decodingTasks = new HashMap<PageTreeNode, DecodeTask>();
+        final Map<Long, Future<?>> decodingFutures = new HashMap<Long, Future<?>>();
 
-        private final BlockingQueue<Runnable> queue;
-        private final ThreadPoolExecutor executorService;
+        final BlockingQueue<Runnable> queue;
+        final ThreadPoolExecutor executorService;
 
-        private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+        final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
         public Executor() {
             queue = new LinkedBlockingQueue<Runnable>();
@@ -295,13 +284,13 @@ public class DecodeServiceBase implements DecodeService {
 
     private class DecodeTask implements Runnable {
 
-        private final long id = TASK_ID_SEQ.incrementAndGet();
-        private final PageTreeNode node;
-        private final int pageNumber;
-        private final float zoom;
-        private final DecodeCallback decodeCallback;
-        private final RectF pageSliceBounds;
-        private final int targetWidth;
+        final long id = TASK_ID_SEQ.incrementAndGet();
+        final PageTreeNode node;
+        final int pageNumber;
+        final float zoom;
+        final DecodeCallback decodeCallback;
+        final RectF pageSliceBounds;
+        final int targetWidth;
 
         private DecodeTask(final DecodeCallback decodeCallback, final int targetWidth, final float zoom,
                 final PageTreeNode node) {

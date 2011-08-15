@@ -8,8 +8,10 @@
 
 	<LinearLayout style="@style/action_bar">
 		<ImageView
+			android:id="@+id/goHome"
 			style="@style/action_bar_icon"
-			android:src="@drawable/actionbar_open" />
+			android:src="@drawable/home" 
+			android:onClick="goHome"/>
 
 		<View style="@style/action_bar_separator" />
 
@@ -22,12 +24,6 @@
 			style="@style/action_bar_action"
 			android:src="@drawable/arrowup_enabled"
 			android:onClick="goUp" />
-
-		<ImageView
-			android:id="@+id/goHome"
-			style="@style/action_bar_action"
-			android:src="@drawable/home"
-			android:onClick="goHome" />
 
 		<View style="@style/action_bar_separator" />
 

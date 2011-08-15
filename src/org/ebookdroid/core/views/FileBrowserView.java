@@ -80,6 +80,7 @@ public class FileBrowserView extends ListView implements AdapterView.OnItemClick
                 break;
             case 1:
                 base.getSettings().getAppSettings().changeAutoScanDirs(selected.getPath(), !scannedDir);
+                adapter.notifyDataSetInvalidated();
                 Toast.makeText(base.getActivity().getApplicationContext(), "Done.", Toast.LENGTH_SHORT).show();
                 break;
         }
@@ -89,7 +90,7 @@ public class FileBrowserView extends ListView implements AdapterView.OnItemClick
         final AlertDialog alertDialog = new AlertDialog.Builder(base.getContext()).create();
         alertDialog.setTitle("Info");
         alertDialog.setMessage(msg);
-        alertDialog.setButton("OK", (DialogInterface.OnClickListener)null);
+        alertDialog.setButton("OK", (DialogInterface.OnClickListener) null);
         alertDialog.setIcon(R.drawable.icon);
         alertDialog.show();
     }

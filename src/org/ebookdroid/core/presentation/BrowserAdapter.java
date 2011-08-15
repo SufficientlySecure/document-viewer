@@ -1,9 +1,9 @@
 package org.ebookdroid.core.presentation;
 
 import org.ebookdroid.R;
+import org.ebookdroid.core.IBrowserActivity;
 import org.ebookdroid.utils.LengthUtils;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,14 +24,14 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
 
     private static final List<File> EMPTY_LIST = Collections.<File> emptyList();
 
-    private final Context context;
+    private final IBrowserActivity base;
     private final FileFilter filter;
 
     private File currentDirectory;
     private List<File> files = EMPTY_LIST;
 
-    public BrowserAdapter(final Context context, final FileFilter filter) {
-        this.context = context;
+    public BrowserAdapter(final IBrowserActivity base, final FileFilter filter) {
+        this.base = base;
         this.filter = filter;
     }
 
@@ -68,7 +68,7 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
     public View getView(final int i, View view, final ViewGroup viewGroup) {
 
         if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.browseritem, viewGroup, false);
+            view = LayoutInflater.from(base.getContext()).inflate(R.layout.browseritem, viewGroup, false);
         }
 
         final ImageView imageView = (ImageView) view.findViewById(R.id.browserItemIcon);
@@ -80,7 +80,9 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
             imageView.setImageResource(R.drawable.arrowup);
             textView.setText(file.getAbsolutePath());
         } else if (file.isDirectory()) {
-            imageView.setImageResource(R.drawable.folderopen);
+            boolean watched = base.getSettings().getAppSettings().getAutoScanDirs().contains(file.getPath());
+            imageView.setImageResource(watched ? R.drawable.folderwatched : R.drawable.folderopen);
+
             final File[] listOfFiles = file.listFiles(filter);
             int folders = 0;
             int books = 0;

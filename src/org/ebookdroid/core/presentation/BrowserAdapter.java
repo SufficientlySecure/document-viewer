@@ -2,6 +2,7 @@ package org.ebookdroid.core.presentation;
 
 import org.ebookdroid.R;
 import org.ebookdroid.core.IBrowserActivity;
+import org.ebookdroid.utils.FileUtils;
 import org.ebookdroid.utils.LengthUtils;
 
 import android.view.LayoutInflater;
@@ -50,20 +51,6 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
         return i;
     }
 
-    private String getFileSize(final long size) {
-
-        if (size > 1073741824) {
-            return String.format("%.2f", size / 1073741824.0) + " GB";
-        } else if (size > 1048576) {
-            return String.format("%.2f", size / 1048576.0) + " MB";
-        } else if (size > 1024) {
-            return String.format("%.2f", size / 1024.0) + " KB";
-        } else {
-            return size + " B";
-        }
-
-    }
-
     @Override
     public View getView(final int i, View view, final ViewGroup viewGroup) {
 
@@ -104,7 +91,7 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
             info.setText(new SimpleDateFormat("dd MMM yyyy").format(file.lastModified()));
 
             final TextView fileSize = (TextView) view.findViewById(R.id.browserItemfileSize);
-            fileSize.setText(getFileSize(file.length()));
+            fileSize.setText(FileUtils.getFileSize(file.length()));
         }
         return view;
     }

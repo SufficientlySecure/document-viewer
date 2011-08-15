@@ -2,6 +2,7 @@ package org.ebookdroid.core.presentation;
 
 import org.ebookdroid.R;
 import org.ebookdroid.core.IBrowserActivity;
+import org.ebookdroid.utils.FileUtils;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -51,20 +52,6 @@ public class FileListAdapter extends BaseExpandableListAdapter implements Compar
         return data.get(groupPosition).size();
     }
 
-    private String getFileSize(final long size) {
-
-        if (size > 1073741824) {
-            return String.format("%.2f", size / 1073741824.0) + " GB";
-        } else if (size > 1048576) {
-            return String.format("%.2f", size / 1048576.0) + " MB";
-        } else if (size > 1024) {
-            return String.format("%.2f", size / 1024.0) + " KB";
-        } else {
-            return size + " B";
-        }
-
-    }
-
     @Override
     public View getChildView(final int groupPosition, final int childPosition, final boolean isLastChild,
             View convertView, final ViewGroup parent) {
@@ -82,7 +69,7 @@ public class FileListAdapter extends BaseExpandableListAdapter implements Compar
         info.setText(new SimpleDateFormat("dd MMM yyyy").format(file.lastModified()));
 
         final TextView fileSize = (TextView) convertView.findViewById(R.id.browserItemfileSize);
-        fileSize.setText(getFileSize(file.length()));
+        fileSize.setText(FileUtils.getFileSize(file.length()));
         return convertView;
     }
 

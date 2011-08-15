@@ -68,6 +68,7 @@ public class RecentAdapter extends BaseAdapter {
 
     public void clearBooks() {
         this.books = Collections.emptyList();
+        notifyDataSetInvalidated();
     }
 
     public void setBooks(final Collection<BookSettings> books, final FileFilter filter) {

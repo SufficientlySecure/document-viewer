@@ -20,7 +20,7 @@
 
 		<TextView
 			style="@style/action_bar_title"
-			android:id="@+id/browsertext" />
+			android:id="@+id/browsertext" android:textSize="12sp"/>
 
 		<ImageView
 			android:id="@+id/goUpFolder"

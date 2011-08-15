@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
@@ -68,12 +69,8 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
     protected void onPostCreate(final Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        final File sdcardPath = new File("/sdcard");
-        if (sdcardPath.exists()) {
-            setCurrentDir(sdcardPath);
-        } else {
-            setCurrentDir(new File("/"));
-        }
+        goHome(null);
+
         if (savedInstanceState != null) {
             final String absolutePath = savedInstanceState.getString(CURRENT_DIRECTORY);
             if (absolutePath != null) {
@@ -101,6 +98,23 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void goHome(View view) {
+        final File sdcardPath = new File("/sdcard");
+        if (sdcardPath.exists()) {
+            setCurrentDir(sdcardPath);
+        } else {
+            setCurrentDir(new File("/"));
+        }
+    }
+
+    public void goUp(final View view) {
+        final File dir = adapter.getCurrentDirectory();
+        final File parent = dir != null ? dir.getParentFile() : null;
+        if (parent != null) {
+            setCurrentDir(parent);
+        }
+    }
+
     public void showSettings(final View view) {
         final Intent i = new Intent(BrowserActivity.this, SettingsActivity.class);
         startActivity(i);
@@ -115,8 +129,12 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
 
     @Override
     public void setCurrentDir(final File newDir) {
-        adapter.setCurrentDirectory(newDir);
+        final ImageView view = (ImageView) findViewById(R.id.goUpFolder);
+        final boolean hasParent = newDir.getParentFile() != null;
+        view.setImageResource(hasParent ? R.drawable.arrowup_enabled : R.drawable.arrowup_disabled);
+
         header.setText(newDir.getAbsolutePath());
+        adapter.setCurrentDirectory(newDir);
     }
 
     @Override

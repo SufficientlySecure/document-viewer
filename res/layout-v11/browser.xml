@@ -17,6 +17,18 @@
 			style="@style/action_bar_title"
 			android:id="@+id/browsertext" />
 
+		<ImageView
+			android:id="@+id/goUpFolder"
+			style="@style/action_bar_action"
+			android:src="@drawable/arrowup_enabled"
+			android:onClick="goUp" />
+
+		<ImageView
+			android:id="@+id/goHome"
+			style="@style/action_bar_action"
+			android:src="@drawable/home"
+			android:onClick="goHome" />
+
 		<View style="@style/action_bar_separator" />
 
 		<ImageView

@@ -6,14 +6,35 @@
 	android:layout_height="fill_parent"
 	android:layout_gravity="center">
 
-	<LinearLayout style="@style/action_bar">
-		<ImageView style="@style/action_bar_icon" 
-			android:src="@drawable/actionbar_open" />
-		<View style="@style/action_bar_separator" />
-		<TextView style="@style/action_bar_title" 
-			android:id="@+id/browsertext"/>
+	<LinearLayout
+		style="@style/action_bar">
 
-		<View style="@style/action_bar_separator" />
+		<ImageView
+			style="@style/action_bar_icon"
+			android:src="@drawable/actionbar_open" />
+
+		<View
+			style="@style/action_bar_separator" />
+
+		<TextView
+			style="@style/action_bar_title"
+			android:id="@+id/browsertext" />
+
+		<ImageView
+			android:id="@+id/goUpFolder"
+			style="@style/action_bar_action"
+			android:src="@drawable/arrowup_enabled"
+			android:onClick="goUp" />
+
+		<ImageView
+			android:id="@+id/goHome"
+			style="@style/action_bar_action"
+			android:src="@drawable/home"
+			android:onClick="goHome" />
+
+		<View
+			style="@style/action_bar_separator" />
+
 		<ImageView
 			style="@style/action_bar_action"
 			android:src="@drawable/actionbar_recent"

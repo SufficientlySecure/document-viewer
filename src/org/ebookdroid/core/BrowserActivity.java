@@ -2,15 +2,13 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.R;
 import org.ebookdroid.core.presentation.BrowserAdapter;
-import org.ebookdroid.core.settings.AppSettings;
 import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.utils.DirectoryOrFileFilter;
+import org.ebookdroid.core.views.FileBrowserView;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,19 +17,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.Arrays;
-
 
 public class BrowserActivity extends Activity implements IBrowserActivity {
 
@@ -42,23 +32,8 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
     private ViewFlipper viewflipper;
     private TextView header;
 
-    private final AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
-
-        @Override
-        @SuppressWarnings({ "unchecked" })
-        public void onItemClick(final AdapterView<?> adapterView, final View view, final int i, final long l) {
-            final File file = ((AdapterView<BrowserAdapter>) adapterView).getAdapter().getItem(i);
-            if (file.isDirectory()) {
-                setCurrentDir(file);
-            } else {
-                showDocument(file);
-            }
-        }
-    };
-
     public BrowserActivity() {
         this.filter = createFileFilter();
-
     }
 
     protected FileFilter createFileFilter() {
@@ -82,11 +57,11 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.browser);
-        final ListView browseList = initBrowserListView();
 
+        adapter = new BrowserAdapter(this, filter);
         header = (TextView) findViewById(R.id.browsertext);
         viewflipper = (ViewFlipper) findViewById(R.id.browserflip);
-        viewflipper.addView(browseList);
+        viewflipper.addView(new FileBrowserView(this, adapter));
     }
 
     @Override
@@ -131,98 +106,15 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
         startActivity(i);
     }
 
-    private void showDialog(final String msg) {
-        final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle("Info");
-        alertDialog.setMessage(msg);
-        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(final DialogInterface dialog, final int which) {
-
-                // here you can add functions
-            }
-        });
-        alertDialog.setIcon(R.drawable.icon);
-        alertDialog.show();
-    }
-
-
-    private ListView initListView(final BrowserAdapter adapter) {
-        final ListView listView = new ListView(this);
-        listView.setAdapter(adapter);
-        listView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
-        listView.setOnItemClickListener(onItemClickListener);
-
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-            @Override
-            @SuppressWarnings({ "unchecked" })
-            public boolean onItemLongClick(final AdapterView<?> adapterView, final View view, final int i, final long l) {
-                final File file = ((AdapterView<BrowserAdapter>) adapterView).getAdapter().getItem(i);
-
-                if(file.isDirectory())
-                {               
-                    //TODO: check is subdirectory in scan list. Optimize and simplify code.
-                    final String currdir = file.getAbsolutePath();
-                    final AppSettings settings = getSettings().getAppSettings();
-                    final ArrayList<String> dirs = new ArrayList<String>(Arrays.asList(settings.getAutoScanDirs()));
-                    final boolean inlist = dirs.contains(currdir);
-
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(BrowserActivity.this);
-                    builder.setTitle(file.getName());
-                    builder.setItems((inlist)?R.array.list_filebrowser_del:R.array.list_filebrowser_add, new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(final DialogInterface dialog, final int item) {
-                            switch(item){
-                                case 0:
-                                    setCurrentDir(file);
-                                    break;
-                                case 1:
-                                    if(inlist)
-                                        dirs.remove(currdir);
-                                    else
-                                        dirs.add(currdir);
-                                    settings.updateAutoScanDirs(dirs.toArray(new String[dirs.size()]));
-                                    Toast.makeText(getApplicationContext(), "Done.", Toast.LENGTH_SHORT).show();
-                                    break;    
-                            }
-                            //Toast.makeText(getApplicationContext(), items[item], Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    final AlertDialog alert = builder.create();
-                    alert.show();
-                }
-                else
-                    showDialog("Path: " + file.getParent() + "\nFile: " + file.getName());
-                return false;
-            }
-        });
-
-        listView.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
-                ViewGroup.LayoutParams.FILL_PARENT));
-        return listView;
-    }
-
-    private ListView initBrowserListView() {
-        adapter = new BrowserAdapter(this, filter);
-        return initListView(adapter);
-    }
-
-
-    private void showDocument(final File file) {
-        showDocument(Uri.fromFile(file));
-    }
-
     @Override
     public void showDocument(final Uri uri) {
         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-         intent.setClass(this, Activities.getByUri(uri));
+        intent.setClass(this, Activities.getByUri(uri));
         startActivity(intent);
     }
 
-    private void setCurrentDir(final File newDir) {
+    @Override
+    public void setCurrentDir(final File newDir) {
         adapter.setCurrentDirectory(newDir);
         header.setText(newDir.getAbsolutePath());
     }

@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 
+import java.io.File;
 
 public interface IBrowserActivity {
 
@@ -14,6 +15,8 @@ public interface IBrowserActivity {
     Activity getActivity();
 
     SettingsManager getSettings();
+
+    void setCurrentDir(File newDir);
 
     void showDocument(Uri uri);
 

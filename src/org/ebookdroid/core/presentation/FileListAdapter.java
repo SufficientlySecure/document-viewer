@@ -2,7 +2,6 @@ package org.ebookdroid.core.presentation;
 
 import org.ebookdroid.R;
 import org.ebookdroid.core.IBrowserActivity;
-import org.ebookdroid.core.settings.SettingsManager;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -158,14 +157,14 @@ public class FileListAdapter extends BaseExpandableListAdapter implements Compar
     }
 
     @Override
-    public int compare(final File o1, final File o2) {
-        if (o1.isDirectory() && o2.isFile()) {
+    public int compare(final File f1, final File f2) {
+        if (f1.isDirectory() && f2.isFile()) {
             return -1;
         }
-        if (o1.isFile() && o2.isDirectory()) {
+        if (f1.isFile() && f2.isDirectory()) {
             return 1;
         }
-        return o1.getName().compareTo(o2.getName());
+        return f1.getName().compareTo(f2.getName());
     }
 
     public void clearData() {
@@ -187,11 +186,11 @@ public class FileListAdapter extends BaseExpandableListAdapter implements Compar
 
     private class ScanTask implements Runnable {
 
-        private final FileFilter filter;
+        final FileFilter filter;
 
-        private final Queue<File> currFiles = new ConcurrentLinkedQueue<File>();
+        final Queue<File> currFiles = new ConcurrentLinkedQueue<File>();
 
-        private final AtomicBoolean inUI = new AtomicBoolean();
+        final AtomicBoolean inUI = new AtomicBoolean();
 
         public ScanTask(FileFilter filter) {
             this.filter = filter;
@@ -210,9 +209,7 @@ public class FileListAdapter extends BaseExpandableListAdapter implements Compar
                 return;
             }
 
-            // Retrieves paths to scan
-            String[] paths = SettingsManager.getInstance(context).getAppSettings().getAutoScanDirs();
-            for (String path : paths) {
+            for (String path : base.getSettings().getAppSettings().getAutoScanDirs()) {
                 // Scan each valid folder
                 File dir = new File(path);
                 if (dir.isDirectory()) {
@@ -236,7 +233,7 @@ public class FileListAdapter extends BaseExpandableListAdapter implements Compar
             if (file.isFile()) {
                 // Add file to queue
                 currFiles.add(file);
-                if (currFiles.size() > 10 && inUI.compareAndSet(false, true)) {
+                if (currFiles.size() > 40 && inUI.compareAndSet(false, true)) {
                     // Start UI task if required
                     base.getActivity().runOnUiThread(this);
                 }

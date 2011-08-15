@@ -4,6 +4,7 @@ import org.ebookdroid.core.PageAlign;
 import org.ebookdroid.core.RotationType;
 import org.ebookdroid.core.curl.PageAnimationType;
 import org.ebookdroid.core.utils.FileExtensionFilter;
+import org.ebookdroid.utils.StringUtils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -11,6 +12,7 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -48,40 +50,34 @@ public class AppSettings {
 
     private Integer brightness;
 
-    private String[] autoScanDirs;
+    private Set<String> autoScanDirs;
 
     AppSettings(final Context context) {
         this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    public String[] getAutoScanDirs() {
+    public Set<String> getAutoScanDirs() {
         if (autoScanDirs == null) {
-            autoScanDirs = prefs.getString("brautoscandir", "/sdcard").split(File.pathSeparator);
+            autoScanDirs = StringUtils.split(File.pathSeparator, prefs.getString("brautoscandir", "/sdcard"));
         }
         return autoScanDirs;
     }
-    
-    public static String aaaray2string(String[] a, String separator) {
-        StringBuffer result = new StringBuffer();
-        if (a.length > 0) {
-            result.append(a[0]);
-            for (int i=1; i<a.length; i++) {
-                result.append(separator);
-                result.append(a[i]);
-            }
-        }
-        return result.toString();
-    }
-    
-    public void updateAutoScanDirs(String[] dirs){
+
+    public void setAutoScanDirs(final Set<String> dirs) {
         autoScanDirs = dirs;
         final Editor edit = prefs.edit();
-        edit.putString("brautoscandir", aaaray2string(autoScanDirs, File.pathSeparator));
+        edit.putString("brautoscandir", StringUtils.merge(File.pathSeparator, autoScanDirs));
         edit.commit();
-        
     }
 
-    public FileExtensionFilter getAllowedFileTypes(final Set<String> fileTypes) {
+    public void changeAutoScanDirs(final String dir, final boolean add) {
+        final Set<String> dirs = getAutoScanDirs();
+        if (add && dirs.add(dir) || dirs.remove(dir)) {
+            setAutoScanDirs(dirs);
+        }
+    }
+
+    public FileFilter getAllowedFileTypes(final Set<String> fileTypes) {
         final Set<String> res = new HashSet<String>();
         for (final String ext : fileTypes) {
             if (isFileTypeAllowed(ext)) {
@@ -91,7 +87,7 @@ public class AppSettings {
         return new FileExtensionFilter(res);
     }
 
-    public boolean isFileTypeAllowed(String ext) {
+    public boolean isFileTypeAllowed(final String ext) {
         return prefs.getBoolean("brfiletype" + ext, true);
     }
 

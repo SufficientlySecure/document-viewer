@@ -22,10 +22,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ViewFlipper;
 
+import java.io.File;
+
 public class RecentActivity extends Activity implements IBrowserActivity {
 
-    private int VIEW_RECENT = 0;
-    private int VIEW_LIBRARY = 1;
+    private static final int VIEW_RECENT = 0;
+    private static final int VIEW_LIBRARY = 1;
 
     private RecentAdapter recentAdapter;
     private FileListAdapter libraryAdapter;
@@ -80,15 +82,14 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         startActivity(i);
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
 
         getSettings().clearCurrentBookSettings();
 
-        DirectoryOrFileFilter filter = new DirectoryOrFileFilter(getSettings().getAppSettings().getAllowedFileTypes(
-                Activities.getAllExtensions()));
+        final DirectoryOrFileFilter filter = new DirectoryOrFileFilter(getSettings().getAppSettings()
+                .getAllowedFileTypes(Activities.getAllExtensions()));
 
         recentAdapter.setBooks(getSettings().getAllBooksSettings().values(), filter);
 
@@ -108,6 +109,10 @@ public class RecentActivity extends Activity implements IBrowserActivity {
     @Override
     public SettingsManager getSettings() {
         return SettingsManager.getInstance(this);
+    }
+
+    @Override
+    public void setCurrentDir(final File newDir) {
     }
 
     @Override
@@ -133,7 +138,6 @@ public class RecentActivity extends Activity implements IBrowserActivity {
     }
 
     public void goFileBrowser(final View view) {
-        // TODO: change
         final Intent myIntent = new Intent(RecentActivity.this, BrowserActivity.class);
         startActivity(myIntent);
     }

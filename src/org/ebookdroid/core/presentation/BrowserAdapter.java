@@ -1,6 +1,7 @@
 package org.ebookdroid.core.presentation;
 
 import org.ebookdroid.R;
+import org.ebookdroid.utils.LengthUtils;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -19,12 +20,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class BrowserAdapter extends BaseAdapter {
+public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
+
+    private static final List<File> EMPTY_LIST = Collections.<File> emptyList();
 
     private final Context context;
-    private File currentDirectory;
-    private List<File> files = Collections.emptyList();
     private final FileFilter filter;
+
+    private File currentDirectory;
+    private List<File> files = EMPTY_LIST;
 
     public BrowserAdapter(final Context context, final FileFilter filter) {
         this.context = context;
@@ -62,9 +66,11 @@ public class BrowserAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int i, View view, final ViewGroup viewGroup) {
-        
-        if (view == null)
+
+        if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.browseritem, viewGroup, false);
+        }
+
         final ImageView imageView = (ImageView) view.findViewById(R.id.browserItemIcon);
         final File file = files.get(i);
         final TextView textView = (TextView) view.findViewById(R.id.browserItemText);
@@ -103,25 +109,18 @@ public class BrowserAdapter extends BaseAdapter {
 
     public void setCurrentDirectory(final File currentDirectory) {
         final File[] fileArray = currentDirectory.listFiles(filter);
-        final ArrayList<File> files = new ArrayList<File>(fileArray != null ? Arrays.asList(fileArray)
-                : Collections.<File> emptyList());
-        this.currentDirectory = currentDirectory;
-        Collections.sort(files, new Comparator<File>() {
 
-            @Override
-            public int compare(final File o1, final File o2) {
-                if (o1.isDirectory() && o2.isFile()) {
-                    return -1;
-                }
-                if (o1.isFile() && o2.isDirectory()) {
-                    return 1;
-                }
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
+        List<File> files = EMPTY_LIST;
+        if (LengthUtils.isNotEmpty(fileArray)) {
+            files = new ArrayList<File>(Arrays.asList(fileArray));
+            this.currentDirectory = currentDirectory;
+            Collections.sort(files, this);
+        }
+
         if (currentDirectory.getParentFile() != null) {
             files.add(0, currentDirectory.getParentFile());
         }
+
         setFiles(files);
     }
 
@@ -132,5 +131,16 @@ public class BrowserAdapter extends BaseAdapter {
 
     public File getCurrentDirectory() {
         return currentDirectory;
+    }
+
+    @Override
+    public int compare(final File f1, final File f2) {
+        if (f1.isDirectory() && f2.isFile()) {
+            return -1;
+        }
+        if (f1.isFile() && f2.isDirectory()) {
+            return 1;
+        }
+        return f1.getName().compareTo(f2.getName());
     }
 }

@@ -111,11 +111,9 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
 
     public void setCurrentDirectory(final File currentDirectory) {
         final File[] fileArray = currentDirectory.listFiles(filter);
-
-        List<File> files = EMPTY_LIST;
+        final ArrayList<File> files = new ArrayList<File>(LengthUtils.isNotEmpty(fileArray)? Arrays.asList(fileArray): EMPTY_LIST);
+        this.currentDirectory = currentDirectory;
         if (LengthUtils.isNotEmpty(fileArray)) {
-            files = new ArrayList<File>(Arrays.asList(fileArray));
-            this.currentDirectory = currentDirectory;
             Collections.sort(files, this);
         }
 

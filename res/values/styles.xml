@@ -15,7 +15,7 @@
 	<style name="action_bar_icon">
 		<item name="android:layout_width">@dimen/actionbar_height</item>
 		<item name="android:layout_height">@dimen/actionbar_height</item>
-		<item name="android:padding">4dip</item>
+		<item name="android:padding">2dip</item>
 		<item name="android:gravity">center</item>
 		<item name="android:scaleType">center</item>
 	</style>
@@ -31,10 +31,10 @@
 	<style name="action_bar_separator">
 		<item name="android:layout_width">@dimen/actionbar_separator_width</item>
 		<item name="android:layout_height">@dimen/actionbar_separator_height</item>
-		<item name="android:layout_marginLeft">4dip</item>
-		<item name="android:layout_marginRight">4dip</item>
-		<item name="android:layout_marginTop">4dip</item>
-		<item name="android:layout_marginBottom">4dip</item>
+		<item name="android:layout_marginLeft">2dip</item>
+		<item name="android:layout_marginRight">2dip</item>
+		<item name="android:layout_marginTop">2dip</item>
+		<item name="android:layout_marginBottom">2dip</item>
 		<item name="android:gravity">center</item>
 		<item name="android:background">@drawable/actionbar_separator</item>
 	</style>
@@ -43,7 +43,7 @@
 		<item name="android:layout_width">0dip</item>
 		<item name="android:layout_height">fill_parent</item>
 		<item name="android:layout_weight">1</item>
-		<item name="android:padding">4dip</item>
+		<item name="android:padding">2dip</item>
 		<item name="android:gravity">center_vertical|left</item>
 		<item name="android:singleLine">true</item>
 		<item name="android:scrollHorizontally">true</item>

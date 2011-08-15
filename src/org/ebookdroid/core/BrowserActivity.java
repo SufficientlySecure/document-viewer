@@ -235,6 +235,7 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
     public void goRecent(final View view) {
         final Intent myIntent = new Intent(BrowserActivity.this, RecentActivity.class);
         startActivity(myIntent);
+        finish();
     }
 
     @Override

@@ -55,4 +55,17 @@
 		<item>Squeeze</item>
 	</string-array>
 
+	<string-array
+		name="list_filebrowser_add"
+		translatable="false">
+		<item>Open</item>
+		<item>Add to Scan Dir</item>
+	</string-array>
+	
+	<string-array
+		name="list_filebrowser_del"
+		translatable="false">
+		<item>Open</item>
+		<item>Delete from Scan Dir</item>
+	</string-array>
 </resources>

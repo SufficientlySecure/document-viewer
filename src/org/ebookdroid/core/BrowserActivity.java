@@ -2,6 +2,7 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.R;
 import org.ebookdroid.core.presentation.BrowserAdapter;
+import org.ebookdroid.core.settings.AppSettings;
 import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.utils.DirectoryOrFileFilter;
@@ -28,6 +29,8 @@ import android.widget.ViewFlipper;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class BrowserActivity extends Activity implements IBrowserActivity {
@@ -144,6 +147,7 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
         alertDialog.show();
     }
 
+
     private ListView initListView(final BrowserAdapter adapter) {
         final ListView listView = new ListView(this);
         listView.setAdapter(adapter);
@@ -158,17 +162,33 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
                 final File file = ((AdapterView<BrowserAdapter>) adapterView).getAdapter().getItem(i);
 
                 if(file.isDirectory())
-                {
-                    //TODO: change app settings.
-                    final CharSequence[] items = {"Set as scan directory"};
+                {               
+                    //TODO: check is subdirectory in scan list. Optimize and simplify code.
+                    final String currdir = file.getAbsolutePath();
+                    final AppSettings settings = getSettings().getAppSettings();
+                    final ArrayList<String> dirs = new ArrayList<String>(Arrays.asList(settings.getAutoScanDirs()));
+                    final boolean inlist = dirs.contains(currdir);
 
                     final AlertDialog.Builder builder = new AlertDialog.Builder(BrowserActivity.this);
                     builder.setTitle(file.getName());
-                    builder.setItems(items, new DialogInterface.OnClickListener() {
+                    builder.setItems((inlist)?R.array.list_filebrowser_del:R.array.list_filebrowser_add, new DialogInterface.OnClickListener() {
 
                         @Override
                         public void onClick(final DialogInterface dialog, final int item) {
-                            Toast.makeText(getApplicationContext(), items[item], Toast.LENGTH_SHORT).show();
+                            switch(item){
+                                case 0:
+                                    setCurrentDir(file);
+                                    break;
+                                case 1:
+                                    if(inlist)
+                                        dirs.remove(currdir);
+                                    else
+                                        dirs.add(currdir);
+                                    settings.updateAutoScanDirs(dirs.toArray(new String[dirs.size()]));
+                                    Toast.makeText(getApplicationContext(), "Done.", Toast.LENGTH_SHORT).show();
+                                    break;    
+                            }
+                            //Toast.makeText(getApplicationContext(), items[item], Toast.LENGTH_SHORT).show();
                         }
                     });
                     final AlertDialog alert = builder.create();

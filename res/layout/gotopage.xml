@@ -1,17 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:orientation="horizontal">
-    <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minEms="4"
-            android:numeric="integer"
-            android:id="@+id/pageNumberTextEdit" android:inputType="number"/>
-    <Button android:text="@string/button_goto_page"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/goToButton"/>
-</LinearLayout>
+	<LinearLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:orientation="vertical"
+		android:gravity="top"
+		>
+	<LinearLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:gravity="top"
+		>
+		<EditText
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:minEms="4"
+			android:numeric="integer"
+			android:id="@+id/pageNumberTextEdit"
+			android:inputType="number" />
+		<Button
+			android:text="@string/button_goto_page"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/goToButton" />
+	</LinearLayout>
+	<SeekBar android:id="@+id/seekbar"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+		android:gravity="bottom"
+	/>
+	</LinearLayout>
+

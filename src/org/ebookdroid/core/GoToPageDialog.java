@@ -3,11 +3,14 @@ package org.ebookdroid.core;
 import org.ebookdroid.R;
 
 import android.app.Dialog;
+import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,7 +23,11 @@ public class GoToPageDialog extends Dialog {
         this.base = base;
         setTitle(R.string.dialog_title_goto_page);
         setContentView(R.layout.gotopage);
+        
         final Button button = (Button) findViewById(R.id.goToButton);
+        final SeekBar seekbar = (SeekBar) findViewById(R.id.seekbar);
+        final EditText editText = (EditText) findViewById(R.id.pageNumberTextEdit);
+
         button.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -28,7 +35,6 @@ public class GoToPageDialog extends Dialog {
                 goToPageAndDismiss();
             }
         });
-        final EditText editText = (EditText) findViewById(R.id.pageNumberTextEdit);
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
             @Override
@@ -37,7 +43,26 @@ public class GoToPageDialog extends Dialog {
                     goToPageAndDismiss();
                     return true;
                 }
+                
                 return false;
+            }
+        });
+
+        seekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    editText.setText("" + (progress + 1));
+                }
             }
         });
     }
@@ -46,6 +71,19 @@ public class GoToPageDialog extends Dialog {
         navigateToPage();
         dismiss();
     }
+
+    
+    @Override
+    protected void onStart() {
+        super.onStart();
+        final SeekBar seekbar = (SeekBar) findViewById(R.id.seekbar);
+        final EditText editText = (EditText) findViewById(R.id.pageNumberTextEdit);
+        
+        seekbar.setMax(base.getDocumentModel().getPageCount() - 1);
+        seekbar.setProgress(base.getDocumentModel().getCurrentViewPageIndex());
+        editText.setText("" + (base.getDocumentModel().getCurrentViewPageIndex() + 1));
+    }
+
 
     private void navigateToPage() {
         final EditText text = (EditText) findViewById(R.id.pageNumberTextEdit);

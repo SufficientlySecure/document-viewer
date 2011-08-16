@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.RectF;
 
 public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
 
@@ -67,8 +68,8 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
      * @param canvas
      */
     @Override
-    protected void onFirstDrawEvent(final Canvas canvas) {
-        mFlipRadius = view.getWidth();
+    protected void onFirstDrawEvent(final Canvas canvas, RectF viewRect) {
+        mFlipRadius = viewRect.width();
 
         resetClipEdge();
         updateValues();
@@ -106,7 +107,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
      * @param paint
      */
     @Override
-    protected void drawForeground(final Canvas canvas) {
+    protected void drawForeground(final Canvas canvas, RectF viewRect) {
         Page page = view.getBase().getDocumentModel().getPageObject(foreIndex);
         if (page == null) {
             page = view.getBase().getDocumentModel().getCurrentPageObject();
@@ -114,7 +115,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
         if (page != null) {
             canvas.save();
             canvas.clipRect(page.getBounds());
-            page.draw(canvas, true);
+            page.draw(canvas, viewRect, true);
             canvas.restore();
         }
     }
@@ -127,7 +128,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
      * @param paint
      */
     @Override
-    protected void drawBackground(final Canvas canvas) {
+    protected void drawBackground(final Canvas canvas, RectF viewRect) {
         final Path mask = createBackgroundPath();
 
         final Page page = view.getBase().getDocumentModel().getPageObject(backIndex);
@@ -140,7 +141,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
 
             canvas.drawRect(canvas.getClipBounds(), paint.getFillPaint());
 
-            page.draw(canvas, true);
+            page.draw(canvas, viewRect, true);
             canvas.restore();
         }
 
@@ -182,7 +183,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
      * @param canvas
      */
     @Override
-    protected void drawExtraObjects(final Canvas canvas) {
+    protected void drawExtraObjects(final Canvas canvas, RectF viewRect) {
         final Path path = createCurlEdgePath();
         canvas.drawPath(path, mCurlEdgePaint);
     }

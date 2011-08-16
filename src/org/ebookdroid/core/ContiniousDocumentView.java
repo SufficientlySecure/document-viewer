@@ -1,12 +1,18 @@
 package org.ebookdroid.core;
 
+import org.ebookdroid.core.utils.AndroidVersion;
+
 import android.graphics.Canvas;
 import android.graphics.RectF;
+import android.view.View;
 
 public class ContiniousDocumentView extends AbstractDocumentView {
 
     public ContiniousDocumentView(final IViewerActivity base) {
         super(base);
+        if (!AndroidVersion.lessThan3x) {
+            this.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        }
     }
 
     @Override
@@ -23,14 +29,9 @@ public class ContiniousDocumentView extends AbstractDocumentView {
 
     @Override
     protected void onScrollChanged() {
-        post(new Runnable() {
-
-            @Override
-            public void run() {
-                getBase().getDocumentModel().setCurrentPageByFirstVisible();
-            }
-        });
         super.onScrollChanged();
+        getBase().getDocumentModel().setCurrentPageByFirstVisible();
+        redrawView();
     }
 
     @Override
@@ -39,14 +40,14 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         getScroller().startScroll(getScrollX(), getScrollY(), 0,
                 (int) (direction * getHeight() * (scrollheight / 100.0)));
 
-        invalidate();
+        redrawView();
     }
 
     @Override
     protected void verticalDpadScroll(final int direction) {
         getScroller().startScroll(getScrollX(), getScrollY(), 0, direction * getHeight() / 2);
 
-        invalidate();
+        redrawView();
     }
 
     @Override
@@ -70,10 +71,9 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    protected void onDraw(final Canvas canvas) {
-        super.onDraw(canvas);
+    public void drawView(final Canvas canvas, RectF viewRect) {
         for (final Page page : getBase().getDocumentModel().getPages().values()) {
-            page.draw(canvas);
+            page.draw(canvas, viewRect);
         }
     }
 
@@ -114,7 +114,6 @@ public class ContiniousDocumentView extends AbstractDocumentView {
             heightAccum += pageHeight;
         }
     }
-
 
     @Override
     public boolean isPageVisible(final Page page) {

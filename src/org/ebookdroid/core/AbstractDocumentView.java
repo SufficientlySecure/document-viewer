@@ -2,14 +2,18 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.core.events.ZoomListener;
 
+import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.widget.Scroller;
 
-public abstract class AbstractDocumentView extends View implements ZoomListener, IDocumentViewController {
+public abstract class AbstractDocumentView extends SurfaceView implements ZoomListener, IDocumentViewController,
+        SurfaceHolder.Callback {
 
     private final IViewerActivity base;
     private boolean isInitialized = false;
@@ -25,6 +29,8 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
     private PageAlign align;
     private boolean touchInTapZone = false;
 
+    private DrawThread drawThread;
+
     public AbstractDocumentView(final IViewerActivity baseActivity) {
         super(baseActivity.getContext());
         this.base = baseActivity;
@@ -33,6 +39,7 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
         scroller = new Scroller(getContext());
         setFocusable(true);
         setFocusableInTouchMode(true);
+        getHolder().addCallback(this);
     }
 
     @Override
@@ -137,7 +144,7 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
         invalidatePageSizes();
         scrollTo((int) ((getScrollX() + getWidth() / 2) * ratio - getWidth() / 2),
                 (int) ((getScrollY() + getHeight() / 2) * ratio - getHeight() / 2));
-        postInvalidate();
+        redrawView();
     }
 
     @Override
@@ -172,7 +179,7 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
             if ((ev.getY() / getHeight() < ts) || (ev.getY() / getHeight() > (1 - ts))) {
                 inTap = true;
             }
-        }        
+        }
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 stopScroller();
@@ -183,7 +190,7 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
                     lastDownEventTime = ev.getEventTime();
                 }
                 touchInTapZone = inTap;
-                
+
                 break;
             case MotionEvent.ACTION_MOVE:
                 scrollBy((int) (lastX - ev.getX()), (int) (lastY - ev.getY()));
@@ -196,7 +203,7 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
                         getBottomLimit());
                 velocityTracker.recycle();
                 velocityTracker = null;
-                
+
                 if (inTap && touchInTapZone) {
                     if (ev.getY() / getHeight() < ts) {
                         verticalConfigScroll(-1);
@@ -262,7 +269,7 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
         viewRect = null;
     }
 
-    protected RectF getViewRect() {
+    public RectF getViewRect() {
         if (viewRect == null) {
             viewRect = new RectF(getScrollX(), getScrollY(), getScrollX() + getWidth(), getScrollY() + getHeight());
         }
@@ -348,7 +355,8 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
     /**
      * Returns if given page tree node should be kept in memory.
      *
-     * @param pageTreeNode the page tree node
+     * @param pageTreeNode
+     *            the page tree node
      * @return true, if successful
      * @see org.ebookdroid.core.IDocumentViewController#shouldKeptInMemory(org.ebookdroid.core.PageTreeNode)
      */
@@ -362,4 +370,29 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
     @Override
     public abstract boolean isPageVisible(Page page);
 
+    public abstract void drawView(Canvas canvas, RectF viewRect2);
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        redrawView();
+    }
+
+    public void redrawView() {
+        if (drawThread != null) {
+            drawThread.draw(getViewRect());
+        }
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        drawThread = new DrawThread(getHolder(), this);
+        drawThread.start();
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        boolean retry = true;
+        drawThread.finish();
+
+    }
 }

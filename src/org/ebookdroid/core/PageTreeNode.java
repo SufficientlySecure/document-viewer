@@ -38,8 +38,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     private final float childrenZoomThreshold;
     private final Matrix matrix = new Matrix();
     private boolean invalidateFlag;
-    private Rect targetRect;
-    private RectF targetRectF;
     private final boolean slice_limit;
     private final PageTreeNode parent;
 
@@ -109,8 +107,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     void invalidateNodeBounds() {
-        targetRect = null;
-        targetRectF = null;
         if (children != null) {
             for (final PageTreeNode child : children) {
                 child.invalidateNodeBounds();
@@ -118,23 +114,24 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         }
     }
 
-    void draw(final Canvas canvas, final PagePaint paint) {
+    void draw(final Canvas canvas, RectF viewRect, final PagePaint paint) {
+        Rect tr = getTargetRect(viewRect);
         if (getBitmap() != null) {
-            canvas.drawRect(getTargetRect(), paint.getFillPaint());
-            canvas.drawBitmap(getBitmap(), null, getTargetRect(), paint.getBitmapPaint());
+            canvas.drawRect(tr, paint.getFillPaint());
+            canvas.drawBitmap(getBitmap(), null, tr, paint.getBitmapPaint());
         }
         int brightness = getBase().getAppSettings().getBrightness();
         if (brightness < 100) {
             Paint p = new Paint();
             p.setColor(Color.BLACK);
             p.setAlpha(255 - brightness * 255 / 100);
-            canvas.drawRect(getTargetRect(), p);
+            canvas.drawRect(tr, p);
         }
         if (children == null) {
             return;
         }
         for (final PageTreeNode child : children) {
-            child.draw(canvas, paint);
+            child.draw(canvas, viewRect, paint);
         }
     }
 
@@ -142,13 +139,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         final boolean pageTreeNodeKeptInMemory = base.getDocumentController().shouldKeptInMemory(this);
         // Log.d("DocModel", "Node visibility: " + this + " -> " + pageTreeNodeVisible);
         return pageTreeNodeKeptInMemory;
-    }
-
-    public RectF getTargetRectF() {
-        if (targetRectF == null) {
-            targetRectF = new RectF(getTargetRect());
-        }
-        return targetRectF;
     }
 
     private void invalidateChildren() {
@@ -230,9 +220,9 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                     this.bitmap.recycle();
                 }
                 bitmapWeakReference = new SoftReference<Bitmap>(bitmap);
-                base.getView().postInvalidate();
             }
             this.bitmap = bitmap;
+            ((AbstractDocumentView) base.getView()).redrawView();
         }
     }
 
@@ -248,18 +238,18 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         return false;
     }
 
-    private Rect getTargetRect() {
-        if (targetRect == null) {
-            matrix.reset();
-            matrix.postScale(page.getBounds().width() * page.getTargetRectScale(), page.getBounds().height());
-            matrix.postTranslate(page.getBounds().left - page.getBounds().width() * page.getTargetTranslate(),
-                    page.getBounds().top);
-            final RectF targetRectF = new RectF();
-            matrix.mapRect(targetRectF, pageSliceBounds);
-            targetRect = new Rect((int) targetRectF.left, (int) targetRectF.top, (int) targetRectF.right,
-                    (int) targetRectF.bottom);
-        }
-        return targetRect;
+    private Rect getTargetRect(RectF viewRect) {
+        matrix.reset();
+        RectF bounds = new RectF(page.getBounds());
+        bounds.offset(-viewRect.left, -viewRect.top);
+
+        matrix.postScale(bounds.width() * page.getTargetRectScale(), bounds.height());
+        matrix.postTranslate(bounds.left - bounds.width() * page.getTargetTranslate(), bounds.top);
+
+        final RectF targetRectF = new RectF();
+        matrix.mapRect(targetRectF, pageSliceBounds);
+        return new Rect((int) targetRectF.left, (int) targetRectF.top, (int) targetRectF.right,
+                (int) targetRectF.bottom);
     }
 
     private void stopDecodingThisNode(final String reason) {

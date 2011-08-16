@@ -23,13 +23,13 @@ public class SinglePageFader extends AbstractPageSlider {
      * @param paint
      */
     @Override
-    protected void drawForeground(final Canvas canvas) {
+    protected void drawForeground(final Canvas canvas, RectF viewRect) {
         Page page = view.getBase().getDocumentModel().getPageObject(foreIndex);
         if (page == null) {
             page = view.getBase().getDocumentModel().getCurrentPageObject();
         }
         if (page != null) {
-            page.draw(canvas, true);
+            page.draw(canvas, viewRect, true);
         }
     }
 
@@ -41,20 +41,20 @@ public class SinglePageFader extends AbstractPageSlider {
      * @param paint
      */
     @Override
-    protected void drawBackground(final Canvas canvas) {
+    protected void drawBackground(final Canvas canvas, RectF viewRect) {
         final Page page = view.getBase().getDocumentModel().getPageObject(backIndex);
         if (page != null) {
             final Bitmap back = getBitmap(canvas);
             final Canvas tmp = new Canvas(back);
-            page.draw(tmp, true);
+            page.draw(tmp, viewRect, true);
 
             final Paint paint = new Paint();
             paint.setFilterBitmap(true);
             paint.setAntiAlias(true);
             paint.setDither(true);
-            paint.setAlpha(255 * (int) mA.x / view.getWidth());
-            final Rect src = new Rect(0, 0, view.getWidth(), view.getHeight());
-            final RectF dst = new RectF(0, 0, view.getWidth(), view.getHeight());
+            paint.setAlpha(255 * (int) mA.x / (int)viewRect.width());
+            final Rect src = new Rect(0, 0, (int)viewRect.width(), (int)viewRect.height());
+            final RectF dst = new RectF(0, 0, viewRect.width(), viewRect.height());
             canvas.drawBitmap(back, src, dst, paint);
         }
 

@@ -182,10 +182,10 @@ public class SinglePageDocumentView extends AbstractDocumentView {
         final PageAnimationType type = getBase().getBookSettings().getAnimationType();
         curler = PageAnimationType.create(type, this);
 
-        if (!AndroidVersion.lessThan3x) {
-            final int layerType = type.isHardwareAccelSupported() ? View.LAYER_TYPE_HARDWARE : View.LAYER_TYPE_SOFTWARE;
-            this.setLayerType(layerType, null);
-        }
+//        if (!AndroidVersion.lessThan3x) {
+//            final int layerType = type.isHardwareAccelSupported() ? View.LAYER_TYPE_HARDWARE : View.LAYER_TYPE_SOFTWARE;
+//            this.setLayerType(layerType, null);
+//        }
 
         if (curler != null) {
             curler.init();

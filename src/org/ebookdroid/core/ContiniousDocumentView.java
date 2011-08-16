@@ -10,9 +10,9 @@ public class ContiniousDocumentView extends AbstractDocumentView {
 
     public ContiniousDocumentView(final IViewerActivity base) {
         super(base);
-        if (!AndroidVersion.lessThan3x) {
-            this.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        }
+//        if (!AndroidVersion.lessThan3x) {
+//            this.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+//        }
     }
 
     @Override

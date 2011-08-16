@@ -14,7 +14,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -123,7 +122,6 @@ public class RecentActivity extends Activity implements IBrowserActivity {
     }
 
     private void changeLibraryView() {
-        Log.i("www", "Curr view " + viewflipper.getDisplayedChild());
         if (viewflipper.getDisplayedChild() == VIEW_RECENT) {
             viewflipper.setDisplayedChild(VIEW_LIBRARY);
             library.setImageResource(R.drawable.actionbar_recent);

@@ -41,6 +41,10 @@ public class DocumentModel extends CurrentPageModel {
         pages.clear();
     }
 
+    public Page getPageObject(final int page) {
+        return pages.get(page);
+    }
+
     /**
      * Gets the current page object.
      *
@@ -75,10 +79,6 @@ public class DocumentModel extends CurrentPageModel {
      */
     public Page getLastPageObject() {
         return pages.get(pages.size() - 1);
-    }
-    
-    public Page getPage(int index) {
-        return pages.get(index);
     }
 
     public int getFirstVisiblePage() {

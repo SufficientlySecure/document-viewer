@@ -360,9 +360,9 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
                         + getBase().getAppSettings().getPagesInMemory());
         */
         return (pageTreeNode.getPageIndex() >= getBase().getDocumentModel().getCurrentPageObject().getIndex()
-                - getBase().getAppSettings().getPagesInMemory()/2)
+                - Math.ceil(getBase().getAppSettings().getPagesInMemory()/2.0))
                 && (pageTreeNode.getPageIndex() <= getBase().getDocumentModel().getCurrentPageObject().getIndex()
-                        + getBase().getAppSettings().getPagesInMemory()/2);
+                        + Math.ceil(getBase().getAppSettings().getPagesInMemory()/2.0));
     }
 
     @Override

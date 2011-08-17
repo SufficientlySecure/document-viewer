@@ -17,6 +17,7 @@ public class Page {
     private final int documentPage;
     private final PageType pageType;
     private boolean keptInMempory;
+    private boolean visible;
 
     public Page(final IViewerActivity base, final int index, final int documentPage, final PageType pt,
             final CodecPageInfo cpi) {
@@ -51,20 +52,18 @@ public class Page {
         if (drawInvisible || isVisible()) {
             final PagePaint paint = base.getAppSettings().getNightMode() ? PagePaint.NIGHT : PagePaint.DAY;
 
-            RectF bounds2 = new RectF(getBounds());
-            bounds2.offset(- viewRect.left , - viewRect.top);
+            RectF bounds = new RectF(getBounds());
+            bounds.offset(-viewRect.left, -viewRect.top);
 
-            canvas.drawRect(bounds2, paint.getFillPaint());
+            canvas.drawRect(bounds, paint.getFillPaint());
 
-            canvas.drawText(base.getContext().getString(R.string.text_page) + " " + (getIndex() + 1), bounds2
-                    .centerX(), bounds2.centerY(), paint.getTextPaint());
+            canvas.drawText(base.getContext().getString(R.string.text_page) + " " + (getIndex() + 1),
+                    bounds.centerX(), bounds.centerY(), paint.getTextPaint());
 
-            node.draw(canvas, viewRect, paint);
+            node.draw(canvas, viewRect, new RectF(bounds), paint);
 
-            canvas.drawLine(bounds2.left, bounds2.top, bounds2.right, bounds2.top,
-                    paint.getStrokePaint());
-            canvas.drawLine(bounds2.left, bounds2.bottom, bounds2.right, bounds2.bottom,
-                    paint.getStrokePaint());
+            canvas.drawLine(bounds.left, bounds.top, bounds.right, bounds.top, paint.getStrokePaint());
+            canvas.drawLine(bounds.left, bounds.bottom, bounds.right, bounds.bottom, paint.getStrokePaint());
             return true;
         }
         return false;
@@ -88,7 +87,7 @@ public class Page {
     }
 
     public boolean isVisible() {
-        return base.getDocumentController().isPageVisible(this);
+        return visible;
     }
 
     public void setAspectRatio(final int width, final int height) {
@@ -101,7 +100,7 @@ public class Page {
     }
 
     public boolean isKeptInMemory() {
-        return keptInMempory || isVisible();
+        return keptInMempory || visible;
     }
 
     private boolean calculateKeptInMemory() {
@@ -112,11 +111,13 @@ public class Page {
 
     public void updateVisibility() {
         keptInMempory = calculateKeptInMemory();
+        visible = base.getDocumentController().isPageVisible(this);
         node.updateVisibility();
     }
 
     public void invalidate() {
         keptInMempory = calculateKeptInMemory();
+        visible = base.getDocumentController().isPageVisible(this);
         node.invalidate();
     }
 

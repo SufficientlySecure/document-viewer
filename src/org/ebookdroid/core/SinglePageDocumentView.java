@@ -2,13 +2,11 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.core.curl.PageAnimationType;
 import org.ebookdroid.core.curl.PageAnimator;
-import org.ebookdroid.core.utils.AndroidVersion;
 
 import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
-import android.view.View;
 
 /**
  * The Class SinglePageDocumentView.
@@ -122,7 +120,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    public void drawView(final Canvas canvas, RectF viewRect) {
+    public void drawView(final Canvas canvas, final RectF viewRect) {
         if (isCurlerDisabled()) {
             final Page page = getBase().getDocumentModel().getCurrentPageObject();
             if (page != null) {
@@ -174,7 +172,11 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     @Override
     protected boolean isPageVisibleImpl(final Page page) {
-        return page.getIndex() == getCurrentPage();
+        final int pageIndex = page.getIndex();
+        if (curler != null) {
+            return pageIndex == curler.getForeIndex() || pageIndex == curler.getBackIndex();
+        }
+        return pageIndex == getCurrentPage();
     }
 
     @Override

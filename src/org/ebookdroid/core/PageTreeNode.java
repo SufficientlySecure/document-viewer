@@ -70,12 +70,17 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     public void updateVisibility() {
         invalidateChildren();
+
         if (children != null) {
             for (final PageTreeNode child : children) {
                 child.updateVisibility();
             }
         }
-        if (page.isKeptInMemory()) {
+
+        if (!page.isKeptInMemory() || isHiddenByChildren()) {
+            stopDecodingThisNode("node hidden");
+            setBitmap(null);
+        } else if (page.isKeptInMemory()) {
             if (!thresholdHit()) {
                 if (getBitmap() != null && !getBitmap().isRecycled()  && !invalidateFlag) {
                     restoreBitmapReference();
@@ -83,10 +88,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                     decodePageTreeNode();
                 }
             }
-        }
-        if (!isVisibleAndNotHiddenByChildren()) {
-            stopDecodingThisNode("node hidden");
-            setBitmap(null);
         }
     }
 
@@ -114,8 +115,8 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         }
     }
 
-    void draw(final Canvas canvas, RectF viewRect, final PagePaint paint) {
-        Rect tr = getTargetRect(viewRect);
+    void draw(final Canvas canvas, RectF viewRect, RectF pageBounds, final PagePaint paint) {
+        Rect tr = getTargetRect(viewRect, pageBounds);
         if (getBitmap() != null && !getBitmap().isRecycled()) {
             canvas.drawRect(tr, paint.getFillPaint());
             canvas.drawBitmap(getBitmap(), null, tr, paint.getBitmapPaint());
@@ -131,7 +132,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             return;
         }
         for (final PageTreeNode child : children) {
-            child.draw(canvas, viewRect, paint);
+            child.draw(canvas, viewRect, pageBounds, paint);
         }
     }
 
@@ -232,9 +233,10 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         return false;
     }
 
-    private Rect getTargetRect(RectF viewRect) {
+    private Rect getTargetRect(RectF viewRect, RectF pageBounds) {
         matrix.reset();
-        RectF bounds = new RectF(page.getBounds());
+
+        RectF bounds = new RectF(pageBounds);
         bounds.offset(-viewRect.left, -viewRect.top);
 
         matrix.postScale(bounds.width() * page.getTargetRectScale(), bounds.height());
@@ -300,10 +302,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 child.recycle();
             }
         }
-    }
-
-    private boolean isVisibleAndNotHiddenByChildren() {
-        return page.isKeptInMemory() && !isHiddenByChildren();
     }
 
     public int getPageIndex() {

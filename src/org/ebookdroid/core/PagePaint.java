@@ -16,11 +16,10 @@ public enum PagePaint {
     private final Paint strokePaint = new Paint();
 
     private PagePaint(final int textColor, final int fillColor, final boolean invert) {
+        bitmapPaint = new Paint();
+        bitmapPaint.setFilterBitmap(true);
         if (invert) {
-            bitmapPaint = new Paint();
             bitmapPaint.setXfermode(new PixelXorXfermode(-1));
-        } else {
-            bitmapPaint = null;
         }
 
         textPaint.setColor(textColor);

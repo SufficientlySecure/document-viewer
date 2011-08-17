@@ -25,6 +25,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -456,6 +457,15 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
         }
+    }
+    
+    @Override
+    public boolean onKeyDown(final int keyCode, final KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {   
+            finish();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
 }

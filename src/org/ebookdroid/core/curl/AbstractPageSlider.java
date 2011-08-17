@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.RectF;
 
 public abstract class AbstractPageSlider extends AbstractPageAnimator {
 
@@ -35,7 +34,7 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
      * @param canvas
      */
     @Override
-    protected void onFirstDrawEvent(final Canvas canvas, RectF viewRect) {
+    protected void onFirstDrawEvent(final Canvas canvas) {
         resetClipEdge();
         updateValues();
     }
@@ -75,12 +74,12 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
         final PagePaint paint = !(view.getBase().getAppSettings().getNightMode()) ? PagePaint.NIGHT : PagePaint.DAY;
 
         bitmap.eraseColor(paint.getFillPaint().getColor());
-
+        
         return bitmap;
     }
 
     @Override
-    protected void drawExtraObjects(final Canvas canvas, RectF viewRect) {
+    protected void drawExtraObjects(final Canvas canvas) {
         final Paint paint = new Paint();
         paint.setFilterBitmap(true);
         paint.setAntiAlias(true);

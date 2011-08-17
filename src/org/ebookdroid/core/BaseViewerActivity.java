@@ -358,7 +358,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
                 return true;
             case R.id.mainmenu_nightmode:
                 getAppSettings().switchNightMode();
-                ((AbstractDocumentView)getView()).redrawView();
+                getView().invalidate();
                 return true;
         }
         return super.onOptionsItemSelected(item);

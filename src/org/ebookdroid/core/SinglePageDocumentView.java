@@ -36,12 +36,11 @@ public class SinglePageDocumentView extends AbstractDocumentView {
         if (toPage >= 0 && toPage <= getBase().getDocumentModel().getPageCount()) {
             final Page page = getBase().getDocumentModel().getPageObject(toPage);
             getBase().getDocumentModel().setCurrentPageIndex(page.getDocumentPageIndex(), page.getIndex());
-            if (curler != null) {
-                curler.resetPageIndexes();
-            }
             updatePageVisibility();
         }
-//        redrawView();
+        if (curler != null) {
+            curler.resetPageIndexes();
+        }
     }
 
     @Override
@@ -52,11 +51,14 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     @Override
     protected void verticalConfigScroll(final int direction) {
         goToPageImpl(getBase().getDocumentModel().getCurrentViewPageIndex() + direction);
+
+        invalidate();
     }
 
     @Override
     protected void verticalDpadScroll(final int direction) {
         goToPageImpl(getBase().getDocumentModel().getCurrentViewPageIndex() + direction);
+        invalidate();
     }
 
     @Override
@@ -109,7 +111,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
             }
             velocityTracker.addMovement(event);
 
-            return curler.handleTouchEvent(event);
+            return curler.onTouchEvent(event);
         }
     }
 
@@ -123,16 +125,17 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    public void drawView(final Canvas canvas, RectF viewRect) {
+    protected void onDraw(final Canvas canvas) {
         if (isCurlerDisabled()) {
             final Page page = getBase().getDocumentModel().getCurrentPageObject();
             if (page != null) {
-                page.draw(canvas, viewRect);
+                page.draw(canvas);
             }
         } else {
-            curler.draw(canvas, viewRect);
+            curler.onDraw(canvas);
         }
     }
+
     /**
      * Invalidate page sizes.
      */
@@ -170,6 +173,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
         if (curler != null) {
             curler.setViewDrawn(false);
         }
+
     }
 
     @Override
@@ -182,15 +186,14 @@ public class SinglePageDocumentView extends AbstractDocumentView {
         final PageAnimationType type = getBase().getBookSettings().getAnimationType();
         curler = PageAnimationType.create(type, this);
 
-//        if (!AndroidVersion.lessThan3x) {
-//            final int layerType = type.isHardwareAccelSupported() ? View.LAYER_TYPE_HARDWARE : View.LAYER_TYPE_SOFTWARE;
-//            this.setLayerType(layerType, null);
-//        }
+        if (!AndroidVersion.lessThan3x) {
+            final int layerType = type.isHardwareAccelSupported() ? View.LAYER_TYPE_HARDWARE : View.LAYER_TYPE_SOFTWARE;
+            this.setLayerType(layerType, null);
+        }
 
         if (curler != null) {
             curler.init();
         }
     }
-
 
 }

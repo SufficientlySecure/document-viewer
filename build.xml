@@ -1,0 +1,34 @@
+<project name="EBookDroid" basedir="." default="debug">
+
+    <property file="default.properties" />
+
+    <tstamp>
+        <format property="debug.version" pattern="yyyyMMdd.HHmmss" />
+    </tstamp>
+
+    <property name="sdk.dir" location="/opt/android/android-sdk-linux_x86" />
+
+    <property name="aapt" value="${sdk.dir}/platform-tools/aapt" />
+    <property name="dx" value="${sdk.dir}/platform-tools/dx" />
+
+    <property name="android.jar" value="${sdk.dir}/platforms/${target}/android.jar" />
+
+    <property name="out.dir" value="target" />
+    <property name="out.absolute.dir" location="${out.dir}" />
+    <property name="out.debug.file" location="${out.absolute.dir}/${ant.project.name}-${debug.version}.apk" />
+
+    <path id="project.libraries.src" path="thirdparty/junrar" />
+
+    <path id="project.libraries.jars" />
+    <path id="project.libraries.libs" />
+
+    <path id="android.target.classpath">
+        <fileset dir="${sdk.dir}/platforms/${target}/">
+            <include name="android.jar" />
+        </fileset>
+    </path>
+
+    <import file="${sdk.dir}/tools/ant/pre_setup.xml" />
+    <import file="${sdk.dir}/tools/ant/main_rules.xml" />
+
+</project>

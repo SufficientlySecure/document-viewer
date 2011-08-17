@@ -185,14 +185,63 @@ JNIEXPORT jint JNICALL
                                     jobject cpi)
 {
 
-	renderdocument_t *doc = (renderdocument_t*) (long)handle;
+    renderdocument_t *doc = (renderdocument_t*) (long)handle;
+
+///
+
+
+    jclass clazz;
+    jfieldID fid;
+
+    fz_error error = 0;
+    fz_obj *pageobj = NULL;
+    fz_obj *boxobj = NULL;
+    fz_rect bbox;
+    fz_obj *rotateobj = NULL;
+    int rotate = 0;
+                     
+    pageobj = doc->xref->page_objs[pageNumber - 1];
+    boxobj = fz_dict_gets(pageobj, "MediaBox");
+    if (boxobj == NULL)
+      boxobj = fz_dict_gets(pageobj, "CropBox");
+    bbox = pdf_to_rect(boxobj);
+
+    rotateobj = fz_dict_gets(pageobj, "Rotate");
+    if (fz_is_int(rotateobj)) 
+	rotate = fz_to_int(rotateobj);
+    else 
+	rotate = 0;
+    
+    clazz = (*env)->GetObjectClass(env,cpi);
+    if (0 == clazz)
+    {
+	return(-1);
+    }
+	    
+    fid = (*env)->GetFieldID(env,clazz,"width","I");
+    (*env)->SetIntField(env,cpi,fid,bbox.x1 - bbox.x0);
+
+    fid = (*env)->GetFieldID(env,clazz,"height","I");
+    (*env)->SetIntField(env,cpi,fid,bbox.y1 - bbox.y0);
+
+    fid = (*env)->GetFieldID(env,clazz,"dpi","I");
+    (*env)->SetIntField(env,cpi,fid,0);
+
+    fid = (*env)->GetFieldID(env,clazz,"rotation","I");
+    (*env)->SetIntField(env,cpi,fid,rotate);
+
+    fid = (*env)->GetFieldID(env,clazz,"version","I");
+    (*env)->SetIntField(env,cpi,fid,0);
+    return 0;
+
+///
+
+
 
 //	DEBUG("PdfDocument.getPageInfo = %p", doc);
-
+/*
 	pdf_page *page = NULL;
 	
-	jclass clazz;
-	jfieldID fid;
 
 
 	fz_error* error = pdf_load_page(&page, doc->xref, pageNumber - 1);
@@ -224,6 +273,7 @@ JNIEXPORT jint JNICALL
     	    return 0;
 	}
 	return(-1);
+    */
 }
 
 

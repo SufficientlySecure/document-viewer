@@ -1,6 +1,7 @@
 package org.ebookdroid.core.curl;
 
 import android.graphics.Canvas;
+import android.graphics.RectF;
 import android.view.MotionEvent;
 
 
@@ -12,9 +13,9 @@ public interface PageAnimator {
 
     void resetPageIndexes();
 
-    boolean onTouchEvent(MotionEvent event);
+    boolean handleTouchEvent(MotionEvent event);
 
-    void onDraw(Canvas canvas);
+    void draw(Canvas canvas, RectF viewRect);
 
     void setViewDrawn(boolean b);
 

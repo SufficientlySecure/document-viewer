@@ -25,15 +25,9 @@ public class ContiniousDocumentView extends AbstractDocumentView {
 
     @Override
     protected void onScrollChanged() {
-        post(new Runnable() {
-
-            @Override
-            public void run() {
-                updatePageVisibility();
-                getBase().getDocumentModel().setCurrentPageByFirstVisible(getFirstVisiblePage());
-            }
-        });
         super.onScrollChanged();
+        getBase().getDocumentModel().setCurrentPageByFirstVisible(getFirstVisiblePage());
+        redrawView();
     }
 
     @Override
@@ -42,14 +36,14 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         getScroller().startScroll(getScrollX(), getScrollY(), 0,
                 (int) (direction * getHeight() * (scrollheight / 100.0)));
 
-        invalidate();
+        redrawView();
     }
 
     @Override
     protected void verticalDpadScroll(final int direction) {
         getScroller().startScroll(getScrollX(), getScrollY(), 0, direction * getHeight() / 2);
 
-        invalidate();
+        redrawView();
     }
 
     @Override
@@ -73,13 +67,12 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    protected void onDraw(final Canvas canvas) {
-        super.onDraw(canvas);
+    public void drawView(final Canvas canvas, RectF viewRect) {
         DocumentModel dm = getBase().getDocumentModel();
         for (int i = firstVisiblePage; i <= lastVisiblePage; i++) {
             final Page page = dm.getPageObject(i);
             if (page != null) {
-                page.draw(canvas);
+                page.draw(canvas, viewRect);
             }
         }
     }

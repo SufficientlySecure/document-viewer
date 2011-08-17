@@ -43,22 +43,27 @@ public class Page {
         return Math.round(getBounds().top);
     }
 
-    public boolean draw(final Canvas canvas) {
-        return draw(canvas, false);
+    public boolean draw(final Canvas canvas, RectF viewRect) {
+        return draw(canvas, viewRect, false);
     }
 
-    public boolean draw(final Canvas canvas, final boolean drawInvisible) {
+    public boolean draw(final Canvas canvas, RectF viewRect, final boolean drawInvisible) {
         if (drawInvisible || isVisible()) {
             final PagePaint paint = base.getAppSettings().getNightMode() ? PagePaint.NIGHT : PagePaint.DAY;
 
-            canvas.drawRect(getBounds(), paint.getFillPaint());
+            RectF bounds2 = new RectF(getBounds());
+            bounds2.offset(- viewRect.left , - viewRect.top);
 
-            canvas.drawText(base.getContext().getString(R.string.text_page) + " " + (getIndex() + 1), getBounds()
-                    .centerX(), getBounds().centerY(), paint.getTextPaint());
-            node.draw(canvas, paint);
-            canvas.drawLine(getBounds().left, getBounds().top, getBounds().right, getBounds().top,
+            canvas.drawRect(bounds2, paint.getFillPaint());
+
+            canvas.drawText(base.getContext().getString(R.string.text_page) + " " + (getIndex() + 1), bounds2
+                    .centerX(), bounds2.centerY(), paint.getTextPaint());
+
+            node.draw(canvas, viewRect, paint);
+
+            canvas.drawLine(bounds2.left, bounds2.top, bounds2.right, bounds2.top,
                     paint.getStrokePaint());
-            canvas.drawLine(getBounds().left, getBounds().bottom, getBounds().right, getBounds().bottom,
+            canvas.drawLine(bounds2.left, bounds2.bottom, bounds2.right, bounds2.bottom,
                     paint.getStrokePaint());
             return true;
         }

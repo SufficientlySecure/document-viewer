@@ -4,6 +4,7 @@ import org.ebookdroid.core.SinglePageDocumentView;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.RectF;
 import android.view.MotionEvent;
 
 public abstract class AbstractPageAnimator implements PageAnimator {
@@ -83,7 +84,8 @@ public abstract class AbstractPageAnimator implements PageAnimator {
      */
     @Override
     public void resetPageIndexes() {
-        foreIndex = backIndex = -1;
+        foreIndex = view.getCurrentPage();
+        backIndex = view.getCurrentPage();
     }
 
     public int getForeIndex() {
@@ -146,11 +148,20 @@ public abstract class AbstractPageAnimator implements PageAnimator {
         // Create values
         updateValues();
 
+        if (mA.x < 1) {
+            mA.x = 0;
+        }
+
+        if (mA.x > width - 1) {
+            mA.x = width;
+        }
+
         // Check for endings :D
-        if (mA.x < 1 || mA.x > width - 1) {
+        if (mA.x <= 1 || mA.x >= width - 1) {
             bFlipping = false;
             if (bFlipRight) {
                 view.goToPageImpl(backIndex);
+                foreIndex = backIndex;
             } else {
                 view.goToPageImpl(foreIndex);
             }
@@ -167,18 +178,18 @@ public abstract class AbstractPageAnimator implements PageAnimator {
         }
 
         // Force a new draw call
-        view.invalidate();
+        view.redrawView();
     }
 
     protected abstract void resetClipEdge();
 
     protected abstract Vector2D fixMovement(Vector2D point, final boolean bMaintainMoveDir);
 
-    protected abstract void drawBackground(final Canvas canvas);
+    protected abstract void drawBackground(final Canvas canvas, RectF viewRect);
 
-    protected abstract void drawForeground(final Canvas canvas);
+    protected abstract void drawForeground(final Canvas canvas, RectF viewRect);
 
-    protected abstract void drawExtraObjects(final Canvas canvas);
+    protected abstract void drawExtraObjects(final Canvas canvas, RectF viewRect);
 
     /**
      * Update points values values.
@@ -191,19 +202,19 @@ public abstract class AbstractPageAnimator implements PageAnimator {
      * @see org.ebookdroid.core.curl.PageAnimator#onDraw(android.graphics.Canvas)
      */
     @Override
-    public void onDraw(final Canvas canvas) {
+    public void draw(final Canvas canvas, RectF viewRect) {
         // We need to initialize all size data when we first draw the view
         if (!isViewDrawn()) {
             setViewDrawn(true);
-            onFirstDrawEvent(canvas);
+            onFirstDrawEvent(canvas, viewRect);
         }
 
         canvas.drawColor(Color.BLACK);
 
         // Draw our elements
-        drawForeground(canvas);
-        drawBackground(canvas);
-        drawExtraObjects(canvas);
+        drawForeground(canvas, viewRect);
+        drawBackground(canvas, viewRect);
+        drawExtraObjects(canvas, viewRect);
 
         // Check if we can re-enable input
         if (bEnableInputAfterDraw) {
@@ -212,10 +223,10 @@ public abstract class AbstractPageAnimator implements PageAnimator {
         }
     }
 
-    protected abstract void onFirstDrawEvent(Canvas canvas);
+    protected abstract void onFirstDrawEvent(Canvas canvas, RectF viewRect);
 
     @Override
-    public boolean onTouchEvent(final MotionEvent event) {
+    public boolean handleTouchEvent(final MotionEvent event) {
         if (!bBlockTouchInput) {
 
             // Get our finger position
@@ -289,7 +300,7 @@ public abstract class AbstractPageAnimator implements PageAnimator {
 
                     // Force a new draw call
                     updateValues();
-                    view.invalidate();
+                    view.redrawView();
                     break;
             }
 

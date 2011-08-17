@@ -36,10 +36,10 @@ public class SinglePageDocumentView extends AbstractDocumentView {
         if (toPage >= 0 && toPage <= getBase().getDocumentModel().getPageCount()) {
             final Page page = getBase().getDocumentModel().getPageObject(toPage);
             getBase().getDocumentModel().setCurrentPageIndex(page.getDocumentPageIndex(), page.getIndex());
+            if (curler != null) {
+                curler.resetPageIndexes();
+            }
             updatePageVisibility();
-        }
-        if (curler != null) {
-            curler.resetPageIndexes();
         }
     }
 
@@ -51,14 +51,11 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     @Override
     protected void verticalConfigScroll(final int direction) {
         goToPageImpl(getBase().getDocumentModel().getCurrentViewPageIndex() + direction);
-
-        invalidate();
     }
 
     @Override
     protected void verticalDpadScroll(final int direction) {
         goToPageImpl(getBase().getDocumentModel().getCurrentViewPageIndex() + direction);
-        invalidate();
     }
 
     @Override
@@ -111,7 +108,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
             }
             velocityTracker.addMovement(event);
 
-            return curler.onTouchEvent(event);
+            return curler.handleTouchEvent(event);
         }
     }
 
@@ -125,14 +122,14 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    protected void onDraw(final Canvas canvas) {
+    public void drawView(final Canvas canvas, RectF viewRect) {
         if (isCurlerDisabled()) {
             final Page page = getBase().getDocumentModel().getCurrentPageObject();
             if (page != null) {
-                page.draw(canvas);
+                page.draw(canvas, viewRect);
             }
         } else {
-            curler.onDraw(canvas);
+            curler.draw(canvas, viewRect);
         }
     }
 
@@ -184,11 +181,6 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     public void updateAnimationType() {
         final PageAnimationType type = getBase().getBookSettings().getAnimationType();
         curler = PageAnimationType.create(type, this);
-
-        if (!AndroidVersion.lessThan3x) {
-            final int layerType = type.isHardwareAccelSupported() ? View.LAYER_TYPE_HARDWARE : View.LAYER_TYPE_SOFTWARE;
-            this.setLayerType(layerType, null);
-        }
 
         if (curler != null) {
             curler.init();

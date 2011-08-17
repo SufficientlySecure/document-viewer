@@ -5,29 +5,30 @@ import org.ebookdroid.core.IViewerActivity;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.PageType;
 import org.ebookdroid.core.codec.CodecPageInfo;
+import org.ebookdroid.utils.LengthUtils;
 
 import android.view.View;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.ArrayList;
 
 public class DocumentModel extends CurrentPageModel {
 
+    private static final Page[] EMPTY_PAGES = {};
+
     private DecodeService decodeService;
 
-    private final Map<Integer, Page> pages = new TreeMap<Integer, Page>();
+    private Page[] pages = EMPTY_PAGES;
 
     public DocumentModel(final DecodeService decodeService) {
-        super();
         this.decodeService = decodeService;
     }
 
-    public Map<Integer, Page> getPages() {
+    public Page[] getPages() {
         return pages;
     }
 
     public int getPageCount() {
-        return getPages().size();
+        return LengthUtils.length(pages);
     }
 
     public DecodeService getDecodeService() {
@@ -37,12 +38,11 @@ public class DocumentModel extends CurrentPageModel {
     public void recycle() {
         decodeService.recycle();
         decodeService = null;
-
-        pages.clear();
+        pages = null;
     }
 
-    public Page getPageObject(final int page) {
-        return pages.get(page);
+    public Page getPageObject(final int viewIndex) {
+        return pages != null && 0 <= viewIndex && viewIndex < pages.length ? pages[viewIndex] : null;
     }
 
     /**
@@ -51,7 +51,7 @@ public class DocumentModel extends CurrentPageModel {
      * @return the current page object
      */
     public Page getCurrentPageObject() {
-        return pages.get(getCurrentViewPageIndex());
+        return getPageObject(this.currentViewPageIndex);
     }
 
     /**
@@ -60,7 +60,7 @@ public class DocumentModel extends CurrentPageModel {
      * @return the next page object
      */
     public Page getNextPageObject() {
-        return pages.get(getCurrentViewPageIndex() + 1);
+        return getPageObject(this.currentViewPageIndex + 1);
     }
 
     /**
@@ -69,7 +69,7 @@ public class DocumentModel extends CurrentPageModel {
      * @return the prev page object
      */
     public Page getPrevPageObject() {
-        return pages.get(getCurrentViewPageIndex() - 1);
+        return getPageObject(this.currentViewPageIndex - 1);
     }
 
     /**
@@ -78,44 +78,18 @@ public class DocumentModel extends CurrentPageModel {
      * @return the last page object
      */
     public Page getLastPageObject() {
-        return pages.get(pages.size() - 1);
+        return getPageObject(pages.length - 1);
     }
 
-    public int getFirstVisiblePage() {
-        int result = 0;
-        for (final Page page : pages.values()) {
-            if (page.isVisible()) {
-                result = page.getIndex();
-                break;
-            }
+    public void setCurrentPageByFirstVisible(int firstVisiblePage) {
+        Page page = getPageObject(firstVisiblePage);
+        if (page != null) {
+            setCurrentPageIndex(page.getDocumentPageIndex(), page.getIndex());
         }
-        return result;
-    }
-
-    public int getLastVisiblePage() {
-        int result = 0;
-        boolean foundVisible = false;
-        for (final Page page : pages.values()) {
-            if (page.isVisible()) {
-                foundVisible = true;
-                result = page.getIndex();
-            } else {
-                if (foundVisible) {
-                    break;
-                }
-            }
-        }
-        return result;
-    }
-
-    public void setCurrentPageByFirstVisible() {
-        int index = getFirstVisiblePage();
-        Page page = pages.get(index);
-        setCurrentPageIndex(page.getDocumentPageIndex(), page.getIndex());
     }
 
     public void initPages(final IViewerActivity base) {
-        pages.clear();
+        pages = EMPTY_PAGES;
 
         final boolean splitPages = base.getBookSettings().getSplitPages();
         final View view = base.getView();
@@ -126,17 +100,20 @@ public class DocumentModel extends CurrentPageModel {
 
         int index = 0;
 
+        ArrayList<Page> list = new ArrayList<Page>();
         for (int i = 0; i < getDecodeService().getPageCount(); i++) {
             final CodecPageInfo cpi = getDecodeService().getPageInfo(i);
             if (!splitPages || cpi == null || (cpi.getWidth() < cpi.getHeight())) {
-                final Page page = new Page(base, index, i, PageType.FULL_PAGE, cpi != null ? cpi : defCpi);
-                pages.put(index++, page);
+                final Page page = new Page(base, index++, i, PageType.FULL_PAGE, cpi != null ? cpi : defCpi);
+                list.add(page);
             } else {
-                final Page page1 = new Page(base, index, i, PageType.LEFT_PAGE, cpi);
-                pages.put(index++, page1);
-                final Page page2 = new Page(base, index, i, PageType.RIGHT_PAGE, cpi);
-                pages.put(index++, page2);
+                final Page page1 = new Page(base, index++, i, PageType.LEFT_PAGE, cpi);
+                list.add(page1);
+                final Page page2 = new Page(base, index++, i, PageType.RIGHT_PAGE, cpi);
+                list.add(page2);
             }
         }
+
+        pages = list.toArray(new Page[list.size()]);
     }
 }

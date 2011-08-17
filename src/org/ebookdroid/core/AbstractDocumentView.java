@@ -25,12 +25,18 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
     private PageAlign align;
     private boolean touchInTapZone = false;
 
+    int firstVisiblePage;
+    int lastVisiblePage;
+
     public AbstractDocumentView(final IViewerActivity baseActivity) {
         super(baseActivity.getContext());
         this.base = baseActivity;
         this.align = base.getBookSettings().getPageAlign();
+        this.firstVisiblePage = -1;
+        this.lastVisiblePage = -1;
+        this.scroller = new Scroller(getContext());
+
         setKeepScreenOn(true);
-        scroller = new Scroller(getContext());
         setFocusable(true);
         setFocusableInTouchMode(true);
     }
@@ -87,8 +93,25 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
 
     @Override
     public void updatePageVisibility() {
-        for (final Page page : getBase().getDocumentModel().getPages().values()) {
+        calculatePageVisibility();
+
+        for (final Page page : getBase().getDocumentModel().getPages()) {
             page.updateVisibility();
+        }
+    }
+
+    protected void calculatePageVisibility() {
+        firstVisiblePage = -1;
+        lastVisiblePage = -1;
+        for (final Page page : getBase().getDocumentModel().getPages()) {
+            if (isPageVisibleImpl(page)) {
+                if (firstVisiblePage == -1) {
+                    firstVisiblePage = page.getIndex();
+                }
+                lastVisiblePage = page.getIndex();
+            } else if (firstVisiblePage != -1) {
+                break;
+            }
         }
     }
 
@@ -96,7 +119,7 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
     public void commitZoom() {
         base.getSettings().zoomChanged(base.getZoomModel().getZoom());
 
-        for (final Page page : getBase().getDocumentModel().getPages().values()) {
+        for (final Page page : getBase().getDocumentModel().getPages()) {
             page.invalidate();
         }
         inZoom = false;
@@ -172,7 +195,7 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
             if ((ev.getY() / getHeight() < ts) || (ev.getY() / getHeight() > (1 - ts))) {
                 inTap = true;
             }
-        }        
+        }
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 stopScroller();
@@ -183,7 +206,7 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
                     lastDownEventTime = ev.getEventTime();
                 }
                 touchInTapZone = inTap;
-                
+
                 break;
             case MotionEvent.ACTION_MOVE:
                 scrollBy((int) (lastX - ev.getX()), (int) (lastY - ev.getY()));
@@ -196,7 +219,7 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
                         getBottomLimit());
                 velocityTracker.recycle();
                 velocityTracker = null;
-                
+
                 if (inTap && touchInTapZone) {
                     if (ev.getY() / getHeight() < ts) {
                         verticalConfigScroll(-1);
@@ -345,21 +368,18 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
         return isInitialized;
     }
 
-    /**
-     * Returns if given page tree node should be kept in memory.
-     *
-     * @param pageTreeNode the page tree node
-     * @return true, if successful
-     * @see org.ebookdroid.core.IDocumentViewController#shouldKeptInMemory(org.ebookdroid.core.PageTreeNode)
-     */
-    public final boolean shouldKeptInMemory(final PageTreeNode pageTreeNode) {
-        return (pageTreeNode.getPageIndex() >= getBase().getDocumentModel().getCurrentPageObject().getIndex()
-                - Math.ceil(getBase().getAppSettings().getPagesInMemory()/2.0))
-                && (pageTreeNode.getPageIndex() <= getBase().getDocumentModel().getCurrentPageObject().getIndex()
-                        + Math.ceil(getBase().getAppSettings().getPagesInMemory()/2.0));
+    @Override
+    public final boolean isPageVisible(Page page) {
+        return firstVisiblePage <= page.getIndex() && page.getIndex() <= lastVisiblePage;
     }
 
-    @Override
-    public abstract boolean isPageVisible(Page page);
+    protected abstract boolean isPageVisibleImpl(final Page page);
 
+    public int getFirstVisiblePage() {
+        return firstVisiblePage;
+    }
+
+    public int getLastVisiblePage() {
+        return lastVisiblePage;
+    }
 }

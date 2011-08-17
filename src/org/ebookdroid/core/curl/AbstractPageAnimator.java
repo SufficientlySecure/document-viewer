@@ -115,7 +115,7 @@ public abstract class AbstractPageAnimator implements PageAnimator {
         backIndex = view.getCurrentPage();
         foreIndex = backIndex - 1;
         if (foreIndex < 0) {
-            foreIndex = view.getBase().getDocumentModel().getPages().size() - 1;
+            foreIndex = view.getBase().getDocumentModel().getPageCount() - 1;
         }
     }
 

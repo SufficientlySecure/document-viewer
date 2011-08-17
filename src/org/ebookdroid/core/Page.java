@@ -16,6 +16,7 @@ public class Page {
     private float aspectRatio;
     private final int documentPage;
     private final PageType pageType;
+    private boolean keptInMempory;
 
     public Page(final IViewerActivity base, final int index, final int documentPage, final PageType pt,
             final CodecPageInfo cpi) {
@@ -42,11 +43,11 @@ public class Page {
         return Math.round(getBounds().top);
     }
 
-    public void draw(final Canvas canvas) {
-        draw(canvas, false);
+    public boolean draw(final Canvas canvas) {
+        return draw(canvas, false);
     }
 
-    public void draw(final Canvas canvas, final boolean drawInvisible) {
+    public boolean draw(final Canvas canvas, final boolean drawInvisible) {
         if (drawInvisible || isVisible()) {
             final PagePaint paint = base.getAppSettings().getNightMode() ? PagePaint.NIGHT : PagePaint.DAY;
 
@@ -59,7 +60,9 @@ public class Page {
                     paint.getStrokePaint());
             canvas.drawLine(getBounds().left, getBounds().bottom, getBounds().right, getBounds().bottom,
                     paint.getStrokePaint());
+            return true;
         }
+        return false;
     }
 
     public float getAspectRatio() {
@@ -80,9 +83,7 @@ public class Page {
     }
 
     public boolean isVisible() {
-        final boolean pageVisible = base.getDocumentController().isPageVisible(this);
-        // Log.d("DocModel", "Page visibility: " + this + " -> " + pageVisible);
-        return pageVisible;
+        return base.getDocumentController().isPageVisible(this);
     }
 
     public void setAspectRatio(final int width, final int height) {
@@ -94,11 +95,23 @@ public class Page {
         node.invalidateNodeBounds();
     }
 
+    public boolean isKeptInMemory() {
+        return keptInMempory || isVisible();
+    }
+
+    private boolean calculateKeptInMemory() {
+        int current = base.getDocumentModel().getCurrentViewPageIndex();
+        int inMemory = (int) Math.ceil(base.getAppSettings().getPagesInMemory() / 2.0);
+        return (current - inMemory <= this.index) && (this.index <= current + inMemory);
+    }
+
     public void updateVisibility() {
+        keptInMempory = calculateKeptInMemory();
         node.updateVisibility();
     }
 
     public void invalidate() {
+        keptInMempory = calculateKeptInMemory();
         node.invalidate();
     }
 

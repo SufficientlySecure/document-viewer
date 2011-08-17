@@ -77,7 +77,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 child.updateVisibility();
             }
         }
-        if (isKeptInMemory()) {
+        if (page.isKeptInMemory()) {
             if (!thresholdHit()) {
                 if (getBitmap() != null && !invalidateFlag) {
                     restoreBitmapReference();
@@ -138,12 +138,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         }
     }
 
-    private boolean isKeptInMemory() {
-        final boolean pageTreeNodeKeptInMemory = base.getDocumentController().shouldKeptInMemory(this);
-        // Log.d("DocModel", "Node visibility: " + this + " -> " + pageTreeNodeVisible);
-        return pageTreeNodeKeptInMemory;
-    }
-
     public RectF getTargetRectF() {
         if (targetRectF == null) {
             targetRectF = new RectF(getTargetRect());
@@ -152,14 +146,14 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     private void invalidateChildren() {
-        if (thresholdHit() && children == null && isKeptInMemory()) {
+        if (thresholdHit() && children == null && page.isKeptInMemory()) {
             final float newThreshold = childrenZoomThreshold * 2;
             children = new PageTreeNode[splitMasks.length];
             for (int i = 0; i < children.length; i++) {
                 children[i] = new PageTreeNode(base, splitMasks[i], page, newThreshold, this, slice_limit);
             }
         }
-        if (!thresholdHit() && getBitmap() != null || !isKeptInMemory()) {
+        if (!thresholdHit() && getBitmap() != null || !page.isKeptInMemory()) {
             recycleChildren();
         }
     }
@@ -319,7 +313,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     private boolean isVisibleAndNotHiddenByChildren() {
-        return isKeptInMemory() && !isHiddenByChildren();
+        return page.isKeptInMemory() && !isHiddenByChildren();
     }
 
     public int getPageIndex() {
@@ -328,11 +322,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((page == null) ? 0 : page.getIndex());
-        result = prime * result + ((pageSliceBounds == null) ? 0 : pageSliceBounds.hashCode());
-        return result;
+        return (page == null) ? 0 : page.getIndex();
     }
 
     @Override

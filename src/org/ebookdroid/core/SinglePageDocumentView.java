@@ -148,9 +148,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
         final int height = getHeight();
         final float zoom = getBase().getZoomModel().getZoom();
 
-        for (int i = 0; i < getBase().getDocumentModel().getPages().size(); i++) {
-            final Page page = getBase().getDocumentModel().getPages().get(i);
-
+        for (final Page page : getBase().getDocumentModel().getPages()) {
             PageAlign effectiveAlign = getAlign();
             if (getAlign() == PageAlign.AUTO) {
                 final float pageHeight = page.getPageHeight(width, zoom);
@@ -163,11 +161,12 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
             if (effectiveAlign == PageAlign.WIDTH) {
                 final float pageHeight = page.getPageHeight(width, zoom);
-                page.setBounds(new RectF(0, ((height - pageHeight) / 2), width * zoom, pageHeight
-                        + ((height - pageHeight) / 2)));
+                final float heightDelta = (height - pageHeight) / 2;
+                page.setBounds(new RectF(0, heightDelta, width * zoom, pageHeight + heightDelta));
             } else {
                 final float pageWidth = page.getPageWidth(height, zoom);
-                page.setBounds(new RectF((width - pageWidth) / 2, 0, pageWidth + (width - pageWidth) / 2, height * zoom));
+                final float widthDelta = (width - pageWidth) / 2;
+                page.setBounds(new RectF(widthDelta, 0, pageWidth + widthDelta, height * zoom));
             }
         }
         if (curler != null) {
@@ -177,7 +176,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    public boolean isPageVisible(final Page page) {
+    protected boolean isPageVisibleImpl(final Page page) {
         return page.getIndex() == getCurrentPage();
     }
 

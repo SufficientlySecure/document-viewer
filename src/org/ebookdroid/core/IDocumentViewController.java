@@ -13,7 +13,9 @@ public interface IDocumentViewController {
 
     boolean isPageVisible(Page page);
 
-    boolean shouldKeptInMemory(PageTreeNode pageTreeNode);
+    int getFirstVisiblePage();
+
+    int getLastVisiblePage();
 
     void showDocument();
 

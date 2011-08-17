@@ -12,6 +12,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -176,7 +177,7 @@ public class DecodeServiceBase implements DecodeService {
 
     private class Executor implements RejectedExecutionHandler {
 
-        final Map<PageTreeNode, DecodeTask> decodingTasks = new HashMap<PageTreeNode, DecodeTask>();
+        final Map<PageTreeNode, DecodeTask> decodingTasks = new IdentityHashMap<PageTreeNode, DecodeTask>();
         final Map<Long, Future<?>> decodingFutures = new HashMap<Long, Future<?>>();
 
         final BlockingQueue<Runnable> queue;
@@ -196,17 +197,20 @@ public class DecodeServiceBase implements DecodeService {
                 Log.d(DECODE_SERVICE, "Adding decoding task: " + task);
 
                 final DecodeTask running = decodingTasks.get(task.node);
+
                 if (running != null && running.equals(task) && !isTaskDead(running)) {
                     Log.d(DECODE_SERVICE, "The similar task is running: " + running.id);
                     return;
+                } else if (running != null) {
+                    Log.d(DECODE_SERVICE, "The another task is running: " + running.id);
                 }
 
-                final Future<?> future = executorService.submit(task);
+                decodingTasks.put(task.node, task);
 
-                decodingFutures.put(task.id, future);
-                final DecodeTask old = decodingTasks.put(task.node, task);
-                if (old != null) {
-                    stopDecoding(old, null, "canceled by new one");
+                decodingFutures.put(task.id, executorService.submit(task));
+
+                if (running != null) {
+                    stopDecoding(running, null, "canceled by new one");
                 }
             } finally {
                 lock.writeLock().unlock();

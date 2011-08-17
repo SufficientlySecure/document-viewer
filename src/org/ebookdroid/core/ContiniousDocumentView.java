@@ -1,5 +1,7 @@
 package org.ebookdroid.core;
 
+import org.ebookdroid.core.models.DocumentModel;
+
 import android.graphics.Canvas;
 import android.graphics.RectF;
 
@@ -18,7 +20,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
 
     @Override
     public int getCurrentPage() {
-        return getBase().getDocumentModel().getFirstVisiblePage();
+        return getFirstVisiblePage();
     }
 
     @Override
@@ -27,7 +29,8 @@ public class ContiniousDocumentView extends AbstractDocumentView {
 
             @Override
             public void run() {
-                getBase().getDocumentModel().setCurrentPageByFirstVisible();
+                updatePageVisibility();
+                getBase().getDocumentModel().setCurrentPageByFirstVisible(getFirstVisiblePage());
             }
         });
         super.onScrollChanged();
@@ -72,8 +75,12 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     @Override
     protected void onDraw(final Canvas canvas) {
         super.onDraw(canvas);
-        for (final Page page : getBase().getDocumentModel().getPages().values()) {
-            page.draw(canvas);
+        DocumentModel dm = getBase().getDocumentModel();
+        for (int i = firstVisiblePage; i <= lastVisiblePage; i++) {
+            final Page page = dm.getPageObject(i);
+            if (page != null) {
+                page.draw(canvas);
+            }
         }
     }
 
@@ -106,18 +113,15 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         final int width = getWidth();
         final float zoom = getBase().getZoomModel().getZoom();
 
-        for (int i = 0; i < getBase().getDocumentModel().getPages().size(); i++) {
-            final Page page = getBase().getDocumentModel().getPages().get(i);
-
+        for (final Page page : getBase().getDocumentModel().getPages()) {
             final float pageHeight = page.getPageHeight(width, zoom);
             page.setBounds(new RectF(0, heightAccum, width * zoom, heightAccum + pageHeight));
             heightAccum += pageHeight;
         }
     }
 
-
     @Override
-    public boolean isPageVisible(final Page page) {
+    protected boolean isPageVisibleImpl(final Page page) {
         return RectF.intersects(getViewRect(), page.getBounds());
     }
 

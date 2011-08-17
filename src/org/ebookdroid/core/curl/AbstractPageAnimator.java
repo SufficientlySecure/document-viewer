@@ -88,10 +88,12 @@ public abstract class AbstractPageAnimator implements PageAnimator {
         backIndex = view.getCurrentPage();
     }
 
+    @Override
     public int getForeIndex() {
         return foreIndex;
     }
 
+    @Override
     public int getBackIndex() {
         return backIndex;
     }

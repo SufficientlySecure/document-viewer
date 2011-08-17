@@ -353,10 +353,16 @@ public abstract class AbstractDocumentView extends View implements ZoomListener,
      * @see org.ebookdroid.core.IDocumentViewController#shouldKeptInMemory(org.ebookdroid.core.PageTreeNode)
      */
     public final boolean shouldKeptInMemory(final PageTreeNode pageTreeNode) {
+        /*
         return (pageTreeNode.getPageIndex() >= getBase().getDocumentModel().getFirstVisiblePage()
                 - getBase().getAppSettings().getPagesInMemory())
                 && (pageTreeNode.getPageIndex() <= getBase().getDocumentModel().getLastVisiblePage()
                         + getBase().getAppSettings().getPagesInMemory());
+        */
+        return (pageTreeNode.getPageIndex() >= getBase().getDocumentModel().getCurrentPageObject().getIndex()
+                - getBase().getAppSettings().getPagesInMemory()/2)
+                && (pageTreeNode.getPageIndex() <= getBase().getDocumentModel().getCurrentPageObject().getIndex()
+                        + getBase().getAppSettings().getPagesInMemory()/2);
     }
 
     @Override

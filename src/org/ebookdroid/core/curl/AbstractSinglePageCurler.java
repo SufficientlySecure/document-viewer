@@ -72,7 +72,13 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
         mFlipRadius = viewRect.width();
 
         resetClipEdge();
-        updateValues();
+
+        lock.writeLock().lock();
+        try {
+            updateValues();
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     /**

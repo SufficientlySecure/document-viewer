@@ -36,8 +36,13 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
      */
     @Override
     protected void onFirstDrawEvent(final Canvas canvas, RectF viewRect) {
-        resetClipEdge();
-        updateValues();
+        lock.writeLock().lock();
+        try {
+            resetClipEdge();
+            updateValues();
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     /**

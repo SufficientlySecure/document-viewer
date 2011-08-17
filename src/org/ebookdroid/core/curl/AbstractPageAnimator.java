@@ -1,11 +1,14 @@
 package org.ebookdroid.core.curl;
 
 import org.ebookdroid.core.SinglePageDocumentView;
+import org.ebookdroid.core.models.DocumentModel;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.RectF;
 import android.view.MotionEvent;
+
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public abstract class AbstractPageAnimator implements PageAnimator {
 
@@ -41,6 +44,8 @@ public abstract class AbstractPageAnimator implements PageAnimator {
     protected Vector2D mOldMovement;
     /** TRUE if the user moves the pages */
     protected boolean bUserMoves;
+
+    protected final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     public AbstractPageAnimator(final PageAnimationType type, final SinglePageDocumentView singlePageDocumentView) {
         this.type = type;
@@ -102,32 +107,42 @@ public abstract class AbstractPageAnimator implements PageAnimator {
      * Swap to next view
      */
     protected void nextView() {
+        DocumentModel dm = view.getBase().getDocumentModel();
+
         foreIndex = view.getCurrentPage();
-        if (foreIndex >= view.getBase().getDocumentModel().getPageCount()) {
+        if (foreIndex >= dm.getPageCount()) {
             foreIndex = 0;
         }
         backIndex = foreIndex + 1;
-        if (backIndex >= view.getBase().getDocumentModel().getPageCount()) {
+        if (backIndex >= dm.getPageCount()) {
             backIndex = 0;
         }
+
+        dm.getPageObject(foreIndex).invalidate();
+        dm.getPageObject(backIndex).invalidate();
     }
 
     /**
      * Swap to previous view
      */
     protected void previousView() {
+        DocumentModel dm = view.getBase().getDocumentModel();
+
         backIndex = view.getCurrentPage();
         foreIndex = backIndex - 1;
         if (foreIndex < 0) {
-            foreIndex = view.getBase().getDocumentModel().getPageCount() - 1;
+            foreIndex = dm.getPageCount() - 1;
         }
+
+        dm.getPageObject(foreIndex).invalidate();
+        dm.getPageObject(backIndex).invalidate();
     }
 
     /**
      * Execute a step of the flip animation
      */
     @Override
-    public void FlipAnimationStep() {
+    public synchronized void FlipAnimationStep() {
         if (!bFlipping) {
             return;
         }
@@ -148,16 +163,21 @@ public abstract class AbstractPageAnimator implements PageAnimator {
         mMovement = fixMovement(mMovement, false);
 
         // Create values
-        updateValues();
 
-        if (mA.x < 1) {
-            mA.x = 0;
+        lock.writeLock().lock();
+        try {
+            updateValues();
+
+            if (mA.x < 1) {
+                mA.x = 0;
+            }
+
+            if (mA.x > width - 1) {
+                mA.x = width;
+            }
+        } finally {
+            lock.writeLock().unlock();
         }
-
-        if (mA.x > width - 1) {
-            mA.x = width;
-        }
-
         // Check for endings :D
         if (mA.x <= 1 || mA.x >= width - 1) {
             bFlipping = false;
@@ -168,10 +188,14 @@ public abstract class AbstractPageAnimator implements PageAnimator {
                 view.goToPageImpl(foreIndex);
             }
 
-            resetClipEdge();
-
             // Create values
-            updateValues();
+            lock.writeLock().lock();
+            try {
+                resetClipEdge();
+                updateValues();
+            } finally {
+                lock.writeLock().unlock();
+            }
 
             // Enable touch input after the next draw event
             bEnableInputAfterDraw = true;
@@ -198,13 +222,11 @@ public abstract class AbstractPageAnimator implements PageAnimator {
      */
     protected abstract void updateValues();
 
-    /*
-     * (non-Javadoc)
-     *
+    /**
      * @see org.ebookdroid.core.curl.PageAnimator#onDraw(android.graphics.Canvas)
      */
     @Override
-    public void draw(final Canvas canvas, RectF viewRect) {
+    public synchronized void draw(final Canvas canvas, RectF viewRect) {
         // We need to initialize all size data when we first draw the view
         if (!isViewDrawn()) {
             setViewDrawn(true);
@@ -214,9 +236,14 @@ public abstract class AbstractPageAnimator implements PageAnimator {
         canvas.drawColor(Color.BLACK);
 
         // Draw our elements
-        drawForeground(canvas, viewRect);
-        drawBackground(canvas, viewRect);
-        drawExtraObjects(canvas, viewRect);
+        lock.readLock().lock();
+        try {
+            drawForeground(canvas, viewRect);
+            drawBackground(canvas, viewRect);
+            drawExtraObjects(canvas, viewRect);
+        } finally {
+            lock.readLock().unlock();
+        }
 
         // Check if we can re-enable input
         if (bEnableInputAfterDraw) {
@@ -301,7 +328,12 @@ public abstract class AbstractPageAnimator implements PageAnimator {
                     mOldMovement.y = mFinger.y;
 
                     // Force a new draw call
-                    updateValues();
+                    lock.writeLock().lock();
+                    try {
+                        updateValues();
+                    } finally {
+                        lock.writeLock().unlock();
+                    }
                     view.redrawView();
                     break;
             }

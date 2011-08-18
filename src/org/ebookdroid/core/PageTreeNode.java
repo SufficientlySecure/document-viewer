@@ -42,7 +42,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     private PageTreeNode[] children;
     private final float childrenZoomThreshold;
     private final Matrix matrix = new Matrix();
-    private boolean invalidateFlag;
     private final boolean slice_limit;
     private final PageTreeNode parent;
 
@@ -95,10 +94,10 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             setBitmap(null);
         } else if (page.isKeptInMemory()) {
             if (!thresholdHit()) {
-                if (getBitmap() != null && !getBitmap().isRecycled() && !invalidateFlag) {
-                    restoreBitmapReference();
-                } else {
+                if (getBitmap() == null || getBitmap().isRecycled()) {
                     decodePageTreeNode();
+                } else {
+                    restoreBitmapReference();
                 }
             }
         }
@@ -111,7 +110,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     private void invalidateRecursive() {
-        invalidateFlag = true;
         lock.readLock().lock();
         try {
             if (children != null) {
@@ -202,7 +200,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             @Override
             public void run() {
                 setBitmap(bitmap);
-                invalidateFlag = false;
                 setDecodingNow(false);
 
                 page.setAspectRatio(codecPage);

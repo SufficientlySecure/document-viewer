@@ -30,7 +30,7 @@ public class Page {
         setAspectRatio(cpi.getWidth(), cpi.getHeight());
 
         final boolean sliceLimit = base.getAppSettings().getSliceLimit();
-        node = new PageTreeNode(base, pageType.getInitialRect(), this, 1, null, sliceLimit);
+        node = new PageTreeNode(base, pageType.getInitialRect(), this, 2, null, sliceLimit);
     }
 
     public void recycle() {
@@ -59,6 +59,7 @@ public class Page {
             final PagePaint paint = base.getAppSettings().getNightMode() ? PagePaint.NIGHT : PagePaint.DAY;
 
             RectF bounds = new RectF(getBounds());
+            RectF nodesBounds = new RectF(bounds);
             bounds.offset(-viewRect.left, -viewRect.top);
 
             canvas.drawRect(bounds, paint.getFillPaint());
@@ -66,7 +67,7 @@ public class Page {
             canvas.drawText(base.getContext().getString(R.string.text_page) + " " + (getIndex() + 1), bounds.centerX(),
                     bounds.centerY(), paint.getTextPaint());
 
-            node.draw(canvas, viewRect, new RectF(bounds), paint);
+            node.draw(canvas, viewRect, nodesBounds, paint);
 
             canvas.drawLine(bounds.left, bounds.top, bounds.right, bounds.top, paint.getStrokePaint());
             canvas.drawLine(bounds.left, bounds.bottom, bounds.right, bounds.bottom, paint.getStrokePaint());

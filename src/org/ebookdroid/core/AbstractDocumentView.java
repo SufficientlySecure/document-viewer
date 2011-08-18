@@ -4,6 +4,7 @@ import org.ebookdroid.core.events.ZoomListener;
 
 import android.graphics.Canvas;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -160,6 +161,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         if (!isInitialized) {
             return;
         }
+        Log.d("ZOOM", "Zoom changed: "+oldZoom+" -> "+newZoom);
         inZoom = true;
         stopScroller();
         final float ratio = newZoom / oldZoom;

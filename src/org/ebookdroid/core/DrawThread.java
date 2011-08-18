@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.view.SurfaceHolder;
 
+import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -35,7 +36,11 @@ public class DrawThread extends Thread {
 
             DrawTask task = null;
             try {
+                ArrayList<DrawTask> list = new ArrayList<DrawTask>();
                 task = queue.take();
+                if (queue.drainTo(list) > 0) {
+                    task = list.get(list.size() - 1);
+                }
             } catch (InterruptedException e) {
                 Thread.interrupted();
             }

@@ -24,16 +24,19 @@ public class BookSettings implements CurrentPageListener {
 
     PageAnimationType animationType = PageAnimationType.NONE;
 
-    BookSettings(final String fileName) {
-        this(fileName, null);
-    }
-
     BookSettings(final String fileName, AppSettings appSettings) {
         this.fileName = fileName;
         this.lastUpdated = System.currentTimeMillis();
         if (appSettings != null) {
             appSettings.fillBookSettings(this);
         }
+    }
+
+    BookSettings(final BookSettings old, AppSettings appSettings) {
+        this(old.fileName, appSettings);
+        this.currentDocPage = old.currentDocPage;
+        this.currentViewPage = old.currentViewPage;
+        this.zoom = old.zoom;
     }
 
     @Override

@@ -71,7 +71,7 @@ public class SettingsManager implements CurrentPageListener {
             final AppSettings apps = getAppSettings();
             if (oldBS != null) {
                 apps.clearPseudoBookSettings();
-                final BookSettings newBS = new BookSettings(oldBS.getFileName(), apps);
+                final BookSettings newBS = new BookSettings(oldBS, apps);
                 apps.updatePseudoBookSettings(newBS);
                 bookSettings = newBS;
             } else {
@@ -156,8 +156,7 @@ public class SettingsManager implements CurrentPageListener {
 
             final BookSettings oldBS = bookSettings;
             if (oldBS != null) {
-                bookSettings = new BookSettings(oldBS.getFileName(), null);
-                appSettings.fillBookSettings(bookSettings);
+                bookSettings = new BookSettings(oldBS, appSettings);
                 db.storeBookSettings(bookSettings);
 
                 applyBookSettingsChanges(base, oldBS, bookSettings);

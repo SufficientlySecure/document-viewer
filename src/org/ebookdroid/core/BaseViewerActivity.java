@@ -47,7 +47,9 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     private IDocumentViewController documentController;
     private Toast pageNumberToast;
+
     private ZoomModel zoomModel;
+    private PageViewZoomControls zoomControls;
 
     private FrameLayout frameLayout;
 
@@ -119,7 +121,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
         getSettings().applyBookSettings(this);
 
-        frameLayout.addView(createZoomControls(zoomModel));
         setContentView(frameLayout);
         setProgressBarIndeterminateVisibility(false);
     }
@@ -193,7 +194,9 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         documentController.goToPage(bs.getSplitPages() ? bs.getCurrentViewPage() : bs.getCurrentDocPage());
         documentController.showDocument();
 
+        frameLayout.removeView(getZoomControls());
         frameLayout.addView(documentController.getView());
+        frameLayout.addView(getZoomControls());
     }
 
     @Override
@@ -214,23 +217,25 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     @Override
     public void currentPageChanged(final int docPageIndex, final int viewPageIndex) {
-        final String pageText = (viewPageIndex + 1) + "/" + documentModel.getPageCount();
-
+        int pageCount = documentModel.getPageCount();
         String prefix = "";
-        if (getAppSettings().getPageInTitle()) {
-            prefix = "(" + pageText + ") ";
-        } else {
-            if (pageNumberToast != null) {
-                pageNumberToast.setText(pageText);
+
+        if (pageCount > 0) {
+            final String pageText = (viewPageIndex + 1) + "/" + pageCount;
+            if (getAppSettings().getPageInTitle()) {
+                prefix = "(" + pageText + ") ";
             } else {
-                pageNumberToast = Toast.makeText(this, pageText, 300);
+                if (pageNumberToast != null) {
+                    pageNumberToast.setText(pageText);
+                } else {
+                    pageNumberToast = Toast.makeText(this, pageText, 300);
+                }
+                pageNumberToast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+                pageNumberToast.show();
             }
-            pageNumberToast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
-            pageNumberToast.show();
         }
 
         getWindow().setTitle(prefix + currentFilename);
-
         getSettings().currentPageChanged(docPageIndex, viewPageIndex);
     }
 
@@ -248,11 +253,13 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         }
     }
 
-    private PageViewZoomControls createZoomControls(final ZoomModel zoomModel) {
-        final PageViewZoomControls controls = new PageViewZoomControls(this, zoomModel);
-        controls.setGravity(Gravity.RIGHT | Gravity.BOTTOM);
-        zoomModel.addEventListener(controls);
-        return controls;
+    private PageViewZoomControls getZoomControls() {
+        if (zoomControls == null) {
+            zoomControls = new PageViewZoomControls(this, zoomModel);
+            zoomControls.setGravity(Gravity.RIGHT | Gravity.BOTTOM);
+            zoomModel.addEventListener(zoomControls);
+        }
+        return zoomControls;
     }
 
     private FrameLayout createMainContainer() {

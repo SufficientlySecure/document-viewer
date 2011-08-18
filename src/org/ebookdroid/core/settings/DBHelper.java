@@ -200,7 +200,7 @@ public class DBHelper extends SQLiteOpenHelper {
     BookSettings createBookSettings(final Cursor c) {
         int index = 0;
 
-        final BookSettings bs = new BookSettings(c.getString(index++));
+        final BookSettings bs = new BookSettings(c.getString(index++), null);
         bs.lastUpdated = c.getLong(index++);
         bs.currentDocPage = c.getInt(index++);
         bs.currentViewPage = c.getInt(index++);

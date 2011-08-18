@@ -38,7 +38,12 @@ public class DocumentModel extends CurrentPageModel {
     public void recycle() {
         decodeService.recycle();
         decodeService = null;
-        pages = null;
+        if (LengthUtils.isNotEmpty(pages)) {
+            for(Page page: pages) {
+                page.recycle();
+            }
+        }
+        pages = EMPTY_PAGES;
     }
 
     public Page getPageObject(final int viewIndex) {
@@ -89,6 +94,11 @@ public class DocumentModel extends CurrentPageModel {
     }
 
     public void initPages(final IViewerActivity base) {
+        if (LengthUtils.isNotEmpty(pages)) {
+            for(Page page: pages) {
+                page.recycle();
+            }
+        }
         pages = EMPTY_PAGES;
 
         final boolean splitPages = base.getBookSettings().getSplitPages();

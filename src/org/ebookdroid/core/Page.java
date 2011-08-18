@@ -18,6 +18,7 @@ public class Page {
     private final PageType pageType;
     private boolean keptInMempory;
     private boolean visible;
+    boolean recycled;
 
     public Page(final IViewerActivity base, final int index, final int documentPage, final PageType pt,
             final CodecPageInfo cpi) {
@@ -30,6 +31,11 @@ public class Page {
 
         final boolean sliceLimit = base.getAppSettings().getSliceLimit();
         node = new PageTreeNode(base, pageType.getInitialRect(), this, 1, null, sliceLimit);
+    }
+
+    public void recycle() {
+        recycled = true;
+        node.recycle();
     }
 
     public float getPageHeight(final int mainWidth, final float zoom) {
@@ -57,8 +63,8 @@ public class Page {
 
             canvas.drawRect(bounds, paint.getFillPaint());
 
-            canvas.drawText(base.getContext().getString(R.string.text_page) + " " + (getIndex() + 1),
-                    bounds.centerX(), bounds.centerY(), paint.getTextPaint());
+            canvas.drawText(base.getContext().getString(R.string.text_page) + " " + (getIndex() + 1), bounds.centerX(),
+                    bounds.centerY(), paint.getTextPaint());
 
             node.draw(canvas, viewRect, new RectF(bounds), paint);
 
@@ -110,15 +116,19 @@ public class Page {
     }
 
     public void updateVisibility() {
-        keptInMempory = calculateKeptInMemory();
-        visible = base.getDocumentController().isPageVisible(this);
-        node.updateVisibility();
+        if (!recycled) {
+            keptInMempory = calculateKeptInMemory();
+            visible = base.getDocumentController().isPageVisible(this);
+            node.updateVisibility();
+        }
     }
 
     public void invalidate() {
-        keptInMempory = calculateKeptInMemory();
-        visible = base.getDocumentController().isPageVisible(this);
-        node.invalidate();
+        if (!recycled) {
+            keptInMempory = calculateKeptInMemory();
+            visible = base.getDocumentController().isPageVisible(this);
+            node.invalidate();
+        }
     }
 
     public RectF getBounds() {

@@ -7,6 +7,8 @@ import org.ebookdroid.core.codec.CodecPageInfo;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 
+import java.util.List;
+
 public class Page {
 
     private final int index;
@@ -115,19 +117,19 @@ public class Page {
         return (current - inMemory <= this.index) && (this.index <= current + inMemory);
     }
 
-    public void updateVisibility() {
+    public void updateVisibility(List<PageTreeNode> nodesToDecode) {
         if (!recycled) {
             keptInMempory = calculateKeptInMemory();
             visible = base.getDocumentController().isPageVisible(this);
-            node.updateVisibility();
+            node.updateVisibility(nodesToDecode);
         }
     }
 
-    public void invalidate() {
+    public void invalidate(List<PageTreeNode> nodesToDecode) {
         if (!recycled) {
             keptInMempory = calculateKeptInMemory();
             visible = base.getDocumentController().isPageVisible(this);
-            node.invalidate();
+            node.invalidate(nodesToDecode);
         }
     }
 

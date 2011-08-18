@@ -118,8 +118,7 @@ public abstract class AbstractPageAnimator implements PageAnimator {
             backIndex = 0;
         }
 
-        dm.getPageObject(foreIndex).invalidate();
-        dm.getPageObject(backIndex).invalidate();
+        view.invalidatePages(dm.getPageObject(foreIndex), dm.getPageObject(backIndex));
     }
 
     /**
@@ -134,8 +133,7 @@ public abstract class AbstractPageAnimator implements PageAnimator {
             foreIndex = dm.getPageCount() - 1;
         }
 
-        dm.getPageObject(foreIndex).invalidate();
-        dm.getPageObject(backIndex).invalidate();
+        view.invalidatePages(dm.getPageObject(foreIndex), dm.getPageObject(backIndex));
     }
 
     /**

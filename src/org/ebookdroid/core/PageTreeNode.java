@@ -9,8 +9,10 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 
 import java.lang.ref.SoftReference;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -32,20 +34,20 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             // Right Bottom
             new RectF(0.5f, 0.5f, 1.0f, 1.0f), };
 
-    private final long id;
-    private Bitmap bitmap;
-    private SoftReference<Bitmap> bitmapWeakReference;
-    private final AtomicBoolean decodingNow = new AtomicBoolean();
-    private final RectF pageSliceBounds;
-    private final Page page;
-    private final IViewerActivity base;
-    private PageTreeNode[] children;
-    private final float childrenZoomThreshold;
-    private final Matrix matrix = new Matrix();
-    private final boolean slice_limit;
-    private final PageTreeNode parent;
+    final long id;
+    final AtomicBoolean decodingNow = new AtomicBoolean();
+    final RectF pageSliceBounds;
+    final Page page;
+    final IViewerActivity base;
+    PageTreeNode[] children;
+    final float childrenZoomThreshold;
+    final Matrix matrix = new Matrix();
+    final boolean slice_limit;
+    final PageTreeNode parent;
 
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+
+    private final BitmapHolder holder = new BitmapHolder();
 
     PageTreeNode(final IViewerActivity base, final RectF localPageSliceBounds, final Page page,
             final float childrenZoomThreshold, final PageTreeNode parent, final boolean sliceLimit) {
@@ -75,14 +77,14 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         return pageSliceBounds;
     }
 
-    public void updateVisibility() {
+    public void updateVisibility(List<PageTreeNode> nodesToDecode) {
         invalidateChildren();
 
         lock.readLock().lock();
         try {
             if (children != null) {
                 for (final PageTreeNode child : children) {
-                    child.updateVisibility();
+                    child.updateVisibility(nodesToDecode);
                 }
             }
         } finally {
@@ -91,22 +93,20 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
         if (!page.isKeptInMemory() || isHiddenByChildren()) {
             stopDecodingThisNode("node hidden");
-            setBitmap(null);
+            holder.clearDirectRef();
         } else if (page.isKeptInMemory()) {
             if (!thresholdHit()) {
-                if (getBitmap() == null || getBitmap().isRecycled()) {
-                    decodePageTreeNode();
-                } else {
-                    restoreBitmapReference();
+                if (getBitmap() == null) {
+                    decodePageTreeNode(nodesToDecode);
                 }
             }
         }
     }
 
-    public void invalidate() {
+    public void invalidate(List<PageTreeNode> nodesToDecode) {
         invalidateChildren();
         invalidateRecursive();
-        updateVisibility();
+        updateVisibility(nodesToDecode);
     }
 
     private void invalidateRecursive() {
@@ -124,9 +124,10 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     void draw(final Canvas canvas, RectF viewRect, RectF pageBounds, final PagePaint paint) {
         Rect tr = getTargetRect(viewRect, pageBounds);
-        if (getBitmap() != null && !getBitmap().isRecycled()) {
+        Bitmap bitmap = getBitmap();
+        if (bitmap != null) {
             canvas.drawRect(tr, paint.getFillPaint());
-            canvas.drawBitmap(getBitmap(), null, tr, paint.getBitmapPaint());
+            canvas.drawBitmap(bitmap, null, tr, paint.getBitmapPaint());
         }
         if (!getBase().getAppSettings().isBrightnessInNightModeOnly() || getBase().getAppSettings().getNightMode()) {
             int brightness = getBase().getAppSettings().getBrightness();
@@ -180,18 +181,12 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     public Bitmap getBitmap() {
-        return bitmapWeakReference != null ? bitmapWeakReference.get() : null;
+        return holder.getBitmap();
     }
 
-    private void restoreBitmapReference() {
-        setBitmap(getBitmap());
-    }
-
-    private void decodePageTreeNode() {
+    private void decodePageTreeNode(List<PageTreeNode> nodesToDecode) {
         if (setDecodingNow(true)) {
-            final int width = base.getView().getWidth();
-            final float zoom = base.getZoomModel().getZoom() * page.getTargetRectScale();
-            base.getDecodeService().decodePage(this, width, zoom, this);
+            nodesToDecode.add(this);
         }
     }
 
@@ -201,12 +196,14 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
             @Override
             public void run() {
-                setBitmap(bitmap);
+                holder.setBitmap(bitmap);
                 setDecodingNow(false);
 
                 page.setAspectRatio(codecPage);
 
                 invalidateChildren();
+
+                base.getDocumentController().redrawView();
             }
         });
     }
@@ -223,22 +220,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         return sliceBounds;
     }
 
-    private void setBitmap(final Bitmap bitmap) {
-        if (bitmap != null && bitmap.getWidth() == -1 && bitmap.getHeight() == -1) {
-            return;
-        }
-        if (this.bitmap != bitmap) {
-            if (this.bitmap != null) {
-                this.bitmap.recycle();
-            }
-            if (bitmap != null) {
-                bitmapWeakReference = new SoftReference<Bitmap>(bitmap);
-            }
-            this.bitmap = bitmap;
-            ((AbstractDocumentView) base.getView()).redrawView();
-        }
-    }
-
     private boolean setDecodingNow(final boolean decodingNow) {
         if (this.decodingNow.compareAndSet(!decodingNow, decodingNow)) {
             if (decodingNow) {
@@ -251,7 +232,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         return false;
     }
 
-    private Rect getTargetRect(RectF viewRect, RectF pageBounds) {
+    public Rect getTargetRect(RectF viewRect, RectF pageBounds) {
         matrix.reset();
 
         RectF bounds = new RectF(pageBounds);
@@ -329,7 +310,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     public void recycle() {
         stopDecodingThisNode("node recycling");
-        setBitmap(null);
+        holder.recycle();
         lock.readLock().lock();
         try {
             if (children != null) {
@@ -387,6 +368,61 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     public int getDocumentPageIndex() {
         return page.getDocumentPageIndex();
+    }
+
+    class BitmapHolder {
+
+        Bitmap bitmap;
+        SoftReference<Bitmap> bitmapWeakReference;
+
+        public Bitmap getBitmap() {
+            Bitmap bmp = bitmap;
+            if (bmp == null) {
+                bmp = bitmapWeakReference != null ? bitmapWeakReference.get() : null;
+            }
+            if (bmp != null && !bmp.isRecycled()) {
+                bitmapWeakReference = new SoftReference<Bitmap>(bmp);
+                return bmp;
+            } else {
+                bitmap = null;
+                bitmapWeakReference = null;
+            }
+            return null;
+        }
+
+        public void clearDirectRef() {
+            if (bitmap != null) {
+                Log.d("ViewDroidDecodeService", "Clear bitmap reference: " + PageTreeNode.this);
+                bitmapWeakReference = new SoftReference<Bitmap>(bitmap);
+                bitmap = null;
+            }
+        }
+
+        public void recycle() {
+            if (bitmap != null && !bitmap.isRecycled()) {
+                Log.d("ViewDroidDecodeService", "Recycle bitmap reference: " + PageTreeNode.this);
+                bitmap.recycle();
+            }
+            bitmap = null;
+            bitmapWeakReference = null;
+        }
+
+        public void setBitmap(final Bitmap bitmap) {
+            if (bitmap == null) {
+                return;
+            }
+            if (bitmap.getWidth() == -1 && bitmap.getHeight() == -1) {
+                return;
+            }
+            if (this.bitmap != bitmap) {
+                recycle();
+                this.bitmap = bitmap;
+                this.bitmapWeakReference = new SoftReference<Bitmap>(bitmap);
+                base.getView().postInvalidate();
+            } else {
+                this.bitmapWeakReference = new SoftReference<Bitmap>(bitmap);
+            }
+        }
     }
 
 }

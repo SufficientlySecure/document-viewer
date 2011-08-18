@@ -1,8 +1,10 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.core.models.DocumentModel;
+import org.ebookdroid.utils.CompareUtils;
 
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 public class ContiniousDocumentView extends AbstractDocumentView {
@@ -13,20 +15,82 @@ public class ContiniousDocumentView extends AbstractDocumentView {
 
     @Override
     protected void goToPageImpl(final int toPage) {
-        if (toPage >= 0 && toPage <= getBase().getDocumentModel().getPageCount()) {
-            scrollTo(0, getBase().getDocumentModel().getPageObject(toPage).getTop());
+        final DocumentModel dm = getBase().getDocumentModel();
+        if (toPage >= 0 && toPage <= dm.getPageCount()) {
+            final Page pageObject = dm.getPageObject(toPage);
+            if (pageObject != null) {
+                final RectF viewRect = this.getViewRect();
+                final RectF bounds = pageObject.getBounds();
+                scrollTo(0, pageObject.getTop() - ((int) viewRect.height() - (int) bounds.height()) / 2);
+            }
         }
+
+    }
+
+    public void setCurrentPageByFirstVisible() {
+        final DocumentModel dm = getBase().getDocumentModel();
+        final int index = getCurrentPage();
+        final Page page = dm.getPageObject(index);
+        post(new Runnable() {
+            public void run() {
+                dm.setCurrentPageIndex(page.getDocumentPageIndex(), page.getIndex());
+            }
+        });
     }
 
     @Override
     public int getCurrentPage() {
-        return getFirstVisiblePage();
+        int result = 0;
+        long bestDistance = Long.MAX_VALUE;
+
+        final RectF viewRect = getViewRect();
+        final int viewY = Math.round((viewRect.top + viewRect.bottom) / 2);
+
+        boolean foundVisible = false;
+        for (final Page page : getBase().getDocumentModel().getPages()) {
+            if (page.isVisible()) {
+                foundVisible = true;
+                final RectF bounds = page.getBounds();
+                final int pageY = Math.round((bounds.top + bounds.bottom) / 2);
+                final long dist = Math.abs(pageY - viewY);
+                if (dist < bestDistance) {
+                    bestDistance = dist;
+                    result = page.getIndex();
+                }
+            } else {
+                if (foundVisible) {
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     @Override
+    public int compare(final PageTreeNode node1, final PageTreeNode node2) {
+        final RectF viewRect = getViewRect();
+
+        final long centerX = ((long) viewRect.left + (long) viewRect.right) / 2;
+        final long centerY = ((long) viewRect.top + (long) viewRect.bottom) / 2;
+
+        final Rect rect1 = node1.getTargetRect(viewRect, node1.page.getBounds());
+        final Rect rect2 = node2.getTargetRect(viewRect, node2.page.getBounds());
+
+        final long centerX1 = ((long) rect1.left + (long) rect1.right) / 2;
+        final long centerY1 = ((long) rect1.top + (long) rect1.bottom) / 2;
+
+        final long centerX2 = ((long) rect2.left + (long) rect2.right) / 2;
+        final long centerY2 = ((long) rect2.top + (long) rect2.bottom) / 2;
+
+        final long dist1 = (centerX1 - centerX) * (centerX1 - centerX) + (centerY1 - centerY) * (centerY1 - centerY);
+        final long dist2 = (centerX2 - centerX) * (centerX2 - centerX) + (centerY2 - centerY) * (centerY2 - centerY);
+
+        return CompareUtils.compare(dist1, dist2);
+    }
+
     protected void onScrollChanged() {
         super.onScrollChanged();
-        getBase().getDocumentModel().setCurrentPageByFirstVisible(getFirstVisiblePage());
+        setCurrentPageByFirstVisible();
         redrawView();
     }
 
@@ -75,6 +139,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
                 page.draw(canvas, viewRect);
             }
         }
+        setCurrentPageByFirstVisible();
     }
 
     @Override

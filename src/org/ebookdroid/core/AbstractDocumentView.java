@@ -13,8 +13,13 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.widget.Scroller;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 public abstract class AbstractDocumentView extends SurfaceView implements ZoomListener, IDocumentViewController,
-        SurfaceHolder.Callback {
+        Comparator<PageTreeNode>, SurfaceHolder.Callback {
 
     private final IViewerActivity base;
     private boolean isInitialized = false;
@@ -102,8 +107,21 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     public void updatePageVisibility() {
         calculatePageVisibility();
 
+        List<PageTreeNode> nodesToDecode = new ArrayList<PageTreeNode>();
         for (final Page page : getBase().getDocumentModel().getPages()) {
-            page.updateVisibility();
+            page.updateVisibility(nodesToDecode);
+        }
+        if (!nodesToDecode.isEmpty()) {
+            decodePageTreeNodes(nodesToDecode);
+        }
+    }
+
+    protected void decodePageTreeNodes(List<PageTreeNode> nodesToDecode) {
+        Collections.sort(nodesToDecode, this);
+        for (PageTreeNode pageTreeNode : nodesToDecode) {
+            final int width = base.getView().getWidth();
+            final float zoom = base.getZoomModel().getZoom() * pageTreeNode.page.getTargetRectScale();
+            base.getDecodeService().decodePage(pageTreeNode, width, zoom, pageTreeNode);
         }
     }
 
@@ -126,10 +144,19 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     public void commitZoom() {
         base.getSettings().zoomChanged(base.getZoomModel().getZoom());
 
-        for (final Page page : getBase().getDocumentModel().getPages()) {
-            page.invalidate();
-        }
+        invalidatePages(getBase().getDocumentModel().getPages());
+
         inZoom = false;
+    }
+
+    public void invalidatePages(Page... pages) {
+        List<PageTreeNode> nodesToDecode = new ArrayList<PageTreeNode>();
+        for (final Page page : pages) {
+            page.invalidate(nodesToDecode);
+        }
+        if (!nodesToDecode.isEmpty()) {
+            decodePageTreeNodes(nodesToDecode);
+        }
     }
 
     @Override
@@ -161,7 +188,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         if (!isInitialized) {
             return;
         }
-        Log.d("ZOOM", "Zoom changed: "+oldZoom+" -> "+newZoom);
+        Log.d("ZOOM", "Zoom changed: " + oldZoom + " -> " + newZoom);
         inZoom = true;
         stopScroller();
         final float ratio = newZoom / oldZoom;

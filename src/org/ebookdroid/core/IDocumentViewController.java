@@ -19,6 +19,8 @@ public interface IDocumentViewController {
 
     void showDocument();
 
+    void redrawView();
+
     void setAlign(PageAlign byResValue);
 
     /* Infrastructure methods */

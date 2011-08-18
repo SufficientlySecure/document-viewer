@@ -21,7 +21,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     private static final int SLICE_SIZE = 131070;
 
     private static final AtomicLong SEQ = new AtomicLong();
-    
+
     private static RectF[] splitMasks = {
             // Left Top
             new RectF(0, 0, 0.5f, 0.5f),
@@ -117,19 +117,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             if (children != null) {
                 for (final PageTreeNode child : children) {
                     child.invalidateRecursive();
-                }
-            }
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
-
-    void invalidateNodeBounds() {
-        lock.readLock().lock();
-        try {
-            if (children != null) {
-                for (final PageTreeNode child : children) {
-                    child.invalidateNodeBounds();
                 }
             }
         } finally {

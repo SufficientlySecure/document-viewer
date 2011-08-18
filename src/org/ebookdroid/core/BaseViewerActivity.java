@@ -32,6 +32,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -173,13 +174,14 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         }
     }
 
+    @Override
     public void createDocumentView() {
         if (documentController != null) {
             frameLayout.removeView(documentController.getView());
             zoomModel.removeEventListener(documentController);
         }
 
-        BookSettings bs = getBookSettings();
+        final BookSettings bs = getBookSettings();
 
         if (bs.getSinglePage()) {
             documentController = new SinglePageDocumentView(this);
@@ -217,7 +219,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     @Override
     public void currentPageChanged(final int docPageIndex, final int viewPageIndex) {
-        int pageCount = documentModel.getPageCount();
+        final int pageCount = documentModel.getPageCount();
         String prefix = "";
 
         if (pageCount > 0) {
@@ -301,6 +303,22 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         return true;
     }
 
+    @Override
+    public boolean onMenuOpened(final int featureId, final Menu menu) {
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        return super.onMenuOpened(featureId, menu);
+    }
+
+    @Override
+    public void onOptionsMenuClosed(final Menu menu) {
+        if (getAppSettings().getFullScreen()) {
+            getWindow()
+                    .setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
+    }
+
     private void showOutline() {
         final List<OutlineLink> outline = documentModel.getDecodeService().getOutline();
         if ((outline != null) && (outline.size() > 0)) {
@@ -366,7 +384,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
                 return true;
             case R.id.mainmenu_nightmode:
                 getAppSettings().switchNightMode();
-                ((AbstractDocumentView)getView()).redrawView();
+                ((AbstractDocumentView) getView()).redrawView();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -465,10 +483,10 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
         }
     }
-    
+
     @Override
     public boolean onKeyDown(final int keyCode, final KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {   
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             finish();
             return true;
         }

@@ -11,15 +11,15 @@ import java.util.List;
 
 public class Page {
 
-    private final int index;
-    private RectF bounds;
-    private final PageTreeNode node;
-    private final IViewerActivity base;
-    private float aspectRatio;
-    private final int documentPage;
-    private final PageType pageType;
-    private boolean keptInMempory;
-    private boolean visible;
+    final int index;
+    RectF bounds;
+    final PageTreeNode node;
+    final IViewerActivity base;
+    float aspectRatio;
+    final int documentPage;
+    final PageType pageType;
+    boolean keptInMempory;
+    boolean visible;
     boolean recycled;
 
     public Page(final IViewerActivity base, final int index, final int documentPage, final PageType pt,

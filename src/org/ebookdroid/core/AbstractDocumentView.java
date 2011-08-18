@@ -42,7 +42,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         this.lastVisiblePage = -1;
         this.scroller = new Scroller(getContext());
 
-        setKeepScreenOn(true);
+        setKeepScreenOn(base.getAppSettings().isKeepScreenOn());
         setFocusable(true);
         setFocusableInTouchMode(true);
         getHolder().addCallback(this);

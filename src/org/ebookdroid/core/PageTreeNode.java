@@ -1,6 +1,7 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.core.codec.CodecPage;
+import org.ebookdroid.core.models.DecodingProgressModel;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -66,7 +67,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     /**
      * Gets the parent node.
-     * 
+     *
      * @return the parent node
      */
     public PageTreeNode getParent() {
@@ -135,14 +136,12 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     void drawBrightnessFilter(final Canvas canvas, final Rect tr) {
-        if (!getBase().getAppSettings().isBrightnessInNightModeOnly() || getBase().getAppSettings().getNightMode()) {
-            final int brightness = getBase().getAppSettings().getBrightness();
-            if (brightness < 100) {
-                final Paint p = new Paint();
-                p.setColor(Color.BLACK);
-                p.setAlpha(255 - brightness * 255 / 100);
-                canvas.drawRect(tr, p);
-            }
+        final int brightness = getBase().getAppSettings().getBrightness();
+        if (brightness < 100) {
+            final Paint p = new Paint();
+            p.setColor(Color.BLACK);
+            p.setAlpha(255 - brightness * 255 / 100);
+            canvas.drawRect(tr, p);
         }
     }
 
@@ -163,12 +162,12 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         lock.writeLock().lock();
         try {
             if (thresholdHit() && children == null && page.isKeptInMemory()) {
-                    final float newThreshold = childrenZoomThreshold * 2;
-                    children = new PageTreeNode[splitMasks.length];
-                    for (int i = 0; i < children.length; i++) {
-                        children[i] = new PageTreeNode(base, splitMasks[i], page, newThreshold, this, slice_limit);
-                    }
+                final float newThreshold = childrenZoomThreshold * 2;
+                children = new PageTreeNode[splitMasks.length];
+                for (int i = 0; i < children.length; i++) {
+                    children[i] = new PageTreeNode(base, splitMasks[i], page, newThreshold, this, slice_limit);
                 }
+            }
             if (!thresholdHit() && getBitmap() != null || !page.isKeptInMemory()) {
                 recycleChildren();
             }
@@ -211,7 +210,10 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
                 invalidateChildren();
 
-                base.getDocumentController().redrawView();
+                IDocumentViewController dc = base.getDocumentController();
+                if (dc != null) {
+                    dc.redrawView();
+                }
             }
         });
     }
@@ -230,10 +232,13 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     private boolean setDecodingNow(final boolean decodingNow) {
         if (this.decodingNow.compareAndSet(!decodingNow, decodingNow)) {
-            if (decodingNow) {
-                base.getDecodingProgressModel().increase();
-            } else {
-                base.getDecodingProgressModel().decrease();
+            DecodingProgressModel dpm = base.getDecodingProgressModel();
+            if (dpm != null) {
+                if (decodingNow) {
+                    dpm.increase();
+                } else {
+                    dpm.decrease();
+                }
             }
             return true;
         }
@@ -257,7 +262,10 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     private void stopDecodingThisNode(final String reason) {
         if (setDecodingNow(false)) {
-            base.getDecodeService().stopDecoding(this, reason);
+            DecodeService ds = base.getDecodeService();
+            if (ds != null) {
+                ds.stopDecoding(this, reason);
+            }
         }
     }
 

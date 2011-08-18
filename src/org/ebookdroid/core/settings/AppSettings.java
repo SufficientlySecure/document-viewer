@@ -49,9 +49,9 @@ public class AppSettings {
     private Boolean pageInTitle;
 
     private Integer brightness;
-    
+
     private Boolean brightnessnightmodeonly;
-    
+
     private Boolean keepscreenon;
 
     private Set<String> autoScanDirs;
@@ -96,6 +96,9 @@ public class AppSettings {
     }
 
     public int getBrightness() {
+        if (isBrightnessInNightModeOnly() && !getNightMode()) {
+            return 100;
+        }
         if (brightness == null) {
             brightness = getIntValue("brightness", 100);
         }
@@ -108,14 +111,14 @@ public class AppSettings {
         }
         return nightMode;
     }
-    
+
     public boolean isKeepScreenOn() {
         if (keepscreenon == null) {
             keepscreenon = prefs.getBoolean("keepscreenon", true);
         }
         return keepscreenon;
     }
-    
+
     public boolean isBrightnessInNightModeOnly() {
         if (brightnessnightmodeonly == null) {
             brightnessnightmodeonly = prefs.getBoolean("brightnessnightmodeonly", false);
@@ -382,15 +385,15 @@ public class AppSettings {
         public boolean isSliceLimitChanged() {
             return 0 != (mask & D_SliceLimit);
         }
-        
+
         public boolean isBrightnessChanged() {
             return 0 != (mask & D_Brightness);
         }
-        
+
         public boolean isBrightnessInNightModeChanged() {
             return 0 != (mask & D_BrightnessInNightMode);
         }
-        
+
         public boolean isKeepScreenOnChanged() {
             return 0 != (mask & D_KeepScreenOn);
         }

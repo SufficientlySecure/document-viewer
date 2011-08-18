@@ -66,7 +66,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     /**
      * Gets the parent node.
-     *
+     * 
      * @return the parent node
      */
     public PageTreeNode getParent() {
@@ -77,7 +77,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         return pageSliceBounds;
     }
 
-    public void updateVisibility(List<PageTreeNode> nodesToDecode) {
+    public void updateVisibility(final List<PageTreeNode> nodesToDecode) {
         invalidateChildren();
 
         lock.readLock().lock();
@@ -103,7 +103,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         }
     }
 
-    public void invalidate(List<PageTreeNode> nodesToDecode) {
+    public void invalidate(final List<PageTreeNode> nodesToDecode) {
         invalidateChildren();
         invalidateRecursive();
         updateVisibility(nodesToDecode);
@@ -122,29 +122,37 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         }
     }
 
-    void draw(final Canvas canvas, RectF viewRect, RectF pageBounds, final PagePaint paint) {
-        Rect tr = getTargetRect(viewRect, pageBounds);
-        Bitmap bitmap = getBitmap();
+    void draw(final Canvas canvas, final RectF viewRect, final RectF pageBounds, final PagePaint paint) {
+        final Rect tr = getTargetRect(viewRect, pageBounds);
+        final Bitmap bitmap = getBitmap();
         if (bitmap != null) {
             canvas.drawRect(tr, paint.getFillPaint());
             canvas.drawBitmap(bitmap, null, tr, paint.getBitmapPaint());
         }
+        drawBrightnessFilter(canvas, tr);
+
+        drawChildren(canvas, viewRect, pageBounds, paint);
+    }
+
+    void drawBrightnessFilter(final Canvas canvas, final Rect tr) {
         if (!getBase().getAppSettings().isBrightnessInNightModeOnly() || getBase().getAppSettings().getNightMode()) {
-            int brightness = getBase().getAppSettings().getBrightness();
+            final int brightness = getBase().getAppSettings().getBrightness();
             if (brightness < 100) {
-                Paint p = new Paint();
+                final Paint p = new Paint();
                 p.setColor(Color.BLACK);
                 p.setAlpha(255 - brightness * 255 / 100);
                 canvas.drawRect(tr, p);
             }
         }
+    }
+
+    void drawChildren(final Canvas canvas, final RectF viewRect, final RectF pageBounds, final PagePaint paint) {
         lock.readLock().lock();
         try {
-            if (children == null) {
-                return;
-            }
-            for (final PageTreeNode child : children) {
-                child.draw(canvas, viewRect, pageBounds, paint);
+            if (children != null) {
+                for (final PageTreeNode child : children) {
+                    child.draw(canvas, viewRect, pageBounds, paint);
+                }
             }
         } finally {
             lock.readLock().unlock();
@@ -155,12 +163,12 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         lock.writeLock().lock();
         try {
             if (thresholdHit() && children == null && page.isKeptInMemory()) {
-                final float newThreshold = childrenZoomThreshold * 2;
-                children = new PageTreeNode[splitMasks.length];
-                for (int i = 0; i < children.length; i++) {
-                    children[i] = new PageTreeNode(base, splitMasks[i], page, newThreshold, this, slice_limit);
+                    final float newThreshold = childrenZoomThreshold * 2;
+                    children = new PageTreeNode[splitMasks.length];
+                    for (int i = 0; i < children.length; i++) {
+                        children[i] = new PageTreeNode(base, splitMasks[i], page, newThreshold, this, slice_limit);
+                    }
                 }
-            }
             if (!thresholdHit() && getBitmap() != null || !page.isKeptInMemory()) {
                 recycleChildren();
             }
@@ -184,7 +192,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         return holder.getBitmap();
     }
 
-    private void decodePageTreeNode(List<PageTreeNode> nodesToDecode) {
+    private void decodePageTreeNode(final List<PageTreeNode> nodesToDecode) {
         if (setDecodingNow(true)) {
             nodesToDecode.add(this);
         }
@@ -208,7 +216,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         });
     }
 
-    private RectF evaluatePageSliceBounds(final RectF localPageSliceBounds, final PageTreeNode parent) {
+    private static RectF evaluatePageSliceBounds(final RectF localPageSliceBounds, final PageTreeNode parent) {
         if (parent == null) {
             return localPageSliceBounds;
         }
@@ -232,10 +240,10 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         return false;
     }
 
-    public Rect getTargetRect(RectF viewRect, RectF pageBounds) {
+    public Rect getTargetRect(final RectF viewRect, final RectF pageBounds) {
         matrix.reset();
 
-        RectF bounds = new RectF(pageBounds);
+        final RectF bounds = new RectF(pageBounds);
         bounds.offset(-viewRect.left, -viewRect.top);
 
         matrix.postScale(bounds.width() * page.getTargetRectScale(), bounds.height());
@@ -273,13 +281,10 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     private void recycleChildren() {
         lock.writeLock().lock();
         try {
-            if (children == null) {
-                return;
-            }
-            for (final PageTreeNode child : children) {
-                child.recycle();
-            }
-            if (!childrenContainBitmaps()) {
+            if (children != null) {
+                for (final PageTreeNode child : children) {
+                    child.recycle();
+                }
                 children = null;
             }
         } finally {
@@ -294,12 +299,11 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     private boolean childrenContainBitmaps() {
         lock.readLock().lock();
         try {
-            if (children == null) {
-                return false;
-            }
-            for (final PageTreeNode child : children) {
-                if (child.containsBitmaps()) {
-                    return true;
+            if (children != null) {
+                for (final PageTreeNode child : children) {
+                    if (child.containsBitmaps()) {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -311,16 +315,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     public void recycle() {
         stopDecodingThisNode("node recycling");
         holder.recycle();
-        lock.readLock().lock();
-        try {
-            if (children != null) {
-                for (final PageTreeNode child : children) {
-                    child.recycle();
-                }
-            }
-        } finally {
-            lock.readLock().unlock();
-        }
+        recycleChildren();
     }
 
     public int getPageIndex() {

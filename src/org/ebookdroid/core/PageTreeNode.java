@@ -128,12 +128,14 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             canvas.drawRect(tr, paint.getFillPaint());
             canvas.drawBitmap(getBitmap(), null, tr, paint.getBitmapPaint());
         }
-        int brightness = getBase().getAppSettings().getBrightness();
-        if (brightness < 100) {
-            Paint p = new Paint();
-            p.setColor(Color.BLACK);
-            p.setAlpha(255 - brightness * 255 / 100);
-            canvas.drawRect(tr, p);
+        if (!getBase().getAppSettings().isBrightnessInNightModeOnly() || getBase().getAppSettings().getNightMode()) {
+            int brightness = getBase().getAppSettings().getBrightness();
+            if (brightness < 100) {
+                Paint p = new Paint();
+                p.setColor(Color.BLACK);
+                p.setAlpha(255 - brightness * 255 / 100);
+                canvas.drawRect(tr, p);
+            }
         }
         lock.readLock().lock();
         try {

@@ -20,6 +20,11 @@
 			android:maxLength="3"
 			android:defaultValue="100"
 			android:numeric="integer" />
+		<CheckBoxPreference
+			android:key="brightnessnightmodeonly"
+			android:title="@string/pref_brightnessnightmodeonly_title"
+			android:summary="@string/pref_brightnessnightmodeonly_summary"
+			android:defaultValue="false" />
 			
 		<ListPreference
 			android:key="rotation"

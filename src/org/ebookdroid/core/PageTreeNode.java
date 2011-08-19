@@ -1,6 +1,7 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.core.codec.CodecPage;
+import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.models.DecodingProgressModel;
 
 import android.graphics.Bitmap;
@@ -10,7 +11,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
 
 import java.lang.ref.SoftReference;
 import java.util.List;
@@ -19,6 +19,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class PageTreeNode implements DecodeService.DecodeCallback {
+
+    private static final LogContext LCTX = LogContext.ROOT.lctx("Decoding");
 
     // private static final int SLICE_SIZE = 65535;
     private static final int SLICE_SIZE = 131070;
@@ -395,7 +397,9 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
         public void clearDirectRef() {
             if (bitmap != null) {
-                Log.d("ViewDroidDecodeService", "Clear bitmap reference: " + PageTreeNode.this);
+                if (LCTX.isDebugEnabled()) {
+                    LCTX.d("Clear bitmap reference: " + PageTreeNode.this);
+                }
                 bitmapWeakReference = new SoftReference<Bitmap>(bitmap);
                 bitmap = null;
             }
@@ -403,7 +407,9 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
         public void recycle() {
             if (bitmap != null && !bitmap.isRecycled()) {
-                Log.d("ViewDroidDecodeService", "Recycle bitmap reference: " + PageTreeNode.this);
+                if (LCTX.isDebugEnabled()) {
+                    LCTX.d("Recycle bitmap reference: " + PageTreeNode.this);
+                }
                 bitmap.recycle();
             }
             bitmap = null;

@@ -2,11 +2,10 @@ package org.ebookdroid.cbdroid.codec;
 
 import org.ebookdroid.core.codec.AbstractCodecDocument;
 import org.ebookdroid.core.codec.CodecPageInfo;
+import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.core.utils.archives.ArchiveEntry;
 import org.ebookdroid.core.utils.archives.ArchiveFile;
-
-import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ import java.util.TreeMap;
 
 public class CbxDocument<ArchiveEntryType extends ArchiveEntry> extends AbstractCodecDocument {
 
-    public static final String LCTX = "CbxDocument";
+    public static final LogContext LCTX = LogContext.ROOT.lctx("Cbx");
 
     private static final FileExtensionFilter imageFilter = new FileExtensionFilter("jpg", "jpeg", "png");
 
@@ -87,7 +86,9 @@ public class CbxDocument<ArchiveEntryType extends ArchiveEntry> extends Abstract
             pages.clear();
             archive.close();
         } catch (final IOException e) {
-            Log.d(LCTX, "IO error: " + e.getMessage());
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("IO error: " + e.getMessage());
+            }
         }
     }
 }

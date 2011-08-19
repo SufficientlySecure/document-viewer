@@ -1,9 +1,10 @@
 package com.sli.unrar.io;
 
+import ij.io.RandomAccessStream;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import ij.io.RandomAccessStream;
 
 import de.innosystec.unrar.io.IReadOnlyAccess;
 

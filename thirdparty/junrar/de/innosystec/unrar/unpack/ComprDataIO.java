@@ -17,16 +17,17 @@
  */
 package de.innosystec.unrar.unpack;
 
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import de.innosystec.unrar.Archive;
 import de.innosystec.unrar.Volume;
 import de.innosystec.unrar.crc.RarCRC;
 import de.innosystec.unrar.exception.RarException;
 import de.innosystec.unrar.io.ReadOnlyAccessInputStream;
 import de.innosystec.unrar.rarfile.FileHeader;
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * DOCUMENT ME

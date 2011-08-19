@@ -2,6 +2,7 @@ package org.ebookdroid.djvudroid.codec;
 
 import org.ebookdroid.core.VuDroidLibraryLoader;
 import org.ebookdroid.core.codec.AbstractCodecContext;
+import org.ebookdroid.core.log.LogContext;
 
 import android.util.Log;
 
@@ -9,11 +10,12 @@ import java.util.concurrent.Semaphore;
 
 public class DjvuContext extends AbstractCodecContext implements Runnable {
 
+    private static final LogContext LCTX = LogContext.ROOT.lctx("Djvu");
+
     static {
         VuDroidLibraryLoader.load();
     }
 
-    private static final String DJVU_DROID_CODEC_LIBRARY = "DjvuDroidCodecLibrary";
     private final Semaphore docSemaphore = new Semaphore(0);
 
     public DjvuContext() {
@@ -44,7 +46,7 @@ public class DjvuContext extends AbstractCodecContext implements Runnable {
                     wait(200);
                 }
             } catch (final Exception e) {
-                Log.e(DJVU_DROID_CODEC_LIBRARY, "Codec error", e);
+                LCTX.e("Codec error", e);
             }
         }
     }

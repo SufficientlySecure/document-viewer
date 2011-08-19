@@ -1,9 +1,12 @@
 package org.ebookdroid.core;
 
+import org.ebookdroid.core.log.LogContext;
+
 import android.graphics.RectF;
-import android.util.Log;
 
 public class PageLink {
+
+    private static final LogContext LCTX = LogContext.ROOT.lctx("dddd");
 
     private final int rect_type;
     private final int[] data;
@@ -24,10 +27,12 @@ public class PageLink {
     }
 
     public void debug() {
-        Log.i("dddd", url);
-        Log.i("dddd", rect_type + "   " + data.toString() + "   " + data.length);
-        for (int i = 0; i < data.length; i++) {
-            Log.i("dddd", "data[" + i + "]" + data[i]);
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d(url);
+            LCTX.d(rect_type + "   " + data.toString() + "   " + data.length);
+            for (int i = 0; i < data.length; i++) {
+                LCTX.d("data[" + i + "]" + data[i]);
+            }
         }
     }
 

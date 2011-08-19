@@ -1,10 +1,10 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.core.events.ZoomListener;
+import org.ebookdroid.core.log.LogContext;
 
 import android.graphics.Canvas;
 import android.graphics.RectF;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -20,6 +20,8 @@ import java.util.List;
 
 public abstract class AbstractDocumentView extends SurfaceView implements ZoomListener, IDocumentViewController,
         Comparator<PageTreeNode>, SurfaceHolder.Callback {
+
+    private static final LogContext LCTX = LogContext.ROOT.lctx("View");
 
     private final IViewerActivity base;
     private boolean isInitialized = false;
@@ -188,7 +190,9 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         if (!isInitialized) {
             return;
         }
-        Log.d("ZOOM", "Zoom changed: " + oldZoom + " -> " + newZoom);
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("Zoom changed: " + oldZoom + " -> " + newZoom);
+        }
         inZoom = true;
         stopScroller();
         final float ratio = newZoom / oldZoom;

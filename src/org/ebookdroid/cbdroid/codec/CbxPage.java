@@ -11,14 +11,11 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage {
-
-    private static final String LCTX = "CbxPage";
 
     private final ArchiveEntryType entry;
 
@@ -37,7 +34,9 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
             return null;
         }
 
-        Log.d(LCTX, "Starting " + (onlyBounds ? " partial" : "full") + " decompressing: " + entry.getName());
+        if (CbxDocument.LCTX.isDebugEnabled()) {
+            CbxDocument.LCTX.d("Starting " + (onlyBounds ? " partial" : "full") + " decompressing: " + entry.getName());
+        }
         try {
             final InputStream is = entry.open();
             try {
@@ -61,10 +60,14 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
                     is.close();
                 } catch (final IOException ex) {
                 }
-                Log.d(LCTX, "Finishing" + (onlyBounds ? " partial" : "full") + " decompressing: " + entry.getName());
+                if (CbxDocument.LCTX.isDebugEnabled()) {
+                    CbxDocument.LCTX.d("Finishing" + (onlyBounds ? " partial" : "full") + " decompressing: " + entry.getName());
+                }
             }
         } catch (final Throwable e) {
-            Log.d(LCTX, "Can not decompress page: " + e.getMessage());
+            if (CbxDocument.LCTX.isDebugEnabled()) {
+                CbxDocument.LCTX.d("Can not decompress page: " + e.getMessage());
+            }
             return null;
         }
     }
@@ -106,12 +109,12 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
 
                 scale *= 2;
             }
-            
+
             bitmap = decode(false, scale);
             if (bitmap == null) {
                 return null;
             }
-            
+
             final Matrix matrix = new Matrix();
             matrix.postScale((float) width / bitmap.getWidth(), (float) height / bitmap.getHeight());
             matrix.postTranslate(-pageSliceBounds.left * width, -pageSliceBounds.top * height);

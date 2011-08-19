@@ -28,9 +28,8 @@ import de.innosystec.unrar.unpack.decode.Decode;
 import de.innosystec.unrar.unpack.decode.DistDecode;
 import de.innosystec.unrar.unpack.decode.LitDecode;
 import de.innosystec.unrar.unpack.decode.LowDistDecode;
-import de.innosystec.unrar.unpack.decode.RepDecode;
-
 import de.innosystec.unrar.unpack.decode.MultDecode;
+import de.innosystec.unrar.unpack.decode.RepDecode;
 
 /**
  * DOCUMENT ME

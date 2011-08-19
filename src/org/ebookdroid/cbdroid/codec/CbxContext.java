@@ -5,8 +5,6 @@ import org.ebookdroid.core.codec.CodecDocument;
 import org.ebookdroid.core.utils.archives.ArchiveEntry;
 import org.ebookdroid.core.utils.archives.ArchiveFile;
 
-import android.util.Log;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -29,7 +27,9 @@ public class CbxContext<ArchiveEntryType extends ArchiveEntry> extends AbstractC
             final ArchiveFile<ArchiveEntryType> archive = factory.create(new File(fileName), password);
             return new CbxDocument<ArchiveEntryType>(this, archive);
         } catch (final IOException e) {
-            Log.d(CbxDocument.LCTX, "IO error: " + e.getMessage());
+            if (CbxDocument.LCTX.isDebugEnabled()) {
+                CbxDocument.LCTX.d("IO error: " + e.getMessage());
+            }
             return new CbxDocument<ArchiveEntryType>(this, null);
         }
     }

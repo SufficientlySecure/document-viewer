@@ -2,6 +2,7 @@ package org.ebookdroid.core.settings;
 
 import org.ebookdroid.core.PageAlign;
 import org.ebookdroid.core.curl.PageAnimationType;
+import org.ebookdroid.core.log.LogContext;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -13,6 +14,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class DBHelper extends SQLiteOpenHelper {
+
+    private static final LogContext LCTX = LogContext.ROOT.lctx("DBHelper");
 
     private static final int DB_VERSION = 1;
 
@@ -83,7 +86,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 db.close();
             }
         } catch (final Throwable th) {
-            Log.e("DBHelper", "Retrieving book settings failed: ", th);
+            LCTX.e("Retrieving book settings failed: ", th);
         }
 
         return map;
@@ -114,7 +117,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 }
             }
         } catch (final Throwable th) {
-            Log.e("DBHelper", "Retrieving book settings failed: ", th);
+            LCTX.e("Retrieving book settings failed: ", th);
         }
 
         return null;
@@ -164,7 +167,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 }
             }
         } catch (final Throwable th) {
-            Log.e("DBHelper", "Update book settings failed: ", th);
+            LCTX.e("Update book settings failed: ", th);
         }
         return false;
     }
@@ -192,7 +195,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 }
             }
         } catch (final Throwable th) {
-            Log.e("DBHelper", "Update book settings failed: ", th);
+            LCTX.e("Update book settings failed: ", th);
         }
         return false;
     }

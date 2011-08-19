@@ -3,7 +3,7 @@ package org.ebookdroid.core;
 import org.ebookdroid.R;
 import org.ebookdroid.core.events.CurrentPageListener;
 import org.ebookdroid.core.events.DecodingProgressListener;
-import org.ebookdroid.core.log.EmergencyHandler;
+import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.models.DecodingProgressModel;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.models.ZoomModel;
@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -44,6 +43,8 @@ import java.util.List;
 
 public abstract class BaseViewerActivity extends Activity implements IViewerActivity, DecodingProgressListener,
         CurrentPageListener {
+
+    public static final LogContext LCTX = LogContext.ROOT.lctx("Core");
 
     private static final int DIALOG_GOTO = 0;
 
@@ -75,7 +76,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EmergencyHandler.init(this);
 
         frameLayout = createMainContainer();
 
@@ -100,7 +100,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
             decodeService.open(fileName, password);
 
         } catch (final Exception e) {
-            Log.e(getClass().getSimpleName(), e.getMessage(), e);
+            LCTX.e(e.getMessage(), e);
             final String msg = e.getMessage();
 
             if ("PDF needs a password!".equals(msg)) {
@@ -334,7 +334,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
                     // Toast.makeText(getApplicationContext(), outline[item].getLink(),
                     // Toast.LENGTH_SHORT).show();
                     final String link = outline.get(item).getLink();
-                    Log.d("VuDroid", "Link: " + link);
                     if (link.startsWith("#")) {
                         int pageNumber = 0;
                         try {

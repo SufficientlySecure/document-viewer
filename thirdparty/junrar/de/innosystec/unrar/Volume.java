@@ -1,9 +1,10 @@
 package de.innosystec.unrar;
 
-import de.innosystec.unrar.rarfile.FileHeader;
-import de.innosystec.unrar.unpack.*;
 import java.io.File;
 import java.io.IOException;
+
+import de.innosystec.unrar.rarfile.FileHeader;
+import de.innosystec.unrar.unpack.ComprDataIO;
 
 /**
  *

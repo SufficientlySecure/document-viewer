@@ -1,6 +1,7 @@
 package org.ebookdroid.xpsdroid.codec;
 
 import org.ebookdroid.core.OutlineLink;
+import org.ebookdroid.core.log.LogContext;
 
 import android.util.Log;
 
@@ -8,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class XpsOutline {
+
+    private static final LogContext LCTX = LogContext.ROOT.lctx("Xps");
 
     private long docHandle;
 
@@ -26,7 +29,9 @@ public class XpsOutline {
             final String title = getTitle(outline);
             final String link = getLink(outline, docHandle);
             if (title != null) {
-                Log.d("XpsOutline", title);
+                if (LCTX.isDebugEnabled()) {
+                    LCTX.d(title);
+                }
                 ls.add(new OutlineLink(title, link));
             }
 

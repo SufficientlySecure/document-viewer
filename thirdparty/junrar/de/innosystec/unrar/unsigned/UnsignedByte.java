@@ -18,7 +18,6 @@
  */
 package de.innosystec.unrar.unsigned;
 
-import de.innosystec.unrar.crc.RarCRC;
 
 /**
  * DOCUMENT ME

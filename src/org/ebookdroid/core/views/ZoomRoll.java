@@ -24,7 +24,7 @@ public class ZoomRoll extends View {
     private VelocityTracker velocityTracker;
     private final Scroller scroller;
     private float lastX;
-    private static final int MAX_VALUE = 1000;
+    private static final int MAX_VALUE = 10000;
     private final ZoomModel zoomModel;
     private static final float MULTIPLIER = 400.0f;
 

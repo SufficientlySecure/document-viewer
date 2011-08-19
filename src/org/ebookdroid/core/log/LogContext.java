@@ -47,11 +47,11 @@ public class LogContext {
     }
 
     public void i(final String msg) {
-        Log.d(tag, msg);
+        Log.i(tag, msg);
     }
 
     public void i(final String msg, final Throwable th) {
-        Log.d(tag, msg, th);
+        Log.i(tag, msg, th);
     }
 
     public void e(final String msg) {
@@ -79,7 +79,7 @@ public class LogContext {
         final PackageManager pm = context.getPackageManager();
         try {
             final PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
-            ROOT.debugEnabled = (pi.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+            ROOT.debugEnabled = (pi.applicationInfo.flags & (ApplicationInfo.FLAG_DEBUGGABLE | 0x100 /*ApplicationInfo.FLAG_TEST_ONLY*/)) != 0;
             Log.i(ROOT.tag, "Debug logging " + (ROOT.debugEnabled ? "enabled" : "disabled") + " by default");
         } catch (final NameNotFoundException ex) {
             ex.printStackTrace();

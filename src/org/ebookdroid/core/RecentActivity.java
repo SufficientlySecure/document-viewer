@@ -1,8 +1,10 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.R;
+import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.presentation.FileListAdapter;
 import org.ebookdroid.core.presentation.RecentAdapter;
+import org.ebookdroid.core.settings.BookSettings;
 import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.utils.DirectoryOrFileFilter;
@@ -24,6 +26,8 @@ import android.widget.ViewFlipper;
 import java.io.File;
 
 public class RecentActivity extends Activity implements IBrowserActivity {
+
+    public static final LogContext LCTX = LogContext.ROOT.lctx("Core");
 
     private static final int VIEW_RECENT = 0;
     private static final int VIEW_LIBRARY = 1;
@@ -48,6 +52,21 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         viewflipper = (ViewFlipper) findViewById(R.id.recentflip);
         viewflipper.addView(new RecentBooksView(this, recentAdapter), VIEW_RECENT);
         viewflipper.addView(new LibraryView(this, libraryAdapter), VIEW_LIBRARY);
+
+        boolean shouldLoad = getSettings().getAppSettings().isLoadRecentBook();
+        BookSettings recent = getSettings().getRecentBook();
+        File file = recent != null ? new File(recent.getFileName()) : null;
+        boolean found = file != null ? file.exists() : false;
+
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("Last book: " + (file != null ? file.getAbsolutePath() : "") + ", found: " + found
+                    + ", should load: " + shouldLoad);
+        }
+
+        if (shouldLoad && found) {
+            showDocument(Uri.fromFile(file));
+        }
+
     }
 
     @Override
@@ -86,7 +105,7 @@ public class RecentActivity extends Activity implements IBrowserActivity {
     protected void onResume() {
         super.onResume();
 
-        getSettings().clearCurrentBookSettings();
+        getSettings().onAppSettingsChanged(this);
 
         final DirectoryOrFileFilter filter = new DirectoryOrFileFilter(getSettings().getAppSettings()
                 .getAllowedFileTypes(Activities.getAllExtensions()));

@@ -56,8 +56,17 @@ public class AppSettings {
 
     private Set<String> autoScanDirs;
 
+    private Boolean loadRecent;
+
     AppSettings(final Context context) {
         this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    }
+
+    public boolean isLoadRecentBook() {
+        if (loadRecent == null) {
+            loadRecent = prefs.getBoolean("loadrecent", false);
+        }
+        return loadRecent;
     }
 
     public Set<String> getAutoScanDirs() {
@@ -293,6 +302,7 @@ public class AppSettings {
         private static final short D_Brightness = 0x0001 << 10;
         private static final short D_BrightnessInNightMode = 0x0001 << 11;
         private static final short D_KeepScreenOn = 0x0001 << 12;
+        private static final short D_LoadRecent = 0x0001 << 13;
 
         private short mask;
         private final boolean firstTime;
@@ -338,6 +348,9 @@ public class AppSettings {
                 }
                 if (firstTime || olds.isKeepScreenOn() != news.isKeepScreenOn()) {
                     mask |= D_KeepScreenOn;
+                }
+                if (firstTime || olds.isLoadRecentBook() != news.isLoadRecentBook()) {
+                    mask |= D_LoadRecent;
                 }
             }
         }
@@ -396,6 +409,10 @@ public class AppSettings {
 
         public boolean isKeepScreenOnChanged() {
             return 0 != (mask & D_KeepScreenOn);
+        }
+
+        public boolean isLoadRecentChanged() {
+            return 0 != (mask & D_LoadRecent);
         }
     }
 

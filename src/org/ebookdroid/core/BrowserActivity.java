@@ -146,6 +146,7 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        getSettings().onAppSettingsChanged(this);
     }
 
     @Override

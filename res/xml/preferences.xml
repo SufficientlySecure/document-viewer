@@ -9,6 +9,11 @@
 		android:summary="@string/pref_ui_category_summary">
 
 		<CheckBoxPreference
+			android:key="loadrecent"
+			android:title="@string/pref_loadrecent_title"
+			android:summary="@string/pref_loadrecent_summary"
+			android:defaultValue="false" />
+		<CheckBoxPreference
 			android:key="nightmode"
 			android:title="@string/pref_nightmode_title"
 			android:summary="@string/pref_nightmode_summary"
@@ -30,7 +35,7 @@
 			android:title="@string/pref_keepscreenon_title"
 			android:summary="@string/pref_keepscreenon_summary"
 			android:defaultValue="true" />
-			
+
 		<ListPreference
 			android:key="rotation"
 			android:title="@string/pref_rotation_title"

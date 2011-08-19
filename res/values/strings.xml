@@ -93,4 +93,6 @@
 	<string name="pref_brightnessnightmodeonly_summary">"Apply brightness setting only in night mode"</string>
 	<string name="pref_keepscreenon_title">"Keep screen On"</string>
 	<string name="pref_keepscreenon_summary">"Keep screen always on"</string>
+	<string name="pref_loadrecent_title">"Load recent"</string>
+	<string name="pref_loadrecent_summary">"Auto loading last opened book on app start"</string>
 </resources>

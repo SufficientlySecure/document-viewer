@@ -1,5 +1,6 @@
 package org.ebookdroid.core.settings;
 
+import org.ebookdroid.core.IBrowserActivity;
 import org.ebookdroid.core.IDocumentViewController;
 import org.ebookdroid.core.IViewerActivity;
 import org.ebookdroid.core.events.CurrentPageListener;
@@ -100,8 +101,13 @@ public class SettingsManager implements CurrentPageListener {
         }
     }
 
+    public BookSettings getRecentBook() {
+        final Map<String, BookSettings> bs = db.getBookSettings(false);
+        return bs.isEmpty() ? null : bs.values().iterator().next();
+    }
+
     public Map<String, BookSettings> getAllBooksSettings() {
-        return db.getBookSettings();
+        return db.getBookSettings(true);
     }
 
     @Override
@@ -146,20 +152,34 @@ public class SettingsManager implements CurrentPageListener {
         }
     }
 
+    public void onAppSettingsChanged(final IBrowserActivity base) {
+        lock.writeLock().lock();
+        try {
+            appSettings = new AppSettings(base.getContext());
+            clearCurrentBookSettings();
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
     public void onAppSettingsChanged(final IViewerActivity base) {
         lock.writeLock().lock();
         try {
             final AppSettings oldSettings = appSettings;
             appSettings = new AppSettings(base.getContext());
 
-            applyAppSettingsChanges(base, oldSettings, appSettings);
+            if (base != null) {
+                applyAppSettingsChanges(base, oldSettings, appSettings);
+            }
 
             final BookSettings oldBS = bookSettings;
             if (oldBS != null) {
                 bookSettings = new BookSettings(oldBS, appSettings);
                 db.storeBookSettings(bookSettings);
 
-                applyBookSettingsChanges(base, oldBS, bookSettings);
+                if (base != null) {
+                    applyBookSettingsChanges(base, oldBS, bookSettings);
+                }
             } else {
                 appSettings.clearPseudoBookSettings();
             }
@@ -201,7 +221,7 @@ public class SettingsManager implements CurrentPageListener {
             if (diff.isKeepScreenOnChanged()) {
                 dc.getView().setKeepScreenOn(newSettings.isKeepScreenOn());
             }
-        }        
+        }
     }
 
     protected void applyBookSettingsChanges(final IViewerActivity base, final BookSettings oldSettings,
@@ -229,7 +249,7 @@ public class SettingsManager implements CurrentPageListener {
             if (diff.isAnimationTypeChanged()) {
                 dc.updateAnimationType();
             }
-            
+
         }
 
         final DocumentModel dm = base.getDocumentModel();

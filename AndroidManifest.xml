@@ -46,14 +46,14 @@
                 <data android:mimeType="application/x-cbr"/>
             </intent-filter>
         </activity>
-        <activity android:name=".core.RecentActivity" android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar" android:launchMode="singleInstance" android:configChanges="keyboardHidden|orientation">
+        <activity android:name=".core.RecentActivity" android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar" android:configChanges="keyboardHidden|orientation" android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity android:name=".core.settings.SettingsActivity" android:configChanges="keyboardHidden|orientation" />
-        <activity android:name=".core.BrowserActivity" android:theme="@android:style/Theme.NoTitleBar" android:launchMode="singleInstance" android:configChanges="keyboardHidden|orientation" />
+        <activity android:name=".core.BrowserActivity" android:theme="@android:style/Theme.NoTitleBar" android:configChanges="keyboardHidden|orientation" android:launchMode="singleTask"/>
 
     </application>
 </manifest>

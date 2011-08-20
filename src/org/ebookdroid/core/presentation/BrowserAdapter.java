@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -58,15 +57,14 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
             view = LayoutInflater.from(base.getContext()).inflate(R.layout.browseritem, viewGroup, false);
         }
 
-        final ImageView imageView = (ImageView) view.findViewById(R.id.browserItemIcon);
         final File file = files.get(i);
+
         final TextView textView = (TextView) view.findViewById(R.id.browserItemText);
         textView.setText(file.getName());
 
-/*        if (currentDirectory != null && file.equals(currentDirectory.getParentFile())) {
-            imageView.setImageResource(R.drawable.arrowup);
-            textView.setText(file.getAbsolutePath());
-        } else */ if (file.isDirectory()) {
+        final ImageView imageView = (ImageView) view.findViewById(R.id.browserItemIcon);
+
+        if (file.isDirectory()) {
             boolean watched = base.getSettings().getAppSettings().getAutoScanDirs().contains(file.getPath());
             imageView.setImageResource(watched ? R.drawable.folderwatched : R.drawable.folderopen);
 
@@ -88,7 +86,7 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
         } else {
             imageView.setImageResource(R.drawable.book);
             final TextView info = (TextView) view.findViewById(R.id.browserItemInfo);
-            info.setText(new SimpleDateFormat("dd MMM yyyy").format(file.lastModified()));
+            info.setText(FileUtils.getFileDate(file.lastModified()));
 
             final TextView fileSize = (TextView) view.findViewById(R.id.browserItemfileSize);
             fileSize.setText(FileUtils.getFileSize(file.length()));
@@ -100,7 +98,6 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
         this.currentDirectory = currentDirectory;
 
         final File[] fileArray = currentDirectory.listFiles(filter);
-//        final ArrayList<File> files = new ArrayList<File>(LengthUtils.isNotEmpty(fileArray)? Arrays.asList(fileArray): EMPTY_LIST);
 
         List<File> files = EMPTY_LIST;
         if (LengthUtils.isNotEmpty(fileArray)) {
@@ -108,11 +105,6 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
             this.currentDirectory = currentDirectory;
             Collections.sort(files, this);
         }
-
-//        if (currentDirectory.getParentFile() != null) {
-//            files.add(0, currentDirectory.getParentFile());
-//        }
-
         setFiles(files);
     }
 

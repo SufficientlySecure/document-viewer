@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Queue;
@@ -49,9 +48,8 @@ public class FileListAdapter extends BaseExpandableListAdapter {
         int getCount() {
             return this.list.length;
         }
-        
-        public String toString()
-        {
+
+        public String toString() {
             return this.name;
         }
     }
@@ -85,14 +83,17 @@ public class FileListAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.browseritem, parent, false);
         }
-        final ImageView imageView = (ImageView) convertView.findViewById(R.id.browserItemIcon);
+
         final File file = getChild(groupPosition, childPosition);
+
         final TextView textView = (TextView) convertView.findViewById(R.id.browserItemText);
         textView.setText(file.getName());
 
+        final ImageView imageView = (ImageView) convertView.findViewById(R.id.browserItemIcon);
         imageView.setImageResource(R.drawable.book);
+
         final TextView info = (TextView) convertView.findViewById(R.id.browserItemInfo);
-        info.setText(new SimpleDateFormat("dd MMM yyyy").format(file.lastModified()));
+        info.setText(FileUtils.getFileDate(file.lastModified()));
 
         final TextView fileSize = (TextView) convertView.findViewById(R.id.browserItemfileSize);
         fileSize.setText(FileUtils.getFileSize(file.length()));

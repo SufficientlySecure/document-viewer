@@ -1,10 +1,10 @@
 package org.ebookdroid.utils;
 
+import java.text.SimpleDateFormat;
+
 
 public class FileUtils {
 
-    public FileUtils() {
-    }
 
     public static final String getFileSize(final long size) {
 
@@ -18,5 +18,10 @@ public class FileUtils {
             return size + " B";
         }
 
+    }
+    
+    public static final String getFileDate(final long time)
+    {
+        return new SimpleDateFormat("dd MMM yyyy").format(time);
     }
 }

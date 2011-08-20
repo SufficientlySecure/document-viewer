@@ -17,12 +17,12 @@ import java.io.File;
 import java.io.FileFilter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Arrays;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class FileListAdapter extends BaseExpandableListAdapter implements Comparator<File> {
+public class FileListAdapter extends BaseExpandableListAdapter {
 
     final IBrowserActivity base;
     final Context context;
@@ -48,6 +48,11 @@ public class FileListAdapter extends BaseExpandableListAdapter implements Compar
 
         int getCount() {
             return this.list.length;
+        }
+        
+        public String toString()
+        {
+            return this.name;
         }
     }
 
@@ -144,17 +149,6 @@ public class FileListAdapter extends BaseExpandableListAdapter implements Compar
             data.add(node);
     }
 
-    @Override
-    public int compare(final File f1, final File f2) {
-        if (f1.isDirectory() && f2.isFile()) {
-            return -1;
-        }
-        if (f1.isFile() && f2.isDirectory()) {
-            return 1;
-        }
-        return f1.getName().compareTo(f2.getName());
-    }
-
     public void clearData() {
         data.clear();
         notifyDataSetInvalidated();
@@ -231,6 +225,7 @@ public class FileListAdapter extends BaseExpandableListAdapter implements Compar
 
                 final String[] list = dir.list(filter);
                 if (list != null && list.length > 0) {
+                    Arrays.sort(list);
                     currNodes.add(new Node(dir.getAbsolutePath(), list));
                     if (inUI.compareAndSet(false, true)) {
                         // Start UI task if required

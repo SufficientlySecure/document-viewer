@@ -1,16 +1,11 @@
 package org.ebookdroid.pdfdroid.codec;
 
 import org.ebookdroid.core.OutlineLink;
-import org.ebookdroid.core.log.LogContext;
-
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PdfOutline {
-
-    private static final LogContext LCTX = LogContext.ROOT.lctx("Pdf");
 
     private long docHandle;
 
@@ -29,9 +24,6 @@ public class PdfOutline {
             final String title = getTitle(outline);
             final String link = getLink(outline, docHandle);
             if (title != null) {
-                if (LCTX.isDebugEnabled()) {
-                    LCTX.d(title);
-                }
                 ls.add(new OutlineLink(title, link));
             }
 

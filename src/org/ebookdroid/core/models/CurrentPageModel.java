@@ -4,8 +4,6 @@ import org.ebookdroid.core.events.CurrentPageListener;
 import org.ebookdroid.core.events.EventDispatcher;
 import org.ebookdroid.core.log.LogContext;
 
-import android.util.Log;
-
 public class CurrentPageModel extends EventDispatcher {
 
     private static final LogContext LCTX = LogContext.ROOT.lctx("DocModel");

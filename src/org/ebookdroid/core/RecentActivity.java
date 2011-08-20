@@ -8,6 +8,8 @@ import org.ebookdroid.core.settings.BookSettings;
 import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.utils.DirectoryOrFileFilter;
+import org.ebookdroid.core.utils.FileExtensionFilter;
+import org.ebookdroid.core.utils.FileNameExtFilter;
 import org.ebookdroid.core.views.LibraryView;
 import org.ebookdroid.core.views.RecentBooksView;
 
@@ -107,12 +109,13 @@ public class RecentActivity extends Activity implements IBrowserActivity {
 
         getSettings().onAppSettingsChanged(this);
 
-        final DirectoryOrFileFilter filter = new DirectoryOrFileFilter(getSettings().getAppSettings()
-                .getAllowedFileTypes(Activities.getAllExtensions()));
+        viewflipper.setDisplayedChild(VIEW_RECENT);
+        library.setImageResource(R.drawable.actionbar_library);
+
+        final DirectoryOrFileFilter filter = new DirectoryOrFileFilter(new FileExtensionFilter(getSettings().getAppSettings()
+                .getAllowedFileTypes(Activities.getAllExtensions())));
 
         recentAdapter.setBooks(getSettings().getAllBooksSettings().values(), filter);
-
-        libraryAdapter.startScan(filter);
     }
 
     @Override
@@ -145,6 +148,10 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         if (viewflipper.getDisplayedChild() == VIEW_RECENT) {
             viewflipper.setDisplayedChild(VIEW_LIBRARY);
             library.setImageResource(R.drawable.actionbar_recent);
+            final FileNameExtFilter filter = new FileNameExtFilter(getSettings().getAppSettings()
+                    .getAllowedFileTypes(Activities.getAllExtensions()));
+             libraryAdapter.startScan(filter);
+            
         } else {
             viewflipper.setDisplayedChild(VIEW_RECENT);
             library.setImageResource(R.drawable.actionbar_library);

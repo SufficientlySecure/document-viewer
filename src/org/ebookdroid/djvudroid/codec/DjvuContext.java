@@ -4,8 +4,6 @@ import org.ebookdroid.core.VuDroidLibraryLoader;
 import org.ebookdroid.core.codec.AbstractCodecContext;
 import org.ebookdroid.core.log.LogContext;
 
-import android.util.Log;
-
 import java.util.concurrent.Semaphore;
 
 public class DjvuContext extends AbstractCodecContext implements Runnable {

@@ -5,6 +5,7 @@ import org.ebookdroid.core.presentation.BrowserAdapter;
 import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.utils.DirectoryOrFileFilter;
+import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.core.views.FileBrowserView;
 
 import android.app.Activity;
@@ -34,23 +35,8 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
     private TextView header;
 
     public BrowserActivity() {
-        this.filter = createFileFilter();
-    }
-
-    protected FileFilter createFileFilter() {
-        return new DirectoryOrFileFilter(new FileFilter() {
-
-            @Override
-            public boolean accept(final File pathname) {
-                for (final String s : Activities.getAllExtensions()) {
-                    if (pathname.getName().toLowerCase().endsWith("." + s)
-                            && getSettings().getAppSettings().isFileTypeAllowed(s)) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
+        this.filter = new DirectoryOrFileFilter(new FileExtensionFilter(getSettings().getAppSettings()
+                .getAllowedFileTypes(Activities.getAllExtensions())));
     }
 
     @Override

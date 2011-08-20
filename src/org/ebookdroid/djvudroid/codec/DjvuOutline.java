@@ -1,16 +1,11 @@
 package org.ebookdroid.djvudroid.codec;
 
 import org.ebookdroid.core.OutlineLink;
-import org.ebookdroid.core.log.LogContext;
-
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DjvuOutline {
-
-    private static final LogContext LCTX = LogContext.ROOT.lctx("Djvu");
 
     private long docHandle;
 
@@ -27,9 +22,6 @@ public class DjvuOutline {
             final String title = getTitle(expr);
             final String link = getLink(expr, docHandle);
             if (title != null) {
-                if (LCTX.isDebugEnabled()) {
-                    LCTX.d(title);
-                }
                 ls.add(new OutlineLink(title, link));
             }
             final long child = getChild(expr);

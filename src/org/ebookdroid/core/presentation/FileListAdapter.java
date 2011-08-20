@@ -181,7 +181,7 @@ public class FileListAdapter extends BaseExpandableListAdapter {
         public void run() {
             // Checks if we started to update adapter data
 
-            if (!currNodes.isEmpty()) {
+            if (!currNodes.isEmpty() && inScan.get()) {
                 // Add files from queue to adapter
                 for (Node n = currNodes.poll(); n != null && inScan.get(); n = currNodes.poll()) {
                     addNode(n);

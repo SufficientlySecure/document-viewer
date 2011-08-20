@@ -39,7 +39,7 @@
 	<string name="list_rotation_auto">"Автоматически"</string>
 	<string name="list_rotation_land">"Форсировать альбом"</string>
 	<string name="list_rotation_port">"Форсировать портрет"</string>
-	<string name="menu_exit">Выход</string>
+	<string name="menu_close">Закрыть</string>
 	<string name="menu_goto_page">Страница</string>
 	<string name="menu_outline">Оглавление</string>
 	<string name="menu_zoom">Увеличение</string>

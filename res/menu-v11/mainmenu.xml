@@ -34,9 +34,9 @@
 		android:icon="@drawable/outline" />
 
 	<item
-		android:id="@+id/mainmenu_exit"
+		android:id="@+id/mainmenu_close"
 		android:alphabeticShortcut="e"
-		android:title="@string/menu_exit"
-		android:icon="@drawable/exit" />
+		android:title="@string/menu_close"
+		android:icon="@drawable/close" />
 
 </menu>

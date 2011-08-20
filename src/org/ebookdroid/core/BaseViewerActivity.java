@@ -21,7 +21,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -144,7 +143,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
             @Override
             public void onClick(final View v) {
-                finish();
+                closeActivity();
             }
         });
     }
@@ -162,7 +161,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
             @Override
             public void onClick(final View v) {
-                finish();
+                closeActivity();
             }
         });
     }
@@ -367,8 +366,8 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.mainmenu_exit:
-                System.exit(0);
+            case R.id.mainmenu_close:
+                closeActivity();
                 return true;
             case R.id.mainmenu_goto_page:
                 showDialog(DIALOG_GOTO);
@@ -476,22 +475,19 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     }
 
     @Override
-    public void onConfigurationChanged(final Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-        }
-    }
-
-    @Override
     public boolean onKeyDown(final int keyCode, final KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            finish();
+            closeActivity();
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+    
+    private void closeActivity()
+    {
+        final Intent myIntent = new Intent(BaseViewerActivity.this, RecentActivity.class);
+        startActivity(myIntent);
+        finish();
     }
 
 }

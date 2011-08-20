@@ -39,7 +39,7 @@
 	<string name="list_rotation_auto">"Automatic"</string>
 	<string name="list_rotation_land">"Force landscape"</string>
 	<string name="list_rotation_port">"Force portrait"</string>
-	<string name="menu_exit">Exit</string>
+	<string name="menu_close">Close</string>
 	<string name="menu_goto_page">Go to page</string>
 	<string name="menu_outline">Outline</string>
 	<string name="menu_zoom">Zoom</string>

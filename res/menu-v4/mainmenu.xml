@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
-   <item android:id="@+id/mainmenu_exit"
+   <item android:id="@+id/mainmenu_close"
          android:alphabeticShortcut="e"
-         android:title="@string/menu_exit"
-         android:icon="@drawable/exit"
+         android:title="@string/menu_close"
+         android:icon="@drawable/close"
          />
    <item android:id="@+id/mainmenu_goto_page"
          android:alphabeticShortcut="g"

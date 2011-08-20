@@ -485,8 +485,8 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     
     private void closeActivity()
     {
-        final Intent myIntent = new Intent(BaseViewerActivity.this, RecentActivity.class);
-        startActivity(myIntent);
+        //final Intent myIntent = new Intent(BaseViewerActivity.this, RecentActivity.class);
+        //startActivity(myIntent);
         finish();
     }
 

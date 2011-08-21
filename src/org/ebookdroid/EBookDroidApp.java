@@ -11,10 +11,10 @@ public class EBookDroidApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        //Disable EmergencyHandler. Currently not usefull, couse store file in private space
-        //Also FC in some devices.
-        //Need additional work.
-        //EmergencyHandler.init(this);
+        // Disable EmergencyHandler. Currently not usefull, couse store file in private space
+        // Also FC in some devices.
+        // Need additional work.
+        // EmergencyHandler.init(this);
         LogContext.init(this);
     }
 }

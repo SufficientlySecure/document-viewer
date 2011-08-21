@@ -138,9 +138,10 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
     @Override
     public boolean onKeyDown(final int keyCode, final KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            final File parent = adapter.getCurrentDirectory().getParentFile();
+            final File dir = adapter.getCurrentDirectory();
+            final File parent = dir != null ? dir.getParentFile() : null;
             if (parent != null) {
-                adapter.setCurrentDirectory(parent);
+                setCurrentDir(parent);
             } else {
                 finish();
             }

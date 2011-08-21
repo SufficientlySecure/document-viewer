@@ -290,7 +290,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Called on creation options menu
-     *
+     * 
      * @param menu
      *            the main menu
      * @return true, if successful
@@ -401,7 +401,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the zoom model.
-     *
+     * 
      * @return the zoom model
      */
     @Override
@@ -411,7 +411,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the multi touch zoom.
-     *
+     * 
      * @return the multi touch zoom
      */
     @Override
@@ -426,7 +426,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the decoding progress model.
-     *
+     * 
      * @return the decoding progress model
      */
     @Override
@@ -482,11 +482,8 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         }
         return super.onKeyDown(keyCode, event);
     }
-    
-    private void closeActivity()
-    {
-        //final Intent myIntent = new Intent(BaseViewerActivity.this, RecentActivity.class);
-        //startActivity(myIntent);
+
+    private void closeActivity() {
         finish();
     }
 

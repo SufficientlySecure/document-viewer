@@ -68,6 +68,8 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
             boolean watched = base.getSettings().getAppSettings().getAutoScanDirs().contains(file.getPath());
             imageView.setImageResource(watched ? R.drawable.folderwatched : R.drawable.folderopen);
 
+            //long len = file.list().length;
+            /*
             final File[] listOfFiles = file.listFiles(filter);
             int folders = 0;
             int books = 0;
@@ -80,9 +82,10 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
                     }
                 }
             }
-
+            */
             final TextView info = (TextView) view.findViewById(R.id.browserItemInfo);
-            info.setText("Folders: " + folders + " Books: " + books);
+            //info.setText("Folders: " + folders + " Books: " + books);
+            info.setText("");
         } else {
             imageView.setImageResource(R.drawable.book);
             final TextView info = (TextView) view.findViewById(R.id.browserItemInfo);

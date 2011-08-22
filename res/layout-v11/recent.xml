@@ -26,6 +26,7 @@
 		<ImageView
 
 			style="@style/action_bar_action"
+			android:id="@+id/recentbrowser"
 			android:src="@drawable/actionbar_open" />
 
 		<View style="@style/action_bar_separator" />

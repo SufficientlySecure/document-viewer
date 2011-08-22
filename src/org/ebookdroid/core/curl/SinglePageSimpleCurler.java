@@ -4,11 +4,11 @@ import org.ebookdroid.core.SinglePageDocumentView;
 
 /**
  * The Class SinglePageCurler.
- *
+ * 
  * Used for drawing page curl animation
- *
+ * 
  * @author Moritz 'Moss' Wundke (b.thax.dcg@gmail.com)
- *
+ * 
  */
 public class SinglePageSimpleCurler extends AbstractSinglePageCurler {
 
@@ -46,9 +46,9 @@ public class SinglePageSimpleCurler extends AbstractSinglePageCurler {
 
         // Now calculate E and F taking into account that the line
         // AD is perpendicular to FB and EC. B and C are fixed points.
-        final double angle = Math.atan((height - mD.y) / (mD.x + mMovement.x - width));
-        final double _cos = Math.cos(2 * angle);
-        final double _sin = Math.sin(2 * angle);
+        final float tanA = (height - mD.y) / (mD.x + mMovement.x - width);
+        final float _cos = (1 - tanA * tanA) / (1 + tanA * tanA);
+        final float _sin = 2 * tanA / (1 + tanA * tanA);
 
         // And get F
         mF.x = (float) (width - mMovement.x + _cos * mMovement.x);

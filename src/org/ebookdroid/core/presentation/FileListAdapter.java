@@ -229,7 +229,7 @@ public class FileListAdapter extends BaseExpandableListAdapter {
                 final String[] list = dir.list(filter);
                 if (list != null && list.length > 0) {
                     Arrays.sort(list);
-                    currNodes.add(new Node(dir.getAbsolutePath(), list));
+                    currNodes.add(new Node(dir.getName(), list));
                     if (inUI.compareAndSet(false, true)) {
                         // Start UI task if required
                         base.getActivity().runOnUiThread(this);

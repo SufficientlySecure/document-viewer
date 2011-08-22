@@ -69,7 +69,10 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         };
 
         findViewById(R.id.recentlibrary).setOnClickListener(handler);
-        findViewById(R.id.recentbrowser).setOnClickListener(handler);
+        View recentBrowser = findViewById(R.id.recentbrowser);
+        if (recentBrowser != null) {
+            recentBrowser.setOnClickListener(handler);
+        }
 
         boolean shouldLoad = SettingsManager.getAppSettings().isLoadRecentBook();
         BookSettings recent = SettingsManager.getRecentBook();

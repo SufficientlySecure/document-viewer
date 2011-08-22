@@ -149,7 +149,8 @@ public class ContiniousDocumentView extends AbstractDocumentView {
 
     @Override
     protected int getBottomLimit() {
-        return (int) getBase().getDocumentModel().getLastPageObject().getBounds().bottom - getHeight();
+        Page lpo = getBase().getDocumentModel().getLastPageObject();
+        return lpo != null ? (int) lpo.getBounds().bottom - getHeight() : 0;
     }
 
     @Override

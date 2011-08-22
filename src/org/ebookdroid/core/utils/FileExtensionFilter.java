@@ -4,11 +4,12 @@ import org.ebookdroid.core.utils.archives.ArchiveEntry;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class FileExtensionFilter implements FileFilter {
+public class FileExtensionFilter implements FileFilter, FilenameFilter {
 
     private final Set<String> extensions;
 
@@ -39,7 +40,26 @@ public class FileExtensionFilter implements FileFilter {
         return false;
     }
 
-    public boolean accept(String name, final String ext) {
+    @Override
+    public boolean accept(final File dir, final String name) {
+        for (final String ext : extensions) {
+            if (accept(name, ext)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean accept(final String name) {
+        for (final String ext : extensions) {
+            if (accept(name, ext)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean accept(final String name, final String ext) {
         return name.toLowerCase().endsWith("." + ext);
     }
 }

@@ -2,6 +2,7 @@ package org.ebookdroid.core.presentation;
 
 import org.ebookdroid.R;
 import org.ebookdroid.core.settings.BookSettings;
+import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.utils.FileUtils;
 
 import android.content.Context;
@@ -17,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 public class RecentAdapter extends BaseAdapter {
 
@@ -70,22 +70,12 @@ public class RecentAdapter extends BaseAdapter {
         this.books = Collections.emptyList();
         notifyDataSetInvalidated();
     }
-    
-    private boolean acceptFile(final Set<String> extensions, final String name)
-    {
-        for (final String ext : extensions) {
-            if (name.toLowerCase().endsWith("." + ext)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
-    public void setBooks(final Collection<BookSettings> books, final Set<String> filter) {
+    public void setBooks(final Collection<BookSettings> books, final FileExtensionFilter filter) {
         if (filter != null) {
             this.books = new ArrayList<BookSettings>(books.size());
             for (final BookSettings bs : books) {
-                if (acceptFile(filter, bs.getFileName())) {
+                if (filter.accept(bs.getFileName())) {
                     this.books.add(bs);
                 }
             }

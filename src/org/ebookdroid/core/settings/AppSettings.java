@@ -3,6 +3,7 @@ package org.ebookdroid.core.settings;
 import org.ebookdroid.core.PageAlign;
 import org.ebookdroid.core.RotationType;
 import org.ebookdroid.core.curl.PageAnimationType;
+import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.utils.StringUtils;
 
 import android.content.Context;
@@ -87,15 +88,15 @@ public class AppSettings {
             setAutoScanDirs(dirs);
         }
     }
-    
-    public Set<String> getAllowedFileTypes(final Set<String> fileTypes) {
+
+    public FileExtensionFilter getAllowedFileTypes(final Set<String> fileTypes) {
         final Set<String> res = new HashSet<String>();
         for (final String ext : fileTypes) {
             if (isFileTypeAllowed(ext)) {
                 res.add(ext);
             }
         }
-        return res;
+        return new FileExtensionFilter(res);
     }
 
     public boolean isFileTypeAllowed(final String ext) {

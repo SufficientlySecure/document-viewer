@@ -7,7 +7,7 @@ import org.ebookdroid.core.presentation.RecentAdapter;
 import org.ebookdroid.core.settings.BookSettings;
 import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
-import org.ebookdroid.core.utils.FileNameExtFilter;
+import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.core.views.LibraryView;
 import org.ebookdroid.core.views.RecentBooksView;
 
@@ -53,8 +53,9 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         viewflipper = (ViewFlipper) findViewById(R.id.recentflip);
         viewflipper.addView(new RecentBooksView(this, recentAdapter), VIEW_RECENT);
         viewflipper.addView(new LibraryView(this, libraryAdapter), VIEW_LIBRARY);
-        
+
         View.OnClickListener handler = new View.OnClickListener() {
+
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.recentlibrary:
@@ -66,7 +67,7 @@ public class RecentActivity extends Activity implements IBrowserActivity {
                 }
             }
         };
-        
+
         findViewById(R.id.recentlibrary).setOnClickListener(handler);
         findViewById(R.id.recentbrowser).setOnClickListener(handler);
 
@@ -156,7 +157,7 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         intent.setClass(this, Activities.getByUri(uri));
         startActivity(intent);
     }
-    
+
     @Override
     public boolean onKeyDown(final int keyCode, final KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
@@ -170,8 +171,8 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         if (viewflipper.getDisplayedChild() == VIEW_RECENT) {
             viewflipper.setDisplayedChild(VIEW_LIBRARY);
             library.setImageResource(R.drawable.actionbar_recent);
-            final FileNameExtFilter filter = new FileNameExtFilter(getSettings().getAppSettings().getAllowedFileTypes(
-                    Activities.getAllExtensions()));
+            final FileExtensionFilter filter = getSettings().getAppSettings().getAllowedFileTypes(
+                    Activities.getAllExtensions());
             libraryAdapter.startScan(filter);
 
         } else {

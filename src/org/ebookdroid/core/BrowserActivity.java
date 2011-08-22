@@ -5,7 +5,6 @@ import org.ebookdroid.core.presentation.BrowserAdapter;
 import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.utils.DirectoryOrFileFilter;
-import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.core.views.FileBrowserView;
 
 import android.app.Activity;
@@ -35,8 +34,8 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
     private TextView header;
 
     public BrowserActivity() {
-        this.filter = new DirectoryOrFileFilter(new FileExtensionFilter(getSettings().getAppSettings()
-                .getAllowedFileTypes(Activities.getAllExtensions())));
+        this.filter = new DirectoryOrFileFilter(getSettings().getAppSettings().getAllowedFileTypes(
+                Activities.getAllExtensions()));
     }
 
     @Override
@@ -49,8 +48,9 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
         header = (TextView) findViewById(R.id.browsertext);
         viewflipper = (ViewFlipper) findViewById(R.id.browserflip);
         viewflipper.addView(new FileBrowserView(this, adapter));
-        
+
         View.OnClickListener handler = new View.OnClickListener() {
+
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.browserhome:
@@ -65,7 +65,7 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
                 }
             }
         };
-        
+
         findViewById(R.id.browserhome).setOnClickListener(handler);
         findViewById(R.id.browserrecent).setOnClickListener(handler);
         findViewById(R.id.browserupfolder).setOnClickListener(handler);

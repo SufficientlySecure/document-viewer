@@ -2,7 +2,7 @@ package org.ebookdroid.core.presentation;
 
 import org.ebookdroid.R;
 import org.ebookdroid.core.IBrowserActivity;
-import org.ebookdroid.core.utils.FileNameExtFilter;
+import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.utils.FileUtils;
 
 import android.content.Context;
@@ -155,7 +155,7 @@ public class FileListAdapter extends BaseExpandableListAdapter {
         notifyDataSetInvalidated();
     }
 
-    public void startScan(FileNameExtFilter filter) {
+    public void startScan(FileExtensionFilter filter) {
         if (inScan.compareAndSet(false, true)) {
             clearData();
             new Thread(new ScanTask(filter)).start();
@@ -168,13 +168,13 @@ public class FileListAdapter extends BaseExpandableListAdapter {
 
     private class ScanTask implements Runnable {
 
-        final FileNameExtFilter filter;
+        final FileExtensionFilter filter;
 
         final Queue<Node> currNodes = new ConcurrentLinkedQueue<Node>();
 
         final AtomicBoolean inUI = new AtomicBoolean();
 
-        public ScanTask(FileNameExtFilter filter) {
+        public ScanTask(FileExtensionFilter filter) {
             this.filter = filter;
         }
 

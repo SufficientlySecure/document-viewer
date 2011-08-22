@@ -6,7 +6,6 @@ import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.utils.CompareUtils;
 
 import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -50,10 +49,10 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    public int compare(PageTreeNode node1, PageTreeNode node2) {
-        RectF viewRect = getViewRect();
-        Rect rect1 = node1.getTargetRect(viewRect, node1.page.getBounds());
-        Rect rect2 = node1.getTargetRect(viewRect, node2.page.getBounds());
+    public int compare(final PageTreeNode node1, final PageTreeNode node2) {
+        final RectF viewRect = getViewRect();
+        final RectF rect1 = node1.getTargetRect(viewRect, node1.page.getBounds());
+        final RectF rect2 = node1.getTargetRect(viewRect, node2.page.getBounds());
 
         final int cp = getCurrentPage();
 

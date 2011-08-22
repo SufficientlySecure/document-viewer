@@ -13,15 +13,17 @@ import java.util.List;
 public class Page {
 
     final int index;
-    RectF bounds;
-    final PageTreeNode node;
-    final IViewerActivity base;
-    float aspectRatio;
     final int documentPage;
+    final IViewerActivity base;
+    final PageTree nodes;
+
+    RectF bounds;
+    float aspectRatio;
     final PageType pageType;
     boolean keptInMempory;
     boolean visible;
     boolean recycled;
+    boolean sliceLimit;
 
     public Page(final IViewerActivity base, final int index, final int documentPage, final PageType pt,
             final CodecPageInfo cpi) {
@@ -32,13 +34,13 @@ public class Page {
 
         setAspectRatio(cpi.getWidth(), cpi.getHeight());
 
-        final boolean sliceLimit = SettingsManager.getAppSettings().getSliceLimit();
-        node = new PageTreeNode(base, pageType.getInitialRect(), this, 2, null, sliceLimit);
+        sliceLimit = SettingsManager.getAppSettings().getSliceLimit();
+        nodes = new PageTree(this);
     }
 
     public void recycle() {
         recycled = true;
-        node.recycle();
+        nodes.recycle();
     }
 
     public float getPageHeight(final int mainWidth, final float zoom) {
@@ -70,7 +72,7 @@ public class Page {
             canvas.drawText(base.getContext().getString(R.string.text_page) + " " + (getIndex() + 1), bounds.centerX(),
                     bounds.centerY(), paint.getTextPaint());
 
-            node.draw(canvas, viewRect, nodesBounds, paint);
+            nodes.root.draw(canvas, viewRect, nodesBounds, paint);
 
             canvas.drawLine(bounds.left, bounds.top, bounds.right, bounds.top, paint.getStrokePaint());
             canvas.drawLine(bounds.left, bounds.bottom, bounds.right, bounds.bottom, paint.getStrokePaint());
@@ -118,20 +120,22 @@ public class Page {
         return (current - inMemory <= this.index) && (this.index <= current + inMemory);
     }
 
-    public void updateVisibility(List<PageTreeNode> nodesToDecode) {
+    public boolean onZoomChanged(float oldZoom, float newZoom, RectF viewRect, final List<PageTreeNode> nodesToDecode) {
         if (!recycled) {
             keptInMempory = calculateKeptInMemory();
             visible = base.getDocumentController().isPageVisible(this);
-            node.updateVisibility(nodesToDecode);
+            return nodes.root.onZoomChanged(oldZoom, newZoom, viewRect, this.getBounds(), nodesToDecode);
         }
+        return false;
     }
 
-    public void invalidate(List<PageTreeNode> nodesToDecode) {
+    public boolean onPositionChanged(RectF viewRect, final List<PageTreeNode> nodesToDecode) {
         if (!recycled) {
             keptInMempory = calculateKeptInMemory();
             visible = base.getDocumentController().isPageVisible(this);
-            node.invalidate(nodesToDecode);
+            return nodes.root.onPositionChanged(viewRect, this.getBounds(), nodesToDecode);
         }
+        return false;
     }
 
     public RectF getBounds() {

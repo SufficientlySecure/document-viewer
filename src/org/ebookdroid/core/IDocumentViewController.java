@@ -1,5 +1,6 @@
 package org.ebookdroid.core;
 
+import android.graphics.RectF;
 import android.view.View;
 
 public interface IDocumentViewController {
@@ -12,6 +13,8 @@ public interface IDocumentViewController {
     void updatePageVisibility();
 
     boolean isPageVisible(Page page);
+
+    RectF getViewRect();
 
     int getFirstVisiblePage();
 

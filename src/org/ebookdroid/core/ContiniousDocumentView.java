@@ -5,8 +5,8 @@ import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.utils.CompareUtils;
 
 import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.graphics.RectF;
+import android.view.View;
 
 public class ContiniousDocumentView extends AbstractDocumentView {
 
@@ -73,8 +73,8 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     @Override
     public int compare(final PageTreeNode node1, final PageTreeNode node2) {
         final RectF viewRect = getViewRect();
-        final Rect rect1 = node1.getTargetRect(viewRect, node1.page.getBounds());
-        final Rect rect2 = node2.getTargetRect(viewRect, node2.page.getBounds());
+        final RectF rect1 = node1.getTargetRect(viewRect, node1.page.getBounds());
+        final RectF rect2 = node2.getTargetRect(viewRect, node2.page.getBounds());
 
         final int cp = getCurrentPage();
 
@@ -86,8 +86,11 @@ public class ContiniousDocumentView extends AbstractDocumentView {
             return res;
         }
 
-        final long centerX = ((long) viewRect.left + (long) viewRect.right) / 2;
-        final long centerY = ((long) viewRect.top + (long) viewRect.bottom) / 2;
+        final View view = node1.page.base.getView();
+        final RectF realViewRect = new RectF(0, 0, view.getWidth(), view.getHeight());
+
+        final long centerX = ((long) realViewRect.left + (long) realViewRect.right) / 2;
+        final long centerY = ((long) realViewRect.top + (long) realViewRect.bottom) / 2;
 
         final long centerX1 = ((long) rect1.left + (long) rect1.right) / 2;
         final long centerY1 = ((long) rect1.top + (long) rect1.bottom) / 2;

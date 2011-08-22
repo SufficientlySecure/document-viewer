@@ -95,45 +95,45 @@ public class DecodeServiceBase implements DecodeService {
     private void performDecode(final DecodeTask task) throws IOException {
         if (executor.isTaskDead(task)) {
             if (LCTX.isDebugEnabled()) {
-                LCTX.d("Task " + task.id + ": Skipping dead decode task");
+                LCTX.d("Task " + task.id + ": Skipping dead decode task for " + task.node);
             }
             return;
         }
 
         if (LCTX.isDebugEnabled()) {
-            LCTX.d("Task " + task.id + ": Starting decoding");
+            LCTX.d("Task " + task.id + ": Starting decoding for " + task.node);
         }
 
         final CodecPage vuPage = getPage(task.pageNumber);
 
         if (executor.isTaskDead(task)) {
             if (LCTX.isDebugEnabled()) {
-                LCTX.d("Task " + task.id + ": Abort dead decode task");
+                LCTX.d("Task " + task.id + ": Abort dead decode task for " + task.node);
             }
             return;
         }
 
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("Task " + task.id + ": Start converting map to bitmap");
-        }
+//        if (LCTX.isDebugEnabled()) {
+//            LCTX.d("Task " + task.id + ": Start converting map to bitmap for " + task.node);
+//        }
         final float scale = calculateScale(vuPage, task.targetWidth) * task.zoom;
         final Bitmap bitmap = vuPage.renderBitmap(getScaledWidth(task, vuPage, scale),
                 getScaledHeight(task, vuPage, scale), task.pageSliceBounds);
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("Task " + task.id + ": Converting map to bitmap finished");
-        }
+//        if (LCTX.isDebugEnabled()) {
+//            LCTX.d("Task " + task.id + ": Converting map to bitmap finished for " + task.node);
+//        }
 
         if (executor.isTaskDead(task)) {
             if (LCTX.isDebugEnabled()) {
-                LCTX.d("Task " + task.id + ": Abort dead decode task");
+                LCTX.d("Task " + task.id + ": Abort dead decode task for " + task.node);
             }
             bitmap.recycle();
             return;
         }
 
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("Task " + task.id + ": Finish decoding task");
-        }
+//        if (LCTX.isDebugEnabled()) {
+//            LCTX.d("Task " + task.id + ": Finish decoding task for " + task.node);
+//        }
         finishDecoding(task, vuPage, bitmap);
     }
 
@@ -213,19 +213,19 @@ public class DecodeServiceBase implements DecodeService {
             lock.writeLock().lock();
             try {
                 if (LCTX.isDebugEnabled()) {
-                    LCTX.d("Adding decoding task: " + task);
+                    LCTX.d("Adding decoding task: " + task + " for " + task.node);
                 }
 
                 final DecodeTask running = decodingTasks.get(task.node);
 
                 if (running != null && running.equals(task) && !isTaskDead(running)) {
                     if (LCTX.isDebugEnabled()) {
-                        LCTX.d("The similar task is running: " + running.id);
+                        LCTX.d("The similar task is running: " + running.id + " for " + task.node);
                     }
                     return;
                 } else if (running != null) {
                     if (LCTX.isDebugEnabled()) {
-                        LCTX.d("The another task is running: " + running.id);
+                        LCTX.d("The another task is running: " + running.id+ " for " + task.node);
                     }
                 }
 
@@ -249,7 +249,7 @@ public class DecodeServiceBase implements DecodeService {
 
                 if (removed != null) {
                     if (LCTX.isDebugEnabled()) {
-                        LCTX.d("Stop decoding task: " + removed.id + " with reason: " + reason);
+                        LCTX.d("Task " + removed.id + ": Stop decoding task with reason: " + reason + " for " + removed.node);
                     }
                 }
                 if (future != null) {

@@ -63,6 +63,24 @@ public final class CompareUtils {
   }
 
   /**
+   * Compare two float values.
+   *
+   * @param val1
+   *          first value
+   * @param val2
+   *          second value
+   * @return on of the following values:
+   *         <ul>
+   *         <li><code>-1</code> if the first value is less than the second one</li>
+   *         <li><code>0</code> if both values are equal</li>
+   *         <li><code>1</code> if the first value is greater than the second one</li>
+   *         </ul>
+   */
+  public static int compare(final float val1, final float val2) {
+    return val1 < val2 ? -1 : val1 > val2 ? 1 : 0;
+  }
+
+  /**
    * Compares two objects.
    *
    * @param o1

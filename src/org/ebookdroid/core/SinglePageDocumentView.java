@@ -2,6 +2,7 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.core.curl.PageAnimationType;
 import org.ebookdroid.core.curl.PageAnimator;
+import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.utils.CompareUtils;
 
@@ -33,9 +34,12 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     @Override
     public void goToPageImpl(final int toPage) {
-        if (toPage >= 0 && toPage <= getBase().getDocumentModel().getPageCount()) {
-            final Page page = getBase().getDocumentModel().getPageObject(toPage);
-            getBase().getDocumentModel().setCurrentPageIndex(page.getDocumentPageIndex(), page.getIndex());
+        DocumentModel dm = getBase().getDocumentModel();
+        if (toPage >= 0 && toPage < dm.getPageCount()) {
+            final Page page = dm.getPageObject(toPage);
+            if (page != null) {
+                dm.setCurrentPageIndex(page.getDocumentPageIndex(), page.getIndex());
+            }
             if (curler != null) {
                 curler.resetPageIndexes();
             }

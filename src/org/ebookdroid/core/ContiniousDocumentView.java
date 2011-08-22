@@ -17,7 +17,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     @Override
     protected void goToPageImpl(final int toPage) {
         final DocumentModel dm = getBase().getDocumentModel();
-        if (toPage >= 0 && toPage <= dm.getPageCount()) {
+        if (toPage >= 0 && toPage < dm.getPageCount()) {
             final Page pageObject = dm.getPageObject(toPage);
             if (pageObject != null) {
                 final RectF viewRect = this.getViewRect();
@@ -25,7 +25,6 @@ public class ContiniousDocumentView extends AbstractDocumentView {
                 scrollTo(0, pageObject.getTop() - ((int) viewRect.height() - (int) bounds.height()) / 2);
             }
         }
-
     }
 
     public void setCurrentPageByFirstVisible() {
@@ -86,6 +85,14 @@ public class ContiniousDocumentView extends AbstractDocumentView {
             return res;
         }
 
+        if (node1.page.index == cp && node2.page.index != cp) {
+            return -1;
+        }
+
+        if (node1.page.index != cp && node2.page.index == cp) {
+            return 1;
+        }
+
         final View view = node1.page.base.getView();
         final RectF realViewRect = new RectF(0, 0, view.getWidth(), view.getHeight());
 
@@ -101,7 +108,11 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         final long dist1 = (centerX1 - centerX) * (centerX1 - centerX) + (centerY1 - centerY) * (centerY1 - centerY);
         final long dist2 = (centerX2 - centerX) * (centerX2 - centerX) + (centerY2 - centerY) * (centerY2 - centerY);
 
-        return CompareUtils.compare(dist1, dist2);
+        int res = CompareUtils.compare(dist1, dist2);
+        if (res == 0) {
+            res = CompareUtils.compare(rect1.left, rect2.left);
+        }
+        return res;
     }
 
     protected void onScrollChanged() {

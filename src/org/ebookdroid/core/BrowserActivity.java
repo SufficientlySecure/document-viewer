@@ -49,6 +49,26 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
         header = (TextView) findViewById(R.id.browsertext);
         viewflipper = (ViewFlipper) findViewById(R.id.browserflip);
         viewflipper.addView(new FileBrowserView(this, adapter));
+        
+        View.OnClickListener handler = new View.OnClickListener() {
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.browserhome:
+                        goHome(v);
+                        break;
+                    case R.id.browserrecent:
+                        goRecent(v);
+                        break;
+                    case R.id.browserupfolder:
+                        goUp(v);
+                        break;
+                }
+            }
+        };
+        
+        findViewById(R.id.browserhome).setOnClickListener(handler);
+        findViewById(R.id.browserrecent).setOnClickListener(handler);
+        findViewById(R.id.browserupfolder).setOnClickListener(handler);
     }
 
     @Override
@@ -115,7 +135,7 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
 
     @Override
     public void setCurrentDir(final File newDir) {
-        final ImageView view = (ImageView) findViewById(R.id.goUpFolder);
+        final ImageView view = (ImageView) findViewById(R.id.browserupfolder);
         final boolean hasParent = newDir.getParentFile() != null;
         view.setImageResource(hasParent ? R.drawable.arrowup_enabled : R.drawable.arrowup_disabled);
 

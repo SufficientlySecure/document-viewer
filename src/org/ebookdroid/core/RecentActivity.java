@@ -53,6 +53,22 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         viewflipper = (ViewFlipper) findViewById(R.id.recentflip);
         viewflipper.addView(new RecentBooksView(this, recentAdapter), VIEW_RECENT);
         viewflipper.addView(new LibraryView(this, libraryAdapter), VIEW_LIBRARY);
+        
+        View.OnClickListener handler = new View.OnClickListener() {
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.recentlibrary:
+                        goLibrary(v);
+                        break;
+                    case R.id.recentbrowser:
+                        goFileBrowser(v);
+                        break;
+                }
+            }
+        };
+        
+        findViewById(R.id.recentlibrary).setOnClickListener(handler);
+        findViewById(R.id.recentbrowser).setOnClickListener(handler);
 
         boolean shouldLoad = getSettings().getAppSettings().isLoadRecentBook();
         BookSettings recent = getSettings().getRecentBook();

@@ -8,10 +8,9 @@
 
 	<LinearLayout style="@style/action_bar">
 		<ImageView
-			android:id="@+id/goHome"
+			android:id="@+id/browserhome"
 			style="@style/action_bar_icon"
-			android:src="@drawable/home" 
-			android:onClick="goHome"/>
+			android:src="@drawable/home" />
 
 		<View style="@style/action_bar_separator" />
 
@@ -20,17 +19,16 @@
 			android:id="@+id/browsertext" />
 
 		<ImageView
-			android:id="@+id/goUpFolder"
+			android:id="@+id/browserupfolder"
 			style="@style/action_bar_action"
-			android:src="@drawable/arrowup_enabled"
-			android:onClick="goUp" />
+			android:src="@drawable/arrowup_enabled" />
 
 		<View style="@style/action_bar_separator" />
 
 		<ImageView
+			android:id="@+id/browserrecent"
 			style="@style/action_bar_action"
-			android:src="@drawable/actionbar_recent"
-			android:onClick="goRecent" />
+			android:src="@drawable/actionbar_recent" />
 
 		<View style="@style/action_bar_separator" />
 

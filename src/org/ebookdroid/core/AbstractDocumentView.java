@@ -2,6 +2,7 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.core.events.ZoomListener;
 import org.ebookdroid.core.log.LogContext;
+import org.ebookdroid.core.settings.SettingsManager;
 
 import android.graphics.Canvas;
 import android.graphics.RectF;
@@ -44,12 +45,12 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     public AbstractDocumentView(final IViewerActivity baseActivity) {
         super(baseActivity.getContext());
         this.base = baseActivity;
-        this.align = base.getBookSettings().getPageAlign();
+        this.align = SettingsManager.getBookSettings().getPageAlign();
         this.firstVisiblePage = -1;
         this.lastVisiblePage = -1;
         this.scroller = new Scroller(getContext());
 
-        setKeepScreenOn(base.getAppSettings().isKeepScreenOn());
+        setKeepScreenOn(SettingsManager.getAppSettings().isKeepScreenOn());
         setFocusable(true);
         setFocusableInTouchMode(true);
         getHolder().addCallback(this);
@@ -144,7 +145,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
     @Override
     public void commitZoom() {
-        base.getSettings().zoomChanged(base.getZoomModel().getZoom());
+        SettingsManager.zoomChanged(base.getZoomModel().getZoom());
 
         invalidatePages(getBase().getDocumentModel().getPages());
 
@@ -224,8 +225,8 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
         boolean inTap = false;
         float ts = 0;
-        if (base.getAppSettings().getTapScroll()) {
-            final int tapsize = base.getAppSettings().getTapSize();
+        if (SettingsManager.getAppSettings().getTapScroll()) {
+            final int tapsize = SettingsManager.getAppSettings().getTapSize();
 
             ts = (float) tapsize / 100;
             if (ts > 0.5) {

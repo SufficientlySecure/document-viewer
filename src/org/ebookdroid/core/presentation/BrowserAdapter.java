@@ -2,6 +2,7 @@ package org.ebookdroid.core.presentation;
 
 import org.ebookdroid.R;
 import org.ebookdroid.core.IBrowserActivity;
+import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.utils.FileUtils;
 import org.ebookdroid.utils.LengthUtils;
 
@@ -64,29 +65,15 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
         final ImageView imageView = (ImageView) view.findViewById(R.id.browserItemIcon);
 
         if (file.isDirectory()) {
-            boolean watched = base.getSettings().getAppSettings().getAutoScanDirs().contains(file.getPath());
+            boolean watched = SettingsManager.getAppSettings().getAutoScanDirs().contains(file.getPath());
             imageView.setImageResource(watched ? R.drawable.folderwatched : R.drawable.folderopen);
 
-            //long len = file.list().length;
-            /*
-            final File[] listOfFiles = file.listFiles(filter);
-            int folders = 0;
-            int books = 0;
-            if (listOfFiles != null) {
-                for (int i1 = 0; i1 < listOfFiles.length; i1++) {
-                    if (listOfFiles[i1].isDirectory()) {
-                        folders++;
-                    } else {
-                        books++;
-                    }
-                }
-            }
-            */
             final TextView info = (TextView) view.findViewById(R.id.browserItemInfo);
             //info.setText("Folders: " + folders + " Books: " + books);
             info.setText("");
         } else {
-            imageView.setImageResource(R.drawable.book);
+            final boolean wasRead = SettingsManager.getBookSettings(file.getAbsolutePath()) != null;
+            imageView.setImageResource(wasRead ? R.drawable.bookwatched : R.drawable.book);
             final TextView info = (TextView) view.findViewById(R.id.browserItemInfo);
             info.setText(FileUtils.getFileDate(file.lastModified()));
 

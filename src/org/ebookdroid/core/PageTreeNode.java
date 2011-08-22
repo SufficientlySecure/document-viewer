@@ -3,6 +3,7 @@ package org.ebookdroid.core;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.models.DecodingProgressModel;
+import org.ebookdroid.core.settings.SettingsManager;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -138,7 +139,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     void drawBrightnessFilter(final Canvas canvas, final Rect tr) {
-        final int brightness = getBase().getAppSettings().getBrightness();
+        final int brightness = SettingsManager.getAppSettings().getBrightness();
         if (brightness < 100) {
             final Paint p = new Paint();
             p.setColor(Color.BLACK);

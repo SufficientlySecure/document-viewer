@@ -32,7 +32,7 @@ public class SettingsActivity extends PreferenceActivity {
             addPreferencesFromResource(R.xml.preferences);
         }
 
-        if (SettingsManager.getInstance(this).getBookSettings() == null) {
+        if (SettingsManager.getBookSettings() == null) {
             Preference bookPrefs = findPreference("book_prefs");
             if (bookPrefs != null) {
                 PreferenceScreen preferenceScreen = getPreferenceScreen();

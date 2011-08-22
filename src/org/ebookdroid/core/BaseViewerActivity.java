@@ -10,6 +10,7 @@ import org.ebookdroid.core.models.ZoomModel;
 import org.ebookdroid.core.multitouch.MultiTouchZoom;
 import org.ebookdroid.core.settings.AppSettings;
 import org.ebookdroid.core.settings.BookSettings;
+import org.ebookdroid.core.settings.ISettingsChangeListener;
 import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.utils.PathFromUri;
@@ -41,7 +42,7 @@ import android.widget.Toast;
 import java.util.List;
 
 public abstract class BaseViewerActivity extends Activity implements IViewerActivity, DecodingProgressListener,
-        CurrentPageListener {
+        CurrentPageListener, ISettingsChangeListener {
 
     public static final LogContext LCTX = LogContext.ROOT.lctx("Core");
 
@@ -75,6 +76,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SettingsManager.addListener(this);
 
         frameLayout = createMainContainer();
 
@@ -83,8 +85,26 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         initView("");
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (documentModel != null) {
+            SettingsManager.onSettingsChanged();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (documentModel != null) {
+            documentModel.recycle();
+            documentModel = null;
+        }
+        SettingsManager.removeListener(this);
+        super.onDestroy();
+    }
+
     private void initActivity() {
-        getSettings().applyAppSettings(this);
+        SettingsManager.applyAppSettingsChanges(null, SettingsManager.getAppSettings());
     }
 
     private void initView(final String password) {
@@ -94,7 +114,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         try {
             final String fileName = PathFromUri.retrieve(getContentResolver(), uri);
 
-            getSettings().init(fileName);
+            SettingsManager.init(fileName);
 
             decodeService.open(fileName, password);
 
@@ -121,7 +141,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         progressModel = new DecodingProgressModel();
         progressModel.addEventListener(this);
 
-        getSettings().applyBookSettings(this);
+        SettingsManager.applyBookSettingsChanges(null, SettingsManager.getBookSettings());
 
         setContentView(frameLayout);
         setProgressBarIndeterminateVisibility(false);
@@ -182,7 +202,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
             zoomModel.removeEventListener(documentController);
         }
 
-        final BookSettings bs = getBookSettings();
+        final BookSettings bs = SettingsManager.getBookSettings();
 
         if (bs.getSinglePage()) {
             documentController = new SinglePageDocumentView(this);
@@ -225,7 +245,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
         if (pageCount > 0) {
             final String pageText = (viewPageIndex + 1) + "/" + pageCount;
-            if (getAppSettings().getPageInTitle()) {
+            if (SettingsManager.getAppSettings().getPageInTitle()) {
                 prefix = "(" + pageText + ") ";
             } else {
                 if (pageNumberToast != null) {
@@ -239,14 +259,14 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         }
 
         getWindow().setTitle(prefix + currentFilename);
-        getSettings().currentPageChanged(docPageIndex, viewPageIndex);
+        SettingsManager.currentPageChanged(docPageIndex, viewPageIndex);
     }
 
     private void setWindowTitle() {
         currentFilename = getIntent().getData().getLastPathSegment();
-        
+
         cleanupTitle();
-        
+
         getWindow().setTitle(currentFilename);
     }
 
@@ -258,7 +278,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
             currentFilename = currentFilename.substring(0, currentFilename.lastIndexOf('.'));
             currentFilename = currentFilename.replaceAll("\\(.*\\)|\\[.*\\]", "");
         } catch (IndexOutOfBoundsException e) {
-            
+
         }
     }
 
@@ -267,7 +287,10 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         super.onPostCreate(savedInstanceState);
         setWindowTitle();
         if (documentModel != null) {
-            currentPageChanged(getBookSettings().getCurrentDocPage(), getBookSettings().getCurrentViewPage());
+            BookSettings bs = SettingsManager.getBookSettings();
+            if (bs != null) {
+                currentPageChanged(bs.getCurrentDocPage(), bs.getCurrentViewPage());
+            }
         }
     }
 
@@ -286,26 +309,9 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     protected abstract DecodeService createDecodeService();
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (documentModel != null) {
-            getSettings().onAppSettingsChanged(this);
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (documentModel != null) {
-            documentModel.recycle();
-            documentModel = null;
-        }
-        super.onDestroy();
-    }
-
     /**
      * Called on creation options menu
-     * 
+     *
      * @param menu
      *            the main menu
      * @return true, if successful
@@ -327,7 +333,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     @Override
     public void onOptionsMenuClosed(final Menu menu) {
-        if (getAppSettings().getFullScreen()) {
+        if (SettingsManager.getAppSettings().getFullScreen()) {
             getWindow()
                     .setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         } else {
@@ -398,7 +404,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
                 startActivity(i);
                 return true;
             case R.id.mainmenu_nightmode:
-                getAppSettings().switchNightMode();
+                SettingsManager.getAppSettings().switchNightMode();
                 ((AbstractDocumentView) getView()).redrawView();
                 return true;
         }
@@ -416,7 +422,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the zoom model.
-     * 
+     *
      * @return the zoom model
      */
     @Override
@@ -426,7 +432,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the multi touch zoom.
-     * 
+     *
      * @return the multi touch zoom
      */
     @Override
@@ -441,7 +447,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the decoding progress model.
-     * 
+     *
      * @return the decoding progress model
      */
     @Override
@@ -475,21 +481,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     }
 
     @Override
-    public SettingsManager getSettings() {
-        return SettingsManager.getInstance(this);
-    }
-
-    @Override
-    public AppSettings getAppSettings() {
-        return getSettings().getAppSettings();
-    }
-
-    @Override
-    public BookSettings getBookSettings() {
-        return getSettings().getBookSettings();
-    }
-
-    @Override
     public boolean onKeyDown(final int keyCode, final KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             closeActivity();
@@ -500,6 +491,69 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     private void closeActivity() {
         finish();
+    }
+
+    @Override
+    public void onAppSettingsChanged(AppSettings oldSettings, AppSettings newSettings, AppSettings.Diff diff) {
+        if (diff.isRotationChanged()) {
+            setRequestedOrientation(newSettings.getRotation().getOrientation());
+        }
+
+        if (diff.isFullScreenChanged()) {
+            final Window window = getWindow();
+            if (newSettings.getFullScreen()) {
+                window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            } else {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            }
+        }
+
+        if (diff.isShowTitleChanged() && diff.isFirstTime()) {
+            final Window window = getWindow();
+            if (!newSettings.getShowTitle()) {
+                window.requestFeature(Window.FEATURE_NO_TITLE);
+            } else {
+                // Android 3.0+ you need both progress!!!
+                window.requestFeature(Window.FEATURE_PROGRESS);
+                window.requestFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+                setProgressBarIndeterminate(true);
+            }
+        }
+        final IDocumentViewController dc = getDocumentController();
+        if (dc != null) {
+            if (diff.isKeepScreenOnChanged()) {
+                dc.getView().setKeepScreenOn(newSettings.isKeepScreenOn());
+            }
+        }
+    }
+
+    @Override
+    public void onBookSettingsChanged(BookSettings oldSettings, BookSettings newSettings,
+            org.ebookdroid.core.settings.BookSettings.Diff diff) {
+
+        if (diff.isSinglePageChanged()) {
+            createDocumentView();
+        }
+
+        if (diff.isZoomChanged() && diff.isFirstTime()) {
+            getZoomModel().setZoom(newSettings.getZoom());
+        }
+
+        final IDocumentViewController dc = getDocumentController();
+        if (dc != null) {
+
+            if (diff.isPageAlignChanged()) {
+                dc.setAlign(newSettings.getPageAlign());
+            }
+
+            if (diff.isAnimationTypeChanged()) {
+                dc.updateAnimationType();
+            }
+
+        }
+
+        final DocumentModel dm = getDocumentModel();
+        currentPageChanged(dm.getCurrentDocPageIndex(), dm.getCurrentViewPageIndex());
     }
 
 }

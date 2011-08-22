@@ -2,6 +2,7 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.core.curl.PageAnimationType;
 import org.ebookdroid.core.curl.PageAnimator;
+import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.utils.CompareUtils;
 
 import android.graphics.Canvas;
@@ -205,7 +206,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     @Override
     public void updateAnimationType() {
-        final PageAnimationType type = getBase().getBookSettings().getAnimationType();
+        final PageAnimationType type = SettingsManager.getBookSettings().getAnimationType();
         curler = PageAnimationType.create(type, this);
 
         if (curler != null) {

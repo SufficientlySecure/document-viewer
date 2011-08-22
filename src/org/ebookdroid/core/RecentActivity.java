@@ -71,8 +71,8 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         findViewById(R.id.recentlibrary).setOnClickListener(handler);
         findViewById(R.id.recentbrowser).setOnClickListener(handler);
 
-        boolean shouldLoad = getSettings().getAppSettings().isLoadRecentBook();
-        BookSettings recent = getSettings().getRecentBook();
+        boolean shouldLoad = SettingsManager.getAppSettings().isLoadRecentBook();
+        BookSettings recent = SettingsManager.getRecentBook();
         File file = recent != null ? new File(recent.getFileName()) : null;
         boolean found = file != null ? file.exists() : false;
 
@@ -85,6 +85,19 @@ public class RecentActivity extends Activity implements IBrowserActivity {
             showDocument(Uri.fromFile(file));
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    
+        SettingsManager.onSettingsChanged();
+    
+        viewflipper.setDisplayedChild(VIEW_RECENT);
+        library.setImageResource(R.drawable.actionbar_library);
+    
+        recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), SettingsManager.getAppSettings()
+                .getAllowedFileTypes(Activities.getAllExtensions()));
     }
 
     @Override
@@ -109,7 +122,7 @@ public class RecentActivity extends Activity implements IBrowserActivity {
     }
 
     public void clearRecent(final View view) {
-        getSettings().deleteAllBookSettings();
+        SettingsManager.deleteAllBookSettings();
         recentAdapter.clearBooks();
     }
 
@@ -120,19 +133,6 @@ public class RecentActivity extends Activity implements IBrowserActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-        getSettings().onAppSettingsChanged(this);
-
-        viewflipper.setDisplayedChild(VIEW_RECENT);
-        library.setImageResource(R.drawable.actionbar_library);
-
-        recentAdapter.setBooks(getSettings().getAllBooksSettings().values(), getSettings().getAppSettings()
-                .getAllowedFileTypes(Activities.getAllExtensions()));
-    }
-
-    @Override
     public Context getContext() {
         return this;
     }
@@ -140,11 +140,6 @@ public class RecentActivity extends Activity implements IBrowserActivity {
     @Override
     public Activity getActivity() {
         return this;
-    }
-
-    @Override
-    public SettingsManager getSettings() {
-        return SettingsManager.getInstance(this);
     }
 
     @Override
@@ -171,7 +166,7 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         if (viewflipper.getDisplayedChild() == VIEW_RECENT) {
             viewflipper.setDisplayedChild(VIEW_LIBRARY);
             library.setImageResource(R.drawable.actionbar_recent);
-            final FileExtensionFilter filter = getSettings().getAppSettings().getAllowedFileTypes(
+            final FileExtensionFilter filter = SettingsManager.getAppSettings().getAllowedFileTypes(
                     Activities.getAllExtensions());
             libraryAdapter.startScan(filter);
 

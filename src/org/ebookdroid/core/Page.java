@@ -3,6 +3,7 @@ package org.ebookdroid.core;
 import org.ebookdroid.R;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
+import org.ebookdroid.core.settings.SettingsManager;
 
 import android.graphics.Canvas;
 import android.graphics.RectF;
@@ -31,7 +32,7 @@ public class Page {
 
         setAspectRatio(cpi.getWidth(), cpi.getHeight());
 
-        final boolean sliceLimit = base.getAppSettings().getSliceLimit();
+        final boolean sliceLimit = SettingsManager.getAppSettings().getSliceLimit();
         node = new PageTreeNode(base, pageType.getInitialRect(), this, 2, null, sliceLimit);
     }
 
@@ -58,7 +59,7 @@ public class Page {
 
     public boolean draw(final Canvas canvas, RectF viewRect, final boolean drawInvisible) {
         if (drawInvisible || isVisible()) {
-            final PagePaint paint = base.getAppSettings().getNightMode() ? PagePaint.NIGHT : PagePaint.DAY;
+            final PagePaint paint = SettingsManager.getAppSettings().getNightMode() ? PagePaint.NIGHT : PagePaint.DAY;
 
             RectF bounds = new RectF(getBounds());
             RectF nodesBounds = new RectF(bounds);
@@ -113,7 +114,7 @@ public class Page {
 
     private boolean calculateKeptInMemory() {
         int current = base.getDocumentModel().getCurrentViewPageIndex();
-        int inMemory = (int) Math.ceil(base.getAppSettings().getPagesInMemory() / 2.0);
+        int inMemory = (int) Math.ceil(SettingsManager.getAppSettings().getPagesInMemory() / 2.0);
         return (current - inMemory <= this.index) && (this.index <= current + inMemory);
     }
 

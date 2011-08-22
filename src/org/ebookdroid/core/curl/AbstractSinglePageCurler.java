@@ -3,6 +3,7 @@ package org.ebookdroid.core.curl;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.PagePaint;
 import org.ebookdroid.core.SinglePageDocumentView;
+import org.ebookdroid.core.settings.SettingsManager;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -143,7 +144,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
             canvas.save();
             canvas.clipPath(mask);
 
-            final PagePaint paint = !(view.getBase().getAppSettings().getNightMode()) ? PagePaint.NIGHT : PagePaint.DAY;
+            final PagePaint paint = !(SettingsManager.getAppSettings().getNightMode()) ? PagePaint.NIGHT : PagePaint.DAY;
 
             canvas.drawRect(canvas.getClipBounds(), paint.getFillPaint());
 

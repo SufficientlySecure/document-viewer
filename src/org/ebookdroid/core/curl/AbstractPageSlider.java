@@ -3,6 +3,7 @@ package org.ebookdroid.core.curl;
 import org.ebookdroid.R;
 import org.ebookdroid.core.PagePaint;
 import org.ebookdroid.core.SinglePageDocumentView;
+import org.ebookdroid.core.settings.SettingsManager;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -77,7 +78,7 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
             }
             bitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.RGB_565);
         }
-        final PagePaint paint = !(view.getBase().getAppSettings().getNightMode()) ? PagePaint.NIGHT : PagePaint.DAY;
+        final PagePaint paint = !(SettingsManager.getAppSettings().getNightMode()) ? PagePaint.NIGHT : PagePaint.DAY;
 
         bitmap.eraseColor(paint.getFillPaint().getColor());
 

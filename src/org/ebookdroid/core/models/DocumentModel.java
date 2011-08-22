@@ -5,6 +5,7 @@ import org.ebookdroid.core.IViewerActivity;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.PageType;
 import org.ebookdroid.core.codec.CodecPageInfo;
+import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.utils.LengthUtils;
 
 import android.view.View;
@@ -101,7 +102,7 @@ public class DocumentModel extends CurrentPageModel {
         }
         pages = EMPTY_PAGES;
 
-        final boolean splitPages = base.getBookSettings().getSplitPages();
+        final boolean splitPages = SettingsManager.getBookSettings().getSplitPages();
         final View view = base.getView();
 
         final CodecPageInfo defCpi = new CodecPageInfo();

@@ -2,6 +2,7 @@ package org.ebookdroid.core.presentation;
 
 import org.ebookdroid.R;
 import org.ebookdroid.core.settings.BookSettings;
+import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.utils.FileUtils;
 
@@ -56,7 +57,8 @@ public class RecentAdapter extends BaseAdapter {
         name.setText(file.getName());
 
         final ImageView imageView = (ImageView) view.findViewById(R.id.recentItemIcon);
-        imageView.setImageResource(R.drawable.book);
+        final boolean wasRead = SettingsManager.getBookSettings(file.getAbsolutePath()) != null;
+        imageView.setImageResource(wasRead ? R.drawable.bookwatched : R.drawable.book);
 
         final TextView info = (TextView) view.findViewById(R.id.recentItemInfo);
         info.setText(FileUtils.getFileDate(file.lastModified()));

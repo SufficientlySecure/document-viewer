@@ -2,6 +2,7 @@ package org.ebookdroid.core.presentation;
 
 import org.ebookdroid.R;
 import org.ebookdroid.core.IBrowserActivity;
+import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.utils.FileUtils;
 
@@ -90,7 +91,8 @@ public class FileListAdapter extends BaseExpandableListAdapter {
         textView.setText(file.getName());
 
         final ImageView imageView = (ImageView) convertView.findViewById(R.id.browserItemIcon);
-        imageView.setImageResource(R.drawable.book);
+        final boolean wasRead = SettingsManager.getBookSettings(file.getAbsolutePath()) != null;
+        imageView.setImageResource(wasRead ? R.drawable.bookwatched : R.drawable.book);
 
         final TextView info = (TextView) convertView.findViewById(R.id.browserItemInfo);
         info.setText(FileUtils.getFileDate(file.lastModified()));
@@ -193,7 +195,7 @@ public class FileListAdapter extends BaseExpandableListAdapter {
                 return;
             }
 
-            for (String path : base.getSettings().getAppSettings().getAutoScanDirs()) {
+            for (String path : SettingsManager.getAppSettings().getAutoScanDirs()) {
                 // Scan each valid folder
                 File dir = new File(path);
                 if (dir.isDirectory()) {

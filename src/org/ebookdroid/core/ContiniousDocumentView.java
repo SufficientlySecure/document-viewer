@@ -1,6 +1,7 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.core.models.DocumentModel;
+import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.utils.CompareUtils;
 
 import android.graphics.Canvas;
@@ -108,7 +109,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
 
     @Override
     protected void verticalConfigScroll(final int direction) {
-        final int scrollheight = getBase().getAppSettings().getScrollHeight();
+        final int scrollheight = SettingsManager.getAppSettings().getScrollHeight();
         getScroller().startScroll(getScrollX(), getScrollY(), 0,
                 (int) (direction * getHeight() * (scrollheight / 100.0)));
 

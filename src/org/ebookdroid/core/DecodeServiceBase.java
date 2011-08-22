@@ -145,12 +145,12 @@ public class DecodeServiceBase implements DecodeService {
         return Math.round(getScaledWidth(vuPage, scale) * currentDecodeTask.pageSliceBounds.width());
     }
 
-    private int getScaledHeight(final CodecPage vuPage, final float scale) {
-        return (int) (scale * vuPage.getHeight());
+    private float getScaledHeight(final CodecPage vuPage, final float scale) {
+        return (scale * vuPage.getHeight());
     }
 
-    private int getScaledWidth(final CodecPage vuPage, final float scale) {
-        return (int) (scale * vuPage.getWidth());
+    private float getScaledWidth(final CodecPage vuPage, final float scale) {
+        return (scale * vuPage.getWidth());
     }
 
     private float calculateScale(final CodecPage codecPage, final int targetWidth) {

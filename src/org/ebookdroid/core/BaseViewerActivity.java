@@ -244,7 +244,22 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     private void setWindowTitle() {
         currentFilename = getIntent().getData().getLastPathSegment();
+        
+        cleanupTitle();
+        
         getWindow().setTitle(currentFilename);
+    }
+
+    /**
+     * Cleanup title. Remove from title file extension and (...), [...]
+     */
+    private void cleanupTitle() {
+        try {
+            currentFilename = currentFilename.substring(0, currentFilename.lastIndexOf('.'));
+            currentFilename = currentFilename.replaceAll("\\(.*\\)|\\[.*\\]", "");
+        } catch (IndexOutOfBoundsException e) {
+            
+        }
     }
 
     @Override

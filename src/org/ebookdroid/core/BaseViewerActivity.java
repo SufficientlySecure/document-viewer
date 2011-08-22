@@ -553,7 +553,8 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         }
 
         final DocumentModel dm = getDocumentModel();
-        currentPageChanged(dm.getCurrentDocPageIndex(), dm.getCurrentViewPageIndex());
+        if(dm != null)
+            currentPageChanged(dm.getCurrentDocPageIndex(), dm.getCurrentViewPageIndex());
     }
 
 }

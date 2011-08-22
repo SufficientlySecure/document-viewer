@@ -31,15 +31,21 @@ public class FileListAdapter extends BaseExpandableListAdapter {
     private class Node {
 
         private String name;
+        private String path;
         private String[] list;
 
-        Node(String name, String[] list) {
+        Node(String name, String path, String[] list) {
             this.name = name;
+            this.path = path;
             this.list = list;
         }
 
         String getName() {
             return this.name;
+        }
+        
+        String getPath() {
+            return this.path;
         }
 
         String[] getList() {
@@ -64,7 +70,7 @@ public class FileListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public File getChild(final int groupPosition, final int childPosition) {
-        return new File(data.get(groupPosition).getName(), data.get(groupPosition).getList()[childPosition]);
+        return new File(data.get(groupPosition).getPath(), data.get(groupPosition).getList()[childPosition]);
     }
 
     @Override
@@ -229,7 +235,7 @@ public class FileListAdapter extends BaseExpandableListAdapter {
                 final String[] list = dir.list(filter);
                 if (list != null && list.length > 0) {
                     Arrays.sort(list);
-                    currNodes.add(new Node(dir.getName(), list));
+                    currNodes.add(new Node(dir.getName(), dir.getAbsolutePath(), list));
                     if (inUI.compareAndSet(false, true)) {
                         // Start UI task if required
                         base.getActivity().runOnUiThread(this);

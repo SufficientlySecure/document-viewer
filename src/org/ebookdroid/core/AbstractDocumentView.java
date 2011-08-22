@@ -16,12 +16,11 @@ import android.widget.Scroller;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class AbstractDocumentView extends SurfaceView implements ZoomListener, IDocumentViewController,
-        Comparator<PageTreeNode>, SurfaceHolder.Callback {
+        SurfaceHolder.Callback {
 
     private static final LogContext LCTX = LogContext.ROOT.lctx("View");
 

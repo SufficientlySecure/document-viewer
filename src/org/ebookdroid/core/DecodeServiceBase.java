@@ -11,6 +11,7 @@ import android.graphics.RectF;
 
 import java.io.IOException;
 import java.lang.ref.SoftReference;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -193,7 +194,7 @@ public class DecodeServiceBase implements DecodeService {
         }
     }
 
-    private class Executor implements RejectedExecutionHandler {
+    private class Executor implements RejectedExecutionHandler, Comparator<Runnable> {
 
         final Map<PageTreeNode, DecodeTask> decodingTasks = new IdentityHashMap<PageTreeNode, DecodeTask>();
         final Map<Long, Future<?>> decodingFutures = new HashMap<Long, Future<?>>();
@@ -204,7 +205,7 @@ public class DecodeServiceBase implements DecodeService {
         final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
         public Executor() {
-            queue = new LinkedBlockingQueue<Runnable>();
+            queue = /*new LinkedBlockingQueue<Runnable>()*/ new PriorityBlockingQueue<Runnable>(16, this);
             executorService = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, queue);
             executorService.setRejectedExecutionHandler(this);
         }
@@ -239,6 +240,26 @@ public class DecodeServiceBase implements DecodeService {
             } finally {
                 lock.writeLock().unlock();
             }
+        }
+
+        @Override
+        public int compare(Runnable r1, Runnable r2)
+        {
+            boolean isTask1 = r1 instanceof DecodeTask;
+            boolean isTask2 = r2 instanceof DecodeTask;
+
+            if (isTask1 != isTask2) {
+                return isTask1 ? -1 : 1;
+            }
+
+            if (!isTask1) {
+                return 0;
+            }
+
+            DecodeTask t1 = (DecodeTask) r1;
+            DecodeTask t2 = (DecodeTask) r2;
+
+            return t1.node.getBase().getDocumentController().compare(t1.node, t2.node);
         }
 
         public void stopDecoding(final DecodeTask task, final PageTreeNode node, final String reason) {

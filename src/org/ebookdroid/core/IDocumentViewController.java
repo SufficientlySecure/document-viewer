@@ -3,7 +3,9 @@ package org.ebookdroid.core;
 import android.graphics.RectF;
 import android.view.View;
 
-public interface IDocumentViewController {
+import java.util.Comparator;
+
+public interface IDocumentViewController extends Comparator<PageTreeNode>{
 
     /* Page related methods */
     void goToPage(int page);

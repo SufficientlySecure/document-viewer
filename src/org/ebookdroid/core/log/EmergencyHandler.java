@@ -79,7 +79,7 @@ public class EmergencyHandler implements UncaughtExceptionHandler {
                 APP_VERSION = pi.versionName;
                 APP_PACKAGE = pi.packageName;
 
-                File dir = context.getExternalFilesDir(null);
+                File dir = Environment.getExternalStorageDirectory();
                 if (dir == null) {
                     dir = context.getFilesDir();
                 }

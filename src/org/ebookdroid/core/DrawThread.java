@@ -5,8 +5,9 @@ import android.graphics.RectF;
 import android.view.SurfaceHolder;
 
 import java.util.ArrayList;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class DrawThread extends Thread {
 
@@ -16,7 +17,7 @@ public class DrawThread extends Thread {
 
     private AbstractDocumentView view;
 
-    private final BlockingQueue<DrawTask> queue = new LinkedBlockingQueue<DrawThread.DrawTask>();
+    private final BlockingQueue<DrawTask> queue = new ArrayBlockingQueue<DrawThread.DrawTask>(16, true);
 
     public DrawThread(SurfaceHolder surfaceHolder, AbstractDocumentView view) {
         this.surfaceHolder = surfaceHolder;
@@ -59,10 +60,12 @@ public class DrawThread extends Thread {
     private DrawTask takeTask() {
         DrawTask task = null;
         try {
-            ArrayList<DrawTask> list = new ArrayList<DrawTask>();
-            task = queue.take();
-            if (queue.drainTo(list) > 0) {
-                task = list.get(list.size() - 1);
+            task = queue.poll(1, TimeUnit.SECONDS);
+            if (task != null) {
+                ArrayList<DrawTask> list = new ArrayList<DrawTask>();
+                if (queue.drainTo(list) > 0) {
+                    task = list.get(list.size() - 1);
+                }
             }
             // if (LCTX.isDebugEnabled()) {
             // LCTX.d("Draw tasks: " + (task != null ? list.size() + 1 : 0));
@@ -82,7 +85,7 @@ public class DrawThread extends Thread {
             // if (LCTX.isDebugEnabled()) {
             // LCTX.d("New draw task: " + viewRect);
             // }
-            queue.add(new DrawTask(viewRect));
+            queue.offer(new DrawTask(viewRect));
         }
     }
 

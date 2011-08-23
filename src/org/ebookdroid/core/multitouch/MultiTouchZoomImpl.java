@@ -47,7 +47,9 @@ public class MultiTouchZoomImpl implements MultiTouchZoom {
     }
 
     private float getZoomDistance(final MotionEvent ev) {
-        return (float) Math.sqrt(Math.pow(ev.getX(0) - ev.getX(1), 2) + Math.pow(ev.getY(0) - ev.getY(1), 2));
+        // We do not need actual distance. Square also goes well.
+        return (float) ((ev.getX(0) - ev.getX(1)) * (ev.getX(0) - ev.getX(1)) + (ev.getY(0) - ev.getY(1))
+                * (ev.getY(0) - ev.getY(1)));
     }
 
     @Override

@@ -6,7 +6,7 @@ import org.ebookdroid.core.log.LogContext;
 
 public class CurrentPageModel extends EventDispatcher {
 
-    private static final LogContext LCTX = LogContext.ROOT.lctx("DocModel");
+    protected static final LogContext LCTX = LogContext.ROOT.lctx("DocModel");
 
     int currentDocPageIndex;
 

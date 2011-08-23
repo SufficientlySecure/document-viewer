@@ -1,6 +1,8 @@
 package org.ebookdroid.core;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.RectF;
 import android.view.SurfaceHolder;
 
@@ -77,6 +79,9 @@ public class DrawThread extends Thread {
     }
 
     private void performDrawing(Canvas canvas, DrawTask task) {
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
+        canvas.drawRect(canvas.getClipBounds(), paint);
         view.drawView(canvas, task.viewRect);
     }
 

@@ -5,11 +5,22 @@ import org.ebookdroid.core.IViewerActivity;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.PageType;
 import org.ebookdroid.core.codec.CodecPageInfo;
+import org.ebookdroid.core.settings.BookSettings;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.utils.LengthUtils;
 
 import android.view.View;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -111,7 +122,8 @@ public class DocumentModel extends CurrentPageModel {
         }
         pages = EMPTY_PAGES;
 
-        final boolean splitPages = SettingsManager.getBookSettings().getSplitPages();
+        final BookSettings bs = SettingsManager.getBookSettings();
+        final boolean splitPages = bs.getSplitPages();
         final View view = base.getView();
 
         final CodecPageInfo defCpi = new CodecPageInfo();
@@ -120,21 +132,132 @@ public class DocumentModel extends CurrentPageModel {
 
         int index = 0;
 
-        final ArrayList<Page> list = new ArrayList<Page>();
-        for (int i = 0; i < getDecodeService().getPageCount(); i++) {
-            final CodecPageInfo cpi = getDecodeService().getPageInfo(i);
-            if (!splitPages || cpi == null || (cpi.getWidth() < cpi.getHeight())) {
-                final Page page = new Page(base, index++, i, PageType.FULL_PAGE, cpi != null ? cpi : defCpi);
-                list.add(page);
-            } else {
-                final Page page1 = new Page(base, index++, i, PageType.LEFT_PAGE, cpi);
-                list.add(page1);
-                final Page page2 = new Page(base, index++, i, PageType.RIGHT_PAGE, cpi);
-                list.add(page2);
+        final long start = System.currentTimeMillis();
+        try {
+            final ArrayList<Page> list = new ArrayList<Page>();
+            final CodecPageInfo[] infos = retrievePagesInfo(base, bs);
+
+            for (int i = 0; i < infos.length; i++) {
+                if (!splitPages || infos[i] == null || (infos[i].getWidth() < infos[i].getHeight())) {
+                    final Page page = new Page(base, index++, i, PageType.FULL_PAGE, infos[i] != null ? infos[i]
+                            : defCpi);
+                    list.add(page);
+                } else {
+                    final Page page1 = new Page(base, index++, i, PageType.LEFT_PAGE, infos[i]);
+                    list.add(page1);
+                    final Page page2 = new Page(base, index++, i, PageType.RIGHT_PAGE, infos[i]);
+                    list.add(page2);
+                }
+            }
+            pages = list.toArray(new Page[list.size()]);
+        } finally {
+            LCTX.d("Loading page info: " + (System.currentTimeMillis() - start) + " ms");
+        }
+    }
+
+    private CodecPageInfo[] retrievePagesInfo(final IViewerActivity base, final BookSettings bs) {
+
+        final String fileName = bs.getFileName();
+        final File cacheDir = base.getContext().getFilesDir();
+
+        final String md5 = md5(fileName);
+        final File pagesFile = new File(cacheDir, md5 + ".cache");
+        if (md5 != null) {
+            if (pagesFile.exists()) {
+                final CodecPageInfo[] infos = loadPagesInfo(pagesFile);
+                if (infos != null) {
+                    return infos;
+                }
             }
         }
 
-        pages = list.toArray(new Page[list.size()]);
+        final CodecPageInfo[] infos = new CodecPageInfo[getDecodeService().getPageCount()];
+        for (int i = 0; i < infos.length; i++) {
+            infos[i] = getDecodeService().getPageInfo(i);
+        }
+
+        if (md5 != null) {
+            storePagesInfo(pagesFile, infos);
+        }
+        return infos;
+    }
+
+    private CodecPageInfo[] loadPagesInfo(final File pagesFile) {
+        try {
+            final DataInputStream in = new DataInputStream(new FileInputStream(pagesFile));
+            try {
+                final int pages = in.readInt();
+                final CodecPageInfo[] infos = new CodecPageInfo[pages];
+                for (int i = 0; i < infos.length; i++) {
+                    final CodecPageInfo cpi = new CodecPageInfo();
+                    cpi.setWidth(in.readInt());
+                    cpi.setHeight(in.readInt());
+                    if (cpi.getWidth() != -1 && cpi.getHeight() != -1) {
+                        infos[i] = cpi;
+                    }
+                }
+                return infos;
+            } catch (final EOFException ex) {
+                LCTX.e("Loading pages cache failed: " + ex.getMessage());
+            } catch (final IOException ex) {
+                LCTX.e("Loading pages cache failed: " + ex.getMessage());
+            } finally {
+                try {
+                    in.close();
+                } catch (final IOException ex) {
+                }
+            }
+        } catch (final FileNotFoundException ex) {
+            LCTX.e("Loading pages cache failed: " + ex.getMessage());
+        }
+        return null;
+    }
+
+    private void storePagesInfo(final File pagesFile, final CodecPageInfo[] infos) {
+        try {
+            final DataOutputStream out = new DataOutputStream(new FileOutputStream(pagesFile));
+            try {
+                out.writeInt(infos.length);
+                for (int i = 0; i < infos.length; i++) {
+                    if (infos[i] != null) {
+                        out.writeInt(infos[i].getWidth());
+                        out.writeInt(infos[i].getHeight());
+                    } else {
+                        out.writeInt(-1);
+                        out.writeInt(-1);
+                    }
+                }
+            } catch (final IOException ex) {
+                LCTX.e("Saving pages cache failed: " + ex.getMessage());
+            } finally {
+                try {
+                    out.close();
+                } catch (final IOException ex) {
+                }
+            }
+        } catch (final IOException ex) {
+            LCTX.e("Saving pages cache failed: " + ex.getMessage());
+        }
+    }
+
+    private String md5(final String in) {
+        MessageDigest digest;
+        try {
+            digest = MessageDigest.getInstance("MD5");
+            digest.reset();
+            digest.update(in.getBytes());
+            final byte[] a = digest.digest();
+            final int len = a.length;
+            final StringBuilder sb = new StringBuilder(len << 1);
+            for (int i = 0; i < len; i++) {
+                sb.append(Character.forDigit((a[i] & 0xf0) >> 4, 16));
+                sb.append(Character.forDigit(a[i] & 0x0f, 16));
+            }
+            return sb.toString();
+        } catch (final NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private final class PageIterator implements Iterable<Page>, Iterator<Page> {

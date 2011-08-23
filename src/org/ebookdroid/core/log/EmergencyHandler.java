@@ -82,7 +82,7 @@ public class EmergencyHandler implements UncaughtExceptionHandler {
                 File dir = Environment.getExternalStorageDirectory();
                 if (dir != null) {
                     File appDir = new File(dir, APP_PACKAGE);
-                    if (appDir.mkdir()) {
+                    if (appDir.isDirectory() || appDir.mkdir()) {
                         dir = appDir;
                     }
                 } else {

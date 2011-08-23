@@ -237,7 +237,9 @@ public abstract class AbstractPageAnimator implements PageAnimator {
         lock.readLock().lock();
         try {
             drawForeground(canvas, viewRect);
-            drawBackground(canvas, viewRect);
+            if (foreIndex != backIndex) {
+                drawBackground(canvas, viewRect);
+            }
             drawExtraObjects(canvas, viewRect);
         } finally {
             lock.readLock().unlock();

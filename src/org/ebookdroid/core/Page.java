@@ -7,6 +7,7 @@ import org.ebookdroid.core.settings.SettingsManager;
 
 import android.graphics.Canvas;
 import android.graphics.RectF;
+import android.text.TextPaint;
 
 import java.util.List;
 
@@ -20,8 +21,6 @@ public class Page {
     RectF bounds;
     float aspectRatio;
     final PageType pageType;
-    boolean keptInMempory;
-    boolean visible;
     boolean recycled;
     boolean sliceLimit;
 
@@ -69,8 +68,10 @@ public class Page {
 
             canvas.drawRect(bounds, paint.getFillPaint());
 
+            TextPaint textPaint = paint.getTextPaint();
+            textPaint.setTextSize(24 * base.getZoomModel().getZoom());
             canvas.drawText(base.getContext().getString(R.string.text_page) + " " + (getIndex() + 1), bounds.centerX(),
-                    bounds.centerY(), paint.getTextPaint());
+                    bounds.centerY(), textPaint);
 
             nodes.root.draw(canvas, viewRect, nodesBounds, paint);
 
@@ -85,45 +86,49 @@ public class Page {
         return aspectRatio;
     }
 
-    private void setAspectRatio(final float aspectRatio) {
+    private boolean setAspectRatio(final float aspectRatio) {
         if (this.aspectRatio != aspectRatio) {
             this.aspectRatio = aspectRatio;
-            base.getDocumentController().invalidatePageSizes();
+            return true;
         }
+        return false;
     }
 
-    public void setAspectRatio(final CodecPage page) {
+    public boolean setAspectRatio(final CodecPage page) {
         if (page != null) {
-            this.setAspectRatio(page.getWidth(), page.getHeight());
+            return this.setAspectRatio(page.getWidth(), page.getHeight());
         }
+        return false;
     }
 
-    public boolean isVisible() {
-        return visible;
-    }
-
-    public void setAspectRatio(final int width, final int height) {
-        setAspectRatio((width / pageType.getWidthScale()) / height);
+    public boolean setAspectRatio(final int width, final int height) {
+        return setAspectRatio((width / pageType.getWidthScale()) / height);
     }
 
     public void setBounds(final RectF pageBounds) {
         bounds = pageBounds;
     }
 
-    public boolean isKeptInMemory() {
-        return keptInMempory || visible;
+    public boolean isVisible() {
+        return base.getDocumentController().isPageVisible(this);
     }
 
-    private boolean calculateKeptInMemory() {
-        int current = base.getDocumentModel().getCurrentViewPageIndex();
-        int inMemory = (int) Math.ceil(SettingsManager.getAppSettings().getPagesInMemory() / 2.0);
-        return (current - inMemory <= this.index) && (this.index <= current + inMemory);
+    public boolean isKeptInMemory() {
+        return isKeptInMemoryImpl() || isVisible();
+    }
+
+    private boolean isKeptInMemoryImpl() {
+        IDocumentViewController dc = base.getDocumentController();
+        if (dc != null) {
+            int current = ((AbstractDocumentView) dc).getCurrentPage();
+            int inMemory = (int) Math.ceil(SettingsManager.getAppSettings().getPagesInMemory() / 2.0);
+            return (current - inMemory <= this.index) && (this.index <= current + inMemory);
+        }
+        return false;
     }
 
     public boolean onZoomChanged(float oldZoom, float newZoom, RectF viewRect, final List<PageTreeNode> nodesToDecode) {
         if (!recycled) {
-            keptInMempory = calculateKeptInMemory();
-            visible = base.getDocumentController().isPageVisible(this);
             return nodes.root.onZoomChanged(oldZoom, newZoom, viewRect, this.getBounds(), nodesToDecode);
         }
         return false;
@@ -131,8 +136,6 @@ public class Page {
 
     public boolean onPositionChanged(RectF viewRect, final List<PageTreeNode> nodesToDecode) {
         if (!recycled) {
-            keptInMempory = calculateKeptInMemory();
-            visible = base.getDocumentController().isPageVisible(this);
             return nodes.root.onPositionChanged(viewRect, this.getBounds(), nodesToDecode);
         }
         return false;

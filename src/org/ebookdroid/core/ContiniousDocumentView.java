@@ -18,11 +18,12 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     protected void goToPageImpl(final int toPage) {
         final DocumentModel dm = getBase().getDocumentModel();
         if (toPage >= 0 && toPage < dm.getPageCount()) {
-            final Page pageObject = dm.getPageObject(toPage);
-            if (pageObject != null) {
+            final Page page = dm.getPageObject(toPage);
+            if (page != null) {
                 final RectF viewRect = this.getViewRect();
-                final RectF bounds = pageObject.getBounds();
-                scrollTo(0, pageObject.getTop() - ((int) viewRect.height() - (int) bounds.height()) / 2);
+                final RectF bounds = page.getBounds();
+                dm.setCurrentPageIndex(page.getDocumentPageIndex(), page.getIndex());
+                scrollTo(0, page.getTop() - ((int) viewRect.height() - (int) bounds.height()) / 2);
             }
         }
     }
@@ -34,6 +35,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         if (page != null) {
             post(new Runnable() {
 
+                @Override
                 public void run() {
                     dm.setCurrentPageIndex(page.getDocumentPageIndex(), page.getIndex());
                 }
@@ -50,19 +52,38 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         final int viewY = Math.round((viewRect.top + viewRect.bottom) / 2);
 
         boolean foundVisible = false;
-        for (final Page page : getBase().getDocumentModel().getPages()) {
-            if (page.isVisible()) {
-                foundVisible = true;
-                final RectF bounds = page.getBounds();
-                final int pageY = Math.round((bounds.top + bounds.bottom) / 2);
-                final long dist = Math.abs(pageY - viewY);
-                if (dist < bestDistance) {
-                    bestDistance = dist;
-                    result = page.getIndex();
+        if (firstVisiblePage != -1) {
+            for (final Page page : getBase().getDocumentModel().getPages(firstVisiblePage, lastVisiblePage + 1)) {
+                if (page.isVisible()) {
+                    foundVisible = true;
+                    final RectF bounds = page.getBounds();
+                    final int pageY = Math.round((bounds.top + bounds.bottom) / 2);
+                    final long dist = Math.abs(pageY - viewY);
+                    if (dist < bestDistance) {
+                        bestDistance = dist;
+                        result = page.getIndex();
+                    }
+                } else {
+                    if (foundVisible) {
+                        break;
+                    }
                 }
-            } else {
-                if (foundVisible) {
-                    break;
+            }
+        } else {
+            for (final Page page : getBase().getDocumentModel().getPages()) {
+                if (page.isVisible()) {
+                    foundVisible = true;
+                    final RectF bounds = page.getBounds();
+                    final int pageY = Math.round((bounds.top + bounds.bottom) / 2);
+                    final long dist = Math.abs(pageY - viewY);
+                    if (dist < bestDistance) {
+                        bestDistance = dist;
+                        result = page.getIndex();
+                    }
+                } else {
+                    if (foundVisible) {
+                        break;
+                    }
                 }
             }
         }
@@ -76,6 +97,9 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         final RectF rect2 = node2.getTargetRect(viewRect, node2.page.getBounds());
 
         final int cp = getCurrentPage();
+
+        final View view = node1.page.base.getView();
+        final RectF realViewRect = new RectF(0, 0, view.getWidth(), view.getHeight());
 
         if (node1.page.index == cp && node2.page.index == cp) {
             int res = CompareUtils.compare(rect1.top, rect2.top);
@@ -92,9 +116,6 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         if (node1.page.index != cp && node2.page.index == cp) {
             return 1;
         }
-
-        final View view = node1.page.base.getView();
-        final RectF realViewRect = new RectF(0, 0, view.getWidth(), view.getHeight());
 
         final long centerX = ((long) realViewRect.left + (long) realViewRect.right) / 2;
         final long centerY = ((long) realViewRect.top + (long) realViewRect.bottom) / 2;
@@ -115,8 +136,9 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         return res;
     }
 
-    protected void onScrollChanged() {
-        super.onScrollChanged();
+    @Override
+    protected void onScrollChanged(final int newPage, final int direction) {
+        super.onScrollChanged(newPage, direction);
         setCurrentPageByFirstVisible();
         redrawView();
     }
@@ -149,7 +171,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
 
     @Override
     protected int getBottomLimit() {
-        Page lpo = getBase().getDocumentModel().getLastPageObject();
+        final Page lpo = getBase().getDocumentModel().getLastPageObject();
         return lpo != null ? (int) lpo.getBounds().bottom - getHeight() : 0;
     }
 
@@ -159,8 +181,8 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    public void drawView(final Canvas canvas, RectF viewRect) {
-        DocumentModel dm = getBase().getDocumentModel();
+    public void drawView(final Canvas canvas, final RectF viewRect) {
+        final DocumentModel dm = getBase().getDocumentModel();
         for (int i = firstVisiblePage; i <= lastVisiblePage; i++) {
             final Page page = dm.getPageObject(i);
             if (page != null) {
@@ -178,7 +200,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         }
         super.onLayout(changed, left, top, right, bottom);
 
-        invalidatePageSizes();
+        invalidatePageSizes(InvalidateSizeReason.LAYOUT, null);
         invalidateScroll();
         commitZoom();
         if (page > 0) {
@@ -190,19 +212,32 @@ public class ContiniousDocumentView extends AbstractDocumentView {
      * Invalidate page sizes.
      */
     @Override
-    public void invalidatePageSizes() {
+    public void invalidatePageSizes(final InvalidateSizeReason reason, final Page changedPage) {
         if (!isInitialized()) {
             return;
         }
-        float heightAccum = 0;
+
+        if (reason == InvalidateSizeReason.PAGE_ALIGN) {
+            return;
+        }
 
         final int width = getWidth();
         final float zoom = getBase().getZoomModel().getZoom();
 
-        for (final Page page : getBase().getDocumentModel().getPages()) {
-            final float pageHeight = page.getPageHeight(width, zoom);
-            page.setBounds(new RectF(0, heightAccum, width * zoom, heightAccum + pageHeight));
-            heightAccum += pageHeight;
+        if (changedPage == null) {
+            float heightAccum = 0;
+            for (final Page page : getBase().getDocumentModel().getPages()) {
+                final float pageHeight = page.getPageHeight(width, zoom);
+                page.setBounds(new RectF(0, heightAccum, width * zoom, heightAccum + pageHeight));
+                heightAccum += pageHeight;
+            }
+        } else {
+            float heightAccum = changedPage.getBounds().top;
+            for (final Page page : getBase().getDocumentModel().getPages(changedPage.index)) {
+                final float pageHeight = page.getPageHeight(width, zoom);
+                page.setBounds(new RectF(0, heightAccum, width * zoom, heightAccum + pageHeight));
+                heightAccum += pageHeight;
+            }
         }
     }
 

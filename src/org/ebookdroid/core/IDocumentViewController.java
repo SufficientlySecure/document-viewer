@@ -10,9 +10,9 @@ public interface IDocumentViewController extends Comparator<PageTreeNode>{
     /* Page related methods */
     void goToPage(int page);
 
-    void invalidatePageSizes();
+    void invalidatePageSizes(InvalidateSizeReason reason, Page changedPage);
 
-    void updatePageVisibility();
+    void updatePageVisibility(int newPage, int direction);
 
     boolean isPageVisible(Page page);
 
@@ -35,4 +35,8 @@ public interface IDocumentViewController extends Comparator<PageTreeNode>{
     View getView();
 
     void updateAnimationType();
+    
+    public static enum InvalidateSizeReason {
+        INIT, LAYOUT, PAGE_ALIGN, ZOOM, PAGE_LOADED;
+    }
 }

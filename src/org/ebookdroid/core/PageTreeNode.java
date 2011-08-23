@@ -1,5 +1,6 @@
 package org.ebookdroid.core;
 
+import org.ebookdroid.core.IDocumentViewController.InvalidateSizeReason;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.models.DecodingProgressModel;
@@ -57,11 +58,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             return false;
         }
 
-        if (!isVisible(viewRect, pageBounds)) {
-            holder.clearDirectRef();
-            return true;
-        }
-
         PageTreeNode[] children = page.nodes.getChildren(this);
 
         if (LengthUtils.isNotEmpty(children)) {
@@ -90,6 +86,8 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
         if (getBitmap() == null) {
             decodePageTreeNode(nodesToDecode);
+        } else if (!isVisible(viewRect, pageBounds)) {
+            // holder.clearDirectRef();
         }
         return true;
     }
@@ -101,11 +99,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             return false;
         }
 
-        if (!isVisible(viewRect, pageBounds)) {
-            holder.clearDirectRef();
-            return true;
-        }
-
         final PageTreeNode[] children = page.nodes.getChildren(this);
         if (LengthUtils.isNotEmpty(children)) {
             for (final PageTreeNode child : children) {
@@ -114,7 +107,11 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             return true;
         }
 
-        decodePageTreeNode(nodesToDecode);
+        if (getBitmap() == null) {
+            decodePageTreeNode(nodesToDecode);
+        } else if (!isVisible(viewRect, pageBounds)) {
+            // holder.clearDirectRef();
+        }
         return true;
     }
 
@@ -125,8 +122,8 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     protected boolean isKeptInMemory(final float zoom, final RectF viewRect, final RectF pageBounds) {
-        // return zoom < 1.41 ? page.isKeptInMemory() : isVisible(viewRect, pageBounds);
-        return page.isKeptInMemory();
+        return zoom < 2 ? page.isKeptInMemory() : page.isKeptInMemory() && page.isVisible();
+        // return page.isKeptInMemory();
     }
 
     protected boolean isVisible(final RectF viewRect, final RectF pageBounds) {
@@ -158,11 +155,13 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             public void run() {
                 holder.setBitmap(bitmap);
                 setDecodingNow(false);
-                page.setAspectRatio(codecPage);
-
                 final IDocumentViewController dc = page.base.getDocumentController();
+                final boolean changed = page.setAspectRatio(codecPage);
 
                 if (dc != null) {
+                    if (changed) {
+                        dc.invalidatePageSizes(InvalidateSizeReason.PAGE_LOADED, page);
+                    }
                     final RectF viewRect = dc.getViewRect();
                     final RectF bounds = page.getBounds();
                     if (parent != null) {
@@ -209,7 +208,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         if (bitmap != null) {
             // long start = System.currentTimeMillis();
             canvas.drawRect(tr, paint.getFillPaint());
-            canvas.drawBitmap(bitmap, null, tr, null/* paint.getBitmapPaint() */);
+            canvas.drawBitmap(bitmap, null, tr, paint.getBitmapPaint());
             // long end = System.currentTimeMillis();
             // if (LCTX.isDebugEnabled()) {
             // LCTX.d("Draw node: " + page.getIndex() + ":" + id + ": [" + bitmap.getWidth() + ", "

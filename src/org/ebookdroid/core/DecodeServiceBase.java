@@ -167,6 +167,9 @@ public class DecodeServiceBase implements DecodeService {
         final SoftReference<CodecPage> ref = pages.get(pageIndex);
         CodecPage page = ref != null ? ref.get() : null;
         if (page == null) {
+            // Cause native recycling last used page if page cache is full now
+            // before opening new native page
+            pages.put(pageIndex, null);
             page = document.getPage(pageIndex);
             pages.put(pageIndex, new SoftReference<CodecPage>(page));
         }

@@ -10,6 +10,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class DrawThread extends Thread {
 
+    // private static final LogContext LCTX = LogContext.ROOT.lctx("View");
+
     private SurfaceHolder surfaceHolder;
 
     private AbstractDocumentView view;
@@ -32,18 +34,10 @@ public class DrawThread extends Thread {
     @Override
     public void run() {
         Canvas canvas;
-        while (true) {
+        Thread.currentThread().setPriority(Thread.NORM_PRIORITY + 1);
 
-            DrawTask task = null;
-            try {
-                ArrayList<DrawTask> list = new ArrayList<DrawTask>();
-                task = queue.take();
-                if (queue.drainTo(list) > 0) {
-                    task = list.get(list.size() - 1);
-                }
-            } catch (InterruptedException e) {
-                Thread.interrupted();
-            }
+        while (true) {
+            DrawTask task = takeTask();
             if (task == null) {
                 continue;
             }
@@ -53,9 +47,7 @@ public class DrawThread extends Thread {
             canvas = null;
             try {
                 canvas = surfaceHolder.lockCanvas(null);
-                synchronized (surfaceHolder) {
-                    performDrawing(canvas, task);
-                }
+                performDrawing(canvas, task);
             } finally {
                 if (canvas != null) {
                     surfaceHolder.unlockCanvasAndPost(canvas);
@@ -64,12 +56,32 @@ public class DrawThread extends Thread {
         }
     }
 
+    private DrawTask takeTask() {
+        DrawTask task = null;
+        try {
+            ArrayList<DrawTask> list = new ArrayList<DrawTask>();
+            task = queue.take();
+            if (queue.drainTo(list) > 0) {
+                task = list.get(list.size() - 1);
+            }
+            // if (LCTX.isDebugEnabled()) {
+            // LCTX.d("Draw tasks: " + (task != null ? list.size() + 1 : 0));
+            // }
+        } catch (InterruptedException e) {
+            Thread.interrupted();
+        }
+        return task;
+    }
+
     private void performDrawing(Canvas canvas, DrawTask task) {
         view.drawView(canvas, task.viewRect);
     }
 
     public void draw(RectF viewRect) {
         if (viewRect != null) {
+            // if (LCTX.isDebugEnabled()) {
+            // LCTX.d("New draw task: " + viewRect);
+            // }
             queue.add(new DrawTask(viewRect));
         }
     }

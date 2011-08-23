@@ -34,16 +34,16 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     @Override
     public void goToPageImpl(final int toPage) {
-        DocumentModel dm = getBase().getDocumentModel();
+        final DocumentModel dm = getBase().getDocumentModel();
         if (toPage >= 0 && toPage < dm.getPageCount()) {
             final Page page = dm.getPageObject(toPage);
             if (page != null) {
                 dm.setCurrentPageIndex(page.getDocumentPageIndex(), page.getIndex());
+                updatePageVisibility(page.getIndex(), 0);
             }
             if (curler != null) {
                 curler.resetPageIndexes();
             }
-            updatePageVisibility();
         }
     }
 
@@ -60,7 +60,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
         final int cp = getCurrentPage();
 
-        if (node1.page.index == node2.page.index) {
+        if (node1.page.index == cp && node2.page.index == cp) {
             int res = CompareUtils.compare(rect1.top, rect2.top);
             if (res == 0) {
                 res = CompareUtils.compare(rect1.left, rect2.left);
@@ -163,7 +163,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
      * Invalidate page sizes.
      */
     @Override
-    public void invalidatePageSizes() {
+    public void invalidatePageSizes(final InvalidateSizeReason reason, final Page changedPage) {
         if (!isInitialized()) {
             return;
         }
@@ -171,31 +171,40 @@ public class SinglePageDocumentView extends AbstractDocumentView {
         final int height = getHeight();
         final float zoom = getBase().getZoomModel().getZoom();
 
-        for (final Page page : getBase().getDocumentModel().getPages()) {
-            PageAlign effectiveAlign = getAlign();
-            if (getAlign() == PageAlign.AUTO) {
-                final float pageHeight = page.getPageHeight(width, zoom);
-                if (pageHeight > height) {
-                    effectiveAlign = PageAlign.HEIGHT;
-                } else {
-                    effectiveAlign = PageAlign.WIDTH;
-                }
+        if (changedPage == null) {
+            for (final Page page : getBase().getDocumentModel().getPages()) {
+                invalidatePageSize(page, zoom, width, height);
             }
-
-            if (effectiveAlign == PageAlign.WIDTH) {
-                final float pageHeight = page.getPageHeight(width, zoom);
-                final float heightDelta = (height - pageHeight) / 2;
-                page.setBounds(new RectF(0, heightDelta, width * zoom, pageHeight + heightDelta));
-            } else {
-                final float pageWidth = page.getPageWidth(height, zoom);
-                final float widthDelta = (width - pageWidth) / 2;
-                page.setBounds(new RectF(widthDelta, 0, pageWidth + widthDelta, height * zoom));
-            }
+        } else {
+            invalidatePageSize(changedPage, zoom, width, height);
         }
+
         if (curler != null) {
             curler.setViewDrawn(false);
         }
 
+    }
+
+    private void invalidatePageSize(final Page page, final float zoom, final int width, final int height) {
+        PageAlign effectiveAlign = getAlign();
+        if (getAlign() == PageAlign.AUTO) {
+            final float pageHeight = page.getPageHeight(width, zoom);
+            if (pageHeight > height) {
+                effectiveAlign = PageAlign.HEIGHT;
+            } else {
+                effectiveAlign = PageAlign.WIDTH;
+            }
+        }
+
+        if (effectiveAlign == PageAlign.WIDTH) {
+            final float pageHeight = page.getPageHeight(width, zoom);
+            final float heightDelta = (height - pageHeight) / 2;
+            page.setBounds(new RectF(0, heightDelta, width * zoom, pageHeight + heightDelta));
+        } else {
+            final float pageWidth = page.getPageWidth(height, zoom);
+            final float widthDelta = (width - pageWidth) / 2;
+            page.setBounds(new RectF(widthDelta, 0, pageWidth + widthDelta, height * zoom));
+        }
     }
 
     @Override

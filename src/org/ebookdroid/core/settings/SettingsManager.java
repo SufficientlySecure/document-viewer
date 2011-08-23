@@ -46,6 +46,10 @@ public class SettingsManager {
         }
     }
 
+    public static BookSettingsEditor edit(final BookSettings bs) {
+        return new BookSettingsEditor(bs);
+    }
+
     public static BookSettings getBookSettings(final String fileName) {
         return db.getBookSettings(fileName);
     }
@@ -153,7 +157,7 @@ public class SettingsManager {
 
     public static void applyAppSettingsChanges(final AppSettings oldSettings, final AppSettings newSettings) {
         final AppSettings.Diff diff = new AppSettings.Diff(oldSettings, newSettings);
-        for (ISettingsChangeListener l : listeners) {
+        for (final ISettingsChangeListener l : listeners) {
             l.onAppSettingsChanged(oldSettings, newSettings, diff);
         }
     }
@@ -163,18 +167,36 @@ public class SettingsManager {
             return;
         }
         final BookSettings.Diff diff = new BookSettings.Diff(oldSettings, newSettings);
-        for (ISettingsChangeListener l : listeners) {
+        for (final ISettingsChangeListener l : listeners) {
             l.onBookSettingsChanged(oldSettings, newSettings, diff);
         }
 
     }
 
-    public static void addListener(ISettingsChangeListener l) {
+    public static void addListener(final ISettingsChangeListener l) {
         listeners.add(l);
     }
 
-    public static void removeListener(ISettingsChangeListener l) {
+    public static void removeListener(final ISettingsChangeListener l) {
         listeners.remove(l);
     }
 
+    public static class BookSettingsEditor {
+
+        final BookSettings bookSettings;
+
+        BookSettingsEditor(final BookSettings bs) {
+            this.bookSettings = bs;
+            getAppSettings().updatePseudoBookSettings(bookSettings);
+        }
+
+        public void commit() {
+            getAppSettings().fillBookSettings(bookSettings);
+            db.storeBookSettings(bookSettings);
+        }
+
+        public void rollback() {
+            getAppSettings().clearPseudoBookSettings();
+        }
+    }
 }

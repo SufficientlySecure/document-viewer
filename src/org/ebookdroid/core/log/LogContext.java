@@ -80,9 +80,9 @@ public class LogContext {
         try {
             final PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
             ROOT.debugEnabled = (pi.applicationInfo.flags & (ApplicationInfo.FLAG_DEBUGGABLE | 0x100 /*ApplicationInfo.FLAG_TEST_ONLY*/)) != 0;
-            Log.i(ROOT.tag, "Debug logging " + (ROOT.debugEnabled ? "enabled" : "disabled") + " by default");
         } catch (final NameNotFoundException ex) {
             ex.printStackTrace();
         }
+            Log.i(ROOT.tag, "Debug logging " + (ROOT.debugEnabled ? "enabled" : "disabled") + " by default");
     }
 }

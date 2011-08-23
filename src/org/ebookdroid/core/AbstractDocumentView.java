@@ -42,7 +42,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     int firstVisiblePage;
     int lastVisiblePage;
 
-    private float initialZoom;
+    float initialZoom;
 
     public AbstractDocumentView(final IViewerActivity baseActivity) {
         super(baseActivity.getContext());

@@ -93,12 +93,13 @@ public class RecentActivity extends Activity implements IBrowserActivity {
     @Override
     protected void onResume() {
         super.onResume();
-    
+
+        SettingsManager.clearCurrentBookSettings();
         SettingsManager.onSettingsChanged();
-    
+
         viewflipper.setDisplayedChild(VIEW_RECENT);
         library.setImageResource(R.drawable.actionbar_library);
-    
+
         recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), SettingsManager.getAppSettings()
                 .getAllowedFileTypes(Activities.getAllExtensions()));
     }

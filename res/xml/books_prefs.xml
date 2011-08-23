@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen
+	xmlns:vudroid="http://schemas.android.com/apk/res/vudroid"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:key="book_prefs"
+	android:title="@string/pref_book_category"
+	android:summary="@string/pref_book_category_summary">
+
+		<CheckBoxPreference
+			android:title="@string/pref_splitpages_title"
+			android:summary="@string/pref_splitpages_summary"
+			android:defaultValue="false"
+			android:key="book_splitpages" />
+
+		<CheckBoxPreference
+			android:title="@string/pref_singlepage_title"
+			android:summary="@string/pref_singlepage_summary"
+			android:defaultValue="false"
+			android:key="book_singlepage" />
+
+		<PreferenceCategory
+			android:title="@string/pref_singlepage_category"
+			android:summary="@string/pref_singlepage_category_summary">
+
+			<ListPreference
+				android:title="@string/pref_align_title"
+				android:summary="@string/pref_align_summary"
+				android:entries="@array/list_align"
+				android:entryValues="@array/list_align_values"
+				android:defaultValue="By Width"
+				android:dependency="book_singlepage"
+				android:key="book_align" />
+
+			<ListPreference
+				android:key="book_animationType"
+				android:title="@string/pref_animationtype_title"
+				android:summary="@string/pref_animationtype_summary"
+				android:entries="@array/list_animation"
+				android:entryValues="@array/list_animation_values"
+				android:defaultValue=""
+				android:dependency="book_singlepage" />
+
+		</PreferenceCategory>
+
+</PreferenceScreen>

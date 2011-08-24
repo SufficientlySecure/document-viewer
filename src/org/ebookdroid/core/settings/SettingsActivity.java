@@ -6,11 +6,10 @@ import org.ebookdroid.core.log.LogContext;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 
-public class SettingsActivity extends PreferenceActivity {
+public class SettingsActivity extends BaseSettingsActivity {
 
     private static final LogContext LCTX = LogContext.ROOT.lctx("Settings");
 
@@ -32,6 +31,10 @@ public class SettingsActivity extends PreferenceActivity {
             addPreferencesFromResource(R.xml.preferences);
         }
 
+        decoratePreferences("brightness", "tapsize", "scrollheight", "pagesinmemory", "brautoscandir");
+        decoratePreferences("rotation", "align", "animationType");
+        decoratePreferences("book_align", "book_animationType");
+
         if (SettingsManager.getBookSettings() == null) {
             Preference bookPrefs = findPreference("book_prefs");
             if (bookPrefs != null) {
@@ -39,6 +42,7 @@ public class SettingsActivity extends PreferenceActivity {
                 preferenceScreen.removePreference(bookPrefs);
             }
         }
+
     }
 
 }

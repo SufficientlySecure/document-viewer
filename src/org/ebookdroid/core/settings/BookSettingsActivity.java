@@ -8,10 +8,9 @@ import org.ebookdroid.core.utils.PathFromUri;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 
-public class BookSettingsActivity extends PreferenceActivity {
+public class BookSettingsActivity extends BaseSettingsActivity {
 
     private static final LogContext LCTX = LogContext.ROOT.lctx("Settings");
 
@@ -43,11 +42,12 @@ public class BookSettingsActivity extends PreferenceActivity {
             PreferenceManager.setDefaultValues(this, R.xml.books_prefs, true);
             addPreferencesFromResource(R.xml.books_prefs);
         }
+
+        decoratePreferences("book_align", "book_animationType");
     }
 
     @Override
     protected void onPause() {
-        LCTX.d("Stack trace", new Exception());
         if (edit != null) {
             edit.commit();
         }

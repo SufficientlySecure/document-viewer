@@ -181,7 +181,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    public void drawView(final Canvas canvas, final RectF viewRect) {
+    public  synchronized void drawView(final Canvas canvas, final RectF viewRect) {
         final DocumentModel dm = getBase().getDocumentModel();
         for (int i = firstVisiblePage; i <= lastVisiblePage; i++) {
             final Page page = dm.getPageObject(i);
@@ -212,7 +212,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
      * Invalidate page sizes.
      */
     @Override
-    public void invalidatePageSizes(final InvalidateSizeReason reason, final Page changedPage) {
+    public synchronized void invalidatePageSizes(final InvalidateSizeReason reason, final Page changedPage) {
         if (!isInitialized()) {
             return;
         }

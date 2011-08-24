@@ -7,6 +7,7 @@ import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.utils.CompareUtils;
 
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -85,33 +86,17 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    protected int getTopLimit() {
-        final RectF bounds = getBase().getDocumentModel().getCurrentPageObject().getBounds();
-        return ((int) bounds.top > 0) ? 0 : (int) bounds.top;
-    }
+    protected Rect getScrollLimits() {
+        final int width = getWidth();
+        final int height = getHeight();
 
-    @Override
-    protected int getLeftLimit() {
         final RectF bounds = getBase().getDocumentModel().getCurrentPageObject().getBounds();
-        return ((int) bounds.left > 0) ? 0 : (int) bounds.left;
-    }
+        final int top = ((int) bounds.top > 0) ? 0 : (int) bounds.top;
+        final int left = ((int) bounds.left > 0) ? 0 : (int) bounds.left;
+        final int bottom = ((int) bounds.bottom < height) ? 0 : (int) bounds.bottom - height;
+        final int right = ((int) bounds.right < width) ? 0 : (int) bounds.right - width;
 
-    @Override
-    protected int getBottomLimit() {
-        final RectF bounds = getBase().getDocumentModel().getCurrentPageObject().getBounds();
-        return ((int) bounds.bottom < getHeight()) ? 0 : (int) bounds.bottom - getHeight();
-    }
-
-    @Override
-    protected int getRightLimit() {
-        final RectF bounds = getBase().getDocumentModel().getCurrentPageObject().getBounds();
-        return ((int) bounds.right < getWidth()) ? 0 : (int) bounds.right - getWidth();
-    }
-
-    @Override
-    public void scrollTo(final int x, final int y) {
-        super.scrollTo(Math.min(Math.max(x, getLeftLimit()), getRightLimit()),
-                Math.min(Math.max(y, getTopLimit()), getBottomLimit()));
+        return new Rect(left, top, right, bottom);
     }
 
     @Override

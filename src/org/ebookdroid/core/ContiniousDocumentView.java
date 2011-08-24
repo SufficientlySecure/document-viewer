@@ -5,6 +5,7 @@ import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.utils.CompareUtils;
 
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.View;
 
@@ -160,28 +161,19 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    protected int getTopLimit() {
-        return 0;
-    }
-
-    @Override
-    protected int getLeftLimit() {
-        return 0;
-    }
-
-    @Override
-    protected int getBottomLimit() {
+    protected Rect getScrollLimits() {
+        final int width = getWidth();
+        final int height = getHeight();
         final Page lpo = getBase().getDocumentModel().getLastPageObject();
-        return lpo != null ? (int) lpo.getBounds().bottom - getHeight() : 0;
+
+        final int bottom = lpo != null ? (int) lpo.getBounds().bottom - height : 0;
+        final int right = (int) (width * getBase().getZoomModel().getZoom()) - width;
+
+        return new Rect(0, 0, right, bottom);
     }
 
     @Override
-    protected int getRightLimit() {
-        return (int) (getWidth() * getBase().getZoomModel().getZoom()) - getWidth();
-    }
-
-    @Override
-    public  synchronized void drawView(final Canvas canvas, final RectF viewRect) {
+    public synchronized void drawView(final Canvas canvas, final RectF viewRect) {
         final DocumentModel dm = getBase().getDocumentModel();
         for (int i = firstVisiblePage; i <= lastVisiblePage; i++) {
             final Page page = dm.getPageObject(i);

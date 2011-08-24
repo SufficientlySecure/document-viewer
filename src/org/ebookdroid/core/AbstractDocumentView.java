@@ -3,8 +3,10 @@ package org.ebookdroid.core;
 import org.ebookdroid.core.events.ZoomListener;
 import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.settings.SettingsManager;
+import org.ebookdroid.utils.MathUtils;
 
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -201,9 +203,9 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
                 }
             }
         }
-//        if (LCTX.isDebugEnabled()) {
-//            LCTX.d("Visible pages: " + firstVisiblePage + " " + lastVisiblePage);
-//        }
+        // if (LCTX.isDebugEnabled()) {
+        // LCTX.d("Visible pages: " + firstVisiblePage + " " + lastVisiblePage);
+        // }
     }
 
     @Override
@@ -269,9 +271,9 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         if (!isInitialized) {
             return;
         }
-//        if (LCTX.isDebugEnabled()) {
-//            LCTX.d("Zoom changed: " + oldZoom + " -> " + newZoom);
-//        }
+        // if (LCTX.isDebugEnabled()) {
+        // LCTX.d("Zoom changed: " + oldZoom + " -> " + newZoom);
+        // }
         if (inZoom.compareAndSet(false, true)) {
             initialZoom = oldZoom;
         }
@@ -338,9 +340,9 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
                 break;
             case MotionEvent.ACTION_UP:
                 velocityTracker.computeCurrentVelocity(1000);
+                final Rect l = getScrollLimits();
                 getScroller().fling(getScrollX(), getScrollY(), (int) -velocityTracker.getXVelocity(),
-                        (int) -velocityTracker.getYVelocity(), getLeftLimit(), getRightLimit(), getTopLimit(),
-                        getBottomLimit());
+                        (int) -velocityTracker.getYVelocity(), l.left, l.right, l.top, l.bottom);
                 velocityTracker.recycle();
                 velocityTracker = null;
 
@@ -394,18 +396,12 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
     protected abstract void verticalDpadScroll(int direction);
 
-    protected abstract int getTopLimit();
-
-    protected abstract int getLeftLimit();
-
-    protected abstract int getBottomLimit();
-
-    protected abstract int getRightLimit();
+    protected abstract Rect getScrollLimits();
 
     @Override
-    public void scrollTo(final int x, final int y) {
-        super.scrollTo(Math.min(Math.max(x, getLeftLimit()), getRightLimit()),
-                Math.min(Math.max(y, getTopLimit()), getBottomLimit()));
+    public final void scrollTo(final int x, final int y) {
+        final Rect l = getScrollLimits();
+        super.scrollTo(MathUtils.adjust(x, l.left, l.right), MathUtils.adjust(y, l.top, l.bottom));
     }
 
     @Override

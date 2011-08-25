@@ -46,6 +46,7 @@
 	<string name="menu_nightmode">Day/Night</string>
 	<string name="menu_settings">Settings</string>
 	<string name="menu_cleanrecent">Clear Recent</string>
+	<string name="menu_add_bookmark">Add bookmark</string>
 	<string name="dialog_title_goto_page">Go to page</string>
 	<string name="button_goto_page">Go to page</string>
 	<string name="text_page">Page</string>
@@ -95,4 +96,5 @@
 	<string name="pref_keepscreenon_summary">"Keep screen always on"</string>
 	<string name="pref_loadrecent_title">"Load recent"</string>
 	<string name="pref_loadrecent_summary">"Auto loading last opened book on app start"</string>
+	<string name="add_bookmark_name">"Enter bookmark description"</string>
 </resources>

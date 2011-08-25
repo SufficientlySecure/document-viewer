@@ -1,5 +1,6 @@
 package org.ebookdroid.core.models;
 
+import org.ebookdroid.core.Bookmark;
 import org.ebookdroid.core.DecodeService;
 import org.ebookdroid.core.IViewerActivity;
 import org.ebookdroid.core.Page;
@@ -9,6 +10,7 @@ import org.ebookdroid.core.settings.BookSettings;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.utils.LengthUtils;
 
+import android.provider.Browser.BookmarkColumns;
 import android.view.View;
 
 import java.io.DataInputStream;
@@ -23,6 +25,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class DocumentModel extends CurrentPageModel {
 
@@ -31,6 +34,8 @@ public class DocumentModel extends CurrentPageModel {
     private DecodeService decodeService;
 
     private Page[] pages = EMPTY_PAGES;
+    
+    private List<Bookmark> bookmarks = new ArrayList<Bookmark>();
 
     public DocumentModel(final DecodeService decodeService) {
         this.decodeService = decodeService;
@@ -65,6 +70,7 @@ public class DocumentModel extends CurrentPageModel {
             }
         }
         pages = EMPTY_PAGES;
+        bookmarks.clear();
     }
 
     public Page getPageObject(final int viewIndex) {
@@ -121,6 +127,7 @@ public class DocumentModel extends CurrentPageModel {
             }
         }
         pages = EMPTY_PAGES;
+        bookmarks.clear();
 
         final BookSettings bs = SettingsManager.getBookSettings();
         final boolean splitPages = bs.getSplitPages();
@@ -288,5 +295,13 @@ public class DocumentModel extends CurrentPageModel {
         public Iterator<Page> iterator() {
             return this;
         }
+    }
+
+    public void addBookmark(int page, String name) {
+        bookmarks.add(new Bookmark(page, name));
+    }
+
+    public List<Bookmark> getBookmarks() {
+        return bookmarks;
     }
 }

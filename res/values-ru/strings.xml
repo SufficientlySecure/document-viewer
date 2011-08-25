@@ -46,6 +46,7 @@
 	<string name="menu_nightmode">День/Ночь</string>
 	<string name="menu_settings">Настройки</string>
 	<string name="menu_cleanrecent">Очистить Недавние</string>
+	<string name="menu_add_bookmark">Добавить закладку</string>
 	<string name="dialog_title_goto_page">Страница</string>
 	<string name="button_goto_page">Перейти</string>
 	<string name="text_page">Страница</string>
@@ -97,4 +98,5 @@
 	<string name="pref_keepscreenon_summary">"Не переходить в спящий режим"</string>
 	<string name="pref_loadrecent_title">"Открывать последнее"</string>
 	<string name="pref_loadrecent_summary">"На старте автоматически открывать последнюю книгу"</string>
+	<string name="add_bookmark_name">"Введите описание закладки"</string>
 </resources>

@@ -22,27 +22,6 @@ public class GoToPageDialog extends Dialog {
     private final IViewerActivity base;
     private ArrayAdapter<Bookmark> adapter;
 
-    private class Bookmark {
-
-        private final int page;
-        private final String name;
-
-        public Bookmark(int page, String name) {
-            super();
-            this.page = page;
-            this.name = name;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-
-        public int getPage() {
-            return page;
-        }
-    }
-
     public GoToPageDialog(final IViewerActivity base) {
         super(base.getContext());
         this.base = base;
@@ -99,19 +78,31 @@ public class GoToPageDialog extends Dialog {
         });
 
         bookmarks.setOnItemSelectedListener(new OnItemSelectedListener() {
-
+            private boolean firstEvent = true;
             @Override
             public void onItemSelected(AdapterView<?> adapter, View view, int i, long lng) {
-                Object item = adapter.getItemAtPosition(i);
-                if (item instanceof Bookmark) {
-                    Bookmark bookmark = (Bookmark) item;
-                    editText.setText("" + bookmark.getPage());
-                    seekbar.setProgress(bookmark.getPage() - 1);
+                if (firstEvent) {
+                    firstEvent = false;
+                    return;
                 }
+                Object item = adapter.getItemAtPosition(i);
+                updateControls(seekbar, editText, item);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapter) {
+                if (adapter.getCount() > 0) {
+                    Object item = adapter.getItemAtPosition(0);
+                    updateControls(seekbar, editText, item);
+                }
+            }
+
+            private void updateControls(final SeekBar seekbar, final EditText editText, Object item) {
+                if (item instanceof Bookmark) {
+                    Bookmark bookmark = (Bookmark) item;
+                    editText.setText("" + (bookmark.getPage() + 1));
+                    seekbar.setProgress(bookmark.getPage());
+                }
             }
         });
     }
@@ -133,19 +124,19 @@ public class GoToPageDialog extends Dialog {
 
         if (adapter != null) {
             adapter.clear();
-            for (int i = 1; i <= base.getDocumentModel().getPageCount(); i += 37) {
-                adapter.add(new Bookmark(i, "Page " + i));
+            for(Bookmark b : base.getDocumentModel().getBookmarks()) {
+                adapter.add(b);
             }
         }
     }
 
     private void navigateToPage() {
         final EditText text = (EditText) findViewById(R.id.pageNumberTextEdit);
-        int pageNumber = 0;
+        int pageNumber = 1;
         try {
             pageNumber = Integer.parseInt(text.getText().toString());
         } catch (final Exception e) {
-            pageNumber = 0;
+            pageNumber = 1;
         }
         final int pageCount = base.getDocumentModel().getPageCount();
         if (pageNumber < 1 || pageNumber > pageCount) {

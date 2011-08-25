@@ -9,6 +9,10 @@
          android:alphabeticShortcut="g"
          android:title="@string/menu_goto_page"
          />
+   <item android:id="@+id/mainmenu_bookmark"
+   		 android:alphabeticShortcut="b"
+   		 android:title="@string/menu_add_bookmark"
+   />
    <item android:id="@+id/mainmenu_outline"
          android:alphabeticShortcut="o"
          android:title="@string/menu_outline"

@@ -8,6 +8,12 @@
 		android:icon="@drawable/gotopage"
 		android:showAsAction="ifRoom" />
 
+   <item android:id="@+id/mainmenu_bookmark"
+   		 android:alphabeticShortcut="b"
+   		 android:title="@string/menu_add_bookmark"
+   		 android:icon="@drawable/bookmark"
+   		 android:showAsAction="ifRoom" 
+   />
 	<item
 		android:id="@+id/mainmenu_nightmode"
 		android:alphabeticShortcut="n"

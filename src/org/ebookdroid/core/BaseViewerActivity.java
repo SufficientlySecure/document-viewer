@@ -24,6 +24,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -311,7 +312,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Called on creation options menu
-     *
+     * 
      * @param menu
      *            the main menu
      * @return true, if successful
@@ -407,8 +408,33 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
                 SettingsManager.getAppSettings().switchNightMode();
                 ((AbstractDocumentView) getView()).redrawView();
                 return true;
+            case R.id.mainmenu_bookmark:
+                addBookmark();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void addBookmark() {
+        final int page = getDocumentModel().getCurrentViewPageIndex();
+
+        String message = getString(R.string.add_bookmark_name);
+
+        final EditText input = new EditText(this);
+        input.setText(getString(R.string.text_page) + " " + (page + 1));
+
+        new AlertDialog.Builder(this).setTitle(R.string.menu_add_bookmark).setMessage(message).setView(input)
+                .setPositiveButton(R.string.password_ok, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        Editable value = input.getText();
+                        getDocumentModel().addBookmark(page, value.toString());
+                    }
+                }).setNegativeButton(R.string.password_cancel, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                }).show();
     }
 
     @Override
@@ -422,7 +448,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the zoom model.
-     *
+     * 
      * @return the zoom model
      */
     @Override
@@ -432,7 +458,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the multi touch zoom.
-     *
+     * 
      * @return the multi touch zoom
      */
     @Override
@@ -447,7 +473,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the decoding progress model.
-     *
+     * 
      * @return the decoding progress model
      */
     @Override
@@ -553,7 +579,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         }
 
         final DocumentModel dm = getDocumentModel();
-        if(dm != null)
+        if (dm != null)
             currentPageChanged(dm.getCurrentDocPageIndex(), dm.getCurrentViewPageIndex());
     }
 

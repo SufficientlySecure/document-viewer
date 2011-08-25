@@ -81,20 +81,22 @@ public class GoToPageDialog extends Dialog {
             private boolean firstEvent = true;
             @Override
             public void onItemSelected(AdapterView<?> adapter, View view, int i, long lng) {
+                bookmarks.setSelection(0);
+                if (i == 0) {
+                    return;
+                }
                 if (firstEvent) {
                     firstEvent = false;
                     return;
                 }
                 Object item = adapter.getItemAtPosition(i);
                 updateControls(seekbar, editText, item);
+                goToPageAndDismiss();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapter) {
-                if (adapter.getCount() > 0) {
-                    Object item = adapter.getItemAtPosition(0);
-                    updateControls(seekbar, editText, item);
-                }
+                return;
             }
 
             private void updateControls(final SeekBar seekbar, final EditText editText, Object item) {
@@ -124,9 +126,12 @@ public class GoToPageDialog extends Dialog {
 
         if (adapter != null) {
             adapter.clear();
+            adapter.add(new Bookmark(-1, "Bookmarks"));
             for(Bookmark b : base.getDocumentModel().getBookmarks()) {
                 adapter.add(b);
             }
+            final Spinner bookmarks = (Spinner) findViewById(R.id.bookmarks);
+            bookmarks.setEnabled(base.getDocumentModel().getBookmarks().size() != 0);
         }
     }
 

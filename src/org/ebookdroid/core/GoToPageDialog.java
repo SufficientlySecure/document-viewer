@@ -4,23 +4,28 @@ import org.ebookdroid.R;
 
 import android.app.Dialog;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class GoToPageDialog extends Dialog {
 
     private final IViewerActivity base;
-    private ArrayAdapter<Bookmark> adapter;
+    private BookmarkAdapter adapter;
 
     public GoToPageDialog(final IViewerActivity base) {
         super(base.getContext());
@@ -32,10 +37,9 @@ public class GoToPageDialog extends Dialog {
         final SeekBar seekbar = (SeekBar) findViewById(R.id.seekbar);
         final EditText editText = (EditText) findViewById(R.id.pageNumberTextEdit);
 
-        final Spinner bookmarks = (Spinner) findViewById(R.id.bookmarks);
+        final ListView bookmarks = (ListView) findViewById(R.id.bookmarks);
 
-        adapter = new ArrayAdapter<Bookmark>(base.getContext(), android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter = new BookmarkAdapter();
 
         bookmarks.setAdapter(adapter);
 
@@ -62,48 +66,17 @@ public class GoToPageDialog extends Dialog {
         seekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
+            public void onStopTrackingTouch(final SeekBar seekBar) {
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
+            public void onStartTrackingTouch(final SeekBar seekBar) {
             }
 
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            public void onProgressChanged(final SeekBar seekBar, final int progress, final boolean fromUser) {
                 if (fromUser) {
                     editText.setText("" + (progress + 1));
-                }
-            }
-        });
-
-        bookmarks.setOnItemSelectedListener(new OnItemSelectedListener() {
-            private boolean firstEvent = true;
-            @Override
-            public void onItemSelected(AdapterView<?> adapter, View view, int i, long lng) {
-                bookmarks.setSelection(0);
-                if (i == 0) {
-                    return;
-                }
-                if (firstEvent) {
-                    firstEvent = false;
-                    return;
-                }
-                Object item = adapter.getItemAtPosition(i);
-                updateControls(seekbar, editText, item);
-                goToPageAndDismiss();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapter) {
-                return;
-            }
-
-            private void updateControls(final SeekBar seekbar, final EditText editText, Object item) {
-                if (item instanceof Bookmark) {
-                    Bookmark bookmark = (Bookmark) item;
-                    editText.setText("" + (bookmark.getPage() + 1));
-                    seekbar.setProgress(bookmark.getPage());
                 }
             }
         });
@@ -126,13 +99,20 @@ public class GoToPageDialog extends Dialog {
 
         if (adapter != null) {
             adapter.clear();
-            adapter.add(new Bookmark(-1, "Bookmarks"));
-            for(Bookmark b : base.getDocumentModel().getBookmarks()) {
-                adapter.add(b);
-            }
-            final Spinner bookmarks = (Spinner) findViewById(R.id.bookmarks);
-            bookmarks.setEnabled(base.getDocumentModel().getBookmarks().size() != 0);
+            adapter.add(new Bookmark(0, "Beginning"));
+            adapter.add(base.getDocumentModel().getBookmarks());
+            adapter.add(new Bookmark(base.getDocumentModel().getPageCount() - 1, "End"));
+
+            final ListView bookmarks = (ListView) findViewById(R.id.bookmarks);
+            bookmarks.setEnabled(true);
         }
+    }
+
+    public void updateControls(final Bookmark bookmark) {
+        final SeekBar seekbar = (SeekBar) findViewById(R.id.seekbar);
+        final EditText editText = (EditText) findViewById(R.id.pageNumberTextEdit);
+        editText.setText("" + (bookmark.getPage() + 1));
+        seekbar.setProgress(bookmark.getPage());
     }
 
     private void navigateToPage() {
@@ -150,4 +130,68 @@ public class GoToPageDialog extends Dialog {
         }
         base.getDocumentController().goToPage(pageNumber - 1);
     }
+
+    private final class BookmarkAdapter extends BaseAdapter {
+
+        private final List<Bookmark> list = new ArrayList<Bookmark>();
+
+        public void add(final Bookmark... bookmarks) {
+            for (final Bookmark bookmark : bookmarks) {
+                list.add(bookmark);
+            }
+            notifyDataSetChanged();
+        }
+
+        public void add(final Collection<Bookmark> bookmarks) {
+            list.addAll(bookmarks);
+            notifyDataSetChanged();
+        }
+
+        public void clear() {
+            list.clear();
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+
+        @Override
+        public Object getItem(final int index) {
+            return list.get(index);
+        }
+
+        @Override
+        public long getItemId(final int index) {
+            return index;
+        }
+
+        @Override
+        public View getView(final int index, View itemView, final ViewGroup parent) {
+            if (itemView == null) {
+                itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.bookmark, parent, false);
+            }
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(final View v) {
+                    final Bookmark bookmark = list.get(index);
+                    updateControls(bookmark);
+                }
+            });
+
+            final Bookmark b = list.get(index);
+            final TextView text = (TextView) itemView.findViewById(R.id.bookmarkName);
+            text.setText(b.toString());
+
+            final ProgressBar bar = (ProgressBar) itemView.findViewById(R.id.bookmarkPage);
+            bar.setMax(base.getDocumentModel().getPageCount() - 1);
+            bar.setProgress(b.getPage());
+
+            return itemView;
+        }
+    }
+
 }

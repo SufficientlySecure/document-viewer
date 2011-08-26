@@ -1,5 +1,6 @@
 package org.ebookdroid.core;
 
+import org.ebookdroid.core.IDocumentViewController.InvalidateSizeReason;
 import org.ebookdroid.core.curl.PageAnimationType;
 import org.ebookdroid.core.curl.PageAnimator;
 import org.ebookdroid.core.models.DocumentModel;
@@ -152,16 +153,19 @@ public class SinglePageDocumentView extends AbstractDocumentView {
         if (!isInitialized()) {
             return;
         }
+        if (reason == InvalidateSizeReason.ZOOM) {
+            return;
+        }
+        
         final int width = getWidth();
         final int height = getHeight();
-        final float zoom = getBase().getZoomModel().getZoom();
 
         if (changedPage == null) {
             for (final Page page : getBase().getDocumentModel().getPages()) {
-                invalidatePageSize(page, zoom, width, height);
+                invalidatePageSize(page, width, height);
             }
         } else {
-            invalidatePageSize(changedPage, zoom, width, height);
+            invalidatePageSize(changedPage, width, height);
         }
 
         if (curler != null) {
@@ -170,10 +174,10 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     }
 
-    private void invalidatePageSize(final Page page, final float zoom, final int width, final int height) {
+    private void invalidatePageSize(final Page page, final int width, final int height) {
         PageAlign effectiveAlign = getAlign();
         if (getAlign() == PageAlign.AUTO) {
-            final float pageHeight = page.getPageHeight(width, zoom);
+            final float pageHeight = page.getPageHeight(width, 1);
             if (pageHeight > height) {
                 effectiveAlign = PageAlign.HEIGHT;
             } else {
@@ -182,13 +186,13 @@ public class SinglePageDocumentView extends AbstractDocumentView {
         }
 
         if (effectiveAlign == PageAlign.WIDTH) {
-            final float pageHeight = page.getPageHeight(width, zoom);
+            final float pageHeight = page.getPageHeight(width, 1);
             final float heightDelta = (height - pageHeight) / 2;
-            page.setBounds(new RectF(0, heightDelta, width * zoom, pageHeight + heightDelta));
+            page.setBounds(new RectF(0, heightDelta, width, pageHeight + heightDelta));
         } else {
-            final float pageWidth = page.getPageWidth(height, zoom);
+            final float pageWidth = page.getPageWidth(height, 1);
             final float widthDelta = (width - pageWidth) / 2;
-            page.setBounds(new RectF(widthDelta, 0, pageWidth + widthDelta, height * zoom));
+            page.setBounds(new RectF(widthDelta, 0, pageWidth + widthDelta, height));
         }
     }
 

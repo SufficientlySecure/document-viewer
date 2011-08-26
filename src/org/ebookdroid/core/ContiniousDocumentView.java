@@ -212,22 +212,25 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         if (reason == InvalidateSizeReason.PAGE_ALIGN) {
             return;
         }
+        
+        if (reason == InvalidateSizeReason.ZOOM) {
+            return;
+        }
 
         final int width = getWidth();
-        final float zoom = getBase().getZoomModel().getZoom();
 
         if (changedPage == null) {
             float heightAccum = 0;
             for (final Page page : getBase().getDocumentModel().getPages()) {
-                final float pageHeight = page.getPageHeight(width, zoom);
-                page.setBounds(new RectF(0, heightAccum, width * zoom, heightAccum + pageHeight));
+                final float pageHeight = page.getPageHeight(width, 1);
+                page.setBounds(new RectF(0, heightAccum, width, heightAccum + pageHeight));
                 heightAccum += pageHeight;
             }
         } else {
             float heightAccum = changedPage.getBounds().top;
             for (final Page page : getBase().getDocumentModel().getPages(changedPage.index)) {
-                final float pageHeight = page.getPageHeight(width, zoom);
-                page.setBounds(new RectF(0, heightAccum, width * zoom, heightAccum + pageHeight));
+                final float pageHeight = page.getPageHeight(width, 1);
+                page.setBounds(new RectF(0, heightAccum, width, heightAccum + pageHeight));
                 heightAccum += pageHeight;
             }
         }

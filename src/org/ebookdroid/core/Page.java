@@ -4,6 +4,7 @@ import org.ebookdroid.R;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.settings.SettingsManager;
+import org.ebookdroid.utils.MathUtils;
 
 import android.graphics.Canvas;
 import android.graphics.RectF;
@@ -23,6 +24,8 @@ public class Page {
     final PageType pageType;
     boolean recycled;
     boolean sliceLimit;
+    private float storedZoom;
+    private RectF zoomedBounds;
 
     public Page(final IViewerActivity base, final int index, final int documentPage, final PageType pt,
             final CodecPageInfo cpi) {
@@ -106,6 +109,8 @@ public class Page {
     }
 
     public void setBounds(final RectF pageBounds) {
+        storedZoom = 0.0f;
+        zoomedBounds = null;
         bounds = pageBounds;
     }
 
@@ -142,7 +147,12 @@ public class Page {
     }
 
     public RectF getBounds() {
-        return bounds;
+        float zoom = base.getZoomModel().getZoom();
+        if (zoom != storedZoom) {
+            storedZoom = zoom;
+            zoomedBounds = MathUtils.zoom(bounds, zoom);
+        }
+        return zoomedBounds;
     }
 
     public int getIndex() {

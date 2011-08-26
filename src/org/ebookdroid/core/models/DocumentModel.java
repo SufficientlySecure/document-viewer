@@ -1,9 +1,9 @@
 package org.ebookdroid.core.models;
 
-import org.ebookdroid.core.Bookmark;
 import org.ebookdroid.core.DecodeService;
 import org.ebookdroid.core.IViewerActivity;
 import org.ebookdroid.core.Page;
+import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.core.PageType;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.settings.BookSettings;
@@ -24,7 +24,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 public class DocumentModel extends CurrentPageModel {
 
@@ -33,8 +32,6 @@ public class DocumentModel extends CurrentPageModel {
     private DecodeService decodeService;
 
     private Page[] pages = EMPTY_PAGES;
-
-    private final List<Bookmark> bookmarks = new ArrayList<Bookmark>();
 
     public DocumentModel(final DecodeService decodeService) {
         this.decodeService = decodeService;
@@ -69,7 +66,6 @@ public class DocumentModel extends CurrentPageModel {
             }
         }
         pages = EMPTY_PAGES;
-        bookmarks.clear();
     }
 
     public Page getPageObject(final int viewIndex) {
@@ -82,7 +78,7 @@ public class DocumentModel extends CurrentPageModel {
      * @return the current page object
      */
     public Page getCurrentPageObject() {
-        return getPageObject(this.currentViewPageIndex);
+        return getPageObject(this.currentIndex.viewIndex);
     }
 
     /**
@@ -91,7 +87,7 @@ public class DocumentModel extends CurrentPageModel {
      * @return the next page object
      */
     public Page getNextPageObject() {
-        return getPageObject(this.currentViewPageIndex + 1);
+        return getPageObject(this.currentIndex.viewIndex + 1);
     }
 
     /**
@@ -100,7 +96,7 @@ public class DocumentModel extends CurrentPageModel {
      * @return the prev page object
      */
     public Page getPrevPageObject() {
-        return getPageObject(this.currentViewPageIndex - 1);
+        return getPageObject(this.currentIndex.viewIndex - 1);
     }
 
     /**
@@ -115,7 +111,7 @@ public class DocumentModel extends CurrentPageModel {
     public void setCurrentPageByFirstVisible(final int firstVisiblePage) {
         final Page page = getPageObject(firstVisiblePage);
         if (page != null) {
-            setCurrentPageIndex(page.getDocumentPageIndex(), page.getIndex());
+            setCurrentPageIndex(page.index);
         }
     }
 
@@ -126,7 +122,6 @@ public class DocumentModel extends CurrentPageModel {
             }
         }
         pages = EMPTY_PAGES;
-        bookmarks.clear();
 
         final BookSettings bs = SettingsManager.getBookSettings();
         final boolean splitPages = bs.getSplitPages();
@@ -136,22 +131,25 @@ public class DocumentModel extends CurrentPageModel {
         defCpi.setWidth(view.getWidth());
         defCpi.setHeight(view.getHeight());
 
-        int index = 0;
+        int viewIndex = 0;
 
         final long start = System.currentTimeMillis();
         try {
             final ArrayList<Page> list = new ArrayList<Page>();
             final CodecPageInfo[] infos = retrievePagesInfo(base, bs);
 
-            for (int i = 0; i < infos.length; i++) {
-                if (!splitPages || infos[i] == null || (infos[i].getWidth() < infos[i].getHeight())) {
-                    final Page page = new Page(base, index++, i, PageType.FULL_PAGE, infos[i] != null ? infos[i]
-                            : defCpi);
+            for (int docIndex = 0; docIndex < infos.length; docIndex++) {
+                if (!splitPages || infos[docIndex] == null
+                        || (infos[docIndex].getWidth() < infos[docIndex].getHeight())) {
+                    final Page page = new Page(base, new PageIndex(docIndex, viewIndex++), PageType.FULL_PAGE,
+                            infos[docIndex] != null ? infos[docIndex] : defCpi);
                     list.add(page);
                 } else {
-                    final Page page1 = new Page(base, index++, i, PageType.LEFT_PAGE, infos[i]);
+                    final Page page1 = new Page(base, new PageIndex(docIndex, viewIndex++), PageType.LEFT_PAGE,
+                            infos[docIndex]);
                     list.add(page1);
-                    final Page page2 = new Page(base, index++, i, PageType.RIGHT_PAGE, infos[i]);
+                    final Page page2 = new Page(base, new PageIndex(docIndex, viewIndex++), PageType.RIGHT_PAGE,
+                            infos[docIndex]);
                     list.add(page2);
                 }
             }
@@ -294,23 +292,5 @@ public class DocumentModel extends CurrentPageModel {
         public Iterator<Page> iterator() {
             return this;
         }
-    }
-
-    public Bookmark addBookmark(final int page, final String name) {
-        final Bookmark bookmark = new Bookmark(page, name);
-        bookmarks.add(bookmark);
-        return bookmark;
-    }
-
-    public List<Bookmark> getBookmarks() {
-        return bookmarks;
-    }
-
-    public void clearBookmarks() {
-        bookmarks.clear();
-    }
-
-    public void removeBookmark(final Bookmark bookmark) {
-        bookmarks.remove(bookmark);
     }
 }

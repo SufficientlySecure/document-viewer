@@ -14,8 +14,8 @@ import java.util.List;
 
 public class Page {
 
-    final int index;
-    final int documentPage;
+    public final PageIndex index;
+
     final IViewerActivity base;
     final PageTree nodes;
 
@@ -27,11 +27,9 @@ public class Page {
     private float storedZoom;
     private RectF zoomedBounds;
 
-    public Page(final IViewerActivity base, final int index, final int documentPage, final PageType pt,
-            final CodecPageInfo cpi) {
+    public Page(final IViewerActivity base, PageIndex index, final PageType pt, final CodecPageInfo cpi) {
         this.base = base;
         this.index = index;
-        this.documentPage = documentPage;
         this.pageType = pt != null ? pt : PageType.FULL_PAGE;
 
         setAspectRatio(cpi.getWidth(), cpi.getHeight());
@@ -65,8 +63,8 @@ public class Page {
 
             TextPaint textPaint = paint.getTextPaint();
             textPaint.setTextSize(24 * base.getZoomModel().getZoom());
-            canvas.drawText(base.getContext().getString(R.string.text_page) + " " + (getIndex() + 1), bounds.centerX(),
-                    bounds.centerY(), textPaint);
+            canvas.drawText(base.getContext().getString(R.string.text_page) + " " + (index.viewIndex + 1),
+                    bounds.centerX(), bounds.centerY(), textPaint);
 
             nodes.root.draw(canvas, viewRect, nodesBounds, paint);
 
@@ -119,7 +117,7 @@ public class Page {
         if (dc != null) {
             int current = ((AbstractDocumentView) dc).getCurrentPage();
             int inMemory = (int) Math.ceil(SettingsManager.getAppSettings().getPagesInMemory() / 2.0);
-            return (current - inMemory <= this.index) && (this.index <= current + inMemory);
+            return (current - inMemory <= this.index.viewIndex) && (this.index.viewIndex <= current + inMemory);
         }
         return false;
     }
@@ -147,10 +145,6 @@ public class Page {
         return zoomedBounds;
     }
 
-    public int getIndex() {
-        return index;
-    }
-
     @Override
     public String toString() {
         final StringBuilder buf = new StringBuilder("Page");
@@ -165,10 +159,6 @@ public class Page {
         buf.append("type").append("=").append(pageType.name());
         buf.append("]");
         return buf.toString();
-    }
-
-    public int getDocumentPageIndex() {
-        return documentPage;
     }
 
     public float getTargetRectScale() {

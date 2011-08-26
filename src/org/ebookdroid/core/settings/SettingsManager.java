@@ -1,8 +1,11 @@
 package org.ebookdroid.core.settings;
 
+import org.ebookdroid.core.PageIndex;
+
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -17,7 +20,9 @@ public class SettingsManager {
 
     private static AppSettings appSettings;
 
-    private static BookSettings bookSettings;
+    private static final Map<String, BookSettings> bookSettings = new HashMap<String, BookSettings>();
+
+    private static BookSettings current;
 
     private static List<ISettingsChangeListener> listeners = new ArrayList<ISettingsChangeListener>();
 
@@ -32,17 +37,51 @@ public class SettingsManager {
     public static BookSettings init(final String fileName) {
         lock.writeLock().lock();
         try {
-            BookSettings bs = getBookSettings(fileName);
+            current = getBookSettingsImpl(fileName, true);
+            getAppSettings().updatePseudoBookSettings(current);
+
+            return current;
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    public static BookSettings getBookSettings(final String fileName) {
+        lock.writeLock().lock();
+        try {
+            BookSettings bs = bookSettings.get(fileName);
+            if (bs == null) {
+                bs = db.getBookSettings(fileName);
+            }
+            if (current == null) {
+                current = bs;
+            }
+            return bs;
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    private static BookSettings getBookSettingsImpl(final String fileName, final boolean createOnDemand) {
+        BookSettings bs = bookSettings.get(fileName);
+        if (bs == null) {
+            bs = db.getBookSettings(fileName);
             if (bs == null) {
                 bs = new BookSettings(fileName, getAppSettings());
                 db.storeBookSettings(bs);
             }
-            bookSettings = bs;
-            getAppSettings().updatePseudoBookSettings(bs);
+            bookSettings.put(fileName, bs);
+        }
+        return bs;
+    }
 
-            return bs;
-        } finally {
-            lock.writeLock().unlock();
+    private static void replaceCurrentBookSettings(final BookSettings newBS) {
+        if (current != null) {
+            bookSettings.remove(current.fileName);
+        }
+        current = newBS;
+        if (current != null) {
+            bookSettings.put(current.fileName, current);
         }
     }
 
@@ -50,15 +89,11 @@ public class SettingsManager {
         return new BookSettingsEditor(bs);
     }
 
-    public static BookSettings getBookSettings(final String fileName) {
-        return db.getBookSettings(fileName);
-    }
-
     public static void clearCurrentBookSettings() {
         lock.writeLock().lock();
         try {
             getAppSettings().clearPseudoBookSettings();
-            bookSettings = null;
+            replaceCurrentBookSettings(null);
         } finally {
             lock.writeLock().unlock();
         }
@@ -68,13 +103,17 @@ public class SettingsManager {
         lock.writeLock().lock();
         try {
             db.deleteAll();
+            bookSettings.clear();
+
             final BookSettings oldBS = getBookSettings();
             final AppSettings apps = getAppSettings();
             if (oldBS != null) {
                 apps.clearPseudoBookSettings();
                 final BookSettings newBS = new BookSettings(oldBS, apps);
                 apps.updatePseudoBookSettings(newBS);
-                bookSettings = newBS;
+
+                replaceCurrentBookSettings(newBS);
+
             } else {
                 apps.clearPseudoBookSettings();
             }
@@ -95,26 +134,50 @@ public class SettingsManager {
     public static BookSettings getBookSettings() {
         lock.readLock().lock();
         try {
-            return bookSettings;
+            return current;
         } finally {
             lock.readLock().unlock();
         }
     }
 
     public static BookSettings getRecentBook() {
-        final Map<String, BookSettings> bs = db.getBookSettings(false);
-        return bs.isEmpty() ? null : bs.values().iterator().next();
+        lock.readLock().lock();
+        try {
+            if (current != null) {
+                return current;
+            }
+            final Map<String, BookSettings> books = db.getBookSettings(false);
+            final BookSettings bs = books.isEmpty() ? null : books.values().iterator().next();
+            if (bs != null) {
+                bookSettings.put(bs.fileName, bs);
+            }
+            return bs;
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 
     public static Map<String, BookSettings> getAllBooksSettings() {
-        return db.getBookSettings(true);
+        lock.writeLock().lock();
+        try {
+            final String fileName = current != null ? current.fileName : null;
+            final Map<String, BookSettings> books = db.getBookSettings(true);
+            bookSettings.clear();
+            books.putAll(books);
+            replaceCurrentBookSettings(books.get(fileName));
+            return books;
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
-    public static void currentPageChanged(final int docPageIndex, final int viewPageIndex) {
+    public static void currentPageChanged(final PageIndex oldIndex, final PageIndex newIndex) {
         lock.readLock().lock();
         try {
-            bookSettings.currentPageChanged(docPageIndex, viewPageIndex);
-            db.storeBookSettings(bookSettings);
+            if (current != null) {
+                current.currentPageChanged(oldIndex, newIndex);
+                db.storeBookSettings(current);
+            }
         } finally {
             lock.readLock().unlock();
         }
@@ -123,9 +186,9 @@ public class SettingsManager {
     public static void zoomChanged(final float zoom) {
         lock.readLock().lock();
         try {
-            if (bookSettings != null) {
-                bookSettings.setZoom(zoom);
-                db.storeBookSettings(bookSettings);
+            if (current != null) {
+                current.setZoom(zoom);
+                db.storeBookSettings(current);
             }
         } finally {
             lock.readLock().unlock();
@@ -140,13 +203,11 @@ public class SettingsManager {
 
             applyAppSettingsChanges(oldSettings, appSettings);
 
-            final BookSettings oldBS = bookSettings;
+            final BookSettings oldBS = current;
             if (oldBS != null) {
-                bookSettings = new BookSettings(oldBS, appSettings);
-                db.storeBookSettings(bookSettings);
-
-                applyBookSettingsChanges(oldBS, bookSettings);
-
+                replaceCurrentBookSettings(new BookSettings(oldBS, appSettings));
+                db.storeBookSettings(current);
+                applyBookSettingsChanges(oldBS, current);
             } else {
                 appSettings.clearPseudoBookSettings();
             }
@@ -187,12 +248,15 @@ public class SettingsManager {
 
         BookSettingsEditor(final BookSettings bs) {
             this.bookSettings = bs;
-            getAppSettings().updatePseudoBookSettings(bookSettings);
+            if (bookSettings != null) {
+                getAppSettings().updatePseudoBookSettings(bookSettings);
+            }
         }
 
         public void commit() {
-            getAppSettings().fillBookSettings(bookSettings);
-            db.storeBookSettings(bookSettings);
+            if (bookSettings != null) {
+                onSettingsChanged();
+            }
         }
 
         public void rollback() {

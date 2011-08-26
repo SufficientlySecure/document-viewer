@@ -1,8 +1,13 @@
 package org.ebookdroid.core.settings;
 
 import org.ebookdroid.core.PageAlign;
+import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.core.curl.PageAnimationType;
 import org.ebookdroid.core.events.CurrentPageListener;
+import org.ebookdroid.utils.CompareUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BookSettings implements CurrentPageListener {
 
@@ -10,9 +15,7 @@ public class BookSettings implements CurrentPageListener {
 
     long lastUpdated;
 
-    int currentDocPage;
-
-    int currentViewPage;
+    PageIndex currentPage;
 
     int zoom = 100;
 
@@ -24,8 +27,11 @@ public class BookSettings implements CurrentPageListener {
 
     PageAnimationType animationType = PageAnimationType.NONE;
 
+    final List<Bookmark> bookmarks = new ArrayList<Bookmark>();
+
     BookSettings(final String fileName, AppSettings appSettings) {
         this.fileName = fileName;
+        this.currentPage = PageIndex.FIRST;
         this.lastUpdated = System.currentTimeMillis();
         if (appSettings != null) {
             appSettings.fillBookSettings(this);
@@ -34,27 +40,22 @@ public class BookSettings implements CurrentPageListener {
 
     BookSettings(final BookSettings old, AppSettings appSettings) {
         this(old.fileName, appSettings);
-        this.currentDocPage = old.currentDocPage;
-        this.currentViewPage = old.currentViewPage;
+        this.currentPage = old.currentPage;
         this.zoom = old.zoom;
+        this.bookmarks.addAll(old.bookmarks);
     }
 
     @Override
-    public void currentPageChanged(int docPageIndex, int viewPageIndex) {
-        this.currentDocPage = docPageIndex;
-        this.currentViewPage = viewPageIndex;
+    public void currentPageChanged(PageIndex oldIndex, PageIndex newIndex) {
+        this.currentPage = newIndex;
     }
 
     public String getFileName() {
         return fileName;
     }
 
-    public int getCurrentDocPage() {
-        return currentDocPage;
-    }
-
-    public int getCurrentViewPage() {
-        return currentViewPage;
+    public PageIndex getCurrentPage() {
+        return currentPage;
     }
 
     public float getZoom() {
@@ -81,15 +82,18 @@ public class BookSettings implements CurrentPageListener {
         return animationType;
     }
 
+    public List<Bookmark> getBookmarks() {
+        return bookmarks;
+    }
+
     public static class Diff {
 
-        private static final short D_CurrentDocPage = 0x0001 << 0;
-        private static final short D_CurrentViewPage = 0x0001 << 1;
-        private static final short D_Zoom = 0x0001 << 2;
-        private static final short D_SplitPages = 0x0001 << 3;
-        private static final short D_SinglePage = 0x0001 << 4;
-        private static final short D_PageAlign = 0x0001 << 5;
-        private static final short D_AnimationType = 0x0001 << 6;
+        private static final short D_CurrentPage = 0x0001 << 0;
+        private static final short D_Zoom = 0x0001 << 1;
+        private static final short D_SplitPages = 0x0001 << 2;
+        private static final short D_SinglePage = 0x0001 << 3;
+        private static final short D_PageAlign = 0x0001 << 4;
+        private static final short D_AnimationType = 0x0001 << 5;
 
         private short mask;
         private final boolean firstTime;
@@ -97,25 +101,22 @@ public class BookSettings implements CurrentPageListener {
         public Diff(BookSettings olds, BookSettings news) {
             firstTime = olds == null;
             if (news != null) {
-                if (firstTime || olds.getCurrentDocPage() != news.getCurrentDocPage()) {
-                    mask |= D_CurrentDocPage;
+                if (firstTime || !CompareUtils.equals(olds.currentPage, news.currentPage)) {
+                    mask |= D_CurrentPage;
                 }
-                if (firstTime || olds.getCurrentViewPage() != news.getCurrentViewPage()) {
-                    mask |= D_CurrentViewPage;
-                }
-                if (firstTime || olds.getZoom() != news.getZoom()) {
+                if (firstTime || olds.zoom != news.zoom) {
                     mask |= D_Zoom;
                 }
-                if (firstTime || olds.getSplitPages() != news.getSplitPages()) {
+                if (firstTime || olds.splitPages != news.splitPages) {
                     mask |= D_SplitPages;
                 }
-                if (firstTime || olds.getSinglePage() != news.getSinglePage()) {
+                if (firstTime || olds.singlePage != news.singlePage) {
                     mask |= D_SinglePage;
                 }
-                if (firstTime || olds.getPageAlign() != news.getPageAlign()) {
+                if (firstTime || olds.pageAlign != news.pageAlign) {
                     mask |= D_PageAlign;
                 }
-                if (firstTime || olds.getAnimationType() != news.getAnimationType()) {
+                if (firstTime || olds.animationType != news.animationType) {
                     mask |= D_AnimationType;
                 }
             }
@@ -125,12 +126,8 @@ public class BookSettings implements CurrentPageListener {
             return firstTime;
         }
 
-        public boolean isCurrentDocPageChanged() {
-            return 0 != (mask & D_CurrentDocPage);
-        }
-
-        public boolean isCurrentViewPageChanged() {
-            return 0 != (mask & D_CurrentViewPage);
+        public boolean isCurrentPageChanged() {
+            return 0 != (mask & D_CurrentPage);
         }
 
         public boolean isZoomChanged() {

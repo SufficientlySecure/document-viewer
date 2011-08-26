@@ -44,7 +44,8 @@
 	<string name="menu_outline">Outline</string>
 	<string name="menu_zoom">Zoom</string>
 	<string name="menu_nightmode">Day/Night</string>
-	<string name="menu_settings">Settings</string>
+	<string name="menu_settings">All Settings</string>
+	<string name="menu_booksettings">Book Settings</string>
 	<string name="menu_cleanrecent">Clear Recent</string>
 	<string name="menu_add_bookmark">Add bookmark</string>
 	<string name="dialog_title_goto_page">Go to page</string>

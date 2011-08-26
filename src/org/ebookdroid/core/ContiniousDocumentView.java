@@ -23,7 +23,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
             if (page != null) {
                 final RectF viewRect = this.getViewRect();
                 final RectF bounds = page.getBounds();
-                dm.setCurrentPageIndex(page.getDocumentPageIndex(), page.getIndex());
+                dm.setCurrentPageIndex(page.index);
                 scrollTo(0, page.getTop() - ((int) viewRect.height() - (int) bounds.height()) / 2);
             }
         }
@@ -38,7 +38,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
 
                 @Override
                 public void run() {
-                    dm.setCurrentPageIndex(page.getDocumentPageIndex(), page.getIndex());
+                    dm.setCurrentPageIndex(page.index);
                 }
             });
         }
@@ -62,7 +62,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
                     final long dist = Math.abs(pageY - viewY);
                     if (dist < bestDistance) {
                         bestDistance = dist;
-                        result = page.getIndex();
+                        result = page.index.viewIndex;
                     }
                 } else {
                     if (foundVisible) {
@@ -79,7 +79,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
                     final long dist = Math.abs(pageY - viewY);
                     if (dist < bestDistance) {
                         bestDistance = dist;
-                        result = page.getIndex();
+                        result = page.index.viewIndex;
                     }
                 } else {
                     if (foundVisible) {
@@ -102,7 +102,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         final View view = node1.page.base.getView();
         final RectF realViewRect = new RectF(0, 0, view.getWidth(), view.getHeight());
 
-        if (node1.page.index == cp && node2.page.index == cp) {
+        if (node1.page.index.viewIndex == cp && node2.page.index.viewIndex == cp) {
             int res = CompareUtils.compare(rect1.top, rect2.top);
             if (res == 0) {
                 res = CompareUtils.compare(rect1.left, rect2.left);
@@ -110,11 +110,11 @@ public class ContiniousDocumentView extends AbstractDocumentView {
             return res;
         }
 
-        if (node1.page.index == cp && node2.page.index != cp) {
+        if (node1.page.index.viewIndex == cp && node2.page.index.viewIndex != cp) {
             return -1;
         }
 
-        if (node1.page.index != cp && node2.page.index == cp) {
+        if (node1.page.index.viewIndex != cp && node2.page.index.viewIndex == cp) {
             return 1;
         }
 
@@ -212,7 +212,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         if (reason == InvalidateSizeReason.PAGE_ALIGN) {
             return;
         }
-        
+
         if (reason == InvalidateSizeReason.ZOOM) {
             return;
         }
@@ -228,7 +228,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
             }
         } else {
             float heightAccum = changedPage.getBounds().top;
-            for (final Page page : getBase().getDocumentModel().getPages(changedPage.index)) {
+            for (final Page page : getBase().getDocumentModel().getPages(changedPage.index.viewIndex)) {
                 final float pageHeight = width / page.getAspectRatio();
                 page.setBounds(new RectF(0, heightAccum, width, heightAccum + pageHeight));
                 heightAccum += pageHeight;

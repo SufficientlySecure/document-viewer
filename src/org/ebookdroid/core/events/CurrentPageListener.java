@@ -1,23 +1,25 @@
 package org.ebookdroid.core.events;
 
+import org.ebookdroid.core.PageIndex;
+
 public interface CurrentPageListener {
 
-    void currentPageChanged(int docPageIndex, int viewPageIndex);
+    void currentPageChanged(PageIndex oldIndex, PageIndex newIndex);
 
     public class CurrentPageChangedEvent extends SafeEvent<CurrentPageListener> {
 
-        private final int docPageIndex;
+        private final PageIndex oldIndex;
 
-        private final int viewPageIndex;
+        private final PageIndex newIndex;
 
-        public CurrentPageChangedEvent(final int docPageIndex, final int viewPageIndex) {
-            this.docPageIndex = docPageIndex;
-            this.viewPageIndex = viewPageIndex;
+        public CurrentPageChangedEvent(final PageIndex oldIndex, final PageIndex newIndex) {
+            this.oldIndex = oldIndex;
+            this.newIndex = newIndex;
         }
 
         @Override
         public void dispatchSafely(final CurrentPageListener listener) {
-            listener.currentPageChanged(docPageIndex, viewPageIndex);
+            listener.currentPageChanged(oldIndex, newIndex);
         }
     }
 }

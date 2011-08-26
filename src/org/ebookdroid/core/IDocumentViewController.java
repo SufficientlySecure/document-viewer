@@ -35,7 +35,7 @@ public interface IDocumentViewController extends Comparator<PageTreeNode>{
     View getView();
 
     void updateAnimationType();
-    
+
     public static enum InvalidateSizeReason {
         INIT, LAYOUT, PAGE_ALIGN, ZOOM, PAGE_LOADED;
     }

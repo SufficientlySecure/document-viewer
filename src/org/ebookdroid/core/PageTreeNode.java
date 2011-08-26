@@ -270,7 +270,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     public int getPageIndex() {
-        return page.getIndex();
+        return page.index.viewIndex;
     }
 
     public Bitmap getBitmap() {
@@ -279,7 +279,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     @Override
     public int hashCode() {
-        return (page == null) ? 0 : page.getIndex();
+        return (page == null) ? 0 : page.index.viewIndex;
     }
 
     @Override
@@ -293,7 +293,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             if (this.page == null) {
                 return that.page == null;
             }
-            return this.page.getIndex() == that.getPageIndex() && this.pageSliceBounds.equals(that.pageSliceBounds);
+            return this.page.index.viewIndex == that.page.index.viewIndex && this.pageSliceBounds.equals(that.pageSliceBounds);
         }
 
         return false;
@@ -304,7 +304,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         final StringBuilder buf = new StringBuilder("PageTreeNode");
         buf.append("[");
 
-        buf.append("id").append("=").append(page.getIndex()).append(":").append(id);
+        buf.append("id").append("=").append(page.index.viewIndex).append(":").append(id);
         buf.append(", ");
         buf.append("rect").append("=").append(this.pageSliceBounds);
         buf.append(", ");
@@ -315,7 +315,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     public int getDocumentPageIndex() {
-        return page.getDocumentPageIndex();
+        return page.index.docIndex;
     }
 
     private static RectF evaluatePageSliceBounds(final RectF localPageSliceBounds, final PageTreeNode parent) {

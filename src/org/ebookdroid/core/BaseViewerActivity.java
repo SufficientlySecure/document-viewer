@@ -10,6 +10,8 @@ import org.ebookdroid.core.models.ZoomModel;
 import org.ebookdroid.core.multitouch.MultiTouchZoom;
 import org.ebookdroid.core.settings.AppSettings;
 import org.ebookdroid.core.settings.BookSettings;
+import org.ebookdroid.core.settings.BookSettingsActivity;
+import org.ebookdroid.core.settings.Bookmark;
 import org.ebookdroid.core.settings.ISettingsChangeListener;
 import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
@@ -40,6 +42,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.List;
 
 public abstract class BaseViewerActivity extends Activity implements IViewerActivity, DecodingProgressListener,
@@ -215,7 +218,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         documentController.getView().setLayoutParams(
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
 
-        documentController.goToPage(bs.getSplitPages() ? bs.getCurrentViewPage() : bs.getCurrentDocPage());
         documentController.showDocument();
 
         frameLayout.removeView(getZoomControls());
@@ -240,12 +242,12 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     }
 
     @Override
-    public void currentPageChanged(final int docPageIndex, final int viewPageIndex) {
+    public void currentPageChanged(final PageIndex oldIndex, final PageIndex newIndex) {
         final int pageCount = documentModel.getPageCount();
         String prefix = "";
 
         if (pageCount > 0) {
-            final String pageText = (viewPageIndex + 1) + "/" + pageCount;
+            final String pageText = (newIndex.viewIndex + 1) + "/" + pageCount;
             if (SettingsManager.getAppSettings().getPageInTitle()) {
                 prefix = "(" + pageText + ") ";
             } else {
@@ -260,7 +262,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         }
 
         getWindow().setTitle(prefix + currentFilename);
-        SettingsManager.currentPageChanged(docPageIndex, viewPageIndex);
+        SettingsManager.currentPageChanged(oldIndex, newIndex);
     }
 
     private void setWindowTitle() {
@@ -290,7 +292,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         if (documentModel != null) {
             BookSettings bs = SettingsManager.getBookSettings();
             if (bs != null) {
-                currentPageChanged(bs.getCurrentDocPage(), bs.getCurrentViewPage());
+                currentPageChanged(PageIndex.NULL, bs.getCurrentPage());
             }
         }
     }
@@ -312,7 +314,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Called on creation options menu
-     * 
+     *
      * @param menu
      *            the main menu
      * @return true, if successful
@@ -400,6 +402,11 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
             case R.id.mainmenu_outline:
                 showOutline();
                 return true;
+            case R.id.mainmenu_booksettings:
+                final Intent bsa = new Intent(BaseViewerActivity.this, BookSettingsActivity.class);
+                bsa.setData(Uri.fromFile(new File(SettingsManager.getBookSettings().getFileName())));
+                startActivity(bsa);
+                return true;
             case R.id.mainmenu_settings:
                 final Intent i = new Intent(BaseViewerActivity.this, SettingsActivity.class);
                 startActivity(i);
@@ -428,7 +435,9 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
                     public void onClick(DialogInterface dialog, int whichButton) {
                         Editable value = input.getText();
-                        getDocumentModel().addBookmark(page, value.toString());
+                        BookSettings bs = SettingsManager.getBookSettings();
+                        bs.getBookmarks().add(new Bookmark(getDocumentModel().getCurrentIndex(), value.toString()));
+                        SettingsManager.edit(bs).commit();
                     }
                 }).setNegativeButton(R.string.password_cancel, new DialogInterface.OnClickListener() {
 
@@ -448,7 +457,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the zoom model.
-     * 
+     *
      * @return the zoom model
      */
     @Override
@@ -458,7 +467,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the multi touch zoom.
-     * 
+     *
      * @return the multi touch zoom
      */
     @Override
@@ -473,7 +482,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the decoding progress model.
-     * 
+     *
      * @return the decoding progress model
      */
     @Override
@@ -557,7 +566,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     public void onBookSettingsChanged(BookSettings oldSettings, BookSettings newSettings,
             org.ebookdroid.core.settings.BookSettings.Diff diff) {
 
-        if (diff.isSinglePageChanged()) {
+        if (diff.isSinglePageChanged() || diff.isSplitPagesChanged()) {
             createDocumentView();
         }
 
@@ -580,7 +589,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
         final DocumentModel dm = getDocumentModel();
         if (dm != null)
-            currentPageChanged(dm.getCurrentDocPageIndex(), dm.getCurrentViewPageIndex());
+            currentPageChanged(PageIndex.NULL, dm.getCurrentIndex());
     }
 
 }

@@ -1,32 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
-  xmlns:android="http://schemas.android.com/apk/res/android">
-   <item android:id="@+id/mainmenu_close"
-         android:alphabeticShortcut="e"
-         android:title="@string/menu_close"
-         />
-   <item android:id="@+id/mainmenu_goto_page"
-         android:alphabeticShortcut="g"
-         android:title="@string/menu_goto_page"
-         />
-   <item android:id="@+id/mainmenu_bookmark"
-   		 android:alphabeticShortcut="b"
-   		 android:title="@string/menu_add_bookmark"
-   />
-   <item android:id="@+id/mainmenu_outline"
-         android:alphabeticShortcut="o"
-         android:title="@string/menu_outline"
-         />
-   <item android:id="@+id/mainmenu_zoom"
-         android:alphabeticShortcut="z"
-         android:title="@string/menu_zoom"
-         />
-   <item android:id="@+id/mainmenu_nightmode"
-         android:alphabeticShortcut="n"
-         android:title="@string/menu_nightmode"
-         />
-   <item android:id="@+id/mainmenu_settings"
-         android:alphabeticShortcut="s"
-         android:title="@string/menu_settings"
-         />
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<item
+		android:id="@+id/mainmenu_bookmark"
+		android:alphabeticShortcut="b"
+		android:title="@string/menu_add_bookmark" />
+	<item
+		android:id="@+id/mainmenu_goto_page"
+		android:alphabeticShortcut="g"
+		android:title="@string/menu_goto_page" />
+	<item
+		android:id="@+id/mainmenu_outline"
+		android:alphabeticShortcut="o"
+		android:title="@string/menu_outline" />
+	<item
+		android:id="@+id/mainmenu_zoom"
+		android:alphabeticShortcut="z"
+		android:title="@string/menu_zoom" />
+	<item
+		android:id="@+id/mainmenu_nightmode"
+		android:alphabeticShortcut="n"
+		android:title="@string/menu_nightmode" />
+	<item
+		android:id="@+id/mainmenu_booksettings"
+		android:alphabeticShortcut="t"
+		android:title="@string/menu_booksettings" />
+	<item
+		android:id="@+id/mainmenu_settings"
+		android:alphabeticShortcut="s"
+		android:title="@string/menu_settings" />
+	<item
+		android:id="@+id/mainmenu_close"
+		android:alphabeticShortcut="e"
+		android:title="@string/menu_close" />
 </menu>

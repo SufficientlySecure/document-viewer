@@ -55,9 +55,10 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         viewflipper.addView(new RecentBooksView(this, recentAdapter), VIEW_RECENT);
         viewflipper.addView(new LibraryView(this, libraryAdapter), VIEW_LIBRARY);
 
-        View.OnClickListener handler = new View.OnClickListener() {
+        final View.OnClickListener handler = new View.OnClickListener() {
 
-            public void onClick(View v) {
+            @Override
+            public void onClick(final View v) {
                 switch (v.getId()) {
                     case R.id.recentlibrary:
                         goLibrary(v);
@@ -70,15 +71,15 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         };
 
         findViewById(R.id.recentlibrary).setOnClickListener(handler);
-        View recentBrowser = findViewById(R.id.recentbrowser);
+        final View recentBrowser = findViewById(R.id.recentbrowser);
         if (recentBrowser != null) {
             recentBrowser.setOnClickListener(handler);
         }
 
-        boolean shouldLoad = SettingsManager.getAppSettings().isLoadRecentBook();
-        BookSettings recent = SettingsManager.getRecentBook();
-        File file = recent != null ? new File(recent.getFileName()) : null;
-        boolean found = file != null ? file.exists() : false;
+        final boolean shouldLoad = SettingsManager.getAppSettings().isLoadRecentBook();
+        final BookSettings recent = SettingsManager.getRecentBook();
+        final File file = recent != null ? new File(recent.getFileName()) : null;
+        final boolean found = file != null ? file.exists() : false;
 
         if (LCTX.isDebugEnabled()) {
             LCTX.d("Last book: " + (file != null ? file.getAbsolutePath() : "") + ", found: " + found
@@ -98,11 +99,7 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         SettingsManager.clearCurrentBookSettings();
         SettingsManager.onSettingsChanged();
 
-        viewflipper.setDisplayedChild(VIEW_RECENT);
-        library.setImageResource(R.drawable.actionbar_library);
-
-        recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), SettingsManager.getAppSettings()
-                .getAllowedFileTypes(Activities.getAllExtensions()));
+        changeLibraryView(SettingsManager.getRecentBook() != null ? VIEW_RECENT : VIEW_LIBRARY);
     }
 
     @Override
@@ -167,38 +164,41 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    private void changeLibraryView() {
-        if (viewflipper.getDisplayedChild() == VIEW_RECENT) {
+    private void changeLibraryView(int view) {
+        final FileExtensionFilter filter = SettingsManager.getAppSettings().getAllowedFileTypes(
+                Activities.getAllExtensions());
+
+        if (view == VIEW_LIBRARY) {
             viewflipper.setDisplayedChild(VIEW_LIBRARY);
             library.setImageResource(R.drawable.actionbar_recent);
-            final FileExtensionFilter filter = SettingsManager.getAppSettings().getAllowedFileTypes(
-                    Activities.getAllExtensions());
+
             libraryAdapter.startScan(filter);
 
         } else {
             viewflipper.setDisplayedChild(VIEW_RECENT);
             library.setImageResource(R.drawable.actionbar_library);
+
+            recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), filter);
         }
     }
 
     public void goLibrary(final View view) {
-        changeLibraryView();
+        changeLibraryView(viewflipper.getDisplayedChild() == VIEW_RECENT ? VIEW_LIBRARY: VIEW_RECENT);
     }
 
     public void goFileBrowser(final View view) {
         final Intent myIntent = new Intent(RecentActivity.this, BrowserActivity.class);
         startActivity(myIntent);
     }
-    
+
     @Override
-    public void showProgress(final boolean show)
-    {
+    public void showProgress(final boolean show) {
         final ProgressBar progress = (ProgressBar) findViewById(R.id.recentprogress);
         if (show) {
             progress.setVisibility(View.VISIBLE);
         } else {
             progress.setVisibility(View.GONE);
         }
-    
+
     }
 }

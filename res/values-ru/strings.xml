@@ -44,7 +44,8 @@
 	<string name="menu_outline">Оглавление</string>
 	<string name="menu_zoom">Увеличение</string>
 	<string name="menu_nightmode">День/Ночь</string>
-	<string name="menu_settings">Настройки</string>
+	<string name="menu_settings">Все настройки</string>
+	<string name="menu_booksettings">Настройки книги</string>
 	<string name="menu_cleanrecent">Очистить Недавние</string>
 	<string name="menu_add_bookmark">Добавить закладку</string>
 	<string name="dialog_title_goto_page">Страница</string>

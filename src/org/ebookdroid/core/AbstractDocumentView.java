@@ -28,7 +28,6 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
     private final IViewerActivity base;
     private boolean isInitialized = false;
-    private int pageToGoTo;
     private float lastX;
     private float lastY;
     protected VelocityTracker velocityTracker;
@@ -40,6 +39,8 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     private boolean touchInTapZone = false;
 
     private DrawThread drawThread;
+
+    final PageIndex pageToGo;
 
     int firstVisiblePage;
     int lastVisiblePage;
@@ -53,6 +54,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         this.firstVisiblePage = -1;
         this.lastVisiblePage = -1;
         this.scroller = new Scroller(getContext());
+        this.pageToGo = SettingsManager.getBookSettings().getCurrentPage();
 
         setKeepScreenOn(SettingsManager.getAppSettings().isKeepScreenOn());
         setFocusable(true);
@@ -83,7 +85,9 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         isInitialized = true;
         invalidatePageSizes(InvalidateSizeReason.INIT, null);
         invalidateScroll();
-        goToPageImpl(pageToGoTo);
+
+        Page page = pageToGo.getActualPage(base.getDocumentModel(), SettingsManager.getBookSettings());
+        goToPageImpl(page != null ? page.index.viewIndex : 0);
     }
 
     protected abstract void goToPageImpl(final int toPage);
@@ -195,9 +199,9 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
             for (final Page page : getBase().getDocumentModel().getPages()) {
                 if (isPageVisibleImpl(page)) {
                     if (firstVisiblePage == -1) {
-                        firstVisiblePage = page.getIndex();
+                        firstVisiblePage = page.index.viewIndex;
                     }
-                    lastVisiblePage = page.getIndex();
+                    lastVisiblePage = page.index.viewIndex;
                 } else if (firstVisiblePage != -1) {
                     break;
                 }
@@ -259,8 +263,6 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     public void goToPage(final int toPage) {
         if (isInitialized) {
             goToPageImpl(toPage);
-        } else {
-            pageToGoTo = toPage;
         }
     }
 
@@ -482,7 +484,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
     @Override
     public final boolean isPageVisible(final Page page) {
-        return firstVisiblePage <= page.getIndex() && page.getIndex() <= lastVisiblePage;
+        return firstVisiblePage <= page.index.viewIndex && page.index.viewIndex <= lastVisiblePage;
     }
 
     protected abstract boolean isPageVisibleImpl(final Page page);

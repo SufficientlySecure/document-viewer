@@ -39,8 +39,8 @@ public class SinglePageDocumentView extends AbstractDocumentView {
         if (toPage >= 0 && toPage < dm.getPageCount()) {
             final Page page = dm.getPageObject(toPage);
             if (page != null) {
-                dm.setCurrentPageIndex(page.getDocumentPageIndex(), page.getIndex());
-                updatePageVisibility(page.getIndex(), 0);
+                dm.setCurrentPageIndex(page.index);
+                updatePageVisibility(page.index.viewIndex, 0);
             }
             if (curler != null) {
                 curler.resetPageIndexes();
@@ -61,7 +61,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
         final int cp = getCurrentPage();
 
-        if (node1.page.index == cp && node2.page.index == cp) {
+        if (node1.page.index.viewIndex == cp && node2.page.index.viewIndex == cp) {
             int res = CompareUtils.compare(rect1.top, rect2.top);
             if (res == 0) {
                 res = CompareUtils.compare(rect1.left, rect2.left);
@@ -69,8 +69,8 @@ public class SinglePageDocumentView extends AbstractDocumentView {
             return res;
         }
 
-        final int dist1 = Math.abs(node1.page.index - cp);
-        final int dist2 = Math.abs(node2.page.index - cp);
+        final int dist1 = Math.abs(node1.page.index.viewIndex - cp);
+        final int dist2 = Math.abs(node2.page.index.viewIndex - cp);
 
         return CompareUtils.compare(dist1, dist2);
     }
@@ -155,7 +155,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
         if (reason == InvalidateSizeReason.ZOOM) {
             return;
         }
-        
+
         final int width = getWidth();
         final int height = getHeight();
 
@@ -197,7 +197,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     @Override
     protected boolean isPageVisibleImpl(final Page page) {
-        final int pageIndex = page.getIndex();
+        final int pageIndex = page.index.viewIndex;
         if (curler != null) {
             return pageIndex == curler.getForeIndex() || pageIndex == curler.getBackIndex();
         }

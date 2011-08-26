@@ -1,36 +1,39 @@
 package org.ebookdroid.core.models;
 
+import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.core.events.CurrentPageListener;
 import org.ebookdroid.core.events.EventDispatcher;
 import org.ebookdroid.core.log.LogContext;
+import org.ebookdroid.utils.CompareUtils;
 
 public class CurrentPageModel extends EventDispatcher {
 
     protected static final LogContext LCTX = LogContext.ROOT.lctx("DocModel");
 
-    int currentDocPageIndex;
+    protected PageIndex currentIndex = PageIndex.FIRST;
 
-    int currentViewPageIndex;
-
-    public void setCurrentPageIndex(final int currentDocPageIndex, final int currentViewPageIndex) {
-        if (this.currentViewPageIndex != currentViewPageIndex) {
+    public void setCurrentPageIndex(final PageIndex newIndex) {
+        if (!CompareUtils.equals(currentIndex, newIndex)) {
             if (LCTX.isDebugEnabled()) {
-                LCTX.d("Current page changed: " + "[" + this.currentDocPageIndex + ", "
-                        + this.currentViewPageIndex + "]" + " -> " + "[" + currentDocPageIndex + ", "
-                        + currentViewPageIndex + "]");
+                LCTX.d("Current page changed: " + "currentIndex" + " -> " + newIndex);
             }
-            this.currentDocPageIndex = currentDocPageIndex;
-            this.currentViewPageIndex = currentViewPageIndex;
 
-            dispatch(new CurrentPageListener.CurrentPageChangedEvent(currentDocPageIndex, currentViewPageIndex));
+            final PageIndex oldIndex = this.currentIndex;
+            this.currentIndex = newIndex;
+
+            dispatch(new CurrentPageListener.CurrentPageChangedEvent(oldIndex, newIndex));
         }
     }
 
+    public PageIndex getCurrentIndex() {
+        return this.currentIndex;
+    }
+
     public int getCurrentViewPageIndex() {
-        return this.currentViewPageIndex;
+        return this.currentIndex.viewIndex;
     }
 
     public int getCurrentDocPageIndex() {
-        return currentDocPageIndex;
+        return this.currentIndex.docIndex;
     }
 }

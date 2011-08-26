@@ -134,7 +134,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     protected boolean isChildrenRequired(final float zoom, final RectF viewRect) {
         if (page.sliceLimit) {
             final int mainWidth = (int) viewRect.width();
-            final float height = page.getPageHeight(mainWidth, zoom);
+            final float height = zoom * mainWidth / page.getAspectRatio();
             return (mainWidth * zoom * height) / (childrenZoomThreshold * childrenZoomThreshold) > SLICE_SIZE;
         } else {
             return zoom > childrenZoomThreshold;

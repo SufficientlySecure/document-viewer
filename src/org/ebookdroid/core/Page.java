@@ -45,14 +45,6 @@ public class Page {
         nodes.recycle();
     }
 
-    public float getPageHeight(final int mainWidth, final float zoom) {
-        return mainWidth / getAspectRatio() * zoom;
-    }
-
-    public float getPageWidth(final int mainHeight, final float zoom) {
-        return mainHeight * getAspectRatio() * zoom;
-    }
-
     public int getTop() {
         return Math.round(getBounds().top);
     }

@@ -1,6 +1,5 @@
 package org.ebookdroid.core;
 
-import org.ebookdroid.core.IDocumentViewController.InvalidateSizeReason;
 import org.ebookdroid.core.curl.PageAnimationType;
 import org.ebookdroid.core.curl.PageAnimator;
 import org.ebookdroid.core.models.DocumentModel;
@@ -177,7 +176,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     private void invalidatePageSize(final Page page, final int width, final int height) {
         PageAlign effectiveAlign = getAlign();
         if (getAlign() == PageAlign.AUTO) {
-            final float pageHeight = page.getPageHeight(width, 1);
+            final float pageHeight = width / page.getAspectRatio();
             if (pageHeight > height) {
                 effectiveAlign = PageAlign.HEIGHT;
             } else {
@@ -186,11 +185,11 @@ public class SinglePageDocumentView extends AbstractDocumentView {
         }
 
         if (effectiveAlign == PageAlign.WIDTH) {
-            final float pageHeight = page.getPageHeight(width, 1);
+            final float pageHeight = width / page.getAspectRatio();
             final float heightDelta = (height - pageHeight) / 2;
             page.setBounds(new RectF(0, heightDelta, width, pageHeight + heightDelta));
         } else {
-            final float pageWidth = page.getPageWidth(height, 1);
+            final float pageWidth = height * page.getAspectRatio();
             final float widthDelta = (width - pageWidth) / 2;
             page.setBounds(new RectF(widthDelta, 0, pageWidth + widthDelta, height));
         }

@@ -422,6 +422,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         invalidatePageSizes(InvalidateSizeReason.LAYOUT, null);
         invalidateScroll();
         commitZoom();
+        redrawView();
     }
 
     protected void invalidateScroll() {

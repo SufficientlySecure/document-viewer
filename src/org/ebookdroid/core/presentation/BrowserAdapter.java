@@ -71,6 +71,8 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
             final TextView info = (TextView) view.findViewById(R.id.browserItemInfo);
             //info.setText("Folders: " + folders + " Books: " + books);
             info.setText("");
+            final TextView fileSize = (TextView) view.findViewById(R.id.browserItemfileSize);
+            fileSize.setText("");
         } else {
             //final boolean wasRead = SettingsManager.getBookSettings(file.getAbsolutePath()) != null;
             //imageView.setImageResource(wasRead ? R.drawable.bookwatched : R.drawable.book);

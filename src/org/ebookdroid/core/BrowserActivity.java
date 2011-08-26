@@ -186,4 +186,10 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
     public Activity getActivity() {
         return this;
     }
+    
+    @Override
+    public void showProgress(final boolean show)
+    {
+    
+    }
 }

@@ -15,5 +15,6 @@ public interface IBrowserActivity {
     void setCurrentDir(File newDir);
 
     void showDocument(Uri uri);
-
+    
+    void showProgress(final boolean show);
 }

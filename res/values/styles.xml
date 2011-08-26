@@ -53,5 +53,14 @@
 		<item name="android:textColor">@color/actionbar_white</item>
 		<item name="android:text">EBookDroid</item>
 	</style>
+	
+	<style name="action_bar_progress" parent="@android:style/Widget.ProgressBar.Small">
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_marginLeft">4dip</item>
+		<item name="android:layout_marginRight">4dip</item>
+		<item name="android:layout_marginTop">11dip</item>
+		<item name="android:indeterminate">true</item>
+	</style>
 
 </resources>

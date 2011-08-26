@@ -43,7 +43,7 @@ public class FileListAdapter extends BaseExpandableListAdapter {
         String getName() {
             return this.name;
         }
-        
+
         String getPath() {
             return this.path;
         }
@@ -165,6 +165,7 @@ public class FileListAdapter extends BaseExpandableListAdapter {
 
     public void startScan(FileExtensionFilter filter) {
         if (inScan.compareAndSet(false, true)) {
+            base.showProgress(true);
             clearData();
             new Thread(new ScanTask(filter)).start();
         }
@@ -188,8 +189,7 @@ public class FileListAdapter extends BaseExpandableListAdapter {
 
         public void run() {
             // Checks if we started to update adapter data
-
-            if (!currNodes.isEmpty() && inScan.get()) {
+            if (!currNodes.isEmpty()) {
                 // Add files from queue to adapter
                 for (Node n = currNodes.poll(); n != null && inScan.get(); n = currNodes.poll()) {
                     addNode(n);
@@ -214,6 +214,14 @@ public class FileListAdapter extends BaseExpandableListAdapter {
                 // Start final UI task
                 base.getActivity().runOnUiThread(this);
             }
+            base.getActivity().runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    base.showProgress(false);
+                }
+            });
+
         }
 
         public class DirectoryFilter implements FileFilter {

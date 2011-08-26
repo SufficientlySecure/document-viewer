@@ -22,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.ViewFlipper;
 
 import java.io.File;
@@ -187,5 +188,17 @@ public class RecentActivity extends Activity implements IBrowserActivity {
     public void goFileBrowser(final View view) {
         final Intent myIntent = new Intent(RecentActivity.this, BrowserActivity.class);
         startActivity(myIntent);
+    }
+    
+    @Override
+    public void showProgress(final boolean show)
+    {
+        final ProgressBar progress = (ProgressBar) findViewById(R.id.recentprogress);
+        if (show) {
+            progress.setVisibility(View.VISIBLE);
+        } else {
+            progress.setVisibility(View.GONE);
+        }
+    
     }
 }

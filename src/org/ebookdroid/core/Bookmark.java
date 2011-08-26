@@ -1,22 +1,36 @@
 package org.ebookdroid.core;
 
+
 public class Bookmark {
 
-    private final int page;
-    private final String name;
+    final int page;
+    final String name;
+    final boolean service;
 
-    public Bookmark(int page, String name) {
-        super();
+    public Bookmark(final int page, final String name) {
+        this(page, name, false);
+    }
+
+    public Bookmark(final int page, final String name, final boolean service) {
         this.page = page;
         this.name = name;
+        this.service = service;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isService() {
+        return service;
     }
 
     @Override
     public String toString() {
         return name;
-    }
-
-    public int getPage() {
-        return page;
     }
 }

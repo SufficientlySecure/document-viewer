@@ -101,4 +101,8 @@
 	<string name="bookmark_end">End</string>
 	<string name="bookmark_invalid_page">"Page number out of range. Valid range: 1-"</string>
 	<string name="bookmarks_title">"Bookmarks"</string>
+	<string name="clear_bookmarks_title">"Clear bookmarks"</string>
+	<string name="clear_bookmarks_text">"Do you really want to remove all bookmarks?"</string>
+	<string name="del_bookmark_title">"Delete bookmark"</string>
+	<string name="del_bookmark_text">"Do you really want to remove this bookmark?"</string>
 </resources>

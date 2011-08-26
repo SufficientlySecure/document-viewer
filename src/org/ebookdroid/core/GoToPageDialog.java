@@ -1,8 +1,13 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.R;
+import org.ebookdroid.core.models.DocumentModel;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.text.Editable;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +29,8 @@ import java.util.List;
 
 public class GoToPageDialog extends Dialog {
 
-    private final IViewerActivity base;
-    private BookmarkAdapter adapter;
+    final IViewerActivity base;
+    final BookmarkAdapter adapter;
 
     public GoToPageDialog(final IViewerActivity base) {
         super(base.getContext());
@@ -37,10 +42,14 @@ public class GoToPageDialog extends Dialog {
         final SeekBar seekbar = (SeekBar) findViewById(R.id.seekbar);
         final EditText editText = (EditText) findViewById(R.id.pageNumberTextEdit);
 
+        final View bookmarksHeader = findViewById(R.id.bookmarkHeader);
+        final BookmarkHeaderListener listener = new BookmarkHeaderListener(base);
+        bookmarksHeader.setOnClickListener(listener);
+        bookmarksHeader.setOnLongClickListener(listener);
+
+        adapter = new BookmarkAdapter(base.getDocumentModel().getPageCount());
+
         final ListView bookmarks = (ListView) findViewById(R.id.bookmarks);
-
-        adapter = new BookmarkAdapter();
-
         bookmarks.setAdapter(adapter);
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -50,6 +59,7 @@ public class GoToPageDialog extends Dialog {
                 goToPageAndDismiss();
             }
         });
+
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
             @Override
@@ -93,19 +103,17 @@ public class GoToPageDialog extends Dialog {
         final SeekBar seekbar = (SeekBar) findViewById(R.id.seekbar);
         final EditText editText = (EditText) findViewById(R.id.pageNumberTextEdit);
 
-        seekbar.setMax(base.getDocumentModel().getPageCount() - 1);
-        seekbar.setProgress(base.getDocumentModel().getCurrentViewPageIndex());
-        editText.setText("" + (base.getDocumentModel().getCurrentViewPageIndex() + 1));
+        final DocumentModel dm = base.getDocumentModel();
 
-        if (adapter != null) {
-            adapter.clear();
-            adapter.add(new Bookmark(0, base.getContext().getString(R.string.bookmark_start)));
-            adapter.add(base.getDocumentModel().getBookmarks());
-            adapter.add(new Bookmark(base.getDocumentModel().getPageCount() - 1, base.getContext().getString(R.string.bookmark_end)));
+        seekbar.setMax(dm.getPageCount() - 1);
+        seekbar.setProgress(dm.getCurrentViewPageIndex());
+        editText.setText("" + (dm.getCurrentViewPageIndex() + 1));
 
-            final ListView bookmarks = (ListView) findViewById(R.id.bookmarks);
-            bookmarks.setEnabled(true);
-        }
+        adapter.clear();
+        adapter.add(dm.getBookmarks());
+
+        final ListView bookmarks = (ListView) findViewById(R.id.bookmarks);
+        bookmarks.setEnabled(true);
     }
 
     public void updateControls(final Bookmark bookmark) {
@@ -125,7 +133,8 @@ public class GoToPageDialog extends Dialog {
         }
         final int pageCount = base.getDocumentModel().getPageCount();
         if (pageNumber < 1 || pageNumber > pageCount) {
-            Toast.makeText(getContext(), base.getContext().getString(R.string.bookmark_invalid_page) + pageCount, 2000).show();
+            Toast.makeText(getContext(), base.getContext().getString(R.string.bookmark_invalid_page) + pageCount, 2000)
+                    .show();
             return;
         }
         base.getDocumentController().goToPage(pageNumber - 1);
@@ -133,7 +142,15 @@ public class GoToPageDialog extends Dialog {
 
     private final class BookmarkAdapter extends BaseAdapter {
 
+        private final Bookmark start;
+        private final Bookmark end;
+
         private final List<Bookmark> list = new ArrayList<Bookmark>();
+
+        public BookmarkAdapter(final int pageCount) {
+            start = new Bookmark(0, getContext().getString(R.string.bookmark_start), true);
+            end = new Bookmark(pageCount - 1, getContext().getString(R.string.bookmark_end), true);
+        }
 
         public void add(final Bookmark... bookmarks) {
             for (final Bookmark bookmark : bookmarks) {
@@ -147,6 +164,13 @@ public class GoToPageDialog extends Dialog {
             notifyDataSetChanged();
         }
 
+        public void remove(final Bookmark b) {
+            if (!b.isService()) {
+                list.remove(b);
+                notifyDataSetChanged();
+            }
+        }
+
         public void clear() {
             list.clear();
             notifyDataSetChanged();
@@ -154,12 +178,26 @@ public class GoToPageDialog extends Dialog {
 
         @Override
         public int getCount() {
-            return list.size();
+            return 2 + list.size();
+        }
+
+        public boolean hasUserBookmarks() {
+            return !list.isEmpty();
         }
 
         @Override
         public Object getItem(final int index) {
-            return list.get(index);
+            return getBookmark(index);
+        }
+
+        public Bookmark getBookmark(final int index) {
+            if (index == 0) {
+                return start;
+            }
+            if (index - 1 < list.size()) {
+                return list.get(index - 1);
+            }
+            return end;
         }
 
         @Override
@@ -173,24 +211,117 @@ public class GoToPageDialog extends Dialog {
                 itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.bookmark, parent, false);
             }
 
-            itemView.setOnClickListener(new View.OnClickListener() {
+            final Bookmark b = getBookmark(index);
+            final BookmarkListener listener = new BookmarkListener(b);
+            itemView.setOnClickListener(listener);
+            itemView.setOnLongClickListener(listener);
 
-                @Override
-                public void onClick(final View v) {
-                    final Bookmark bookmark = list.get(index);
-                    updateControls(bookmark);
-                }
-            });
-
-            final Bookmark b = list.get(index);
             final TextView text = (TextView) itemView.findViewById(R.id.bookmarkName);
-            text.setText(b.toString());
+            text.setText(b.getName());
 
             final ProgressBar bar = (ProgressBar) itemView.findViewById(R.id.bookmarkPage);
             bar.setMax(base.getDocumentModel().getPageCount() - 1);
             bar.setProgress(b.getPage());
 
             return itemView;
+        }
+    }
+
+    private final class BookmarkListener implements View.OnClickListener, View.OnLongClickListener {
+
+        private final Bookmark bookmark;
+
+        private BookmarkListener(final Bookmark bookmark) {
+            this.bookmark = bookmark;
+        }
+
+        @Override
+        public void onClick(final View v) {
+            updateControls(bookmark);
+        }
+
+        @Override
+        public boolean onLongClick(final View v) {
+            if (bookmark.isService()) {
+                return false;
+            }
+            final Context context = getContext();
+
+            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle(R.string.del_bookmark_title).setMessage(R.string.del_bookmark_text)
+                    .setPositiveButton(R.string.password_ok, new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(final DialogInterface dialog, final int whichButton) {
+                            base.getDocumentModel().removeBookmark(bookmark);
+                            adapter.remove(bookmark);
+                        }
+                    }).setNegativeButton(R.string.password_cancel, new EmptyDialogButtonListener()).show();
+
+            return false;
+        }
+
+    }
+
+    private final class BookmarkHeaderListener implements View.OnClickListener, View.OnLongClickListener {
+
+        private final IViewerActivity m_base;
+
+        private BookmarkHeaderListener(final IViewerActivity base) {
+            m_base = base;
+        }
+
+        @Override
+        public void onClick(final View v) {
+            final Context context = getContext();
+
+            final SeekBar seekbar = (SeekBar) findViewById(R.id.seekbar);
+            final int page = seekbar.getProgress();
+
+            final EditText input = new EditText(context);
+            input.setText(context.getString(R.string.text_page) + " " + (page + 1));
+
+            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle(R.string.menu_add_bookmark).setMessage(R.string.add_bookmark_name).setView(input)
+                    .setPositiveButton(R.string.password_ok, new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(final DialogInterface dialog, final int whichButton) {
+                            final Editable value = input.getText();
+                            adapter.add(m_base.getDocumentModel().addBookmark(page, value.toString()));
+                            adapter.notifyDataSetChanged();
+                        }
+                    }).setNegativeButton(R.string.password_cancel, new EmptyDialogButtonListener()).show();
+        }
+
+        @Override
+        public boolean onLongClick(final View v) {
+            if (!adapter.hasUserBookmarks()) {
+                return false;
+            }
+
+            final Context context = getContext();
+
+            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle(R.string.clear_bookmarks_title).setMessage(R.string.clear_bookmarks_text)
+                    .setPositiveButton(R.string.password_ok, new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(final DialogInterface dialog, final int whichButton) {
+                            base.getDocumentModel().clearBookmarks();
+                            adapter.clear();
+                        }
+                    }).setNegativeButton(R.string.password_cancel, new EmptyDialogButtonListener()).show();
+
+            return false;
+        }
+
+    }
+
+    private final class EmptyDialogButtonListener implements DialogInterface.OnClickListener {
+
+        @Override
+        public void onClick(final DialogInterface dialog, final int whichButton) {
         }
     }
 

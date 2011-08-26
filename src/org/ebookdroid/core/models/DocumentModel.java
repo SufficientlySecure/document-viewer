@@ -10,7 +10,6 @@ import org.ebookdroid.core.settings.BookSettings;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.utils.LengthUtils;
 
-import android.provider.Browser.BookmarkColumns;
 import android.view.View;
 
 import java.io.DataInputStream;
@@ -34,8 +33,8 @@ public class DocumentModel extends CurrentPageModel {
     private DecodeService decodeService;
 
     private Page[] pages = EMPTY_PAGES;
-    
-    private List<Bookmark> bookmarks = new ArrayList<Bookmark>();
+
+    private final List<Bookmark> bookmarks = new ArrayList<Bookmark>();
 
     public DocumentModel(final DecodeService decodeService) {
         this.decodeService = decodeService;
@@ -79,7 +78,7 @@ public class DocumentModel extends CurrentPageModel {
 
     /**
      * Gets the current page object.
-     *
+     * 
      * @return the current page object
      */
     public Page getCurrentPageObject() {
@@ -88,7 +87,7 @@ public class DocumentModel extends CurrentPageModel {
 
     /**
      * Gets the next page object.
-     *
+     * 
      * @return the next page object
      */
     public Page getNextPageObject() {
@@ -97,7 +96,7 @@ public class DocumentModel extends CurrentPageModel {
 
     /**
      * Gets the prev page object.
-     *
+     * 
      * @return the prev page object
      */
     public Page getPrevPageObject() {
@@ -106,7 +105,7 @@ public class DocumentModel extends CurrentPageModel {
 
     /**
      * Gets the last page object.
-     *
+     * 
      * @return the last page object
      */
     public Page getLastPageObject() {
@@ -297,11 +296,21 @@ public class DocumentModel extends CurrentPageModel {
         }
     }
 
-    public void addBookmark(int page, String name) {
-        bookmarks.add(new Bookmark(page, name));
+    public Bookmark addBookmark(final int page, final String name) {
+        final Bookmark bookmark = new Bookmark(page, name);
+        bookmarks.add(bookmark);
+        return bookmark;
     }
 
     public List<Bookmark> getBookmarks() {
         return bookmarks;
+    }
+
+    public void clearBookmarks() {
+        bookmarks.clear();
+    }
+
+    public void removeBookmark(final Bookmark bookmark) {
+        bookmarks.remove(bookmark);
     }
 }

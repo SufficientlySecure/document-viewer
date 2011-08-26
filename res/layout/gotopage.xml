@@ -46,16 +46,16 @@
 		android:layout_marginRight="4dip"
 		android:layout_marginTop="2dip"
 		android:layout_marginBottom="2dip" />
-	<TextView
+	<Button
 		android:layout_gravity="center"
-		android:layout_width="wrap_content"
+		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:singleLine="true"
 		android:id="@+id/bookmarkHeader"
 		android:gravity="center_vertical"
 		android:text="@string/bookmarks_title"
-		android:layout_marginLeft="4dip"
-		android:layout_marginRight="4dip"
+		android:layout_marginLeft="2dip"
+		android:layout_marginRight="2dip"
 		android:layout_marginTop="2dip"
 		android:layout_marginBottom="4dip" />
 	<ListView

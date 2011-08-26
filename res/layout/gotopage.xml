@@ -53,7 +53,7 @@
 		android:singleLine="true"
 		android:id="@+id/bookmarkHeader"
 		android:gravity="center_vertical"
-		android:text="Bookmarks"
+		android:text="@string/bookmarks_title"
 		android:layout_marginLeft="4dip"
 		android:layout_marginRight="4dip"
 		android:layout_marginTop="2dip"

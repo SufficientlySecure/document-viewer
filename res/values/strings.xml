@@ -97,4 +97,8 @@
 	<string name="pref_loadrecent_title">"Load recent"</string>
 	<string name="pref_loadrecent_summary">"Auto loading last opened book on app start"</string>
 	<string name="add_bookmark_name">"Enter bookmark description"</string>
+	<string name="bookmark_start">Start</string>
+	<string name="bookmark_end">End</string>
+	<string name="bookmark_invalid_page">"Page number out of range. Valid range: 1-"</string>
+	<string name="bookmarks_title">"Bookmarks"</string>
 </resources>

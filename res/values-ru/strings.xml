@@ -99,4 +99,8 @@
 	<string name="pref_loadrecent_title">"Открывать последнее"</string>
 	<string name="pref_loadrecent_summary">"На старте автоматически открывать последнюю книгу"</string>
 	<string name="add_bookmark_name">"Введите описание закладки"</string>
+	<string name="bookmark_start">Начало</string>
+	<string name="bookmark_end">Конец</string>
+	<string name="bookmark_invalid_page">"Ошибочный номер страницы. Доступные страницы: 1-"</string>
+	<string name="bookmarks_title">"Закладки"</string>
 </resources>

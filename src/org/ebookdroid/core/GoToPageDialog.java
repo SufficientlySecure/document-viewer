@@ -99,9 +99,9 @@ public class GoToPageDialog extends Dialog {
 
         if (adapter != null) {
             adapter.clear();
-            adapter.add(new Bookmark(0, "Beginning"));
+            adapter.add(new Bookmark(0, base.getContext().getString(R.string.bookmark_start)));
             adapter.add(base.getDocumentModel().getBookmarks());
-            adapter.add(new Bookmark(base.getDocumentModel().getPageCount() - 1, "End"));
+            adapter.add(new Bookmark(base.getDocumentModel().getPageCount() - 1, base.getContext().getString(R.string.bookmark_end)));
 
             final ListView bookmarks = (ListView) findViewById(R.id.bookmarks);
             bookmarks.setEnabled(true);
@@ -125,7 +125,7 @@ public class GoToPageDialog extends Dialog {
         }
         final int pageCount = base.getDocumentModel().getPageCount();
         if (pageNumber < 1 || pageNumber > pageCount) {
-            Toast.makeText(getContext(), "Page number out of range. Valid range: 1-" + pageCount, 2000).show();
+            Toast.makeText(getContext(), base.getContext().getString(R.string.bookmark_invalid_page) + pageCount, 2000).show();
             return;
         }
         base.getDocumentController().goToPage(pageNumber - 1);

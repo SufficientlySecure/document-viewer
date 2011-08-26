@@ -36,7 +36,7 @@ public class BaseSettingsActivity extends PreferenceActivity {
             @Override
             public boolean onPreferenceChange(final Preference preference, final Object newValue) {
                 setPreferenceSummary(textPrefs, summary, (String) newValue);
-                return false;
+                return true;
             }
         });
     }
@@ -51,7 +51,7 @@ public class BaseSettingsActivity extends PreferenceActivity {
             @Override
             public boolean onPreferenceChange(final Preference preference, final Object newValue) {
                 setListPreferenceSummary(listPrefs, summary, (String) newValue);
-                return false;
+                return true;
             }
         });
     }

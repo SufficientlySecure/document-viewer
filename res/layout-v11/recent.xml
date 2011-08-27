@@ -15,6 +15,9 @@
 		<View style="@style/action_bar_separator" />
 
 		<TextView style="@style/action_bar_title" />
+		<ProgressBar style="@style/action_bar_progress"
+		    android:id="@+id/recentprogress"
+		    android:visibility="gone" />
 
 		<View style="@style/action_bar_separator" />
 

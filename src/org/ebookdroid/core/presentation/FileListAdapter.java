@@ -6,7 +6,6 @@ import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.utils.FileUtils;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,14 +24,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class FileListAdapter extends BaseExpandableListAdapter {
 
     final IBrowserActivity base;
-    final Context context;
     final AtomicBoolean inScan = new AtomicBoolean();
 
     private class Node {
 
-        private String name;
-        private String path;
-        private String[] list;
+        private final String name;
+        private final String path;
+        private final String[] list;
 
         Node(String name, String path, String[] list) {
             this.name = name;
@@ -65,7 +63,6 @@ public class FileListAdapter extends BaseExpandableListAdapter {
 
     public FileListAdapter(final IBrowserActivity base) {
         this.base = base;
-        this.context = base.getContext();
     }
 
     @Override

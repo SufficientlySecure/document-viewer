@@ -22,9 +22,6 @@ public class RecentAdapter extends BaseAdapter {
 
     private List<BookSettings> books = Collections.emptyList();
 
-    public RecentAdapter() {
-    }
-
     @Override
     public int getCount() {
         return books.size();

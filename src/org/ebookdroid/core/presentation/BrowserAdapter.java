@@ -57,27 +57,21 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
         final File file = getItem(i);
 
         final TextView textView = (TextView) view.findViewById(R.id.browserItemText);
-        textView.setText(file.getName());
-
         final ImageView imageView = (ImageView) view.findViewById(R.id.browserItemIcon);
+        final TextView info = (TextView) view.findViewById(R.id.browserItemInfo);
+        final TextView fileSize = (TextView) view.findViewById(R.id.browserItemfileSize);
+        
+        textView.setText(file.getName());
 
         if (file.isDirectory()) {
             boolean watched = SettingsManager.getAppSettings().getAutoScanDirs().contains(file.getPath());
             imageView.setImageResource(watched ? R.drawable.folderwatched : R.drawable.folderopen);
-
-            final TextView info = (TextView) view.findViewById(R.id.browserItemInfo);
             //info.setText("Folders: " + folders + " Books: " + books);
-            info.setText("");
-            final TextView fileSize = (TextView) view.findViewById(R.id.browserItemfileSize);
+            info.setText("");            
             fileSize.setText("");
         } else {
-            //final boolean wasRead = SettingsManager.getBookSettings(file.getAbsolutePath()) != null;
-            //imageView.setImageResource(wasRead ? R.drawable.bookwatched : R.drawable.book);
             imageView.setImageResource(R.drawable.book);
-            final TextView info = (TextView) view.findViewById(R.id.browserItemInfo);
             info.setText(FileUtils.getFileDate(file.lastModified()));
-
-            final TextView fileSize = (TextView) view.findViewById(R.id.browserItemfileSize);
             fileSize.setText(FileUtils.getFileSize(file.length()));
         }
         return view;

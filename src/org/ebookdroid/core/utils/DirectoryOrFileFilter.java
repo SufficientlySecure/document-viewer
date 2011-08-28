@@ -13,6 +13,8 @@ public class DirectoryOrFileFilter implements FileFilter {
 
     @Override
     public boolean accept(File file) {
-        return file.isDirectory() || fileFilter.accept(file);
+//TODO: Make show hidden files configurable.
+        return (file.isDirectory() && !file.getName().startsWith(".")) || fileFilter.accept(file);
+                
     }
 }

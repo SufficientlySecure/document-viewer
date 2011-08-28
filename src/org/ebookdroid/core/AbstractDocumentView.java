@@ -36,7 +36,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     private long lastDownEventTime;
     private static final int DOUBLE_TAP_TIME = 500;
     private PageAlign align;
-    private boolean touchInTapZone = false;
+    private Boolean touchInTapZone = null;
 
     private DrawThread drawThread;
 
@@ -348,13 +348,15 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
                 velocityTracker.recycle();
                 velocityTracker = null;
 
-                if (inTap && touchInTapZone) {
+                if (inTap && (touchInTapZone == null || touchInTapZone.booleanValue())) {
                     if (ev.getY() / getHeight() < ts) {
                         verticalConfigScroll(-1);
                     } else if (ev.getY() / getHeight() > (1 - ts)) {
                         verticalConfigScroll(1);
                     }
                 }
+
+                touchInTapZone = null;
                 break;
         }
         return true;

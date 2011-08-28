@@ -104,6 +104,16 @@
 			android:title="@string/pref_slicelimit_title"
 			android:summary="@string/pref_slicelimit_summary"
 			android:defaultValue="true" />
+
+		<EditTextPreference
+			android:key="maximagesize"
+			android:title="@string/pref_maximagesize_title"
+			android:summary="@string/pref_maximagesize_summary"
+			android:maxLength="5"
+			android:defaultValue="256"
+			android:dependency="slicelimit" />
+		android:numeric="integer" />
+
 	</PreferenceScreen>
 
 

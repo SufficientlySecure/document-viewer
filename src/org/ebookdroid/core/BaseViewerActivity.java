@@ -137,7 +137,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         progressModel = new DecodingProgressModel();
         progressModel.addEventListener(this);
 
-        SettingsManager.applyBookSettingsChanges(null, SettingsManager.getBookSettings());
+        SettingsManager.applyBookSettingsChanges(null, SettingsManager.getBookSettings(), null);
 
         setContentView(frameLayout);
         setProgressBarIndeterminateVisibility(false);
@@ -405,7 +405,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
                 return true;
             case R.id.mainmenu_nightmode:
                 SettingsManager.getAppSettings().switchNightMode();
-                ((AbstractDocumentView) getView()).redrawView();
+                getDocumentController().redrawView();
                 return true;
             case R.id.mainmenu_bookmark:
                 addBookmark();
@@ -560,17 +560,21 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
                 dc.getView().setKeepScreenOn(newSettings.isKeepScreenOn());
             }
         }
+
     }
 
     @Override
     public void onBookSettingsChanged(final BookSettings oldSettings, final BookSettings newSettings,
-            final org.ebookdroid.core.settings.BookSettings.Diff diff) {
+            final BookSettings.Diff diff, final AppSettings.Diff appDiff) {
 
+        boolean redrawn = false;
         if (diff.isSinglePageChanged() || diff.isSplitPagesChanged()) {
+            redrawn = true;
             createDocumentView();
         }
 
         if (diff.isZoomChanged() && diff.isFirstTime()) {
+            redrawn = true;
             getZoomModel().setZoom(newSettings.getZoom());
         }
 
@@ -585,6 +589,11 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
                 dc.updateAnimationType();
             }
 
+            if (!redrawn && appDiff != null) {
+                if (appDiff.isMaxImageSizeChanged() || appDiff.isPagesInMemoryChanged() || appDiff.isLowMemoryChanged()) {
+                    dc.updateMemorySettings();
+                }
+            }
         }
 
         final DocumentModel dm = getDocumentModel();

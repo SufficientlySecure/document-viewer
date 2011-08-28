@@ -31,8 +31,11 @@ public class SettingsActivity extends BaseSettingsActivity {
             addPreferencesFromResource(R.xml.preferences);
         }
 
-        decoratePreferences("brightness", "tapsize", "scrollheight", "pagesinmemory", "brautoscandir");
-        decoratePreferences("rotation", "align", "animationType");
+        decoratePreferences("rotation", "brightness");
+        decoratePreferences("tapsize", "scrollheight");
+        decoratePreferences("pagesinmemory", "maximagesize");
+        decoratePreferences("brautoscandir");
+        decoratePreferences("align", "animationType");
         decoratePreferences("book_align", "book_animationType");
 
         if (SettingsManager.getBookSettings() == null) {

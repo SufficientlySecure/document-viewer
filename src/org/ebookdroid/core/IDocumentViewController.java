@@ -36,6 +36,8 @@ public interface IDocumentViewController extends Comparator<PageTreeNode>{
 
     void updateAnimationType();
 
+    void updateMemorySettings();
+
     public static enum InvalidateSizeReason {
         INIT, LAYOUT, PAGE_ALIGN, ZOOM, PAGE_LOADED;
     }

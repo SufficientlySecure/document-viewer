@@ -23,7 +23,7 @@ public class Page {
     float aspectRatio;
     final PageType pageType;
     boolean recycled;
-    boolean sliceLimit;
+    boolean lowMemory;
     private float storedZoom;
     private RectF zoomedBounds;
 
@@ -31,10 +31,11 @@ public class Page {
         this.base = base;
         this.index = index;
         this.pageType = pt != null ? pt : PageType.FULL_PAGE;
+        this.bounds = new RectF(0, 0, cpi.getWidth(), cpi.getHeight());
 
         setAspectRatio(cpi.getWidth(), cpi.getHeight());
 
-        sliceLimit = SettingsManager.getAppSettings().getSliceLimit();
+        lowMemory = SettingsManager.getAppSettings().getLowMemory();
         nodes = new PageTree(this);
     }
 

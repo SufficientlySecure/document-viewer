@@ -57,6 +57,8 @@ public class AppSettings {
 
     private Boolean loadRecent;
 
+    private Integer maxImageSize;
+
     AppSettings(final Context context) {
         this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
@@ -201,11 +203,19 @@ public class AppSettings {
         return pagesInMemory.intValue();
     }
 
-    public Boolean getSliceLimit() {
+    public Boolean getLowMemory() {
         if (sliceLimit == null) {
             sliceLimit = prefs.getBoolean("slicelimit", true);
         }
         return sliceLimit;
+    }
+
+    public int getMaxImageSize() {
+        if (maxImageSize == null) {
+            int value = Math.max(64, getIntValue("maximagesize", 256));
+            maxImageSize = value * 1024;
+        }
+        return maxImageSize;
     }
 
     boolean getSplitPages() {
@@ -297,11 +307,12 @@ public class AppSettings {
         private static final short D_TapSize = 0x0001 << 6;
         private static final short D_ScrollHeight = 0x0001 << 7;
         private static final short D_PagesInMemory = 0x0001 << 8;
-        private static final short D_SliceLimit = 0x0001 << 9;
+        private static final short D_LowMemory = 0x0001 << 9;
         private static final short D_Brightness = 0x0001 << 10;
         private static final short D_BrightnessInNightMode = 0x0001 << 11;
         private static final short D_KeepScreenOn = 0x0001 << 12;
         private static final short D_LoadRecent = 0x0001 << 13;
+        private static final short D_MaxImageSize = 0x0001 << 14;
 
         private short mask;
         private final boolean firstTime;
@@ -336,8 +347,8 @@ public class AppSettings {
                 if (firstTime || olds.getPagesInMemory() != news.getPagesInMemory()) {
                     mask |= D_PagesInMemory;
                 }
-                if (firstTime || olds.getSliceLimit() != news.getSliceLimit()) {
-                    mask |= D_SliceLimit;
+                if (firstTime || olds.getLowMemory() != news.getLowMemory()) {
+                    mask |= D_LowMemory;
                 }
                 if (firstTime || olds.getBrightness() != news.getBrightness()) {
                     mask |= D_Brightness;
@@ -350,6 +361,9 @@ public class AppSettings {
                 }
                 if (firstTime || olds.isLoadRecentBook() != news.isLoadRecentBook()) {
                     mask |= D_LoadRecent;
+                }
+                if (firstTime || olds.getMaxImageSize() != news.getMaxImageSize()) {
+                    mask |= D_MaxImageSize;
                 }
             }
         }
@@ -394,8 +408,8 @@ public class AppSettings {
             return 0 != (mask & D_PagesInMemory);
         }
 
-        public boolean isSliceLimitChanged() {
-            return 0 != (mask & D_SliceLimit);
+        public boolean isLowMemoryChanged() {
+            return 0 != (mask & D_LowMemory);
         }
 
         public boolean isBrightnessChanged() {
@@ -412,6 +426,10 @@ public class AppSettings {
 
         public boolean isLoadRecentChanged() {
             return 0 != (mask & D_LoadRecent);
+        }
+
+        public boolean isMaxImageSizeChanged() {
+            return 0 != (mask & D_MaxImageSize);
         }
     }
 

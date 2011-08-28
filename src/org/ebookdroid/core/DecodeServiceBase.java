@@ -7,9 +7,9 @@ import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.log.LogContext;
 
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.RectF;
 
-import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -93,7 +93,7 @@ public class DecodeServiceBase implements DecodeService {
         executor.stopDecoding(null, node, reason);
     }
 
-    private void performDecode(final DecodeTask task) throws IOException {
+    void performDecode(final DecodeTask task) {
         if (executor.isTaskDead(task)) {
             if (LCTX.isDebugEnabled()) {
                 LCTX.d("Task " + task.id + ": Skipping dead decode task for " + task.node);
@@ -105,65 +105,72 @@ public class DecodeServiceBase implements DecodeService {
             LCTX.d("Task " + task.id + ": Starting decoding for " + task.node);
         }
 
-        final CodecPage vuPage = getPage(task.pageNumber);
+        CodecPage vuPage = null;
+        try {
+            vuPage = getPage(task.pageNumber);
 
-        if (executor.isTaskDead(task)) {
-            if (LCTX.isDebugEnabled()) {
-                LCTX.d("Task " + task.id + ": Abort dead decode task for " + task.node);
+            if (executor.isTaskDead(task)) {
+                if (LCTX.isDebugEnabled()) {
+                    LCTX.d("Task " + task.id + ": Abort dead decode task for " + task.node);
+                }
+                return;
             }
-            return;
-        }
 
-//        if (LCTX.isDebugEnabled()) {
-//            LCTX.d("Task " + task.id + ": Start converting map to bitmap for " + task.node);
-//        }
-        final float scale = calculateScale(vuPage, task.targetWidth) * task.zoom;
-        final Bitmap bitmap = vuPage.renderBitmap(getScaledWidth(task, vuPage, scale),
-                getScaledHeight(task, vuPage, scale), task.pageSliceBounds);
-//        if (LCTX.isDebugEnabled()) {
-//            LCTX.d("Task " + task.id + ": Converting map to bitmap finished for " + task.node);
-//        }
+            final Rect r = getScaledSize(task, vuPage);
+            final Bitmap bitmap = vuPage.renderBitmap(r.width(), r.height(), task.pageSliceBounds);
 
-        if (executor.isTaskDead(task)) {
-            if (LCTX.isDebugEnabled()) {
-                LCTX.d("Task " + task.id + ": Abort dead decode task for " + task.node);
+            if (executor.isTaskDead(task)) {
+                if (LCTX.isDebugEnabled()) {
+                    LCTX.d("Task " + task.id + ": Abort dead decode task for " + task.node);
+                }
+                bitmap.recycle();
+                return;
             }
-            bitmap.recycle();
-            return;
+
+            finishDecoding(task, vuPage, bitmap);
+        } catch (OutOfMemoryError ex) {
+            LCTX.e("Task " + task.id + ": No memory to decode " + task.node);
+            for(int i=0; i < PAGE_POOL_SIZE; i++) {
+                pages.put(Integer.MAX_VALUE - i, null);
+            }
+            vuPage.recycle();
+            abortDecoding(task, null, null);
+        } catch (Throwable th) {
+            LCTX.e("Task " + task.id + ": Decoding failed for " + task.node + ": " + th.getMessage(), th);
+            abortDecoding(task, vuPage, null);
         }
-
-//        if (LCTX.isDebugEnabled()) {
-//            LCTX.d("Task " + task.id + ": Finish decoding task for " + task.node);
-//        }
-        finishDecoding(task, vuPage, bitmap);
     }
 
-    private int getScaledHeight(final DecodeTask currentDecodeTask, final CodecPage vuPage, final float scale) {
-        return Math.round(getScaledHeight(vuPage, scale) * currentDecodeTask.pageSliceBounds.height());
+    Rect getScaledSize(final DecodeTask task, final CodecPage vuPage) {
+        final int viewWidth = task.targetWidth;
+        final int pageWidth = vuPage.getWidth();
+        final int pageHeight = vuPage.getHeight();
+        final RectF nodeBounds = task.pageSliceBounds;
+        final float zoom = task.zoom;
+
+        return getScaledSize(viewWidth, pageWidth, pageHeight, nodeBounds, zoom);
     }
 
-    private int getScaledWidth(final DecodeTask currentDecodeTask, final CodecPage vuPage, final float scale) {
-        return Math.round(getScaledWidth(vuPage, scale) * currentDecodeTask.pageSliceBounds.width());
+    @Override
+    public Rect getScaledSize(final float viewWidth, final float pageWidth, final float pageHeight,
+            final RectF nodeBounds, final float zoom) {
+        final float scale = 1.0f * viewWidth / pageWidth * zoom;
+        final int scaledWidth = Math.round((scale * pageWidth) * nodeBounds.width());
+        final int scaledHeight = Math.round((scale * pageHeight) * nodeBounds.height());
+        return new Rect(0, 0, scaledWidth, scaledHeight);
     }
 
-    private float getScaledHeight(final CodecPage vuPage, final float scale) {
-        return (scale * vuPage.getHeight());
-    }
-
-    private float getScaledWidth(final CodecPage vuPage, final float scale) {
-        return (scale * vuPage.getWidth());
-    }
-
-    private float calculateScale(final CodecPage codecPage, final int targetWidth) {
-        return 1.0f * targetWidth / codecPage.getWidth();
-    }
-
-    private void finishDecoding(final DecodeTask currentDecodeTask, final CodecPage page, final Bitmap bitmap) {
+    void finishDecoding(final DecodeTask currentDecodeTask, final CodecPage page, final Bitmap bitmap) {
         stopDecoding(currentDecodeTask.node, "complete");
         updateImage(currentDecodeTask, page, bitmap);
     }
 
-    private CodecPage getPage(final int pageIndex) {
+    void abortDecoding(final DecodeTask currentDecodeTask, final CodecPage page, final Bitmap bitmap) {
+        stopDecoding(currentDecodeTask.node, "failed");
+        updateImage(currentDecodeTask, page, bitmap);
+    }
+
+    CodecPage getPage(final int pageIndex) {
         final SoftReference<CodecPage> ref = pages.get(pageIndex);
         CodecPage page = ref != null ? ref.get() : null;
         if (page == null) {
@@ -176,7 +183,7 @@ public class DecodeServiceBase implements DecodeService {
         return page;
     }
 
-    private void updateImage(final DecodeTask currentDecodeTask, final CodecPage page, final Bitmap bitmap) {
+    void updateImage(final DecodeTask currentDecodeTask, final CodecPage page, final Bitmap bitmap) {
         currentDecodeTask.decodeCallback.decodeComplete(page, bitmap);
     }
 
@@ -197,7 +204,7 @@ public class DecodeServiceBase implements DecodeService {
         }
     }
 
-    private class Executor implements RejectedExecutionHandler, Comparator<Runnable> {
+    class Executor implements RejectedExecutionHandler, Comparator<Runnable> {
 
         final Map<PageTreeNode, DecodeTask> decodingTasks = new IdentityHashMap<PageTreeNode, DecodeTask>();
         final Map<Long, Future<?>> decodingFutures = new HashMap<Long, Future<?>>();
@@ -207,8 +214,8 @@ public class DecodeServiceBase implements DecodeService {
 
         final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
-        public Executor() {
-            queue = /*new LinkedBlockingQueue<Runnable>()*/ new PriorityBlockingQueue<Runnable>(16, this);
+        Executor() {
+            queue = new PriorityBlockingQueue<Runnable>(16, this);
             executorService = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, queue);
             executorService.setRejectedExecutionHandler(this);
         }
@@ -229,7 +236,7 @@ public class DecodeServiceBase implements DecodeService {
                     return;
                 } else if (running != null) {
                     if (LCTX.isDebugEnabled()) {
-                        LCTX.d("The another task is running: " + running.id+ " for " + task.node);
+                        LCTX.d("The another task is running: " + running.id + " for " + task.node);
                     }
                 }
 
@@ -246,10 +253,9 @@ public class DecodeServiceBase implements DecodeService {
         }
 
         @Override
-        public int compare(Runnable r1, Runnable r2)
-        {
-            boolean isTask1 = r1 instanceof DecodeTask;
-            boolean isTask2 = r2 instanceof DecodeTask;
+        public int compare(final Runnable r1, final Runnable r2) {
+            final boolean isTask1 = r1 instanceof DecodeTask;
+            final boolean isTask2 = r2 instanceof DecodeTask;
 
             if (isTask1 != isTask2) {
                 return isTask1 ? -1 : 1;
@@ -259,8 +265,8 @@ public class DecodeServiceBase implements DecodeService {
                 return 0;
             }
 
-            DecodeTask t1 = (DecodeTask) r1;
-            DecodeTask t2 = (DecodeTask) r2;
+            final DecodeTask t1 = (DecodeTask) r1;
+            final DecodeTask t2 = (DecodeTask) r2;
 
             return t1.node.getBase().getDocumentController().compare(t1.node, t2.node);
         }
@@ -273,7 +279,8 @@ public class DecodeServiceBase implements DecodeService {
 
                 if (removed != null) {
                     if (LCTX.isDebugEnabled()) {
-                        LCTX.d("Task " + removed.id + ": Stop decoding task with reason: " + reason + " for " + removed.node);
+                        LCTX.d("Task " + removed.id + ": Stop decoding task with reason: " + reason + " for "
+                                + removed.node);
                     }
                 }
                 if (future != null) {
@@ -338,7 +345,7 @@ public class DecodeServiceBase implements DecodeService {
         }
     }
 
-    private class DecodeTask implements Runnable {
+    class DecodeTask implements Runnable {
 
         final long id = TASK_ID_SEQ.incrementAndGet();
         final PageTreeNode node;
@@ -348,8 +355,7 @@ public class DecodeServiceBase implements DecodeService {
         final RectF pageSliceBounds;
         final int targetWidth;
 
-        private DecodeTask(final DecodeCallback decodeCallback, final int targetWidth, final float zoom,
-                final PageTreeNode node) {
+        DecodeTask(final DecodeCallback decodeCallback, final int targetWidth, final float zoom, final PageTreeNode node) {
             this.pageNumber = node.getDocumentPageIndex();
             this.decodeCallback = decodeCallback;
             this.zoom = zoom;
@@ -360,12 +366,8 @@ public class DecodeServiceBase implements DecodeService {
 
         @Override
         public void run() {
-            try {
-                Thread.currentThread().setPriority(Thread.NORM_PRIORITY - 1);
-                performDecode(this);
-            } catch (final IOException e) {
-                LCTX.e("Decode fail", e);
-            }
+            Thread.currentThread().setPriority(Thread.NORM_PRIORITY - 1);
+            performDecode(this);
         }
 
         @Override

@@ -4,6 +4,8 @@ import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
 
 import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.graphics.RectF;
 
 import java.util.List;
 
@@ -23,7 +25,9 @@ public interface DecodeService {
 
     void recycle();
 
-    public interface DecodeCallback {
+    Rect getScaledSize(float viewWidth, float pageWidth, float pageHeight, RectF nodeBounds, float zoom);
+
+    interface DecodeCallback {
 
         void decodeComplete(CodecPage page, Bitmap bitmap);
     }

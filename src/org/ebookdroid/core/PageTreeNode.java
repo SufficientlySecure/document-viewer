@@ -12,6 +12,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 import java.lang.ref.SoftReference;
@@ -21,8 +22,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class PageTreeNode implements DecodeService.DecodeCallback {
 
     private static final LogContext LCTX = LogContext.ROOT.lctx("Imaging");
-
-    private static final int SLICE_SIZE = 131070;
 
     final Page page;
     final PageTreeNode parent;
@@ -58,49 +57,67 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             return false;
         }
 
+        final boolean childrenRequired = isChildrenRequired(newZoom, viewRect);
+
         PageTreeNode[] children = page.nodes.getChildren(this);
 
-        if (LengthUtils.isNotEmpty(children)) {
-            if (newZoom < oldZoom && !isChildrenRequired(newZoom, viewRect)) {
+        if (newZoom < oldZoom) {
+            if (LengthUtils.isNotEmpty(children) && !childrenRequired) {
                 hasChildren = page.nodes.recycleChildren(this);
-                if (getBitmap() == null) {
+                if (isVisible(viewRect, pageBounds) && getBitmap() == null) {
                     decodePageTreeNode(nodesToDecode);
-                }
-            } else {
-                for (final PageTreeNode child : children) {
-                    child.onZoomChanged(oldZoom, newZoom, viewRect, pageBounds, nodesToDecode);
                 }
             }
             return true;
         }
 
-        if (newZoom > oldZoom && isChildrenRequired(newZoom, viewRect)) {
-            hasChildren = true;
-            stopDecodingThisNode("children created");
-            children = page.nodes.createChildren(this, childrenZoomThreshold * childrenZoomThreshold);
+        if (childrenRequired) {
+            if (LengthUtils.isEmpty(children)) {
+                hasChildren = true;
+                stopDecodingThisNode("children created");
+                children = page.nodes.createChildren(this, childrenZoomThreshold * childrenZoomThreshold);
+            }
+
             for (final PageTreeNode child : children) {
                 child.onZoomChanged(oldZoom, newZoom, viewRect, pageBounds, nodesToDecode);
             }
+
             return true;
         }
 
         if (getBitmap() == null) {
             decodePageTreeNode(nodesToDecode);
         } else if (!isVisible(viewRect, pageBounds)) {
-            // holder.clearDirectRef();
+            if (page.lowMemory) {
+                holder.clearDirectRef();
+            }
         }
         return true;
     }
 
     public boolean onPositionChanged(final RectF viewRect, final RectF pageBounds,
             final List<PageTreeNode> nodesToDecode) {
-        if (!isKeptInMemory(page.base.getZoomModel().getZoom(), viewRect, pageBounds)) {
+        final float zoom = page.base.getZoomModel().getZoom();
+
+        if (!isKeptInMemory(zoom, viewRect, pageBounds)) {
             recycle();
             return false;
         }
 
-        final PageTreeNode[] children = page.nodes.getChildren(this);
+        final boolean childrenRequired = isChildrenRequired(zoom, viewRect);
+        PageTreeNode[] children = page.nodes.getChildren(this);
+
         if (LengthUtils.isNotEmpty(children)) {
+            for (final PageTreeNode child : children) {
+                child.onPositionChanged(viewRect, pageBounds, nodesToDecode);
+            }
+            return true;
+        }
+
+        if (childrenRequired) {
+            hasChildren = true;
+            stopDecodingThisNode("children created");
+            children = page.nodes.createChildren(this, childrenZoomThreshold * childrenZoomThreshold);
             for (final PageTreeNode child : children) {
                 child.onPositionChanged(viewRect, pageBounds, nodesToDecode);
             }
@@ -110,20 +127,30 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         if (getBitmap() == null) {
             decodePageTreeNode(nodesToDecode);
         } else if (!isVisible(viewRect, pageBounds)) {
-            // holder.clearDirectRef();
+            if (page.lowMemory) {
+                holder.clearDirectRef();
+            }
         }
         return true;
     }
 
     protected void onChildLoaded(final PageTreeNode child, final RectF viewRect, final RectF bounds) {
-        if (page.nodes.isHiddenByChildren(this, viewRect, bounds)) {
-            // holder.clearDirectRef();
+        if (page.lowMemory) {
+            if (page.nodes.isHiddenByChildren(this, viewRect, bounds)) {
+                holder.clearDirectRef();
+            }
         }
     }
 
     protected boolean isKeptInMemory(final float zoom, final RectF viewRect, final RectF pageBounds) {
-        return zoom < 2 ? page.isKeptInMemory() : page.isKeptInMemory() && page.isVisible();
-        // return page.isKeptInMemory();
+        if (zoom < 2) {
+            return page.isKeptInMemory();
+        }
+        if (zoom < 4) {
+            return page.isKeptInMemory() && page.isVisible();
+        }
+
+        return this.isVisible(viewRect, pageBounds);
     }
 
     protected boolean isVisible(final RectF viewRect, final RectF pageBounds) {
@@ -132,13 +159,14 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     protected boolean isChildrenRequired(final float zoom, final RectF viewRect) {
-        if (page.sliceLimit) {
-            final int mainWidth = (int) viewRect.width();
-            final float height = zoom * mainWidth / page.getAspectRatio();
-            return (mainWidth * zoom * height) / (childrenZoomThreshold * childrenZoomThreshold) > SLICE_SIZE;
-        } else {
+        if (!page.lowMemory) {
             return zoom > childrenZoomThreshold;
         }
+
+        final Rect rect = page.base.getDecodeService().getScaledSize(page.base.getView().getWidth(),
+                page.bounds.width(), page.bounds.height(), pageSliceBounds, zoom);
+        final int size = 4 * rect.width() * rect.height();
+        return size >= SettingsManager.getAppSettings().getMaxImageSize();
     }
 
     protected void decodePageTreeNode(final List<PageTreeNode> nodesToDecode) {
@@ -206,7 +234,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         }
         Bitmap bitmap = null;
 
-        final long start = System.currentTimeMillis();
+        // final long start = System.currentTimeMillis();
 
         if (SettingsManager.getAppSettings().getNightMode()) {
             bitmap = holder.getNightBitmap(tr, paint.getNightBitmapPaint());
@@ -217,12 +245,12 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         if (bitmap != null) {
             canvas.drawRect(tr, paint.getFillPaint());
             canvas.drawBitmap(bitmap, null, tr, paint.getBitmapPaint());
-            final long end = System.currentTimeMillis();
-            if (LCTX.isDebugEnabled()) {
-                LCTX.d("Draw node: " + page.index.viewIndex + ":" + id + ": [" + bitmap.getWidth() + ", "
-                        + bitmap.getHeight() + "] => [" + (int) tr.width() + ", " + (int) tr.height() + "]: "
-                        + (end - start) + " ms");
-            }
+            // final long end = System.currentTimeMillis();
+            // if (LCTX.isDebugEnabled()) {
+            // LCTX.d("Draw node: " + page.index.viewIndex + ":" + id + ": [" + bitmap.getWidth() + ", "
+            // + bitmap.getHeight() + "] => [" + (int) tr.width() + ", " + (int) tr.height() + "]: "
+            // + (end - start) + " ms");
+            // }
         }
 
         drawBrightnessFilter(canvas, tr);
@@ -420,7 +448,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         }
 
         void recycleNightRef() {
-            Bitmap night = nightWeakReference != null ? nightWeakReference.get() : null;
+            final Bitmap night = nightWeakReference != null ? nightWeakReference.get() : null;
             if (night != null) {
                 night.recycle();
             }

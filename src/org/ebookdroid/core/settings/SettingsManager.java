@@ -195,16 +195,16 @@ public class SettingsManager {
         try {
             final AppSettings oldSettings = appSettings;
             appSettings = new AppSettings(ctx);
-            applyAppSettingsChanges(oldSettings, appSettings);
 
-            onBookSettingsChanged(current);
+            final AppSettings.Diff appDiff = applyAppSettingsChanges(oldSettings, appSettings);
+            onBookSettingsChanged(current, appDiff);
 
         } finally {
             lock.writeLock().unlock();
         }
     }
 
-    static void onBookSettingsChanged(BookSettings bs) {
+    static void onBookSettingsChanged(final BookSettings bs, final AppSettings.Diff appDiff) {
         lock.writeLock().lock();
         try {
             if (current == bs) {
@@ -212,7 +212,7 @@ public class SettingsManager {
                 appSettings.fillBookSettings(current);
                 db.storeBookSettings(current);
 
-                applyBookSettingsChanges(oldBS, current);
+                applyBookSettingsChanges(oldBS, current, appDiff);
             } else {
                 appSettings.fillBookSettings(current);
                 db.storeBookSettings(current);
@@ -223,20 +223,22 @@ public class SettingsManager {
 
     }
 
-    public static void applyAppSettingsChanges(final AppSettings oldSettings, final AppSettings newSettings) {
+    public static AppSettings.Diff applyAppSettingsChanges(final AppSettings oldSettings, final AppSettings newSettings) {
         final AppSettings.Diff diff = new AppSettings.Diff(oldSettings, newSettings);
         for (final ISettingsChangeListener l : listeners) {
             l.onAppSettingsChanged(oldSettings, newSettings, diff);
         }
+        return diff;
     }
 
-    public static void applyBookSettingsChanges(final BookSettings oldSettings, final BookSettings newSettings) {
+    public static void applyBookSettingsChanges(final BookSettings oldSettings, final BookSettings newSettings,
+            final AppSettings.Diff appDiff) {
         if (newSettings == null) {
             return;
         }
         final BookSettings.Diff diff = new BookSettings.Diff(oldSettings, newSettings);
         for (final ISettingsChangeListener l : listeners) {
-            l.onBookSettingsChanged(oldSettings, newSettings, diff);
+            l.onBookSettingsChanged(oldSettings, newSettings, diff, appDiff);
         }
 
     }
@@ -262,7 +264,7 @@ public class SettingsManager {
 
         public void commit() {
             if (bookSettings != null) {
-                onBookSettingsChanged(bookSettings);
+                onBookSettingsChanged(bookSettings, null);
             }
         }
 

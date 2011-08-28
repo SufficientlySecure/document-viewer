@@ -6,7 +6,7 @@ public class EventDispatcher {
 
     private final ArrayList<Object> listeners = new ArrayList<Object>();
 
-    public void dispatch(final Event event) {
+    public void dispatch(final Event<?> event) {
         for (final Object listener : listeners) {
             event.dispatchOn(listener);
         }

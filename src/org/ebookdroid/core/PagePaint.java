@@ -6,21 +6,23 @@ import android.graphics.PixelXorXfermode;
 import android.text.TextPaint;
 
 public enum PagePaint {
-    DAY(Color.BLACK, Color.WHITE, false),
+    DAY(Color.BLACK, Color.WHITE),
 
-    NIGHT(Color.WHITE, Color.BLACK, true);
+    NIGHT(Color.WHITE, Color.BLACK);
 
     private final Paint bitmapPaint;
+    private final Paint bitmapNightPaint;
     private final TextPaint textPaint = new TextPaint();
     private final Paint fillPaint = new Paint();
     private final Paint strokePaint = new Paint();
 
-    private PagePaint(final int textColor, final int fillColor, final boolean invert) {
+    private PagePaint(final int textColor, final int fillColor) {
         bitmapPaint = new Paint();
         bitmapPaint.setFilterBitmap(true);
-        if (invert) {
-            bitmapPaint.setXfermode(new PixelXorXfermode(-1));
-        }
+
+        bitmapNightPaint = new Paint();
+        bitmapNightPaint.setFilterBitmap(true);
+        bitmapNightPaint.setXfermode(new PixelXorXfermode(-1));
 
         textPaint.setColor(textColor);
         textPaint.setAntiAlias(true);
@@ -37,6 +39,10 @@ public enum PagePaint {
 
     public Paint getBitmapPaint() {
         return bitmapPaint;
+    }
+
+    public Paint getNightBitmapPaint() {
+        return bitmapNightPaint;
     }
 
     public TextPaint getTextPaint() {

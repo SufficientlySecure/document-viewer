@@ -204,17 +204,25 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         if (!isVisible(viewRect, pageBounds)) {
             return;
         }
-        final Bitmap bitmap = getBitmap();
+        Bitmap bitmap = null;
+
+        final long start = System.currentTimeMillis();
+
+        if (SettingsManager.getAppSettings().getNightMode()) {
+            bitmap = holder.getNightBitmap(tr, paint.getNightBitmapPaint());
+        } else {
+            bitmap = getBitmap();
+        }
+
         if (bitmap != null) {
-            // long start = System.currentTimeMillis();
             canvas.drawRect(tr, paint.getFillPaint());
             canvas.drawBitmap(bitmap, null, tr, paint.getBitmapPaint());
-            // long end = System.currentTimeMillis();
-            // if (LCTX.isDebugEnabled()) {
-            // LCTX.d("Draw node: " + page.getIndex() + ":" + id + ": [" + bitmap.getWidth() + ", "
-            // + bitmap.getHeight() + "] => [" + (int) tr.width() + ", " + (int) tr.height() + "]: "
-            // + (end - start) + " ms");
-            // }
+            final long end = System.currentTimeMillis();
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("Draw node: " + page.index.viewIndex + ":" + id + ": [" + bitmap.getWidth() + ", "
+                        + bitmap.getHeight() + "] => [" + (int) tr.width() + ", " + (int) tr.height() + "]: "
+                        + (end - start) + " ms");
+            }
         }
 
         drawBrightnessFilter(canvas, tr);
@@ -293,7 +301,8 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             if (this.page == null) {
                 return that.page == null;
             }
-            return this.page.index.viewIndex == that.page.index.viewIndex && this.pageSliceBounds.equals(that.pageSliceBounds);
+            return this.page.index.viewIndex == that.page.index.viewIndex
+                    && this.pageSliceBounds.equals(that.pageSliceBounds);
         }
 
         return false;
@@ -334,6 +343,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
         Bitmap bitmap;
         SoftReference<Bitmap> bitmapWeakReference;
+        SoftReference<Bitmap> nightWeakReference;
 
         public Bitmap getBitmap() {
             Bitmap bmp = bitmap;
@@ -350,6 +360,22 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             return null;
         }
 
+        public Bitmap getNightBitmap(final RectF targetRect, final Paint paint) {
+            Bitmap bmp = nightWeakReference != null ? nightWeakReference.get() : null;
+            if (bmp != null && !bmp.isRecycled()) {
+                return bmp;
+            }
+            bmp = getBitmap();
+            if (bmp == null || bmp.isRecycled()) {
+                return null;
+            }
+            final Bitmap night = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), Bitmap.Config.RGB_565);
+            final Canvas c = new Canvas(night);
+            c.drawBitmap(bitmap, 0, 0, paint);
+            nightWeakReference = new SoftReference<Bitmap>(night);
+            return night;
+        }
+
         public void clearDirectRef() {
             if (bitmap != null) {
                 if (LCTX.isDebugEnabled()) {
@@ -357,6 +383,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 }
                 bitmapWeakReference = new SoftReference<Bitmap>(bitmap);
                 bitmap = null;
+                recycleNightRef();
             }
         }
 
@@ -369,6 +396,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             }
             bitmap = null;
             bitmapWeakReference = null;
+            recycleNightRef();
         }
 
         public void setBitmap(final Bitmap bitmap) {
@@ -384,10 +412,19 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 }
                 this.bitmap = bitmap;
                 this.bitmapWeakReference = new SoftReference<Bitmap>(bitmap);
+                recycleNightRef();
                 page.base.getView().postInvalidate();
             } else {
                 this.bitmapWeakReference = new SoftReference<Bitmap>(bitmap);
             }
+        }
+
+        void recycleNightRef() {
+            Bitmap night = nightWeakReference != null ? nightWeakReference.get() : null;
+            if (night != null) {
+                night.recycle();
+            }
+            nightWeakReference = null;
         }
     }
 

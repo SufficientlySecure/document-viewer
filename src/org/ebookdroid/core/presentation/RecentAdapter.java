@@ -5,7 +5,6 @@ import org.ebookdroid.core.settings.BookSettings;
 import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.utils.FileUtils;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +20,9 @@ import java.util.List;
 
 public class RecentAdapter extends BaseAdapter {
 
-    private final Context context;
     private List<BookSettings> books = Collections.emptyList();
 
-    public RecentAdapter(final Context context) {
-        this.context = context;
+    public RecentAdapter() {
     }
 
     @Override
@@ -44,9 +41,9 @@ public class RecentAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(final int i, View view, final ViewGroup viewGroup) {
+    public View getView(final int i, View view, final ViewGroup parent) {
         if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.recentitem, viewGroup, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recentitem, parent, false);
         }
 
         final BookSettings bs = books.get(i);

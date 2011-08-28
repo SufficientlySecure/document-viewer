@@ -46,7 +46,7 @@ public class RecentActivity extends Activity implements IBrowserActivity {
 
         setContentView(R.layout.recent);
 
-        recentAdapter = new RecentAdapter(this);
+        recentAdapter = new RecentAdapter();
         libraryAdapter = new FileListAdapter(this);
 
         library = (ImageView) findViewById(R.id.recentlibrary);

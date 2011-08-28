@@ -44,7 +44,7 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
 
         setContentView(R.layout.browser);
 
-        adapter = new BrowserAdapter(this, filter);
+        adapter = new BrowserAdapter(filter);
         header = (TextView) findViewById(R.id.browsertext);
         viewflipper = (ViewFlipper) findViewById(R.id.browserflip);
         viewflipper.addView(new FileBrowserView(this, adapter));

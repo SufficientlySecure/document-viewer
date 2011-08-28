@@ -1,7 +1,6 @@
 package org.ebookdroid.core.presentation;
 
 import org.ebookdroid.R;
-import org.ebookdroid.core.IBrowserActivity;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.utils.FileUtils;
 import org.ebookdroid.utils.LengthUtils;
@@ -20,14 +19,12 @@ import java.util.Comparator;
 
 public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
 
-    private final IBrowserActivity base;
     private final FileFilter filter;
 
     private File currentDirectory;
     private File[] files = null;
 
-    public BrowserAdapter(final IBrowserActivity base, final FileFilter filter) {
-        this.base = base;
+    public BrowserAdapter(final FileFilter filter) {
         this.filter = filter;
     }
 
@@ -51,10 +48,10 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
     }
 
     @Override
-    public View getView(final int i, View view, final ViewGroup viewGroup) {
+    public View getView(final int i, View view, final ViewGroup parent) {
 
         if (view == null) {
-            view = LayoutInflater.from(base.getContext()).inflate(R.layout.browseritem, viewGroup, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.browseritem, parent, false);
         }
 
         final File file = getItem(i);

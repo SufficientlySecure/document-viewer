@@ -272,7 +272,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         try {
             currentFilename = currentFilename.substring(0, currentFilename.lastIndexOf('.'));
             currentFilename = currentFilename.replaceAll("\\(.*\\)|\\[.*\\]", "");
-        } catch (IndexOutOfBoundsException e) {
+        } catch (final IndexOutOfBoundsException e) {
 
         }
     }
@@ -282,7 +282,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         super.onPostCreate(savedInstanceState);
         setWindowTitle();
         if (documentModel != null) {
-            BookSettings bs = SettingsManager.getBookSettings();
+            final BookSettings bs = SettingsManager.getBookSettings();
             if (bs != null) {
                 currentPageChanged(PageIndex.NULL, bs.getCurrentPage());
             }
@@ -417,7 +417,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     private void addBookmark() {
         final int page = getDocumentModel().getCurrentViewPageIndex();
 
-        String message = getString(R.string.add_bookmark_name);
+        final String message = getString(R.string.add_bookmark_name);
 
         final EditText input = new EditText(this);
         input.setText(getString(R.string.text_page) + " " + (page + 1));
@@ -425,15 +425,17 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         new AlertDialog.Builder(this).setTitle(R.string.menu_add_bookmark).setMessage(message).setView(input)
                 .setPositiveButton(R.string.password_ok, new DialogInterface.OnClickListener() {
 
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        Editable value = input.getText();
-                        BookSettings bs = SettingsManager.getBookSettings();
+                    @Override
+                    public void onClick(final DialogInterface dialog, final int whichButton) {
+                        final Editable value = input.getText();
+                        final BookSettings bs = SettingsManager.getBookSettings();
                         bs.getBookmarks().add(new Bookmark(getDocumentModel().getCurrentIndex(), value.toString()));
                         SettingsManager.edit(bs).commit();
                     }
                 }).setNegativeButton(R.string.password_cancel, new DialogInterface.OnClickListener() {
 
-                    public void onClick(DialogInterface dialog, int whichButton) {
+                    @Override
+                    public void onClick(final DialogInterface dialog, final int whichButton) {
                     }
                 }).show();
     }
@@ -517,11 +519,13 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     }
 
     private void closeActivity() {
+        SettingsManager.clearCurrentBookSettings();
         finish();
     }
 
     @Override
-    public void onAppSettingsChanged(AppSettings oldSettings, AppSettings newSettings, AppSettings.Diff diff) {
+    public void onAppSettingsChanged(final AppSettings oldSettings, final AppSettings newSettings,
+            final AppSettings.Diff diff) {
         if (diff.isRotationChanged()) {
             setRequestedOrientation(newSettings.getRotation().getOrientation());
         }
@@ -537,13 +541,17 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
         if (diff.isShowTitleChanged() && diff.isFirstTime()) {
             final Window window = getWindow();
-            if (!newSettings.getShowTitle()) {
-                window.requestFeature(Window.FEATURE_NO_TITLE);
-            } else {
-                // Android 3.0+ you need both progress!!!
-                window.requestFeature(Window.FEATURE_PROGRESS);
-                window.requestFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-                setProgressBarIndeterminate(true);
+            try {
+                if (!newSettings.getShowTitle()) {
+                    window.requestFeature(Window.FEATURE_NO_TITLE);
+                } else {
+                    // Android 3.0+ you need both progress!!!
+                    window.requestFeature(Window.FEATURE_PROGRESS);
+                    window.requestFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+                    setProgressBarIndeterminate(true);
+                }
+            } catch (final Throwable th) {
+                LCTX.e("Error on requestFeature call: " + th.getMessage());
             }
         }
         final IDocumentViewController dc = getDocumentController();
@@ -555,8 +563,8 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     }
 
     @Override
-    public void onBookSettingsChanged(BookSettings oldSettings, BookSettings newSettings,
-            org.ebookdroid.core.settings.BookSettings.Diff diff) {
+    public void onBookSettingsChanged(final BookSettings oldSettings, final BookSettings newSettings,
+            final org.ebookdroid.core.settings.BookSettings.Diff diff) {
 
         if (diff.isSinglePageChanged() || diff.isSplitPagesChanged()) {
             createDocumentView();
@@ -580,8 +588,9 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         }
 
         final DocumentModel dm = getDocumentModel();
-        if (dm != null)
+        if (dm != null) {
             currentPageChanged(PageIndex.NULL, dm.getCurrentIndex());
+        }
     }
 
 }

@@ -96,6 +96,16 @@ public class RecentActivity extends Activity implements IBrowserActivity {
     protected void onResume() {
         super.onResume();
 
+        // Issue 33: 50% fail inside Djvu lib
+        // BookSettings last = SettingsManager.getBookSettings();
+        // if (last != null) {
+        // final File file = new File(last.getFileName());
+        // final boolean found = file != null ? file.exists() : false;
+        // if (found) {
+        // showDocument(Uri.fromFile(file));
+        // }
+        // }
+
         changeLibraryView(SettingsManager.getRecentBook() != null ? VIEW_RECENT : VIEW_LIBRARY);
     }
 
@@ -149,6 +159,9 @@ public class RecentActivity extends Activity implements IBrowserActivity {
     public void showDocument(final Uri uri) {
         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         intent.setClass(this, Activities.getByUri(uri));
+
+        // Issue 33
+        // startActivityIfNeeded(intent, -1);
         startActivity(intent);
     }
 
@@ -180,7 +193,7 @@ public class RecentActivity extends Activity implements IBrowserActivity {
     }
 
     public void goLibrary(final View view) {
-        changeLibraryView(viewflipper.getDisplayedChild() == VIEW_RECENT ? VIEW_LIBRARY: VIEW_RECENT);
+        changeLibraryView(viewflipper.getDisplayedChild() == VIEW_RECENT ? VIEW_LIBRARY : VIEW_RECENT);
     }
 
     public void goFileBrowser(final View view) {

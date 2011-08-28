@@ -147,15 +147,18 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     @Override
     protected void verticalConfigScroll(final int direction) {
         final int scrollheight = SettingsManager.getAppSettings().getScrollHeight();
-        getScroller().startScroll(getScrollX(), getScrollY(), 0,
-                (int) (direction * getHeight() * (scrollheight / 100.0)));
+        final int dy = (int) (direction * getHeight() * (scrollheight / 100.0));
+
+        scrollBy(0, dy);
 
         redrawView();
     }
 
     @Override
     protected void verticalDpadScroll(final int direction) {
-        getScroller().startScroll(getScrollX(), getScrollY(), 0, direction * getHeight() / 2);
+        final int dy = direction * getHeight() / 2;
+
+        scrollBy(0, dy);
 
         redrawView();
     }

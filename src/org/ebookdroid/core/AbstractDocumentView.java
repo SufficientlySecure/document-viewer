@@ -366,7 +366,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     }
 
     @Override
-    public boolean dispatchKeyEvent(final KeyEvent event) {
+    public final boolean dispatchKeyEvent(final KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             switch (event.getKeyCode()) {
                 case KeyEvent.KEYCODE_DPAD_DOWN:
@@ -386,6 +386,8 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         }
         if (event.getAction() == KeyEvent.ACTION_UP) {
             switch (event.getKeyCode()) {
+                case KeyEvent.KEYCODE_DPAD_DOWN:
+                case KeyEvent.KEYCODE_DPAD_UP:
                 case KeyEvent.KEYCODE_VOLUME_DOWN:
                 case KeyEvent.KEYCODE_VOLUME_UP:
                     return true;

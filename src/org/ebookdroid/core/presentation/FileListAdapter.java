@@ -221,7 +221,7 @@ public class FileListAdapter extends BaseExpandableListAdapter {
 
         }
 
-        public class DirectoryFilter implements FileFilter {
+        private class DirectoryFilter implements FileFilter {
 
             @Override
             public boolean accept(File file) {
@@ -231,28 +231,24 @@ public class FileListAdapter extends BaseExpandableListAdapter {
 
         private void scanDir(final File dir) {
             // Checks if scan should be continued
-            if (!inScan.get()) {
+            if (!inScan.get() || !dir.isDirectory()) {
                 return;
             }
-            // Checks parameter type
-            if (dir.isDirectory()) {
-
-                final String[] list = dir.list(filter);
-                if (list != null && list.length > 0) {
-                    Arrays.sort(list);
-                    currNodes.add(new Node(dir.getName(), dir.getAbsolutePath(), list));
-                    if (inUI.compareAndSet(false, true)) {
-                        // Start UI task if required
-                        base.getActivity().runOnUiThread(this);
-                    }
+            final String[] list = dir.list(filter);
+            if (list != null && list.length > 0) {
+                Arrays.sort(list);
+                currNodes.add(new Node(dir.getName(), dir.getAbsolutePath(), list));
+                if (inUI.compareAndSet(false, true)) {
+                    // Start UI task if required
+                    base.getActivity().runOnUiThread(this);
                 }
-                // Retrieves files from current directory
-                final File[] listOfDirs = dir.listFiles(new DirectoryFilter());
-                if (listOfDirs != null && inScan.get()) {
-                    for (int i = 0; i < listOfDirs.length; i++) {
-                        // Recursively processing found file
-                        scanDir(listOfDirs[i]);
-                    }
+            }
+            // Retrieves files from current directory
+            final File[] listOfDirs = dir.listFiles(new DirectoryFilter());
+            if (listOfDirs != null && inScan.get()) {
+                for (int i = 0; i < listOfDirs.length; i++) {
+                    // Recursively processing found file
+                    scanDir(listOfDirs[i]);
                 }
             }
         }

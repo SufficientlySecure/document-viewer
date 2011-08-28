@@ -90,14 +90,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (documentModel != null) {
-            SettingsManager.onSettingsChanged();
-        }
-    }
-
-    @Override
     protected void onDestroy() {
         if (documentModel != null) {
             documentModel.recycle();

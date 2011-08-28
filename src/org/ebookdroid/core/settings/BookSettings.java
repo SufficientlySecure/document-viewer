@@ -29,6 +29,19 @@ public class BookSettings implements CurrentPageListener {
 
     final List<Bookmark> bookmarks = new ArrayList<Bookmark>();
 
+    BookSettings(BookSettings current) {
+        this.fileName = current.fileName;
+        this.currentPage = current.currentPage;
+        this.lastUpdated = current.lastUpdated;
+        this.zoom = current.zoom;
+        this.splitPages = current.splitPages;
+        this.singlePage = current.singlePage;
+        this.pageAlign = current.pageAlign;
+        this.animationType = current.animationType;
+        this.bookmarks.addAll(current.bookmarks);
+
+    }
+
     BookSettings(final String fileName, AppSettings appSettings) {
         this.fileName = fileName;
         this.currentPage = PageIndex.FIRST;
@@ -36,13 +49,6 @@ public class BookSettings implements CurrentPageListener {
         if (appSettings != null) {
             appSettings.fillBookSettings(this);
         }
-    }
-
-    BookSettings(final BookSettings old, AppSettings appSettings) {
-        this(old.fileName, appSettings);
-        this.currentPage = old.currentPage;
-        this.zoom = old.zoom;
-        this.bookmarks.addAll(old.bookmarks);
     }
 
     @Override

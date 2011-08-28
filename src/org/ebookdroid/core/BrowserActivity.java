@@ -87,12 +87,6 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        SettingsManager.onSettingsChanged();
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
 
         final MenuInflater inflater = getMenuInflater();
@@ -186,10 +180,10 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
     public Activity getActivity() {
         return this;
     }
-    
+
     @Override
     public void showProgress(final boolean show)
     {
-    
+
     }
 }

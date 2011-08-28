@@ -105,15 +105,10 @@ public class SettingsManager {
             db.deleteAll();
             bookSettings.clear();
 
-            final BookSettings oldBS = getBookSettings();
             final AppSettings apps = getAppSettings();
-            if (oldBS != null) {
+            if (current != null) {
                 apps.clearPseudoBookSettings();
-                final BookSettings newBS = new BookSettings(oldBS, apps);
-                apps.updatePseudoBookSettings(newBS);
-
-                replaceCurrentBookSettings(newBS);
-
+                apps.updatePseudoBookSettings(current);
             } else {
                 apps.clearPseudoBookSettings();
             }
@@ -200,20 +195,32 @@ public class SettingsManager {
         try {
             final AppSettings oldSettings = appSettings;
             appSettings = new AppSettings(ctx);
-
             applyAppSettingsChanges(oldSettings, appSettings);
 
-            final BookSettings oldBS = current;
-            if (oldBS != null) {
-                replaceCurrentBookSettings(new BookSettings(oldBS, appSettings));
+            onBookSettingsChanged(current);
+
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    static void onBookSettingsChanged(BookSettings bs) {
+        lock.writeLock().lock();
+        try {
+            if (current == bs) {
+                final BookSettings oldBS = new BookSettings(current);
+                appSettings.fillBookSettings(current);
                 db.storeBookSettings(current);
+
                 applyBookSettingsChanges(oldBS, current);
             } else {
-                appSettings.clearPseudoBookSettings();
+                appSettings.fillBookSettings(current);
+                db.storeBookSettings(current);
             }
         } finally {
             lock.writeLock().unlock();
         }
+
     }
 
     public static void applyAppSettingsChanges(final AppSettings oldSettings, final AppSettings newSettings) {
@@ -255,7 +262,7 @@ public class SettingsManager {
 
         public void commit() {
             if (bookSettings != null) {
-                onSettingsChanged();
+                onBookSettingsChanged(bookSettings);
             }
         }
 

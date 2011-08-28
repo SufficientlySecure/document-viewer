@@ -36,13 +36,19 @@ public class SettingsActivity extends BaseSettingsActivity {
         decoratePreferences("book_align", "book_animationType");
 
         if (SettingsManager.getBookSettings() == null) {
-            Preference bookPrefs = findPreference("book_prefs");
+            final Preference bookPrefs = findPreference("book_prefs");
             if (bookPrefs != null) {
-                PreferenceScreen preferenceScreen = getPreferenceScreen();
+                final PreferenceScreen preferenceScreen = getPreferenceScreen();
                 preferenceScreen.removePreference(bookPrefs);
             }
         }
 
+    }
+
+    @Override
+    protected void onPause() {
+        SettingsManager.onSettingsChanged();
+        super.onPause();
     }
 
 }

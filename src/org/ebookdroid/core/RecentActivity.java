@@ -96,9 +96,6 @@ public class RecentActivity extends Activity implements IBrowserActivity {
     protected void onResume() {
         super.onResume();
 
-        SettingsManager.clearCurrentBookSettings();
-        SettingsManager.onSettingsChanged();
-
         changeLibraryView(SettingsManager.getRecentBook() != null ? VIEW_RECENT : VIEW_LIBRARY);
     }
 

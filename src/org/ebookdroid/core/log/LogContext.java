@@ -55,11 +55,11 @@ public class LogContext {
     }
 
     public void e(final String msg) {
-        Log.d(tag, msg);
+        Log.e(tag, msg);
     }
 
     public void e(final String msg, final Throwable th) {
-        Log.d(tag, msg, th);
+        Log.e(tag, msg, th);
     }
 
     public boolean isDebugEnabled() {

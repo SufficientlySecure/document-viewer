@@ -90,8 +90,9 @@ public class RecentActivity extends Activity implements IBrowserActivity {
 
         if (shouldLoad && found) {
             showDocument(Uri.fromFile(file));
+        } else {
+            changeLibraryView(recent != null ? VIEW_RECENT : VIEW_LIBRARY);
         }
-
     }
 
     @Override
@@ -108,7 +109,9 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         // }
         // }
 
-        changeLibraryView(SettingsManager.getRecentBook() != null ? VIEW_RECENT : VIEW_LIBRARY);
+        // Fix for switching book state from recent/non recent
+        recentAdapter.notifyDataSetInvalidated();
+        libraryAdapter.notifyDataSetInvalidated();
     }
 
     @Override
@@ -139,7 +142,7 @@ public class RecentActivity extends Activity implements IBrowserActivity {
             public void onClick(final DialogInterface dialog, final int whichButton) {
             }
         }
-        
+
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.clear_recent_title);
         builder.setMessage(R.string.clear_recent_text);
@@ -149,10 +152,12 @@ public class RecentActivity extends Activity implements IBrowserActivity {
             public void onClick(final DialogInterface dialog, final int whichButton) {
                 SettingsManager.deleteAllBookSettings();
                 recentAdapter.clearBooks();
+                // Fix for switching book state from recent/non recent
+                libraryAdapter.notifyDataSetInvalidated();
             }
         });
         builder.setNegativeButton(R.string.password_cancel, new EmptyDialogButtonListener()).show();
-        
+
     }
 
     public void showSettings(final View view) {

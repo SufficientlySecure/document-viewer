@@ -1,5 +1,7 @@
 package org.ebookdroid.core;
 
+import org.ebookdroid.core.log.LogContext;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -13,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public class DrawThread extends Thread {
 
-    // private static final LogContext LCTX = LogContext.ROOT.lctx("View");
+    private static final LogContext LCTX = LogContext.ROOT.lctx("Imaging");
 
     private SurfaceHolder surfaceHolder;
 
@@ -51,6 +53,8 @@ public class DrawThread extends Thread {
             try {
                 canvas = surfaceHolder.lockCanvas(null);
                 performDrawing(canvas, task);
+            } catch (Throwable th) {
+                LCTX.e("Unexpected error on drawing: " + th.getMessage(), th);
             } finally {
                 if (canvas != null) {
                     surfaceHolder.unlockCanvasAndPost(canvas);
@@ -69,9 +73,6 @@ public class DrawThread extends Thread {
                     task = list.get(list.size() - 1);
                 }
             }
-            // if (LCTX.isDebugEnabled()) {
-            // LCTX.d("Draw tasks: " + (task != null ? list.size() + 1 : 0));
-            // }
         } catch (InterruptedException e) {
             Thread.interrupted();
         }
@@ -87,9 +88,6 @@ public class DrawThread extends Thread {
 
     public void draw(RectF viewRect) {
         if (viewRect != null) {
-            // if (LCTX.isDebugEnabled()) {
-            // LCTX.d("New draw task: " + viewRect);
-            // }
             queue.offer(new DrawTask(viewRect));
         }
     }

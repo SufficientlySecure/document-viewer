@@ -108,4 +108,6 @@
 	<string name="clear_bookmarks_text">"Do you really want to remove all bookmarks?"</string>
 	<string name="del_bookmark_title">"Delete bookmark"</string>
 	<string name="del_bookmark_text">"Do you really want to remove this bookmark?"</string>
+	<string name="clear_recent_title">"Clear recent items"</string>
+	<string name="clear_recent_text">"Do you really want to remove all recent books?"</string>
 </resources>

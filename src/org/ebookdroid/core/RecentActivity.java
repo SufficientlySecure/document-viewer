@@ -12,7 +12,9 @@ import org.ebookdroid.core.views.LibraryView;
 import org.ebookdroid.core.views.RecentBooksView;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -131,8 +133,26 @@ public class RecentActivity extends Activity implements IBrowserActivity {
     }
 
     public void clearRecent(final View view) {
-        SettingsManager.deleteAllBookSettings();
-        recentAdapter.clearBooks();
+        final class EmptyDialogButtonListener implements DialogInterface.OnClickListener {
+
+            @Override
+            public void onClick(final DialogInterface dialog, final int whichButton) {
+            }
+        }
+        
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.clear_recent_title);
+        builder.setMessage(R.string.clear_recent_text);
+        builder.setPositiveButton(R.string.password_ok, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(final DialogInterface dialog, final int whichButton) {
+                SettingsManager.deleteAllBookSettings();
+                recentAdapter.clearBooks();
+            }
+        });
+        builder.setNegativeButton(R.string.password_cancel, new EmptyDialogButtonListener()).show();
+        
     }
 
     public void showSettings(final View view) {

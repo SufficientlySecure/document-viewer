@@ -110,4 +110,6 @@
 	<string name="clear_bookmarks_text">"Вы действительно хотите стереть все закладки?"</string>
 	<string name="del_bookmark_title">"Удалить закладку"</string>
 	<string name="del_bookmark_text">"Вы действительно хотите удалить эту закладку?"</string>
+	<string name="clear_recent_title">"Удалить последние"</string>
+	<string name="clear_recent_text">"Вы действительно хотите очистить список последних открытых книг?"</string>
 </resources>

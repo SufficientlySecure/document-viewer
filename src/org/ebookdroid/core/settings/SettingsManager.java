@@ -207,15 +207,17 @@ public class SettingsManager {
     static void onBookSettingsChanged(final BookSettings bs, final AppSettings.Diff appDiff) {
         lock.writeLock().lock();
         try {
-            if (current == bs) {
-                final BookSettings oldBS = new BookSettings(current);
-                appSettings.fillBookSettings(current);
-                db.storeBookSettings(current);
+            if (current != null) {
+                if (current == bs) {
+                    final BookSettings oldBS = new BookSettings(current);
+                    appSettings.fillBookSettings(current);
+                    db.storeBookSettings(current);
 
-                applyBookSettingsChanges(oldBS, current, appDiff);
-            } else {
-                appSettings.fillBookSettings(current);
-                db.storeBookSettings(current);
+                    applyBookSettingsChanges(oldBS, current, appDiff);
+                } else {
+                    appSettings.fillBookSettings(current);
+                    db.storeBookSettings(current);
+                }
             }
         } finally {
             lock.writeLock().unlock();

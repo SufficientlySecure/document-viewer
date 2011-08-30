@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="org.ebookdroid" android:installLocation="preferExternal" android:versionName="1.2.0-rc2" android:versionCode="8">
+          package="org.ebookdroid" android:installLocation="preferExternal" android:versionName="1.2.0-rc3" android:versionCode="8">
     <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="11"/>
     <uses-permission android:name="com.android.email.permission.ACCESS_PROVIDER"/>
     <uses-permission android:name="com.android.email.permission.READ_ATTACHMENT"/>

@@ -12,6 +12,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:mimeType="application/pdf"/>
+                <data android:pathPattern=".*\\.pdf" />
             </intent-filter>
         </activity>
         <activity android:name=".djvudroid.DjvuViewerActivity" android:configChanges="orientation|keyboardHidden">
@@ -22,6 +23,8 @@
                 <data android:mimeType="image/djvu"/>
                 <data android:mimeType="image/vnd.djvu"/>
                 <data android:mimeType="image/x-djvu" />
+                <data android:pathPattern=".*\\.djvu" />
+                <data android:pathPattern=".*\\.djv" />
             </intent-filter>
         </activity>
         <activity android:name=".xpsdroid.XpsViewerActivity" android:configChanges="orientation|keyboardHidden">
@@ -31,6 +34,8 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:mimeType="application/vnd.ms-xpsdocument"/>
                 <data android:mimeType="application/oxps"/>
+                <data android:pathPattern=".*\\.xps" />
+                <data android:pathPattern=".*\\.oxps" />
             </intent-filter>
         </activity>
         <activity android:name=".cbdroid.CbzViewerActivity" android:configChanges="orientation|keyboardHidden">
@@ -39,6 +44,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:mimeType="application/x-cbz"/>
+                <data android:pathPattern=".*\\.cbz" />
             </intent-filter>
         </activity>
         <activity android:name=".cbdroid.CbrViewerActivity" android:configChanges="orientation|keyboardHidden">
@@ -47,6 +53,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:mimeType="application/x-cbr"/>
+                <data android:pathPattern=".*\\.cbr" />
             </intent-filter>
         </activity>
         <activity android:name=".core.RecentActivity" android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar" android:configChanges="keyboardHidden|orientation" android:launchMode="singleTask">

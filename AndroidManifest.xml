@@ -20,6 +20,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:mimeType="image/djvu"/>
+                <data android:mimeType="image/vnd.djvu"/>
             </intent-filter>
         </activity>
         <activity android:name=".xpsdroid.XpsViewerActivity" android:configChanges="orientation|keyboardHidden">

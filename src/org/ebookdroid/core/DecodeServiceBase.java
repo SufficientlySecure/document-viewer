@@ -50,7 +50,8 @@ public class DecodeServiceBase implements DecodeService {
         @Override
         protected boolean removeEldestEntry(final Entry<Integer, SoftReference<CodecPage>> eldest) {
             if (this.size() > PAGE_POOL_SIZE) {
-                final CodecPage codecPage = eldest.getValue().get();
+                SoftReference<CodecPage> value = eldest != null ? eldest.getValue() :null;
+                final CodecPage codecPage = value != null ? value.get() : null;
                 if (codecPage != null) {
                     if (LCTX.isDebugEnabled()) {
                         LCTX.d("Recycling old page: " + codecPage);
@@ -148,7 +149,7 @@ public class DecodeServiceBase implements DecodeService {
         final int pageHeight = vuPage.getHeight();
         final RectF nodeBounds = task.pageSliceBounds;
         final float zoom = task.zoom;
-        
+
         return task.nativeResolution ? getScaledSize(pageWidth, pageWidth, pageHeight, nodeBounds, 1.0f) : getScaledSize(viewWidth, pageWidth, pageHeight, nodeBounds, zoom);
     }
 
@@ -364,7 +365,7 @@ public class DecodeServiceBase implements DecodeService {
             this.node = node;
             this.pageSliceBounds = node.getPageSliceBounds();
             this.targetWidth = targetWidth;
-            this.nativeResolution = nativeResolution; 
+            this.nativeResolution = nativeResolution;
         }
 
         @Override

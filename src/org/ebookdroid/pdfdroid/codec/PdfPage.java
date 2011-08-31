@@ -12,9 +12,9 @@ import android.graphics.RectF;
 public class PdfPage implements CodecPage {
 
     private static final boolean useNativeGraphics;
-    
+
     static {
-        useNativeGraphics = false;
+        useNativeGraphics = isNativeGraphicsAvailable();
     }
 
     private long pageHandle;
@@ -91,14 +91,12 @@ public class PdfPage implements CodecPage {
         final int height = viewbox.height();
 
         if (useNativeGraphics && AndroidVersion.VERSION >= 8) {
-            try {
-                Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-                if (renderPageBitmap(docHandle, pageHandle, mRect, matrixArray, bmp)) {
-                    return bmp;
-                } else {
-                    bmp.recycle();
-                }
-            } catch (UnsatisfiedLinkError ex) {
+            Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            if (renderPageBitmap(docHandle, pageHandle, mRect, matrixArray, bmp)) {
+                return bmp;
+            } else {
+                bmp.recycle();
+                return null;
             }
         }
 
@@ -118,6 +116,8 @@ public class PdfPage implements CodecPage {
 
     private static native void renderPage(long dochandle, long pagehandle, int[] viewboxarray, float[] matrixarray,
             int[] bufferarray);
+
+    private static native boolean isNativeGraphicsAvailable();
 
     private static native boolean renderPageBitmap(long dochandle, long pagehandle, int[] viewboxarray,
             float[] matrixarray, Bitmap bitmap);

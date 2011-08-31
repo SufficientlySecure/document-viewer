@@ -111,8 +111,14 @@
 			android:summary="@string/pref_maximagesize_summary"
 			android:maxLength="5"
 			android:defaultValue="256"
-			android:dependency="slicelimit" />
-		android:numeric="integer" />
+			android:dependency="slicelimit"
+		    android:numeric="integer" />
+		    
+		<CheckBoxPreference
+			android:key="nativeresolution"
+			android:title="@string/pref_nativeresolution_title"
+			android:summary="@string/pref_nativeresolution_summary"
+			android:defaultValue="false" />
 
 	</PreferenceScreen>
 

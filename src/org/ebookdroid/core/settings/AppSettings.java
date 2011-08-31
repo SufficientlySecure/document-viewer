@@ -47,6 +47,8 @@ public class AppSettings {
 
     private Boolean pageInTitle;
 
+    private Boolean nativeResolution;
+
     private Integer brightness;
 
     private Boolean brightnessnightmodeonly;
@@ -201,6 +203,13 @@ public class AppSettings {
             pagesInMemory = getIntValue("pagesinmemory", 2);
         }
         return pagesInMemory.intValue();
+    }
+
+    public boolean getNativeResolution() {
+        if (nativeResolution == null) {
+            nativeResolution = prefs.getBoolean("nativeresolution", false);
+        }
+        return nativeResolution;
     }
 
     public Boolean getLowMemory() {

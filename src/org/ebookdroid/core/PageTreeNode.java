@@ -159,6 +159,9 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     protected boolean isChildrenRequired(final float zoom, final RectF viewRect) {
+        if (page.nativeResolution) {
+            return false;
+        }
         if (!page.lowMemory) {
             return zoom > childrenZoomThreshold;
         }

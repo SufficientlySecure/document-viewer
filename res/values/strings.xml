@@ -99,6 +99,8 @@
 	<string name="pref_keepscreenon_summary">"Keep screen always on"</string>
 	<string name="pref_loadrecent_title">"Load recent"</string>
 	<string name="pref_loadrecent_summary">"Auto loading last opened book on app start"</string>
+	<string name="pref_nativeresolution_title">"Use native resolution"</string>
+	<string name="pref_nativeresolution_summary">"Render page in document resolution. Can consume a lot of memory"</string>
 	<string name="add_bookmark_name">"Enter bookmark description"</string>
 	<string name="bookmark_start">Start</string>
 	<string name="bookmark_end">End</string>

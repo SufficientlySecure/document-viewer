@@ -27,6 +27,8 @@ public class Page {
     private float storedZoom;
     private RectF zoomedBounds;
 
+    boolean nativeResolution;
+
     public Page(final IViewerActivity base, PageIndex index, final PageType pt, final CodecPageInfo cpi) {
         this.base = base;
         this.index = index;
@@ -36,6 +38,7 @@ public class Page {
         setAspectRatio(cpi.getWidth(), cpi.getHeight());
 
         lowMemory = SettingsManager.getAppSettings().getLowMemory();
+        nativeResolution = lowMemory ? false : SettingsManager.getAppSettings().getNativeResolution();
         nodes = new PageTree(this);
     }
 

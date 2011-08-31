@@ -2,9 +2,12 @@
 
 #include <android/log.h>
 
-/*JNI BITMAP API
+/*JNI BITMAP API */
+
+#ifdef USE_JNI_BITMAP_API
 #include <android/bitmap.h>
-*/
+#endif
+
 #include <errno.h>
 
 #include <fitz.h>
@@ -55,16 +58,16 @@ void throw_exception(JNIEnv *env, char *message)
 
 static void pdf_free_document(renderdocument_t* doc)
 {
-    if(doc) 
+    if(doc)
     {
 	if(doc->outline)
 	    pdf_free_outline(doc->outline);
-	doc->outline = NULL;		                          
-			
-	if (doc->drawcache) 
+	doc->outline = NULL;
+
+	if (doc->drawcache)
 	    fz_free_glyph_cache(doc->drawcache);
 	doc->drawcache = NULL;
-		
+
 	if(doc->xref)
 	{
 	    if(doc->xref->store)
@@ -74,7 +77,7 @@ static void pdf_free_document(renderdocument_t* doc)
 	    pdf_free_xref(doc->xref);
 	}
 	doc->xref = NULL;
-		
+
 	fz_free(doc);
 	doc = NULL;
     }
@@ -100,7 +103,7 @@ JNIEXPORT jlong JNICALL
 	password = (char*)(*env)->GetStringUTFChars(env, pwd, &iscopy);
 
 	doc = fz_malloc(sizeof(renderdocument_t));
-	if(!doc) 
+	if(!doc)
 	{
 		throw_exception(env, "Out of Memory");
 		goto cleanup;
@@ -112,7 +115,7 @@ JNIEXPORT jlong JNICALL
 	/* initialize renderer */
 
 	doc->drawcache = fz_new_glyph_cache();
-	if (!doc->drawcache) 
+	if (!doc->drawcache)
 	{
 		pdf_free_document(doc);
 		throw_exception(env, "Cannot create new renderer");
@@ -124,7 +127,7 @@ JNIEXPORT jlong JNICALL
 	 */
 	error = pdf_open_xref(&(doc->xref), filename, NULL);
 
-	if (error || (!doc->xref)) 
+	if (error || (!doc->xref))
 	{
 		pdf_free_document(doc);
 		throw_exception(env, "PDF file not found or corrupted");
@@ -135,19 +138,19 @@ JNIEXPORT jlong JNICALL
 	 * Handle encrypted PDF files
 	 */
 
-	if (pdf_needs_password(doc->xref)) 
+	if (pdf_needs_password(doc->xref))
 	{
-		if(strlen(password)) 
+		if(strlen(password))
 		{
 			int ok = pdf_authenticate_password(doc->xref, password);
-			if(!ok) 
+			if(!ok)
 			{
 				pdf_free_document(doc);
 				throw_exception(env, "Wrong password given");
 				goto cleanup;
 			}
-		} 
-		else 
+		}
+		else
 		{
 			pdf_free_document(doc);
 			throw_exception(env, "PDF needs a password!");
@@ -156,7 +159,7 @@ JNIEXPORT jlong JNICALL
 	}
 
 	error = pdf_load_page_tree(doc->xref);
-	if (error) 
+	if (error)
 	{
 		pdf_free_document(doc);
     	    	throw_exception(env, "error loading pagetree");
@@ -202,7 +205,7 @@ JNIEXPORT jint JNICALL
     fz_rect bbox;
     fz_obj *rotateobj = NULL;
     int rotate = 0;
-                     
+
     pageobj = doc->xref->page_objs[pageNumber - 1];
     boxobj = fz_dict_gets(pageobj, "MediaBox");
     if (boxobj == NULL)
@@ -210,17 +213,17 @@ JNIEXPORT jint JNICALL
     bbox = pdf_to_rect(boxobj);
 
     rotateobj = fz_dict_gets(pageobj, "Rotate");
-    if (fz_is_int(rotateobj)) 
+    if (fz_is_int(rotateobj))
 	rotate = fz_to_int(rotateobj);
-    else 
+    else
 	rotate = 0;
-    
+
     clazz = (*env)->GetObjectClass(env,cpi);
     if (0 == clazz)
     {
 	return(-1);
     }
-	    
+
     fid = (*env)->GetFieldID(env,clazz,"width","I");
     (*env)->SetIntField(env,cpi,fid,bbox.x1 - bbox.x0);
 
@@ -244,19 +247,19 @@ JNIEXPORT jint JNICALL
 //	DEBUG("PdfDocument.getPageInfo = %p", doc);
 /*
 	pdf_page *page = NULL;
-	
+
 
 
 	fz_error* error = pdf_load_page(&page, doc->xref, pageNumber - 1);
 
-	if(!error && page) 
+	if(!error && page)
 	{
 	    clazz = (*env)->GetObjectClass(env,cpi);
 	    if (0 == clazz)
 	    {
 		return(-1);
 	    }
-	    
+
 	    fid = (*env)->GetFieldID(env,clazz,"width","I");
 	    (*env)->SetIntField(env,cpi,fid,page->mediabox.x1 - page->mediabox.x0);
 
@@ -271,7 +274,7 @@ JNIEXPORT jint JNICALL
 
 	    fid = (*env)->GetFieldID(env,clazz,"version","I");
 	    (*env)->SetIntField(env,cpi,fid,0);
-	        	
+
     	    pdf_free_page(page);
     	    return 0;
 	}
@@ -290,7 +293,7 @@ JNIEXPORT jobject JNICALL
 	DEBUG("PdfDocument.getLinks = %p", doc);
 
 	pdf_link *link;
-	
+
 	jobject arrayList = NULL;
 
 	pdf_page *page = NULL;
@@ -301,7 +304,7 @@ JNIEXPORT jobject JNICALL
 	    jclass arrayListClass = (*env)->FindClass(env,"java/util/ArrayList");
 	    if(!arrayListClass)
 	        return arrayList;
-	        
+
 	    jmethodID alInitMethodId = (*env)->GetMethodID(env,arrayListClass, "<init>", "()V");
 	    if(!alInitMethodId)
 	        return arrayList;
@@ -309,7 +312,7 @@ JNIEXPORT jobject JNICALL
 	    jmethodID alAddMethodId = (*env)->GetMethodID(env,arrayListClass, "add", "(Ljava/lang/Object;)Z");
 	    if(!alAddMethodId)
 	        return arrayList;
-            
+
 	    arrayList = (*env)->NewObject(env,arrayListClass, alInitMethodId);
 	    if(!arrayList)
 	        return arrayList;
@@ -317,15 +320,15 @@ JNIEXPORT jobject JNICALL
 
 	     for (link = page->links; link; link = link->next)
 	     {
-	     
+
 	    	jclass pagelinkClass = (*env)->FindClass(env,"org/ebookdroid/core/PageLink");
 		if(!pagelinkClass)
 		    return arrayList;
-        
+
 		jmethodID plInitMethodId = (*env)->GetMethodID(env,pagelinkClass, "<init>", "(Ljava/lang/String;I[I)V");
-		if(!plInitMethodId) 
+		if(!plInitMethodId)
 		    return arrayList;
-    
+
 		jint data[4];
 		data[0] = link->rect.x0;
 		data[1] = link->rect.y0;
@@ -333,11 +336,11 @@ JNIEXPORT jobject JNICALL
 		data[3] = link->rect.y1;
 		jintArray points = (*env)->NewIntArray(env,4);
 		(*env)->SetIntArrayRegion(env,points, 0, 4, data);
-    
-		
+
+
 		char linkbuf[128];
 		int number;
-	
+
 		if (link->kind == PDF_LINK_URI)
 		{
 		    int len = (fz_to_str_len(link->dest) < 127)?fz_to_str_len(link->dest):127;
@@ -355,11 +358,11 @@ JNIEXPORT jobject JNICALL
 		jstring jstr = (*env)->NewStringUTF(env,linkbuf);
 
 		jobject hl = (*env)->NewObject(env,pagelinkClass, plInitMethodId, jstr, (jint)1 ,points);
-    
+
 		(*env)->DeleteLocalRef(env,jstr);
-		(*env)->DeleteLocalRef(env,points);	        
-	        
-	             
+		(*env)->DeleteLocalRef(env,points);
+
+
 		if(hl)
 		    (*env)->CallBooleanMethod(env,arrayList, alAddMethodId, hl);
 		//jenv->DeleteLocalRef(hl);
@@ -392,14 +395,14 @@ JNIEXPORT jlong JNICALL
 	jfieldID fid;
 
 	page = fz_malloc(sizeof(renderpage_t));
-	if(!page) 
+	if(!page)
 	{
 		throw_exception(env, "Out of Memory");
 		return (jlong) (long)NULL;
 	}
 
 	error = pdf_load_page(&page->page, doc->xref, pageno - 1);
-	if (error) 
+	if (error)
 	{
 		throw_exception(env, "error loading page");
 		goto cleanup;
@@ -512,11 +515,11 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPage
 	/* do the rendering */
 
 	buffer = (*env)->GetPrimitiveArrayCritical(env, bufferarray, 0);
-	
+
 	pixmap = fz_new_pixmap_with_data(fz_device_bgr, viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0, (unsigned char*)buffer);
 
 	DEBUG("doing the rendering...");
-	
+
 	fz_clear_pixmap_with_color(pixmap, 0xff);
 
 	dev = fz_new_draw_device(doc->drawcache, pixmap);
@@ -524,19 +527,12 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPage
         fz_free_device(dev);
 
 	(*env)->ReleasePrimitiveArrayCritical(env, bufferarray, buffer, 0);
-	
+
 	fz_drop_pixmap(pixmap);
-//Old draw page
-//	if (error) 
-//	{
-//		DEBUG("error!");
-//		throw_exception(env, "error rendering page");
-//	}
-//
+
 	DEBUG("PdfView.renderPage() done");
 }
 
-#if false
 /*JNI BITMAP API*/
 
 JNIEXPORT jboolean JNICALL
@@ -545,9 +541,10 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPageBitmap
 		jintArray viewboxarray, jfloatArray matrixarray,
 		jobject bitmap)
 {
+#ifdef USE_JNI_BITMAP_API
 	renderdocument_t *doc = (renderdocument_t*) (long)dochandle;
 	renderpage_t *page = (renderpage_t*) (long)pagehandle;
-	DEBUG("PdfView(%p).renderPage(%p, %p)", this, doc, page);
+	DEBUG("PdfView(%p).renderPageBitmap(%p, %p)", this, doc, page);
 	fz_error error;
 	fz_matrix ctm;
 	fz_bbox viewbox;
@@ -560,7 +557,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPageBitmap
 
     AndroidBitmapInfo info;
     void *pixels;
-    
+
     int ret;
 
     if ((ret = AndroidBitmap_getInfo(env, bitmap, &info)) < 0) {
@@ -602,10 +599,10 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPageBitmap
 	(*env)->ReleasePrimitiveArrayCritical(env, viewboxarray, viewboxarr, 0);
 	DEBUG("Viewbox: %d %d %d %d", viewbox.x0, viewbox.y0, viewbox.x1, viewbox.y1);
 
-	pixmap = fz_new_pixmap_with_data(fz_device_bgr, viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0, pixels);
+	pixmap = fz_new_pixmap_with_data(fz_device_rgb, viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0, pixels);
 
 	DEBUG("doing the rendering...");
-	
+
 	fz_clear_pixmap_with_color(pixmap, 0xff);
 
 	dev = fz_new_draw_device(doc->drawcache, pixmap);
@@ -614,12 +611,15 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPageBitmap
 	fz_drop_pixmap(pixmap);
 
 	DEBUG("PdfView.renderPage() done");
-	
+
     AndroidBitmap_unlockPixels(env, bitmap);
-	
+
 	return 1;
-}
+#else
+	DEBUG("PdfView(%p).renderPageBitmap(): not implemented", this);
+	return 0;
 #endif
+}
 
 //Outline
 JNIEXPORT jlong JNICALL
@@ -639,7 +639,7 @@ JNIEXPORT void JNICALL
 {
 	renderdocument_t *doc = (renderdocument_t*) (long)dochandle;
 	DEBUG("PdfOutline_free(%p)",doc);
-	if(doc) 
+	if(doc)
 	{
 	    if(doc->outline)
 		pdf_free_outline(doc->outline);
@@ -653,7 +653,7 @@ JNIEXPORT jstring JNICALL
 {
 	pdf_outline *outline = (pdf_outline*) (long)outlinehandle;
 //	DEBUG("PdfOutline_getTitle(%p)",outline);
-	if(outline) 
+	if(outline)
 	    return (*env)->NewStringUTF(env, outline->title);
 	return NULL;
 }
@@ -668,14 +668,14 @@ JNIEXPORT jstring JNICALL
 //	DEBUG("PdfOutline_getLink(%p)",outline);
 	if(!outline)
 	    return NULL;
-	    
+
 	pdf_link* link = outline->link;
 	if(!link)
 	    return NULL;
-	
+
 	char linkbuf[128];
 	int number;
-	
+
 	if (link->kind == PDF_LINK_URI)
 	{
 	    int len = (fz_to_str_len(link->dest) < 127)?fz_to_str_len(link->dest):127;
@@ -699,7 +699,7 @@ JNIEXPORT jlong JNICALL
 {
 	pdf_outline *outline = (pdf_outline*) (long)outlinehandle;
 //	DEBUG("PdfOutline_getNext(%p)",outline);
-	if(!outline) 
+	if(!outline)
 	    return 0;
 	return (jlong) (long)outline->next;
 }
@@ -710,7 +710,7 @@ JNIEXPORT jlong JNICALL
 {
 	pdf_outline *outline = (pdf_outline*) (long)outlinehandle;
 //	DEBUG("PdfOutline_getChild(%p)",outline);
-	if(!outline) 
+	if(!outline)
 	    return 0;
 	return (jlong) (long)outline->child;
 }

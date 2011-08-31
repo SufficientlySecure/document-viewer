@@ -2,6 +2,7 @@ package org.ebookdroid.pdfdroid.codec;
 
 import org.ebookdroid.core.BaseViewerActivity;
 import org.ebookdroid.core.codec.CodecPage;
+import org.ebookdroid.core.utils.AndroidVersion;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -9,6 +10,12 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 public class PdfPage implements CodecPage {
+
+    private static final boolean useNativeGraphics;
+    
+    static {
+        useNativeGraphics = false;
+    }
 
     private long pageHandle;
     private final long docHandle;
@@ -20,12 +27,12 @@ public class PdfPage implements CodecPage {
 
     @Override
     public int getWidth() {
-        return (int)(getMediaBox().width() * BaseViewerActivity.DM.xdpi / 72);
+        return (int) (getMediaBox().width() * BaseViewerActivity.DM.xdpi / 72);
     }
 
     @Override
     public int getHeight() {
-        return (int)(getMediaBox().height() * BaseViewerActivity.DM.xdpi / 72);
+        return (int) (getMediaBox().height() * BaseViewerActivity.DM.xdpi / 72);
     }
 
     @Override
@@ -82,26 +89,22 @@ public class PdfPage implements CodecPage {
 
         final int width = viewbox.width();
         final int height = viewbox.height();
-        
+
+        if (useNativeGraphics && AndroidVersion.VERSION >= 8) {
+            try {
+                Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                if (renderPageBitmap(docHandle, pageHandle, mRect, matrixArray, bmp)) {
+                    return bmp;
+                } else {
+                    bmp.recycle();
+                }
+            } catch (UnsatisfiedLinkError ex) {
+            }
+        }
+
         final int[] bufferarray = new int[width * height];
         renderPage(docHandle, pageHandle, mRect, matrixArray, bufferarray);
         return Bitmap.createBitmap(bufferarray, width, height, Bitmap.Config.RGB_565);
-        /* JNI BITMAP*/
-        /*
-        if (AndroidVersion.VERSION < 8) {
-            final int[] bufferarray = new int[width * height];
-            renderPage(docHandle, pageHandle, mRect, matrixArray, bufferarray);
-            return Bitmap.createBitmap(bufferarray, width, height, Bitmap.Config.RGB_565);
-        } else {
-            Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-            if (renderPageBitmap(docHandle, pageHandle, mRect, matrixArray, bmp)) {
-                return bmp;
-            } else {
-                bmp.recycle();
-                return null;
-            }
-        }
-        */
     }
 
     private static native void getMediaBox(long handle, float[] mediabox);
@@ -116,8 +119,6 @@ public class PdfPage implements CodecPage {
     private static native void renderPage(long dochandle, long pagehandle, int[] viewboxarray, float[] matrixarray,
             int[] bufferarray);
 
-    
-/* JNI BITMAP API   */ 
-//    private static native boolean renderPageBitmap(long dochandle, long pagehandle, int[] viewboxarray, float[] matrixarray,
-//            Bitmap bitmap);
+    private static native boolean renderPageBitmap(long dochandle, long pagehandle, int[] viewboxarray,
+            float[] matrixarray, Bitmap bitmap);
 }

@@ -376,7 +376,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         SoftReference<Bitmap> bitmapWeakReference;
         SoftReference<Bitmap> nightWeakReference;
 
-        public Bitmap getBitmap() {
+        public synchronized Bitmap getBitmap() {
             Bitmap bmp = bitmap;
             if (bmp == null) {
                 bmp = bitmapWeakReference != null ? bitmapWeakReference.get() : null;
@@ -391,7 +391,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             return null;
         }
 
-        public Bitmap getNightBitmap(final RectF targetRect, final Paint paint) {
+        public synchronized Bitmap getNightBitmap(final RectF targetRect, final Paint paint) {
             Bitmap bmp = nightWeakReference != null ? nightWeakReference.get() : null;
             if (bmp != null && !bmp.isRecycled()) {
                 return bmp;
@@ -402,12 +402,12 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             }
             final Bitmap night = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), Bitmap.Config.RGB_565);
             final Canvas c = new Canvas(night);
-            c.drawBitmap(bitmap, 0, 0, paint);
+            c.drawBitmap(bmp, 0, 0, paint);
             nightWeakReference = new SoftReference<Bitmap>(night);
             return night;
         }
 
-        public void clearDirectRef() {
+        public synchronized void clearDirectRef() {
             if (bitmap != null) {
                 if (LCTX.isDebugEnabled()) {
                     LCTX.d("Clear bitmap reference: " + PageTreeNode.this);
@@ -418,7 +418,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             }
         }
 
-        public void recycle() {
+        public synchronized void recycle() {
             if (bitmap != null && !bitmap.isRecycled()) {
                 if (LCTX.isDebugEnabled()) {
                     LCTX.d("Recycle bitmap reference: " + PageTreeNode.this);
@@ -430,7 +430,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             recycleNightRef();
         }
 
-        public void setBitmap(final Bitmap bitmap) {
+        public synchronized void setBitmap(final Bitmap bitmap) {
             if (bitmap == null) {
                 return;
             }
@@ -450,7 +450,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             }
         }
 
-        void recycleNightRef() {
+        synchronized void recycleNightRef() {
             final Bitmap night = nightWeakReference != null ? nightWeakReference.get() : null;
             if (night != null) {
                 night.recycle();

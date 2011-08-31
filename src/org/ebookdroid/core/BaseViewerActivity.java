@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -51,6 +52,8 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     public static final LogContext LCTX = LogContext.ROOT.lctx("Core");
 
     private static final int DIALOG_GOTO = 0;
+
+    public static final DisplayMetrics DM = new DisplayMetrics();
 
     private IDocumentViewController documentController;
     private Toast pageNumberToast;
@@ -80,6 +83,9 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        getWindowManager().getDefaultDisplay().getMetrics(DM);
+        
         SettingsManager.addListener(this);
 
         frameLayout = createMainContainer();

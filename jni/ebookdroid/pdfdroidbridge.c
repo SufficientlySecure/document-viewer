@@ -2,6 +2,9 @@
 
 #include <android/log.h>
 
+/*JNI BITMAP API
+#include <android/bitmap.h>
+*/
 #include <errno.h>
 
 #include <fitz.h>
@@ -510,24 +513,15 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPage
 
 	buffer = (*env)->GetPrimitiveArrayCritical(env, bufferarray, 0);
 	
-//	pixmap = fz_new_pixmap_with_data(fz_device_bgr, viewbox.x0, viewbox.y0, viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0, (unsigned char*)buffer);
 	pixmap = fz_new_pixmap_with_data(fz_device_bgr, viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0, (unsigned char*)buffer);
 
 	DEBUG("doing the rendering...");
 	
 	fz_clear_pixmap_with_color(pixmap, 0xff);
 
-//Old draw page
-//	dev = fz_newdrawdevice(doc->drawcache, pixmap);
-//	error = pdf_runpage(doc->xref, page->page, dev, ctm);
-//	fz_freedevice(dev);
-//
-
-//New draw page
 	dev = fz_new_draw_device(doc->drawcache, pixmap);
         fz_execute_display_list(page->pageList, dev, ctm, viewbox);
         fz_free_device(dev);
-//
 
 	(*env)->ReleasePrimitiveArrayCritical(env, bufferarray, buffer, 0);
 	
@@ -541,6 +535,91 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPage
 //
 	DEBUG("PdfView.renderPage() done");
 }
+
+#if false
+/*JNI BITMAP API*/
+
+JNIEXPORT jboolean JNICALL
+Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPageBitmap
+	(JNIEnv *env, jobject this, jlong dochandle, jlong pagehandle,
+		jintArray viewboxarray, jfloatArray matrixarray,
+		jobject bitmap)
+{
+	renderdocument_t *doc = (renderdocument_t*) (long)dochandle;
+	renderpage_t *page = (renderpage_t*) (long)pagehandle;
+	DEBUG("PdfView(%p).renderPage(%p, %p)", this, doc, page);
+	fz_error error;
+	fz_matrix ctm;
+	fz_bbox viewbox;
+	fz_pixmap *pixmap;
+	jfloat *matrix;
+	jint *viewboxarr;
+	jint *dimen;
+	int length, val;
+	fz_device *dev = NULL;
+
+    AndroidBitmapInfo info;
+    void *pixels;
+    
+    int ret;
+
+    if ((ret = AndroidBitmap_getInfo(env, bitmap, &info)) < 0) {
+            ERROR("AndroidBitmap_getInfo() failed ! error=%d", ret);
+            return 0;
+    }
+
+    DEBUG("Checking format\n");
+    if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+            ERROR("Bitmap format is not RGBA_8888 !");
+            return 0;
+    }
+
+    DEBUG("locking pixels\n");
+    if ((ret = AndroidBitmap_lockPixels(env, bitmap, &pixels)) < 0) {
+            ERROR("AndroidBitmap_lockPixels() failed ! error=%d", ret);
+            return 0;
+    }
+
+	ctm = fz_identity;
+
+	matrix = (*env)->GetPrimitiveArrayCritical(env, matrixarray, 0);
+	ctm.a = matrix[0];
+	ctm.b = matrix[1];
+	ctm.c = matrix[2];
+	ctm.d = matrix[3];
+	ctm.e = matrix[4];
+	ctm.f = matrix[5];
+	(*env)->ReleasePrimitiveArrayCritical(env, matrixarray, matrix, 0);
+	DEBUG("Matrix: %f %f %f %f %f %f", ctm.a, ctm.b, ctm.c, ctm.d, ctm.e, ctm.f);
+
+
+	viewboxarr = (*env)->GetPrimitiveArrayCritical(env, viewboxarray, 0);
+	viewbox.x0 = viewboxarr[0];
+	viewbox.y0 = viewboxarr[1];
+	viewbox.x1 = viewboxarr[2];
+	viewbox.y1 = viewboxarr[3];
+
+	(*env)->ReleasePrimitiveArrayCritical(env, viewboxarray, viewboxarr, 0);
+	DEBUG("Viewbox: %d %d %d %d", viewbox.x0, viewbox.y0, viewbox.x1, viewbox.y1);
+
+	pixmap = fz_new_pixmap_with_data(fz_device_bgr, viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0, pixels);
+
+	DEBUG("doing the rendering...");
+	
+	fz_clear_pixmap_with_color(pixmap, 0xff);
+
+	dev = fz_new_draw_device(doc->drawcache, pixmap);
+    fz_execute_display_list(page->pageList, dev, ctm, viewbox);
+    fz_free_device(dev);
+	fz_drop_pixmap(pixmap);
+
+	DEBUG("PdfView.renderPage() done");
+	
+    AndroidBitmap_unlockPixels(env, bitmap);
+	
+	return 1;
+}
+#endif
 
 //Outline
 JNIEXPORT jlong JNICALL

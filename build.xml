@@ -1,12 +1,11 @@
 <project name="EBookDroid" basedir="." default="debug">
 
+    <property file="build.properties" />
     <property file="default.properties" />
 
     <tstamp>
         <format property="debug.version" pattern="yyyyMMdd.HHmmss" />
     </tstamp>
-
-    <property name="sdk.dir" location="/opt/android/android-sdk-linux_x86" />
 
     <property name="aapt" value="${sdk.dir}/platform-tools/aapt" />
     <property name="dx" value="${sdk.dir}/platform-tools/dx" />

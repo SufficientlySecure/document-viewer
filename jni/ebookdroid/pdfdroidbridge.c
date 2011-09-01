@@ -549,23 +549,23 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_isNativeGraphicsAvailable
 
 JNIEXPORT jboolean JNICALL
 Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPageBitmap
-	(JNIEnv *env, jobject this, jlong dochandle, jlong pagehandle,
-		jintArray viewboxarray, jfloatArray matrixarray,
-		jobject bitmap)
+    (JNIEnv *env, jobject this, jlong dochandle, jlong pagehandle,
+	jintArray viewboxarray, jfloatArray matrixarray,
+	jobject bitmap)
 {
 //#ifdef USE_JNI_BITMAP_API
-	renderdocument_t *doc = (renderdocument_t*) (long)dochandle;
-	renderpage_t *page = (renderpage_t*) (long)pagehandle;
-	DEBUG("PdfView(%p).renderPageBitmap(%p, %p)", this, doc, page);
-	fz_error error;
-	fz_matrix ctm;
-	fz_bbox viewbox;
-	fz_pixmap *pixmap;
-	jfloat *matrix;
-	jint *viewboxarr;
-	jint *dimen;
-	int length, val;
-	fz_device *dev = NULL;
+    renderdocument_t *doc = (renderdocument_t*) (long)dochandle;
+    renderpage_t *page = (renderpage_t*) (long)pagehandle;
+    DEBUG("PdfView(%p).renderPageBitmap(%p, %p)", this, doc, page);
+    fz_error error;
+    fz_matrix ctm;
+    fz_bbox viewbox;
+    fz_pixmap *pixmap;
+    jfloat *matrix;
+    jint *viewboxarr;
+    jint *dimen;
+    int length, val;
+    fz_device *dev = NULL;
 
     AndroidBitmapInfo info;
     void *pixels;
@@ -589,44 +589,42 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPageBitmap
             return 0;
     }
 
-	ctm = fz_identity;
+    ctm = fz_identity;
 
-	matrix = (*env)->GetPrimitiveArrayCritical(env, matrixarray, 0);
-	ctm.a = matrix[0];
-	ctm.b = matrix[1];
-	ctm.c = matrix[2];
-	ctm.d = matrix[3];
-	ctm.e = matrix[4];
-	ctm.f = matrix[5];
-	(*env)->ReleasePrimitiveArrayCritical(env, matrixarray, matrix, 0);
-	DEBUG("Matrix: %f %f %f %f %f %f", ctm.a, ctm.b, ctm.c, ctm.d, ctm.e, ctm.f);
+    matrix = (*env)->GetPrimitiveArrayCritical(env, matrixarray, 0);
+    ctm.a = matrix[0];
+    ctm.b = matrix[1];
+    ctm.c = matrix[2];
+    ctm.d = matrix[3];
+    ctm.e = matrix[4];
+    ctm.f = matrix[5];
+    (*env)->ReleasePrimitiveArrayCritical(env, matrixarray, matrix, 0);
+    DEBUG("Matrix: %f %f %f %f %f %f", ctm.a, ctm.b, ctm.c, ctm.d, ctm.e, ctm.f);
 
+    viewboxarr = (*env)->GetPrimitiveArrayCritical(env, viewboxarray, 0);
+    viewbox.x0 = viewboxarr[0];
+    viewbox.y0 = viewboxarr[1];
+    viewbox.x1 = viewboxarr[2];
+    viewbox.y1 = viewboxarr[3];
+    (*env)->ReleasePrimitiveArrayCritical(env, viewboxarray, viewboxarr, 0);
+    DEBUG("Viewbox: %d %d %d %d", viewbox.x0, viewbox.y0, viewbox.x1, viewbox.y1);
 
-	viewboxarr = (*env)->GetPrimitiveArrayCritical(env, viewboxarray, 0);
-	viewbox.x0 = viewboxarr[0];
-	viewbox.y0 = viewboxarr[1];
-	viewbox.x1 = viewboxarr[2];
-	viewbox.y1 = viewboxarr[3];
+    pixmap = fz_new_pixmap_with_data(fz_device_rgb, viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0, pixels);
 
-	(*env)->ReleasePrimitiveArrayCritical(env, viewboxarray, viewboxarr, 0);
-	DEBUG("Viewbox: %d %d %d %d", viewbox.x0, viewbox.y0, viewbox.x1, viewbox.y1);
+    DEBUG("doing the rendering...");
 
-	pixmap = fz_new_pixmap_with_data(fz_device_rgb, viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0, pixels);
+    fz_clear_pixmap_with_color(pixmap, 0xff);
 
-	DEBUG("doing the rendering...");
-
-	fz_clear_pixmap_with_color(pixmap, 0xff);
-
-	dev = fz_new_draw_device(doc->drawcache, pixmap);
+    dev = fz_new_draw_device(doc->drawcache, pixmap);
     fz_execute_display_list(page->pageList, dev, ctm, viewbox);
     fz_free_device(dev);
-	fz_drop_pixmap(pixmap);
+    fz_drop_pixmap(pixmap);
 
-	DEBUG("PdfView.renderPage() done");
+    DEBUG("PdfView.renderPage() done");
 
     NativeBitmap_unlockPixels(env, bitmap);
 
-	return 1;
+    return 1;
 //#else
 //	DEBUG("PdfView(%p).renderPageBitmap(): not implemented", this);
 //	return 0;
@@ -638,11 +636,11 @@ JNIEXPORT jlong JNICALL
 	Java_org_ebookdroid_pdfdroid_codec_PdfOutline_open
 	(JNIEnv *env, jclass clazz, jlong dochandle)
 {
-	renderdocument_t *doc = (renderdocument_t*) (long)dochandle;
-	if(!doc->outline)
-	    doc->outline = pdf_load_outline(doc->xref);
-	DEBUG("PdfOutline.open(): return handle = %p", doc->outline);
-	return (jlong) (long)doc->outline;
+    renderdocument_t *doc = (renderdocument_t*) (long)dochandle;
+    if(!doc->outline)
+        doc->outline = pdf_load_outline(doc->xref);
+    DEBUG("PdfOutline.open(): return handle = %p", doc->outline);
+    return (jlong) (long)doc->outline;
 }
 
 JNIEXPORT void JNICALL

@@ -541,6 +541,11 @@ Java_org_ebookdroid_djvudroid_codec_DjvuPage_renderPageBitmap(JNIEnv *env,
 //    	DEBUG_WRITE("Bitmap format is not RGBA_8888 !");
 //            return 0;
 //    }
+    if (info.format != ANDROID_BITMAP_FORMAT_RGB_565) {
+    	DEBUG_WRITE("Bitmap format is not RGB_565 !");
+            return 0;
+    }
+
 
     DEBUG_WRITE("locking pixels");
     if ((ret = NativeBitmap_lockPixels(env, bitmap, &pixels)) < 0) {

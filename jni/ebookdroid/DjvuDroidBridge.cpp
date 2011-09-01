@@ -537,10 +537,10 @@ Java_org_ebookdroid_djvudroid_codec_DjvuPage_renderPageBitmap(JNIEnv *env,
     }
 
     DEBUG_WRITE("Checking format");
-    if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
-    	DEBUG_WRITE("Bitmap format is not RGBA_8888 !");
-            return 0;
-    }
+//    if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+//    	DEBUG_WRITE("Bitmap format is not RGBA_8888 !");
+//            return 0;
+//    }
 
     DEBUG_WRITE("locking pixels");
     if ((ret = NativeBitmap_lockPixels(env, bitmap, &pixels)) < 0) {
@@ -560,12 +560,16 @@ Java_org_ebookdroid_djvudroid_codec_DjvuPage_renderPageBitmap(JNIEnv *env,
     targetRect.y = pageSliceY * targetHeight / pageSliceHeight;
     targetRect.w = targetWidth;
     targetRect.h = targetHeight;
-    unsigned int masks[] = {0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000};
-    ddjvu_format_t* pixelFormat = ddjvu_format_create(DDJVU_FORMAT_RGBMASK32, 4, masks);
+    unsigned int masks[] = {0xF800, 0x07E0, 0x001F};
+    ddjvu_format_t* pixelFormat = ddjvu_format_create(DDJVU_FORMAT_RGBMASK16, 3, masks);
+//    unsigned int masks[] = {0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000};    
+//    ddjvu_format_t* pixelFormat = ddjvu_format_create(DDJVU_FORMAT_RGBMASK32, 4, masks);
+
     ddjvu_format_set_row_order(pixelFormat, TRUE);
     ddjvu_format_set_y_direction(pixelFormat, TRUE);
 
-    jboolean result = ddjvu_page_render(page, DDJVU_RENDER_COLOR, &pageRect, &targetRect, pixelFormat, targetWidth * 4, (char*)pixels);
+//    jboolean result = ddjvu_page_render(page, DDJVU_RENDER_COLOR, &pageRect, &targetRect, pixelFormat, targetWidth * 4, (char*)pixels);
+    jboolean result = ddjvu_page_render(page, DDJVU_RENDER_COLOR, &pageRect, &targetRect, pixelFormat, targetWidth * 2, (char*)pixels);
 
     ddjvu_format_release(pixelFormat);
 

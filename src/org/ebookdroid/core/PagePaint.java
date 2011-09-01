@@ -10,19 +10,20 @@ public enum PagePaint {
 
     NIGHT(Color.WHITE, Color.BLACK);
 
-    private final Paint bitmapPaint;
-    private final Paint bitmapNightPaint;
-    private final TextPaint textPaint = new TextPaint();
-    private final Paint fillPaint = new Paint();
-    private final Paint strokePaint = new Paint();
+    public final Paint bitmapPaint;
+    public final Paint nightBitmapPaint;
+    public final TextPaint textPaint = new TextPaint();
+    public final Paint fillPaint = new Paint();
+    public final Paint decodingPaint = new Paint();
+    public final Paint strokePaint = new Paint();
 
     private PagePaint(final int textColor, final int fillColor) {
         bitmapPaint = new Paint();
         bitmapPaint.setFilterBitmap(true);
 
-        bitmapNightPaint = new Paint();
-        bitmapNightPaint.setFilterBitmap(true);
-        bitmapNightPaint.setXfermode(new PixelXorXfermode(-1));
+        nightBitmapPaint = new Paint();
+        nightBitmapPaint.setFilterBitmap(true);
+        nightBitmapPaint.setXfermode(new PixelXorXfermode(-1));
 
         textPaint.setColor(textColor);
         textPaint.setAntiAlias(true);
@@ -32,28 +33,11 @@ public enum PagePaint {
         fillPaint.setColor(fillColor);
         fillPaint.setStyle(Paint.Style.FILL);
 
+        decodingPaint.setColor(Color.GRAY);
+        decodingPaint.setStyle(Paint.Style.FILL);
+
         strokePaint.setColor(textColor);
         strokePaint.setStyle(Paint.Style.STROKE);
         strokePaint.setStrokeWidth(2);
-    }
-
-    public Paint getBitmapPaint() {
-        return bitmapPaint;
-    }
-
-    public Paint getNightBitmapPaint() {
-        return bitmapNightPaint;
-    }
-
-    public TextPaint getTextPaint() {
-        return textPaint;
-    }
-
-    public Paint getFillPaint() {
-        return fillPaint;
-    }
-
-    public Paint getStrokePaint() {
-        return strokePaint;
     }
 }

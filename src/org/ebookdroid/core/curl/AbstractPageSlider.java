@@ -80,7 +80,7 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
         }
         final PagePaint paint = !(SettingsManager.getAppSettings().getNightMode()) ? PagePaint.NIGHT : PagePaint.DAY;
 
-        bitmap.eraseColor(paint.getFillPaint().getColor());
+        bitmap.eraseColor(paint.fillPaint.getColor());
 
         return bitmap;
     }

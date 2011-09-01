@@ -55,24 +55,29 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     @Override
     public int compare(final PageTreeNode node1, final PageTreeNode node2) {
-        final RectF viewRect = getViewRect();
-        final RectF rect1 = node1.getTargetRect(viewRect, node1.page.getBounds());
-        final RectF rect2 = node1.getTargetRect(viewRect, node2.page.getBounds());
-
         final int cp = getCurrentPage();
+        final int viewIndex1 = node1.page.index.viewIndex;
+        final int viewIndex2 = node2.page.index.viewIndex;
 
-        if (node1.page.index.viewIndex == cp && node2.page.index.viewIndex == cp) {
-            int res = CompareUtils.compare(rect1.top, rect2.top);
+        int res = 0;
+
+        if (viewIndex1 == cp && viewIndex2 == cp) {
+            res = CompareUtils.compare(node1.pageSliceBounds.top, node2.pageSliceBounds.top);
             if (res == 0) {
-                res = CompareUtils.compare(rect1.left, rect2.left);
+                res = CompareUtils.compare(node1.pageSliceBounds.left, node2.pageSliceBounds.left);
             }
-            return res;
+        } else {
+            float d1 = viewIndex1 + node1.pageSliceBounds.top - (cp + 0.5f);
+            float d2 = viewIndex2 + node2.pageSliceBounds.top - (cp + 0.5f);
+            final int dist1 = Math.abs((int) (d1 * node1.childrenZoomThreshold));
+            final int dist2 = Math.abs((int) (d2 * node2.childrenZoomThreshold));
+            res = CompareUtils.compare(dist1, dist2);
+            if (res == 0) {
+                res = -CompareUtils.compare(viewIndex1, viewIndex2);
+            }
         }
 
-        final int dist1 = Math.abs(node1.page.index.viewIndex - cp);
-        final int dist2 = Math.abs(node2.page.index.viewIndex - cp);
-
-        return CompareUtils.compare(dist1, dist2);
+        return res;
     }
 
     @Override

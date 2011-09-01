@@ -4,6 +4,7 @@ import org.ebookdroid.core.codec.CodecContext;
 import org.ebookdroid.core.codec.CodecDocument;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
+import org.ebookdroid.core.log.EmergencyHandler;
 import org.ebookdroid.core.log.LogContext;
 
 import android.graphics.Bitmap;
@@ -11,18 +12,13 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 import java.lang.ref.SoftReference;
+import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Future;
-import java.util.concurrent.PriorityBlockingQueue;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -48,9 +44,9 @@ public class DecodeServiceBase implements DecodeService {
         private static final long serialVersionUID = -8845124816503128098L;
 
         @Override
-        protected boolean removeEldestEntry(final Entry<Integer, SoftReference<CodecPage>> eldest) {
+        protected boolean removeEldestEntry(final Map.Entry<Integer, SoftReference<CodecPage>> eldest) {
             if (this.size() > PAGE_POOL_SIZE) {
-                SoftReference<CodecPage> value = eldest != null ? eldest.getValue() :null;
+                SoftReference<CodecPage> value = eldest != null ? eldest.getValue() : null;
                 final CodecPage codecPage = value != null ? value.get() : null;
                 if (codecPage != null) {
                     if (LCTX.isDebugEnabled()) {
@@ -62,7 +58,6 @@ public class DecodeServiceBase implements DecodeService {
             }
             return false;
         }
-
     };
 
     public DecodeServiceBase(final CodecContext codecContext) {
@@ -72,6 +67,11 @@ public class DecodeServiceBase implements DecodeService {
     @Override
     public void open(final String fileName, final String password) {
         document = codecContext.openDocument(fileName, password);
+    }
+
+    @Override
+    public CodecPageInfo getPageInfo(final int pageIndex) {
+        return document.getPageInfo(pageIndex);
     }
 
     @Override
@@ -118,7 +118,7 @@ public class DecodeServiceBase implements DecodeService {
             }
 
             final Rect r = getScaledSize(task, vuPage);
-            LCTX.d("Rendering bitmap size: "+r);
+            LCTX.d("Rendering bitmap size: " + r);
             final Bitmap bitmap = vuPage.renderBitmap(r.width(), r.height(), task.pageSliceBounds);
 
             if (executor.isTaskDead(task)) {
@@ -132,7 +132,7 @@ public class DecodeServiceBase implements DecodeService {
             finishDecoding(task, vuPage, bitmap);
         } catch (OutOfMemoryError ex) {
             LCTX.e("Task " + task.id + ": No memory to decode " + task.node);
-            for(int i=0; i < PAGE_POOL_SIZE; i++) {
+            for (int i = 0; i < PAGE_POOL_SIZE; i++) {
                 pages.put(Integer.MAX_VALUE - i, null);
             }
             vuPage.recycle();
@@ -150,7 +150,8 @@ public class DecodeServiceBase implements DecodeService {
         final RectF nodeBounds = task.pageSliceBounds;
         final float zoom = task.zoom;
 
-        return task.nativeResolution ? getScaledSize(pageWidth, pageWidth, pageHeight, nodeBounds, 1.0f) : getScaledSize(viewWidth, pageWidth, pageHeight, nodeBounds, zoom);
+        return task.nativeResolution ? getScaledSize(pageWidth, pageWidth, pageHeight, nodeBounds, 1.0f)
+                : getScaledSize(viewWidth, pageWidth, pageHeight, nodeBounds, zoom);
     }
 
     @Override
@@ -206,31 +207,63 @@ public class DecodeServiceBase implements DecodeService {
         }
     }
 
-    class Executor implements RejectedExecutionHandler, Comparator<Runnable> {
+    class Executor implements Runnable, Comparator<Runnable> {
 
         final Map<PageTreeNode, DecodeTask> decodingTasks = new IdentityHashMap<PageTreeNode, DecodeTask>();
-        final Map<Long, Future<?>> decodingFutures = new HashMap<Long, Future<?>>();
 
-        final BlockingQueue<Runnable> queue;
-        final ThreadPoolExecutor executorService;
-
+        final LinkedList<Runnable> queue;
+        final Thread thread;
         final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+        final AtomicBoolean run = new AtomicBoolean(true);
 
         Executor() {
-            queue = new PriorityBlockingQueue<Runnable>(16, this);
-            executorService = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, queue);
-            executorService.setRejectedExecutionHandler(this);
+            queue = new LinkedList<Runnable>();
+            thread = new Thread(this);
+            thread.start();
+        }
+
+        public void run() {
+            try {
+                while (run.get()) {
+                    Runnable r = nextTask();
+                    if (r != null) {
+                        r.run();
+                    }
+                }
+
+            } catch (Throwable th) {
+                LCTX.e("Decoding service executor failed: " + th.getMessage(), th);
+                EmergencyHandler.onUnexpectedError(th);
+            }
+        }
+
+        Runnable nextTask() {
+            synchronized (run) {
+                try {
+                    run.wait(1000);
+                } catch (InterruptedException ex) {
+                    Thread.interrupted();
+                }
+            }
+
+            lock.writeLock().lock();
+            try {
+                Runnable best = Collections.min(queue, this);
+                queue.remove(best);
+                return best;
+            } finally {
+                lock.writeLock().unlock();
+            }
         }
 
         public void add(final DecodeTask task) {
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("Adding decoding task: " + task + " for " + task.node);
+            }
+
             lock.writeLock().lock();
             try {
-                if (LCTX.isDebugEnabled()) {
-                    LCTX.d("Adding decoding task: " + task + " for " + task.node);
-                }
-
                 final DecodeTask running = decodingTasks.get(task.node);
-
                 if (running != null && running.equals(task) && !isTaskDead(running)) {
                     if (LCTX.isDebugEnabled()) {
                         LCTX.d("The similar task is running: " + running.id + " for " + task.node);
@@ -243,8 +276,11 @@ public class DecodeServiceBase implements DecodeService {
                 }
 
                 decodingTasks.put(task.node, task);
+                queue.offer(task);
 
-                decodingFutures.put(task.id, executorService.submit(task));
+                synchronized (run) {
+                    run.notifyAll();
+                }
 
                 if (running != null) {
                     stopDecoding(running, null, "canceled by new one");
@@ -270,28 +306,22 @@ public class DecodeServiceBase implements DecodeService {
             final DecodeTask t1 = (DecodeTask) r1;
             final DecodeTask t2 = (DecodeTask) r2;
 
-            return t1.node.getBase().getDocumentController().compare(t1.node, t2.node);
+            int res = t1.node.getBase().getDocumentController().compare(t1.node, t2.node);
+            return res;
         }
 
         public void stopDecoding(final DecodeTask task, final PageTreeNode node, final String reason) {
             lock.writeLock().lock();
             try {
                 final DecodeTask removed = task == null ? decodingTasks.remove(node) : task;
-                final Future<?> future = removed != null ? decodingFutures.remove(removed.id) : null;
 
                 if (removed != null) {
+                    removed.cancelled.set(true);
+                    queue.remove(removed);
                     if (LCTX.isDebugEnabled()) {
                         LCTX.d("Task " + removed.id + ": Stop decoding task with reason: " + reason + " for "
                                 + removed.node);
                     }
-                }
-                if (future != null) {
-                    if (removed == null) {
-                        if (LCTX.isDebugEnabled()) {
-                            LCTX.d("Stop decoding task for " + node + " with reason: " + reason);
-                        }
-                    }
-                    future.cancel(false);
                 }
             } finally {
                 lock.writeLock().unlock();
@@ -299,23 +329,7 @@ public class DecodeServiceBase implements DecodeService {
         }
 
         public boolean isTaskDead(final DecodeTask task) {
-            lock.readLock().lock();
-            try {
-                final Future<?> future = decodingFutures.get(task.id);
-                if (future != null) {
-                    return future.isCancelled();
-                }
-                return true;
-            } finally {
-                lock.readLock().unlock();
-            }
-        }
-
-        @Override
-        public void rejectedExecution(final Runnable r, final ThreadPoolExecutor executor) {
-            if (r instanceof DecodeTask) {
-                stopDecoding(((DecodeTask) r), null, "rejected by executor");
-            }
+            return task.cancelled.get();
         }
 
         public void recycle() {
@@ -324,7 +338,8 @@ public class DecodeServiceBase implements DecodeService {
                 for (final DecodeTask task : decodingTasks.values()) {
                     stopDecoding(task, null, "recycling");
                 }
-                executorService.submit(new Runnable() {
+
+                queue.offer(new Runnable() {
 
                     @Override
                     public void run() {
@@ -338,9 +353,14 @@ public class DecodeServiceBase implements DecodeService {
                             document.recycle();
                         }
                         codecContext.recycle();
-                        executorService.shutdown();
+                        run.set(false);
                     }
                 });
+
+                synchronized (run) {
+                    run.notifyAll();
+                }
+
             } finally {
                 lock.writeLock().unlock();
             }
@@ -350,6 +370,8 @@ public class DecodeServiceBase implements DecodeService {
     class DecodeTask implements Runnable {
 
         final long id = TASK_ID_SEQ.incrementAndGet();
+        final AtomicBoolean cancelled = new AtomicBoolean();
+
         final PageTreeNode node;
         final int pageNumber;
         final float zoom;
@@ -358,7 +380,8 @@ public class DecodeServiceBase implements DecodeService {
         final int targetWidth;
         final boolean nativeResolution;
 
-        DecodeTask(final DecodeCallback decodeCallback, final int targetWidth, final float zoom, final PageTreeNode node, final boolean nativeResolution) {
+        DecodeTask(final DecodeCallback decodeCallback, final int targetWidth, final float zoom,
+                final PageTreeNode node, final boolean nativeResolution) {
             this.pageNumber = node.getDocumentPageIndex();
             this.decodeCallback = decodeCallback;
             this.zoom = zoom;
@@ -405,11 +428,6 @@ public class DecodeServiceBase implements DecodeService {
             buf.append("]");
             return buf.toString();
         }
-    }
-
-    @Override
-    public CodecPageInfo getPageInfo(final int pageIndex) {
-        return document.getPageInfo(pageIndex);
     }
 
 }

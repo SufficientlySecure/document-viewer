@@ -63,17 +63,17 @@ public class Page {
             RectF nodesBounds = new RectF(bounds);
             bounds.offset(-viewRect.left, -viewRect.top);
 
-            canvas.drawRect(bounds, paint.getFillPaint());
+            canvas.drawRect(bounds, paint.fillPaint);
 
-            TextPaint textPaint = paint.getTextPaint();
+            TextPaint textPaint = paint.textPaint;
             textPaint.setTextSize(24 * base.getZoomModel().getZoom());
             canvas.drawText(base.getContext().getString(R.string.text_page) + " " + (index.viewIndex + 1),
                     bounds.centerX(), bounds.centerY(), textPaint);
 
             nodes.root.draw(canvas, viewRect, nodesBounds, paint);
 
-            canvas.drawLine(bounds.left, bounds.top, bounds.right, bounds.top, paint.getStrokePaint());
-            canvas.drawLine(bounds.left, bounds.bottom, bounds.right, bounds.bottom, paint.getStrokePaint());
+            canvas.drawLine(bounds.left, bounds.top, bounds.right, bounds.top, paint.strokePaint);
+            canvas.drawLine(bounds.left, bounds.bottom, bounds.right, bounds.bottom, paint.strokePaint);
             return true;
         }
         return false;

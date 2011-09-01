@@ -146,7 +146,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
 
             final PagePaint paint = !(SettingsManager.getAppSettings().getNightMode()) ? PagePaint.NIGHT : PagePaint.DAY;
 
-            canvas.drawRect(canvas.getClipBounds(), paint.getFillPaint());
+            canvas.drawRect(canvas.getClipBounds(), paint.fillPaint);
 
             page.draw(canvas, viewRect, true);
             canvas.restore();

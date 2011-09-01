@@ -237,23 +237,16 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         }
         Bitmap bitmap = null;
 
-        // final long start = System.currentTimeMillis();
-
         if (SettingsManager.getAppSettings().getNightMode()) {
-            bitmap = holder.getNightBitmap(tr, paint.getNightBitmapPaint());
+            bitmap = holder.getNightBitmap(tr, paint.nightBitmapPaint);
         } else {
             bitmap = getBitmap();
         }
 
         if (bitmap != null) {
-            canvas.drawRect(tr, paint.getFillPaint());
-            canvas.drawBitmap(bitmap, null, tr, paint.getBitmapPaint());
-            // final long end = System.currentTimeMillis();
-            // if (LCTX.isDebugEnabled()) {
-            // LCTX.d("Draw node: " + page.index.viewIndex + ":" + id + ": [" + bitmap.getWidth() + ", "
-            // + bitmap.getHeight() + "] => [" + (int) tr.width() + ", " + (int) tr.height() + "]: "
-            // + (end - start) + " ms");
-            // }
+            canvas.drawBitmap(bitmap, null, tr, paint.bitmapPaint);
+        } else if (decodingNow.get()) {
+            canvas.drawRect(tr, paint.decodingPaint);
         }
 
         drawBrightnessFilter(canvas, tr);
@@ -352,6 +345,14 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
         buf.append("]");
         return buf.toString();
+    }
+
+    public String getShortId() {
+        return page.index.viewIndex + ":" + id;
+    }
+
+    public String getFullId() {
+        return page.index + ":" + id;
     }
 
     public int getDocumentPageIndex() {

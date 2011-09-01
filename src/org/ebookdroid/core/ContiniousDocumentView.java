@@ -7,7 +7,6 @@ import org.ebookdroid.utils.CompareUtils;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.view.View;
 
 public class ContiniousDocumentView extends AbstractDocumentView {
 
@@ -93,46 +92,26 @@ public class ContiniousDocumentView extends AbstractDocumentView {
 
     @Override
     public int compare(final PageTreeNode node1, final PageTreeNode node2) {
-        final RectF viewRect = getViewRect();
-        final RectF rect1 = node1.getTargetRect(viewRect, node1.page.getBounds());
-        final RectF rect2 = node2.getTargetRect(viewRect, node2.page.getBounds());
-
         final int cp = getCurrentPage();
+        final int viewIndex1 = node1.page.index.viewIndex;
+        final int viewIndex2 = node2.page.index.viewIndex;
 
-        final View view = node1.page.base.getView();
-        final RectF realViewRect = new RectF(0, 0, view.getWidth(), view.getHeight());
+        int res = 0;
 
-        if (node1.page.index.viewIndex == cp && node2.page.index.viewIndex == cp) {
-            int res = CompareUtils.compare(rect1.top, rect2.top);
+        if (viewIndex1 == cp && viewIndex2 == cp) {
+            res = CompareUtils.compare(node1.pageSliceBounds.top, node2.pageSliceBounds.top);
             if (res == 0) {
-                res = CompareUtils.compare(rect1.left, rect2.left);
+                res = CompareUtils.compare(node1.pageSliceBounds.left, node2.pageSliceBounds.left);
             }
-            return res;
-        }
-
-        if (node1.page.index.viewIndex == cp && node2.page.index.viewIndex != cp) {
-            return -1;
-        }
-
-        if (node1.page.index.viewIndex != cp && node2.page.index.viewIndex == cp) {
-            return 1;
-        }
-
-        final long centerX = ((long) realViewRect.left + (long) realViewRect.right) / 2;
-        final long centerY = ((long) realViewRect.top + (long) realViewRect.bottom) / 2;
-
-        final long centerX1 = ((long) rect1.left + (long) rect1.right) / 2;
-        final long centerY1 = ((long) rect1.top + (long) rect1.bottom) / 2;
-
-        final long centerX2 = ((long) rect2.left + (long) rect2.right) / 2;
-        final long centerY2 = ((long) rect2.top + (long) rect2.bottom) / 2;
-
-        final long dist1 = (centerX1 - centerX) * (centerX1 - centerX) + (centerY1 - centerY) * (centerY1 - centerY);
-        final long dist2 = (centerX2 - centerX) * (centerX2 - centerX) + (centerY2 - centerY) * (centerY2 - centerY);
-
-        int res = CompareUtils.compare(dist1, dist2);
-        if (res == 0) {
-            res = CompareUtils.compare(rect1.left, rect2.left);
+        } else {
+            float d1 = viewIndex1 + node1.pageSliceBounds.top - (cp + 0.5f);
+            float d2 = viewIndex2 + node2.pageSliceBounds.top - (cp + 0.5f);
+            final int dist1 = Math.abs((int) (d1 * node1.childrenZoomThreshold));
+            final int dist2 = Math.abs((int) (d2 * node2.childrenZoomThreshold));
+            res = CompareUtils.compare(dist1, dist2);
+            if (res == 0) {
+                res = -CompareUtils.compare(viewIndex1, viewIndex2);
+            }
         }
         return res;
     }

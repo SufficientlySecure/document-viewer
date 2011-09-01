@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class DecodeServiceBase implements DecodeService {
 
@@ -213,7 +213,7 @@ public class DecodeServiceBase implements DecodeService {
 
         final LinkedList<Runnable> queue;
         final Thread thread;
-        final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+        final ReentrantLock lock = new ReentrantLock();
         final AtomicBoolean run = new AtomicBoolean(true);
 
         Executor() {
@@ -246,13 +246,16 @@ public class DecodeServiceBase implements DecodeService {
                 }
             }
 
-            lock.writeLock().lock();
+            lock.lock();
             try {
-                Runnable best = Collections.min(queue, this);
-                queue.remove(best);
-                return best;
+                if (!queue.isEmpty()) {
+                    Runnable best = Collections.min(queue, this);
+                    queue.remove(best);
+                    return best;
+                }
+                return null;
             } finally {
-                lock.writeLock().unlock();
+                lock.unlock();
             }
         }
 
@@ -261,7 +264,7 @@ public class DecodeServiceBase implements DecodeService {
                 LCTX.d("Adding decoding task: " + task + " for " + task.node);
             }
 
-            lock.writeLock().lock();
+            lock.lock();
             try {
                 final DecodeTask running = decodingTasks.get(task.node);
                 if (running != null && running.equals(task) && !isTaskDead(running)) {
@@ -286,7 +289,7 @@ public class DecodeServiceBase implements DecodeService {
                     stopDecoding(running, null, "canceled by new one");
                 }
             } finally {
-                lock.writeLock().unlock();
+                lock.unlock();
             }
         }
 
@@ -311,7 +314,7 @@ public class DecodeServiceBase implements DecodeService {
         }
 
         public void stopDecoding(final DecodeTask task, final PageTreeNode node, final String reason) {
-            lock.writeLock().lock();
+            lock.lock();
             try {
                 final DecodeTask removed = task == null ? decodingTasks.remove(node) : task;
 
@@ -324,7 +327,7 @@ public class DecodeServiceBase implements DecodeService {
                     }
                 }
             } finally {
-                lock.writeLock().unlock();
+                lock.unlock();
             }
         }
 
@@ -333,7 +336,7 @@ public class DecodeServiceBase implements DecodeService {
         }
 
         public void recycle() {
-            lock.writeLock().lock();
+            lock.lock();
             try {
                 for (final DecodeTask task : decodingTasks.values()) {
                     stopDecoding(task, null, "recycling");
@@ -362,7 +365,7 @@ public class DecodeServiceBase implements DecodeService {
                 }
 
             } finally {
-                lock.writeLock().unlock();
+                lock.unlock();
             }
         }
     }

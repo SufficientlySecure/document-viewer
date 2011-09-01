@@ -1,6 +1,6 @@
 package org.ebookdroid.core;
 
-public class VuDroidLibraryLoader {
+public class EBookDroidLibraryLoader {
 
     private static boolean alreadyLoaded = false;
 
@@ -11,4 +11,6 @@ public class VuDroidLibraryLoader {
         System.loadLibrary("ebookdroid");
         alreadyLoaded = true;
     }
+    
+    public static native void free();
 }

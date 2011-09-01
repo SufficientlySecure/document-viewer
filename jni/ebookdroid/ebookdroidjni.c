@@ -28,9 +28,10 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
 JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *jvm, void *reserved)
 {
     __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "Unloading EBookDroid JNI library based on MuPDF and DjVuLibre");
+    present = 0;
     if(handler)
 	dlclose(handler);
-    present = 0;
+    handler = NULL;
 }
 
 JNIEXPORT jboolean JNICALL
@@ -40,6 +41,7 @@ Java_org_ebookdroid_core_EBookDroidLibraryLoader_free(JNIEnv *env, jobject this)
     present = 0;
     if(handler)
 	dlclose(handler);
+    handler = NULL;
 }
 
 int NativePresent()

@@ -103,7 +103,7 @@ public class PageTree {
                 if (child == null) {
                     return false;
                 }
-                if (!child.isVisible(viewState, pageBounds)) {
+                if (!viewState.isNodeVisible(child, pageBounds)) {
                     return false;
                 }
                 if (child.getBitmap() == null && !child.decodingNow.get()

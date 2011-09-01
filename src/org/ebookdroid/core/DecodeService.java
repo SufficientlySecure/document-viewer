@@ -13,7 +13,7 @@ public interface DecodeService {
 
     void open(String fileName, String password);
 
-    void decodePage(PageTreeNode node, ViewState viewState, DecodeCallback decodeCallback, boolean nativeResolution);
+    void decodePage(ViewState viewState, PageTreeNode node);
 
     void stopDecoding(PageTreeNode node, String reason);
 

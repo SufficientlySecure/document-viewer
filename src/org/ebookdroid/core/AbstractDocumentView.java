@@ -135,8 +135,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
     protected void decodePageTreeNodes(final ViewState viewState, final List<PageTreeNode> nodesToDecode) {
         for (final PageTreeNode pageTreeNode : nodesToDecode) {
-            base.getDecodeService().decodePage(pageTreeNode, viewState, pageTreeNode,
-                    pageTreeNode.page.nativeResolution);
+            base.getDecodeService().decodePage(viewState, pageTreeNode);
         }
     }
 

@@ -82,9 +82,8 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     @Override
-    public void decodePage(final PageTreeNode node, final ViewState viewState, final DecodeCallback decodeCallback,
-            final boolean nativeResolution) {
-        final DecodeTask decodeTask = new DecodeTask(decodeCallback, viewState, node, nativeResolution);
+    public void decodePage(final ViewState viewState, final PageTreeNode node) {
+        final DecodeTask decodeTask = new DecodeTask(viewState, node);
         updateViewState(viewState);
 
         if (isRecycled.get()) {
@@ -157,7 +156,7 @@ public class DecodeServiceBase implements DecodeService {
         final RectF nodeBounds = task.pageSliceBounds;
         final float zoom = task.viewState.zoom;
 
-        return task.nativeResolution ? getScaledSize(pageWidth, pageWidth, pageHeight, nodeBounds, 1.0f)
+        return task.viewState.nativeResolution ? getScaledSize(pageWidth, pageWidth, pageHeight, nodeBounds, 1.0f)
                 : getScaledSize(viewWidth, pageWidth, pageHeight, nodeBounds, zoom);
     }
 
@@ -194,7 +193,7 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     void updateImage(final DecodeTask currentDecodeTask, final CodecPage page, final Bitmap bitmap) {
-        currentDecodeTask.decodeCallback.decodeComplete(page, bitmap);
+        currentDecodeTask.node.decodeComplete(page, bitmap);
     }
 
     @Override
@@ -428,18 +427,13 @@ public class DecodeServiceBase implements DecodeService {
         final PageTreeNode node;
         final ViewState viewState;
         final int pageNumber;
-        final DecodeCallback decodeCallback;
         final RectF pageSliceBounds;
-        final boolean nativeResolution;
 
-        DecodeTask(final DecodeCallback decodeCallback, final ViewState viewState, final PageTreeNode node,
-                final boolean nativeResolution) {
+        DecodeTask(final ViewState viewState, final PageTreeNode node) {
             this.pageNumber = node.getDocumentPageIndex();
-            this.decodeCallback = decodeCallback;
             this.viewState = viewState;
             this.node = node;
             this.pageSliceBounds = node.getPageSliceBounds();
-            this.nativeResolution = nativeResolution;
         }
 
         @Override

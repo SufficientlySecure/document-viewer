@@ -23,11 +23,8 @@ public class Page {
     float aspectRatio;
     final PageType pageType;
     boolean recycled;
-    boolean lowMemory;
     private float storedZoom;
     private RectF zoomedBounds;
-
-    boolean nativeResolution;
 
     public Page(final IViewerActivity base, final PageIndex index, final PageType pt, final CodecPageInfo cpi) {
         this.base = base;
@@ -37,8 +34,6 @@ public class Page {
 
         setAspectRatio(cpi.getWidth(), cpi.getHeight());
 
-        lowMemory = SettingsManager.getAppSettings().getLowMemory();
-        nativeResolution = lowMemory ? false : SettingsManager.getAppSettings().getNativeResolution();
         nodes = new PageTree(this);
     }
 
@@ -52,7 +47,7 @@ public class Page {
     }
 
     public boolean draw(final Canvas canvas, final ViewState viewState, final boolean drawInvisible) {
-        if (drawInvisible || isVisible(viewState)) {
+        if (drawInvisible || viewState.isPageVisible(this)) {
             final PagePaint paint = SettingsManager.getAppSettings().getNightMode() ? PagePaint.NIGHT : PagePaint.DAY;
 
             final RectF bounds = new RectF(viewState.getBounds(this));
@@ -102,16 +97,6 @@ public class Page {
         storedZoom = 0.0f;
         zoomedBounds = null;
         bounds = pageBounds;
-    }
-
-    public boolean isVisible(final ViewState viewState) {
-        return viewState.isPageVisible(this);
-    }
-
-    public boolean isKeptInMemory(final ViewState viewState) {
-        final int current = viewState.currentIndex;
-        final int inMemory = (int) Math.ceil(SettingsManager.getAppSettings().getPagesInMemory() / 2.0);
-        return (current - inMemory <= this.index.viewIndex) && (this.index.viewIndex <= current + inMemory);
     }
 
     public boolean onZoomChanged(final float oldZoom, final ViewState viewState, final List<PageTreeNode> nodesToDecode) {

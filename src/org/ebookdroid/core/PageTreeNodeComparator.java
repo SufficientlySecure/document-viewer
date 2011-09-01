@@ -20,8 +20,8 @@ public class PageTreeNodeComparator implements Comparator<PageTreeNode> {
         final int viewIndex1 = node1.page.index.viewIndex;
         final int viewIndex2 = node2.page.index.viewIndex;
 
-        final boolean v1 = node1.isVisible(viewState, viewState.getBounds(node1.page));
-        final boolean v2 = node2.isVisible(viewState, viewState.getBounds(node2.page));
+        final boolean v1 = viewState.isNodeVisible(node1, viewState.getBounds(node1.page));
+        final boolean v2 = viewState.isNodeVisible(node2, viewState.getBounds(node2.page));
 
         int res = 0;
 
@@ -52,5 +52,4 @@ public class PageTreeNodeComparator implements Comparator<PageTreeNode> {
         }
         return res;
     }
-
 }

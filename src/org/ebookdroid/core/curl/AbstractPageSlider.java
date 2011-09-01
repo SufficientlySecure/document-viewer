@@ -3,13 +3,13 @@ package org.ebookdroid.core.curl;
 import org.ebookdroid.R;
 import org.ebookdroid.core.PagePaint;
 import org.ebookdroid.core.SinglePageDocumentView;
+import org.ebookdroid.core.ViewState;
 import org.ebookdroid.core.settings.SettingsManager;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.RectF;
 
 public abstract class AbstractPageSlider extends AbstractPageAnimator {
 
@@ -32,11 +32,11 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
 
     /**
      * Called on the first draw event of the view
-     *
+     * 
      * @param canvas
      */
     @Override
-    protected void onFirstDrawEvent(final Canvas canvas, RectF viewRect) {
+    protected void onFirstDrawEvent(final Canvas canvas, final ViewState viewState) {
         lock.writeLock().lock();
         try {
             resetClipEdge();
@@ -86,7 +86,7 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
     }
 
     @Override
-    protected void drawExtraObjects(final Canvas canvas, RectF viewRect, final float zoom) {
+    protected void drawExtraObjects(final Canvas canvas, final ViewState viewState) {
         final Paint paint = new Paint();
         paint.setFilterBitmap(true);
         paint.setAntiAlias(true);

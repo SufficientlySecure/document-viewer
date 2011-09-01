@@ -29,7 +29,7 @@ public class Page {
 
     boolean nativeResolution;
 
-    public Page(final IViewerActivity base, PageIndex index, final PageType pt, final CodecPageInfo cpi) {
+    public Page(final IViewerActivity base, final PageIndex index, final PageType pt, final CodecPageInfo cpi) {
         this.base = base;
         this.index = index;
         this.pageType = pt != null ? pt : PageType.FULL_PAGE;
@@ -47,26 +47,26 @@ public class Page {
         nodes.recycle();
     }
 
-    public boolean draw(final Canvas canvas, final RectF viewRect, final float zoom) {
-        return draw(canvas, viewRect, zoom, false);
+    public boolean draw(final Canvas canvas, final ViewState viewState) {
+        return draw(canvas, viewState, false);
     }
 
-    public boolean draw(final Canvas canvas, RectF viewRect, final float zoom, final boolean drawInvisible) {
-        if (drawInvisible || isVisible()) {
+    public boolean draw(final Canvas canvas, final ViewState viewState, final boolean drawInvisible) {
+        if (drawInvisible || isVisible(viewState)) {
             final PagePaint paint = SettingsManager.getAppSettings().getNightMode() ? PagePaint.NIGHT : PagePaint.DAY;
 
-            RectF bounds = new RectF(getBounds(zoom));
-            RectF nodesBounds = new RectF(bounds);
-            bounds.offset(-viewRect.left, -viewRect.top);
+            final RectF bounds = new RectF(viewState.getBounds(this));
+            final RectF nodesBounds = new RectF(bounds);
+            bounds.offset(-viewState.viewRect.left, -viewState.viewRect.top);
 
             canvas.drawRect(bounds, paint.fillPaint);
 
-            TextPaint textPaint = paint.textPaint;
+            final TextPaint textPaint = paint.textPaint;
             textPaint.setTextSize(24 * base.getZoomModel().getZoom());
             canvas.drawText(base.getContext().getString(R.string.text_page) + " " + (index.viewIndex + 1),
                     bounds.centerX(), bounds.centerY(), textPaint);
 
-            nodes.root.draw(canvas, viewRect, nodesBounds, paint);
+            nodes.root.draw(canvas, viewState, nodesBounds, paint);
 
             canvas.drawLine(bounds.left, bounds.top, bounds.right, bounds.top, paint.strokePaint);
             canvas.drawLine(bounds.left, bounds.bottom, bounds.right, bounds.bottom, paint.strokePaint);
@@ -104,39 +104,35 @@ public class Page {
         bounds = pageBounds;
     }
 
-    public boolean isVisible() {
-        return base.getDocumentController().isPageVisible(this);
+    public boolean isVisible(final ViewState viewState) {
+        return viewState.isPageVisible(this);
     }
 
-    public boolean isKeptInMemory() {
-        return isKeptInMemoryImpl() || isVisible();
+    public boolean isKeptInMemory(final ViewState viewState) {
+        return isKeptInMemoryImpl(viewState) || isVisible(viewState);
     }
 
-    private boolean isKeptInMemoryImpl() {
-        IDocumentViewController dc = base.getDocumentController();
-        if (dc != null) {
-            int current = ((AbstractDocumentView) dc).getCurrentPage();
-            int inMemory = (int) Math.ceil(SettingsManager.getAppSettings().getPagesInMemory() / 2.0);
-            return (current - inMemory <= this.index.viewIndex) && (this.index.viewIndex <= current + inMemory);
-        }
-        return false;
+    private boolean isKeptInMemoryImpl(final ViewState viewState) {
+        final int current = viewState.currentIndex;
+        final int inMemory = (int) Math.ceil(SettingsManager.getAppSettings().getPagesInMemory() / 2.0);
+        return (current - inMemory <= this.index.viewIndex) && (this.index.viewIndex <= current + inMemory);
     }
 
-    public boolean onZoomChanged(float oldZoom, float newZoom, RectF viewRect, final List<PageTreeNode> nodesToDecode) {
+    public boolean onZoomChanged(final float oldZoom, final ViewState viewState, final List<PageTreeNode> nodesToDecode) {
         if (!recycled) {
-            return nodes.root.onZoomChanged(oldZoom, newZoom, viewRect, this.getBounds(newZoom), nodesToDecode);
+            return nodes.root.onZoomChanged(oldZoom, viewState, viewState.getBounds(this), nodesToDecode);
         }
         return false;
     }
 
-    public boolean onPositionChanged(RectF viewRect, float zoom, final List<PageTreeNode> nodesToDecode) {
+    public boolean onPositionChanged(final ViewState viewState, final List<PageTreeNode> nodesToDecode) {
         if (!recycled) {
-            return nodes.root.onPositionChanged(viewRect, this.getBounds(zoom), nodesToDecode);
+            return nodes.root.onPositionChanged(viewState, viewState.getBounds(this), nodesToDecode);
         }
         return false;
     }
 
-    public RectF getBounds(float zoom) {
+    public RectF getBounds(final float zoom) {
         if (zoom != storedZoom) {
             storedZoom = zoom;
             zoomedBounds = MathUtils.zoom(bounds, zoom);

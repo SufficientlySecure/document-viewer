@@ -13,7 +13,7 @@ public interface DecodeService {
 
     void open(String fileName, String password);
 
-    void decodePage(PageTreeNode node, int targetWidth, float zoom, DecodeCallback decodeCallback, boolean nativeResolution);
+    void decodePage(PageTreeNode node, ViewState viewState, DecodeCallback decodeCallback, boolean nativeResolution);
 
     void stopDecoding(PageTreeNode node, String reason);
 
@@ -26,6 +26,8 @@ public interface DecodeService {
     void recycle();
 
     Rect getScaledSize(float viewWidth, float pageWidth, float pageHeight, RectF nodeBounds, float zoom);
+
+    void updateViewState(ViewState viewState);
 
     interface DecodeCallback {
 

@@ -5,7 +5,6 @@ import org.ebookdroid.core.log.LogContext;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.view.SurfaceHolder;
 
 import java.util.ArrayList;
@@ -29,7 +28,7 @@ public class DrawThread extends Thread {
     }
 
     public void finish() {
-        queue.add(new DrawTask(null, 0));
+        queue.add(new DrawTask(null));
         try {
             this.join();
         } catch (final InterruptedException e) {
@@ -46,7 +45,7 @@ public class DrawThread extends Thread {
             if (task == null) {
                 continue;
             }
-            if (task.viewRect == null) {
+            if (task.viewState == null) {
                 break;
             }
             canvas = null;
@@ -83,23 +82,21 @@ public class DrawThread extends Thread {
         final Paint paint = new Paint();
         paint.setColor(Color.BLACK);
         canvas.drawRect(canvas.getClipBounds(), paint);
-        view.drawView(canvas, task.viewRect, task.zoom);
+        view.drawView(canvas, task.viewState);
     }
 
-    public void draw(final RectF viewRect, final float zoom) {
-        if (viewRect != null) {
-            queue.offer(new DrawTask(viewRect, zoom));
+    public void draw(final ViewState viewState) {
+        if (viewState != null) {
+            queue.offer(new DrawTask(viewState));
         }
     }
 
     private static class DrawTask {
 
-        final RectF viewRect;
-        final float zoom;
+        final ViewState viewState;
 
-        public DrawTask(final RectF viewRect, final float zoom) {
-            this.viewRect = viewRect != null ? new RectF(viewRect) : null;
-            this.zoom = zoom;
+        public DrawTask(final ViewState viewState) {
+            this.viewState = viewState;
         }
     }
 }

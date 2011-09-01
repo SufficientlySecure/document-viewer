@@ -4,7 +4,6 @@ import org.ebookdroid.core.curl.PageAnimationType;
 import org.ebookdroid.core.curl.PageAnimator;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.settings.SettingsManager;
-import org.ebookdroid.utils.CompareUtils;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -14,7 +13,7 @@ import android.view.VelocityTracker;
 
 /**
  * The Class SinglePageDocumentView.
- *
+ * 
  * Used in single page view mode
  */
 public class SinglePageDocumentView extends AbstractDocumentView {
@@ -24,7 +23,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     /**
      * Instantiates a new single page document view.
-     *
+     * 
      * @param baseActivity
      *            the base activity
      */
@@ -38,46 +37,18 @@ public class SinglePageDocumentView extends AbstractDocumentView {
         final DocumentModel dm = getBase().getDocumentModel();
         if (toPage >= 0 && toPage < dm.getPageCount()) {
             final Page page = dm.getPageObject(toPage);
-            if (page != null) {
-                dm.setCurrentPageIndex(page.index);
-                updatePageVisibility(page.index.viewIndex, 0, getBase().getZoomModel().getZoom());
-            }
+            dm.setCurrentPageIndex(page.index);
+            final ViewState viewState = updatePageVisibility(page.index.viewIndex, 0, getBase().getZoomModel()
+                    .getZoom());
             if (curler != null) {
-                curler.resetPageIndexes();
+                curler.resetPageIndexes(viewState);
             }
         }
     }
 
     @Override
-    public int getCurrentPage() {
+    public int calculateCurrentPage(final ViewState viewState) {
         return getBase().getDocumentModel().getCurrentViewPageIndex();
-    }
-
-    @Override
-    public int compare(final PageTreeNode node1, final PageTreeNode node2) {
-        final int cp = getCurrentPage();
-        final int viewIndex1 = node1.page.index.viewIndex;
-        final int viewIndex2 = node2.page.index.viewIndex;
-
-        int res = 0;
-
-        if (viewIndex1 == cp && viewIndex2 == cp) {
-            res = CompareUtils.compare(node1.pageSliceBounds.top, node2.pageSliceBounds.top);
-            if (res == 0) {
-                res = CompareUtils.compare(node1.pageSliceBounds.left, node2.pageSliceBounds.left);
-            }
-        } else {
-            float d1 = viewIndex1 + node1.pageSliceBounds.top - (cp + 0.5f);
-            float d2 = viewIndex2 + node2.pageSliceBounds.top - (cp + 0.5f);
-            final int dist1 = Math.abs((int) (d1 * node1.childrenZoomThreshold));
-            final int dist2 = Math.abs((int) (d2 * node2.childrenZoomThreshold));
-            res = CompareUtils.compare(dist1, dist2);
-            if (res == 0) {
-                res = -CompareUtils.compare(viewIndex1, viewIndex2);
-            }
-        }
-
-        return res;
     }
 
     @Override
@@ -139,14 +110,14 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    public void drawView(final Canvas canvas, final RectF viewRect, final float zoom) {
+    public void drawView(final Canvas canvas, final ViewState viewState) {
         if (isCurlerDisabled()) {
             final Page page = getBase().getDocumentModel().getCurrentPageObject();
             if (page != null) {
-                page.draw(canvas, viewRect, zoom);
+                page.draw(canvas, viewState);
             }
         } else {
-            curler.draw(canvas, viewRect, zoom);
+            curler.draw(canvas, viewState);
         }
     }
 
@@ -202,12 +173,12 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    protected boolean isPageVisibleImpl(final Page page, final float zoom) {
+    protected boolean isPageVisibleImpl(final Page page, final ViewState viewState) {
         final int pageIndex = page.index.viewIndex;
         if (curler != null) {
             return pageIndex == curler.getForeIndex() || pageIndex == curler.getBackIndex();
         }
-        return pageIndex == getCurrentPage();
+        return pageIndex == calculateCurrentPage(viewState);
     }
 
     @Override

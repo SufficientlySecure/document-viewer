@@ -12,15 +12,15 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 import java.lang.ref.SoftReference;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class DecodeServiceBase implements DecodeService {
@@ -37,6 +37,8 @@ public class DecodeServiceBase implements DecodeService {
 
     final AtomicBoolean isRecycled = new AtomicBoolean();
 
+    final AtomicReference<ViewState> viewState = new AtomicReference<ViewState>();
+
     CodecDocument document;
 
     final Map<Integer, SoftReference<CodecPage>> pages = new LinkedHashMap<Integer, SoftReference<CodecPage>>() {
@@ -46,7 +48,7 @@ public class DecodeServiceBase implements DecodeService {
         @Override
         protected boolean removeEldestEntry(final Map.Entry<Integer, SoftReference<CodecPage>> eldest) {
             if (this.size() > PAGE_POOL_SIZE) {
-                SoftReference<CodecPage> value = eldest != null ? eldest.getValue() : null;
+                final SoftReference<CodecPage> value = eldest != null ? eldest.getValue() : null;
                 final CodecPage codecPage = value != null ? value.get() : null;
                 if (codecPage != null) {
                     if (LCTX.isDebugEnabled()) {
@@ -75,9 +77,15 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     @Override
-    public void decodePage(final PageTreeNode node, final int targetWidth, final float zoom,
-            final DecodeCallback decodeCallback, final boolean nativeResolution) {
-        final DecodeTask decodeTask = new DecodeTask(decodeCallback, targetWidth, zoom, node, nativeResolution);
+    public void updateViewState(final ViewState viewState) {
+        this.viewState.set(viewState);
+    }
+
+    @Override
+    public void decodePage(final PageTreeNode node, final ViewState viewState, final DecodeCallback decodeCallback,
+            final boolean nativeResolution) {
+        final DecodeTask decodeTask = new DecodeTask(decodeCallback, viewState, node, nativeResolution);
+        updateViewState(viewState);
 
         if (isRecycled.get()) {
             if (LCTX.isDebugEnabled()) {
@@ -130,25 +138,25 @@ public class DecodeServiceBase implements DecodeService {
             }
 
             finishDecoding(task, vuPage, bitmap);
-        } catch (OutOfMemoryError ex) {
+        } catch (final OutOfMemoryError ex) {
             LCTX.e("Task " + task.id + ": No memory to decode " + task.node);
             for (int i = 0; i < PAGE_POOL_SIZE; i++) {
                 pages.put(Integer.MAX_VALUE - i, null);
             }
             vuPage.recycle();
             abortDecoding(task, null, null);
-        } catch (Throwable th) {
+        } catch (final Throwable th) {
             LCTX.e("Task " + task.id + ": Decoding failed for " + task.node + ": " + th.getMessage(), th);
             abortDecoding(task, vuPage, null);
         }
     }
 
     Rect getScaledSize(final DecodeTask task, final CodecPage vuPage) {
-        final int viewWidth = task.targetWidth;
+        final int viewWidth = (int) task.viewState.realRect.width();
         final int pageWidth = vuPage.getWidth();
         final int pageHeight = vuPage.getHeight();
         final RectF nodeBounds = task.pageSliceBounds;
-        final float zoom = task.zoom;
+        final float zoom = task.viewState.zoom;
 
         return task.nativeResolution ? getScaledSize(pageWidth, pageWidth, pageHeight, nodeBounds, 1.0f)
                 : getScaledSize(viewWidth, pageWidth, pageHeight, nodeBounds, zoom);
@@ -207,56 +215,77 @@ public class DecodeServiceBase implements DecodeService {
         }
     }
 
-    class Executor implements Runnable, Comparator<Runnable> {
+    class Executor implements Runnable {
 
         final Map<PageTreeNode, DecodeTask> decodingTasks = new IdentityHashMap<PageTreeNode, DecodeTask>();
 
-        final LinkedList<Runnable> queue;
+        final ArrayList<Runnable> queue;
         final Thread thread;
         final ReentrantLock lock = new ReentrantLock();
         final AtomicBoolean run = new AtomicBoolean(true);
 
         Executor() {
-            queue = new LinkedList<Runnable>();
+            queue = new ArrayList<Runnable>();
             thread = new Thread(this);
             thread.start();
         }
 
+        @Override
         public void run() {
             try {
                 while (run.get()) {
-                    Runnable r = nextTask();
+                    final Runnable r = nextTask();
                     if (r != null) {
                         r.run();
                     }
                 }
 
-            } catch (Throwable th) {
+            } catch (final Throwable th) {
                 LCTX.e("Decoding service executor failed: " + th.getMessage(), th);
                 EmergencyHandler.onUnexpectedError(th);
             }
         }
 
         Runnable nextTask() {
-            synchronized (run) {
-                try {
-                    run.wait(1000);
-                } catch (InterruptedException ex) {
-                    Thread.interrupted();
-                }
-            }
-
             lock.lock();
             try {
                 if (!queue.isEmpty()) {
-                    Runnable best = Collections.min(queue, this);
-                    queue.remove(best);
-                    return best;
+                    final TaskComparator comp = new TaskComparator(viewState.get());
+                    Runnable candidate = null;
+                    int cindex = 0;
+
+                    int index = 0;
+                    while (index < queue.size() && candidate == null) {
+                        candidate = queue.get(index);
+                        cindex = index;
+                        index++;
+                    }
+                    if (candidate == null) {
+                        queue.clear();
+                    } else {
+                        while (index < queue.size()) {
+                            final Runnable next = queue.get(index);
+                            if (next != null && comp.compare(next, candidate) < 0) {
+                                candidate = next;
+                                cindex = index;
+                            }
+                            index++;
+                        }
+                        queue.set(cindex, null);
+                    }
+                    return candidate;
                 }
-                return null;
             } finally {
                 lock.unlock();
             }
+            synchronized (run) {
+                try {
+                    run.wait(1000);
+                } catch (final InterruptedException ex) {
+                    Thread.interrupted();
+                }
+            }
+            return null;
         }
 
         public void add(final DecodeTask task) {
@@ -279,7 +308,16 @@ public class DecodeServiceBase implements DecodeService {
                 }
 
                 decodingTasks.put(task.node, task);
-                queue.offer(task);
+                boolean added = false;
+                for (int index = 0; index < queue.size() && !added; index++) {
+                    if (null == queue.get(index)) {
+                        queue.set(index, task);
+                        added = true;
+                    }
+                }
+                if (!added) {
+                    queue.add(task);
+                }
 
                 synchronized (run) {
                     run.notifyAll();
@@ -291,26 +329,6 @@ public class DecodeServiceBase implements DecodeService {
             } finally {
                 lock.unlock();
             }
-        }
-
-        @Override
-        public int compare(final Runnable r1, final Runnable r2) {
-            final boolean isTask1 = r1 instanceof DecodeTask;
-            final boolean isTask2 = r2 instanceof DecodeTask;
-
-            if (isTask1 != isTask2) {
-                return isTask1 ? -1 : 1;
-            }
-
-            if (!isTask1) {
-                return 0;
-            }
-
-            final DecodeTask t1 = (DecodeTask) r1;
-            final DecodeTask t2 = (DecodeTask) r2;
-
-            int res = t1.node.getBase().getDocumentController().compare(t1.node, t2.node);
-            return res;
         }
 
         public void stopDecoding(final DecodeTask task, final PageTreeNode node, final String reason) {
@@ -342,7 +360,7 @@ public class DecodeServiceBase implements DecodeService {
                     stopDecoding(task, null, "recycling");
                 }
 
-                queue.offer(new Runnable() {
+                queue.add(new Runnable() {
 
                     @Override
                     public void run() {
@@ -370,27 +388,58 @@ public class DecodeServiceBase implements DecodeService {
         }
     }
 
+    class TaskComparator implements Comparator<Runnable> {
+
+        final PageTreeNodeComparator cmp;
+
+        public TaskComparator(final ViewState viewState) {
+            cmp = viewState != null ? new PageTreeNodeComparator(viewState) : null;
+        }
+
+        @Override
+        public int compare(final Runnable r1, final Runnable r2) {
+            final boolean isTask1 = r1 instanceof DecodeTask;
+            final boolean isTask2 = r2 instanceof DecodeTask;
+
+            if (isTask1 != isTask2) {
+                return isTask1 ? -1 : 1;
+            }
+
+            if (!isTask1) {
+                return 0;
+            }
+
+            final DecodeTask t1 = (DecodeTask) r1;
+            final DecodeTask t2 = (DecodeTask) r2;
+
+            if (cmp != null) {
+                return cmp.compare(t1.node, t2.node);
+            }
+
+            return 0;
+        }
+
+    }
+
     class DecodeTask implements Runnable {
 
         final long id = TASK_ID_SEQ.incrementAndGet();
         final AtomicBoolean cancelled = new AtomicBoolean();
 
         final PageTreeNode node;
+        final ViewState viewState;
         final int pageNumber;
-        final float zoom;
         final DecodeCallback decodeCallback;
         final RectF pageSliceBounds;
-        final int targetWidth;
         final boolean nativeResolution;
 
-        DecodeTask(final DecodeCallback decodeCallback, final int targetWidth, final float zoom,
-                final PageTreeNode node, final boolean nativeResolution) {
+        DecodeTask(final DecodeCallback decodeCallback, final ViewState viewState, final PageTreeNode node,
+                final boolean nativeResolution) {
             this.pageNumber = node.getDocumentPageIndex();
             this.decodeCallback = decodeCallback;
-            this.zoom = zoom;
+            this.viewState = viewState;
             this.node = node;
             this.pageSliceBounds = node.getPageSliceBounds();
-            this.targetWidth = targetWidth;
             this.nativeResolution = nativeResolution;
         }
 
@@ -408,7 +457,8 @@ public class DecodeServiceBase implements DecodeService {
             if (obj instanceof DecodeTask) {
                 final DecodeTask that = (DecodeTask) obj;
                 return this.pageNumber == that.pageNumber && this.pageSliceBounds.equals(that.pageSliceBounds)
-                        && this.targetWidth == that.targetWidth && this.zoom == that.zoom;
+                        && this.viewState.realRect.width() == that.viewState.realRect.width()
+                        && this.viewState.zoom == that.viewState.zoom;
             }
             return false;
         }
@@ -422,9 +472,9 @@ public class DecodeServiceBase implements DecodeService {
             buf.append(", ");
             buf.append("target").append("=").append(node);
             buf.append(", ");
-            buf.append("width").append("=").append(targetWidth);
+            buf.append("width").append("=").append((int) viewState.realRect.width());
             buf.append(", ");
-            buf.append("zoom").append("=").append(zoom);
+            buf.append("zoom").append("=").append(viewState.zoom);
             buf.append(", ");
             buf.append("bounds").append("=").append(pageSliceBounds);
 

@@ -2,7 +2,6 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.settings.SettingsManager;
-import org.ebookdroid.utils.CompareUtils;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -30,100 +29,54 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     public void setCurrentPageByFirstVisible() {
-        final DocumentModel dm = getBase().getDocumentModel();
-        final int index = getCurrentPage();
-        final Page page = dm.getPageObject(index);
-        if (page != null) {
-            post(new Runnable() {
-
-                @Override
-                public void run() {
-                    dm.setCurrentPageIndex(page.index);
-                }
-            });
-        }
     }
 
     @Override
-    public int getCurrentPage() {
+    public int calculateCurrentPage(final ViewState viewState) {
         int result = 0;
         long bestDistance = Long.MAX_VALUE;
 
-        final RectF viewRect = getViewRect();
-        final float zoom = getBase().getZoomModel().getZoom();
+        final int viewY = Math.round(viewState.viewRect.centerY());
 
-        final int viewY = Math.round((viewRect.top + viewRect.bottom) / 2);
-
-        boolean foundVisible = false;
-        if (firstVisiblePage != -1) {
-            for (final Page page : getBase().getDocumentModel().getPages(firstVisiblePage, lastVisiblePage + 1)) {
-                if (page.isVisible()) {
-                    foundVisible = true;
-                    final RectF bounds = page.getBounds(zoom);
-                    final int pageY = Math.round((bounds.top + bounds.bottom) / 2);
-                    final long dist = Math.abs(pageY - viewY);
-                    if (dist < bestDistance) {
-                        bestDistance = dist;
-                        result = page.index.viewIndex;
-                    }
-                } else {
-                    if (foundVisible) {
-                        break;
-                    }
-                }
-            }
-        } else {
-            for (final Page page : getBase().getDocumentModel().getPages()) {
-                if (page.isVisible()) {
-                    foundVisible = true;
-                    final RectF bounds = page.getBounds(zoom);
-                    final int pageY = Math.round((bounds.top + bounds.bottom) / 2);
-                    final long dist = Math.abs(pageY - viewY);
-                    if (dist < bestDistance) {
-                        bestDistance = dist;
-                        result = page.index.viewIndex;
-                    }
-                } else {
-                    if (foundVisible) {
-                        break;
-                    }
+        if (viewState.firstVisible != -1) {
+            for (final Page page : getBase().getDocumentModel().getPages(viewState.firstVisible,
+                    viewState.lastVisible + 1)) {
+                final RectF bounds = viewState.getBounds(page);
+                final int pageY = Math.round(bounds.centerY());
+                final long dist = Math.abs(pageY - viewY);
+                if (dist < bestDistance) {
+                    bestDistance = dist;
+                    result = page.index.viewIndex;
                 }
             }
         }
+
         return result;
     }
 
     @Override
-    public int compare(final PageTreeNode node1, final PageTreeNode node2) {
-        final int cp = getCurrentPage();
-        final int viewIndex1 = node1.page.index.viewIndex;
-        final int viewIndex2 = node2.page.index.viewIndex;
-
-        int res = 0;
-
-        if (viewIndex1 == cp && viewIndex2 == cp) {
-            res = CompareUtils.compare(node1.pageSliceBounds.top, node2.pageSliceBounds.top);
-            if (res == 0) {
-                res = CompareUtils.compare(node1.pageSliceBounds.left, node2.pageSliceBounds.left);
-            }
-        } else {
-            float d1 = viewIndex1 + node1.pageSliceBounds.top - (cp + 0.5f);
-            float d2 = viewIndex2 + node2.pageSliceBounds.top - (cp + 0.5f);
-            final int dist1 = Math.abs((int) (d1 * node1.childrenZoomThreshold));
-            final int dist2 = Math.abs((int) (d2 * node2.childrenZoomThreshold));
-            res = CompareUtils.compare(dist1, dist2);
-            if (res == 0) {
-                res = -CompareUtils.compare(viewIndex1, viewIndex2);
-            }
-        }
-        return res;
-    }
-
-    @Override
     protected void onScrollChanged(final int newPage, final int direction) {
-        super.onScrollChanged(newPage, direction);
-        setCurrentPageByFirstVisible();
-        redrawView();
+        // bounds could be not updated
+        if (inZoom.get()) {
+            return;
+        }
+
+        // on scrollChanged can be called from scrollTo just after new layout applied so we should wait for relayout
+        base.getActivity().runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                final ViewState viewState = updatePageVisibility(newPage, direction, getBase().getZoomModel().getZoom());
+
+                final DocumentModel dm = getBase().getDocumentModel();
+                final Page page = dm.getPageObject(viewState.currentIndex);
+                if (page != null) {
+                    dm.setCurrentPageIndex(page.index);
+                    redrawView();
+                }
+            }
+        });
+
     }
 
     @Override
@@ -161,22 +114,22 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    public synchronized void drawView(final Canvas canvas, final RectF viewRect, final float zoom) {
+    public synchronized void drawView(final Canvas canvas, final ViewState viewState) {
         final DocumentModel dm = getBase().getDocumentModel();
-        for (int i = firstVisiblePage; i <= lastVisiblePage; i++) {
+        for (int i = viewState.firstVisible; i <= viewState.lastVisible; i++) {
             final Page page = dm.getPageObject(i);
             if (page != null) {
-                page.draw(canvas, viewRect, zoom);
+                page.draw(canvas, viewState);
             }
         }
-        setCurrentPageByFirstVisible();
+        // setCurrentPageByFirstVisible();
     }
 
     @Override
     protected void onLayout(final boolean changed, final int left, final int top, final int right, final int bottom) {
         int page = -1;
         if (changed) {
-            page = getCurrentPage();
+            page = base.getDocumentModel().getCurrentViewPageIndex();
         }
         super.onLayout(changed, left, top, right, bottom);
 
@@ -225,8 +178,8 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    protected boolean isPageVisibleImpl(final Page page, final float zoom) {
-        return RectF.intersects(getViewRect(), page.getBounds(zoom));
+    protected boolean isPageVisibleImpl(final Page page, final ViewState viewState) {
+        return RectF.intersects(viewState.viewRect, viewState.getBounds(page));
     }
 
     @Override

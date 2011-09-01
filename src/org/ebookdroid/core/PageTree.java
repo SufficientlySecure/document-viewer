@@ -18,7 +18,7 @@ public class PageTree {
             // Right Bottom
             new RectF(0.5f, 0.5f, 1.0f, 1.0f), };
 
-    private PageTreeNode[] EMPTY_CHILDREN = {};
+    private final PageTreeNode[] EMPTY_CHILDREN = {};
 
     final Page owner;
     final PageTreeNode root;
@@ -27,7 +27,7 @@ public class PageTree {
 
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
-    public PageTree(Page owner) {
+    public PageTree(final Page owner) {
         this.owner = owner;
         this.root = createRoot();
     }
@@ -43,18 +43,17 @@ public class PageTree {
     }
 
     private PageTreeNode createRoot() {
-        PageTreeNode root = new PageTreeNode(owner, null, 0, owner.pageType.getInitialRect(), 2);
+        final PageTreeNode root = new PageTreeNode(owner, null, 0, owner.pageType.getInitialRect(), 2);
         nodes.put(root.id, root);
         return root;
     }
 
-    public PageTreeNode[] createChildren(PageTreeNode parent, final float newThreshold) {
+    public PageTreeNode[] createChildren(final PageTreeNode parent, final float newThreshold) {
         lock.writeLock().lock();
         try {
-            PageTreeNode[] children = new PageTreeNode[splitMasks.length];
+            final PageTreeNode[] children = new PageTreeNode[splitMasks.length];
             for (int i = 0; i < splitMasks.length; i++) {
-                children[i] = new PageTreeNode(owner, parent, getChildId(parent.id, i), splitMasks[i],
-                        newThreshold);
+                children[i] = new PageTreeNode(owner, parent, getChildId(parent.id, i), splitMasks[i], newThreshold);
                 nodes.put(children[i].id, children[i]);
             }
             return children;
@@ -63,11 +62,11 @@ public class PageTree {
         }
     }
 
-    public boolean recycleChildren(PageTreeNode parent) {
+    public boolean recycleChildren(final PageTreeNode parent) {
         lock.writeLock().lock();
         try {
             for (int i = 0; i < splitMasks.length; i++) {
-                PageTreeNode child = nodes.remove(getChildId(parent.id, i));
+                final PageTreeNode child = nodes.remove(getChildId(parent.id, i));
                 if (child != null) {
                     child.recycle();
                 }
@@ -78,14 +77,14 @@ public class PageTree {
         return false;
     }
 
-    public PageTreeNode[] getChildren(PageTreeNode parent) {
+    public PageTreeNode[] getChildren(final PageTreeNode parent) {
         lock.readLock().lock();
         try {
-            PageTreeNode node1 = nodes.get(getChildId(parent.id, 0));
+            final PageTreeNode node1 = nodes.get(getChildId(parent.id, 0));
             if (node1 == null) {
                 return EMPTY_CHILDREN;
             }
-            PageTreeNode[] res = new PageTreeNode[splitMasks.length];
+            final PageTreeNode[] res = new PageTreeNode[splitMasks.length];
             res[0] = node1;
             for (int i = 1; i < splitMasks.length; i++) {
                 res[i] = nodes.get(getChildId(parent.id, i));
@@ -96,18 +95,19 @@ public class PageTree {
         }
     }
 
-    public boolean isHiddenByChildren(PageTreeNode parent, RectF viewRect, RectF pageBounds) {
+    public boolean isHiddenByChildren(final PageTreeNode parent, final ViewState viewState, final RectF pageBounds) {
         lock.readLock().lock();
         try {
             for (int i = 0; i < splitMasks.length; i++) {
-                PageTreeNode child = nodes.get(getChildId(parent.id, i));
+                final PageTreeNode child = nodes.get(getChildId(parent.id, i));
                 if (child == null) {
                     return false;
                 }
-                if (!child.isVisible(viewRect, pageBounds)) {
+                if (!child.isVisible(viewState, pageBounds)) {
                     return false;
                 }
-                if (child.getBitmap() == null && !child.decodingNow.get() && isHiddenByChildren(child, viewRect, pageBounds)) {
+                if (child.getBitmap() == null && !child.decodingNow.get()
+                        && isHiddenByChildren(child, viewState, pageBounds)) {
                     return false;
                 }
             }
@@ -117,7 +117,7 @@ public class PageTree {
         }
     }
 
-    public boolean hasChildren(PageTreeNode parent) {
+    public boolean hasChildren(final PageTreeNode parent) {
         lock.readLock().lock();
         try {
             return null != nodes.get(getChildId(parent.id, 0));
@@ -126,7 +126,7 @@ public class PageTree {
         }
     }
 
-    private long getChildId(long parentId, int seq) {
+    private long getChildId(final long parentId, final int seq) {
         return parentId * splitMasks.length + seq + 1;
     }
 }

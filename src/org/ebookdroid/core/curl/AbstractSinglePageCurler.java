@@ -3,14 +3,13 @@ package org.ebookdroid.core.curl;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.PagePaint;
 import org.ebookdroid.core.SinglePageDocumentView;
+import org.ebookdroid.core.ViewState;
 import org.ebookdroid.core.settings.SettingsManager;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.RectF;
-import android.util.FloatMath;
 
 public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
 
@@ -66,12 +65,12 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
 
     /**
      * Called on the first draw event of the view
-     *
+     * 
      * @param canvas
      */
     @Override
-    protected void onFirstDrawEvent(final Canvas canvas, RectF viewRect) {
-        mFlipRadius = viewRect.width();
+    protected void onFirstDrawEvent(final Canvas canvas, final ViewState viewState) {
+        mFlipRadius = viewState.viewRect.width();
 
         resetClipEdge();
 
@@ -109,34 +108,34 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
 
     /**
      * Draw the foreground
-     *
+     * 
      * @param canvas
      * @param rect
      * @param paint
      */
     @Override
-    protected void drawForeground(final Canvas canvas, RectF viewRect, final float zoom) {
+    protected void drawForeground(final Canvas canvas, final ViewState viewState) {
         Page page = view.getBase().getDocumentModel().getPageObject(foreIndex);
         if (page == null) {
             page = view.getBase().getDocumentModel().getCurrentPageObject();
         }
         if (page != null) {
             canvas.save();
-            canvas.clipRect(page.getBounds(zoom));
-            page.draw(canvas, viewRect, zoom, true);
+            canvas.clipRect(viewState.getBounds(page));
+            page.draw(canvas, viewState, true);
             canvas.restore();
         }
     }
 
     /**
      * Draw the background image.
-     *
+     * 
      * @param canvas
      * @param rect
      * @param paint
      */
     @Override
-    protected void drawBackground(final Canvas canvas, RectF viewRect, final float zoom) {
+    protected void drawBackground(final Canvas canvas, final ViewState viewState) {
         final Path mask = createBackgroundPath();
 
         final Page page = view.getBase().getDocumentModel().getPageObject(backIndex);
@@ -145,11 +144,12 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
             canvas.save();
             canvas.clipPath(mask);
 
-            final PagePaint paint = !(SettingsManager.getAppSettings().getNightMode()) ? PagePaint.NIGHT : PagePaint.DAY;
+            final PagePaint paint = !(SettingsManager.getAppSettings().getNightMode()) ? PagePaint.NIGHT
+                    : PagePaint.DAY;
 
             canvas.drawRect(canvas.getClipBounds(), paint.fillPaint);
 
-            page.draw(canvas, viewRect, zoom, true);
+            page.draw(canvas, viewState, true);
             canvas.restore();
         }
 
@@ -157,7 +157,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
 
     /**
      * Create a Path used as a mask to draw the background page
-     *
+     * 
      * @return
      */
     private Path createBackgroundPath() {
@@ -172,7 +172,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
 
     /**
      * Creates a path used to draw the curl edge in.
-     *
+     * 
      * @return
      */
     private Path createCurlEdgePath() {
@@ -187,11 +187,11 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
 
     /**
      * Draw the curl page edge
-     *
+     * 
      * @param canvas
      */
     @Override
-    protected void drawExtraObjects(final Canvas canvas, RectF viewRect, final float zoom) {
+    protected void drawExtraObjects(final Canvas canvas, final ViewState viewState) {
         final Path path = createCurlEdgePath();
         canvas.drawPath(path, mCurlEdgePaint);
     }

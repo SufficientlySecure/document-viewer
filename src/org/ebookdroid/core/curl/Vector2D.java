@@ -1,5 +1,7 @@
 package org.ebookdroid.core.curl;
 
+import android.util.FloatMath;
+
 /**
  * Inner class used to represent a 2D point.
  */
@@ -66,7 +68,7 @@ class Vector2D {
     }
 
     public float distance(final Vector2D other) {
-        return (float) Math.sqrt(distanceSquared(other));
+        return FloatMath.sqrt(distanceSquared(other));
     }
 
     public float dotProduct(final Vector2D other) {

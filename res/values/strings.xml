@@ -112,4 +112,6 @@
 	<string name="del_bookmark_text">"Do you really want to remove this bookmark?"</string>
 	<string name="clear_recent_title">"Clear recent items"</string>
 	<string name="clear_recent_text">"Do you really want to remove all recent books?"</string>
+	<string name="pref_zoomdoubletap_title">"Zoom by double tap"</string>
+	<string name="pref_zoomdoubletap_summary">"Show/hide zoom controls by double tap"</string>
 </resources>

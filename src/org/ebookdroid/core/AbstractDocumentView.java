@@ -342,7 +342,9 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
                 stopScroller();
                 setLastPosition(ev);
                 if (ev.getEventTime() - lastDownEventTime < DOUBLE_TAP_TIME) {
-                    getBase().getZoomModel().toggleZoomControls();
+                    if (SettingsManager.getAppSettings().getZoomByDoubleTap()) {
+                        getBase().getZoomModel().toggleZoomControls();
+                    }
                 } else {
                     lastDownEventTime = ev.getEventTime();
                 }

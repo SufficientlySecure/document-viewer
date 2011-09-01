@@ -61,6 +61,8 @@ public class AppSettings {
 
     private Integer maxImageSize;
 
+    private Boolean zoomByDoubleTap;
+
     AppSettings(final Context context) {
         this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
@@ -226,6 +228,13 @@ public class AppSettings {
         }
         return maxImageSize;
     }
+    
+    public boolean getZoomByDoubleTap() {
+        if (zoomByDoubleTap == null) {
+            zoomByDoubleTap = prefs.getBoolean("zoomdoubletap", false);
+        }
+        return zoomByDoubleTap;
+    }
 
     boolean getSplitPages() {
         if (splitPages == null) {
@@ -240,7 +249,7 @@ public class AppSettings {
         }
         return singlePage;
     }
-
+    
     PageAlign getPageAlign() {
         if (pageAlign == null) {
             final String align = prefs.getString("align", PageAlign.AUTO.getResValue());

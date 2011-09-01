@@ -59,6 +59,11 @@
 			android:summary="@string/pref_pageintitle_summary"
 			android:defaultValue="true"
 			android:dependency="title" />
+		<CheckBoxPreference
+			android:key="zoomdoubletap"
+			android:title="@string/pref_zoomdoubletap_title"
+			android:summary="@string/pref_zoomdoubletap_summary"
+			android:defaultValue="false" />
 	</PreferenceScreen>
 
 	<PreferenceScreen

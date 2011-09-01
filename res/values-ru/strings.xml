@@ -114,4 +114,6 @@
 	<string name="del_bookmark_text">"Вы действительно хотите удалить эту закладку?"</string>
 	<string name="clear_recent_title">"Удалить последние"</string>
 	<string name="clear_recent_text">"Вы действительно хотите очистить список последних открытых книг?"</string>
+	<string name="pref_zoomdoubletap_title">"Увеличение по тапу"</string>
+	<string name="pref_zoomdoubletap_summary">"Показать/скрыть линейку увеличения по двойному тапу"</string>
 </resources>

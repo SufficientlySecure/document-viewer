@@ -50,7 +50,7 @@ public class DjvuPage implements CodecPage {
 
     @Override
     public Bitmap renderBitmap(final int width, final int height, final RectF pageSliceBounds) {
-        if (useNativeGraphics && AndroidVersion.VERSION >= 8) {
+        if (useNativeGraphics /*&& AndroidVersion.VERSION >= 8*/) {
             Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
             if (renderPageBitmap(pageHandle, width, height, pageSliceBounds.left, pageSliceBounds.top,
                     pageSliceBounds.width(), pageSliceBounds.height(), bmp)) {

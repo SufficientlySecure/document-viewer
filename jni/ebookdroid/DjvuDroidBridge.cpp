@@ -13,9 +13,10 @@
 
 /*JNI BITMAP API */
 
-#ifdef USE_JNI_BITMAP_API
-#include <android/bitmap.h>
-#endif
+#include <nativebitmap.h>
+//#ifdef USE_JNI_BITMAP_API
+//#include <android/bitmap.h>
+//#endif
 
 void ThrowError(JNIEnv* env, const char* msg)
 {
@@ -501,11 +502,12 @@ Java_org_ebookdroid_djvudroid_codec_DjvuPage_renderPage(JNIEnv *env,
 extern "C" jboolean
 Java_org_ebookdroid_djvudroid_codec_DjvuPage_isNativeGraphicsAvailable(JNIEnv *env, jclass cls)
 {
-#ifdef USE_JNI_BITMAP_API
-	return 1;
-#else
-	return 0;
-#endif
+  return NativePresent();
+//#ifdef USE_JNI_BITMAP_API
+//	return 1;
+//#else
+//	return 0;
+//#endif
 }
 
 extern "C" jboolean
@@ -520,7 +522,7 @@ Java_org_ebookdroid_djvudroid_codec_DjvuPage_renderPageBitmap(JNIEnv *env,
                                     jfloat pageSliceHeight,
                                     jobject bitmap)
 {
-#ifdef USE_JNI_BITMAP_API
+//#ifdef USE_JNI_BITMAP_API
 
     DEBUG_WRITE("Rendering page bitmap");
 
@@ -529,7 +531,7 @@ Java_org_ebookdroid_djvudroid_codec_DjvuPage_renderPageBitmap(JNIEnv *env,
 
     int ret;
 
-    if ((ret = AndroidBitmap_getInfo(env, bitmap, &info)) < 0) {
+    if ((ret = NativeBitmap_getInfo(env, bitmap, &info)) < 0) {
     	DEBUG_PRINT("AndroidBitmap_getInfo() failed ! error=%d", ret);
             return 0;
     }
@@ -541,7 +543,7 @@ Java_org_ebookdroid_djvudroid_codec_DjvuPage_renderPageBitmap(JNIEnv *env,
     }
 
     DEBUG_WRITE("locking pixels");
-    if ((ret = AndroidBitmap_lockPixels(env, bitmap, &pixels)) < 0) {
+    if ((ret = NativeBitmap_lockPixels(env, bitmap, &pixels)) < 0) {
     	DEBUG_PRINT("AndroidBitmap_lockPixels() failed ! error=%d", ret);
             return 0;
     }
@@ -567,13 +569,13 @@ Java_org_ebookdroid_djvudroid_codec_DjvuPage_renderPageBitmap(JNIEnv *env,
 
     ddjvu_format_release(pixelFormat);
 
-    AndroidBitmap_unlockPixels(env, bitmap);
+    NativeBitmap_unlockPixels(env, bitmap);
 
     return result;
-#else
-    DEBUG_WRITE("Rendering page bitmap not implemented");
-	return 0;
-#endif
+//#else
+//    DEBUG_WRITE("Rendering page bitmap not implemented");
+//	return 0;
+//#endif
 }
 
 extern "C" void

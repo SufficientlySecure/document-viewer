@@ -20,7 +20,7 @@ class Vector2D {
     }
 
     public float length() {
-        return (float) Math.sqrt(x * x + y * y);
+        return FloatMath.sqrt(x * x + y * y);
     }
 
     public float lengthSquared() {
@@ -76,7 +76,7 @@ class Vector2D {
     }
 
     public Vector2D normalize() {
-        final float magnitude = (float) Math.sqrt(dotProduct(this));
+        final float magnitude = FloatMath.sqrt(dotProduct(this));
         return new Vector2D(x / magnitude, y / magnitude);
     }
 

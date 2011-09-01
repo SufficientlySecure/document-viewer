@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.util.FloatMath;
 
 public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
 
@@ -57,7 +58,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
                 } else if (point.x < (mOrigin.x - mFlipRadius)) {
                     point.x = (mOrigin.x - mFlipRadius);
                 }
-                point.y = (float) (Math.sin(Math.acos(Math.abs(point.x - mOrigin.x) / mFlipRadius)) * mFlipRadius);
+                point.y = 0;
             }
         }
         return point;

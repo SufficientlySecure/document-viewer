@@ -1,11 +1,18 @@
 package org.ebookdroid.djvudroid.codec;
 
 import org.ebookdroid.core.codec.CodecPage;
+import org.ebookdroid.core.utils.AndroidVersion;
 
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 
 public class DjvuPage implements CodecPage {
+
+    private static final boolean useNativeGraphics;
+
+    static {
+        useNativeGraphics = isNativeGraphicsAvailable();
+    }
 
     private long pageHandle;
 
@@ -24,6 +31,11 @@ public class DjvuPage implements CodecPage {
     private static native boolean renderPage(long pageHandle, int targetWidth, int targetHeight, float pageSliceX,
             float pageSliceY, float pageSliceWidth, float pageSliceHeight, int[] buffer);
 
+    private static native boolean isNativeGraphicsAvailable();
+
+    private static native boolean renderPageBitmap(long pageHandle, int targetWidth, int targetHeight,
+            float pageSliceX, float pageSliceY, float pageSliceWidth, float pageSliceHeight, Bitmap bitmap);
+
     private static native void free(long pageHandle);
 
     @Override
@@ -38,6 +50,17 @@ public class DjvuPage implements CodecPage {
 
     @Override
     public Bitmap renderBitmap(final int width, final int height, final RectF pageSliceBounds) {
+        if (useNativeGraphics && AndroidVersion.VERSION >= 8) {
+            Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            if (renderPageBitmap(pageHandle, width, height, pageSliceBounds.left, pageSliceBounds.top,
+                    pageSliceBounds.width(), pageSliceBounds.height(), bmp)) {
+                return bmp;
+            } else {
+                bmp.recycle();
+                return null;
+            }
+        }
+
         final int[] buffer = new int[width * height];
         renderPage(pageHandle, width, height, pageSliceBounds.left, pageSliceBounds.top, pageSliceBounds.width(),
                 pageSliceBounds.height(), buffer);

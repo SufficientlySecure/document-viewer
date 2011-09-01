@@ -182,6 +182,7 @@ public class RecentActivity extends Activity implements IBrowserActivity {
 
     @Override
     public void showDocument(final Uri uri) {
+        libraryAdapter.stopScan();
         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         intent.setClass(this, Activities.getByUri(uri));
 

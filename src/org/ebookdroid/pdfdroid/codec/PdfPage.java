@@ -90,7 +90,7 @@ public class PdfPage implements CodecPage {
         final int width = viewbox.width();
         final int height = viewbox.height();
 
-        if (useNativeGraphics && AndroidVersion.VERSION >= 8) {
+        if (useNativeGraphics /*&& AndroidVersion.VERSION >= 8*/) {
             Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
             if (renderPageBitmap(docHandle, pageHandle, mRect, matrixArray, bmp)) {
                 return bmp;

@@ -4,9 +4,11 @@
 
 /*JNI BITMAP API */
 
-#ifdef USE_JNI_BITMAP_API
-#include <android/bitmap.h>
-#endif
+#include <nativebitmap.h>
+
+//#ifdef USE_JNI_BITMAP_API
+//#include <android/bitmap.h>
+//#endif
 
 #include <errno.h>
 
@@ -37,9 +39,7 @@ typedef struct renderpage_s renderpage_t;
 struct renderpage_s
 {
 	pdf_page *page;
-//New draw page
 	fz_display_list *pageList;
-//
 };
 
 #define RUNTIME_EXCEPTION "java/lang/RuntimeException"
@@ -539,11 +539,12 @@ JNIEXPORT jboolean JNICALL
 Java_org_ebookdroid_pdfdroid_codec_PdfPage_isNativeGraphicsAvailable
 	(JNIEnv *env, jobject this)
 {
-#ifdef USE_JNI_BITMAP_API
-	return 1;
-#else
-	return 0;
-#endif
+    return NativePresent();
+//#ifdef USE_JNI_BITMAP_API
+//	return 1;
+//#else
+//	return 0;
+//#endif
 }
 
 JNIEXPORT jboolean JNICALL
@@ -552,7 +553,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPageBitmap
 		jintArray viewboxarray, jfloatArray matrixarray,
 		jobject bitmap)
 {
-#ifdef USE_JNI_BITMAP_API
+//#ifdef USE_JNI_BITMAP_API
 	renderdocument_t *doc = (renderdocument_t*) (long)dochandle;
 	renderpage_t *page = (renderpage_t*) (long)pagehandle;
 	DEBUG("PdfView(%p).renderPageBitmap(%p, %p)", this, doc, page);
@@ -571,7 +572,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPageBitmap
 
     int ret;
 
-    if ((ret = AndroidBitmap_getInfo(env, bitmap, &info)) < 0) {
+    if ((ret = NativeBitmap_getInfo(env, bitmap, &info)) < 0) {
             ERROR("AndroidBitmap_getInfo() failed ! error=%d", ret);
             return 0;
     }
@@ -583,7 +584,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPageBitmap
     }
 
     DEBUG("locking pixels\n");
-    if ((ret = AndroidBitmap_lockPixels(env, bitmap, &pixels)) < 0) {
+    if ((ret = NativeBitmap_lockPixels(env, bitmap, &pixels)) < 0) {
             ERROR("AndroidBitmap_lockPixels() failed ! error=%d", ret);
             return 0;
     }
@@ -623,13 +624,13 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPageBitmap
 
 	DEBUG("PdfView.renderPage() done");
 
-    AndroidBitmap_unlockPixels(env, bitmap);
+    NativeBitmap_unlockPixels(env, bitmap);
 
 	return 1;
-#else
-	DEBUG("PdfView(%p).renderPageBitmap(): not implemented", this);
-	return 0;
-#endif
+//#else
+//	DEBUG("PdfView(%p).renderPageBitmap(): not implemented", this);
+//	return 0;
+//#endif
 }
 
 //Outline

@@ -110,7 +110,7 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         // }
 
         // Fix for switching book state from recent/non recent
-        recentAdapter.notifyDataSetInvalidated();
+        changeLibraryView(SettingsManager.getRecentBook() != null ? VIEW_RECENT : VIEW_LIBRARY);
         libraryAdapter.notifyDataSetInvalidated();
     }
 

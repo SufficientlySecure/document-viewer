@@ -47,19 +47,15 @@ public class Page {
         nodes.recycle();
     }
 
-    public int getTop() {
-        return Math.round(getBounds().top);
+    public boolean draw(final Canvas canvas, final RectF viewRect, final float zoom) {
+        return draw(canvas, viewRect, zoom, false);
     }
 
-    public boolean draw(final Canvas canvas, RectF viewRect) {
-        return draw(canvas, viewRect, false);
-    }
-
-    public boolean draw(final Canvas canvas, RectF viewRect, final boolean drawInvisible) {
+    public boolean draw(final Canvas canvas, RectF viewRect, final float zoom, final boolean drawInvisible) {
         if (drawInvisible || isVisible()) {
             final PagePaint paint = SettingsManager.getAppSettings().getNightMode() ? PagePaint.NIGHT : PagePaint.DAY;
 
-            RectF bounds = new RectF(getBounds());
+            RectF bounds = new RectF(getBounds(zoom));
             RectF nodesBounds = new RectF(bounds);
             bounds.offset(-viewRect.left, -viewRect.top);
 
@@ -128,20 +124,19 @@ public class Page {
 
     public boolean onZoomChanged(float oldZoom, float newZoom, RectF viewRect, final List<PageTreeNode> nodesToDecode) {
         if (!recycled) {
-            return nodes.root.onZoomChanged(oldZoom, newZoom, viewRect, this.getBounds(), nodesToDecode);
+            return nodes.root.onZoomChanged(oldZoom, newZoom, viewRect, this.getBounds(newZoom), nodesToDecode);
         }
         return false;
     }
 
-    public boolean onPositionChanged(RectF viewRect, final List<PageTreeNode> nodesToDecode) {
+    public boolean onPositionChanged(RectF viewRect, float zoom, final List<PageTreeNode> nodesToDecode) {
         if (!recycled) {
-            return nodes.root.onPositionChanged(viewRect, this.getBounds(), nodesToDecode);
+            return nodes.root.onPositionChanged(viewRect, this.getBounds(zoom), nodesToDecode);
         }
         return false;
     }
 
-    public RectF getBounds() {
-        float zoom = base.getZoomModel().getZoom();
+    public RectF getBounds(float zoom) {
         if (zoom != storedZoom) {
             storedZoom = zoom;
             zoomedBounds = MathUtils.zoom(bounds, zoom);

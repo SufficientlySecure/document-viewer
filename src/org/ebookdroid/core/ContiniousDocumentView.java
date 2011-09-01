@@ -21,9 +21,10 @@ public class ContiniousDocumentView extends AbstractDocumentView {
             final Page page = dm.getPageObject(toPage);
             if (page != null) {
                 final RectF viewRect = this.getViewRect();
-                final RectF bounds = page.getBounds();
+                final RectF bounds = page.getBounds(getBase().getZoomModel().getZoom());
+
                 dm.setCurrentPageIndex(page.index);
-                scrollTo(0, page.getTop() - ((int) viewRect.height() - (int) bounds.height()) / 2);
+                scrollTo(getScrollX(), Math.round(bounds.top - (viewRect.height() - bounds.height()) / 2));
             }
         }
     }
@@ -49,6 +50,8 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         long bestDistance = Long.MAX_VALUE;
 
         final RectF viewRect = getViewRect();
+        final float zoom = getBase().getZoomModel().getZoom();
+
         final int viewY = Math.round((viewRect.top + viewRect.bottom) / 2);
 
         boolean foundVisible = false;
@@ -56,7 +59,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
             for (final Page page : getBase().getDocumentModel().getPages(firstVisiblePage, lastVisiblePage + 1)) {
                 if (page.isVisible()) {
                     foundVisible = true;
-                    final RectF bounds = page.getBounds();
+                    final RectF bounds = page.getBounds(zoom);
                     final int pageY = Math.round((bounds.top + bounds.bottom) / 2);
                     final long dist = Math.abs(pageY - viewY);
                     if (dist < bestDistance) {
@@ -73,7 +76,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
             for (final Page page : getBase().getDocumentModel().getPages()) {
                 if (page.isVisible()) {
                     foundVisible = true;
-                    final RectF bounds = page.getBounds();
+                    final RectF bounds = page.getBounds(zoom);
                     final int pageY = Math.round((bounds.top + bounds.bottom) / 2);
                     final long dist = Math.abs(pageY - viewY);
                     if (dist < bestDistance) {
@@ -149,20 +152,21 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         final int width = getWidth();
         final int height = getHeight();
         final Page lpo = getBase().getDocumentModel().getLastPageObject();
+        final float zoom = getBase().getZoomModel().getZoom();
 
-        final int bottom = lpo != null ? (int) lpo.getBounds().bottom - height : 0;
-        final int right = (int) (width * getBase().getZoomModel().getZoom()) - width;
+        final int bottom = lpo != null ? (int) lpo.getBounds(zoom).bottom - height : 0;
+        final int right = (int) (width * zoom) - width;
 
         return new Rect(0, 0, right, bottom);
     }
 
     @Override
-    public synchronized void drawView(final Canvas canvas, final RectF viewRect) {
+    public synchronized void drawView(final Canvas canvas, final RectF viewRect, final float zoom) {
         final DocumentModel dm = getBase().getDocumentModel();
         for (int i = firstVisiblePage; i <= lastVisiblePage; i++) {
             final Page page = dm.getPageObject(i);
             if (page != null) {
-                page.draw(canvas, viewRect);
+                page.draw(canvas, viewRect, zoom);
             }
         }
         setCurrentPageByFirstVisible();
@@ -211,7 +215,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
                 heightAccum += pageHeight;
             }
         } else {
-            float heightAccum = changedPage.getBounds().top;
+            float heightAccum = changedPage.getBounds(1.0f).top;
             for (final Page page : getBase().getDocumentModel().getPages(changedPage.index.viewIndex)) {
                 final float pageHeight = width / page.getAspectRatio();
                 page.setBounds(new RectF(0, heightAccum, width, heightAccum + pageHeight));
@@ -221,8 +225,8 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    protected boolean isPageVisibleImpl(final Page page) {
-        return RectF.intersects(getViewRect(), page.getBounds());
+    protected boolean isPageVisibleImpl(final Page page, final float zoom) {
+        return RectF.intersects(getViewRect(), page.getBounds(zoom));
     }
 
     @Override

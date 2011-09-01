@@ -109,20 +109,21 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
             @Override
             public void run() {
-                updatePageVisibility(newPage, direction);
+                updatePageVisibility(newPage, direction, getBase().getZoomModel().getZoom());
             }
         });
     }
 
     @Override
-    public void updatePageVisibility(final int newPage, final int direction) {
-        calculatePageVisibility(newPage, direction);
+    public void updatePageVisibility(final int newPage, final int direction, final float zoom) {
+        calculatePageVisibility(newPage, direction, zoom);
 
         final RectF viewRect = getViewRect();
+
         final List<PageTreeNode> nodesToDecode = new ArrayList<PageTreeNode>();
 
         for (final Page page : getBase().getDocumentModel().getPages()) {
-            page.onPositionChanged(viewRect, nodesToDecode);
+            page.onPositionChanged(viewRect, zoom, nodesToDecode);
         }
         if (!nodesToDecode.isEmpty()) {
             decodePageTreeNodes(nodesToDecode);
@@ -138,7 +139,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         }
     }
 
-    protected void calculatePageVisibility(final int newPage, final int direction) {
+    protected void calculatePageVisibility(final int newPage, final int direction, final float zoom) {
         final Page[] pages = getBase().getDocumentModel().getPages();
 
         if (newPage != -1) {
@@ -146,21 +147,21 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
             lastVisiblePage = newPage;
             while (firstVisiblePage > 0) {
                 final int index = firstVisiblePage - 1;
-                if (!isPageVisibleImpl(pages[index])) {
+                if (!isPageVisibleImpl(pages[index], zoom)) {
                     break;
                 }
                 firstVisiblePage = index;
             }
             while (lastVisiblePage < pages.length - 1) {
                 final int index = lastVisiblePage + 1;
-                if (!isPageVisibleImpl(pages[index])) {
+                if (!isPageVisibleImpl(pages[index], zoom)) {
                     break;
                 }
                 lastVisiblePage = index;
             }
         } else if (direction < 0 && lastVisiblePage != -1) {
             for (int i = lastVisiblePage; i >= 0; i--) {
-                if (!isPageVisibleImpl(pages[i])) {
+                if (!isPageVisibleImpl(pages[i], zoom)) {
                     continue;
                 } else {
                     lastVisiblePage = i;
@@ -170,7 +171,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
             firstVisiblePage = lastVisiblePage;
             while (firstVisiblePage > 0) {
                 final int index = firstVisiblePage - 1;
-                if (!isPageVisibleImpl(pages[index])) {
+                if (!isPageVisibleImpl(pages[index], zoom)) {
                     break;
                 }
                 firstVisiblePage = index;
@@ -178,7 +179,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
         } else if (direction > 0 && firstVisiblePage != -1) {
             for (int i = firstVisiblePage; i < pages.length; i++) {
-                if (!isPageVisibleImpl(pages[i])) {
+                if (!isPageVisibleImpl(pages[i], zoom)) {
                     continue;
                 } else {
                     firstVisiblePage = i;
@@ -188,7 +189,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
             lastVisiblePage = firstVisiblePage;
             while (lastVisiblePage < pages.length - 1) {
                 final int index = lastVisiblePage + 1;
-                if (!isPageVisibleImpl(pages[index])) {
+                if (!isPageVisibleImpl(pages[index], zoom)) {
                     break;
                 }
                 lastVisiblePage = index;
@@ -197,7 +198,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
             firstVisiblePage = -1;
             lastVisiblePage = 1;
             for (final Page page : getBase().getDocumentModel().getPages()) {
-                if (isPageVisibleImpl(page)) {
+                if (isPageVisibleImpl(page, zoom)) {
                     if (firstVisiblePage == -1) {
                         firstVisiblePage = page.index.viewIndex;
                     }
@@ -223,7 +224,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     }
 
     private void onZoomChanged(final float newZoom) {
-        calculatePageVisibility(base.getDocumentModel().getCurrentViewPageIndex(), 0);
+        calculatePageVisibility(base.getDocumentModel().getCurrentViewPageIndex(), 0, newZoom);
 
         final RectF viewRect = getViewRect();
         final List<PageTreeNode> nodesToDecode = new ArrayList<PageTreeNode>();
@@ -251,9 +252,11 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
     public void invalidatePages(final Page... pages) {
         final RectF viewRect = getViewRect();
+        final float zoom = getBase().getZoomModel().getZoom();
+
         final List<PageTreeNode> nodesToDecode = new ArrayList<PageTreeNode>();
         for (final Page page : pages) {
-            page.onPositionChanged(viewRect, nodesToDecode);
+            page.onPositionChanged(viewRect, zoom, nodesToDecode);
         }
         if (!nodesToDecode.isEmpty()) {
             decodePageTreeNodes(nodesToDecode);
@@ -458,11 +461,12 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
     private float getScrollScaleRatio() {
         final Page page = getBase().getDocumentModel().getCurrentPageObject();
-        if (page == null || page.getBounds() == null) {
+        final float zoom = getBase().getZoomModel().getZoom();
+
+        if (page == null || page.getBounds(zoom) == null) {
             return 0;
         }
-        final float v = getBase().getZoomModel().getZoom();
-        return getWidth() * v / page.getBounds().width();
+        return getWidth() * zoom / page.getBounds(zoom).width();
     }
 
     private void stopScroller() {
@@ -507,7 +511,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         return firstVisiblePage <= page.index.viewIndex && page.index.viewIndex <= lastVisiblePage;
     }
 
-    protected abstract boolean isPageVisibleImpl(final Page page);
+    protected abstract boolean isPageVisibleImpl(final Page page, final float zoom);
 
     @Override
     public int getFirstVisiblePage() {
@@ -519,7 +523,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         return lastVisiblePage;
     }
 
-    public abstract void drawView(Canvas canvas, RectF viewRect2);
+    public abstract void drawView(Canvas canvas, RectF viewRect, float zoom);
 
     @Override
     public void surfaceChanged(final SurfaceHolder holder, final int format, final int width, final int height) {
@@ -529,7 +533,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     @Override
     public void redrawView() {
         if (drawThread != null) {
-            drawThread.draw(getViewRect());
+            drawThread.draw(getViewRect(), base.getZoomModel().getZoom());
         }
     }
 

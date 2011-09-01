@@ -40,7 +40,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
             final Page page = dm.getPageObject(toPage);
             if (page != null) {
                 dm.setCurrentPageIndex(page.index);
-                updatePageVisibility(page.index.viewIndex, 0);
+                updatePageVisibility(page.index.viewIndex, 0, getBase().getZoomModel().getZoom());
             }
             if (curler != null) {
                 curler.resetPageIndexes();
@@ -94,8 +94,9 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     protected Rect getScrollLimits() {
         final int width = getWidth();
         final int height = getHeight();
+        final float zoom = getBase().getZoomModel().getZoom();
 
-        final RectF bounds = getBase().getDocumentModel().getCurrentPageObject().getBounds();
+        final RectF bounds = getBase().getDocumentModel().getCurrentPageObject().getBounds(zoom);
         final int top = ((int) bounds.top > 0) ? 0 : (int) bounds.top;
         final int left = ((int) bounds.left > 0) ? 0 : (int) bounds.left;
         final int bottom = ((int) bounds.bottom < height) ? 0 : (int) bounds.bottom - height;
@@ -138,14 +139,14 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    public void drawView(final Canvas canvas, final RectF viewRect) {
+    public void drawView(final Canvas canvas, final RectF viewRect, final float zoom) {
         if (isCurlerDisabled()) {
             final Page page = getBase().getDocumentModel().getCurrentPageObject();
             if (page != null) {
-                page.draw(canvas, viewRect);
+                page.draw(canvas, viewRect, zoom);
             }
         } else {
-            curler.draw(canvas, viewRect);
+            curler.draw(canvas, viewRect, zoom);
         }
     }
 
@@ -201,7 +202,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    protected boolean isPageVisibleImpl(final Page page) {
+    protected boolean isPageVisibleImpl(final Page page, final float zoom) {
         final int pageIndex = page.index.viewIndex;
         if (curler != null) {
             return pageIndex == curler.getForeIndex() || pageIndex == curler.getBackIndex();

@@ -12,7 +12,7 @@ public interface IDocumentViewController extends Comparator<PageTreeNode>{
 
     void invalidatePageSizes(InvalidateSizeReason reason, Page changedPage);
 
-    void updatePageVisibility(int newPage, int direction);
+    void updatePageVisibility(int newPage, int direction, float zoom);
 
     boolean isPageVisible(Page page);
 

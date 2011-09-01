@@ -209,11 +209,11 @@ public abstract class AbstractPageAnimator implements PageAnimator {
 
     protected abstract Vector2D fixMovement(Vector2D point, final boolean bMaintainMoveDir);
 
-    protected abstract void drawBackground(final Canvas canvas, RectF viewRect);
+    protected abstract void drawBackground(final Canvas canvas, RectF viewRect, float zoom);
 
-    protected abstract void drawForeground(final Canvas canvas, RectF viewRect);
+    protected abstract void drawForeground(final Canvas canvas, RectF viewRect, float zoom);
 
-    protected abstract void drawExtraObjects(final Canvas canvas, RectF viewRect);
+    protected abstract void drawExtraObjects(final Canvas canvas, RectF viewRect, float zoom);
 
     /**
      * Update points values values.
@@ -224,7 +224,7 @@ public abstract class AbstractPageAnimator implements PageAnimator {
      * @see org.ebookdroid.core.curl.PageAnimator#onDraw(android.graphics.Canvas)
      */
     @Override
-    public synchronized void draw(final Canvas canvas, RectF viewRect) {
+    public synchronized void draw(final Canvas canvas, RectF viewRect, final float zoom) {
         // We need to initialize all size data when we first draw the view
         if (!isViewDrawn()) {
             setViewDrawn(true);
@@ -236,11 +236,11 @@ public abstract class AbstractPageAnimator implements PageAnimator {
         // Draw our elements
         lock.readLock().lock();
         try {
-            drawForeground(canvas, viewRect);
+            drawForeground(canvas, viewRect, zoom);
             if (foreIndex != backIndex) {
-                drawBackground(canvas, viewRect);
+                drawBackground(canvas, viewRect, zoom);
             }
-            drawExtraObjects(canvas, viewRect);
+            drawExtraObjects(canvas, viewRect, zoom);
         } finally {
             lock.readLock().unlock();
         }

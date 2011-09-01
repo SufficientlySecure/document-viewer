@@ -86,7 +86,7 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
     }
 
     @Override
-    protected void drawExtraObjects(final Canvas canvas, RectF viewRect) {
+    protected void drawExtraObjects(final Canvas canvas, RectF viewRect, final float zoom) {
         final Paint paint = new Paint();
         paint.setFilterBitmap(true);
         paint.setAntiAlias(true);

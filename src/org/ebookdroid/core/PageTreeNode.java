@@ -194,7 +194,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                         dc.invalidatePageSizes(InvalidateSizeReason.PAGE_LOADED, page);
                     }
                     final RectF viewRect = dc.getViewRect();
-                    final RectF bounds = page.getBounds();
+                    final RectF bounds = page.getBounds(page.base.getZoomModel().getZoom());
                     if (parent != null) {
                         parent.onChildLoaded(PageTreeNode.this, viewRect, bounds);
                     }

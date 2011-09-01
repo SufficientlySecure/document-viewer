@@ -23,13 +23,13 @@ public class SinglePageFader extends AbstractPageSlider {
      * @param paint
      */
     @Override
-    protected void drawForeground(final Canvas canvas, RectF viewRect) {
+    protected void drawForeground(final Canvas canvas, RectF viewRect, final float zoom) {
         Page page = view.getBase().getDocumentModel().getPageObject(foreIndex);
         if (page == null) {
             page = view.getBase().getDocumentModel().getCurrentPageObject();
         }
         if (page != null) {
-            page.draw(canvas, viewRect, true);
+            page.draw(canvas, viewRect, zoom, true);
         }
     }
 
@@ -41,12 +41,12 @@ public class SinglePageFader extends AbstractPageSlider {
      * @param paint
      */
     @Override
-    protected void drawBackground(final Canvas canvas, RectF viewRect) {
+    protected void drawBackground(final Canvas canvas, RectF viewRect, final float zoom) {
         final Page page = view.getBase().getDocumentModel().getPageObject(backIndex);
         if (page != null) {
             final Bitmap back = getBitmap(canvas);
             final Canvas tmp = new Canvas(back);
-            page.draw(tmp, viewRect, true);
+            page.draw(tmp, viewRect, zoom, true);
 
             final Paint paint = new Paint();
             paint.setFilterBitmap(true);

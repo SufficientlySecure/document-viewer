@@ -17,22 +17,22 @@ public class DrawThread extends Thread {
 
     private static final LogContext LCTX = LogContext.ROOT.lctx("Imaging");
 
-    private SurfaceHolder surfaceHolder;
+    private final SurfaceHolder surfaceHolder;
 
-    private AbstractDocumentView view;
+    private final AbstractDocumentView view;
 
     private final BlockingQueue<DrawTask> queue = new ArrayBlockingQueue<DrawThread.DrawTask>(16, true);
 
-    public DrawThread(SurfaceHolder surfaceHolder, AbstractDocumentView view) {
+    public DrawThread(final SurfaceHolder surfaceHolder, final AbstractDocumentView view) {
         this.surfaceHolder = surfaceHolder;
         this.view = view;
     }
 
     public void finish() {
-        queue.add(new DrawTask(null));
+        queue.add(new DrawTask(null, 0));
         try {
             this.join();
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
         }
     }
 
@@ -42,7 +42,7 @@ public class DrawThread extends Thread {
         Thread.currentThread().setPriority(Thread.NORM_PRIORITY + 1);
 
         while (true) {
-            DrawTask task = takeTask();
+            final DrawTask task = takeTask();
             if (task == null) {
                 continue;
             }
@@ -53,7 +53,7 @@ public class DrawThread extends Thread {
             try {
                 canvas = surfaceHolder.lockCanvas(null);
                 performDrawing(canvas, task);
-            } catch (Throwable th) {
+            } catch (final Throwable th) {
                 LCTX.e("Unexpected error on drawing: " + th.getMessage(), th);
             } finally {
                 if (canvas != null) {
@@ -68,36 +68,38 @@ public class DrawThread extends Thread {
         try {
             task = queue.poll(1, TimeUnit.SECONDS);
             if (task != null) {
-                ArrayList<DrawTask> list = new ArrayList<DrawTask>();
+                final ArrayList<DrawTask> list = new ArrayList<DrawTask>();
                 if (queue.drainTo(list) > 0) {
                     task = list.get(list.size() - 1);
                 }
             }
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             Thread.interrupted();
         }
         return task;
     }
 
-    private void performDrawing(Canvas canvas, DrawTask task) {
-        Paint paint = new Paint();
+    private void performDrawing(final Canvas canvas, final DrawTask task) {
+        final Paint paint = new Paint();
         paint.setColor(Color.BLACK);
         canvas.drawRect(canvas.getClipBounds(), paint);
-        view.drawView(canvas, task.viewRect);
+        view.drawView(canvas, task.viewRect, task.zoom);
     }
 
-    public void draw(RectF viewRect) {
+    public void draw(final RectF viewRect, final float zoom) {
         if (viewRect != null) {
-            queue.offer(new DrawTask(viewRect));
+            queue.offer(new DrawTask(viewRect, zoom));
         }
     }
 
     private static class DrawTask {
 
         final RectF viewRect;
+        final float zoom;
 
-        public DrawTask(RectF viewRect) {
+        public DrawTask(final RectF viewRect, final float zoom) {
             this.viewRect = viewRect != null ? new RectF(viewRect) : null;
+            this.zoom = zoom;
         }
     }
 }

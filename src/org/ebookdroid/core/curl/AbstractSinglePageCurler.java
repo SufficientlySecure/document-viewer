@@ -114,15 +114,15 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
      * @param paint
      */
     @Override
-    protected void drawForeground(final Canvas canvas, RectF viewRect) {
+    protected void drawForeground(final Canvas canvas, RectF viewRect, final float zoom) {
         Page page = view.getBase().getDocumentModel().getPageObject(foreIndex);
         if (page == null) {
             page = view.getBase().getDocumentModel().getCurrentPageObject();
         }
         if (page != null) {
             canvas.save();
-            canvas.clipRect(page.getBounds());
-            page.draw(canvas, viewRect, true);
+            canvas.clipRect(page.getBounds(zoom));
+            page.draw(canvas, viewRect, zoom, true);
             canvas.restore();
         }
     }
@@ -135,7 +135,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
      * @param paint
      */
     @Override
-    protected void drawBackground(final Canvas canvas, RectF viewRect) {
+    protected void drawBackground(final Canvas canvas, RectF viewRect, final float zoom) {
         final Path mask = createBackgroundPath();
 
         final Page page = view.getBase().getDocumentModel().getPageObject(backIndex);
@@ -148,7 +148,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
 
             canvas.drawRect(canvas.getClipBounds(), paint.fillPaint);
 
-            page.draw(canvas, viewRect, true);
+            page.draw(canvas, viewRect, zoom, true);
             canvas.restore();
         }
 
@@ -190,7 +190,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
      * @param canvas
      */
     @Override
-    protected void drawExtraObjects(final Canvas canvas, RectF viewRect) {
+    protected void drawExtraObjects(final Canvas canvas, RectF viewRect, final float zoom) {
         final Path path = createCurlEdgePath();
         canvas.drawPath(path, mCurlEdgePaint);
     }

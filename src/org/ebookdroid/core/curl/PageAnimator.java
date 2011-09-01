@@ -15,7 +15,7 @@ public interface PageAnimator {
 
     boolean handleTouchEvent(MotionEvent event);
 
-    void draw(Canvas canvas, RectF viewRect);
+    void draw(Canvas canvas, RectF viewRect, float zoom);
 
     void setViewDrawn(boolean b);
 

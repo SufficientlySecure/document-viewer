@@ -11,7 +11,7 @@ static int present = 0;
 
 void* NativeBitmapInit();
 
-JNI_OnLoad(JavaVM *jvm, void *reserved)
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
 {
     __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "initializing EBookDroid JNI library based on MuPDF and DjVuLibre");
     fz_accelerate();
@@ -21,7 +21,7 @@ JNI_OnLoad(JavaVM *jvm, void *reserved)
 
     handler = NativeBitmapInit();
     if(handler) present = 1;
-    return JNI_VERSION_1_2;
+    return JNI_VERSION_1_4;
 }
 
 
@@ -31,6 +31,15 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *jvm, void *reserved)
     if(handler)
 	dlclose(handler);
     present = 0;
+}
+
+JNIEXPORT jboolean JNICALL
+Java_org_ebookdroid_core_EBookDroidLibraryLoader_free(JNIEnv *env, jobject this)
+{
+    __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "Free EBookDroid JNI library");
+    present = 0;
+    if(handler)
+	dlclose(handler);
 }
 
 int NativePresent()

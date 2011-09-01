@@ -1,6 +1,6 @@
 package org.ebookdroid.djvudroid.codec;
 
-import org.ebookdroid.core.VuDroidLibraryLoader;
+import org.ebookdroid.core.EBookDroidLibraryLoader;
 import org.ebookdroid.core.codec.AbstractCodecContext;
 import org.ebookdroid.core.log.LogContext;
 
@@ -11,7 +11,7 @@ public class DjvuContext extends AbstractCodecContext implements Runnable {
     private static final LogContext LCTX = LogContext.ROOT.lctx("Djvu");
 
     static {
-        VuDroidLibraryLoader.load();
+        EBookDroidLibraryLoader.load();
     }
 
     private final Semaphore docSemaphore = new Semaphore(0);

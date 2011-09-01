@@ -1,7 +1,6 @@
 package org.ebookdroid.djvudroid.codec;
 
 import org.ebookdroid.core.codec.CodecPage;
-import org.ebookdroid.core.utils.AndroidVersion;
 
 import android.graphics.Bitmap;
 import android.graphics.RectF;

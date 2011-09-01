@@ -2,7 +2,6 @@ package org.ebookdroid.pdfdroid.codec;
 
 import org.ebookdroid.core.BaseViewerActivity;
 import org.ebookdroid.core.codec.CodecPage;
-import org.ebookdroid.core.utils.AndroidVersion;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;

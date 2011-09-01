@@ -1,13 +1,13 @@
 package org.ebookdroid.pdfdroid.codec;
 
-import org.ebookdroid.core.VuDroidLibraryLoader;
+import org.ebookdroid.core.EBookDroidLibraryLoader;
 import org.ebookdroid.core.codec.AbstractCodecContext;
 import org.ebookdroid.core.codec.CodecDocument;
 
 public class PdfContext extends AbstractCodecContext {
 
     static {
-        VuDroidLibraryLoader.load();
+        EBookDroidLibraryLoader.load();
     }
 
     @Override

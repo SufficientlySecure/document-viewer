@@ -108,10 +108,7 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         // showDocument(Uri.fromFile(file));
         // }
         // }
-
-        // Fix for switching book state from recent/non recent
         changeLibraryView(SettingsManager.getRecentBook() != null ? VIEW_RECENT : VIEW_LIBRARY);
-        libraryAdapter.notifyDataSetInvalidated();
     }
 
     @Override
@@ -152,7 +149,7 @@ public class RecentActivity extends Activity implements IBrowserActivity {
             public void onClick(final DialogInterface dialog, final int whichButton) {
                 SettingsManager.deleteAllBookSettings();
                 recentAdapter.clearBooks();
-                // Fix for switching book state from recent/non recent
+
                 libraryAdapter.notifyDataSetInvalidated();
             }
         });

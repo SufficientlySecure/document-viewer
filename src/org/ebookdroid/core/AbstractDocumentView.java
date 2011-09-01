@@ -127,11 +127,13 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
             decodePageTreeNodes(viewState, nodesToDecode);
         }
 
+        LCTX.d("updatePageVisibility: " + viewState.firstVisible + " " + viewState.currentIndex + " "
+                + viewState.lastVisible + " => " + nodesToDecode.size());
+
         return viewState;
     }
 
     protected void decodePageTreeNodes(final ViewState viewState, final List<PageTreeNode> nodesToDecode) {
-        // Collections.sort(nodesToDecode, new PageTreeNodeComparator(viewState));
         for (final PageTreeNode pageTreeNode : nodesToDecode) {
             base.getDecodeService().decodePage(pageTreeNode, viewState, pageTreeNode,
                     pageTreeNode.page.nativeResolution);
@@ -234,6 +236,10 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         if (!nodesToDecode.isEmpty()) {
             decodePageTreeNodes(viewState, nodesToDecode);
         }
+
+        LCTX.d("onZoomChanged: " + viewState.firstVisible + " " + viewState.currentIndex + " "
+                + viewState.lastVisible + " => " + nodesToDecode.size());
+
     }
 
     @Override
@@ -248,6 +254,9 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         if (!nodesToDecode.isEmpty()) {
             decodePageTreeNodes(viewState, nodesToDecode);
         }
+        LCTX.d("updateMemorySettings: " + viewState.firstVisible + " " + viewState.currentIndex + " "
+                + viewState.lastVisible + " => " + nodesToDecode.size());
+
     }
 
     public void invalidatePages(final Page... pages) {
@@ -260,6 +269,9 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         if (!nodesToDecode.isEmpty()) {
             decodePageTreeNodes(viewState, nodesToDecode);
         }
+
+        LCTX.d("invalidatePages: " + viewState.firstVisible + " " + viewState.currentIndex + " "
+                + viewState.lastVisible + " => " + nodesToDecode.size());
     }
 
     @Override
@@ -474,7 +486,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
     /**
      * Sets the page align flag.
-     * 
+     *
      * @param align
      *            the new flag indicating align
      */
@@ -496,7 +508,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
     /**
      * Checks if view is initialized.
-     * 
+     *
      * @return true, if is initialized
      */
     protected boolean isInitialized() {

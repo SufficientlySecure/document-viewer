@@ -143,13 +143,13 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     protected boolean isKeptInMemory(final ViewState viewState, final RectF pageBounds) {
         if (viewState.zoom < 2) {
-            return page.isKeptInMemory(viewState);
+            return page.isKeptInMemory(viewState) || page.isVisible(viewState);
         }
         if (viewState.zoom < 4) {
             return page.isKeptInMemory(viewState) && page.isVisible(viewState);
         }
 
-        return this.isVisible(viewState, pageBounds);
+        return page.isVisible(viewState) && this.isVisible(viewState, pageBounds);
     }
 
     protected boolean isVisible(final ViewState viewState, final RectF pageBounds) {
@@ -289,7 +289,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     /**
      * Gets the parent node.
-     * 
+     *
      * @return the parent node
      */
     public PageTreeNode getParent() {

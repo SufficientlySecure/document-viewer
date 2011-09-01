@@ -109,10 +109,6 @@ public class Page {
     }
 
     public boolean isKeptInMemory(final ViewState viewState) {
-        return isKeptInMemoryImpl(viewState) || isVisible(viewState);
-    }
-
-    private boolean isKeptInMemoryImpl(final ViewState viewState) {
         final int current = viewState.currentIndex;
         final int inMemory = (int) Math.ceil(SettingsManager.getAppSettings().getPagesInMemory() / 2.0);
         return (current - inMemory <= this.index.viewIndex) && (this.index.viewIndex <= current + inMemory);

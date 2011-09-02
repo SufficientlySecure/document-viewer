@@ -83,9 +83,9 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         getWindowManager().getDefaultDisplay().getMetrics(DM);
-        
+
         SettingsManager.addListener(this);
 
         frameLayout = createMainContainer();
@@ -596,7 +596,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
             }
 
             if (!redrawn && appDiff != null) {
-                if (appDiff.isMaxImageSizeChanged() || appDiff.isPagesInMemoryChanged() || appDiff.isLowMemoryChanged()) {
+                if (appDiff.isMaxImageSizeChanged() || appDiff.isPagesInMemoryChanged() || appDiff.isDecodeModeChanged()) {
                     dc.updateMemorySettings();
                 }
             }

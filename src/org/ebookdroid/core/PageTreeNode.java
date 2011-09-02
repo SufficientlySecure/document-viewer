@@ -90,7 +90,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         if (getBitmap() == null) {
             decodePageTreeNode(nodesToDecode);
         } else if (!viewState.isNodeVisible(this, pageBounds)) {
-            if (viewState.lowMemory) {
+            if (viewState.decodeMode == DecodeMode.LOW_MEMORY) {
                 holder.clearDirectRef();
             }
         }
@@ -128,7 +128,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         if (getBitmap() == null) {
             decodePageTreeNode(nodesToDecode);
         } else if (!viewState.isNodeVisible(this, pageBounds)) {
-            if (viewState.lowMemory) {
+            if (viewState.decodeMode == DecodeMode.LOW_MEMORY) {
                 holder.clearDirectRef();
             }
         }
@@ -136,7 +136,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     protected void onChildLoaded(final PageTreeNode child, final ViewState viewState, final RectF bounds) {
-        if (viewState.lowMemory) {
+        if (viewState.decodeMode == DecodeMode.LOW_MEMORY) {
             if (page.nodes.isHiddenByChildren(this, viewState, bounds)) {
                 holder.clearDirectRef();
             }
@@ -144,10 +144,11 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     protected boolean isChildrenRequired(final ViewState viewState) {
-        if (viewState.nativeResolution) {
+        if (viewState.decodeMode == DecodeMode.NATIVE_RESOLUTION) {
             return false;
         }
-        if (!viewState.lowMemory) {
+
+        if (viewState.decodeMode == DecodeMode.NORMAL) {
             return viewState.zoom > childrenZoomThreshold;
         }
 

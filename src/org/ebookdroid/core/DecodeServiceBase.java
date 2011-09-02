@@ -156,8 +156,10 @@ public class DecodeServiceBase implements DecodeService {
         final RectF nodeBounds = task.pageSliceBounds;
         final float zoom = task.viewState.zoom;
 
-        return task.viewState.nativeResolution ? getScaledSize(pageWidth, pageWidth, pageHeight, nodeBounds, 1.0f)
-                : getScaledSize(viewWidth, pageWidth, pageHeight, nodeBounds, zoom);
+        if (task.viewState.decodeMode == DecodeMode.NATIVE_RESOLUTION) {
+            return getScaledSize(pageWidth, pageWidth, pageHeight, nodeBounds, 1.0f);
+        }
+        return getScaledSize(viewWidth, pageWidth, pageHeight, nodeBounds, zoom);
     }
 
     @Override

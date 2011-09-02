@@ -59,17 +59,17 @@
 			android:summary="@string/pref_pageintitle_summary"
 			android:defaultValue="true"
 			android:dependency="title" />
-		<CheckBoxPreference
-			android:key="zoomdoubletap"
-			android:title="@string/pref_zoomdoubletap_title"
-			android:summary="@string/pref_zoomdoubletap_summary"
-			android:defaultValue="false" />
 	</PreferenceScreen>
 
 	<PreferenceScreen
 		android:title="@string/pref_scroll_category"
 		android:summary="@string/pref_scroll_category_summary">
 
+		<CheckBoxPreference
+			android:key="zoomdoubletap"
+			android:title="@string/pref_zoomdoubletap_title"
+			android:summary="@string/pref_zoomdoubletap_summary"
+			android:defaultValue="false" />
 		<CheckBoxPreference
 			android:key="tapscroll"
 			android:title="@string/pref_tap_title"
@@ -104,11 +104,13 @@
 			android:defaultValue="0"
 			android:numeric="integer" />
 
-		<CheckBoxPreference
-			android:key="slicelimit"
-			android:title="@string/pref_slicelimit_title"
-			android:summary="@string/pref_slicelimit_summary"
-			android:defaultValue="true" />
+		<ListPreference
+			android:key="decodemode"
+			android:title="@string/pref_decodemode_title"
+			android:summary="@string/pref_decodemode_summary"
+			android:entries="@array/list_decodemode"
+			android:entryValues="@array/list_decodemode_values"
+			android:defaultValue="Normal" />
 
 		<EditTextPreference
 			android:key="maximagesize"
@@ -116,14 +118,7 @@
 			android:summary="@string/pref_maximagesize_summary"
 			android:maxLength="5"
 			android:defaultValue="256"
-			android:dependency="slicelimit"
-		    android:numeric="integer" />
-		    
-		<CheckBoxPreference
-			android:key="nativeresolution"
-			android:title="@string/pref_nativeresolution_title"
-			android:summary="@string/pref_nativeresolution_summary"
-			android:defaultValue="false" />
+			android:numeric="integer" />
 
 	</PreferenceScreen>
 

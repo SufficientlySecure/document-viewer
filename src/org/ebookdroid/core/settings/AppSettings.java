@@ -1,9 +1,11 @@
 package org.ebookdroid.core.settings;
 
+import org.ebookdroid.core.DecodeMode;
 import org.ebookdroid.core.PageAlign;
 import org.ebookdroid.core.RotationType;
 import org.ebookdroid.core.curl.PageAnimationType;
 import org.ebookdroid.core.utils.FileExtensionFilter;
+import org.ebookdroid.utils.LengthUtils;
 import org.ebookdroid.utils.StringUtils;
 
 import android.content.Context;
@@ -39,15 +41,11 @@ public class AppSettings {
 
     private Integer scrollHeight;
 
-    private Boolean sliceLimit;
-
     private PageAnimationType animationType;
 
     private Boolean splitPages;
 
     private Boolean pageInTitle;
-
-    private Boolean nativeResolution;
 
     private Integer brightness;
 
@@ -62,6 +60,8 @@ public class AppSettings {
     private Integer maxImageSize;
 
     private Boolean zoomByDoubleTap;
+
+    private DecodeMode decodeMode;
 
     AppSettings(final Context context) {
         this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -207,18 +207,22 @@ public class AppSettings {
         return pagesInMemory.intValue();
     }
 
-    public boolean getNativeResolution() {
-        if (nativeResolution == null) {
-            nativeResolution = prefs.getBoolean("nativeresolution", false);
+    public DecodeMode getDecodeMode() {
+        if (decodeMode == null) {
+            String val = prefs.getString("decodemode", null);
+            if (LengthUtils.isEmpty(val)) {
+                if (prefs.getBoolean("nativeresolution", false)) {
+                    decodeMode = DecodeMode.NATIVE_RESOLUTION;
+                } else if (prefs.getBoolean("slicelimit", false)) {
+                    decodeMode = DecodeMode.LOW_MEMORY;
+                } else {
+                    decodeMode = DecodeMode.NORMAL;
+                }
+            } else {
+                decodeMode = DecodeMode.getByResValue(val);
+            }
         }
-        return nativeResolution;
-    }
-
-    public Boolean getLowMemory() {
-        if (sliceLimit == null) {
-            sliceLimit = prefs.getBoolean("slicelimit", true);
-        }
-        return sliceLimit;
+        return decodeMode;
     }
 
     public int getMaxImageSize() {
@@ -228,7 +232,7 @@ public class AppSettings {
         }
         return maxImageSize;
     }
-    
+
     public boolean getZoomByDoubleTap() {
         if (zoomByDoubleTap == null) {
             zoomByDoubleTap = prefs.getBoolean("zoomdoubletap", false);
@@ -249,7 +253,7 @@ public class AppSettings {
         }
         return singlePage;
     }
-    
+
     PageAlign getPageAlign() {
         if (pageAlign == null) {
             final String align = prefs.getString("align", PageAlign.AUTO.getResValue());
@@ -325,7 +329,7 @@ public class AppSettings {
         private static final short D_TapSize = 0x0001 << 6;
         private static final short D_ScrollHeight = 0x0001 << 7;
         private static final short D_PagesInMemory = 0x0001 << 8;
-        private static final short D_LowMemory = 0x0001 << 9;
+        private static final short D_DecodeMode = 0x0001 << 9;
         private static final short D_Brightness = 0x0001 << 10;
         private static final short D_BrightnessInNightMode = 0x0001 << 11;
         private static final short D_KeepScreenOn = 0x0001 << 12;
@@ -365,8 +369,8 @@ public class AppSettings {
                 if (firstTime || olds.getPagesInMemory() != news.getPagesInMemory()) {
                     mask |= D_PagesInMemory;
                 }
-                if (firstTime || olds.getLowMemory() != news.getLowMemory()) {
-                    mask |= D_LowMemory;
+                if (firstTime || olds.getDecodeMode() != news.getDecodeMode()) {
+                    mask |= D_DecodeMode;
                 }
                 if (firstTime || olds.getBrightness() != news.getBrightness()) {
                     mask |= D_Brightness;
@@ -426,8 +430,8 @@ public class AppSettings {
             return 0 != (mask & D_PagesInMemory);
         }
 
-        public boolean isLowMemoryChanged() {
-            return 0 != (mask & D_LowMemory);
+        public boolean isDecodeModeChanged() {
+            return 0 != (mask & D_DecodeMode);
         }
 
         public boolean isBrightnessChanged() {

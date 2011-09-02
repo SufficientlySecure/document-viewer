@@ -22,8 +22,7 @@ public class ViewState {
 
     public final float zoom;
 
-    public boolean lowMemory;
-    public boolean nativeResolution;
+    public DecodeMode decodeMode;
 
     public final SparseArray<RectF> pages = new SparseArray<RectF>();
 
@@ -55,8 +54,7 @@ public class ViewState {
         this.firstCached = Math.max(0, this.currentIndex - inMemory);
         this.lastCached = Math.min(this.currentIndex - inMemory, dc.getBase().getDocumentModel().getPageCount());
 
-        this.lowMemory = SettingsManager.getAppSettings().getLowMemory();
-        this.nativeResolution = lowMemory ? false : SettingsManager.getAppSettings().getNativeResolution();
+        this.decodeMode = SettingsManager.getAppSettings().getDecodeMode();
     }
 
     public ViewState(final ViewState oldState, final IDocumentViewController dc) {
@@ -79,8 +77,7 @@ public class ViewState {
         this.firstCached = Math.max(0, this.currentIndex - inMemory);
         this.lastCached = Math.min(this.currentIndex - inMemory, dc.getBase().getDocumentModel().getPageCount());
 
-        this.lowMemory = oldState.lowMemory;
-        this.nativeResolution = oldState.nativeResolution;
+        this.decodeMode = oldState.decodeMode;
     }
 
     public ViewState(final ViewState state) {
@@ -95,8 +92,7 @@ public class ViewState {
         this.firstCached = state.firstCached;
         this.lastCached = state.lastCached;
 
-        this.lowMemory = state.lowMemory;
-        this.nativeResolution = state.nativeResolution;
+        this.decodeMode = state.decodeMode;
     }
 
     public RectF getBounds(final Page page) {
@@ -117,7 +113,7 @@ public class ViewState {
     }
 
     public final boolean isNodeKeptInMemory(final PageTreeNode node, final RectF pageBounds) {
-        if (this.nativeResolution || this.zoom < 2) {
+        if (this.decodeMode == DecodeMode.NATIVE_RESOLUTION || this.zoom < 2) {
             return this.isPageKeptInMemory(node.page) || this.isPageVisible(node.page);
         }
         if (this.zoom < 4) {

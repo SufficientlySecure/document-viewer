@@ -15,10 +15,6 @@
 	<string name="pref_scroll_title">"Scroll height"</string>
 	<string name="pref_scroll_summary">"Set height for scroll "</string>
 	<string name="pref_render_category">"Rendering"</string>
-	<string name="pref_slicelimit_title">"Low memory mode"</string>
-	<string name="pref_slicelimit_summary">"Slice size limit. Can be slowly but stability."</string>
-    <string name="pref_maximagesize_title">"Max rendered image size"</string>
-    <string name="pref_maximagesize_summary">"Max rendered image size (in KB)"</string>
 	<string name="pref_browser_category">"File Browser"</string>
 	<string name="pref_brautoscandir_title">"Auto Scan directory"</string>
 	<string name="pref_brautoscandir_summary">"Directory for automatic files search"</string>
@@ -85,8 +81,8 @@
 	<string name="list_animation_slider">"Slider"</string>
 	<string name="list_animation_fader">"Fade in"</string>
 	<string name="list_animation_squeezer">"Squeeze"</string>
-	<string name="pref_scroll_category">"Scrolling"</string>
-	<string name="pref_scroll_category_summary">"Scrolling preferences"</string>
+	<string name="pref_scroll_category">"Touch and Scrolling"</string>
+	<string name="pref_scroll_category_summary">"Touch and scrolling preferences"</string>
 	<string name="pref_singlepage_category">"Single page settings"</string>
 	<string name="pref_singlepage_category_summary">"Settings actual for single page mode"</string>
 	<string name="pref_memory_category">"Memory usage settings"</string>
@@ -99,8 +95,6 @@
 	<string name="pref_keepscreenon_summary">"Keep screen always on"</string>
 	<string name="pref_loadrecent_title">"Load recent"</string>
 	<string name="pref_loadrecent_summary">"Auto loading last opened book on app start"</string>
-	<string name="pref_nativeresolution_title">"Use native resolution"</string>
-	<string name="pref_nativeresolution_summary">"Render page in document resolution. Can consume a lot of memory"</string>
 	<string name="add_bookmark_name">"Enter bookmark description"</string>
 	<string name="bookmark_start">Start</string>
 	<string name="bookmark_end">End</string>
@@ -114,4 +108,12 @@
 	<string name="clear_recent_text">"Do you really want to remove all recent books?"</string>
 	<string name="pref_zoomdoubletap_title">"Zoom by double tap"</string>
 	<string name="pref_zoomdoubletap_summary">"Show/hide zoom controls by double tap"</string>
+
+	<string name="pref_decodemode_title">"Memory usage mode"</string>
+	<string name="pref_decodemode_summary">"Defines memory usage mode"</string>
+	<string name="list_decodemode_native">"Render page in document resolution"</string>
+	<string name="list_decodemode_normal">"Normal page slices"</string>
+	<string name="list_decodemode_low">"Low memory mode - slice size limit used"</string>
+	<string name="pref_maximagesize_title">"Max slice size"</string>
+	<string name="pref_maximagesize_summary">"Max slice size (in KB)"</string>
 </resources>

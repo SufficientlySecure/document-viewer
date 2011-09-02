@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Scroller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -133,8 +134,13 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     }
 
     protected final void decodePageTreeNodes(final ViewState viewState, final List<PageTreeNode> nodesToDecode) {
-        for (final PageTreeNode pageTreeNode : nodesToDecode) {
-            base.getDecodeService().decodePage(viewState, pageTreeNode);
+        PageTreeNode best = Collections.min(nodesToDecode, new PageTreeNodeComparator(viewState));
+        base.getDecodeService().decodePage(viewState, best);
+
+        for (final PageTreeNode node : nodesToDecode) {
+            if (node != best) {
+                base.getDecodeService().decodePage(viewState, node);
+            }
         }
     }
 
@@ -392,11 +398,9 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         return true;
     }
 
-
     public final long getLastDownEventTime() {
         return lastDownEventTime;
     }
-
 
     public final void setLastDownEventTime(long lastDownEventTime) {
         this.lastDownEventTime = lastDownEventTime;
@@ -408,7 +412,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     }
 
     public final float getSquareDistanceToLast(final MotionEvent ev) {
-        return (ev.getX() - lastX)*(ev.getX() - lastX) + (ev.getY() - lastY)*(ev.getY() - lastY);
+        return (ev.getX() - lastX) * (ev.getX() - lastX) + (ev.getY() - lastY) * (ev.getY() - lastY);
     }
 
     @Override

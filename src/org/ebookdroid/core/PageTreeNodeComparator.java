@@ -38,8 +38,8 @@ public class PageTreeNodeComparator implements Comparator<PageTreeNode> {
         } else if (!v1 && v2) {
             res = 1;
         } else {
-            final float d1 = viewIndex1 + s1.top - (cp + 0.5f);
-            final float d2 = viewIndex2 + s2.top - (cp + 0.5f);
+            final float d1 = viewIndex1 + s1.centerY() - (cp + 0.5f);
+            final float d2 = viewIndex2 + s2.centerY() - (cp + 0.5f);
             final int dist1 = Math.abs((int) (d1 * node1.childrenZoomThreshold));
             final int dist2 = Math.abs((int) (d2 * node2.childrenZoomThreshold));
             res = CompareUtils.compare(dist1, dist2);

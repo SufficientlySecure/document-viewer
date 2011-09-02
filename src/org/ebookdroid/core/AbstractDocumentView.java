@@ -127,8 +127,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
             decodePageTreeNodes(viewState, nodesToDecode);
         }
 
-        LCTX.d("updatePageVisibility: " + viewState.firstVisible + " " + viewState.currentIndex + " "
-                + viewState.lastVisible + " => " + nodesToDecode.size());
+        LCTX.d("updatePageVisibility: " + viewState + " => " + nodesToDecode.size());
 
         return viewState;
     }
@@ -236,9 +235,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
             decodePageTreeNodes(viewState, nodesToDecode);
         }
 
-        LCTX.d("onZoomChanged: " + viewState.firstVisible + " " + viewState.currentIndex + " "
-                + viewState.lastVisible + " => " + nodesToDecode.size());
-
+        LCTX.d("onZoomChanged: " + viewState + " => " + nodesToDecode.size());
     }
 
     @Override
@@ -253,9 +250,8 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         if (!nodesToDecode.isEmpty()) {
             decodePageTreeNodes(viewState, nodesToDecode);
         }
-        LCTX.d("updateMemorySettings: " + viewState.firstVisible + " " + viewState.currentIndex + " "
-                + viewState.lastVisible + " => " + nodesToDecode.size());
 
+        LCTX.d("updateMemorySettings: " + viewState + " => " + nodesToDecode.size());
     }
 
     public final ViewState invalidatePages(ViewState oldState, final Page... pages) {
@@ -269,8 +265,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
             decodePageTreeNodes(viewState, nodesToDecode);
         }
 
-        LCTX.d("invalidatePages: " + viewState.firstVisible + " " + viewState.currentIndex + " "
-                + viewState.lastVisible + " => " + nodesToDecode.size());
+        LCTX.d("invalidatePages: " + viewState + " => " + nodesToDecode.size());
 
         return viewState;
     }

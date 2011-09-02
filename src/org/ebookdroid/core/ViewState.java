@@ -52,7 +52,7 @@ public class ViewState {
 
         final int inMemory = (int) Math.ceil(SettingsManager.getAppSettings().getPagesInMemory() / 2.0);
         this.firstCached = Math.max(0, this.currentIndex - inMemory);
-        this.lastCached = Math.min(this.currentIndex - inMemory, dc.getBase().getDocumentModel().getPageCount());
+        this.lastCached = Math.min(this.currentIndex + inMemory, dc.getBase().getDocumentModel().getPageCount());
 
         this.decodeMode = SettingsManager.getAppSettings().getDecodeMode();
     }
@@ -75,7 +75,7 @@ public class ViewState {
 
         final int inMemory = (int) Math.ceil(SettingsManager.getAppSettings().getPagesInMemory() / 2.0);
         this.firstCached = Math.max(0, this.currentIndex - inMemory);
-        this.lastCached = Math.min(this.currentIndex - inMemory, dc.getBase().getDocumentModel().getPageCount());
+        this.lastCached = Math.min(this.currentIndex + inMemory, dc.getBase().getDocumentModel().getPageCount());
 
         this.decodeMode = oldState.decodeMode;
     }
@@ -131,4 +131,19 @@ public class ViewState {
         }
         return res.booleanValue();
     }
+
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+
+        buf.append("visible: ").append("[").append(firstVisible).append(", ").append(currentIndex).append(", ").append(lastVisible).append("]");
+        buf.append(" ");
+        buf.append("cached: ").append("[").append(firstCached).append(", ").append(lastCached).append("]");
+        buf.append(" ");
+        buf.append("zoom: ").append(zoom);
+
+        return buf.toString();
+    }
+
+
 }

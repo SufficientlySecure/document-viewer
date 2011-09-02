@@ -111,9 +111,9 @@
 	<string name="pref_zoomdoubletap_title">"Увеличение по тапу"</string>
 	<string name="pref_zoomdoubletap_summary">"Показать/скрыть линейку увеличения по двойному тапу"</string>
 
-	<string name="pref_decodemode_title">"Memory usage mode"</string>
-	<string name="pref_decodemode_summary">"Defines memory usage mode"</string>
-	<string name="list_decodemode_native">"Декодировать страницу целиком"</string>
+	<string name="pref_decodemode_title">"Использование памяти"</string>
+	<string name="pref_decodemode_summary">"Задает режимы использования памяти"</string>
+	<string name="list_decodemode_native">"Декодировать страницу в исходном разрешении"</string>
 	<string name="list_decodemode_normal">"Декодировать страницу по областям"</string>
 	<string name="list_decodemode_low">"Экономия памяти - ограничить размер областей при декодировании"</string>
 	<string name="pref_maximagesize_title">"Макс. размер области"</string>

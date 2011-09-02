@@ -363,6 +363,9 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
                 break;
             case MotionEvent.ACTION_MOVE:
+                if (getSquareDistanceToLast(ev) >= 100) {
+                    lastDownEventTime = 0;
+                }
                 scrollBy((int) (lastX - ev.getX()), (int) (lastY - ev.getY()));
                 setLastPosition(ev);
                 redrawView();
@@ -374,6 +377,9 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
                         (int) -velocityTracker.getYVelocity(), l.left, l.right, l.top, l.bottom);
                 velocityTracker.recycle();
                 velocityTracker = null;
+                if (getSquareDistanceToLast(ev) >= 100) {
+                    lastDownEventTime = 0;
+                }
 
                 if (inTap && (touchInTapZone == null || touchInTapZone.booleanValue())) {
                     if (ev.getY() / getHeight() < ts) {
@@ -394,6 +400,10 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         lastY = ev.getY();
     }
 
+    protected float getSquareDistanceToLast(final MotionEvent ev) {
+        return (ev.getX() - lastX)*(ev.getX() - lastX) + (ev.getY() - lastY)*(ev.getY() - lastY);
+    }
+    
     @Override
     public final boolean dispatchKeyEvent(final KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {

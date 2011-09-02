@@ -14,7 +14,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    protected void goToPageImpl(final int toPage) {
+    protected final void goToPageImpl(final int toPage) {
         final DocumentModel dm = getBase().getDocumentModel();
         if (toPage >= 0 && toPage < dm.getPageCount()) {
             final Page page = dm.getPageObject(toPage);
@@ -28,11 +28,11 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         }
     }
 
-    public void setCurrentPageByFirstVisible() {
+    public final void setCurrentPageByFirstVisible() {
     }
 
     @Override
-    public int calculateCurrentPage(final ViewState viewState) {
+    public final int calculateCurrentPage(final ViewState viewState) {
         int result = 0;
         long bestDistance = Long.MAX_VALUE;
 
@@ -55,7 +55,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    protected void onScrollChanged(final int newPage, final int direction) {
+    protected final void onScrollChanged(final int newPage, final int direction) {
         // bounds could be not updated
         if (inZoom.get()) {
             return;
@@ -72,7 +72,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
                 final Page page = dm.getPageObject(viewState.currentIndex);
                 if (page != null) {
                     dm.setCurrentPageIndex(page.index);
-                    redrawView();
+                    redrawView(viewState);
                 }
             }
         });
@@ -80,7 +80,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    protected void verticalConfigScroll(final int direction) {
+    protected final void verticalConfigScroll(final int direction) {
         final int scrollheight = SettingsManager.getAppSettings().getScrollHeight();
         final int dy = (int) (direction * getHeight() * (scrollheight / 100.0));
 
@@ -91,7 +91,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    protected void verticalDpadScroll(final int direction) {
+    protected final void verticalDpadScroll(final int direction) {
         final int dy = direction * getHeight() / 2;
 
         getScroller().startScroll(getScrollX(), getScrollY(), 0, dy);
@@ -101,7 +101,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    protected Rect getScrollLimits() {
+    protected final Rect getScrollLimits() {
         final int width = getWidth();
         final int height = getHeight();
         final Page lpo = getBase().getDocumentModel().getLastPageObject();
@@ -114,7 +114,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    public synchronized void drawView(final Canvas canvas, final ViewState viewState) {
+    public synchronized final void drawView(final Canvas canvas, final ViewState viewState) {
         final DocumentModel dm = getBase().getDocumentModel();
         for (int i = viewState.firstVisible; i <= viewState.lastVisible; i++) {
             final Page page = dm.getPageObject(i);
@@ -126,7 +126,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    protected void onLayout(final boolean changed, final int left, final int top, final int right, final int bottom) {
+    protected final void onLayout(final boolean changed, final int left, final int top, final int right, final int bottom) {
         int page = -1;
         if (changed) {
             page = base.getDocumentModel().getCurrentViewPageIndex();
@@ -145,7 +145,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
      * Invalidate page sizes.
      */
     @Override
-    public synchronized void invalidatePageSizes(final InvalidateSizeReason reason, final Page changedPage) {
+    public synchronized final void invalidatePageSizes(final InvalidateSizeReason reason, final Page changedPage) {
         if (!isInitialized()) {
             return;
         }
@@ -178,12 +178,12 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    protected boolean isPageVisibleImpl(final Page page, final ViewState viewState) {
+    protected final boolean isPageVisibleImpl(final Page page, final ViewState viewState) {
         return RectF.intersects(viewState.viewRect, viewState.getBounds(page));
     }
 
     @Override
-    public void updateAnimationType() {
+    public final void updateAnimationType() {
         // This mode do not use animation
 
     }

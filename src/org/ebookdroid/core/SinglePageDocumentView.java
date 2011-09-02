@@ -33,7 +33,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    public void goToPageImpl(final int toPage) {
+    public final void goToPageImpl(final int toPage) {
         final DocumentModel dm = getBase().getDocumentModel();
         if (toPage >= 0 && toPage < dm.getPageCount()) {
             final Page page = dm.getPageObject(toPage);
@@ -47,22 +47,22 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    public int calculateCurrentPage(final ViewState viewState) {
+    public final int calculateCurrentPage(final ViewState viewState) {
         return getBase().getDocumentModel().getCurrentViewPageIndex();
     }
 
     @Override
-    protected void verticalConfigScroll(final int direction) {
+    protected final void verticalConfigScroll(final int direction) {
         goToPageImpl(getBase().getDocumentModel().getCurrentViewPageIndex() + direction);
     }
 
     @Override
-    protected void verticalDpadScroll(final int direction) {
+    protected final void verticalDpadScroll(final int direction) {
         goToPageImpl(getBase().getDocumentModel().getCurrentViewPageIndex() + direction);
     }
 
     @Override
-    protected Rect getScrollLimits() {
+    protected final Rect getScrollLimits() {
         final int width = getWidth();
         final int height = getHeight();
         final float zoom = getBase().getZoomModel().getZoom();
@@ -77,7 +77,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    public boolean onTouchEvent(final MotionEvent event) {
+    public final boolean onTouchEvent(final MotionEvent event) {
         if (isCurlerDisabled()) {
             return super.onTouchEvent(event);
         } else {
@@ -110,7 +110,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    public void drawView(final Canvas canvas, final ViewState viewState) {
+    public final void drawView(final Canvas canvas, final ViewState viewState) {
         if (isCurlerDisabled()) {
             final Page page = getBase().getDocumentModel().getCurrentPageObject();
             if (page != null) {
@@ -125,7 +125,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
      * Invalidate page sizes.
      */
     @Override
-    public void invalidatePageSizes(final InvalidateSizeReason reason, final Page changedPage) {
+    public final void invalidatePageSizes(final InvalidateSizeReason reason, final Page changedPage) {
         if (!isInitialized()) {
             return;
         }
@@ -173,7 +173,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    protected boolean isPageVisibleImpl(final Page page, final ViewState viewState) {
+    protected final boolean isPageVisibleImpl(final Page page, final ViewState viewState) {
         final int pageIndex = page.index.viewIndex;
         if (curler != null) {
             return pageIndex == curler.getForeIndex() || pageIndex == curler.getBackIndex();
@@ -182,7 +182,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    public void updateAnimationType() {
+    public final void updateAnimationType() {
         final PageAnimationType type = SettingsManager.getBookSettings().getAnimationType();
         curler = PageAnimationType.create(type, this);
 

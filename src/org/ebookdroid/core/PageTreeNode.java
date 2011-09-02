@@ -144,7 +144,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     protected boolean isKeptInMemory(final ViewState viewState, final RectF pageBounds) {
-        if (viewState.zoom < 2) {
+        if (viewState.zoom < 2 || SettingsManager.getAppSettings().getNativeResolution()) {
             return viewState.isPageKeptInMemory(page) || viewState.isPageVisible(page);
         }
         if (viewState.zoom < 4) {

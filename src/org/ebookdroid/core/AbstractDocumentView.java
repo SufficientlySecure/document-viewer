@@ -25,7 +25,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
     protected static final LogContext LCTX = LogContext.ROOT.lctx("View");
 
-    protected static final int DOUBLE_TAP_TIME = 500;
+    public static final int DOUBLE_TAP_TIME = 500;
 
     protected final IViewerActivity base;
     protected boolean isInitialized = false;
@@ -395,12 +395,22 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         return true;
     }
 
-    protected void setLastPosition(final MotionEvent ev) {
+    
+    public long getLastDownEventTime() {
+        return lastDownEventTime;
+    }
+
+    
+    public void setLastDownEventTime(long lastDownEventTime) {
+        this.lastDownEventTime = lastDownEventTime;
+    }
+
+    public void setLastPosition(final MotionEvent ev) {
         lastX = ev.getX();
         lastY = ev.getY();
     }
 
-    protected float getSquareDistanceToLast(final MotionEvent ev) {
+    public float getSquareDistanceToLast(final MotionEvent ev) {
         return (ev.getX() - lastX)*(ev.getX() - lastX) + (ev.getY() - lastY)*(ev.getY() - lastY);
     }
     

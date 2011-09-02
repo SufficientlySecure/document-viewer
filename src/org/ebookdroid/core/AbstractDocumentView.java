@@ -258,8 +258,8 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
     }
 
-    public void invalidatePages(final Page... pages) {
-        final ViewState viewState = new ViewState(this);
+    public ViewState invalidatePages(ViewState oldState, final Page... pages) {
+        final ViewState viewState = calculatePageVisibility(pages[0].index.viewIndex, 0, oldState.zoom);
 
         final List<PageTreeNode> nodesToDecode = new ArrayList<PageTreeNode>();
         for (final Page page : pages) {
@@ -271,6 +271,8 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
         LCTX.d("invalidatePages: " + viewState.firstVisible + " " + viewState.currentIndex + " "
                 + viewState.lastVisible + " => " + nodesToDecode.size());
+
+        return viewState;
     }
 
     @Override
@@ -413,7 +415,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     public float getSquareDistanceToLast(final MotionEvent ev) {
         return (ev.getX() - lastX)*(ev.getX() - lastX) + (ev.getY() - lastY)*(ev.getY() - lastY);
     }
-    
+
     @Override
     public final boolean dispatchKeyEvent(final KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {

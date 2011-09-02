@@ -108,7 +108,7 @@ public abstract class AbstractPageAnimator implements PageAnimator {
     /**
      * Swap to next view
      */
-    protected void nextView(final ViewState viewState) {
+    protected ViewState nextView(final ViewState viewState) {
         final DocumentModel dm = view.getBase().getDocumentModel();
 
         foreIndex = viewState.currentIndex;
@@ -120,13 +120,13 @@ public abstract class AbstractPageAnimator implements PageAnimator {
             backIndex = 0;
         }
 
-        view.invalidatePages(dm.getPageObject(foreIndex), dm.getPageObject(backIndex));
+        return view.invalidatePages(viewState, dm.getPageObject(foreIndex), dm.getPageObject(backIndex));
     }
 
     /**
      * Swap to previous view
      */
-    protected void previousView(final ViewState viewState) {
+    protected ViewState previousView(final ViewState viewState) {
         final DocumentModel dm = view.getBase().getDocumentModel();
 
         backIndex = viewState.currentIndex;
@@ -135,7 +135,7 @@ public abstract class AbstractPageAnimator implements PageAnimator {
             foreIndex = dm.getPageCount() - 1;
         }
 
-        view.invalidatePages(dm.getPageObject(foreIndex), dm.getPageObject(backIndex));
+        return view.invalidatePages(viewState, dm.getPageObject(foreIndex), dm.getPageObject(backIndex));
     }
 
     /**
@@ -265,7 +265,7 @@ public abstract class AbstractPageAnimator implements PageAnimator {
             mFinger.y = event.getY();
             final int width = view.getWidth();
 
-            final ViewState viewState = new ViewState(view);
+            ViewState viewState = new ViewState(view);
 
             // Depending on the action do what we need to
             switch (event.getAction()) {
@@ -306,14 +306,14 @@ public abstract class AbstractPageAnimator implements PageAnimator {
 
                                 // Set the right movement flag
                                 bFlipRight = true;
-                                nextView(viewState);
+                                viewState = nextView(viewState);
 
                             } else {
                                 // Set the left movement flag
                                 bFlipRight = false;
 
                                 // go to next previous page
-                                previousView(viewState);
+                                viewState = previousView(viewState);
 
                                 // Set new movement
                                 mMovement.x = getInitialXForBackFlip(width);
@@ -353,7 +353,7 @@ public abstract class AbstractPageAnimator implements PageAnimator {
                     } finally {
                         lock.writeLock().unlock();
                     }
-                    view.redrawView();
+                    view.redrawView(viewState);
                     break;
             }
 

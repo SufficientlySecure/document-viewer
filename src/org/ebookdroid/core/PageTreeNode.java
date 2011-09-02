@@ -54,7 +54,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     public boolean onZoomChanged(final float oldZoom, final ViewState viewState, final RectF pageBounds,
             final List<PageTreeNode> nodesToDecode) {
-        if (!isKeptInMemory(viewState, pageBounds)) {
+        if (!viewState.isNodeKeptInMemory(this, pageBounds)) {
             recycle();
             return false;
         }
@@ -100,7 +100,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     public boolean onPositionChanged(final ViewState viewState, final RectF pageBounds,
             final List<PageTreeNode> nodesToDecode) {
 
-        if (!isKeptInMemory(viewState, pageBounds)) {
+        if (!viewState.isNodeKeptInMemory(this, pageBounds)) {
             recycle();
             return false;
         }
@@ -141,16 +141,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 holder.clearDirectRef();
             }
         }
-    }
-
-    protected boolean isKeptInMemory(final ViewState viewState, final RectF pageBounds) {
-        if (viewState.zoom < 2 || SettingsManager.getAppSettings().getNativeResolution()) {
-            return viewState.isPageKeptInMemory(page) || viewState.isPageVisible(page);
-        }
-        if (viewState.zoom < 4) {
-            return viewState.isPageKeptInMemory(page) && viewState.isPageVisible(page);
-        }
-        return viewState.isPageVisible(page) && viewState.isNodeVisible(this, pageBounds);
     }
 
     protected boolean isChildrenRequired(final ViewState viewState) {

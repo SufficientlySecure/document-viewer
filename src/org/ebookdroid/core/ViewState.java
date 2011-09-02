@@ -116,6 +116,16 @@ public class ViewState {
         return firstVisible <= page.index.viewIndex && page.index.viewIndex <= lastVisible;
     }
 
+    public final boolean isNodeKeptInMemory(final PageTreeNode node, final RectF pageBounds) {
+        if (this.nativeResolution || this.zoom < 2) {
+            return this.isPageKeptInMemory(node.page) || this.isPageVisible(node.page);
+        }
+        if (this.zoom < 4) {
+            return this.isPageKeptInMemory(node.page) && this.isPageVisible(node.page);
+        }
+        return this.isPageVisible(node.page) && this.isNodeVisible(node, pageBounds);
+    }
+
     public final boolean isNodeVisible(final PageTreeNode node, final RectF pageBounds) {
         Boolean res = nodeVisibility.get(node.shortId);
         if (res == null) {

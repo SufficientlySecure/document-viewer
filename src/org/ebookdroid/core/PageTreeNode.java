@@ -231,8 +231,8 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
         if (bitmap != null) {
             canvas.drawBitmap(bitmap, null, tr, paint.bitmapPaint);
-        } else if (decodingNow.get()) {
-            canvas.drawRect(tr, paint.decodingPaint);
+//        } else if (decodingNow.get()) {
+//            canvas.drawRect(tr, paint.decodingPaint);
         }
 
         drawBrightnessFilter(canvas, tr);

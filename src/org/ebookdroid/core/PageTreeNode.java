@@ -153,7 +153,8 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         }
 
         final Rect rect = page.base.getDecodeService().getScaledSize(viewState.realRect.width(), page.bounds.width(),
-                page.bounds.height(), pageSliceBounds, viewState.zoom);
+                page.bounds.height(), pageSliceBounds, viewState.zoom, page.getTargetRectScale());
+
         final int size = 4 * rect.width() * rect.height();
         return size >= SettingsManager.getAppSettings().getMaxImageSize();
     }
@@ -231,8 +232,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
         if (bitmap != null) {
             canvas.drawBitmap(bitmap, null, tr, paint.bitmapPaint);
-//        } else if (decodingNow.get()) {
-//            canvas.drawRect(tr, paint.decodingPaint);
         }
 
         drawBrightnessFilter(canvas, tr);

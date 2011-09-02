@@ -157,17 +157,26 @@ public class DecodeServiceBase implements DecodeService {
         final float zoom = task.viewState.zoom;
 
         if (task.viewState.decodeMode == DecodeMode.NATIVE_RESOLUTION) {
-            return getScaledSize(pageWidth, pageWidth, pageHeight, nodeBounds, 1.0f);
+            return getNativeSize(pageWidth, pageHeight, nodeBounds, task.node.page.getTargetRectScale());
         }
-        return getScaledSize(viewWidth, pageWidth, pageHeight, nodeBounds, zoom);
+        return getScaledSize(viewWidth, pageWidth, pageHeight, nodeBounds, zoom, task.node.page.getTargetRectScale());
+    }
+
+    @Override
+    public Rect getNativeSize(final float pageWidth, final float pageHeight, final RectF nodeBounds,
+            final float pageTypeWidthScale) {
+
+        final int scaledWidth = Math.round((pageWidth * pageTypeWidthScale) * nodeBounds.width());
+        final int scaledHeight = Math.round((pageHeight * pageTypeWidthScale) * nodeBounds.height());
+        return new Rect(0, 0, scaledWidth, scaledHeight);
     }
 
     @Override
     public Rect getScaledSize(final float viewWidth, final float pageWidth, final float pageHeight,
-            final RectF nodeBounds, final float zoom) {
+            final RectF nodeBounds, final float zoom, final float pageTypeWidthScale) {
         final float scale = 1.0f * viewWidth / pageWidth * zoom;
-        final int scaledWidth = Math.round((scale * pageWidth) * nodeBounds.width());
-        final int scaledHeight = Math.round((scale * pageHeight) * nodeBounds.height());
+        final int scaledWidth = Math.round((scale * pageWidth * pageTypeWidthScale) * nodeBounds.width());
+        final int scaledHeight = Math.round((scale * pageHeight * pageTypeWidthScale) * nodeBounds.height());
         return new Rect(0, 0, scaledWidth, scaledHeight);
     }
 

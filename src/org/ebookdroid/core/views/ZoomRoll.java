@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.MotionEvent;
@@ -62,6 +63,12 @@ public class ZoomRoll extends View {
         canvas.drawBitmap(left, 0, 0, paint);
         canvas.drawBitmap(right, getWidth() - right.getWidth(), getHeight() - right.getHeight(), paint);
 
+        Paint textPaint = new Paint();
+        textPaint.setColor(Color.BLACK);
+        textPaint.setTextSize(24);
+        textPaint.setAntiAlias(true);
+        String zoomText = String.format("%.2f", zoomModel.getZoom());
+        canvas.drawText(zoomText+"x", 6, getHeight() / 2 + 12, textPaint);
     }
 
     @Override

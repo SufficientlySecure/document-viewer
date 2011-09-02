@@ -90,8 +90,8 @@ public abstract class AbstractPageAnimator implements PageAnimator {
      * Reset page indexes.
      */
     @Override
-    public void resetPageIndexes(final ViewState viewState) {
-        foreIndex = viewState.currentIndex;
+    public void resetPageIndexes(final int currentIndex) {
+        foreIndex = currentIndex;
         backIndex = foreIndex;
     }
 
@@ -286,7 +286,7 @@ public abstract class AbstractPageAnimator implements PageAnimator {
                     if (view.getSquareDistanceToLast(event) >= 100) {
                         view.setLastDownEventTime(0);
                     }
-                    
+
                     if (bUserMoves) {
                         bUserMoves = false;
                         bFlipping = true;

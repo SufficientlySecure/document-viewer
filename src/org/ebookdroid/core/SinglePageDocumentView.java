@@ -13,7 +13,7 @@ import android.view.VelocityTracker;
 
 /**
  * The Class SinglePageDocumentView.
- * 
+ *
  * Used in single page view mode
  */
 public class SinglePageDocumentView extends AbstractDocumentView {
@@ -23,7 +23,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     /**
      * Instantiates a new single page document view.
-     * 
+     *
      * @param baseActivity
      *            the base activity
      */
@@ -38,11 +38,13 @@ public class SinglePageDocumentView extends AbstractDocumentView {
         if (toPage >= 0 && toPage < dm.getPageCount()) {
             final Page page = dm.getPageObject(toPage);
             dm.setCurrentPageIndex(page.index);
+            if (curler != null) {
+                curler.setViewDrawn(false);
+                curler.resetPageIndexes(page.index.viewIndex);
+            }
             final ViewState viewState = updatePageVisibility(page.index.viewIndex, 0, getBase().getZoomModel()
                     .getZoom());
-            if (curler != null) {
-                curler.resetPageIndexes(viewState);
-            }
+            redrawView(viewState);
         }
     }
 

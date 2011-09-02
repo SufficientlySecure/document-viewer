@@ -11,7 +11,7 @@ public interface PageAnimator {
 
     void init();
 
-    void resetPageIndexes(ViewState viewState);
+    void resetPageIndexes(final int currentIndex);
 
     boolean handleTouchEvent(MotionEvent event);
 

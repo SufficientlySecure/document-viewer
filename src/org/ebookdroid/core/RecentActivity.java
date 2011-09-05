@@ -88,8 +88,8 @@ public class RecentActivity extends Activity implements IBrowserActivity {
                     + ", should load: " + shouldLoad);
         }
 
-        changeLibraryView(VIEW_RECENT);
         if (shouldLoad && found) {
+            changeLibraryView(VIEW_RECENT);
             showDocument(Uri.fromFile(file));
         } else {
             changeLibraryView(recent != null ? VIEW_RECENT : VIEW_LIBRARY);

@@ -88,6 +88,7 @@ public class RecentActivity extends Activity implements IBrowserActivity {
                     + ", should load: " + shouldLoad);
         }
 
+        changeLibraryView(VIEW_RECENT);
         if (shouldLoad && found) {
             showDocument(Uri.fromFile(file));
         } else {
@@ -108,7 +109,9 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         // showDocument(Uri.fromFile(file));
         // }
         // }
-        changeLibraryView(SettingsManager.getRecentBook() != null ? VIEW_RECENT : VIEW_LIBRARY);
+        if (SettingsManager.getRecentBook() == null) {
+            changeLibraryView(VIEW_LIBRARY);
+        }
     }
 
     @Override

@@ -109,9 +109,15 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         // showDocument(Uri.fromFile(file));
         // }
         // }
-        if (SettingsManager.getRecentBook() == null) {
-            changeLibraryView(VIEW_LIBRARY);
-        }
+        //if (SettingsManager.getRecentBook() == null) {
+        //    changeLibraryView(VIEW_LIBRARY);
+        //}
+        //else {
+        //    changeLibraryView(VIEW_RECENT); 
+        //}
+        recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), SettingsManager.getAppSettings().getAllowedFileTypes(
+                Activities.getAllExtensions()));
+            
     }
 
     @Override

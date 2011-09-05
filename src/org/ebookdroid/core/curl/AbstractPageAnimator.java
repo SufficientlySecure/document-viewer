@@ -74,7 +74,7 @@ public abstract class AbstractPageAnimator implements PageAnimator {
 
         // Set the default props
         mCurlSpeed = 30;
-        mUpdateRate = 33;
+        mUpdateRate = 5;
     }
 
     @Override

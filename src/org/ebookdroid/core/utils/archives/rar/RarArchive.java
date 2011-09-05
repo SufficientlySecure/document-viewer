@@ -43,7 +43,7 @@ public class RarArchive implements ArchiveFile<RarArchiveEntry> {
      */
     @Override
     public boolean randomAccessAllowed() {
-        return true;
+        return false;
     }
 
 

@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-import java.io.File;
 import java.util.List;
 
 public interface DecodeService {
@@ -36,6 +35,4 @@ public interface DecodeService {
 
         void decodeComplete(CodecPage page, Bitmap bitmap);
     }
-
-    void createThumbnail(File thumbnailFile, int width, int height);
 }

@@ -373,8 +373,8 @@ public class DecodeServiceBase implements DecodeService {
 
                     @Override
                     public void run() {
-                        for (final SoftReference<CodecPage> codecPageSoftReference : pages.values()) {
-                            final CodecPage page = codecPageSoftReference.get();
+                        for (final SoftReference<CodecPage> ref : pages.values()) {
+                            final CodecPage page = ref != null ? ref.get() : null;
                             if (page != null) {
                                 page.recycle();
                             }

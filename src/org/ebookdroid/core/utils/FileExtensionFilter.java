@@ -52,7 +52,7 @@ public class FileExtensionFilter implements FileFilter, FilenameFilter {
 
     public boolean accept(final String name) {
         for (final String ext : extensions) {
-            if (accept(name, ext)) {
+            if (accept(name, ext) && new File(name).exists()) {
                 return true;
             }
         }

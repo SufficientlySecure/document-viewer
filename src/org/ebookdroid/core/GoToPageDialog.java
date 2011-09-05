@@ -82,7 +82,7 @@ public class GoToPageDialog extends Dialog {
             @Override
             public void onProgressChanged(final SeekBar seekBar, final int progress, final boolean fromUser) {
                 if (fromUser) {
-                    editText.setText("" + (progress + 1));
+                    updateControls(progress, false);
                 }
             }
         });
@@ -93,17 +93,16 @@ public class GoToPageDialog extends Dialog {
         super.onStart();
 
         adapter = new BookmarkAdapter(base.getDocumentModel().getLastPageObject(), SettingsManager.getBookSettings());
+
         final ListView bookmarks = (ListView) findViewById(R.id.bookmarks);
         bookmarks.setAdapter(adapter);
 
-        final SeekBar seekbar = (SeekBar) findViewById(R.id.seekbar);
-        final EditText editText = (EditText) findViewById(R.id.pageNumberTextEdit);
-
         final DocumentModel dm = base.getDocumentModel();
 
+        final SeekBar seekbar = (SeekBar) findViewById(R.id.seekbar);
         seekbar.setMax(dm.getPageCount() - 1);
-        seekbar.setProgress(dm.getCurrentViewPageIndex());
-        editText.setText("" + (dm.getCurrentViewPageIndex() + 1));
+
+        updateControls(dm.getCurrentViewPageIndex(), true);
     }
 
     @Override
@@ -119,13 +118,21 @@ public class GoToPageDialog extends Dialog {
     }
 
     public void updateControls(final Bookmark bookmark) {
+        Page actualPage = bookmark.getPage().getActualPage(base.getDocumentModel(), adapter.bookSettings);
+        if (actualPage != null) {
+            updateControls(actualPage.index.viewIndex, true);
+        }
+    }
+
+    private void updateControls(final int viewIndex, boolean updateBar) {
         final SeekBar seekbar = (SeekBar) findViewById(R.id.seekbar);
         final EditText editText = (EditText) findViewById(R.id.pageNumberTextEdit);
 
-        Page actualPage = bookmark.getPage().getActualPage(base.getDocumentModel(), adapter.bookSettings);
-        if (actualPage != null) {
-            editText.setText("" + (actualPage.index.viewIndex + 1));
-            seekbar.setProgress(actualPage.index.viewIndex);
+        editText.setText("" + (viewIndex + 1));
+        editText.selectAll();
+
+        if (updateBar) {
+            seekbar.setProgress(viewIndex);
         }
     }
 
@@ -287,6 +294,7 @@ public class GoToPageDialog extends Dialog {
 
             final EditText input = new EditText(context);
             input.setText(context.getString(R.string.text_page) + " " + (viewIndex + 1));
+            input.selectAll();
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle(R.string.menu_add_bookmark);

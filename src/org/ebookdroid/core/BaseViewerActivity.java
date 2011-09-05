@@ -427,6 +427,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
         final EditText input = new EditText(this);
         input.setText(getString(R.string.text_page) + " " + (page + 1));
+        input.selectAll();
 
         new AlertDialog.Builder(this).setTitle(R.string.menu_add_bookmark).setMessage(message).setView(input)
                 .setPositiveButton(R.string.password_ok, new DialogInterface.OnClickListener() {

@@ -228,7 +228,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         }
     }
 
-    protected final void onZoomChanged(final float newZoom) {
+    protected ViewState onZoomChanged(final float newZoom) {
         final ViewState viewState = calculatePageVisibility(base.getDocumentModel().getCurrentViewPageIndex(), 0,
                 newZoom);
 
@@ -242,6 +242,8 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         }
 
         LCTX.d("onZoomChanged: " + viewState + " => " + nodesToDecode.size());
+
+        return viewState;
     }
 
     @Override
@@ -473,10 +475,19 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     @Override
     protected void onLayout(final boolean changed, final int left, final int top, final int right, final int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        invalidatePageSizes(InvalidateSizeReason.LAYOUT, null);
-        invalidateScroll();
-        commitZoom();
-        redrawView();
+        if (changed) {
+            if (isInitialized) {
+                for (Page page : base.getDocumentModel().getPages()) {
+                    page.nodes.root.recycle();
+                }
+                invalidatePageSizes(InvalidateSizeReason.LAYOUT, null);
+                invalidateScroll();
+                float oldZoom = base.getZoomModel().getZoom();
+                initialZoom = 0;
+                ViewState state = onZoomChanged(oldZoom);
+                redrawView(state);
+            }
+        }
     }
 
     protected final void invalidateScroll() {

@@ -8,9 +8,14 @@ import org.ebookdroid.core.log.EmergencyHandler;
 import org.ebookdroid.core.log.LogContext;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -484,6 +489,21 @@ public class DecodeServiceBase implements DecodeService {
 
             buf.append("]");
             return buf.toString();
+        }
+    }
+
+    @Override
+    public void createThumbnail(File thumbnailFile, int width, int height) {
+        CodecPage page = getPage(0);
+        Bitmap bmp = page.renderBitmap(width, height, new RectF(0, 0, 1, 1));
+        
+        FileOutputStream out;
+        try {
+            out = new FileOutputStream(thumbnailFile);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 50, out);
+            out.close();
+        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
         }
     }
 

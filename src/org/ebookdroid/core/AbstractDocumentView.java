@@ -218,14 +218,18 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         return new ViewState(initial, this);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.events.ZoomListener#commitZoom()
+     */
     @Override
     public final void commitZoom() {
-        if (inZoom.compareAndSet(true, false)) {
-            final float newZoom = base.getZoomModel().getZoom();
-            SettingsManager.zoomChanged(newZoom);
-            initialZoom = newZoom;
-            onZoomChanged(newZoom);
-        }
+        inZoom.set(false);
+        final float newZoom = base.getZoomModel().getZoom();
+        SettingsManager.zoomChanged(newZoom);
+        onZoomChanged(newZoom);
+        initialZoom = newZoom;
     }
 
     protected ViewState onZoomChanged(final float newZoom) {
@@ -298,6 +302,11 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.events.ZoomListener#zoomChanged(float, float)
+     */
     @Override
     public final void zoomChanged(final float newZoom, final float oldZoom) {
         if (!isInitialized) {

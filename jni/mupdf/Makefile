@@ -47,7 +47,7 @@ CMAP_GB_SRC := $(wildcard mupdf/cmaps/gb/*)
 CMAP_JAPAN_SRC := $(wildcard mupdf/cmaps/japan/*)
 CMAP_KOREA_SRC := $(wildcard mupdf/cmaps/korea/*)
 FONT_BASE14_SRC := $(wildcard mupdf/fonts/*.cff)
-FONT_DROID_SRC := mupdf/fonts/droid/DroidSans.ttf
+FONT_DROID_SRC := mupdf/fonts/droid/DroidSans.ttf mupdf/fonts/droid/DroidSansMono.ttf
 FONT_CJK_SRC := mupdf/fonts/droid/DroidSansFallback.ttf
 
 $(GEN)/cmap_cns.h : $(CMAP_CNS_SRC)

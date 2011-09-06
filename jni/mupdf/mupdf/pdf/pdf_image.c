@@ -90,6 +90,8 @@ pdf_load_image_imp(fz_pixmap **imgp, pdf_xref *xref, fz_obj *rdb, fz_obj *dict, 
 		return fz_throw("image height is zero");
 	if (bpc == 0)
 		return fz_throw("image depth is zero");
+	if (bpc > 16)
+		return fz_throw("image depth is too large: %d", bpc);
 	if (w > (1 << 16))
 		return fz_throw("image is too wide");
 	if (h > (1 << 16))
@@ -345,7 +347,6 @@ pdf_load_image(fz_pixmap **pixp, pdf_xref *xref, fz_obj *dict)
 	error = pdf_load_image_imp(pixp, xref, NULL, dict, NULL, 0);
 	if (error)
 		return fz_rethrow(error, "cannot load image (%d 0 R)", fz_to_num(dict));
-
 
 //	EBookDroid: Commented out for saving A LOTS of memory. Caching is not needed for embedded solutions
 //	pdf_store_item(xref->store, fz_keep_pixmap, fz_drop_pixmap, dict, *pixp);

@@ -9,6 +9,7 @@ import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.settings.BookSettings;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.utils.LengthUtils;
+import org.ebookdroid.utils.StringUtils;
 
 import android.view.View;
 
@@ -154,9 +155,31 @@ public class DocumentModel extends CurrentPageModel {
                 }
             }
             pages = list.toArray(new Page[list.size()]);
+            if (infos.length > 0){
+                createBookThumbnail(base, bs, infos[0]);
+            }
         } finally {
             LCTX.d("Loading page info: " + (System.currentTimeMillis() - start) + " ms");
         }
+    }
+
+    private void createBookThumbnail(final IViewerActivity base, final BookSettings bs, CodecPageInfo info) {
+        final String fileName = bs.getFileName();
+        final File cacheDir = base.getContext().getFilesDir();
+
+        final String md5 = StringUtils.md5(fileName);
+        final File thumbnailFile = new File(cacheDir, md5 + ".thumbnail");
+        if (thumbnailFile.exists()) {
+            return;
+        }
+        int width = 200, height = 200;
+        if (info.getHeight() > info.getWidth()) {
+            width = 200 * info.getWidth() / info.getHeight();
+        } else {
+            height = 200 * info.getHeight() / info.getWidth();
+        }
+        
+        decodeService.createThumbnail(thumbnailFile, width, height);
     }
 
     private CodecPageInfo[] retrievePagesInfo(final IViewerActivity base, final BookSettings bs) {
@@ -164,13 +187,22 @@ public class DocumentModel extends CurrentPageModel {
         final String fileName = bs.getFileName();
         final File cacheDir = base.getContext().getFilesDir();
 
-        final String md5 = md5(fileName);
+        final String md5 = StringUtils.md5(fileName);
         final File pagesFile = new File(cacheDir, md5 + ".cache");
         if (md5 != null) {
             if (pagesFile.exists()) {
                 final CodecPageInfo[] infos = loadPagesInfo(pagesFile);
                 if (infos != null) {
-                    return infos;
+                    boolean nullInfoFound = false;
+                    for (CodecPageInfo info : infos) {
+                        if (info == null) {
+                            nullInfoFound = true;
+                            break;
+                        }
+                    }
+                    if (!nullInfoFound) {
+                        return infos;
+                    }
                 }
             }
         }
@@ -244,25 +276,6 @@ public class DocumentModel extends CurrentPageModel {
         }
     }
 
-    private String md5(final String in) {
-        MessageDigest digest;
-        try {
-            digest = MessageDigest.getInstance("MD5");
-            digest.reset();
-            digest.update(in.getBytes());
-            final byte[] a = digest.digest();
-            final int len = a.length;
-            final StringBuilder sb = new StringBuilder(len << 1);
-            for (int i = 0; i < len; i++) {
-                sb.append(Character.forDigit((a[i] & 0xf0) >> 4, 16));
-                sb.append(Character.forDigit(a[i] & 0x0f, 16));
-            }
-            return sb.toString();
-        } catch (final NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     private final class PageIterator implements Iterable<Page>, Iterator<Page> {
 

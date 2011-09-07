@@ -17,6 +17,7 @@ import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.utils.PathFromUri;
 import org.ebookdroid.core.views.PageViewZoomControls;
+import org.ebookdroid.utils.StringUtils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -266,21 +267,9 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     private void setWindowTitle() {
         currentFilename = getIntent().getData().getLastPathSegment();
 
-        cleanupTitle();
+        currentFilename = StringUtils.cleanupTitle(currentFilename);
 
         getWindow().setTitle(currentFilename);
-    }
-
-    /**
-     * Cleanup title. Remove from title file extension and (...), [...]
-     */
-    private void cleanupTitle() {
-        try {
-            currentFilename = currentFilename.substring(0, currentFilename.lastIndexOf('.'));
-            currentFilename = currentFilename.replaceAll("\\(.*\\)|\\[.*\\]", "");
-        } catch (final IndexOutOfBoundsException e) {
-
-        }
     }
 
     @Override

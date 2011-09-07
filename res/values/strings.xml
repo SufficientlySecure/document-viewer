@@ -116,4 +116,6 @@
 	<string name="list_decodemode_low">"Low memory mode - slice size limit used"</string>
 	<string name="pref_maximagesize_title">"Max slice size"</string>
 	<string name="pref_maximagesize_summary">"Max slice size (in KB)"</string>
+  
+    <string name="bookcase_shelves">"Bookshelves"</string>
 </resources>

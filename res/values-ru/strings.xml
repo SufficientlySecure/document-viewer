@@ -118,4 +118,6 @@
 	<string name="list_decodemode_low">"Экономия памяти - ограничить размер областей при декодировании"</string>
 	<string name="pref_maximagesize_title">"Макс. размер области"</string>
 	<string name="pref_maximagesize_summary">"Макс. размер области при декодировании (в КБ)"</string>
+
+    <string name="bookcase_shelves">"Книжные полки"</string>
 </resources>

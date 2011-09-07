@@ -8,6 +8,8 @@ import org.ebookdroid.core.settings.BookSettings;
 import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.utils.FileExtensionFilter;
+import org.ebookdroid.core.views.BookcaseView;
+import org.ebookdroid.core.views.BooksAdapter;
 import org.ebookdroid.core.views.LibraryView;
 import org.ebookdroid.core.views.RecentBooksView;
 
@@ -35,12 +37,14 @@ public class RecentActivity extends Activity implements IBrowserActivity {
 
     private static final int VIEW_RECENT = 0;
     private static final int VIEW_LIBRARY = 1;
+    private static final int VIEW_LIBRARY_GRID = 2;
 
     private RecentAdapter recentAdapter;
     private FileListAdapter libraryAdapter;
+    private BooksAdapter bookshelfAdapter;
 
     private ViewFlipper viewflipper;
-    private ImageView library;
+    private ImageView libraryButton;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -50,12 +54,14 @@ public class RecentActivity extends Activity implements IBrowserActivity {
 
         recentAdapter = new RecentAdapter();
         libraryAdapter = new FileListAdapter(this);
+        bookshelfAdapter = new BooksAdapter(this);
 
-        library = (ImageView) findViewById(R.id.recentlibrary);
+        libraryButton = (ImageView) findViewById(R.id.recentlibrary);
 
         viewflipper = (ViewFlipper) findViewById(R.id.recentflip);
         viewflipper.addView(new RecentBooksView(this, recentAdapter), VIEW_RECENT);
         viewflipper.addView(new LibraryView(this, libraryAdapter), VIEW_LIBRARY);
+        viewflipper.addView(new BookcaseView(this, bookshelfAdapter), VIEW_LIBRARY_GRID);
 
         final View.OnClickListener handler = new View.OnClickListener() {
 
@@ -126,7 +132,7 @@ public class RecentActivity extends Activity implements IBrowserActivity {
             }
             
         }
-            
+        bookshelfAdapter.notifyDataSetChanged();    
     }
 
     @Override
@@ -177,6 +183,7 @@ public class RecentActivity extends Activity implements IBrowserActivity {
 
     public void showSettings(final View view) {
         libraryAdapter.stopScan();
+        bookshelfAdapter.stopScan();
         final Intent i = new Intent(RecentActivity.this, SettingsActivity.class);
         startActivity(i);
     }
@@ -198,6 +205,7 @@ public class RecentActivity extends Activity implements IBrowserActivity {
     @Override
     public void showDocument(final Uri uri) {
         libraryAdapter.stopScan();
+        bookshelfAdapter.stopScan();
         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         intent.setClass(this, Activities.getByUri(uri));
 
@@ -221,20 +229,32 @@ public class RecentActivity extends Activity implements IBrowserActivity {
 
         if (view == VIEW_LIBRARY) {
             viewflipper.setDisplayedChild(VIEW_LIBRARY);
-            library.setImageResource(R.drawable.actionbar_recent);
+            libraryButton.setImageResource(R.drawable.actionbar_shelf);
 
             libraryAdapter.startScan(filter);
 
+        } else if (view == VIEW_LIBRARY_GRID) {
+            viewflipper.setDisplayedChild(VIEW_LIBRARY_GRID);
+            libraryButton.setImageResource(R.drawable.actionbar_recent);
+
+            bookshelfAdapter.startScan(filter);
+
         } else {
             viewflipper.setDisplayedChild(VIEW_RECENT);
-            library.setImageResource(R.drawable.actionbar_library);
+            libraryButton.setImageResource(R.drawable.actionbar_library);
 
             recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), filter);
         }
     }
 
     public void goLibrary(final View view) {
-        changeLibraryView(viewflipper.getDisplayedChild() == VIEW_RECENT ? VIEW_LIBRARY : VIEW_RECENT);
+        if (viewflipper.getDisplayedChild() == VIEW_RECENT) {
+            changeLibraryView(VIEW_LIBRARY);
+        }else if (viewflipper.getDisplayedChild() == VIEW_LIBRARY) {
+            changeLibraryView(VIEW_LIBRARY_GRID);
+        } else if (viewflipper.getDisplayedChild() == VIEW_LIBRARY_GRID) {
+            changeLibraryView(VIEW_RECENT);
+        }
     }
 
     public void goFileBrowser(final View view) {

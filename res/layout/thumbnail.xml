@@ -2,34 +2,34 @@
 <LinearLayout
   android:orientation="vertical"
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="160px"
+  android:layout_width="160dip"
   android:layout_height="fill_parent"
   android:id="@+id/linearLayout1">
   <ImageView
     android:id="@+id/thumbnailImage"
-    android:layout_width="132px"
-    android:layout_height="132px"
+    android:layout_width="132dip"
+    android:layout_height="132dip"
     android:gravity="center"
     android:layout_gravity="center"
-    android:paddingLeft="14px"
-    android:paddingRight="14px">
+    android:paddingLeft="14dip"
+    android:paddingRight="14dip">
   </ImageView>
   <TextView
     android:text=""
     android:id="@+id/thumbnailText"
-    android:layout_width="160px"
-    android:layout_height="50px"
+    android:layout_width="160dip"
+    android:layout_height="50dip"
     android:gravity="center"
     android:background="@drawable/border"
-    android:paddingBottom="8px"
-    android:paddingTop="8px"
-    android:paddingLeft="10px"
-    android:paddingRight="10px" />
+    android:paddingBottom="8dip"
+    android:paddingTop="8dip"
+    android:paddingLeft="10dip"
+    android:paddingRight="10dip" />
   <TextView
     android:text=""
     android:id="@+id/thumbnailPadding"
-    android:layout_width="160px"
-    android:layout_height="12px"
+    android:layout_width="160dip"
+    android:layout_height="12dip"
     android:gravity="center" 
     />
 </LinearLayout>

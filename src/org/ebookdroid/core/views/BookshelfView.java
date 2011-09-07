@@ -25,6 +25,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.net.Uri;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -49,12 +50,15 @@ public class BookshelfView extends GridView implements OnItemClickListener {
         this.base = base;
         this.adapter = adapter;
         init(base.getContext());
-        setColumnWidth(160);
         setNumColumns(AUTO_FIT);
-        setStretchMode(STRETCH_COLUMN_WIDTH);
+        setStretchMode(STRETCH_SPACING);
         setAdapter(adapter);
         setOnItemClickListener(this);
         setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+
+        Resources r = getResources();
+        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, r.getDisplayMetrics());    
+        setColumnWidth((int)px);
     }
 
     private void init(Context context) {

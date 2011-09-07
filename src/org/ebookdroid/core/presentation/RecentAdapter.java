@@ -4,7 +4,9 @@ import org.ebookdroid.R;
 import org.ebookdroid.core.settings.BookSettings;
 import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.utils.FileUtils;
+import org.ebookdroid.utils.StringUtils;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +52,18 @@ public class RecentAdapter extends BaseAdapter {
         name.setText(file.getName());
 
         final ImageView imageView = (ImageView) view.findViewById(R.id.recentItemIcon);
-        imageView.setImageResource(R.drawable.book);
+        //imageView.setImageResource(R.drawable.book);
+        
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        final File cacheDir = parent.getContext().getFilesDir();
+        final String md5 = StringUtils.md5(file.getPath());
+        final File thumbnailFile = new File(cacheDir, md5 + ".thumbnail");
+        if (thumbnailFile.exists()) {
+            imageView.setImageURI(Uri.fromFile(thumbnailFile));
+        } else {
+            imageView.setImageResource(R.drawable.book);
+        }
+        
 
         final TextView info = (TextView) view.findViewById(R.id.recentItemInfo);
         info.setText(FileUtils.getFileDate(file.lastModified()));

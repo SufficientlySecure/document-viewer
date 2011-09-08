@@ -1,59 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	android:orientation="horizontal">
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="?android:attr/listPreferredItemHeight"
+  android:orientation="horizontal">
+  <ImageView
+    android:layout_width="48sp"
+    android:layout_height="48sp"
+    android:id="@+id/recentItemIcon"
 
-	<ImageView
-		android:layout_width="48sp"
-    	android:layout_height="48sp"
-    	android:gravity="center"
-    	android:layout_gravity="center"
-		android:id="@+id/recentItemIcon" />
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentBottom="false"
+    android:layout_marginRight="0dip"
+    android:src="@drawable/book" />
+  <TextView
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:singleLine="true"
+    android:id="@+id/recentItemName"
 
-	<LinearLayout
-		android:orientation="vertical"
-		android:layout_height="fill_parent"
-		android:layout_width="fill_parent">
+    android:layout_alignParentTop="true"
+    android:layout_alignParentRight="true"
 
-		<TextView
-			android:layout_width="fill_parent"
-			android:layout_height="0dip"
-			android:layout_weight="1"
-			android:singleLine="true"
-			android:id="@+id/recentItemName"
-			android:gravity="center_vertical"
-			android:ellipsize="marquee" />
+    android:gravity="center_vertical"
+    android:ellipsize="marquee"
+    android:text="Name"
+    android:layout_toRightOf="@+id/recentItemIcon" />
+  <TextView
+    android:layout_height="0dip"
+    android:id="@+id/recentItemInfo"
+    android:singleLine="true"
+    android:ellipsize="marquee"
+    android:text="ItemInfo"
 
-		<LinearLayout
-			android:orientation="horizontal"
-			android:layout_height="0dip"
-			android:layout_width="fill_parent"
-			android:layout_weight="1">
+    android:layout_toRightOf="@+id/recentItemIcon"
+    android:layout_below="@+id/recentItemName"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentRight="true"
+    android:layout_width="wrap_content"
+    android:textSize="11sp"
+    android:gravity="top|left" />
+  <TextView
+    android:layout_height="0dip"
+    android:id="@+id/recentItemfileSize"
+    android:singleLine="true"
+    android:ellipsize="marquee"
+    android:text="FileSize"
 
-			<TextView
-				android:layout_width="0dip"
-				android:layout_height="fill_parent"
-				android:layout_weight="1"
-				android:id="@+id/recentItemInfo"
-				android:singleLine="true"
-				android:textSize="11sp"
-				android:ellipsize="marquee" />
+    android:layout_toRightOf="@+id/recentItemIcon"
+    android:layout_below="@+id/recentItemName"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentRight="true"
+    android:layout_width="wrap_content"
+    android:textSize="11sp"
+    android:gravity="top|right" />
 
-			<TextView
-				android:layout_width="0dip"
-				android:layout_height="fill_parent"
-				android:gravity="right"
-				android:layout_weight="1"
-				android:id="@+id/recentItemfileSize"
-				android:singleLine="true"
-				android:textSize="11sp"
-				android:ellipsize="marquee" />
+</RelativeLayout>
 
-		</LinearLayout>
 
-	</LinearLayout>
-
-</LinearLayout>

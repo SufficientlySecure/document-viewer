@@ -7,6 +7,7 @@ import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.utils.FileUtils;
 import org.ebookdroid.utils.StringUtils;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,48 +82,72 @@ public class FileListAdapter extends BaseExpandableListAdapter {
         return data.get(groupPosition).getCount();
     }
 
+    private static class ViewHolder {
+        TextView name;
+        ImageView image;
+        TextView info;
+        TextView fileSize;
+    }
+    
     @Override
     public View getChildView(final int groupPosition, final int childPosition, final boolean isLastChild,
             View convertView, final ViewGroup parent) {
 
+        ViewHolder holder;
+        
         if (convertView == null) {
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.browseritem, parent, false);
+            holder = new ViewHolder();
+            
+            holder.name = (TextView) convertView.findViewById(R.id.browserItemText);
+            holder.image = (ImageView) convertView.findViewById(R.id.browserItemIcon);
+            holder.info = (TextView) convertView.findViewById(R.id.browserItemInfo);
+            holder.fileSize = (TextView) convertView.findViewById(R.id.browserItemfileSize); 
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder)convertView.getTag();
         }
 
         final File file = getChild(groupPosition, childPosition);
 
-        final TextView textView = (TextView) convertView.findViewById(R.id.browserItemText);
-        textView.setText(file.getName());
+        holder.name.setText(file.getName());
 
-        final ImageView imageView = (ImageView) convertView.findViewById(R.id.browserItemIcon);
         final boolean wasRead = SettingsManager.getBookSettings(file.getAbsolutePath()) != null;
-        imageView.setImageResource(wasRead ? R.drawable.bookwatched : R.drawable.book);
+        holder.image.setImageResource(wasRead ? R.drawable.bookwatched : R.drawable.book);
 
-        final TextView info = (TextView) convertView.findViewById(R.id.browserItemInfo);
-        info.setText(FileUtils.getFileDate(file.lastModified()));
+        holder.info.setText(FileUtils.getFileDate(file.lastModified()));
 
-        final TextView fileSize = (TextView) convertView.findViewById(R.id.browserItemfileSize);
-        fileSize.setText(FileUtils.getFileSize(file.length()));
+        holder.fileSize.setText(FileUtils.getFileSize(file.length()));
         return convertView;
     }
 
     @Override
     public View getGroupView(final int groupPosition, final boolean isExpanded, View convertView, final ViewGroup parent) {
+        ViewHolder holder;
 
         if (convertView == null) {
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.browseritem, parent, false);
+            holder = new ViewHolder();
+            
+            holder.name = (TextView) convertView.findViewById(R.id.browserItemText);
+            holder.image = (ImageView) convertView.findViewById(R.id.browserItemIcon);
+            holder.info = (TextView) convertView.findViewById(R.id.browserItemInfo);
+            holder.fileSize = (TextView) convertView.findViewById(R.id.browserItemfileSize); 
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder)convertView.getTag();
         }
+        
         final Node curr = getGroup(groupPosition);
 
-        final TextView textView = (TextView) convertView.findViewById(R.id.browserItemText);
-        textView.setText(curr.getName());
+        holder.name.setText(curr.getName());
 
-        final ImageView imageView = (ImageView) convertView.findViewById(R.id.browserItemIcon);
-        imageView.setImageResource(R.drawable.folderopen);
+        holder.image.setImageResource(R.drawable.folderopen);
 
-        final TextView info = (TextView) convertView.findViewById(R.id.browserItemInfo);
-        info.setText("Books: " + curr.getCount());
+        holder.info.setText("Books: " + curr.getCount());
 
+        holder.fileSize.setText("");
+        
         return convertView;
     }
 

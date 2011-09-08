@@ -6,6 +6,7 @@ import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.core.utils.archives.ArchiveEntry;
 import org.ebookdroid.core.utils.archives.ArchiveFile;
+import org.ebookdroid.utils.StringUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class CbxDocument<ArchiveEntryType extends ArchiveEntry> extends Abstract
         this.archive = archive;
 
         if (archive != null) {
-            final Map<String, ArchiveEntryType> pages = new TreeMap<String, ArchiveEntryType>();
+            final Map<String, ArchiveEntryType> pages = new TreeMap<String, ArchiveEntryType>(StringUtils.getNaturalComparator());
             final Enumeration<ArchiveEntryType> entries = archive.entries();
             while (entries.hasMoreElements()) {
                 final ArchiveEntryType fh = entries.nextElement();

@@ -5,6 +5,7 @@ import org.ebookdroid.core.IBrowserActivity;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.utils.FileUtils;
+import org.ebookdroid.utils.StringUtils;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -236,7 +237,7 @@ public class FileListAdapter extends BaseExpandableListAdapter {
             }
             final String[] list = dir.list(filter);
             if (list != null && list.length > 0) {
-                Arrays.sort(list);
+                Arrays.sort(list, StringUtils.getNaturalComparator());
                 currNodes.add(new Node(dir.getName(), dir.getAbsolutePath(), list));
                 if (inUI.compareAndSet(false, true)) {
                     // Start UI task if required

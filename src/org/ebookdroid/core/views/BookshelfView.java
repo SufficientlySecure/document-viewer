@@ -18,6 +18,7 @@ package org.ebookdroid.core.views;
 
 import org.ebookdroid.R;
 import org.ebookdroid.core.IBrowserActivity;
+import org.ebookdroid.core.presentation.BooksAdapter;
 
 import android.content.Context;
 import android.content.res.Resources;

@@ -1,4 +1,4 @@
-package org.ebookdroid.core.views;
+package org.ebookdroid.core.presentation;
 
 import org.ebookdroid.R;
 import org.ebookdroid.core.IBrowserActivity;
@@ -233,7 +233,7 @@ public class BooksAdapter extends BaseAdapter {
             }
             final File[] list = dir.listFiles((FilenameFilter) filter);
             if (list != null && list.length > 0) {
-                Arrays.sort(list);
+                Arrays.sort(list, StringUtils.getNaturalFileComparator());
                 int listNum = SEQ.getAndIncrement();
                 names.put(listNum, dir.getName());
                 for (File f : list) {

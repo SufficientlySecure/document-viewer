@@ -1,8 +1,11 @@
 package org.ebookdroid.utils;
 
+import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.Collator;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -24,7 +27,6 @@ public class StringUtils {
         return out;
     }
 
-
     public static String md5(final String in) {
         MessageDigest digest;
         try {
@@ -44,7 +46,7 @@ public class StringUtils {
         }
         return null;
     }
-    
+
     public static Set<String> split(final String separator, final String value) {
         final Set<String> list = new LinkedHashSet<String>();
 
@@ -81,6 +83,131 @@ public class StringUtils {
             }
         }
         return result.toString();
+    }
+
+    public static Comparator<? super String> getNaturalComparator() {
+        return new Comparator<String>() {
+
+            public int compare(String o1, String o2) {
+                return compareNatural(o1, o2);
+            }
+        };
+    }
+
+    public static final int compareNatural(String firstString, String secondString) {
+        int firstIndex = 0;
+        int secondIndex = 0;
+
+        Collator collator = Collator.getInstance();
+
+        while (true) {
+            if (firstIndex == firstString.length() && secondIndex == secondString.length()) {
+                return 0;
+            }
+            if (firstIndex == firstString.length()) {
+                return -1;
+            }
+            if (secondIndex == secondString.length()) {
+                return 1;
+            }
+
+            if (Character.isDigit(firstString.charAt(firstIndex)) && Character.isDigit(secondString.charAt(secondIndex))) {
+                int firstZeroCount = 0;
+                while (firstString.charAt(firstIndex) == '0') {
+                    firstZeroCount++;
+                    firstIndex++;
+                    if (firstIndex == firstString.length()) {
+                        break;
+                    }
+                }
+                int secondZeroCount = 0;
+                while (secondString.charAt(secondIndex) == '0') {
+                    secondZeroCount++;
+                    secondIndex++;
+                    if (secondIndex == secondString.length()) {
+                        break;
+                    }
+                }
+                if ((firstIndex == firstString.length() || !Character.isDigit(firstString.charAt(firstIndex)))
+                        && (secondIndex == secondString.length() || !Character.isDigit(secondString.charAt(secondIndex)))) {
+                    continue;
+                }
+                if ((firstIndex == firstString.length() || !Character.isDigit(firstString.charAt(firstIndex)))
+                        && !(secondIndex == secondString.length() || !Character.isDigit(secondString.charAt(secondIndex)))) {
+                    return -1;
+                }
+                if ((secondIndex == secondString.length() || !Character.isDigit(secondString.charAt(secondIndex)))) {
+                    return 1;
+                }
+
+                int diff = 0;
+                do {
+                    if (diff == 0) {
+                        diff = firstString.charAt(firstIndex) - secondString.charAt(secondIndex);
+                    }
+                    firstIndex++;
+                    secondIndex++;
+                    if (firstIndex == firstString.length() && secondIndex == secondString.length()) {
+                        return diff != 0 ? diff : firstZeroCount - secondZeroCount;
+                    }
+                    if (firstIndex == firstString.length()) {
+                        if (diff == 0) {
+                            return -1;
+                        }
+                        return Character.isDigit(secondString.charAt(secondIndex)) ? -1 : diff;
+                    }
+                    if (secondIndex == secondString.length()) {
+                        if (diff == 0) {
+                            return 1;
+                        }
+                        return Character.isDigit(firstString.charAt(firstIndex)) ? 1 : diff;
+                    }
+                    if (!Character.isDigit(firstString.charAt(firstIndex)) && !Character.isDigit(secondString.charAt(secondIndex))) {
+                        if (diff != 0) {
+                            return diff;
+                        }
+                        break;
+                    }
+                    if (!Character.isDigit(firstString.charAt(firstIndex))) {
+                        return -1;
+                    }
+                    if (!Character.isDigit(secondString.charAt(secondIndex))) {
+                        return 1;
+                    }
+                } while (true);
+            } else {
+                int aw = firstIndex;
+                int bw = secondIndex;
+                do {
+                    firstIndex++;
+                } while (firstIndex < firstString.length() && !Character.isDigit(firstString.charAt(firstIndex)));
+                do {
+                    secondIndex++;
+                } while (secondIndex < secondString.length() && !Character.isDigit(secondString.charAt(secondIndex)));
+
+                String as = firstString.substring(aw, firstIndex);
+                String bs = secondString.substring(bw, secondIndex);
+                int subwordResult = collator.compare(as, bs);
+                if (subwordResult != 0) {
+                    return subwordResult;
+                }
+            }
+        }
+    }
+
+    public static Comparator<? super File> getNaturalFileComparator() {
+        return new Comparator<File>() {
+
+            public int compare(File o1, File o2) {
+                if (o1 == null) {
+                    return -1;
+                }
+                if (o2 == null) {
+                    return 1;
+                }
+                return compareNatural(o1.getAbsolutePath(), o2.getAbsolutePath());
+            }
+        };
     }
 
 }

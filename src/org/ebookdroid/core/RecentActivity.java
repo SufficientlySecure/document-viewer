@@ -2,6 +2,7 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.R;
 import org.ebookdroid.core.log.LogContext;
+import org.ebookdroid.core.presentation.BooksAdapter;
 import org.ebookdroid.core.presentation.FileListAdapter;
 import org.ebookdroid.core.presentation.RecentAdapter;
 import org.ebookdroid.core.settings.BookSettings;
@@ -9,7 +10,6 @@ import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.core.views.BookcaseView;
-import org.ebookdroid.core.views.BooksAdapter;
 import org.ebookdroid.core.views.LibraryView;
 import org.ebookdroid.core.views.RecentBooksView;
 

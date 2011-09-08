@@ -2,6 +2,7 @@ package org.ebookdroid.core.views;
 
 import org.ebookdroid.R;
 import org.ebookdroid.core.IBrowserActivity;
+import org.ebookdroid.core.presentation.BooksAdapter;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;

@@ -317,6 +317,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     @Override
     public boolean onMenuOpened(final int featureId, final Menu menu) {
+        getDocumentController().changeLayoutLock(true);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         return super.onMenuOpened(featureId, menu);
     }
@@ -329,6 +330,12 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
+        getView().post(new Runnable() {
+            @Override
+            public void run() {
+                getDocumentController().changeLayoutLock(false);
+            }
+        });
     }
 
     private void showOutline() {

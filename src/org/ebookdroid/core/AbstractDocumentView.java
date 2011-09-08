@@ -48,6 +48,8 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
     protected float initialZoom;
 
+    protected boolean layoutLocked;
+
     public AbstractDocumentView(final IViewerActivity baseActivity) {
         super(baseActivity.getContext());
         this.base = baseActivity;
@@ -482,9 +484,18 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     }
 
     @Override
-    protected void onLayout(final boolean changed, final int left, final int top, final int right, final int bottom) {
+    public void changeLayoutLock(final boolean lock) {
+        layoutLocked = lock;
+    }
+
+    @Override
+    protected final void onLayout(final boolean changed, final int left, final int top, final int right, final int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        if (changed) {
+        onLayoutChanged(changed, left, top, right, bottom);
+    }
+
+    protected boolean onLayoutChanged(final boolean changed, final int left, final int top, final int right, final int bottom) {
+        if (changed && !layoutLocked) {
             if (isInitialized) {
                 for (Page page : base.getDocumentModel().getPages()) {
                     page.nodes.root.recycle();
@@ -495,8 +506,10 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
                 initialZoom = 0;
                 ViewState state = onZoomChanged(oldZoom);
                 redrawView(state);
+                return true;
             }
         }
+        return false;
     }
 
     protected final void invalidateScroll() {

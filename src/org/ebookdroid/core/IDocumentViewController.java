@@ -24,6 +24,8 @@ public interface IDocumentViewController {
 
     void redrawView(ViewState viewState);
 
+    void changeLayoutLock(boolean lock);
+
     void setAlign(PageAlign byResValue);
 
     /* Infrastructure methods */

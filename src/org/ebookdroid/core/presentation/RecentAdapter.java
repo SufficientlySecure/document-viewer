@@ -1,13 +1,11 @@
 package org.ebookdroid.core.presentation;
 
 import org.ebookdroid.R;
+import org.ebookdroid.core.IBrowserActivity;
 import org.ebookdroid.core.settings.BookSettings;
 import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.utils.FileUtils;
-import org.ebookdroid.utils.StringUtils;
 
-import android.net.Uri;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -22,7 +20,13 @@ import java.util.List;
 
 public class RecentAdapter extends BaseAdapter {
 
+    final IBrowserActivity base;
+
     private List<BookSettings> books = Collections.emptyList();
+
+    public RecentAdapter(IBrowserActivity base) {
+        this.base = base;
+    }
 
     @Override
     public int getCount() {
@@ -40,37 +44,22 @@ public class RecentAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(final int i, View view, final ViewGroup parent) {
-        if (view == null) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recentitem, parent, false);
-        }
+    public View getView(final int i, final View view, final ViewGroup parent) {
+        final ViewHolder holder = BaseViewHolder.getOrCreateViewHolder(ViewHolder.class, R.layout.recentitem, view,
+                parent);
 
         final BookSettings bs = books.get(i);
         final File file = new File(bs.getFileName());
 
-        final TextView name = (TextView) view.findViewById(R.id.recentItemName);
-        name.setText(file.getName());
+        holder.name.setText(file.getName());
 
-        final ImageView imageView = (ImageView) view.findViewById(R.id.recentItemIcon);
-        //imageView.setImageResource(R.drawable.book);
-        
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        final File cacheDir = parent.getContext().getFilesDir();
-        final String md5 = StringUtils.md5(file.getPath());
-        final File thumbnailFile = new File(cacheDir, md5 + ".thumbnail");
-        if (thumbnailFile.exists()) {
-            imageView.setImageURI(Uri.fromFile(thumbnailFile));
-        } else {
-            imageView.setImageResource(R.drawable.book);
-        }
-        
+        // holder.imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        base.loadThumbnail(file.getPath(), holder.imageView, R.drawable.book);
 
-        final TextView info = (TextView) view.findViewById(R.id.recentItemInfo);
-        info.setText(FileUtils.getFileDate(file.lastModified()));
+        holder.info.setText(FileUtils.getFileDate(file.lastModified()));
+        holder.fileSize.setText(FileUtils.getFileSize(file.length()));
 
-        final TextView fileSize = (TextView) view.findViewById(R.id.recentItemfileSize);
-        fileSize.setText(FileUtils.getFileSize(file.length()));
-        return view;
+        return holder.getView();
     }
 
     public void clearBooks() {
@@ -91,4 +80,22 @@ public class RecentAdapter extends BaseAdapter {
         }
         notifyDataSetInvalidated();
     }
+
+    static class ViewHolder extends BaseViewHolder {
+
+        TextView name;
+        ImageView imageView;
+        TextView info;
+        TextView fileSize;
+
+        @Override
+        public void init(final View convertView) {
+            super.init(convertView);
+            name = (TextView) convertView.findViewById(R.id.recentItemName);
+            imageView = (ImageView) convertView.findViewById(R.id.recentItemIcon);
+            info = (TextView) convertView.findViewById(R.id.recentItemInfo);
+            fileSize = (TextView) convertView.findViewById(R.id.recentItemfileSize);
+        }
+    }
+
 }

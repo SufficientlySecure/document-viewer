@@ -5,7 +5,6 @@ import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.utils.FileUtils;
 import org.ebookdroid.utils.LengthUtils;
 
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -30,15 +29,17 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
 
     @Override
     public int getCount() {
-        if(LengthUtils.isNotEmpty(files))
+        if (LengthUtils.isNotEmpty(files)) {
             return files.length;
+        }
         return 0;
     }
 
     @Override
     public File getItem(final int i) {
-        if(LengthUtils.isNotEmpty(files))
+        if (LengthUtils.isNotEmpty(files)) {
             return files[i];
+        }
         return null;
     }
 
@@ -48,33 +49,44 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
     }
 
     @Override
-    public View getView(final int i, View view, final ViewGroup parent) {
+    public View getView(final int i, final View view, final ViewGroup parent) {
 
-        if (view == null) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.browseritem, parent, false);
-        }
+        final ViewHolder holder = BaseViewHolder.getOrCreateViewHolder(ViewHolder.class, R.layout.browseritem, view,
+                parent);
 
         final File file = getItem(i);
 
-        final TextView textView = (TextView) view.findViewById(R.id.browserItemText);
-        final ImageView imageView = (ImageView) view.findViewById(R.id.browserItemIcon);
-        final TextView info = (TextView) view.findViewById(R.id.browserItemInfo);
-        final TextView fileSize = (TextView) view.findViewById(R.id.browserItemfileSize);
-        
-        textView.setText(file.getName());
+        holder.textView.setText(file.getName());
 
         if (file.isDirectory()) {
-            boolean watched = SettingsManager.getAppSettings().getAutoScanDirs().contains(file.getPath());
-            imageView.setImageResource(watched ? R.drawable.folderwatched : R.drawable.folderopen);
-            //info.setText("Folders: " + folders + " Books: " + books);
-            info.setText("");            
-            fileSize.setText("");
+            final boolean watched = SettingsManager.getAppSettings().getAutoScanDirs().contains(file.getPath());
+            holder.imageView.setImageResource(watched ? R.drawable.folderwatched : R.drawable.folderopen);
+            holder.info.setText("");
+            holder.fileSize.setText("");
         } else {
-            imageView.setImageResource(R.drawable.book);
-            info.setText(FileUtils.getFileDate(file.lastModified()));
-            fileSize.setText(FileUtils.getFileSize(file.length()));
+            holder.imageView.setImageResource(R.drawable.book);
+            holder.info.setText(FileUtils.getFileDate(file.lastModified()));
+            holder.fileSize.setText(FileUtils.getFileSize(file.length()));
         }
-        return view;
+
+        return holder.getView();
+    }
+
+    static class ViewHolder extends BaseViewHolder {
+
+        TextView textView;
+        ImageView imageView;
+        TextView info;
+        TextView fileSize;
+
+        @Override
+        public void init(final View convertView) {
+            super.init(convertView);
+            textView = (TextView) convertView.findViewById(R.id.browserItemText);
+            imageView = (ImageView) convertView.findViewById(R.id.browserItemIcon);
+            info = (TextView) convertView.findViewById(R.id.browserItemInfo);
+            fileSize = (TextView) convertView.findViewById(R.id.browserItemfileSize);
+        }
     }
 
     public void setCurrentDirectory(final File currentDirectory) {

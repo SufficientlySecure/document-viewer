@@ -1,5 +1,6 @@
 package org.ebookdroid.core.settings;
 
+import org.ebookdroid.core.Activities;
 import org.ebookdroid.core.DecodeMode;
 import org.ebookdroid.core.PageAlign;
 import org.ebookdroid.core.RotationType;
@@ -93,6 +94,10 @@ public class AppSettings {
         if (add && dirs.add(dir) || dirs.remove(dir)) {
             setAutoScanDirs(dirs);
         }
+    }
+
+    public FileExtensionFilter getAllowedFileTypes() {
+        return getAllowedFileTypes(Activities.getAllExtensions());
     }
 
     public FileExtensionFilter getAllowedFileTypes(final Set<String> fileTypes) {

@@ -12,12 +12,15 @@ import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.core.views.BookcaseView;
 import org.ebookdroid.core.views.LibraryView;
 import org.ebookdroid.core.views.RecentBooksView;
+import org.ebookdroid.utils.StringUtils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -30,6 +33,9 @@ import android.widget.ProgressBar;
 import android.widget.ViewFlipper;
 
 import java.io.File;
+import java.lang.ref.SoftReference;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RecentActivity extends Activity implements IBrowserActivity {
 
@@ -46,13 +52,15 @@ public class RecentActivity extends Activity implements IBrowserActivity {
     private ViewFlipper viewflipper;
     private ImageView libraryButton;
 
+    private final Map<String, SoftReference<Bitmap>> thumbnails = new HashMap<String, SoftReference<Bitmap>>();
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.recent);
 
-        recentAdapter = new RecentAdapter();
+        recentAdapter = new RecentAdapter(this);
         libraryAdapter = new FileListAdapter(this);
         bookshelfAdapter = new BooksAdapter(this);
 
@@ -115,24 +123,23 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         // showDocument(Uri.fromFile(file));
         // }
         // }
-        //if (SettingsManager.getRecentBook() == null) {
-        //    changeLibraryView(VIEW_LIBRARY);
-        //}
-        //else {
-        //    changeLibraryView(VIEW_RECENT); 
-        //}
-        
-        if(viewflipper.getDisplayedChild() == VIEW_RECENT) {
+        // if (SettingsManager.getRecentBook() == null) {
+        // changeLibraryView(VIEW_LIBRARY);
+        // }
+        // else {
+        // changeLibraryView(VIEW_RECENT);
+        // }
+
+        if (viewflipper.getDisplayedChild() == VIEW_RECENT) {
             if (SettingsManager.getRecentBook() == null) {
                 changeLibraryView(VIEW_LIBRARY);
+            } else {
+                recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), SettingsManager.getAppSettings()
+                        .getAllowedFileTypes());
             }
-            else {
-                recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), SettingsManager.getAppSettings().getAllowedFileTypes(
-                        Activities.getAllExtensions()));
-            }
-            
+
         }
-        bookshelfAdapter.notifyDataSetChanged();    
+        bookshelfAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -223,9 +230,8 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    private void changeLibraryView(int view) {
-        final FileExtensionFilter filter = SettingsManager.getAppSettings().getAllowedFileTypes(
-                Activities.getAllExtensions());
+    private void changeLibraryView(final int view) {
+        final FileExtensionFilter filter = SettingsManager.getAppSettings().getAllowedFileTypes();
 
         if (view == VIEW_LIBRARY) {
             viewflipper.setDisplayedChild(VIEW_LIBRARY);
@@ -250,7 +256,7 @@ public class RecentActivity extends Activity implements IBrowserActivity {
     public void goLibrary(final View view) {
         if (viewflipper.getDisplayedChild() == VIEW_RECENT) {
             changeLibraryView(VIEW_LIBRARY);
-        }else if (viewflipper.getDisplayedChild() == VIEW_LIBRARY) {
+        } else if (viewflipper.getDisplayedChild() == VIEW_LIBRARY) {
             changeLibraryView(VIEW_LIBRARY_GRID);
         } else if (viewflipper.getDisplayedChild() == VIEW_LIBRARY_GRID) {
             changeLibraryView(VIEW_RECENT);
@@ -270,6 +276,27 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         } else {
             progress.setVisibility(View.GONE);
         }
-
     }
+
+    @Override
+    public void loadThumbnail(final String path, final ImageView imageView, final int defaultResID) {
+        final String md5 = StringUtils.md5(path);
+        final SoftReference<Bitmap> ref = thumbnails.get(md5);
+        Bitmap bmp = ref != null ? ref.get() : null;
+        if (bmp == null) {
+            final File cacheDir = getContext().getFilesDir();
+            final File thumbnailFile = new File(cacheDir, md5 + ".thumbnail");
+            if (thumbnailFile.exists()) {
+                bmp = BitmapFactory.decodeFile(thumbnailFile.getPath());
+                thumbnails.put(md5, new SoftReference<Bitmap>(bmp));
+            }
+        }
+
+        if (bmp != null) {
+            imageView.setImageBitmap(bmp);
+        } else {
+            imageView.setImageResource(defaultResID);
+        }
+    }
+
 }

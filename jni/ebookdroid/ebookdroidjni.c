@@ -10,11 +10,16 @@ static void* handler = NULL;
 static int present = 0;
 
 void* NativeBitmapInit();
+void closeHandler();
+
+
+
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
 {
     __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "initializing EBookDroid JNI library based on MuPDF and DjVuLibre");
     fz_accelerate();
+    atexit(closeHandler);
     NativeBitmap_getInfo = NULL;
     NativeBitmap_lockPixels = NULL;
     NativeBitmap_unlockPixels = NULL;
@@ -25,23 +30,18 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
 }
 
 
+
 JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *jvm, void *reserved)
 {
     __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "Unloading EBookDroid JNI library based on MuPDF and DjVuLibre");
-    present = 0;
-    if(handler)
-	dlclose(handler);
-    handler = NULL;
+    closeHandler();
 }
 
 JNIEXPORT jboolean JNICALL
 Java_org_ebookdroid_core_EBookDroidLibraryLoader_free(JNIEnv *env, jobject this)
 {
     __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "Free EBookDroid JNI library");
-    present = 0;
-    if(handler)
-	dlclose(handler);
-    handler = NULL;
+    closeHandler();
 }
 
 int NativePresent()
@@ -79,5 +79,14 @@ void* NativeBitmapInit()
 	}
 	NativeBitmap_unlockPixels = (AndroidBitmap_unlockPixels)bitmapUnlockPixels;
 	return bitmap_library;
+}
+
+void closeHandler()
+{
+  __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "closeHandler");
+    present = 0;
+    if(handler)
+	dlclose(handler);
+    handler = NULL;
 }
 

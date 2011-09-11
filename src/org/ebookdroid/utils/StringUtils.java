@@ -21,7 +21,7 @@ public class StringUtils {
         String out = in;
         try {
             out = in.substring(0, in.lastIndexOf('.'));
-            out = out.replaceAll("\\(.*\\)|\\[.*\\]", "");
+            out = out.replaceAll("\\(.*?\\)|\\[.*?\\]", "").replaceAll("_", " ").trim();
         } catch (final IndexOutOfBoundsException e) {
         }
         return out;

@@ -71,6 +71,7 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         viewflipper.addView(new LibraryView(this, libraryAdapter), VIEW_LIBRARY);
         viewflipper.addView(new BookcaseView(this, bookshelfAdapter), VIEW_LIBRARY_GRID);
 
+        viewflipper.setMinimumHeight(2000);
         final View.OnClickListener handler = new View.OnClickListener() {
 
             @Override

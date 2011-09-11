@@ -9,7 +9,6 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.MotionEvent;
-import android.view.VelocityTracker;
 
 /**
  * The Class SinglePageDocumentView.
@@ -87,16 +86,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
                 if (getBase().getMultiTouchZoom().onTouchEvent(event)) {
                     return true;
                 }
-                if (getBase().getMultiTouchZoom().isResetLastPointAfterZoom()) {
-                    setLastPosition(event);
-                    getBase().getMultiTouchZoom().setResetLastPointAfterZoom(false);
-                }
             }
-
-            if (velocityTracker == null) {
-                velocityTracker = VelocityTracker.obtain();
-            }
-            velocityTracker.addMovement(event);
 
             return curler.handleTouchEvent(event);
         }

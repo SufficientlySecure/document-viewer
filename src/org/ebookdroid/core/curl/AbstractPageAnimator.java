@@ -1,10 +1,8 @@
 package org.ebookdroid.core.curl;
 
-import org.ebookdroid.core.AbstractDocumentView;
 import org.ebookdroid.core.SinglePageDocumentView;
 import org.ebookdroid.core.ViewState;
 import org.ebookdroid.core.models.DocumentModel;
-import org.ebookdroid.core.settings.SettingsManager;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -273,20 +271,8 @@ public abstract class AbstractPageAnimator implements PageAnimator {
                     mOldMovement.x = mFinger.x;
                     mOldMovement.y = mFinger.y;
                     bUserMoves = false;
-                    view.setLastPosition(event);
-                    if (event.getEventTime() - view.getLastDownEventTime() < AbstractDocumentView.DOUBLE_TAP_TIME) {
-                        if (SettingsManager.getAppSettings().getZoomByDoubleTap()) {
-                            view.getBase().getZoomModel().toggleZoomControls();
-                        }
-                    } else {
-                        view.setLastDownEventTime(event.getEventTime());
-                    }
                     break;
                 case MotionEvent.ACTION_UP:
-                    if (view.getSquareDistanceToLast(event) >= 100) {
-                        view.setLastDownEventTime(0);
-                    }
-
                     if (bUserMoves) {
                         bUserMoves = false;
                         bFlipping = true;
@@ -294,9 +280,6 @@ public abstract class AbstractPageAnimator implements PageAnimator {
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    if (view.getSquareDistanceToLast(event) >= 100) {
-                        view.setLastDownEventTime(0);
-                    }
                     if (mFinger.distanceSquared(mOldMovement) > 625) {
                         if (!bUserMoves) {
                             // If we moved over the half of the display flip to next

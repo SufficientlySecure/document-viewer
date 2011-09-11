@@ -43,7 +43,6 @@ public class DrawThread extends Thread {
         while (true) {
             final DrawTask task = takeTask();
             if (task == null) {
-                System.gc();
                 continue;
             }
             if (task.viewState == null) {

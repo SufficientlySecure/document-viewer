@@ -25,6 +25,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.util.TypedValue;
 import android.view.View;
@@ -46,20 +47,24 @@ public class BookshelfView extends GridView implements OnItemClickListener {
 
     private IBrowserActivity base;
     private BooksAdapter adapter;
+
     public BookshelfView(IBrowserActivity base, BooksAdapter adapter) {
         super(base.getContext());
         this.base = base;
         this.adapter = adapter;
-        init(base.getContext());
+        setCacheColorHint(0);
+        setSelector(android.R.color.transparent);
         setNumColumns(AUTO_FIT);
         setStretchMode(STRETCH_SPACING);
         setAdapter(adapter);
         setOnItemClickListener(this);
         setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
-
         Resources r = getResources();
-        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, r.getDisplayMetrics());    
-        setColumnWidth((int)px);
+        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, r.getDisplayMetrics());
+        setColumnWidth((int) px);
+
+        init(base.getContext());
+
     }
 
     private void init(Context context) {
@@ -76,6 +81,24 @@ public class BookshelfView extends GridView implements OnItemClickListener {
         final Bitmap webRight = BitmapFactory.decodeResource(resources, R.drawable.web_right);
         mWebRightWidth = webRight.getWidth();
         mWebRight = webRight;
+
+        StateListDrawable drawable = new StateListDrawable();
+
+        SpotlightDrawable start = new SpotlightDrawable(context, this);
+        start.disableOffset();
+        SpotlightDrawable end = new SpotlightDrawable(context, this, R.drawable.spotlight_blue);
+        end.disableOffset();
+        TransitionDrawable transition = new TransitionDrawable(start, end);
+        drawable.addState(new int[] { android.R.attr.state_pressed }, transition);
+
+        final SpotlightDrawable normal = new SpotlightDrawable(context, this);
+        drawable.addState(new int[] {}, normal);
+
+        normal.setParent(drawable);
+        transition.setParent(drawable);
+
+        setSelector(drawable);
+        setDrawSelectorOnTop(false);
     }
 
     @Override
@@ -109,5 +132,5 @@ public class BookshelfView extends GridView implements OnItemClickListener {
             base.showDocument(Uri.fromFile(file));
         }
     }
-    
+
 }

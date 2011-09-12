@@ -160,15 +160,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         if (inZoom.get()) {
             return;
         }
-        // on scrollChanged can be called from scrollTo just after new layout applied so we should wait for relayout
-        base.getActivity().runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-                final ViewState viewState = updatePageVisibility(newPage, direction, getBase().getZoomModel().getZoom());
-                redrawView(viewState);
-            }
-        });
+        redrawView();
     }
 
     public final ViewState updatePageVisibility(final int newPage, final int direction, final float zoom) {
@@ -384,14 +376,6 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
     @Override
     public boolean onTouchEvent(final MotionEvent ev) {
-        super.onTouchEvent(ev);
-
-        try {
-            Thread.sleep(16);
-        } catch (InterruptedException e) {
-            Thread.interrupted();
-        }
-        
         if (getBase().getMultiTouchZoom() != null) {
             if (getBase().getMultiTouchZoom().onTouchEvent(ev)) {
                 return true;

@@ -5,6 +5,7 @@ import org.ebookdroid.core.log.LogContext;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 import java.util.ArrayList;
@@ -21,6 +22,9 @@ public class DrawThread extends Thread {
     private final AbstractDocumentView view;
 
     private final BlockingQueue<DrawTask> queue = new ArrayBlockingQueue<DrawThread.DrawTask>(16, true);
+
+    private long lastUpdate = 0;
+    private static final long TIME_INTERVAL = 30;
 
     public DrawThread(final SurfaceHolder surfaceHolder, final AbstractDocumentView view) {
         this.surfaceHolder = surfaceHolder;
@@ -49,7 +53,17 @@ public class DrawThread extends Thread {
                 break;
             }
             canvas = null;
+            long interval = System.currentTimeMillis() - lastUpdate;
+            if (interval < TIME_INTERVAL) {
+                try {
+                    Thread.sleep(TIME_INTERVAL - interval);
+                } catch (InterruptedException e) {
+                    Thread.interrupted();
+                }
+            }
+            long start = System.currentTimeMillis();
             try {
+                lastUpdate = System.currentTimeMillis();
                 canvas = surfaceHolder.lockCanvas(null);
                 performDrawing(canvas, task);
             } catch (final Throwable th) {
@@ -58,6 +72,7 @@ public class DrawThread extends Thread {
                 if (canvas != null) {
                     surfaceHolder.unlockCanvasAndPost(canvas);
                 }
+                Log.d("Time", "Draw time: " + (System.currentTimeMillis() - start) + "ms");
             }
         }
     }
@@ -66,12 +81,12 @@ public class DrawThread extends Thread {
         DrawTask task = null;
         try {
             task = queue.poll(1, TimeUnit.SECONDS);
-            if (task != null) {
-                final ArrayList<DrawTask> list = new ArrayList<DrawTask>();
-                if (queue.drainTo(list) > 0) {
-                    task = list.get(list.size() - 1);
-                }
-            }
+//            if (task != null) {
+//                final ArrayList<DrawTask> list = new ArrayList<DrawTask>();
+//                if (queue.drainTo(list) > 0) {
+//                    task = list.get(list.size() - 1);
+//                }
+//            }
         } catch (final InterruptedException e) {
             Thread.interrupted();
         }

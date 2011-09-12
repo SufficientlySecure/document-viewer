@@ -24,6 +24,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -72,9 +73,10 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         viewflipper.addView(new LibraryView(this, libraryAdapter), VIEW_LIBRARY);
         viewflipper.addView(new BookcaseView(this, bookshelfAdapter), VIEW_LIBRARY_GRID);
 
-        if (AndroidVersion.is3x) {
-            viewflipper.setMinimumHeight(2000);
-        }
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm );
+        
+        viewflipper.setMinimumHeight(Math.max(dm.heightPixels, dm.widthPixels));
         
         final View.OnClickListener handler = new View.OnClickListener() {
 

@@ -8,6 +8,7 @@ import org.ebookdroid.core.presentation.RecentAdapter;
 import org.ebookdroid.core.settings.BookSettings;
 import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
+import org.ebookdroid.core.utils.AndroidVersion;
 import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.core.views.BookcaseView;
 import org.ebookdroid.core.views.LibraryView;
@@ -71,7 +72,10 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         viewflipper.addView(new LibraryView(this, libraryAdapter), VIEW_LIBRARY);
         viewflipper.addView(new BookcaseView(this, bookshelfAdapter), VIEW_LIBRARY_GRID);
 
-        //viewflipper.setMinimumHeight(2000);
+        if (AndroidVersion.is3x) {
+            viewflipper.setMinimumHeight(2000);
+        }
+        
         final View.OnClickListener handler = new View.OnClickListener() {
 
             @Override

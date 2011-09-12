@@ -1,10 +1,6 @@
 package org.ebookdroid.utils;
 
-import org.ebookdroid.EBookDroidApp;
-
 import android.graphics.Bitmap;
-import android.util.Log;
-import android.widget.Toast;
 
 import java.lang.ref.SoftReference;
 import java.util.Iterator;
@@ -31,12 +27,10 @@ public class BitmapManager {
             }
             if (bmp.getConfig() == config && bmp.getWidth() == width && bmp.getHeight() >= height) {
                 it.remove();
-                Log.d("BitmapCache", "Bitmap reused");
                 return bmp;
             }
         }
         
-        Log.d("BitmapCache", "Bitmap created");
         return Bitmap.createBitmap(width, height, config);
     }
     

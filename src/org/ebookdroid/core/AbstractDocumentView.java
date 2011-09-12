@@ -165,7 +165,8 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
             @Override
             public void run() {
-                updatePageVisibility(newPage, direction, getBase().getZoomModel().getZoom());
+                final ViewState viewState = updatePageVisibility(newPage, direction, getBase().getZoomModel().getZoom());
+                redrawView(viewState);
             }
         });
     }

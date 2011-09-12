@@ -72,7 +72,7 @@ public class DrawThread extends Thread {
                 if (canvas != null) {
                     surfaceHolder.unlockCanvasAndPost(canvas);
                 }
-                Log.d("Time", "Draw time: " + (System.currentTimeMillis() - start) + "ms");
+//                Log.d("Time", "Draw time: " + (System.currentTimeMillis() - start) + "ms");
             }
         }
     }

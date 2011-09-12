@@ -3,6 +3,7 @@ package org.ebookdroid.cbdroid.codec;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.utils.archives.ArchiveEntry;
+import org.ebookdroid.utils.BitmapManager;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -120,7 +121,7 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
             matrix.postTranslate(-pageSliceBounds.left * width, -pageSliceBounds.top * height);
             matrix.postScale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height());
 
-            final Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+            final Bitmap bmp = BitmapManager.getBitmap(width, height, Bitmap.Config.RGB_565);
 
             final Canvas c = new Canvas(bmp);
             final Paint paint = new Paint();
@@ -132,7 +133,7 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
             return bmp;
         } finally {
             if (bitmap != null) {
-                bitmap.recycle();
+                BitmapManager.recycle(bitmap);
             }
         }
     }

@@ -1,6 +1,7 @@
 package org.ebookdroid.xpsdroid.codec;
 
 import org.ebookdroid.core.codec.CodecPage;
+import org.ebookdroid.utils.BitmapManager;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -75,7 +76,9 @@ public class XpsPage implements CodecPage {
         final int height = viewbox.height();
         final int[] bufferarray = new int[width * height];
         renderPage(docHandle, pageHandle, mRect, matrixArray, bufferarray);
-        return Bitmap.createBitmap(bufferarray, width, height, Bitmap.Config.RGB_565);
+        Bitmap b = BitmapManager.getBitmap(width, height, Bitmap.Config.RGB_565);
+        b.setPixels(bufferarray, 0, width, 0, 0, width, height);
+        return b;
     }
 
     private static native int getPageWidth(long handle);

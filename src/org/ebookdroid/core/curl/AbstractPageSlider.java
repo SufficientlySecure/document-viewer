@@ -5,6 +5,7 @@ import org.ebookdroid.core.PagePaint;
 import org.ebookdroid.core.SinglePageDocumentView;
 import org.ebookdroid.core.ViewState;
 import org.ebookdroid.core.settings.SettingsManager;
+import org.ebookdroid.utils.BitmapManager;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,7 +14,6 @@ import android.graphics.Paint;
 
 public abstract class AbstractPageSlider extends AbstractPageAnimator {
 
-    protected Bitmap bitmap;
     protected Bitmap arrowsBitmap;
 
     public AbstractPageSlider(final PageAnimationType type, final SinglePageDocumentView singlePageDocumentView) {
@@ -72,12 +72,8 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
     }
 
     protected Bitmap getBitmap(final Canvas canvas) {
-        if (bitmap == null || bitmap.getWidth() != canvas.getWidth() || bitmap.getHeight() != canvas.getHeight()) {
-            if (bitmap != null) {
-                bitmap.recycle();
-            }
-            bitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.RGB_565);
-        }
+        Bitmap bitmap = BitmapManager.getBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.RGB_565);
+        
         final PagePaint paint = !(SettingsManager.getAppSettings().getNightMode()) ? PagePaint.NIGHT : PagePaint.DAY;
 
         bitmap.eraseColor(paint.fillPaint.getColor());

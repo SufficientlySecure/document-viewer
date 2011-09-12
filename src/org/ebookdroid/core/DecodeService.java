@@ -33,8 +33,7 @@ public interface DecodeService {
     void updateViewState(ViewState viewState);
 
     interface DecodeCallback {
-
-        void decodeComplete(CodecPage page, Bitmap bitmap);
+        void decodeComplete(CodecPage codecPage, Bitmap bitmap, Rect bitmapBounds);
     }
 
     void createThumbnail(File thumbnailFile, int width, int height);

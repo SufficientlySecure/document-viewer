@@ -6,6 +6,7 @@ import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.log.EmergencyHandler;
 import org.ebookdroid.core.log.LogContext;
+import org.ebookdroid.utils.BitmapManager;
 
 import android.graphics.Bitmap;
 import android.graphics.Rect;
@@ -135,11 +136,11 @@ public class DecodeServiceBase implements DecodeService {
                 if (LCTX.isDebugEnabled()) {
                     LCTX.d("Task " + task.id + ": Abort dead decode task for " + task.node);
                 }
-                bitmap.recycle();
+                BitmapManager.recycle(bitmap);
                 return;
             }
 
-            finishDecoding(task, vuPage, bitmap);
+            finishDecoding(task, vuPage, bitmap, r);
         } catch (final OutOfMemoryError ex) {
             LCTX.e("Task " + task.id + ": No memory to decode " + task.node);
             for (int i = 0; i < PAGE_POOL_SIZE; i++) {
@@ -184,14 +185,14 @@ public class DecodeServiceBase implements DecodeService {
         return new Rect(0, 0, scaledWidth, scaledHeight);
     }
 
-    void finishDecoding(final DecodeTask currentDecodeTask, final CodecPage page, final Bitmap bitmap) {
+    void finishDecoding(final DecodeTask currentDecodeTask, final CodecPage page, final Bitmap bitmap, final Rect bitmapBounds) {
         stopDecoding(currentDecodeTask.node, "complete");
-        updateImage(currentDecodeTask, page, bitmap);
+        updateImage(currentDecodeTask, page, bitmap, bitmapBounds);
     }
 
     void abortDecoding(final DecodeTask currentDecodeTask, final CodecPage page, final Bitmap bitmap) {
         stopDecoding(currentDecodeTask.node, "failed");
-        updateImage(currentDecodeTask, page, bitmap);
+        updateImage(currentDecodeTask, page, bitmap, null);
     }
 
     CodecPage getPage(final int pageIndex) {
@@ -207,8 +208,8 @@ public class DecodeServiceBase implements DecodeService {
         return page;
     }
 
-    void updateImage(final DecodeTask currentDecodeTask, final CodecPage page, final Bitmap bitmap) {
-        currentDecodeTask.node.decodeComplete(page, bitmap);
+    void updateImage(final DecodeTask currentDecodeTask, final CodecPage page, final Bitmap bitmap, final Rect bitmapBounds) {
+        currentDecodeTask.node.decodeComplete(page, bitmap, bitmapBounds);
     }
 
     @Override

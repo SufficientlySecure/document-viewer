@@ -5,6 +5,7 @@ import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.models.DecodingProgressModel;
 import org.ebookdroid.core.settings.SettingsManager;
+import org.ebookdroid.utils.BitmapManager;
 import org.ebookdroid.utils.LengthUtils;
 
 import android.graphics.Bitmap;
@@ -166,12 +167,12 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     @Override
-    public void decodeComplete(final CodecPage codecPage, final Bitmap bitmap) {
+    public void decodeComplete(final CodecPage codecPage, final Bitmap bitmap, final Rect bitmapBounds) {
         page.base.getView().post(new Runnable() {
 
             @Override
             public void run() {
-                holder.setBitmap(bitmap);
+                holder.setBitmap(bitmap, bitmapBounds);
                 setDecodingNow(false);
                 final IDocumentViewController dc = page.base.getDocumentController();
                 final boolean changed = page.setAspectRatio(codecPage);
@@ -231,12 +232,16 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         }
 
         if (bitmap != null) {
-            canvas.drawBitmap(bitmap, null, tr, paint.bitmapPaint);
+            canvas.drawBitmap(bitmap, getBitmapBounds(), tr, paint.bitmapPaint);
         }
 
         drawBrightnessFilter(canvas, tr);
 
         drawChildren(canvas, viewState, pageBounds, paint);
+    }
+
+    private Rect getBitmapBounds() {
+        return holder.getBitmapBounds();
     }
 
     void drawBrightnessFilter(final Canvas canvas, final RectF tr) {
@@ -357,6 +362,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         Bitmap bitmap;
         SoftReference<Bitmap> bitmapWeakReference;
         SoftReference<Bitmap> nightWeakReference;
+        private Rect bounds;
 
         public synchronized Bitmap getBitmap() {
             Bitmap bmp = bitmap;
@@ -373,6 +379,9 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             return null;
         }
 
+        public synchronized Rect getBitmapBounds() {
+            return bounds;
+        }
         public synchronized Bitmap getNightBitmap(final RectF targetRect, final Paint paint) {
             Bitmap bmp = nightWeakReference != null ? nightWeakReference.get() : null;
             if (bmp != null && !bmp.isRecycled()) {
@@ -382,7 +391,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             if (bmp == null || bmp.isRecycled()) {
                 return null;
             }
-            final Bitmap night = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), Bitmap.Config.RGB_565);
+            final Bitmap night = BitmapManager.getBitmap(bmp.getWidth(), bmp.getHeight(), Bitmap.Config.RGB_565);
             final Canvas c = new Canvas(night);
             c.drawBitmap(bmp, 0, 0, paint);
             nightWeakReference = new SoftReference<Bitmap>(night);
@@ -405,23 +414,24 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 if (LCTX.isDebugEnabled()) {
                     LCTX.d("Recycle bitmap reference: " + PageTreeNode.this);
                 }
-                bitmap.recycle();
+                BitmapManager.recycle(bitmap);
             }
             bitmap = null;
             bitmapWeakReference = null;
             recycleNightRef();
         }
 
-        public synchronized void setBitmap(final Bitmap bitmap) {
+        public synchronized void setBitmap(final Bitmap bitmap, Rect bitmapBounds) {
             if (bitmap == null) {
                 return;
             }
             if (bitmap.getWidth() == -1 && bitmap.getHeight() == -1) {
                 return;
             }
+            this.bounds = bitmapBounds;
             if (this.bitmap != bitmap) {
                 if (this.bitmap != null && !bitmap.isRecycled()) {
-                    this.bitmap.recycle();
+                    BitmapManager.recycle(this.bitmap);
                 }
                 this.bitmap = bitmap;
                 this.bitmapWeakReference = new SoftReference<Bitmap>(bitmap);
@@ -435,7 +445,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         synchronized void recycleNightRef() {
             final Bitmap night = nightWeakReference != null ? nightWeakReference.get() : null;
             if (night != null) {
-                night.recycle();
+                BitmapManager.recycle(night);
             }
             nightWeakReference = null;
         }

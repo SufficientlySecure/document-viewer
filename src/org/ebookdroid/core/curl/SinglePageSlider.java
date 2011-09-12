@@ -3,6 +3,7 @@ package org.ebookdroid.core.curl;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.SinglePageDocumentView;
 import org.ebookdroid.core.ViewState;
+import org.ebookdroid.utils.BitmapManager;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -42,6 +43,7 @@ public class SinglePageSlider extends AbstractPageSlider {
             paint.setAntiAlias(true);
             paint.setDither(true);
             canvas.drawBitmap(fore, src, dst, paint);
+            BitmapManager.recycle(fore);
         }
     }
 
@@ -68,6 +70,7 @@ public class SinglePageSlider extends AbstractPageSlider {
             final RectF dst = new RectF(viewState.viewRect.width() - mA.x, 0, viewState.viewRect.width(),
                     viewState.viewRect.height());
             canvas.drawBitmap(back, src, dst, paint);
+            BitmapManager.recycle(back);
         }
 
     }

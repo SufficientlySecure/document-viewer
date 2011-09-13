@@ -1,8 +1,9 @@
 package org.ebookdroid.pdfdroid.codec;
 
 import org.ebookdroid.core.BaseViewerActivity;
+import org.ebookdroid.core.bitmaps.BitmapManager;
+import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.codec.CodecPage;
-import org.ebookdroid.utils.BitmapManager;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -36,7 +37,7 @@ public class PdfPage implements CodecPage {
     }
 
     @Override
-    public Bitmap renderBitmap(final int width, final int height, final RectF pageSliceBounds) {
+    public BitmapRef renderBitmap(final int width, final int height, final RectF pageSliceBounds) {
         final Matrix matrix = new Matrix();
         matrix.postTranslate(-getMediaBox().left, -getMediaBox().top);
         matrix.postScale(width / getMediaBox().width(), -height / getMediaBox().height());
@@ -70,7 +71,7 @@ public class PdfPage implements CodecPage {
         return new RectF(box[0], box[1], box[2], box[3]);
     }
 
-    public Bitmap render(final Rect viewbox, final Matrix matrix) {
+    public BitmapRef render(final Rect viewbox, final Matrix matrix) {
         final int[] mRect = new int[4];
         mRect[0] = viewbox.left;
         mRect[1] = viewbox.top;
@@ -90,20 +91,20 @@ public class PdfPage implements CodecPage {
         final int width = viewbox.width();
         final int height = viewbox.height();
 
-        if (useNativeGraphics /*&& AndroidVersion.VERSION >= 8*/) {
-            Bitmap bmp = BitmapManager.getBitmap(width, height, Bitmap.Config.ARGB_8888);
-            if (renderPageBitmap(docHandle, pageHandle, mRect, matrixArray, bmp)) {
+        if (useNativeGraphics) {
+            BitmapRef bmp = BitmapManager.getBitmap(width, height, Bitmap.Config.ARGB_8888);
+            if (renderPageBitmap(docHandle, pageHandle, mRect, matrixArray, bmp.getBitmap())) {
                 return bmp;
             } else {
-                BitmapManager.recycle(bmp);
+                BitmapManager.release(bmp);
                 return null;
             }
         }
 
         final int[] bufferarray = new int[width * height];
         renderPage(docHandle, pageHandle, mRect, matrixArray, bufferarray);
-        Bitmap b = BitmapManager.getBitmap(width, height, Bitmap.Config.RGB_565);
-        b.setPixels(bufferarray, 0, width, 0, 0, width, height);
+        BitmapRef b = BitmapManager.getBitmap(width, height, Bitmap.Config.RGB_565);
+        b.getBitmap().setPixels(bufferarray, 0, width, 0, 0, width, height);
         return b;
     }
 

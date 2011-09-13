@@ -1,9 +1,9 @@
 package org.ebookdroid.core;
 
+import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
 
-import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
@@ -33,7 +33,7 @@ public interface DecodeService {
     void updateViewState(ViewState viewState);
 
     interface DecodeCallback {
-        void decodeComplete(CodecPage codecPage, Bitmap bitmap, Rect bitmapBounds);
+        void decodeComplete(CodecPage codecPage, BitmapRef bitmap, Rect bitmapBounds);
     }
 
     void createThumbnail(File thumbnailFile, int width, int height);

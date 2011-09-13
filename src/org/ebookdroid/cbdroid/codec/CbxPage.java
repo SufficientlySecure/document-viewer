@@ -1,9 +1,10 @@
 package org.ebookdroid.cbdroid.codec;
 
+import org.ebookdroid.core.bitmaps.BitmapManager;
+import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.utils.archives.ArchiveEntry;
-import org.ebookdroid.utils.BitmapManager;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -88,7 +89,7 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
     }
 
     @Override
-    public Bitmap renderBitmap(final int width, final int height, final RectF pageSliceBounds) {
+    public BitmapRef renderBitmap(final int width, final int height, final RectF pageSliceBounds) {
         if (getPageInfo() == null) {
             return null;
         }
@@ -121,9 +122,9 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
             matrix.postTranslate(-pageSliceBounds.left * width, -pageSliceBounds.top * height);
             matrix.postScale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height());
 
-            final Bitmap bmp = BitmapManager.getBitmap(width, height, Bitmap.Config.RGB_565);
+            final BitmapRef bmp = BitmapManager.getBitmap(width, height, Bitmap.Config.RGB_565);
 
-            final Canvas c = new Canvas(bmp);
+            final Canvas c = new Canvas(bmp.getBitmap());
             final Paint paint = new Paint();
             paint.setFilterBitmap(true);
             paint.setAntiAlias(true);
@@ -133,7 +134,7 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
             return bmp;
         } finally {
             if (bitmap != null) {
-                BitmapManager.recycle(bitmap);
+                bitmap.recycle();
             }
         }
     }

@@ -1,5 +1,7 @@
 package org.ebookdroid.core;
 
+import org.ebookdroid.core.bitmaps.BitmapManager;
+import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.events.ZoomListener;
 import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.settings.SettingsManager;
@@ -9,12 +11,12 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.widget.Scroller;
 
 import java.util.ArrayList;
@@ -24,59 +26,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class AbstractDocumentView extends SurfaceView implements ZoomListener, IDocumentViewController,
         SurfaceHolder.Callback {
-
-    private final class GestureListener extends SimpleOnGestureListener {
-        @Override
-        public boolean onDoubleTap(MotionEvent e) {
-            if (SettingsManager.getAppSettings().getZoomByDoubleTap()) {
-                getBase().getZoomModel().toggleZoomControls();
-            }
-            return true;
-        }
-
-        @Override
-        public boolean onDown(MotionEvent e) {
-            if(!scroller.isFinished() ) { // is flinging
-                scroller.forceFinished(true); // to stop flinging on touch
-            }
-            return true;
-        }
-
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float vX, float vY) {
-            final Rect l = getScrollLimits();
-            scroller.fling(getScrollX(), getScrollY(),
-                    -(int)vX, -(int)vY, l.left, l.right, l.top, l.bottom);
-            return true;
-            }
-
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            scrollBy((int)distanceX, (int)distanceY);
-            return true;
-        }
-
-        @Override
-        public boolean onSingleTapUp(MotionEvent e) {
-            float ts;
-            if (SettingsManager.getAppSettings().getTapScroll()) {
-                final int tapsize = SettingsManager.getAppSettings().getTapSize();
-
-                ts = (float) tapsize / 100;
-                if (ts > 0.5) {
-                    ts = 0.5f;
-                }
-                    if (e.getY() / getHeight() < ts) {
-                        verticalConfigScroll(-1);
-                    } else if (e.getY() / getHeight() > (1 - ts)) {
-                        verticalConfigScroll(1);
-                    }
-                    return true;
-                }
-            return false;
-        }
-        
-    }
 
     protected static final LogContext LCTX = LogContext.ROOT.lctx("View");
 
@@ -98,7 +47,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     protected float initialZoom;
 
     protected boolean layoutLocked;
-    
+
     protected GestureDetector gestureDetector;
 
     public AbstractDocumentView(final IViewerActivity baseActivity) {
@@ -108,7 +57,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         this.firstVisiblePage = -1;
         this.lastVisiblePage = -1;
         this.scroller = new Scroller(getContext());
-        
+
         this.gestureDetector = new GestureDetector(getContext(), new GestureListener());
         this.pageToGo = SettingsManager.getBookSettings().getCurrentPage();
 
@@ -167,10 +116,12 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         final ViewState viewState = calculatePageVisibility(newPage, direction, zoom);
 
         final List<PageTreeNode> nodesToDecode = new ArrayList<PageTreeNode>();
+        final List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
 
         for (final Page page : getBase().getDocumentModel().getPages()) {
-            page.onPositionChanged(viewState, nodesToDecode);
+            page.onPositionChanged(viewState, nodesToDecode, bitmapsToRecycle);
         }
+        BitmapManager.release(bitmapsToRecycle);
 
         if (!nodesToDecode.isEmpty()) {
             decodePageTreeNodes(viewState, nodesToDecode);
@@ -182,7 +133,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     }
 
     protected final void decodePageTreeNodes(final ViewState viewState, final List<PageTreeNode> nodesToDecode) {
-        PageTreeNode best = Collections.min(nodesToDecode, new PageTreeNodeComparator(viewState));
+        final PageTreeNode best = Collections.min(nodesToDecode, new PageTreeNodeComparator(viewState));
         base.getDecodeService().decodePage(viewState, best);
 
         for (final PageTreeNode node : nodesToDecode) {
@@ -281,14 +232,21 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     }
 
     protected ViewState onZoomChanged(final float newZoom) {
+        if (initialZoom != newZoom) {
+            BitmapManager.increateGeneration();
+        }
+
         final ViewState viewState = calculatePageVisibility(base.getDocumentModel().getCurrentViewPageIndex(), 0,
                 newZoom);
 
         final List<PageTreeNode> nodesToDecode = new ArrayList<PageTreeNode>();
+        final List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
 
         for (final Page page : getBase().getDocumentModel().getPages()) {
-            page.onZoomChanged(initialZoom, viewState, nodesToDecode);
+            page.onZoomChanged(initialZoom, viewState, nodesToDecode, bitmapsToRecycle);
         }
+        BitmapManager.release(bitmapsToRecycle);
+
         if (!nodesToDecode.isEmpty()) {
             decodePageTreeNodes(viewState, nodesToDecode);
         }
@@ -303,10 +261,13 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         final ViewState viewState = new ViewState(this);
 
         final List<PageTreeNode> nodesToDecode = new ArrayList<PageTreeNode>();
+        final List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
 
         for (final Page page : getBase().getDocumentModel().getPages()) {
-            page.onZoomChanged(0, viewState, nodesToDecode);
+            page.onZoomChanged(0, viewState, nodesToDecode, bitmapsToRecycle);
         }
+        BitmapManager.release(bitmapsToRecycle);
+
         if (!nodesToDecode.isEmpty()) {
             decodePageTreeNodes(viewState, nodesToDecode);
         }
@@ -314,13 +275,17 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         LCTX.d("updateMemorySettings: " + viewState + " => " + nodesToDecode.size());
     }
 
-    public final ViewState invalidatePages(ViewState oldState, final Page... pages) {
+    public final ViewState invalidatePages(final ViewState oldState, final Page... pages) {
         final ViewState viewState = calculatePageVisibility(pages[0].index.viewIndex, 0, oldState.zoom);
 
         final List<PageTreeNode> nodesToDecode = new ArrayList<PageTreeNode>();
+        final List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
+
         for (final Page page : pages) {
-            page.onPositionChanged(viewState, nodesToDecode);
+            page.onPositionChanged(viewState, nodesToDecode, bitmapsToRecycle);
         }
+        BitmapManager.release(bitmapsToRecycle);
+
         if (!nodesToDecode.isEmpty()) {
             decodePageTreeNodes(viewState, nodesToDecode);
         }
@@ -383,9 +348,8 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         }
 
         return gestureDetector.onTouchEvent(ev);
-        
-    }
 
+    }
 
     @Override
     public final boolean dispatchKeyEvent(final KeyEvent event) {
@@ -448,22 +412,27 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     }
 
     @Override
-    protected final void onLayout(final boolean changed, final int left, final int top, final int right, final int bottom) {
+    protected final void onLayout(final boolean changed, final int left, final int top, final int right,
+            final int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         onLayoutChanged(changed, left, top, right, bottom);
     }
 
-    protected boolean onLayoutChanged(final boolean changed, final int left, final int top, final int right, final int bottom) {
+    protected boolean onLayoutChanged(final boolean changed, final int left, final int top, final int right,
+            final int bottom) {
         if (changed && !layoutLocked) {
             if (isInitialized) {
-                for (Page page : base.getDocumentModel().getPages()) {
-                    page.nodes.root.recycle();
+                ArrayList<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
+                for (final Page page : base.getDocumentModel().getPages()) {
+                    page.nodes.root.recycle(bitmapsToRecycle);
                 }
+                BitmapManager.release(bitmapsToRecycle);
+
                 invalidatePageSizes(InvalidateSizeReason.LAYOUT, null);
                 invalidateScroll();
-                float oldZoom = base.getZoomModel().getZoom();
+                final float oldZoom = base.getZoomModel().getZoom();
                 initialZoom = 0;
-                ViewState state = onZoomChanged(oldZoom);
+                final ViewState state = onZoomChanged(oldZoom);
                 redrawView(state);
                 return true;
             }
@@ -570,5 +539,58 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     @Override
     public final void surfaceDestroyed(final SurfaceHolder holder) {
         drawThread.finish();
+    }
+
+    private final class GestureListener extends SimpleOnGestureListener {
+
+        @Override
+        public boolean onDoubleTap(final MotionEvent e) {
+            if (SettingsManager.getAppSettings().getZoomByDoubleTap()) {
+                getBase().getZoomModel().toggleZoomControls();
+            }
+            return true;
+        }
+
+        @Override
+        public boolean onDown(final MotionEvent e) {
+            if (!scroller.isFinished()) { // is flinging
+                scroller.forceFinished(true); // to stop flinging on touch
+            }
+            return true;
+        }
+
+        @Override
+        public boolean onFling(final MotionEvent e1, final MotionEvent e2, final float vX, final float vY) {
+            final Rect l = getScrollLimits();
+            scroller.fling(getScrollX(), getScrollY(), -(int) vX, -(int) vY, l.left, l.right, l.top, l.bottom);
+            return true;
+        }
+
+        @Override
+        public boolean onScroll(final MotionEvent e1, final MotionEvent e2, final float distanceX, final float distanceY) {
+            scrollBy((int) distanceX, (int) distanceY);
+            return true;
+        }
+
+        @Override
+        public boolean onSingleTapUp(final MotionEvent e) {
+            float ts;
+            if (SettingsManager.getAppSettings().getTapScroll()) {
+                final int tapsize = SettingsManager.getAppSettings().getTapSize();
+
+                ts = (float) tapsize / 100;
+                if (ts > 0.5) {
+                    ts = 0.5f;
+                }
+                if (e.getY() / getHeight() < ts) {
+                    verticalConfigScroll(-1);
+                } else if (e.getY() / getHeight() > (1 - ts)) {
+                    verticalConfigScroll(1);
+                }
+                return true;
+            }
+            return false;
+        }
+
     }
 }

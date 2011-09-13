@@ -1,7 +1,8 @@
 package org.ebookdroid.xpsdroid.codec;
 
+import org.ebookdroid.core.bitmaps.BitmapManager;
+import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.codec.CodecPage;
-import org.ebookdroid.utils.BitmapManager;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -29,7 +30,7 @@ public class XpsPage implements CodecPage {
     }
 
     @Override
-    public Bitmap renderBitmap(final int width, final int height, final RectF pageSliceBounds) {
+    public BitmapRef renderBitmap(final int width, final int height, final RectF pageSliceBounds) {
         final Matrix matrix = new Matrix();
         matrix.postScale(width / (float) getPageWidth(pageHandle), height / (float) getPageHeight(pageHandle));
         matrix.postTranslate(-pageSliceBounds.left * width, -pageSliceBounds.top * height);
@@ -55,7 +56,7 @@ public class XpsPage implements CodecPage {
         }
     }
 
-    public Bitmap render(final Rect viewbox, final Matrix matrix) {
+    public BitmapRef render(final Rect viewbox, final Matrix matrix) {
         final int[] mRect = new int[4];
         mRect[0] = viewbox.left;
         mRect[1] = viewbox.top;
@@ -76,8 +77,8 @@ public class XpsPage implements CodecPage {
         final int height = viewbox.height();
         final int[] bufferarray = new int[width * height];
         renderPage(docHandle, pageHandle, mRect, matrixArray, bufferarray);
-        Bitmap b = BitmapManager.getBitmap(width, height, Bitmap.Config.RGB_565);
-        b.setPixels(bufferarray, 0, width, 0, 0, width, height);
+        BitmapRef b = BitmapManager.getBitmap(width, height, Bitmap.Config.RGB_565);
+        b.getBitmap().setPixels(bufferarray, 0, width, 0, 0, width, height);
         return b;
     }
 

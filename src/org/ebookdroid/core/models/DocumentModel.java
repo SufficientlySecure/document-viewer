@@ -5,6 +5,8 @@ import org.ebookdroid.core.IViewerActivity;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.core.PageType;
+import org.ebookdroid.core.bitmaps.BitmapManager;
+import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.settings.BookSettings;
 import org.ebookdroid.core.settings.SettingsManager;
@@ -23,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class DocumentModel extends CurrentPageModel {
 
@@ -59,10 +62,16 @@ public class DocumentModel extends CurrentPageModel {
     public void recycle() {
         decodeService.recycle();
         decodeService = null;
+        recyclePages();
+    }
+
+    private void recyclePages() {
         if (LengthUtils.isNotEmpty(pages)) {
+            final List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
             for (final Page page : pages) {
-                page.recycle();
+                page.recycle(bitmapsToRecycle);
             }
+            BitmapManager.release(bitmapsToRecycle);
         }
         pages = EMPTY_PAGES;
     }
@@ -73,7 +82,7 @@ public class DocumentModel extends CurrentPageModel {
 
     /**
      * Gets the current page object.
-     * 
+     *
      * @return the current page object
      */
     public Page getCurrentPageObject() {
@@ -82,7 +91,7 @@ public class DocumentModel extends CurrentPageModel {
 
     /**
      * Gets the next page object.
-     * 
+     *
      * @return the next page object
      */
     public Page getNextPageObject() {
@@ -91,7 +100,7 @@ public class DocumentModel extends CurrentPageModel {
 
     /**
      * Gets the prev page object.
-     * 
+     *
      * @return the prev page object
      */
     public Page getPrevPageObject() {
@@ -100,7 +109,7 @@ public class DocumentModel extends CurrentPageModel {
 
     /**
      * Gets the last page object.
-     * 
+     *
      * @return the last page object
      */
     public Page getLastPageObject() {
@@ -115,12 +124,7 @@ public class DocumentModel extends CurrentPageModel {
     }
 
     public void initPages(final IViewerActivity base) {
-        if (LengthUtils.isNotEmpty(pages)) {
-            for (final Page page : pages) {
-                page.recycle();
-            }
-        }
-        pages = EMPTY_PAGES;
+        recyclePages();
 
         final BookSettings bs = SettingsManager.getBookSettings();
         final boolean splitPages = bs.getSplitPages();
@@ -176,7 +180,7 @@ public class DocumentModel extends CurrentPageModel {
         } else {
             height = 200 * info.getHeight() / info.getWidth();
         }
-        
+
         decodeService.createThumbnail(thumbnailFile, width, height);
     }
 

@@ -1,12 +1,13 @@
 package org.ebookdroid.core;
 
+import org.ebookdroid.core.bitmaps.BitmapManager;
+import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.codec.CodecContext;
 import org.ebookdroid.core.codec.CodecDocument;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.log.EmergencyHandler;
 import org.ebookdroid.core.log.LogContext;
-import org.ebookdroid.utils.BitmapManager;
 
 import android.graphics.Bitmap;
 import android.graphics.Rect;
@@ -130,13 +131,13 @@ public class DecodeServiceBase implements DecodeService {
             }
 
             final Rect r = getScaledSize(task, vuPage);
-            final Bitmap bitmap = vuPage.renderBitmap(r.width(), r.height(), task.pageSliceBounds);
+            final BitmapRef bitmap = vuPage.renderBitmap(r.width(), r.height(), task.pageSliceBounds);
 
             if (executor.isTaskDead(task)) {
                 if (LCTX.isDebugEnabled()) {
                     LCTX.d("Task " + task.id + ": Abort dead decode task for " + task.node);
                 }
-                BitmapManager.recycle(bitmap);
+                BitmapManager.release(bitmap);
                 return;
             }
 
@@ -185,12 +186,13 @@ public class DecodeServiceBase implements DecodeService {
         return new Rect(0, 0, scaledWidth, scaledHeight);
     }
 
-    void finishDecoding(final DecodeTask currentDecodeTask, final CodecPage page, final Bitmap bitmap, final Rect bitmapBounds) {
+    void finishDecoding(final DecodeTask currentDecodeTask, final CodecPage page, final BitmapRef bitmap,
+            final Rect bitmapBounds) {
         stopDecoding(currentDecodeTask.node, "complete");
         updateImage(currentDecodeTask, page, bitmap, bitmapBounds);
     }
 
-    void abortDecoding(final DecodeTask currentDecodeTask, final CodecPage page, final Bitmap bitmap) {
+    void abortDecoding(final DecodeTask currentDecodeTask, final CodecPage page, final BitmapRef bitmap) {
         stopDecoding(currentDecodeTask.node, "failed");
         updateImage(currentDecodeTask, page, bitmap, null);
     }
@@ -208,7 +210,8 @@ public class DecodeServiceBase implements DecodeService {
         return page;
     }
 
-    void updateImage(final DecodeTask currentDecodeTask, final CodecPage page, final Bitmap bitmap, final Rect bitmapBounds) {
+    void updateImage(final DecodeTask currentDecodeTask, final CodecPage page, final BitmapRef bitmap,
+            final Rect bitmapBounds) {
         currentDecodeTask.node.decodeComplete(page, bitmap, bitmapBounds);
     }
 
@@ -495,15 +498,17 @@ public class DecodeServiceBase implements DecodeService {
     @Override
     public void createThumbnail(File thumbnailFile, int width, int height) {
         CodecPage page = getPage(0);
-        Bitmap bmp = page.renderBitmap(width, height, new RectF(0, 0, 1, 1));
-        
+        BitmapRef bmp = page.renderBitmap(width, height, new RectF(0, 0, 1, 1));
+
         FileOutputStream out;
         try {
             out = new FileOutputStream(thumbnailFile);
-            bmp.compress(Bitmap.CompressFormat.JPEG, 50, out);
+            bmp.getBitmap().compress(Bitmap.CompressFormat.JPEG, 50, out);
             out.close();
         } catch (FileNotFoundException e) {
         } catch (IOException e) {
+        } finally {
+            BitmapManager.release(bmp);
         }
     }
 

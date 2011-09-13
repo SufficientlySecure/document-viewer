@@ -65,7 +65,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
 
     /**
      * Called on the first draw event of the view
-     * 
+     *
      * @param canvas
      */
     @Override
@@ -108,7 +108,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
 
     /**
      * Draw the foreground
-     * 
+     *
      * @param canvas
      * @param rect
      * @param paint
@@ -129,7 +129,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
 
     /**
      * Draw the background image.
-     * 
+     *
      * @param canvas
      * @param rect
      * @param paint
@@ -144,7 +144,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
             canvas.save();
             canvas.clipPath(mask);
 
-            final PagePaint paint = !(SettingsManager.getAppSettings().getNightMode()) ? PagePaint.NIGHT
+            final PagePaint paint = !(viewState.nightMode) ? PagePaint.NIGHT
                     : PagePaint.DAY;
 
             canvas.drawRect(canvas.getClipBounds(), paint.fillPaint);
@@ -157,7 +157,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
 
     /**
      * Create a Path used as a mask to draw the background page
-     * 
+     *
      * @return
      */
     private Path createBackgroundPath() {
@@ -172,7 +172,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
 
     /**
      * Creates a path used to draw the curl edge in.
-     * 
+     *
      * @return
      */
     private Path createCurlEdgePath() {
@@ -187,7 +187,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
 
     /**
      * Draw the curl page edge
-     * 
+     *
      * @param canvas
      */
     @Override

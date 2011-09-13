@@ -1,9 +1,9 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.R;
+import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
-import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.utils.MathUtils;
 
 import android.graphics.Canvas;
@@ -37,9 +37,9 @@ public class Page {
         nodes = new PageTree(this);
     }
 
-    public void recycle() {
+    public void recycle(List<BitmapRef> bitmapsToRecycle) {
         recycled = true;
-        nodes.recycle();
+        nodes.recycle(bitmapsToRecycle);
     }
 
     public boolean draw(final Canvas canvas, final ViewState viewState) {
@@ -48,7 +48,7 @@ public class Page {
 
     public boolean draw(final Canvas canvas, final ViewState viewState, final boolean drawInvisible) {
         if (drawInvisible || viewState.isPageVisible(this)) {
-            final PagePaint paint = SettingsManager.getAppSettings().getNightMode() ? PagePaint.NIGHT : PagePaint.DAY;
+            final PagePaint paint = viewState.nightMode ? PagePaint.NIGHT : PagePaint.DAY;
 
             final RectF bounds = new RectF(viewState.getBounds(this));
             final RectF nodesBounds = new RectF(bounds);
@@ -99,16 +99,16 @@ public class Page {
         bounds = pageBounds;
     }
 
-    public boolean onZoomChanged(final float oldZoom, final ViewState viewState, final List<PageTreeNode> nodesToDecode) {
+    public boolean onZoomChanged(final float oldZoom, final ViewState viewState, final List<PageTreeNode> nodesToDecode, List<BitmapRef> bitmapsToRecycle) {
         if (!recycled) {
-            return nodes.root.onZoomChanged(oldZoom, viewState, viewState.getBounds(this), nodesToDecode);
+            return nodes.root.onZoomChanged(oldZoom, viewState, viewState.getBounds(this), nodesToDecode, bitmapsToRecycle);
         }
         return false;
     }
 
-    public boolean onPositionChanged(final ViewState viewState, final List<PageTreeNode> nodesToDecode) {
+    public boolean onPositionChanged(final ViewState viewState, final List<PageTreeNode> nodesToDecode, List<BitmapRef> bitmapsToRecycle) {
         if (!recycled) {
-            return nodes.root.onPositionChanged(viewState, viewState.getBounds(this), nodesToDecode);
+            return nodes.root.onPositionChanged(viewState, viewState.getBounds(this), nodesToDecode, bitmapsToRecycle);
         }
         return false;
     }

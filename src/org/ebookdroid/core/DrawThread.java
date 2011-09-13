@@ -5,7 +5,6 @@ import org.ebookdroid.core.log.LogContext;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.SurfaceHolder;
 
 import java.util.ArrayList;
@@ -61,7 +60,6 @@ public class DrawThread extends Thread {
                     Thread.interrupted();
                 }
             }
-            long start = System.currentTimeMillis();
             try {
                 lastUpdate = System.currentTimeMillis();
                 canvas = surfaceHolder.lockCanvas(null);
@@ -72,7 +70,6 @@ public class DrawThread extends Thread {
                 if (canvas != null) {
                     surfaceHolder.unlockCanvasAndPost(canvas);
                 }
-//                Log.d("Time", "Draw time: " + (System.currentTimeMillis() - start) + "ms");
             }
         }
     }
@@ -81,12 +78,12 @@ public class DrawThread extends Thread {
         DrawTask task = null;
         try {
             task = queue.poll(1, TimeUnit.SECONDS);
-//            if (task != null) {
-//                final ArrayList<DrawTask> list = new ArrayList<DrawTask>();
-//                if (queue.drainTo(list) > 0) {
-//                    task = list.get(list.size() - 1);
-//                }
-//            }
+            if (task != null) {
+                final ArrayList<DrawTask> list = new ArrayList<DrawTask>();
+                if (queue.drainTo(list) > 0) {
+                    task = list.get(list.size() - 1);
+                }
+            }
         } catch (final InterruptedException e) {
             Thread.interrupted();
         }

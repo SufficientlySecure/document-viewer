@@ -3,7 +3,8 @@ package org.ebookdroid.core.curl;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.SinglePageDocumentView;
 import org.ebookdroid.core.ViewState;
-import org.ebookdroid.utils.BitmapManager;
+import org.ebookdroid.core.bitmaps.BitmapManager;
+import org.ebookdroid.core.bitmaps.BitmapRef;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -19,7 +20,7 @@ public class SinglePageSqueezer extends AbstractPageSlider {
 
     /**
      * Draw the foreground
-     * 
+     *
      * @param canvas
      * @param rect
      * @param paint
@@ -31,8 +32,8 @@ public class SinglePageSqueezer extends AbstractPageSlider {
             page = view.getBase().getDocumentModel().getCurrentPageObject();
         }
         if (page != null) {
-            final Bitmap fore = getBitmap(canvas);
-            final Canvas tmp = new Canvas(fore);
+            final BitmapRef fore = getBitmap(canvas, viewState);
+            final Canvas tmp = new Canvas(fore.getBitmap());
             page.draw(tmp, viewState, true);
 
             final Rect src = new Rect(0, 0, (int) viewState.viewRect.width(), (int) viewState.viewRect.height());
@@ -41,14 +42,14 @@ public class SinglePageSqueezer extends AbstractPageSlider {
             paint.setFilterBitmap(true);
             paint.setAntiAlias(true);
             paint.setDither(true);
-            canvas.drawBitmap(fore, src, dst, paint);
-            BitmapManager.recycle(fore);
+            canvas.drawBitmap(fore.getBitmap(), src, dst, paint);
+            BitmapManager.release(fore);
         }
     }
 
     /**
      * Draw the background image.
-     * 
+     *
      * @param canvas
      * @param rect
      * @param paint
@@ -57,8 +58,8 @@ public class SinglePageSqueezer extends AbstractPageSlider {
     protected void drawBackground(final Canvas canvas, final ViewState viewState) {
         final Page page = view.getBase().getDocumentModel().getPageObject(backIndex);
         if (page != null) {
-            final Bitmap back = getBitmap(canvas);
-            final Canvas tmp = new Canvas(back);
+            final BitmapRef back = getBitmap(canvas, viewState);
+            final Canvas tmp = new Canvas(back.getBitmap());
             page.draw(tmp, viewState, true);
 
             final Rect src = new Rect(0, 0, (int) viewState.viewRect.width(), (int) viewState.viewRect.height());
@@ -68,8 +69,8 @@ public class SinglePageSqueezer extends AbstractPageSlider {
             paint.setFilterBitmap(true);
             paint.setAntiAlias(true);
             paint.setDither(true);
-            canvas.drawBitmap(back, src, dst, paint);
-            BitmapManager.recycle(back);
+            canvas.drawBitmap(back.getBitmap(), src, dst, paint);
+            BitmapManager.release(back);
         }
 
     }

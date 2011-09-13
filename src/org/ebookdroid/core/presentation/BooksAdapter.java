@@ -9,7 +9,6 @@ import org.ebookdroid.utils.LengthUtils;
 import org.ebookdroid.utils.StringUtils;
 
 import android.graphics.Color;
-import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -130,10 +129,10 @@ public class BooksAdapter extends BaseAdapter {
         inScan.set(false);
     }
 
-    synchronized void addNode(final Pair<Integer, Node> pair) {
-        if (pair != null) {
-            final ArrayList<Node> list = getList(pair.first);
-            list.add(pair.second);
+    synchronized void addNode(final Node node) {
+        if (node != null) {
+            final ArrayList<Node> list = getList(node.listNum);
+            list.add(node);
         }
     }
 
@@ -161,10 +160,12 @@ public class BooksAdapter extends BaseAdapter {
 
     public static class Node {
 
+        final int listNum;
         final String name;
         final String path;
 
-        Node(final String name, final String path) {
+        Node(final int listNum, final String name, final String path) {
+            this.listNum = listNum;
             this.name = name;
             this.path = path;
         }
@@ -187,7 +188,7 @@ public class BooksAdapter extends BaseAdapter {
 
         final FileExtensionFilter filter;
 
-        final Queue<Pair<Integer, Node>> currNodes = new ConcurrentLinkedQueue<Pair<Integer, Node>>();
+        final Queue<Node> currNodes = new ConcurrentLinkedQueue<Node>();
 
         final AtomicBoolean inUI = new AtomicBoolean();
 
@@ -200,7 +201,7 @@ public class BooksAdapter extends BaseAdapter {
             // Checks if we started to update adapter data
             if (!currNodes.isEmpty() && inUI.get()) {
                 // Add files from queue to adapter
-                for (Pair<Integer, Node> p = currNodes.poll(); p != null && inScan.get(); p = currNodes.poll()) {
+                for (Node p = currNodes.poll(); p != null && inScan.get(); p = currNodes.poll()) {
                     addNode(p);
                 }
                 notifyDataSetChanged();
@@ -244,7 +245,7 @@ public class BooksAdapter extends BaseAdapter {
                 final int listNum = SEQ.getAndIncrement();
                 names.put(listNum, dir.getName());
                 for (final File f : list) {
-                    currNodes.add(new Pair<Integer, Node>(listNum, new Node(f.getName(), f.getAbsolutePath())));
+                    currNodes.add(new Node(listNum, f.getName(), f.getAbsolutePath()));
                     if (inUI.compareAndSet(false, true)) {
                         // Start UI task if required
                         base.getActivity().runOnUiThread(this);

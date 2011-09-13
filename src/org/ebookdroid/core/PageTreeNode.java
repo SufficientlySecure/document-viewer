@@ -357,7 +357,10 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         public synchronized Bitmap getBitmap() {
             Bitmap bmp = bitmap != null ? bitmap.getBitmap() : null;
             if (bmp == null || bmp.isRecycled()) {
-                bitmap = null;
+                if (bitmap != null) {
+                    BitmapManager.release(bitmap);
+                    bitmap = null;
+                }
             }
             return bmp;
         }
@@ -367,8 +370,13 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         }
 
         public synchronized Bitmap getNightBitmap(final Paint paint) {
-            Bitmap bmp = night != null ? night.getBitmap() : null;
-            if (bmp != null && !bmp.isRecycled()) {
+            Bitmap bmp = null;
+            if (night != null) {
+                bmp = night.getBitmap();
+                if (bmp == null || bmp.isRecycled()) {
+                    BitmapManager.release(night);
+                    night = null;
+                }
                 return bmp;
             }
             bmp = getBitmap();

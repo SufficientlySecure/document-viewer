@@ -31,6 +31,7 @@ public class BitmapRef {
     }
 
     public void clearDirectRef() {
+        ref = new SoftReference<Bitmap>(bitmap);
         bitmap = null;
     }
 
@@ -42,7 +43,7 @@ public class BitmapRef {
 
     void recycle() {
         final Bitmap bmp = bitmap != null ? bitmap : ref.get();
-        if (bmp != null && bmp.isRecycled()) {
+        if (bmp != null) {
             bmp.recycle();
         }
         bitmap = null;

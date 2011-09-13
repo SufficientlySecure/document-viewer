@@ -15,7 +15,7 @@ public class BitmapManager {
 
     private static final LogContext LCTX = LogContext.ROOT.lctx("Imaging");
 
-    private static final int BITMAP_MEMORY_LIMIT = 8 * 1024 * 1024;
+    private final static long BITMAP_MEMORY_LIMIT = Runtime.getRuntime().maxMemory() / 2;
 
     private static Map<Integer, BitmapRef> actual = new HashMap<Integer, BitmapRef>();
 

@@ -52,16 +52,17 @@ public class ViewState {
                 pages.append(page.index.viewIndex, page.getBounds(zoom));
             }
             this.currentIndex = dc.calculateCurrentPage(this);
+            final int inMemory = (int) Math.ceil(SettingsManager.getAppSettings().getPagesInMemory() / 2.0);
+            this.firstCached = Math.max(0, this.currentIndex - inMemory);
+            this.lastCached = Math.min(this.currentIndex + inMemory, dm.getPageCount());
         } else {
             this.currentIndex = 0;
+            this.firstCached = 0;
+            this.lastCached = 0;
         }
 
-        final int inMemory = (int) Math.ceil(SettingsManager.getAppSettings().getPagesInMemory() / 2.0);
-        this.firstCached = Math.max(0, this.currentIndex - inMemory);
-        this.lastCached = Math.min(this.currentIndex + inMemory, dm.getPageCount());
-
         this.decodeMode = SettingsManager.getAppSettings().getDecodeMode();
-        this.nightMode  = SettingsManager.getAppSettings().getNightMode();
+        this.nightMode = SettingsManager.getAppSettings().getNightMode();
     }
 
     public ViewState(final ViewState oldState, final IDocumentViewController dc) {
@@ -85,7 +86,7 @@ public class ViewState {
         this.lastCached = Math.min(this.currentIndex + inMemory, dc.getBase().getDocumentModel().getPageCount());
 
         this.decodeMode = oldState.decodeMode;
-        this.nightMode  = oldState.nightMode;
+        this.nightMode = oldState.nightMode;
     }
 
     public ViewState(final ViewState state) {
@@ -101,7 +102,7 @@ public class ViewState {
         this.lastCached = state.lastCached;
 
         this.decodeMode = state.decodeMode;
-        this.nightMode  = state.nightMode;
+        this.nightMode = state.nightMode;
     }
 
     public RectF getBounds(final Page page) {

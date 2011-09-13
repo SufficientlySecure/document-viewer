@@ -72,23 +72,6 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
         return holder.getView();
     }
 
-    static class ViewHolder extends BaseViewHolder {
-
-        TextView textView;
-        ImageView imageView;
-        TextView info;
-        TextView fileSize;
-
-        @Override
-        public void init(final View convertView) {
-            super.init(convertView);
-            textView = (TextView) convertView.findViewById(R.id.browserItemText);
-            imageView = (ImageView) convertView.findViewById(R.id.browserItemIcon);
-            info = (TextView) convertView.findViewById(R.id.browserItemInfo);
-            fileSize = (TextView) convertView.findViewById(R.id.browserItemfileSize);
-        }
-    }
-
     public void setCurrentDirectory(final File currentDirectory) {
         this.currentDirectory = currentDirectory;
 
@@ -118,5 +101,22 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
             return 1;
         }
         return f1.getName().compareTo(f2.getName());
+    }
+
+    static class ViewHolder extends BaseViewHolder {
+
+        TextView textView;
+        ImageView imageView;
+        TextView info;
+        TextView fileSize;
+
+        @Override
+        public void init(final View convertView) {
+            super.init(convertView);
+            textView = (TextView) convertView.findViewById(R.id.browserItemText);
+            imageView = (ImageView) convertView.findViewById(R.id.browserItemIcon);
+            info = (TextView) convertView.findViewById(R.id.browserItemInfo);
+            fileSize = (TextView) convertView.findViewById(R.id.browserItemfileSize);
+        }
     }
 }

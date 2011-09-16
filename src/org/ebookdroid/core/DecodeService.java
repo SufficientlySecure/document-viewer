@@ -37,4 +37,6 @@ public interface DecodeService {
     }
 
     void createThumbnail(File thumbnailFile, int width, int height);
+
+    boolean isPageSizeCacheable();
 }

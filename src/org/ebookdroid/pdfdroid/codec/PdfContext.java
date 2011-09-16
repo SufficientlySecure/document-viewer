@@ -14,4 +14,9 @@ public class PdfContext extends AbstractCodecContext {
     public CodecDocument openDocument(final String fileName, final String password) {
         return new PdfDocument(this, fileName, password);
     }
+
+    @Override
+    public boolean isPageSizeCacheable() {
+        return true;
+    }
 }

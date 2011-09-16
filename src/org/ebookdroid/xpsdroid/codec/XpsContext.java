@@ -14,4 +14,9 @@ public class XpsContext extends  AbstractCodecContext {
     public CodecDocument openDocument(final String fileName, final String password) {
         return new XpsDocument(this, fileName);
     }
+
+    @Override
+    public boolean isPageSizeCacheable() {
+        return true;
+    }
 }

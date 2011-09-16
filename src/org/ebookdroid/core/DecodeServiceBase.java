@@ -512,4 +512,9 @@ public class DecodeServiceBase implements DecodeService {
         }
     }
 
+    @Override
+    public boolean isPageSizeCacheable() {
+        return codecContext.isPageSizeCacheable();
+    }
+
 }

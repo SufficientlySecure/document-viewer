@@ -252,6 +252,9 @@ public class DocumentModel extends CurrentPageModel {
     }
 
     private void storePagesInfo(final File pagesFile, final CodecPageInfo[] infos) {
+        if (!decodeService.isPageSizeCacheable()) {
+            return;
+        }
         try {
             final DataOutputStream out = new DataOutputStream(new FileOutputStream(pagesFile));
             try {

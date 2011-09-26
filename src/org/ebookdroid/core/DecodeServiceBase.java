@@ -497,8 +497,23 @@ public class DecodeServiceBase implements DecodeService {
 
     @Override
     public void createThumbnail(File thumbnailFile, int width, int height) {
-        CodecPage page = getPage(0);
-        BitmapRef bmp = page.renderBitmap(width, height, new RectF(0, 0, 1, 1));
+        Bitmap thumbnail = document.getEmbeddedThumbnail();
+        BitmapRef bmp = null;
+        if (thumbnail != null) {
+            width = 200;
+            height = 200;
+            if (thumbnail.getHeight() > thumbnail.getWidth()) {
+                width = 200 * thumbnail.getWidth() / thumbnail.getHeight();
+            } else {
+                height = 200 * thumbnail.getHeight() / thumbnail.getWidth();
+            }
+
+            thumbnail = Bitmap.createScaledBitmap(thumbnail, width, height, true);
+        } else {
+            CodecPage page = getPage(0);
+            bmp = page.renderBitmap(width, height, new RectF(0, 0, 1, 1));
+            thumbnail = bmp.getBitmap();
+        }
 
         FileOutputStream out;
         try {

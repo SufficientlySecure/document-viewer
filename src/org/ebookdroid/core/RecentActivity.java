@@ -8,7 +8,6 @@ import org.ebookdroid.core.presentation.RecentAdapter;
 import org.ebookdroid.core.settings.BookSettings;
 import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
-import org.ebookdroid.core.utils.AndroidVersion;
 import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.core.views.BookcaseView;
 import org.ebookdroid.core.views.LibraryView;
@@ -22,9 +21,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -56,11 +57,21 @@ public class RecentActivity extends Activity implements IBrowserActivity {
 
     private final Map<String, SoftReference<Bitmap>> thumbnails = new HashMap<String, SoftReference<Bitmap>>();
 
+    private Bitmap cornerThmbBitmap;
+
+    private Bitmap leftThmbBitmap;
+
+    private Bitmap topThmbBitmap;
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.recent);
+
+        cornerThmbBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.bt_corner);
+        leftThmbBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.bt_left);
+        topThmbBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.bt_top);
 
         recentAdapter = new RecentAdapter(this);
         libraryAdapter = new FileListAdapter(this);
@@ -97,7 +108,7 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         final boolean shouldLoad = SettingsManager.getAppSettings().isLoadRecentBook();
         final BookSettings recent = SettingsManager.getRecentBook();
         final File file = recent != null ? new File(recent.getFileName()) : null;
-        final boolean found = file != null ? file.exists() : false;
+        final boolean found = file != null ? file.exists() && SettingsManager.getAppSettings().getAllowedFileTypes().accept(file): false;
 
         if (LCTX.isDebugEnabled()) {
             LCTX.d("Last book: " + (file != null ? file.getAbsolutePath() : "") + ", found: " + found
@@ -216,11 +227,13 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         libraryAdapter.stopScan();
         bookshelfAdapter.stopScan();
         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-        intent.setClass(this, Activities.getByUri(uri));
-
-        // Issue 33
-        // startActivityIfNeeded(intent, -1);
-        startActivity(intent);
+        Class<? extends Activity> activity = Activities.getByUri(uri);
+        if (activity != null) {
+            intent.setClass(this, activity);
+            // Issue 33
+            // startActivityIfNeeded(intent, -1);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -289,7 +302,21 @@ public class RecentActivity extends Activity implements IBrowserActivity {
             final File cacheDir = getContext().getFilesDir();
             final File thumbnailFile = new File(cacheDir, md5 + ".thumbnail");
             if (thumbnailFile.exists()) {
-                bmp = BitmapFactory.decodeFile(thumbnailFile.getPath());
+
+                Bitmap tmpbmp = BitmapFactory.decodeFile(thumbnailFile.getPath());
+                int width = tmpbmp.getWidth() + 33;
+                int height = tmpbmp.getHeight() + 23;
+                bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+                bmp.eraseColor(Color.TRANSPARENT);
+
+                Canvas c = new Canvas(bmp);
+
+                c.drawBitmap(cornerThmbBitmap, null, new Rect(0, 0, 33, 23), null);
+                c.drawBitmap(topThmbBitmap, null, new Rect(33, 0, width, 23), null);
+                c.drawBitmap(leftThmbBitmap, null, new Rect(0, 23, 33, height), null);
+                c.drawBitmap(tmpbmp, null, new Rect(33, 23, width, height), null);
+
                 thumbnails.put(md5, new SoftReference<Bitmap>(bmp));
             }
         }

@@ -111,7 +111,8 @@ public class StringUtils {
                 return 1;
             }
 
-            if (Character.isDigit(firstString.charAt(firstIndex)) && Character.isDigit(secondString.charAt(secondIndex))) {
+            if (Character.isDigit(firstString.charAt(firstIndex))
+                    && Character.isDigit(secondString.charAt(secondIndex))) {
                 int firstZeroCount = 0;
                 while (firstString.charAt(firstIndex) == '0') {
                     firstZeroCount++;
@@ -129,11 +130,13 @@ public class StringUtils {
                     }
                 }
                 if ((firstIndex == firstString.length() || !Character.isDigit(firstString.charAt(firstIndex)))
-                        && (secondIndex == secondString.length() || !Character.isDigit(secondString.charAt(secondIndex)))) {
+                        && (secondIndex == secondString.length() || !Character
+                                .isDigit(secondString.charAt(secondIndex)))) {
                     continue;
                 }
                 if ((firstIndex == firstString.length() || !Character.isDigit(firstString.charAt(firstIndex)))
-                        && !(secondIndex == secondString.length() || !Character.isDigit(secondString.charAt(secondIndex)))) {
+                        && !(secondIndex == secondString.length() || !Character.isDigit(secondString
+                                .charAt(secondIndex)))) {
                     return -1;
                 }
                 if ((secondIndex == secondString.length() || !Character.isDigit(secondString.charAt(secondIndex)))) {
@@ -162,7 +165,8 @@ public class StringUtils {
                         }
                         return Character.isDigit(firstString.charAt(firstIndex)) ? 1 : diff;
                     }
-                    if (!Character.isDigit(firstString.charAt(firstIndex)) && !Character.isDigit(secondString.charAt(secondIndex))) {
+                    if (!Character.isDigit(firstString.charAt(firstIndex))
+                            && !Character.isDigit(secondString.charAt(secondIndex))) {
                         if (diff != 0) {
                             return diff;
                         }
@@ -208,6 +212,38 @@ public class StringUtils {
                 return compareNatural(o1.getAbsolutePath(), o2.getAbsolutePath());
             }
         };
+    }
+
+    public static int split(char[] str, int begin, int len, int[] outStart, int[] outLength) {
+        if (str == null) {
+            return 0;
+        }
+        if (len == 0) {
+            return 0;
+        }
+        int i = begin, start = begin;
+        int index = 0;
+        boolean match = false;
+        while (i < begin + len) {
+            if (str[i] == 0x20 || str[i] == 0x0D || str[i] == 0x0A || str[i] == 0x09) {
+                if (match) {
+                    outStart[index] = start;
+                    outLength[index] = i-start;
+                    index++;
+                    match = false;
+                }
+                start = ++i;
+                continue;
+            }
+            match = true;
+            i++;
+        }
+        if (match) {
+            outStart[index] = start;
+            outLength[index] = i-start;
+            index++;
+        }
+        return index;
     }
 
 }

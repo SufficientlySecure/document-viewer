@@ -3,6 +3,8 @@ package org.ebookdroid.core.codec;
 import org.ebookdroid.core.OutlineLink;
 import org.ebookdroid.core.PageLink;
 
+import android.graphics.Bitmap;
+
 import java.util.List;
 
 public abstract class AbstractCodecDocument implements CodecDocument {
@@ -51,5 +53,10 @@ public abstract class AbstractCodecDocument implements CodecDocument {
     }
 
     protected void freeDocument() {
+    }
+
+    @Override
+    public Bitmap getEmbeddedThumbnail() {
+        return null;
     }
 }

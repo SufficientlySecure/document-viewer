@@ -3,6 +3,8 @@ package org.ebookdroid.core.codec;
 import org.ebookdroid.core.OutlineLink;
 import org.ebookdroid.core.PageLink;
 
+import android.graphics.Bitmap;
+
 import java.util.List;
 
 public interface CodecDocument {
@@ -23,4 +25,6 @@ public interface CodecDocument {
      * @return <code>true</code> if instance has been recycled
      */
     boolean isRecycled();
+
+    Bitmap getEmbeddedThumbnail();
 }

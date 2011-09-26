@@ -33,9 +33,4 @@ public class CbxContext<ArchiveEntryType extends ArchiveEntry> extends AbstractC
             return new CbxDocument<ArchiveEntryType>(this, null);
         }
     }
-
-    @Override
-    public boolean isPageSizeCacheable() {
-        return true;
-    }
 }

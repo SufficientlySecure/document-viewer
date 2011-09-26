@@ -271,12 +271,14 @@ public abstract class AbstractPageAnimator implements PageAnimator {
                     mOldMovement.x = mFinger.x;
                     mOldMovement.y = mFinger.y;
                     bUserMoves = false;
-                    break;
+                    return false;
                 case MotionEvent.ACTION_UP:
                     if (bUserMoves) {
                         bUserMoves = false;
                         bFlipping = true;
                         FlipAnimationStep();
+                    } else {
+                        return false;
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:

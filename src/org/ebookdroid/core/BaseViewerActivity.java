@@ -22,10 +22,12 @@ import org.ebookdroid.utils.StringUtils;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.DisplayMetrics;
@@ -110,6 +112,8 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         SettingsManager.applyAppSettingsChanges(null, SettingsManager.getAppSettings());
     }
 
+    ProgressDialog progressDialog;
+
     private void initView(final String password) {
         final DecodeService decodeService = createDecodeService();
 
@@ -119,7 +123,37 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
             SettingsManager.init(fileName);
 
-            decodeService.open(fileName, password);
+            new AsyncTask<String, Void, Void>() {
+
+                @Override
+                protected void onPreExecute() {
+                    progressDialog = ProgressDialog.show(BaseViewerActivity.this, "", "Loading... Please wait", true);
+                }
+
+                @Override
+                protected Void doInBackground(String... params) {
+                    decodeService.open(params[0], params[1]);
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void result) {
+                    documentModel = new DocumentModel(decodeService);
+                    documentModel.addEventListener(BaseViewerActivity.this);
+                    progressModel = new DecodingProgressModel();
+                    progressModel.addEventListener(BaseViewerActivity.this);
+                    SettingsManager.applyBookSettingsChanges(null, SettingsManager.getBookSettings(), null);
+
+                    if (documentModel != null) {
+                        final BookSettings bs = SettingsManager.getBookSettings();
+                        if (bs != null) {
+                            currentPageChanged(PageIndex.NULL, bs.getCurrentPage());
+                        }
+                    }
+                    progressDialog.dismiss();
+                }
+
+            }.execute(fileName, password);
 
         } catch (final Exception e) {
             LCTX.e(e.getMessage(), e);
@@ -133,18 +167,9 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
             return;
         }
 
-        documentModel = new DocumentModel(decodeService);
-
-        documentModel.addEventListener(this);
-
         zoomModel = new ZoomModel();
 
         initMultiTouchZoomIfAvailable();
-
-        progressModel = new DecodingProgressModel();
-        progressModel.addEventListener(this);
-
-        SettingsManager.applyBookSettingsChanges(null, SettingsManager.getBookSettings(), null);
 
         setContentView(frameLayout);
         setProgressBarIndeterminateVisibility(false);
@@ -276,12 +301,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     protected void onPostCreate(final Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setWindowTitle();
-        if (documentModel != null) {
-            final BookSettings bs = SettingsManager.getBookSettings();
-            if (bs != null) {
-                currentPageChanged(PageIndex.NULL, bs.getCurrentPage());
-            }
-        }
     }
 
     private PageViewZoomControls getZoomControls() {
@@ -331,6 +350,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
         getView().post(new Runnable() {
+
             @Override
             public void run() {
                 getDocumentController().changeLayoutLock(false);
@@ -593,7 +613,8 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
             }
 
             if (!redrawn && appDiff != null) {
-                if (appDiff.isMaxImageSizeChanged() || appDiff.isPagesInMemoryChanged() || appDiff.isDecodeModeChanged()) {
+                if (appDiff.isMaxImageSizeChanged() || appDiff.isPagesInMemoryChanged()
+                        || appDiff.isDecodeModeChanged()) {
                     dc.updateMemorySettings();
                 }
             }

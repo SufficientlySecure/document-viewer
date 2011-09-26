@@ -66,9 +66,4 @@ public class DjvuContext extends AbstractCodecContext implements Runnable {
     private static native void free(long contextHandle);
 
     private native void handleMessage(long contextHandle);
-
-    @Override
-    public boolean isPageSizeCacheable() {
-        return true;
-    }
 }

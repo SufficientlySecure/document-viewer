@@ -4,7 +4,6 @@ import org.ebookdroid.core.Page;
 import org.ebookdroid.core.PagePaint;
 import org.ebookdroid.core.SinglePageDocumentView;
 import org.ebookdroid.core.ViewState;
-import org.ebookdroid.core.settings.SettingsManager;
 
 import android.graphics.Canvas;
 import android.graphics.Color;

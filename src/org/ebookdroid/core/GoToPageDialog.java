@@ -92,17 +92,20 @@ public class GoToPageDialog extends Dialog {
     protected void onStart() {
         super.onStart();
 
-        adapter = new BookmarkAdapter(base.getDocumentModel().getLastPageObject(), SettingsManager.getBookSettings());
+        final DocumentModel dm = base.getDocumentModel();
+        final Page lastPage = dm != null ? dm.getLastPageObject() : null;
+        final int current = dm != null ? dm.getCurrentViewPageIndex() : 0;
+        final int max = lastPage != null ? lastPage.index.viewIndex : 0;
+
+        adapter = new BookmarkAdapter(lastPage, SettingsManager.getBookSettings());
 
         final ListView bookmarks = (ListView) findViewById(R.id.bookmarks);
         bookmarks.setAdapter(adapter);
 
-        final DocumentModel dm = base.getDocumentModel();
-
         final SeekBar seekbar = (SeekBar) findViewById(R.id.seekbar);
-        seekbar.setMax(dm.getPageCount() - 1);
+        seekbar.setMax(max);
 
-        updateControls(dm.getCurrentViewPageIndex(), true);
+        updateControls(current, true);
     }
 
     @Override
@@ -163,7 +166,7 @@ public class GoToPageDialog extends Dialog {
         public BookmarkAdapter(final Page lastPage, BookSettings bookSettings) {
             this.bookSettings = bookSettings;
             this.start = new Bookmark(PageIndex.FIRST, getContext().getString(R.string.bookmark_start), true);
-            this.end = new Bookmark(lastPage.index, getContext().getString(R.string.bookmark_end), true);
+            this.end = new Bookmark(lastPage != null ? lastPage.index : PageIndex.FIRST, getContext().getString(R.string.bookmark_end), true);
         }
 
         public void add(final Bookmark... bookmarks) {

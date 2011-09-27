@@ -68,13 +68,20 @@ public class SinglePageDocumentView extends AbstractDocumentView {
         final int height = getHeight();
         final float zoom = getBase().getZoomModel().getZoom();
 
-        final RectF bounds = getBase().getDocumentModel().getCurrentPageObject().getBounds(zoom);
-        final int top = ((int) bounds.top > 0) ? 0 : (int) bounds.top;
-        final int left = ((int) bounds.left > 0) ? 0 : (int) bounds.left;
-        final int bottom = ((int) bounds.bottom < height) ? 0 : (int) bounds.bottom - height;
-        final int right = ((int) bounds.right < width) ? 0 : (int) bounds.right - width;
+        final DocumentModel dm = getBase().getDocumentModel();
+        final Page page = dm != null ? dm.getCurrentPageObject() : null;
 
-        return new Rect(left, top, right, bottom);
+        if (page != null) {
+            final RectF bounds = page.getBounds(zoom);
+            final int top = ((int) bounds.top > 0) ? 0 : (int) bounds.top;
+            final int left = ((int) bounds.left > 0) ? 0 : (int) bounds.left;
+            final int bottom = ((int) bounds.bottom < height) ? 0 : (int) bounds.bottom - height;
+            final int right = ((int) bounds.right < width) ? 0 : (int) bounds.right - width;
+
+            return new Rect(left, top, right, bottom);
+        }
+
+        return new Rect(0, 0, 0, 0);
     }
 
     @Override

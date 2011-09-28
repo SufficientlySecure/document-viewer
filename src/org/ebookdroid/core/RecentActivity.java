@@ -5,6 +5,9 @@ import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.presentation.BooksAdapter;
 import org.ebookdroid.core.presentation.FileListAdapter;
 import org.ebookdroid.core.presentation.RecentAdapter;
+import org.ebookdroid.core.settings.AppSettings;
+import org.ebookdroid.core.settings.AppSettings.Diff;
+import org.ebookdroid.core.settings.ISettingsChangeListener;
 import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.settings.books.BookSettings;
@@ -40,13 +43,12 @@ import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RecentActivity extends Activity implements IBrowserActivity {
+public class RecentActivity extends Activity implements IBrowserActivity, ISettingsChangeListener {
 
     public static final LogContext LCTX = LogContext.ROOT.lctx("Core");
 
     private static final int VIEW_RECENT = 0;
     private static final int VIEW_LIBRARY = 1;
-    private static final int VIEW_LIBRARY_GRID = 2;
 
     private RecentAdapter recentAdapter;
     private FileListAdapter libraryAdapter;
@@ -80,35 +82,41 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         libraryButton = (ImageView) findViewById(R.id.recentlibrary);
 
         viewflipper = (ViewFlipper) findViewById(R.id.recentflip);
-        viewflipper.addView(new RecentBooksView(this, recentAdapter), VIEW_RECENT);
-        viewflipper.addView(new LibraryView(this, libraryAdapter), VIEW_LIBRARY);
-        viewflipper.addView(new BookcaseView(this, bookshelfAdapter), VIEW_LIBRARY_GRID);
 
-        final View.OnClickListener handler = new View.OnClickListener() {
+        if (SettingsManager.getAppSettings().getUseBookcase()) {
+            viewflipper.addView(new BookcaseView(this, bookshelfAdapter), 0);
+            libraryButton.setImageResource(R.drawable.actionbar_shelf);
+        } else {
+            viewflipper.addView(new RecentBooksView(this, recentAdapter), VIEW_RECENT);
+            viewflipper.addView(new LibraryView(this, libraryAdapter), VIEW_LIBRARY);
 
-            @Override
-            public void onClick(final View v) {
-                switch (v.getId()) {
-                    case R.id.recentlibrary:
-                        goLibrary(v);
-                        break;
-                    case R.id.recentbrowser:
-                        goFileBrowser(v);
-                        break;
+            final View.OnClickListener handler = new View.OnClickListener() {
+
+                @Override
+                public void onClick(final View v) {
+                    switch (v.getId()) {
+                        case R.id.recentlibrary:
+                            goLibrary(v);
+                            break;
+                        case R.id.recentbrowser:
+                            goFileBrowser(v);
+                            break;
+                    }
                 }
-            }
-        };
+            };
 
-        findViewById(R.id.recentlibrary).setOnClickListener(handler);
-        final View recentBrowser = findViewById(R.id.recentbrowser);
-        if (recentBrowser != null) {
-            recentBrowser.setOnClickListener(handler);
+            libraryButton.setOnClickListener(handler);
+            final View recentBrowser = findViewById(R.id.recentbrowser);
+            if (recentBrowser != null) {
+                recentBrowser.setOnClickListener(handler);
+            }
         }
 
         final boolean shouldLoad = SettingsManager.getAppSettings().isLoadRecentBook();
         final BookSettings recent = SettingsManager.getRecentBook();
         final File file = recent != null ? new File(recent.fileName) : null;
-        final boolean found = file != null ? file.exists() && SettingsManager.getAppSettings().getAllowedFileTypes().accept(file): false;
+        final boolean found = file != null ? file.exists()
+                && SettingsManager.getAppSettings().getAllowedFileTypes().accept(file) : false;
 
         if (LCTX.isDebugEnabled()) {
             LCTX.d("Last book: " + (file != null ? file.getAbsolutePath() : "") + ", found: " + found
@@ -143,16 +151,19 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         // changeLibraryView(VIEW_RECENT);
         // }
 
-        if (viewflipper.getDisplayedChild() == VIEW_RECENT) {
-            if (SettingsManager.getRecentBook() == null) {
-                changeLibraryView(VIEW_LIBRARY);
-            } else {
-                recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), SettingsManager.getAppSettings()
-                        .getAllowedFileTypes());
-            }
+        if (SettingsManager.getAppSettings().getUseBookcase()) {
+            bookshelfAdapter.startScan(SettingsManager.getAppSettings().getAllowedFileTypes());
+        } else {
+            if (viewflipper.getDisplayedChild() == VIEW_RECENT) {
+                if (SettingsManager.getRecentBook() == null) {
+                    changeLibraryView(VIEW_LIBRARY);
+                } else {
+                    recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), SettingsManager
+                            .getAppSettings().getAllowedFileTypes());
+                }
 
+            }
         }
-        bookshelfAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -246,35 +257,28 @@ public class RecentActivity extends Activity implements IBrowserActivity {
     }
 
     private void changeLibraryView(final int view) {
-        final FileExtensionFilter filter = SettingsManager.getAppSettings().getAllowedFileTypes();
+        if (!SettingsManager.getAppSettings().getUseBookcase()) {
+            final FileExtensionFilter filter = SettingsManager.getAppSettings().getAllowedFileTypes();
 
-        if (view == VIEW_LIBRARY) {
-            viewflipper.setDisplayedChild(VIEW_LIBRARY);
-            libraryButton.setImageResource(R.drawable.actionbar_shelf);
-
-            libraryAdapter.startScan(filter);
-
-        } else if (view == VIEW_LIBRARY_GRID) {
-            viewflipper.setDisplayedChild(VIEW_LIBRARY_GRID);
-            libraryButton.setImageResource(R.drawable.actionbar_recent);
-
-            bookshelfAdapter.startScan(filter);
-
-        } else {
-            viewflipper.setDisplayedChild(VIEW_RECENT);
-            libraryButton.setImageResource(R.drawable.actionbar_library);
-
-            recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), filter);
+            if (view == VIEW_LIBRARY) {
+                viewflipper.setDisplayedChild(VIEW_LIBRARY);
+                libraryButton.setImageResource(R.drawable.actionbar_shelf);
+                libraryAdapter.startScan(filter);
+            } else {
+                viewflipper.setDisplayedChild(VIEW_RECENT);
+                libraryButton.setImageResource(R.drawable.actionbar_library);
+                recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), filter);
+            }
         }
     }
 
     public void goLibrary(final View view) {
-        if (viewflipper.getDisplayedChild() == VIEW_RECENT) {
-            changeLibraryView(VIEW_LIBRARY);
-        } else if (viewflipper.getDisplayedChild() == VIEW_LIBRARY) {
-            changeLibraryView(VIEW_LIBRARY_GRID);
-        } else if (viewflipper.getDisplayedChild() == VIEW_LIBRARY_GRID) {
-            changeLibraryView(VIEW_RECENT);
+        if (!SettingsManager.getAppSettings().getUseBookcase()) {
+            if (viewflipper.getDisplayedChild() == VIEW_RECENT) {
+                changeLibraryView(VIEW_LIBRARY);
+            } else if (viewflipper.getDisplayedChild() == VIEW_LIBRARY) {
+                changeLibraryView(VIEW_RECENT);
+            }
         }
     }
 
@@ -328,4 +332,16 @@ public class RecentActivity extends Activity implements IBrowserActivity {
         }
     }
 
+    @Override
+    public void onAppSettingsChanged(AppSettings oldSettings, AppSettings newSettings, Diff diff) {
+        if (diff.isUseBookcaseChanged()) {
+            // TODO
+        }
+    }
+
+    @Override
+    public void onBookSettingsChanged(BookSettings oldSettings, BookSettings newSettings,
+            org.ebookdroid.core.settings.books.BookSettings.Diff diff, Diff appDiff) {
+
+    }
 }

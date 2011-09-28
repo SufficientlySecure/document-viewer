@@ -65,6 +65,8 @@ public class AppSettings {
 
     private DecodeMode decodeMode;
 
+    private Boolean useBookcase;
+
     AppSettings(final Context context) {
         this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
@@ -246,6 +248,13 @@ public class AppSettings {
         return zoomByDoubleTap;
     }
 
+    public boolean getUseBookcase() {
+        if (useBookcase == null) {
+            useBookcase = prefs.getBoolean("usebookcase", true);
+        }
+        return useBookcase;
+    }
+
     boolean getSplitPages() {
         if (splitPages == null) {
             splitPages = prefs.getBoolean("splitpages", false);
@@ -326,23 +335,24 @@ public class AppSettings {
 
     public static class Diff {
 
-        private static final short D_NightMode = 0x0001 << 0;
-        private static final short D_Rotation = 0x0001 << 1;
-        private static final short D_FullScreen = 0x0001 << 2;
-        private static final short D_ShowTitle = 0x0001 << 3;
-        private static final short D_PageInTitle = 0x0001 << 4;
-        private static final short D_TapScroll = 0x0001 << 5;
-        private static final short D_TapSize = 0x0001 << 6;
-        private static final short D_ScrollHeight = 0x0001 << 7;
-        private static final short D_PagesInMemory = 0x0001 << 8;
-        private static final short D_DecodeMode = 0x0001 << 9;
-        private static final short D_Brightness = 0x0001 << 10;
-        private static final short D_BrightnessInNightMode = 0x0001 << 11;
-        private static final short D_KeepScreenOn = 0x0001 << 12;
-        private static final short D_LoadRecent = 0x0001 << 13;
-        private static final short D_MaxImageSize = 0x0001 << 14;
+        private static final int D_NightMode = 0x0001 << 0;
+        private static final int D_Rotation = 0x0001 << 1;
+        private static final int D_FullScreen = 0x0001 << 2;
+        private static final int D_ShowTitle = 0x0001 << 3;
+        private static final int D_PageInTitle = 0x0001 << 4;
+        private static final int D_TapScroll = 0x0001 << 5;
+        private static final int D_TapSize = 0x0001 << 6;
+        private static final int D_ScrollHeight = 0x0001 << 7;
+        private static final int D_PagesInMemory = 0x0001 << 8;
+        private static final int D_DecodeMode = 0x0001 << 9;
+        private static final int D_Brightness = 0x0001 << 10;
+        private static final int D_BrightnessInNightMode = 0x0001 << 11;
+        private static final int D_KeepScreenOn = 0x0001 << 12;
+        private static final int D_LoadRecent = 0x0001 << 13;
+        private static final int D_MaxImageSize = 0x0001 << 14;
+        private static final int D_UseBookcase = 0x0001 << 15;
 
-        private short mask;
+        private int mask;
         private final boolean firstTime;
 
         public Diff(final AppSettings olds, final AppSettings news) {
@@ -392,6 +402,9 @@ public class AppSettings {
                 }
                 if (firstTime || olds.getMaxImageSize() != news.getMaxImageSize()) {
                     mask |= D_MaxImageSize;
+                }
+                if (firstTime || olds.getUseBookcase() != news.getUseBookcase()) {
+                    mask |= D_UseBookcase;
                 }
             }
         }
@@ -459,6 +472,11 @@ public class AppSettings {
         public boolean isMaxImageSizeChanged() {
             return 0 != (mask & D_MaxImageSize);
         }
+
+        public boolean isUseBookcaseChanged() {
+            return 0 != (mask & D_UseBookcase);
+        }
+
     }
 
 }

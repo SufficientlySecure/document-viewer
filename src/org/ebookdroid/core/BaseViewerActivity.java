@@ -9,12 +9,12 @@ import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.models.ZoomModel;
 import org.ebookdroid.core.multitouch.MultiTouchZoom;
 import org.ebookdroid.core.settings.AppSettings;
-import org.ebookdroid.core.settings.BookSettings;
 import org.ebookdroid.core.settings.BookSettingsActivity;
-import org.ebookdroid.core.settings.Bookmark;
 import org.ebookdroid.core.settings.ISettingsChangeListener;
 import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
+import org.ebookdroid.core.settings.books.BookSettings;
+import org.ebookdroid.core.settings.books.Bookmark;
 import org.ebookdroid.core.utils.PathFromUri;
 import org.ebookdroid.core.views.PageViewZoomControls;
 import org.ebookdroid.utils.StringUtils;
@@ -232,7 +232,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
         final BookSettings bs = SettingsManager.getBookSettings();
 
-        if (bs.getSinglePage()) {
+        if (bs.singlePage) {
             documentController = new SinglePageDocumentView(this);
         } else {
             documentController = new ContiniousDocumentView(this);
@@ -418,7 +418,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
                 return true;
             case R.id.mainmenu_booksettings:
                 final Intent bsa = new Intent(BaseViewerActivity.this, BookSettingsActivity.class);
-                bsa.setData(Uri.fromFile(new File(SettingsManager.getBookSettings().getFileName())));
+                bsa.setData(Uri.fromFile(new File(SettingsManager.getBookSettings().fileName)));
                 startActivity(bsa);
                 return true;
             case R.id.mainmenu_settings:
@@ -452,7 +452,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
                     public void onClick(final DialogInterface dialog, final int whichButton) {
                         final Editable value = input.getText();
                         final BookSettings bs = SettingsManager.getBookSettings();
-                        bs.getBookmarks().add(new Bookmark(getDocumentModel().getCurrentIndex(), value.toString()));
+                        bs.bookmarks.add(new Bookmark(getDocumentModel().getCurrentIndex(), value.toString()));
                         SettingsManager.edit(bs).commit();
                     }
                 }).setNegativeButton(R.string.password_cancel, new DialogInterface.OnClickListener() {
@@ -605,7 +605,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         if (dc != null) {
 
             if (diff.isPageAlignChanged()) {
-                dc.setAlign(newSettings.getPageAlign());
+                dc.setAlign(newSettings.pageAlign);
             }
 
             if (diff.isAnimationTypeChanged()) {

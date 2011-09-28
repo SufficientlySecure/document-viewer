@@ -3,6 +3,7 @@ package org.ebookdroid.core.settings;
 import org.ebookdroid.R;
 import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.settings.SettingsManager.BookSettingsEditor;
+import org.ebookdroid.core.settings.books.BookSettings;
 import org.ebookdroid.core.utils.PathFromUri;
 
 import android.content.SharedPreferences;

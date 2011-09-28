@@ -8,8 +8,8 @@ import org.ebookdroid.core.PageType;
 import org.ebookdroid.core.bitmaps.BitmapManager;
 import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.codec.CodecPageInfo;
-import org.ebookdroid.core.settings.BookSettings;
 import org.ebookdroid.core.settings.SettingsManager;
+import org.ebookdroid.core.settings.books.BookSettings;
 import org.ebookdroid.utils.LengthUtils;
 import org.ebookdroid.utils.StringUtils;
 
@@ -132,7 +132,6 @@ public class DocumentModel extends CurrentPageModel {
             return;
         }
 
-        final boolean splitPages = bs.getSplitPages();
         final View view = base.getView();
 
         final CodecPageInfo defCpi = new CodecPageInfo();
@@ -147,7 +146,7 @@ public class DocumentModel extends CurrentPageModel {
             final CodecPageInfo[] infos = retrievePagesInfo(base, bs);
 
             for (int docIndex = 0; docIndex < infos.length; docIndex++) {
-                if (!splitPages || infos[docIndex] == null
+                if (!bs.splitPages || infos[docIndex] == null
                         || (infos[docIndex].getWidth() < infos[docIndex].getHeight())) {
                     final Page page = new Page(base, new PageIndex(docIndex, viewIndex++), PageType.FULL_PAGE,
                             infos[docIndex] != null ? infos[docIndex] : defCpi);
@@ -171,10 +170,9 @@ public class DocumentModel extends CurrentPageModel {
     }
 
     private void createBookThumbnail(final IViewerActivity base, final BookSettings bs, CodecPageInfo info) {
-        final String fileName = bs.getFileName();
         final File cacheDir = base.getContext().getFilesDir();
 
-        final String md5 = StringUtils.md5(fileName);
+        final String md5 = StringUtils.md5(bs.fileName);
         final File thumbnailFile = new File(cacheDir, md5 + ".thumbnail");
         if (thumbnailFile.exists()) {
             return;
@@ -191,10 +189,9 @@ public class DocumentModel extends CurrentPageModel {
 
     private CodecPageInfo[] retrievePagesInfo(final IViewerActivity base, final BookSettings bs) {
 
-        final String fileName = bs.getFileName();
         final File cacheDir = base.getContext().getFilesDir();
 
-        final String md5 = StringUtils.md5(fileName);
+        final String md5 = StringUtils.md5(bs.fileName);
         final File pagesFile = new File(cacheDir, md5 + ".cache");
         if (md5 != null) {
             if (pagesFile.exists()) {

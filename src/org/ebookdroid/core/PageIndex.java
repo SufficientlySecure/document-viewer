@@ -1,7 +1,7 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.core.models.DocumentModel;
-import org.ebookdroid.core.settings.BookSettings;
+import org.ebookdroid.core.settings.books.BookSettings;
 
 public class PageIndex {
 
@@ -20,7 +20,7 @@ public class PageIndex {
     public Page getActualPage(DocumentModel dm, BookSettings bs) {
         // If now page splitting is switched off:
         // The document index is valid in all cases
-        if (!bs.getSplitPages()) {
+        if (!bs.splitPages) {
             return dm.getPageObject(docIndex);
         }
         // If now page splitting is switched on and bookmark was created in splitting mode (page.docIndex != page.viewIndex)

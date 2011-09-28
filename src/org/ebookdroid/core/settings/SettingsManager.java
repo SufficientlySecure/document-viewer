@@ -1,6 +1,8 @@
 package org.ebookdroid.core.settings;
 
 import org.ebookdroid.core.PageIndex;
+import org.ebookdroid.core.settings.books.BookSettings;
+import org.ebookdroid.core.settings.books.DBSettingsManager;
 
 import android.content.Context;
 
@@ -14,7 +16,7 @@ public class SettingsManager {
 
     private static Context ctx;
 
-    private static DBHelper db;
+    private static DBSettingsManager db;
 
     private static final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
@@ -29,7 +31,7 @@ public class SettingsManager {
     public static void init(final Context context) {
         if (ctx == null) {
             ctx = context;
-            db = new DBHelper(context);
+            db = new DBSettingsManager(context);
             appSettings = new AppSettings(context);
         }
     }
@@ -67,7 +69,8 @@ public class SettingsManager {
         if (bs == null) {
             bs = db.getBookSettings(fileName);
             if (bs == null) {
-                bs = new BookSettings(fileName, getAppSettings());
+                bs = new BookSettings(fileName);
+                getAppSettings().fillBookSettings(bs);
                 db.storeBookSettings(bs);
             }
             bookSettings.put(fileName, bs);

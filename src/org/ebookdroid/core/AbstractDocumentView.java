@@ -53,7 +53,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     public AbstractDocumentView(final IViewerActivity baseActivity) {
         super(baseActivity.getContext());
         this.base = baseActivity;
-        this.align = SettingsManager.getBookSettings().getPageAlign();
+        this.align = SettingsManager.getBookSettings().pageAlign;
         this.firstVisiblePage = -1;
         this.lastVisiblePage = -1;
         this.scroller = new Scroller(getContext());

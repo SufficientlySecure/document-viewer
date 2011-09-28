@@ -12,7 +12,7 @@ import android.view.MotionEvent;
 
 /**
  * The Class SinglePageDocumentView.
- *
+ * 
  * Used in single page view mode
  */
 public class SinglePageDocumentView extends AbstractDocumentView {
@@ -22,7 +22,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     /**
      * Instantiates a new single page document view.
-     *
+     * 
      * @param baseActivity
      *            the base activity
      */
@@ -186,8 +186,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     @Override
     public final void updateAnimationType() {
-        final PageAnimationType type = SettingsManager.getBookSettings().getAnimationType();
-        curler = PageAnimationType.create(type, this);
+        curler = PageAnimationType.create(SettingsManager.getBookSettings().animationType, this);
 
         if (curler != null) {
             curler.init();

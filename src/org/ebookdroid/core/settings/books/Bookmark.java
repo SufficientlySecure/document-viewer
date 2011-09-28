@@ -1,12 +1,12 @@
-package org.ebookdroid.core.settings;
+package org.ebookdroid.core.settings.books;
 
 import org.ebookdroid.core.PageIndex;
 
 public class Bookmark {
 
-    PageIndex page;
-    String name;
-    boolean service;
+    public PageIndex page;
+    public String name;
+    public boolean service;
 
     public Bookmark(final PageIndex page, final String name) {
         this(page, name, false);

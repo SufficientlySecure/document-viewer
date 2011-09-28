@@ -5,6 +5,7 @@ import org.ebookdroid.core.DecodeMode;
 import org.ebookdroid.core.PageAlign;
 import org.ebookdroid.core.RotationType;
 import org.ebookdroid.core.curl.PageAnimationType;
+import org.ebookdroid.core.settings.books.BookSettings;
 import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.utils.LengthUtils;
 import org.ebookdroid.utils.StringUtils;
@@ -289,11 +290,11 @@ public class AppSettings {
 
     void updatePseudoBookSettings(final BookSettings bs) {
         final Editor editor = prefs.edit();
-        editor.putString("book", bs.getFileName());
-        editor.putBoolean("book_splitpages", bs.getSplitPages());
-        editor.putBoolean("book_singlepage", bs.getSinglePage());
-        editor.putString("book_align", bs.getPageAlign().getResValue());
-        editor.putString("book_animationType", bs.getAnimationType().getResValue());
+        editor.putString("book", bs.fileName);
+        editor.putBoolean("book_splitpages", bs.splitPages);
+        editor.putBoolean("book_singlepage", bs.singlePage);
+        editor.putString("book_align", bs.pageAlign.getResValue());
+        editor.putString("book_animationType", bs.animationType.getResValue());
         editor.commit();
     }
 

@@ -2,7 +2,7 @@ package org.ebookdroid.core.presentation;
 
 import org.ebookdroid.R;
 import org.ebookdroid.core.IBrowserActivity;
-import org.ebookdroid.core.settings.BookSettings;
+import org.ebookdroid.core.settings.books.BookSettings;
 import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.utils.FileUtils;
 
@@ -49,7 +49,7 @@ public class RecentAdapter extends BaseAdapter {
                 parent);
 
         final BookSettings bs = books.get(i);
-        final File file = new File(bs.getFileName());
+        final File file = new File(bs.fileName);
 
         holder.name.setText(file.getName());
 
@@ -71,7 +71,7 @@ public class RecentAdapter extends BaseAdapter {
         if (filter != null) {
             this.books = new ArrayList<BookSettings>(books.size());
             for (final BookSettings bs : books) {
-                if (filter.accept(bs.getFileName())) {
+                if (filter.accept(bs.fileName)) {
                     this.books.add(bs);
                 }
             }

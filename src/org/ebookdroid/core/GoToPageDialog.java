@@ -2,9 +2,9 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.R;
 import org.ebookdroid.core.models.DocumentModel;
-import org.ebookdroid.core.settings.BookSettings;
-import org.ebookdroid.core.settings.Bookmark;
 import org.ebookdroid.core.settings.SettingsManager;
+import org.ebookdroid.core.settings.books.BookSettings;
+import org.ebookdroid.core.settings.books.Bookmark;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -25,8 +25,6 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.List;
 
 public class GoToPageDialog extends Dialog {
 
@@ -170,9 +168,8 @@ public class GoToPageDialog extends Dialog {
         }
 
         public void add(final Bookmark... bookmarks) {
-            List<Bookmark> list = bookSettings.getBookmarks();
             for (final Bookmark bookmark : bookmarks) {
-                list.add(bookmark);
+                bookSettings.bookmarks.add(bookmark);
             }
             SettingsManager.edit(bookSettings).commit();
             notifyDataSetChanged();
@@ -180,25 +177,25 @@ public class GoToPageDialog extends Dialog {
 
         public void remove(final Bookmark b) {
             if (!b.isService()) {
-                bookSettings.getBookmarks().remove(b);
+                bookSettings.bookmarks.remove(b);
                 SettingsManager.edit(bookSettings).commit();
                 notifyDataSetChanged();
             }
         }
 
         public void clear() {
-            bookSettings.getBookmarks().clear();
+            bookSettings.bookmarks.clear();
             SettingsManager.edit(bookSettings).commit();
             notifyDataSetChanged();
         }
 
         @Override
         public int getCount() {
-            return 2 + bookSettings.getBookmarks().size();
+            return 2 + bookSettings.bookmarks.size();
         }
 
         public boolean hasUserBookmarks() {
-            return !bookSettings.getBookmarks().isEmpty();
+            return !bookSettings.bookmarks.isEmpty();
         }
 
         @Override
@@ -210,9 +207,8 @@ public class GoToPageDialog extends Dialog {
             if (index == 0) {
                 return start;
             }
-            List<Bookmark> list = bookSettings.getBookmarks();
-            if (index - 1 < list.size()) {
-                return list.get(index - 1);
+            if (index - 1 < bookSettings.bookmarks.size()) {
+                return bookSettings.bookmarks.get(index - 1);
             }
             return end;
         }

@@ -1,5 +1,6 @@
-<project name="EBookDroid" basedir="." default="make-all">
+<project name="EBookDroid 1.2.x" basedir="." default="make-all">
 
+	<property file="build.${user.name}.properties" />
 	<property file="build.properties" />
 	<property file="default.properties" />
 
@@ -26,9 +27,13 @@
 	<property name="out.debug.file" location="${out.absolute.dir}/${ant.project.name}-${debug.version}.apk" />
 	<property name="out.release.file" location="${out.absolute.dir}/${ant.project.name}-${debug.version}.apk" />
 
-	<property name="out.release.arm.file" location="apk/${package.name}-${manifest.version}.apk" />
-	<property name="out.release.cortex.a8.file" location="apk/${package.name}-arm7-cortex-a8-${manifest.version}.apk" />
-	<property name="out.release.cortex.a9.file" location="apk/${package.name}-arm7-cortex-a9-${manifest.version}.apk" />
+	<property name="arm.mk" location="jni/Application.mk" />
+	<property name="cortex.a8.mk" location="jni/Application.arm7.a8.mk" />
+	<property name="cortex.a9.mk" location="jni/Application.arm7.a9.mk" />
+
+	<property name="arm.apk" location="apk/${package.name}-${manifest.version}.apk" />
+	<property name="cortex.a8.apk" value="apk/${package.name}-arm7-cortex-a8-${manifest.version}.apk" />
+	<property name="cortex.a9.apk" value="apk/${package.name}-arm7-cortex-a9-${manifest.version}.apk" />
 
 	<path id="project.libraries.src" path="thirdparty/junrar" />
 
@@ -46,7 +51,7 @@
 
 	<mkdir dir="apk" />
 
-	<target name="make-lib">
+	<target name="make-release">
 
 		<delete dir="obj" />
 		<delete dir="libs" />
@@ -55,40 +60,34 @@
 
 		<echo>${mk}</echo>
 		<exec command="${ndk.dir}/ndk-build NDK_APPLICATION_MK=${mk} -j32" />
+
+		<antcall target="release" />
+
+		<echo>${apk}</echo>
+		<rename src="${out.release.file}" dest="${apk}" />
+
 	</target>
 
 	<target name="make-default-release">
-
-		<property name="mk" location="jni/Application.mk" />
-		<antcall target="make-lib" inheritall="true">
+		<antcall target="make-release" inheritall="true">
+			<param name="mk" value="${arm.mk}" />
+			<param name="apk" value="${arm.apk}" />
 		</antcall>
-
-		<antcall target="release" />
-
-		<rename src="${out.release.file}" dest="${out.release.arm.file}" />
-
 	</target>
 
 	<target name="make-cortex-a8-release">
-
-		<property name="mk" location="jni/Application.arm7.a8.mk" />
-		<antcall target="make-lib">
+		<antcall target="make-release" inheritall="true">
+			<param name="mk" value="${cortex.a8.mk}" />
+			<param name="apk" value="${cortex.a8.apk}" />
 		</antcall>
-
-		<antcall target="release" />
-
-		<rename src="${out.release.file}" dest="${out.release.cortex.a8.file}" />
 	</target>
 
 	<target name="make-cortex-a9-release">
 
-		<property name="mk" location="jni/Application.arm7.a9.mk" />
-		<antcall target="make-lib">
+		<antcall target="make-release">
+			<param name="mk" value="${cortex.a9.mk}" />
+			<param name="apk" value="${cortex.a9.apk}" />
 		</antcall>
-
-		<antcall target="release" />
-
-		<rename src="${out.release.file}" dest="${out.release.cortex.a9.file}" />
 	</target>
 
 	<target name="make-all" depends="make-default-release, make-cortex-a8-release, make-cortex-a9-release">

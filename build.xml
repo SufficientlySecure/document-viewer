@@ -1,33 +1,96 @@
-<project name="EBookDroid" basedir="." default="debug">
+<project name="EBookDroid" basedir="." default="make-all">
 
-    <property file="build.properties" />
-    <property file="default.properties" />
+	<property file="build.properties" />
+	<property file="default.properties" />
 
-    <tstamp>
-        <format property="debug.version" pattern="yyyyMMdd.HHmmss" />
-    </tstamp>
+	<tstamp>
+		<format property="debug.version" pattern="yyyyMMdd.HHmmss" />
+	</tstamp>
 
-    <property name="aapt" value="${sdk.dir}/platform-tools/aapt" />
-    <property name="dx" value="${sdk.dir}/platform-tools/dx" />
+	<path id="android.antlibs">
+		<pathelement path="${sdk.dir}/tools/lib/anttasks.jar" />
+	</path>
 
-    <property name="android.jar" value="${sdk.dir}/platforms/${target}/android.jar" />
+	<taskdef name="xpath" classname="com.android.ant.XPathTask" classpathref="android.antlibs" />
 
-    <property name="out.dir" value="target" />
-    <property name="out.absolute.dir" location="${out.dir}" />
-    <property name="out.debug.file" location="${out.absolute.dir}/${ant.project.name}-${debug.version}.apk" />
+	<property name="aapt" value="${sdk.dir}/platform-tools/aapt" />
+	<property name="dx" value="${sdk.dir}/platform-tools/dx" />
 
-    <path id="project.libraries.src" path="thirdparty/junrar" />
+	<property name="android.jar" value="${sdk.dir}/platforms/${target}/android.jar" />
 
-    <path id="project.libraries.jars" />
-    <path id="project.libraries.libs" />
+	<property name="out.dir" value="target" />
+	<property name="out.absolute.dir" location="${out.dir}" />
 
-    <path id="android.target.classpath">
-        <fileset dir="${sdk.dir}/platforms/${target}/">
-            <include name="android.jar" />
-        </fileset>
-    </path>
+	<xpath input="AndroidManifest.xml" expression="/manifest/@android:versionName" output="manifest.version" />
 
-    <import file="${sdk.dir}/tools/ant/pre_setup.xml" />
-    <import file="${sdk.dir}/tools/ant/main_rules.xml" />
+	<property name="out.debug.file" location="${out.absolute.dir}/${ant.project.name}-${debug.version}.apk" />
+	<property name="out.release.file" location="${out.absolute.dir}/${ant.project.name}-${debug.version}.apk" />
 
+	<property name="out.release.arm.file" location="apk/${package.name}-${manifest.version}.apk" />
+	<property name="out.release.cortex.a8.file" location="apk/${package.name}-arm7-cortex-a8-${manifest.version}.apk" />
+	<property name="out.release.cortex.a9.file" location="apk/${package.name}-arm7-cortex-a9-${manifest.version}.apk" />
+
+	<path id="project.libraries.src" path="thirdparty/junrar" />
+
+	<path id="project.libraries.jars" />
+	<path id="project.libraries.libs" />
+
+	<path id="android.target.classpath">
+		<fileset dir="${sdk.dir}/platforms/${target}/">
+			<include name="android.jar" />
+		</fileset>
+	</path>
+
+	<import file="${sdk.dir}/tools/ant/pre_setup.xml" />
+	<import file="${sdk.dir}/tools/ant/main_rules.xml" />
+
+	<mkdir dir="apk" />
+
+	<target name="make-lib">
+
+		<delete dir="obj" />
+		<delete dir="libs" />
+		<mkdir dir="obj" />
+		<mkdir dir="libs" />
+
+		<echo>${mk}</echo>
+		<exec command="${ndk.dir}/ndk-build NDK_APPLICATION_MK=${mk} -j32" />
+	</target>
+
+	<target name="make-default-release">
+
+		<property name="mk" location="jni/Application.mk" />
+		<antcall target="make-lib" inheritall="true">
+		</antcall>
+
+		<antcall target="release" />
+
+		<rename src="${out.release.file}" dest="${out.release.arm.file}" />
+
+	</target>
+
+	<target name="make-cortex-a8-release">
+
+		<property name="mk" location="jni/Application.arm7.a8.mk" />
+		<antcall target="make-lib">
+		</antcall>
+
+		<antcall target="release" />
+
+		<rename src="${out.release.file}" dest="${out.release.cortex.a8.file}" />
+	</target>
+
+	<target name="make-cortex-a9-release">
+
+		<property name="mk" location="jni/Application.arm7.a9.mk" />
+		<antcall target="make-lib">
+		</antcall>
+
+		<antcall target="release" />
+
+		<rename src="${out.release.file}" dest="${out.release.cortex.a9.file}" />
+	</target>
+
+	<target name="make-all" depends="make-default-release, make-cortex-a8-release, make-cortex-a9-release">
+	</target>
 </project>

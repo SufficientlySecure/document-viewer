@@ -35,6 +35,7 @@ fz_new_pixmap_with_data(fz_colorspace *colorspace, int w, int h, unsigned char *
 	else
 	{
 		fz_memory_used += pix->w * pix->h * pix->n;
+		fz_warn("pixmap allocating %dM. Total allocated %dM", (pix->w * pix->h * pix->n)/(1<<20), fz_memory_used/(1<<20));
 		pix->samples = fz_calloc(pix->h, pix->w * pix->n);
 		pix->free_samples = 1;
 	}
@@ -94,13 +95,15 @@ fz_drop_pixmap(fz_pixmap *pix)
 {
 	if (pix && --pix->refs == 0)
 	{
-		fz_memory_used -= pix->w * pix->h * pix->n;
 		if (pix->mask)
 			fz_drop_pixmap(pix->mask);
 		if (pix->colorspace)
 			fz_drop_colorspace(pix->colorspace);
-		if (pix->free_samples)
+		if (pix->free_samples) {
 			fz_free(pix->samples);
+			fz_memory_used -= pix->w * pix->h * pix->n;
+			fz_warn("pixmap freeing %dM. Total allocated %dM", (pix->w * pix->h * pix->n)/(1<<20), fz_memory_used/(1<<20));
+		}
 		fz_free(pix);
 	}
 }

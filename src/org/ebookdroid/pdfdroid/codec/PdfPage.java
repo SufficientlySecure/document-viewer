@@ -28,12 +28,12 @@ public class PdfPage implements CodecPage {
 
     @Override
     public int getWidth() {
-        return (int) (getMediaBox().width() * BaseViewerActivity.DM.xdpi / 72);
+        return (int) (getMediaBox().width() * BaseViewerActivity.DM.densityDpi / 72);
     }
 
     @Override
     public int getHeight() {
-        return (int) (getMediaBox().height() * BaseViewerActivity.DM.xdpi / 72);
+        return (int) (getMediaBox().height() * BaseViewerActivity.DM.densityDpi / 72);
     }
 
     @Override

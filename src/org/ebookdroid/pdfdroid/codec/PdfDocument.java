@@ -46,8 +46,8 @@ public class PdfDocument extends AbstractCodecDocument {
         if (res == -1) {
             return null;
         } else {
-            info.setHeight((int) (info.getHeight() * BaseViewerActivity.DM.xdpi / 72));
-            info.setWidth((int) (info.getWidth() * BaseViewerActivity.DM.xdpi / 72));
+            info.setHeight((int) (info.getHeight() * BaseViewerActivity.DM.densityDpi / 72));
+            info.setWidth((int) (info.getWidth() * BaseViewerActivity.DM.densityDpi / 72));
             return info;
         }
     }

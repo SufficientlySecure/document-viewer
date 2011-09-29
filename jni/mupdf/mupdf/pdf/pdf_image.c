@@ -349,7 +349,7 @@ pdf_load_image(fz_pixmap **pixp, pdf_xref *xref, fz_obj *dict)
 		return fz_rethrow(error, "cannot load image (%d 0 R)", fz_to_num(dict));
 
 //	EBookDroid: Commented out for saving A LOTS of memory. Caching is not needed for embedded solutions
-	pdf_store_item(xref->store, fz_keep_pixmap, fz_drop_pixmap, dict, *pixp);
+	//pdf_store_item(xref->store, fz_keep_pixmap, fz_drop_pixmap, dict, *pixp);
 
 	return fz_okay;
 }

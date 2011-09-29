@@ -413,10 +413,12 @@ JNIEXPORT jlong JNICALL
 	page->pageno = pageno - 1;
 
 //New draw page
-	page->pageList = fz_new_display_list();
-	fz_device *dev = fz_new_list_device(page->pageList);
-	pdf_run_page(doc->xref, page->page , dev, fz_identity);
-	fz_free_device(dev);
+
+	page->pageList = 0;
+//	page->pageList = fz_new_display_list();
+//	fz_device *dev = fz_new_list_device(page->pageList);
+//	pdf_run_page(doc->xref, page->page , dev, fz_identity);
+//	fz_free_device(dev);
 //
 
 cleanup:
@@ -532,9 +534,13 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPage
 
 	fz_clear_pixmap_with_color(pixmap, 0xff);
 
+	//dev = fz_new_draw_device(doc->drawcache, pixmap);
+        //fz_execute_display_list(page->pageList, dev, ctm, viewbox);
+        //fz_free_device(dev);
+
 	dev = fz_new_draw_device(doc->drawcache, pixmap);
-        fz_execute_display_list(page->pageList, dev, ctm, viewbox);
-        fz_free_device(dev);
+	pdf_run_page(doc->xref, page->page, dev, ctm);
+	fz_free_device(dev);
 
 	(*env)->ReleasePrimitiveArrayCritical(env, bufferarray, buffer, 0);
 
@@ -634,8 +640,13 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPageBitmap
     fz_clear_pixmap_with_color(pixmap, 0xff);
 
     dev = fz_new_draw_device(doc->drawcache, pixmap);
-    fz_execute_display_list(page->pageList, dev, ctm, viewbox);
+    pdf_run_page(doc->xref, page->page, dev, ctm);
     fz_free_device(dev);
+
+
+//    dev = fz_new_draw_device(doc->drawcache, pixmap);
+//    fz_execute_display_list(page->pageList, dev, ctm, viewbox);
+//    fz_free_device(dev);
     fz_drop_pixmap(pixmap);
 
     DEBUG("PdfView.renderPage() done");

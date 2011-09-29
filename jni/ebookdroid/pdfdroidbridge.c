@@ -40,7 +40,10 @@ struct renderpage_s
 {
 	pdf_page *page;
 	fz_display_list *pageList;
+	int pageno;
 };
+
+static int current_page = 0;
 
 #define RUNTIME_EXCEPTION "java/lang/RuntimeException"
 
@@ -407,6 +410,7 @@ JNIEXPORT jlong JNICALL
 		throw_exception(env, "error loading page");
 		goto cleanup;
 	}
+	page->pageno = pageno - 1;
 
 	pdf_age_store(doc->xref->store, 2);
 
@@ -491,6 +495,12 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPage
 	int length, val;
 	fz_device *dev = NULL;
 
+	if(current_page != page->pageno)
+	{
+		pdf_age_store(doc->xref->store, 2);
+		current_page = page->pageno;
+	}
+
 	/* initialize parameter arrays for MuPDF */
 
 	ctm = fz_identity;
@@ -573,6 +583,14 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPageBitmap
     void *pixels;
 
     int ret;
+    
+    if(current_page != page->pageno)
+    {
+	pdf_age_store(doc->xref->store, 2);
+	current_page = page->pageno;
+    }
+
+    
 
     if ((ret = NativeBitmap_getInfo(env, bitmap, &info)) < 0) {
             ERROR("AndroidBitmap_getInfo() failed ! error=%d", ret);

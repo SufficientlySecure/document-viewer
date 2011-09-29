@@ -412,8 +412,6 @@ JNIEXPORT jlong JNICALL
 	}
 	page->pageno = pageno - 1;
 
-	pdf_age_store(doc->xref->store, 2);
-
 //New draw page
 	page->pageList = fz_new_display_list();
 	fz_device *dev = fz_new_list_device(page->pageList);

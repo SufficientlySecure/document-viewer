@@ -33,7 +33,7 @@ public class DecodeServiceBase implements DecodeService {
 
     public static final LogContext LCTX = LogContext.ROOT.lctx("Decoding");
 
-    static final int PAGE_POOL_SIZE = 8;
+    static final int PAGE_POOL_SIZE = 5;
 
     static final AtomicLong TASK_ID_SEQ = new AtomicLong();
 

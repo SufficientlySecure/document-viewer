@@ -95,7 +95,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
         initActivity();
 
-        initView("");
+        initView();
     }
 
     @Override
@@ -114,34 +114,48 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     ProgressDialog progressDialog;
 
-    private void initView(final String password) {
+    private void initView() {
         final DecodeService decodeService = createDecodeService();
 
         final Uri uri = getIntent().getData();
-        try {
-            final String fileName = PathFromUri.retrieve(getContentResolver(), uri);
+        final String fileName = PathFromUri.retrieve(getContentResolver(), uri);
 
-            SettingsManager.init(fileName);
+        SettingsManager.init(fileName);
 
-            new AsyncTask<String, Void, Void>() {
+        startDecoding(decodeService, fileName, "");
+    }
 
-                @Override
-                protected void onPreExecute() {
-                    progressDialog = ProgressDialog.show(BaseViewerActivity.this, "", "Loading... Please wait", true);
-                }
+    private void startDecoding(final DecodeService decodeService, final String fileName, final String password) {
+        new AsyncTask<String, Void, Exception>() {
 
-                @Override
-                protected Void doInBackground(String... params) {
+            @Override
+            protected void onPreExecute() {
+                progressDialog = ProgressDialog.show(BaseViewerActivity.this, "", "Loading... Please wait", true);
+            }
+
+            @Override
+            protected Exception doInBackground(final String... params) {
+                try {
                     decodeService.open(params[0], params[1]);
                     return null;
+                } catch (final Exception e) {
+                    LCTX.e(e.getMessage(), e);
+                    return e;
                 }
+            }
 
-                @Override
-                protected void onPostExecute(Void result) {
+            @Override
+            protected void onPostExecute(final Exception result) {
+                if (result == null) {
+                    zoomModel = new ZoomModel();
+                    initMultiTouchZoomIfAvailable();
+                    setContentView(frameLayout);
+
                     documentModel = new DocumentModel(decodeService);
                     documentModel.addEventListener(BaseViewerActivity.this);
                     progressModel = new DecodingProgressModel();
                     progressModel.addEventListener(BaseViewerActivity.this);
+
                     SettingsManager.applyBookSettingsChanges(null, SettingsManager.getBookSettings(), null);
 
                     if (documentModel != null) {
@@ -150,32 +164,25 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
                             currentPageChanged(PageIndex.NULL, bs.getCurrentPage());
                         }
                     }
+
+                    setProgressBarIndeterminateVisibility(false);
+
                     progressDialog.dismiss();
+                } else {
+                    progressDialog.dismiss();
+
+                    final String msg = result.getMessage();
+                    if ("PDF needs a password!".equals(msg)) {
+                        askPassword(decodeService, fileName);
+                    } else {
+                        showErrorDlg(msg);
+                    }
                 }
-
-            }.execute(fileName, password);
-
-        } catch (final Exception e) {
-            LCTX.e(e.getMessage(), e);
-            final String msg = e.getMessage();
-
-            if ("PDF needs a password!".equals(msg)) {
-                askPassword();
-            } else {
-                showErrorDlg(msg);
             }
-            return;
-        }
-
-        zoomModel = new ZoomModel();
-
-        initMultiTouchZoomIfAvailable();
-
-        setContentView(frameLayout);
-        setProgressBarIndeterminateVisibility(false);
+        }.execute(fileName, password);
     }
 
-    private void askPassword() {
+    private void askPassword(final DecodeService decodeService, final String fileName) {
         setContentView(R.layout.password);
         final Button ok = (Button) findViewById(R.id.pass_ok);
         ok.setOnClickListener(new View.OnClickListener() {
@@ -183,9 +190,10 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
             @Override
             public void onClick(final View v) {
                 final EditText te = (EditText) findViewById(R.id.pass_req);
-                initView(te.getText().toString());
+                startDecoding(decodeService, fileName, te.getText().toString());
             }
         });
+
         final Button cancel = (Button) findViewById(R.id.pass_cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
 

@@ -89,6 +89,11 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
     }
 
     @Override
+    public boolean isRecycled() {
+        return false;
+    }
+
+    @Override
     public BitmapRef renderBitmap(final int width, final int height, final RectF pageSliceBounds) {
         if (getPageInfo() == null) {
             return null;

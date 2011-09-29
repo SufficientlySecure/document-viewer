@@ -85,4 +85,8 @@ public class DjvuPage implements CodecPage {
         pageHandle = 0;
     }
 
+    @Override
+    public synchronized boolean isRecycled() {
+        return pageHandle == 0;
+    }
 }

@@ -56,6 +56,11 @@ public class XpsPage implements CodecPage {
         }
     }
 
+    @Override
+    public synchronized boolean isRecycled() {
+        return pageHandle == 0;
+    }
+
     public BitmapRef render(final Rect viewbox, final Matrix matrix) {
         final int[] mRect = new int[4];
         mRect[0] = viewbox.left;

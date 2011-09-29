@@ -65,6 +65,11 @@ public class PdfPage implements CodecPage {
         }
     }
 
+    @Override
+    public boolean isRecycled() {
+        return pageHandle == 0;
+    }
+
     private RectF getMediaBox() {
         final float[] box = new float[4];
         getMediaBox(pageHandle, box);

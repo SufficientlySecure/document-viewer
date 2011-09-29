@@ -497,7 +497,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPage
 
 	if(current_page != page->pageno)
 	{
-		pdf_age_store(doc->xref->store, 2);
+		pdf_age_store(doc->xref->store, 1);
 		current_page = page->pageno;
 	}
 
@@ -586,7 +586,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPageBitmap
     
     if(current_page != page->pageno)
     {
-	pdf_age_store(doc->xref->store, 2);
+	pdf_age_store(doc->xref->store, 1);
 	current_page = page->pageno;
     }
 

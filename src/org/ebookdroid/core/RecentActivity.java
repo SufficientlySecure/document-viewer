@@ -82,6 +82,21 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
         libraryButton = (ImageView) findViewById(R.id.recentlibrary);
 
         viewflipper = (ViewFlipper) findViewById(R.id.recentflip);
+        
+        final View.OnClickListener handler = new View.OnClickListener() {
+
+            @Override
+            public void onClick(final View v) {
+                switch (v.getId()) {
+                    case R.id.recentlibrary:
+                        goLibrary(v);
+                        break;
+                    case R.id.recentbrowser:
+                        goFileBrowser(v);
+                        break;
+                }
+            }
+        };
 
         if (SettingsManager.getAppSettings().getUseBookcase()) {
             viewflipper.addView(new BookcaseView(this, bookshelfAdapter), 0);
@@ -90,26 +105,12 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
             viewflipper.addView(new RecentBooksView(this, recentAdapter), VIEW_RECENT);
             viewflipper.addView(new LibraryView(this, libraryAdapter), VIEW_LIBRARY);
 
-            final View.OnClickListener handler = new View.OnClickListener() {
-
-                @Override
-                public void onClick(final View v) {
-                    switch (v.getId()) {
-                        case R.id.recentlibrary:
-                            goLibrary(v);
-                            break;
-                        case R.id.recentbrowser:
-                            goFileBrowser(v);
-                            break;
-                    }
-                }
-            };
-
             libraryButton.setOnClickListener(handler);
-            final View recentBrowser = findViewById(R.id.recentbrowser);
-            if (recentBrowser != null) {
-                recentBrowser.setOnClickListener(handler);
-            }
+        }
+        
+        final View recentBrowser = findViewById(R.id.recentbrowser);
+        if (recentBrowser != null) {
+            recentBrowser.setOnClickListener(handler);
         }
 
         final boolean shouldLoad = SettingsManager.getAppSettings().isLoadRecentBook();
@@ -262,7 +263,7 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
 
             if (view == VIEW_LIBRARY) {
                 viewflipper.setDisplayedChild(VIEW_LIBRARY);
-                libraryButton.setImageResource(R.drawable.actionbar_shelf);
+                libraryButton.setImageResource(R.drawable.actionbar_recent);
                 libraryAdapter.startScan(filter);
             } else {
                 viewflipper.setDisplayedChild(VIEW_RECENT);

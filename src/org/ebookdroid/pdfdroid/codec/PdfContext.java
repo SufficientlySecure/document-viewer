@@ -20,7 +20,7 @@ public class PdfContext extends AbstractCodecContext {
 
     private static Field getDensityDPIField() {
         try {
-            return DisplayMetrics.class.getDeclaredField("den");
+            return DisplayMetrics.class.getDeclaredField("densityDpi");
         } catch (final Throwable ex) {
             return null;
         }

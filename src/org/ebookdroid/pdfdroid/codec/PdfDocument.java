@@ -1,6 +1,5 @@
 package org.ebookdroid.pdfdroid.codec;
 
-import org.ebookdroid.core.BaseViewerActivity;
 import org.ebookdroid.core.OutlineLink;
 import org.ebookdroid.core.PageLink;
 import org.ebookdroid.core.codec.AbstractCodecDocument;
@@ -46,8 +45,8 @@ public class PdfDocument extends AbstractCodecDocument {
         if (res == -1) {
             return null;
         } else {
-            info.setHeight((int) (info.getHeight() * BaseViewerActivity.DM.densityDpi / 72));
-            info.setWidth((int) (info.getWidth() * BaseViewerActivity.DM.densityDpi / 72));
+            info.setHeight(PdfContext.getHeightInPixels(info.getHeight()));
+            info.setWidth(PdfContext.getWidthInPixels(info.getWidth()));
             return info;
         }
     }

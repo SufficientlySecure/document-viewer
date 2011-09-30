@@ -1,6 +1,5 @@
 package org.ebookdroid.pdfdroid.codec;
 
-import org.ebookdroid.core.BaseViewerActivity;
 import org.ebookdroid.core.bitmaps.BitmapManager;
 import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.codec.CodecPage;
@@ -20,27 +19,29 @@ public class PdfPage implements CodecPage {
 
     private long pageHandle;
     private final long docHandle;
+    private final RectF mediaBox;
 
     private PdfPage(final long pageHandle, final long docHandle) {
         this.pageHandle = pageHandle;
         this.docHandle = docHandle;
+        this.mediaBox = getMediaBox();
     }
 
     @Override
     public int getWidth() {
-        return (int) (getMediaBox().width() * BaseViewerActivity.DM.densityDpi / 72);
+        return PdfContext.getWidthInPixels(mediaBox.width());
     }
 
     @Override
     public int getHeight() {
-        return (int) (getMediaBox().height() * BaseViewerActivity.DM.densityDpi / 72);
+        return PdfContext.getHeightInPixels(mediaBox.height());
     }
 
     @Override
     public BitmapRef renderBitmap(final int width, final int height, final RectF pageSliceBounds) {
         final Matrix matrix = new Matrix();
-        matrix.postTranslate(-getMediaBox().left, -getMediaBox().top);
-        matrix.postScale(width / getMediaBox().width(), -height / getMediaBox().height());
+        matrix.postTranslate(-mediaBox.left, -mediaBox.top);
+        matrix.postScale(width / mediaBox.width(), -height / mediaBox.height());
         matrix.postTranslate(0, height);
         matrix.postTranslate(-pageSliceBounds.left * width, -pageSliceBounds.top * height);
         matrix.postScale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height());

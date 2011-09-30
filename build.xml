@@ -60,7 +60,7 @@
 		<delete dir="libs/armeabi-v7a" />
 
 		<echo>${mk}</echo>
-		<exec command="${ndk.dir}/ndk-build NDK_APPLICATION_MK=${mk} -j32" />
+		<exec command="${ndk.dir}/ndk-build NDK_DEBUG=0 NDK_APPLICATION_MK=${mk} -j32" />
 
 		<antcall target="release" />
 

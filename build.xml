@@ -54,9 +54,10 @@
 	<target name="make-release">
 
 		<delete dir="obj" />
-		<delete dir="libs" />
 		<mkdir dir="obj" />
-		<mkdir dir="libs" />
+
+		<delete dir="libs/armeabi" />
+		<delete dir="libs/armeabi-v7a" />
 
 		<echo>${mk}</echo>
 		<exec command="${ndk.dir}/ndk-build NDK_APPLICATION_MK=${mk} -j32" />

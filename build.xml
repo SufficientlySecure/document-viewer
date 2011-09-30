@@ -1,4 +1,4 @@
-<project name="EBookDroid 1.2.x" basedir="." default="make-all">
+<project name="EBookDroid" basedir="." default="make-all">
 
 	<property file="build.${user.name}.properties" />
 	<property file="build.properties" />

@@ -22,6 +22,7 @@ import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,9 +56,13 @@ public class DecodeServiceBase implements DecodeService {
             if (this.size() > SettingsManager.getAppSettings().getPagesInMemory() + 1) {
                 final SoftReference<CodecPage> value = eldest != null ? eldest.getValue() : null;
                 final CodecPage codecPage = value != null ? value.get() : null;
-                if (codecPage != null) {
+                if (codecPage == null || codecPage.isRecycled()) {
                     if (LCTX.isDebugEnabled()) {
-                        LCTX.d("Recycling old page: " + codecPage);
+                        LCTX.d("Remove auto-recycled codec page reference: " + eldest.getKey());
+                    }
+                } else {
+                    if (LCTX.isDebugEnabled()) {
+                        LCTX.d("Recycle and remove old codec page: " + eldest.getKey());
                     }
                     codecPage.recycle();
                 }
@@ -198,6 +203,22 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     CodecPage getPage(final int pageIndex) {
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("Codec pages in cache: " + pages.size());
+        }
+        for (Iterator<Map.Entry<Integer, SoftReference<CodecPage>>> i = pages.entrySet().iterator(); i.hasNext();) {
+            Map.Entry<Integer, SoftReference<CodecPage>> entry = i.next();
+            int index = entry.getKey();
+            SoftReference<CodecPage> ref = entry.getValue();
+            CodecPage page = ref != null ? ref.get() : null;
+            if (page == null || page.isRecycled()) {
+                if (LCTX.isDebugEnabled()) {
+                    LCTX.d("Remove auto-recycled codec page reference: " + index);
+                }
+                i.remove();
+            }
+        }
+
         final SoftReference<CodecPage> ref = pages.get(pageIndex);
         CodecPage page = ref != null ? ref.get() : null;
         if (page == null || page.isRecycled()) {
@@ -205,8 +226,8 @@ public class DecodeServiceBase implements DecodeService {
             // before opening new native page
             pages.put(pageIndex, null);
             page = document.getPage(pageIndex);
-            pages.put(pageIndex, new SoftReference<CodecPage>(page));
         }
+        pages.put(pageIndex, new SoftReference<CodecPage>(page));
         return page;
     }
 

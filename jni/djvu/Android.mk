@@ -3,7 +3,7 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE    := djvu
-LOCAL_CFLAGS    := -DHAVE_CONFIG_H -DTHREADMODEL=NOTHREADS -DDEBUGLVL=0 -I$(LOCAL_PATH)/../jpeg
+LOCAL_CFLAGS    := -I$(LOCAL_PATH)/../jpeg
 
 LOCAL_ARM_MODE := arm
 

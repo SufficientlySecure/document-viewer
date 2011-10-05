@@ -41,7 +41,8 @@ extern "C" {
 #ifndef MINILISPAPI
 # define MINILISPAPI /**/
 #endif
-  
+
+#include <stddef.h>  
 
 /* -------------------------------------------------- */
 /* LISP EXPRESSIONS                                   */

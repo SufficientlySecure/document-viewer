@@ -66,6 +66,8 @@
 #include "GString.h"
 #include "GThreads.h"
 #include "GException.h"
+#include <stddef.h>
+#include <stdlib.h>
 #include <string.h>
 
 // - Author: Leon Bottou, 05/1997

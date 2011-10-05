@@ -23,6 +23,7 @@
 # pragma implementation "miniexp.h"
 #endif
 
+#include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>

@@ -73,6 +73,7 @@
 #include "debug.h"
 #include <ctype.h>
 #include <string.h>
+#include <stddef.h>
 #include <stdlib.h>
 // #include <stdio.h>
 #ifdef WIN32

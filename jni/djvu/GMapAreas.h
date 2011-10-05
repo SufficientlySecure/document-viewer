@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: GMapAreas.h,v 1.9 2007/03/25 20:48:31 leonb Exp $
-// $Name: release_3_5_22 $
 
 #ifndef _GMAPAREAS_H
 #define _GMAPAREAS_H
@@ -98,8 +95,7 @@ namespace DJVU {
 
     @memo Definition of base map area classes
     @author Andrei Erofeev <eaf@geocities.com>
-    @version
-    #$Id: GMapAreas.h,v 1.9 2007/03/25 20:48:31 leonb Exp $# */
+*/
 //@{
 
 

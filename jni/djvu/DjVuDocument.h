@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: DjVuDocument.h,v 1.13 2008/01/27 11:36:27 leonb Exp $
-// $Name: release_3_5_22 $
 
 #ifndef _DJVUDOCUMENT_H
 #define _DJVUDOCUMENT_H
@@ -92,7 +89,6 @@ class ByteStream;
 
     @memo DjVu document class.
     @author Andrei Erofeev <eaf@geocities.com>
-    @version #$Id: DjVuDocument.h,v 1.13 2008/01/27 11:36:27 leonb Exp $#
 */
 
 //@{
@@ -792,7 +788,8 @@ public:
    GP<DjVuNavDir>	get_nav_dir(void) const;
 
    /// Create a complete DjVuXML file.
-   void writeDjVuXML(const GP<ByteStream> &gstr_out,int flags) const;
+   void writeDjVuXML(const GP<ByteStream> &gstr_out,
+                     int flags, int page = -1) const;
 
       /// Returns TRUE if #class_name# is #"DjVuDocument"# or #"DjVuPort"#
    virtual bool		inherits(const GUTF8String &class_name) const;

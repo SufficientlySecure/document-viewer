@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: ByteStream.cpp,v 1.24 2007/07/14 01:21:56 leonb Exp $
-// $Name: release_3_5_22 $
 
 // From: Leon Bottou, 1/31/2002
 // This file has very little to do with my initial implementation.
@@ -115,6 +112,9 @@ __inline int dup2(int _a, int _b ) { return _dup2(_a, _b);}
 #  define dup _dup
 # endif
 #endif
+
+
+#include "DjvuDroidTrace.h"
 
 #ifdef HAVE_NAMESPACES
 namespace DJVU {
@@ -669,10 +669,13 @@ urlfopen(const GURL &url,const char mode[])
   }
   return retval?retval:fopen((const char *)url.NativeFilename(),mode);
 #else
-  // looks like GUTF8String destructor called just after cast
-  GUTF8String fileNameString = url.UTF8Filename();
-  const char *nativeFilename = (const char *)fileNameString;
-  return fopen(nativeFilename,mode);
+   // looks like GUTF8String destructor called just after cast 
+   GUTF8String fileNameString = url.UTF8Filename(); 
+   const char *nativeFilename = (const char *)fileNameString; 
+   return fopen(nativeFilename,mode); 
+
+//  DEBUG_PRINT("!!!!Fname =%s", (const char *)url.NativeFilename());
+//  return fopen((const char *)url.NativeFilename(),mode);
 #endif
 }
 

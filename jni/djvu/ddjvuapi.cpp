@@ -53,8 +53,6 @@
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
 
-/* $Id: ddjvuapi.cpp,v 1.91 2009/05/17 23:57:42 leonb Exp $ */
-
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
@@ -120,14 +118,6 @@ using namespace DJVU;
 
 #include "miniexp.h"
 #include "ddjvuapi.h"
-
-#include "DjvuDroidTrace.h"
-
-#if !defined(AUTOCONF) || HAVE_STDINT_H
-# include <stdint.h>
-#elif HAVE_INTTYPES_H
-# include <inttypes.h>
-#endif
 
 
 // ----------------------------------------
@@ -336,6 +326,28 @@ xhead(ddjvu_message_tag_t tag,
 
 
 // ----------------------------------------
+// Version
+
+const char*
+ddjvu_get_version_string(void)
+{
+#ifdef DJVULIBRE_VERSION
+  return "DjVuLibre-" DJVULIBRE_VERSION;
+#else
+  return "DjVuLibre";
+#endif
+}
+
+int
+ddjvu_code_get_version(void)
+{
+  return DJVUVERSION;
+}
+
+
+
+
+// ----------------------------------------
 // Context
 
 
@@ -345,7 +357,12 @@ ddjvu_context_create(const char *programname)
   ddjvu_context_t *ctx = 0;
   G_TRY
     {
+#ifdef LC_ALL
       setlocale(LC_ALL,"");
+# ifdef LC_NUMERIC
+      setlocale(LC_NUMERIC, "C");
+# endif
+#endif
       if (programname)
         djvu_programname(programname);
       DjVuMessage::use_language();
@@ -391,7 +408,6 @@ static void
 msg_push(const ddjvu_message_any_t &head,
          GP<ddjvu_message_p> msg = 0)
 {
-	DEBUG_PRINT("Message push: %d", head.tag);
   ddjvu_context_t *ctx = head.context;
   if (! msg) 
     msg = new ddjvu_message_p;
@@ -435,8 +451,7 @@ msg_prep_error(GUTF8String message,
   p->p.m_error.lineno = lineno;
   G_TRY 
     { 
-//      p->tmp1 = DjVuMessageLite::LookUpUTF8(message); //UNCOMMENTME
-      p->tmp1 = message;
+      p->tmp1 = DjVuMessageLite::LookUpUTF8(message);
       p->p.m_error.message = (const char*)(p->tmp1);
     }
   G_CATCH_ALL 
@@ -460,8 +475,7 @@ msg_prep_error(const GException &ex,
   p->p.m_error.lineno = lineno;
   G_TRY 
     { 
-//      p->tmp1 = DjVuMessageLite::LookUpUTF8(ex.get_cause()); UNCOMMENTME
-	  p->tmp1 = ex.get_cause();
+      p->tmp1 = DjVuMessageLite::LookUpUTF8(ex.get_cause());
       p->p.m_error.message = (const char*)(p->tmp1);
       p->p.m_error.function = ex.get_function();
       p->p.m_error.filename = ex.get_file();
@@ -479,8 +493,7 @@ static GP<ddjvu_message_p>
 msg_prep_info(GUTF8String message)
 {
   GP<ddjvu_message_p> p = new ddjvu_message_p;
-//  p->tmp1 = DjVuMessageLite::LookUpUTF8(message); // i18n nonsense! UNCOMMENTME
-  p->tmp1 = message;
+  p->tmp1 = DjVuMessageLite::LookUpUTF8(message); // i18n nonsense!
   p->p.m_info.message = (const char*)(p->tmp1);
   return p;
 }
@@ -962,7 +975,6 @@ ddjvu_document_create(ddjvu_context_t *ctx,
           gurl.clear_djvu_cgi_arguments();
           d->urlflag = true;
           d->doc->start_init(gurl, d, xcache);
-          DEBUG_WRITE("Starting init");
         }
       else
         {
@@ -984,17 +996,21 @@ ddjvu_document_create(ddjvu_context_t *ctx,
   return d;
 }
 
-ddjvu_document_t *
-ddjvu_document_create_by_filename(ddjvu_context_t *ctx,
-                                  const char *filename,
-                                  int cache)
+static ddjvu_document_t *
+ddjvu_document_create_by_filename_imp(ddjvu_context_t *ctx,
+                                      const char *filename,
+                                      int cache, int utf8)
 {
   ddjvu_document_t *d = 0;
   G_TRY
     {
       DjVuFileCache *xcache = ctx->cache;
       if (! cache) xcache = 0;
-      GURL gurl = GURL::Filename::UTF8(filename);
+      GURL gurl;
+      if (utf8) 
+        gurl = GURL::Filename::UTF8(filename);
+      else
+        gurl = GURL::Filename::Native(filename);
       d = new ddjvu_document_s;
       ref(d);
       GMonitorLock lock(&d->monitor);
@@ -1017,6 +1033,22 @@ ddjvu_document_create_by_filename(ddjvu_context_t *ctx,
     }
   G_ENDCATCH;
   return d;
+}
+
+ddjvu_document_t *
+ddjvu_document_create_by_filename(ddjvu_context_t *ctx,
+                                  const char *filename,
+                                  int cache)
+{
+  return ddjvu_document_create_by_filename_imp(ctx,filename,cache,0);
+}
+
+ddjvu_document_t *
+ddjvu_document_create_by_filename_utf8(ddjvu_context_t *ctx,
+                                       const char *filename,
+                                       int cache)
+{
+  return ddjvu_document_create_by_filename_imp(ctx,filename,cache,1);
 }
 
 ddjvu_job_t *
@@ -1590,6 +1622,7 @@ ddjvu_page_s::status()
   if (! img)
     return DDJVU_JOB_NOTSTARTED;        
   DjVuFile *file = img->get_djvu_file();
+  DjVuInfo *info = img->get_info();
   if (! file)
     return DDJVU_JOB_NOTSTARTED;
   else if (file->is_decode_stopped())
@@ -1597,7 +1630,7 @@ ddjvu_page_s::status()
   else if (file->is_decode_failed())
     return DDJVU_JOB_FAILED;
   else if (file->is_decode_ok())
-    return DDJVU_JOB_OK;
+    return (info) ? DDJVU_JOB_OK : DDJVU_JOB_FAILED;
   else if (file->is_decoding())
     return DDJVU_JOB_STARTED;
   return DDJVU_JOB_NOTSTARTED;
@@ -1765,12 +1798,6 @@ ddjvu_page_get_version(ddjvu_page_t *page)
   return DJVUVERSION;
 }
 
-int
-ddjvu_code_get_version(void)
-{
-  return DJVUVERSION;
-}
-
 ddjvu_page_type_t
 ddjvu_page_get_type(ddjvu_page_t *page)
 {
@@ -1801,8 +1828,7 @@ ddjvu_page_get_short_description(ddjvu_page_t *page)
       if (page && page->img)
         {
           const char *desc = page->img->get_short_description();
-//          return xstr(DjVuMessageLite::LookUpUTF8(desc)); UNCOMMENTME
-          return xstr(desc);
+          return xstr(DjVuMessageLite::LookUpUTF8(desc));
         }
     }
   G_CATCH(ex)
@@ -1821,8 +1847,7 @@ ddjvu_page_get_long_description(ddjvu_page_t *page)
       if (page && page->img)
         {
           const char *desc = page->img->get_long_description();
-//          return xstr(DjVuMessageLite::LookUpUTF8(desc)); UNCOMMENTME
-          return xstr(desc);
+          return xstr(DjVuMessageLite::LookUpUTF8(desc));
         }
     }
   G_CATCH(ex)
@@ -2015,6 +2040,7 @@ struct DJVUNS ddjvu_format_s
   uint32_t palette[6*6*6];
   uint32_t xorval;
   double gamma;
+  GPixel white;
   char ditherbits;
   bool rtoptobottom;
   bool ytoptobottom;
@@ -2037,6 +2063,7 @@ ddjvu_format_create(ddjvu_format_style_t style,
   fmt->rtoptobottom = false;
   fmt->ytoptobottom = false;
   fmt->gamma = 2.2;
+  fmt->white = GPixel::WHITE;
   // Ditherbits
   fmt->ditherbits = 32;
   if (style==DDJVU_FORMAT_RGBMASK16)
@@ -2132,6 +2159,15 @@ ddjvu_format_set_gamma(ddjvu_format_t *format, double gamma)
 }
 
 void
+ddjvu_format_set_white(ddjvu_format_t *format, 
+                       unsigned char b, unsigned char g, unsigned char r)
+{
+  format->white.b = b;
+  format->white.g = g;
+  format->white.r = r;
+}
+
+void
 ddjvu_format_release(ddjvu_format_t *format)
 {
   delete format;
@@ -2195,9 +2231,11 @@ fmt_convert_row(const GPixel *p, int w,
       }
     case DDJVU_FORMAT_MSBTOLSB: /* packed bits, msb on the left */
       {
+        int t = (5*fmt->white.r + 9*fmt->white.g + 2*fmt->white.b + 16);
+        t = t * 0xc / 0x10;
         unsigned char s=0, m=0x80;
         while (--w >= 0) {
-          if ( 5*p->r + 9*p->g + 2*p->b < 0xc00 ) { s |= m; }
+          if ( 5*p->r + 9*p->g + 2*p->b < t ) { s |= m; }
           if (! (m >>= 1)) { *buf++ = s; s=0; m=0x80; }
           p += 1;
         }
@@ -2206,9 +2244,11 @@ fmt_convert_row(const GPixel *p, int w,
       }
     case DDJVU_FORMAT_LSBTOMSB: /* packed bits, lsb on the left */
       {
+        int t = 5*fmt->white.r + 9*fmt->white.g + 2*fmt->white.b + 16;
+        t = t * 0xc / 0x10;
         unsigned char s=0, m=0x1;
         while (--w >= 0) {
-          if ( 5*p->r + 9*p->g + 2*p->b < 0xc00 ) { s |= m; }
+          if ( 5*p->r + 9*p->g + 2*p->b < t ) { s |= m; }
           if (! (m <<= 1)) { *buf++ = s; s=0; m=0x1; }
           p += 1;
         }
@@ -2237,7 +2277,7 @@ fmt_convert(GPixmap *pm, const ddjvu_format_t *fmt, char *buffer, int rowsize)
 }
 
 static void
-fmt_convert_row(unsigned char *p, unsigned char *g, int w, 
+fmt_convert_row(unsigned char *p, unsigned char g[256][4], int w, 
                 const ddjvu_format_t *fmt, char *buf)
 {
   const uint32_t (*r)[256] = fmt->rgb;
@@ -2245,10 +2285,21 @@ fmt_convert_row(unsigned char *p, unsigned char *g, int w,
   switch(fmt->style)
     {
     case DDJVU_FORMAT_BGR24:    /* truecolor 24 bits in BGR order */
+      { 
+        while (--w >= 0) { 
+          buf[0]=g[*p][0];
+          buf[1]=g[*p][1];
+          buf[2]=g[*p][2];
+          buf+=3; p+=1; 
+        }
+        break;
+      }
     case DDJVU_FORMAT_RGB24:    /* truecolor 24 bits in RGB order */
       { 
         while (--w >= 0) { 
-          buf[0]=buf[1]=buf[2]=g[*p];
+          buf[0]=g[*p][2];
+          buf[1]=g[*p][1];
+          buf[2]=g[*p][0];
           buf+=3; p+=1; 
         }
         break;
@@ -2257,8 +2308,8 @@ fmt_convert_row(unsigned char *p, unsigned char *g, int w,
       {
         uint16_t *b = (uint16_t*)buf;
         while (--w >= 0) {
-          unsigned char x = g[*p];
-          b[0]=(r[0][x]|r[1][x]|r[2][x])^xorval; 
+          unsigned char x = *p;
+          b[0]=(r[0][g[x][2]]|r[1][g[x][1]]|r[2][g[x][0]])^xorval; 
           b+=1; p+=1; 
         }
         break;
@@ -2267,8 +2318,8 @@ fmt_convert_row(unsigned char *p, unsigned char *g, int w,
       {
         uint32_t *b = (uint32_t*)buf;
         while (--w >= 0) {
-          unsigned char x = g[*p];
-          b[0]=(r[0][x]|r[1][x]|r[2][x])^xorval; 
+          unsigned char x = *p;
+          b[0]=(r[0][g[x][2]]|r[1][g[x][1]]|r[2][g[x][0]])^xorval; 
           b+=1; p+=1; 
         }
         break;
@@ -2276,7 +2327,7 @@ fmt_convert_row(unsigned char *p, unsigned char *g, int w,
     case DDJVU_FORMAT_GREY8:    /* greylevel 8 bits */
       {
         while (--w >= 0) { 
-          buf[0]=g[*p];
+          buf[0]=g[*p][3];
           buf+=1; p+=1; 
         }
         break;
@@ -2285,16 +2336,20 @@ fmt_convert_row(unsigned char *p, unsigned char *g, int w,
       {
         const uint32_t *u = fmt->palette;
         while (--w >= 0) {
-          buf[0] = u[g[*p]*(1+6+36)];
+          unsigned char x = *p;
+          buf[0] = u[r[0][g[x][0]]+r[1][g[x][1]]+r[2][g[x][2]]]; 
           buf+=1; p+=1; 
         }
         break;
       }
     case DDJVU_FORMAT_MSBTOLSB: /* packed bits, msb on the left */
       {
+        int t = 5*fmt->white.r + 9*fmt->white.g + 2*fmt->white.b + 16;
+        t = t * 0xc / 0x100;
         unsigned char s=0, m=0x80;
         while (--w >= 0) {
-          if (g[*p] < 0xc0) { s |= m; }
+          unsigned char x = *p;
+          if ( g[x][3] < t ) { s |= m; }
           if (! (m >>= 1)) { *buf++ = s; s=0; m=0x80; }
           p += 1;
         }
@@ -2303,9 +2358,12 @@ fmt_convert_row(unsigned char *p, unsigned char *g, int w,
       }
     case DDJVU_FORMAT_LSBTOMSB: /* packed bits, lsb on the left */
       {
+        int t = 5*fmt->white.r + 9*fmt->white.g + 2*fmt->white.b + 16;
+        t = t * 0xc / 0x100;
         unsigned char s=0, m=0x1;
         while (--w >= 0) {
-          if (g[*p] < 0xc0) { s |= m; }
+          unsigned char x = *p;
+          if ( g[x][3] < t ) { s |= m; }
           if (! (m <<= 1)) { *buf++ = s; s=0; m=0x1; }
           p += 1;
         }
@@ -2323,11 +2381,18 @@ fmt_convert(GBitmap *bm, const ddjvu_format_t *fmt, char *buffer, int rowsize)
   int m = bm->get_grays();
   // Gray levels
   int i;
-  unsigned char g[256];
+  unsigned char g[256][4];
+  const GPixel &wh = fmt->white;
   for (i=0; i<m; i++)
-    g[i] = 255 - ( i * 255 + (m - 1)/2 ) / (m - 1);
+    {
+      g[i][0] = wh.b - ( i * wh.b + (m - 1)/2 ) / (m - 1);
+      g[i][1] = wh.g - ( i * wh.g + (m - 1)/2 ) / (m - 1);
+      g[i][2] = wh.r - ( i * wh.r + (m - 1)/2 ) / (m - 1);
+      g[i][3] = (5*g[i][2] + 9*g[i][1] + 2*g[i][0])>>4; 
+    }
   for (i=m; i<256; i++)
-    g[i] = 0;
+    g[i][0] = g[i][1] = g[i][2] = g[i][3] = 0;
+  
   // Loop on rows
   if (fmt->rtoptobottom)
     {
@@ -2360,7 +2425,7 @@ ddjvu_page_render(ddjvu_page_t *page,
                   const ddjvu_render_mode_t mode,
                   const ddjvu_rect_t *pagerect,
                   const ddjvu_rect_t *renderrect,
-                  const ddjvu_format_t *pixelformat,
+                  const ddjvu_format_t *format,
                   unsigned long rowsize,
                   char *imagebuffer )
 {
@@ -2371,7 +2436,7 @@ ddjvu_page_render(ddjvu_page_t *page,
       GRect prect, rrect;
       rect2grect(pagerect, prect);
       rect2grect(renderrect, rrect);
-      if (pixelformat && pixelformat->ytoptobottom)
+      if (format && format->ytoptobottom)
         {
           prect.ymin = renderrect->y + renderrect->h;
           prect.ymax = prect.ymin + pagerect->h;
@@ -2385,28 +2450,28 @@ ddjvu_page_render(ddjvu_page_t *page,
           switch (mode)
             {
             case DDJVU_RENDER_COLOR:
-              pm = img->get_pixmap(rrect, prect, pixelformat->gamma);
+              pm = img->get_pixmap(rrect,prect, format->gamma,format->white);
               if (! pm) 
-                bm = img->get_bitmap(rrect, prect);
+                bm = img->get_bitmap(rrect,prect);
               break;
             case DDJVU_RENDER_BLACK:
-              bm = img->get_bitmap(rrect, prect);
+              bm = img->get_bitmap(rrect,prect);
               if (! bm)
-                pm = img->get_pixmap(rrect, prect, pixelformat->gamma);
+                pm = img->get_pixmap(rrect,prect, format->gamma,format->white);
               break;
             case DDJVU_RENDER_MASKONLY:
-              bm = img->get_bitmap(rrect, prect);
+              bm = img->get_bitmap(rrect,prect);
               break;
             case DDJVU_RENDER_COLORONLY:
-              pm = img->get_pixmap(rrect, prect, pixelformat->gamma);
+              pm = img->get_pixmap(rrect,prect, format->gamma,format->white);
               break;
             case DDJVU_RENDER_BACKGROUND:
-              pm = img->get_bg_pixmap(rrect, prect, pixelformat->gamma);
+              pm = img->get_bg_pixmap(rrect,prect, format->gamma,format->white);
               break;
             case DDJVU_RENDER_FOREGROUND:
-              pm = img->get_fg_pixmap(rrect, prect, pixelformat->gamma);
+              pm = img->get_fg_pixmap(rrect,prect, format->gamma,format->white);
               if (! pm) 
-                bm = img->get_bitmap(rrect, prect);
+                bm = img->get_bitmap(rrect,prect);
               break;
             }
         }
@@ -2414,13 +2479,13 @@ ddjvu_page_render(ddjvu_page_t *page,
         {
           int dx = rrect.xmin - prect.xmin;
           int dy = rrect.ymin - prect.xmin;
-          fmt_dither(pm, pixelformat, dx, dy);
-          fmt_convert(pm, pixelformat, imagebuffer, rowsize);
+          fmt_dither(pm, format, dx, dy);
+          fmt_convert(pm, format, imagebuffer, rowsize);
           return 2;
         }
       else if (bm)
         {
-          fmt_convert(bm, pixelformat, imagebuffer, rowsize);
+          fmt_convert(bm, format, imagebuffer, rowsize);
           return 1;
         }
     }
@@ -2516,7 +2581,7 @@ ddjvu_thumbnail_status(ddjvu_document_t *document, int pagenum, int start)
 int
 ddjvu_thumbnail_render(ddjvu_document_t *document, int pagenum, 
                        int *wptr, int *hptr,
-                       const ddjvu_format_t *pixelformat,
+                       const ddjvu_format_t *format,
                        unsigned long rowsize,
                        char *imagebuffer)
 {
@@ -2552,14 +2617,14 @@ ddjvu_thumbnail_render(ddjvu_document_t *document, int pagenum,
       /* Render and scale image */
       GP<GPixmap> pm = iw->get_pixmap();
       double thumbgamma = document->doc->get_thumbnails_gamma();
-      pm->color_correct(pixelformat->gamma / thumbgamma);
+      pm->color_correct(format->gamma/thumbgamma, format->white);
       GP<GPixmapScaler> scaler = GPixmapScaler::create(w, h, *wptr, *hptr);
       GP<GPixmap> scaledpm = GPixmap::create();
       GRect scaledrect(0, 0, *wptr, *hptr);
       scaler->scale(GRect(0, 0, w, h), *pm, scaledrect, *scaledpm);
       /* Convert */
-      fmt_dither(scaledpm, pixelformat, 0, 0);
-      fmt_convert(scaledpm, pixelformat, imagebuffer, rowsize);
+      fmt_dither(scaledpm, format, 0, 0);
+      fmt_convert(scaledpm, format, imagebuffer, rowsize);
       return TRUE;
     }
   G_CATCH(ex)
@@ -3302,6 +3367,24 @@ ddjvu_anno_get_metadata(miniexp_t p, miniexp_t key)
   metadata_sub(p, m);
   if (m.contains(key))
     return miniexp_to_str(m[key]);
+  return 0;
+}
+
+const char *
+ddjvu_anno_get_xmp(miniexp_t p)
+{
+  miniexp_t s = miniexp_symbol("xmp");
+  while (miniexp_consp(p))
+    {
+      miniexp_t a = miniexp_car(p);
+      p = miniexp_cdr(p);
+      if (miniexp_car(a) == s)
+        {
+          miniexp_t q = miniexp_nth(1, a);
+          if (miniexp_stringp(q))
+            return miniexp_to_str(q);
+        }
+    }
   return 0;
 }
 

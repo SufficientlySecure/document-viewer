@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: DjVuInfo.h,v 1.17 2008/01/27 11:36:27 leonb Exp $
-// $Name: release_3_5_22 $
 
 #ifndef _DJVUINFO_H
 #define _DJVUINFO_H
@@ -74,8 +71,7 @@
     DjVu information chunk.
     @author
     L\'eon Bottou <leonb@research.att.com>
-    @version
-    #$Id: DjVuInfo.h,v 1.17 2008/01/27 11:36:27 leonb Exp $# */
+*/
 //@{
 
 

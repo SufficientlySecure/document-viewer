@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: GThreads.cpp,v 1.19 2007/03/25 20:48:32 leonb Exp $
-// $Name: release_3_5_22 $
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -732,8 +729,8 @@ GThread::create(void (*entry)(void*), void *arg)
 void 
 GThread::terminate()
 {
-  /*if (xentry || xarg)
-    pthread_cancel(hthr);*/
+  if (xentry || xarg)
+    pthread_cancel(hthr);
 }
 
 int
@@ -808,6 +805,7 @@ GMonitor::enter()
 void 
 GMonitor::leave()
 {
+  static pthread_t pthread_null;
   pthread_t self = pthread_self();
   if (ok && (count>0 || !pthread_equal(locker, self)))
     G_THROW( ERR_MSG("GThreads.not_acq_broad") );
@@ -815,6 +813,7 @@ GMonitor::leave()
   if (count > 0)
     {
       count = 1;
+      locker = pthread_null;
       if (ok)
         pthread_mutex_unlock(&mutex);
     }
@@ -1005,8 +1004,12 @@ mach_start(mach_state *st1, void *pc, char *stacklo, char *stackhi)
                     : : "r" (sp), "a" (pc) );
 #elif #cpu(arm) && defined(COTHREAD_UNTESTED)
       char *sp = (char*)(((unsigned long)stackhi-16) & ~0xff);
-      asm volatile ("mov%?\t%|sp, %0\n\t" // set new stack pointer
-                    "mov%?\t%|pc, %1"     // branch to address %1
+      asm volatile ("mov %|sp, %0\n\t" // set new stack pointer
+# if defined(__ARM_ARCH_4__) || defined(__ARM_ARCH_4T__)
+                    "mov %|pc, %1"     // branch to address %1
+# else
+                    "bx %1"     // branch to address %1
+# endif
                     : : "r" (sp), "r" (pc) );
 #else
 #error "COTHREADS not supported on this machine."

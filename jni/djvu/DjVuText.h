@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: DjVuText.h,v 1.12 2008/01/27 11:36:27 leonb Exp $
-// $Name: release_3_5_22 $
 
 #ifndef _DJVUTEXT_H
 #define _DJVUTEXT_H
@@ -83,8 +80,7 @@
     and fills them with decoded data. 
     @memo Implements support for DjVuImage hidden text.
     @author Andrei Erofeev <eaf@geocities.com>
-    @version
-    #$Id: DjVuText.h,v 1.12 2008/01/27 11:36:27 leonb Exp $# */
+*/
 //@{
 
 

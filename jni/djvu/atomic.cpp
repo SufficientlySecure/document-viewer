@@ -146,7 +146,7 @@ static void cond_wait()
 #endif
 #if HAVE_INTEL_ATOMIC_BUILTINS
 # define USE_INTEL_ATOMIC_BUILTINS 1
-#elif defined(WIN32)
+#elif defined(WIN32) && !defined(USE_WIN32_INTERLOCKED)
 # define USE_WIN32_INTERLOCKED 1
 #elif defined(__GNUC__) && defined(__i386__)
 # define USE_GCC_I386_ASM 1
@@ -168,20 +168,20 @@ static void cond_wait()
 
 
 #if USE_WIN32_INTERLOCKED && !HAVE_SYNC
-# define SYNC_ACQ(l)                                    \
+# define SYNC_ACQ(l) \
   (!InterlockedExchange((LONG volatile *)(l),1))
 # if defined(_M_ALPHA) || defined(_M_PPC) || defined(_M_IA64)
-#  define SYNC_REL(l)                           \
+#  define SYNC_REL(l) \
   (InterlockedExchange((LONG volatile *)(l),0))
 # else
-#  define SYNC_REL(l)                           \
+#  define SYNC_REL(l) \
   (*(int volatile *)(l)=0)
 # endif
-# define SYNC_INC(l)                            \
+# define SYNC_INC(l) \
   (InterlockedIncrement((LONG volatile *)(l)))
-# define SYNC_DEC(l)                            \
+# define SYNC_DEC(l) \
   (InterlockedDecrement((LONG volatile *)(l)))
-# define SYNC_CAS(l,o,n)                                        \
+# define SYNC_CAS(l,o,n) \
   (InterlockedCompareExchange((LONG volatile *)(l),n,o)==(o))
 # define HAVE_SYNC 1
 #endif

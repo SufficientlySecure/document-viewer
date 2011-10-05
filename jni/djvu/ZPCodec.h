@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: ZPCodec.h,v 1.10 2007/03/25 20:48:35 leonb Exp $
-// $Name: release_3_5_22 $
 
 #ifndef _ZPCODEC_H
 #define _ZPCODEC_H
@@ -188,8 +185,6 @@ class ByteStream;
     
     @memo
     Binary adaptive quasi-arithmetic coder.
-    @version
-    #$Id: ZPCodec.h,v 1.10 2007/03/25 20:48:35 leonb Exp $#
     @author
     L\'eon Bottou <leonb@research.att.com> */
 //@{

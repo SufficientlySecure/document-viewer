@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: GMapAreas.cpp,v 1.11 2008/08/05 20:50:35 bpearlmutter Exp $
-// $Name: release_3_5_22 $
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -244,6 +241,44 @@ GMapArea::is_point_inside(int x, int y) const
 	      gma_is_point_inside(x, y) : false;
 }
 
+static GUTF8String make_c_string(GUTF8String string)
+{
+  GUTF8String buffer;
+  const char *data = (const char*)string;
+  int length = string.length();
+  buffer = GUTF8String("\"");
+  while (*data && length>0) 
+    {
+      int span = 0;
+      while (span<length && (unsigned char)(data[span])>=0x20 && 
+             data[span]!=0x7f && data[span]!='"' && data[span]!='\\' )
+        span++;
+      if (span > 0) 
+        {  
+          buffer = buffer + GUTF8String(data, span);
+          data += span;
+          length -= span;
+        }  
+      else 
+        {
+          char buf[8];
+          static const char *tr1 = "\"\\tnrbf";
+          static const char *tr2 = "\"\\\t\n\r\b\f";
+          sprintf(buf,"\\%03o", (int)(((unsigned char*)data)[span]));
+          for (int i=0; tr2[i]; i++)
+            if (data[span] == tr2[i])
+              buf[1] = tr1[i];
+          if (buf[1]<'0' || buf[1]>'3')
+            buf[2] = 0;
+          buffer = buffer + GUTF8String(buf);
+          data += 1;
+          length -= 1;
+        }
+    }
+  buffer = buffer + GUTF8String("\"");
+  return buffer;
+}
+
 GUTF8String
 GMapArea::print(void)
 {
@@ -255,31 +290,9 @@ GMapArea::print(void)
      G_THROW(errors);
    }
    
-   int i;
-   GUTF8String tmp;
-   GUTF8String url1, target1, comment1;
-   const GUTF8String url_str=url;
-   for(i=0;i<(int) url_str.length();i++)
-   {
-      char ch=url_str[i];
-      if (ch=='"')
-        url1+='\\';
-      url1+=ch;
-   }
-   for(i=0;i<(int) target.length();i++)
-   {
-      char ch=target[i];
-      if (ch=='"')
-        target1+='\\';
-      target1+=ch;
-   }
-   for(i=0;i<(int) comment.length();i++)
-   {
-      char ch=comment[i];
-      if (ch=='"')
-        comment1+='\\';
-      comment1+=ch;
-   }
+   GUTF8String url1 = make_c_string((GUTF8String)url);
+   GUTF8String target1 = make_c_string(target);
+   GUTF8String comment1 = make_c_string(comment);
    
    GUTF8String border_color_str;
    border_color_str.format("#%02X%02X%02X",
@@ -290,7 +303,6 @@ GMapArea::print(void)
    static const GUTF8String left('(');
    static const GUTF8String right(')');
    static const GUTF8String space(' ');
-   static const GUTF8String quote('"');
    GUTF8String border_type_str;
    switch(border_type)
    {
@@ -332,13 +344,13 @@ GMapArea::print(void)
    GUTF8String URL;
    if (target1==TARGET_SELF)
    {
-      URL=quote+url1+quote;
+      URL=url1;
    }else
    {
-      URL=left+URL_TAG+space+quote+url1+quote+space+quote+target1+quote+right;
+      URL=left+URL_TAG+space+url1+space+target1+right;
    }
 
-   GUTF8String total=left+MAPAREA_TAG+space+URL+space+quote+comment1+quote+space+gma_print()+border_type_str;
+   GUTF8String total=left+MAPAREA_TAG+space+URL+space+comment1+space+gma_print()+border_type_str;
    if (border_always_visible)
      total+=space+left+BORDER_AVIS_TAG+right;
    if ( hilite_str.length() > 0 )

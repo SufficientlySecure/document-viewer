@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: IFFByteStream.h,v 1.13 2007/05/19 03:07:34 leonb Exp $
-// $Name: release_3_5_22 $
 
 #ifndef _IFFBYTESTREAM_H_
 #define _IFFBYTESTREAM_H_
@@ -122,8 +119,7 @@
 // This has been changed by Lizardtech to fit better 
 // with their re-implementation of ByteStreams.
 
-    @version
-    #$Id: IFFByteStream.h,v 1.13 2007/05/19 03:07:34 leonb Exp $# */
+*/
 //@{
 
 

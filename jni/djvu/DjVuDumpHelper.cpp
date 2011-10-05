@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: DjVuDumpHelper.cpp,v 1.11 2008/02/26 05:07:40 leonb Exp $
-// $Name: release_3_5_22 $
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -311,7 +308,21 @@ display_chunks(ByteStream & out_str, IFFByteStream &iff,
     {
       GP<DjVmDir::File> rec = djvminfo.map[rawoffset];
       if (rec)
-        out_str.format( "{%s}", (const char*) rec->get_load_name());
+        {
+          GUTF8String id = rec->get_load_name();
+          GUTF8String title = rec->get_title();
+          out_str.format( "{%s}", (const char*) id);
+          if (rec->is_include())
+            out_str.format(" [I]");
+          if (rec->is_thumbnails())
+            out_str.format(" [T]");
+          if (rec->is_shared_anno())
+            out_str.format(" [S]");
+          if (rec->is_page())
+            out_str.format(" [P%d]", rec->get_page_num()+1);
+          if (id != title)
+            out_str.format(" (%s)", (const char*)title);
+        }
     }
     // Test chunk type
     iff.full_id(fullid);

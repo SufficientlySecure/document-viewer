@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: DjVuMessageLite.h,v 1.11 2008/01/27 11:36:27 leonb Exp $
-// $Name: release_3_5_22 $
 
 #ifndef __DJVU_MESSAGE_LITE_H__
 #define __DJVU_MESSAGE_LITE_H__

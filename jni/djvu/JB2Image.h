@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: JB2Image.h,v 1.13 2008/01/27 11:36:27 leonb Exp $
-// $Name: release_3_5_22 $
 
 #ifndef _JB2IMAGE_H
 #define _JB2IMAGE_H
@@ -157,8 +154,6 @@
     \item ICFDD Draft Proposed American National Standard, 1999-08-26.
     \end{itemize}
 
-    @version
-    #$Id: JB2Image.h,v 1.13 2008/01/27 11:36:27 leonb Exp $#
     @memo
     Coding bilevel images with JB2.
     @author
@@ -325,6 +320,7 @@ public:
 
 
 private:
+  friend class JB2Codec;
   int inherited_shapes;
   GP<JB2Dict> inherited_dict;
   GArray<JB2Shape> shapes;

@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: XMLParser.cpp,v 1.12 2008/08/05 20:50:35 bpearlmutter Exp $
-// $Name: release_3_5_22 $
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -94,6 +91,7 @@ static const char areatag[]="AREA";
 static const char maptag[]="MAP";
 static const char objecttag[]="OBJECT";
 static const char paramtag[]="PARAM";
+static const char charactertag[]="CHARACTER";
 static const char wordtag[]="WORD";
 static const char linetag[]="LINE";
 static const char paragraphtag[]="PARAGRAPH";
@@ -108,9 +106,9 @@ public:
   Impl(void);
   virtual ~Impl();
   /// Parse the specified bytestream.
-  virtual void parse(const GP<ByteStream> &bs);
+  virtual void parse(const GP<ByteStream> &bs, GURL *pdjvufile);
   /// Parse the specified tags - this one does all the work
-  virtual void parse(const lt_XMLTags &tags);
+  virtual void parse(const lt_XMLTags &tags, GURL *pdjvufile);
   /// write to disk.
   virtual void save(void);
   /// erase.
@@ -220,10 +218,10 @@ lt_XMLParser::Impl::save(void)
 }
 
 void
-lt_XMLParser::Impl::parse(const GP<ByteStream> &bs)
+lt_XMLParser::Impl::parse(const GP<ByteStream> &bs, GURL *pdjvufile)
 {
   const GP<lt_XMLTags> tags(lt_XMLTags::create(bs));
-  parse(*tags);
+  parse(*tags, pdjvufile);
 }
   
 static const GMap<GUTF8String,GMapArea::BorderType> &
@@ -595,7 +593,7 @@ lt_XMLParser::Impl::get_file(const GURL &url,GUTF8String id)
 }
   
 void
-lt_XMLParser::Impl::parse(const lt_XMLTags &tags)
+lt_XMLParser::Impl::parse(const lt_XMLTags &tags, GURL *pdjvufile)
 {
   const GPList<lt_XMLTags> Body(tags.get_Tags(bodytag));
   GPosition pos=Body;
@@ -653,12 +651,14 @@ lt_XMLParser::Impl::parse(const lt_XMLTags &tags)
       {
         if(args[typePos] != mimetype)
         {
-//          DjVuPrintErrorUTF8("Ignoring %s Object tag\n",mimetype);
+          // DjVuPrintErrorUTF8("Ignoring %s Object tag\n",mimetype);
           continue;
         }
         isDjVuType=true;
       }
-      const GURL url=GURL::UTF8(args[datapos],(args[datapos][0] == '/')?codebase.base():codebase);
+      const GURL url = (pdjvufile) ? *pdjvufile 
+        : GURL::UTF8(args[datapos], 
+                     (args[datapos][0] == '/') ? codebase.base() : codebase);
       int width;
       {
         GPosition widthPos=args.contains("width");
@@ -799,7 +799,12 @@ make_child_layer(
   DjVuTXT::Zone *self_ptr;
   char sepchar;
   const GUTF8String name(tag.get_name());
-  if(name == wordtag)
+  if(name == charactertag)
+  {
+    self_ptr=parent.append_child();
+    self_ptr->ztype = DjVuTXT::CHARACTER;
+    sepchar=0;  
+  }else if(name == wordtag)
   {
     self_ptr=parent.append_child();
     self_ptr->ztype = DjVuTXT::WORD;
@@ -874,7 +879,7 @@ make_child_layer(
       }
     }
   }
-  if(self.ztype == DjVuTXT::WORD)
+  if(self.ztype == DjVuTXT::CHARACTER)
   {
     if(! pos)
     {

@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: DjVuPort.h,v 1.11 2007/07/14 01:21:56 leonb Exp $
-// $Name: release_3_5_22 $
 
 #ifndef _DJVUPORT_H
 #define _DJVUPORT_H
@@ -121,7 +118,7 @@ class DataPool;
     @memo DjVu decoder communication mechanism.
     @author Andrei Erofeev <eaf@geocities.com>\\
             L\'eon Bottou <leonb@research.att.com>
-    @version #$Id: DjVuPort.h,v 1.11 2007/07/14 01:21:56 leonb Exp $# */
+*/
 //@{
 
 class DjVuPort;

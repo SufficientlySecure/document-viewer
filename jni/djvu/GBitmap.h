@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: GBitmap.h,v 1.14 2007/05/19 03:07:33 leonb Exp $
-// $Name: release_3_5_22 $
 
 #ifndef _GBITMAP_H_
 #define _GBITMAP_H_
@@ -102,8 +99,6 @@ class ByteStream;
     Generic support for bilevel and gray-level images.
     @author
     L\'eon Bottou <leonb@research.att.com>
-    @version
-    #$Id: GBitmap.h,v 1.14 2007/05/19 03:07:33 leonb Exp $#
 
  */
 //@{

@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: DjVuToPS.cpp,v 1.27 2008/08/05 20:50:35 bpearlmutter Exp $
-// $Name: release_3_5_22 $
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -335,7 +332,7 @@ store_doc_prolog(ByteStream &str, int pages, int dpi, GRect *grect)
   time_t tm=time(0);
   write(str, "%%%%CreationDate: %s", ctime(&tm));
   // For
-/*#ifdef UNIX
+#ifdef UNIX
   passwd *pswd = getpwuid(getuid());
   if (pswd)
     {
@@ -350,7 +347,7 @@ store_doc_prolog(ByteStream &str, int pages, int dpi, GRect *grect)
       if (s)
         write(str, "%%%%For: %s\n", s);
     }
-#endif*/
+#endif
   // Language
   write(str, "%%%%LanguageLevel: %d\n", options.get_level());
   if (options.get_level()<2 && options.get_color())

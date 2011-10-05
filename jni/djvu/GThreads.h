@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: GThreads.h,v 1.11 2007/03/25 20:48:32 leonb Exp $
-// $Name: release_3_5_22 $
 
 #ifndef _GTHREADS_H_
 #define _GTHREADS_H_
@@ -128,8 +125,7 @@
 // Almost unchanged by Lizardtech.
 // GSafeFlags should go because it not as safe as it claims.
 
-    @version
-    #$Id: GThreads.h,v 1.11 2007/03/25 20:48:32 leonb Exp $# */
+*/
 //@{
 
 
@@ -154,12 +150,10 @@
 #endif
 
 // Exception emulation is not thread safe
-/*
 #ifdef USE_EXCEPTION_EMULATION
 #undef  THREADMODEL
 #define THREADMODEL NOTHREADS
 #endif
-*/
 // Default is nothreads
 #ifndef THREADMODEL
 #define THREADMODEL NOTHREADS

@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: DjVuDocument.cpp,v 1.21 2008/08/05 20:50:35 bpearlmutter Exp $
-// $Name: release_3_5_22 $
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -77,7 +74,6 @@
 #include "GRect.h"
 
 #include "debug.h"
-#include "DjvuDroidTrace.h"
 
 
 #ifdef HAVE_NAMESPACES
@@ -189,7 +185,6 @@ DjVuDocument::start_init(
    if(!url.is_empty())
    {
      init_data_pool=pcaster->request_data(this, init_url);
-     DEBUG_PRINT("Requesting data for: %s", init_url.get_string(true).getUTF82Native().getbuf(128));
      if(init_data_pool)
      {
        if(!init_url.is_empty() && init_url.is_local_file_url() && djvu_import_codec)
@@ -1831,18 +1826,21 @@ DjVuDocument::save_as(const GURL &where, bool bundled)
    }
 }
 
-static const char prolog[]="<?xml version=\"1.0\" ?>\n<!DOCTYPE DjVuXML PUBLIC \"-//W3C//DTD DjVuXML 1.1//EN\" \"pubtext/DjVuXML-s.dtd\">\n<DjVuXML>\n<HEAD>";
+static const char prolog[]="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE DjVuXML PUBLIC \"-//W3C//DTD DjVuXML 1.1//EN\" \"pubtext/DjVuXML-s.dtd\">\n<DjVuXML>\n<HEAD>";
 static const char start_xml[]="</HEAD>\n<BODY>\n";
 static const char end_xml[]="</BODY>\n</DjVuXML>\n";
 
 void
-DjVuDocument::writeDjVuXML(const GP<ByteStream> &gstr_out,int flags) const
+DjVuDocument::writeDjVuXML(const GP<ByteStream> &gstr_out,
+                           int flags, int page) const
 {
   ByteStream &str_out=*gstr_out;
   str_out.writestring(
     prolog+get_init_url().get_string().toEscaped()+start_xml);
   const int pages=wait_get_pages_num();
-  for(int page_num=0;page_num<pages;++page_num)
+  int pstart = (page < 0) ? 0 : page;
+  int pend = (page < 0) ? pages : page+1;
+  for(int page_num=pstart; page_num<pend; ++page_num)
   {
     const GP<DjVuImage> dimg(get_page(page_num,true));
     if(!dimg)

@@ -54,8 +54,6 @@
 //C- +------------------------------------------------------------------
 */
 
-/* $Id: ddjvuapi.h,v 1.66 2008/04/17 19:57:21 leonb Exp $ */
-
 #ifndef DDJVUAPI_H
 #define DDJVUAPI_H
 
@@ -112,6 +110,12 @@ extern "C" {
 
    Version   Change
    -----------------------------
+     20    Added:
+              ddjvu_get_version_string()
+              ddjvu_format_set_white()
+              ddjvu_anno_get_xmp()
+     19    Added:
+              ddjvu_document_create_by_filename_utf8()
      18    Added:
               ddjvu_document_get_{anno,pagedump,filedump}()
            Modifed (binary compatible):
@@ -129,12 +133,11 @@ extern "C" {
               miniexp.h and related functions.
      15    Added:
               ddjvu_document_get_pageinfo()
+              ddjvu_document_print()
      14    Initial version.
 */
 
-#define DDJVUAPI_VERSION 18
-
-
+#define DDJVUAPI_VERSION 20
 
 typedef struct ddjvu_context_s    ddjvu_context_t;
 typedef union  ddjvu_message_s    ddjvu_message_t;
@@ -182,6 +185,14 @@ typedef struct ddjvu_rectmapper_s ddjvu_rectmapper_t;
  */
 
 
+
+/* ddjvu_get_version_string() ---
+   Returns a string that described the underlying code. */
+
+DDJVUAPI const char*
+ddjvu_get_version_string(void);
+
+
 /* ddjvu_context_create ---
    Creates a <ddjvu_context_t> object.
    Argument <programname> is the name of the calling executable. */
@@ -198,6 +209,8 @@ ddjvu_context_create(const char *programname);
 
 DDJVUAPI void 
 ddjvu_context_release(ddjvu_context_t *context);
+
+
 
 
 
@@ -488,8 +501,8 @@ struct ddjvu_message_info_s {   /* ddjvu_message_t::m_info */
    and <ddjvu_stream_close>.
 
    Localized characters in argument <url> should be in 
-   urlencoded utf-8 (like "%2A"). What is happening for non 
-   ascii characters is unclear (probably plain utf8). */
+   urlencoded UTF-8 (like "%2A"). What is happening for non 
+   ascii characters is unclear (probably UTF-8). */
 
 DDJVUAPI ddjvu_document_t *
 ddjvu_document_create(ddjvu_context_t *context,
@@ -500,13 +513,19 @@ ddjvu_document_create(ddjvu_context_t *context,
 /* ddjvu_document_create_by_filename ---
    Creates a document for a DjVu document stored in a file.
    The document will directly access the specified DjVu file 
-   or related files without generating <m_newstream> messages. */
+   or related files without generating <m_newstream> messages.
+   The standard function expects the filename in locale encoding. 
+   The utf8 variant expects an utf8 encoded filename. */
 
 DDJVUAPI ddjvu_document_t *
 ddjvu_document_create_by_filename(ddjvu_context_t *context,
                                   const char *filename,
                                   int cache);
 
+DDJVUAPI ddjvu_document_t *
+ddjvu_document_create_by_filename_utf8(ddjvu_context_t *context,
+                                       const char *filename,
+                                       int cache);
 
 /* ddjvu_document_job ---
    Access the job object in charge of decoding the document header. 
@@ -978,6 +997,7 @@ ddjvu_page_get_version(ddjvu_page_t *page);
 DDJVUAPI int
 ddjvu_code_get_version(void);
 
+
 /* ddjvu_page_get_type ---
    Returns the type of the page data.
    Calling this function before the termination of the
@@ -1242,6 +1262,16 @@ DDJVUAPI void
 ddjvu_format_set_gamma(ddjvu_format_t *format, double gamma);
 
 
+/* ddjvu_format_set_white ---
+   Sets the whitepoint of the display for which the pixels are
+   intended.  This will be combined with the gamma stored in
+   DjVu documents in order to compute a suitable color
+   correction.  The default value is 0xff,0xff,0xff. */
+
+DDJVUAPI void
+ddjvu_format_set_white(ddjvu_format_t *format, 
+                       unsigned char b, unsigned char g, unsigned char r);
+
 /* ddjvu_format_release ---
    Release a reference to a <ddjvu_format_t> object.
    The calling program should no longer reference this object. */
@@ -1383,7 +1413,7 @@ ddjvu_document_get_outline(ddjvu_document_t *document);
    and <compat> is true, this function searches a shared 
    annotation chunk and returns its contents.
 
-   This function returns <miniexp_dummy> is the information
+   This function returns <miniexp_dummy> if the information
    is not yet available. It may then cause the emission 
    of <m_pageinfo> messages with null <m_any.page>.
 
@@ -1502,7 +1532,7 @@ ddjvu_anno_get_vertalign(miniexp_t annotations);
 /* ddjvu_anno_get_hyperlinks --
    Parse the annotations and returns a zero terminated 
    array of <(maparea ...)> s-expressions.
-   The called should free this array with function <free>.
+   The caller should free this array with function <free>.
    These s-expressions remain allocated as long
    as the annotations remain allocated.
    See also <(maparea ...)> in the djvused man page. */
@@ -1514,7 +1544,7 @@ ddjvu_anno_get_hyperlinks(miniexp_t annotations);
 /* ddjvu_anno_get_metadata_keys --
    Parse the annotations and returns a zero terminated 
    array of key symbols for the page metadata.
-   The called should free this array with function <free>.
+   The caller should free this array with function <free>.
    See also <(metadata ...)> in the djvused man page. */
 
 DDJVUAPI miniexp_t *
@@ -1531,6 +1561,15 @@ ddjvu_anno_get_metadata_keys(miniexp_t annotations);
 DDJVUAPI const char *
 ddjvu_anno_get_metadata(miniexp_t annotations, miniexp_t key);
 
+
+/* ddjvu_anno_get_xmp --
+   Parse the annotations and returns the xmp metadata string.
+   The string remains allocated as long as the 
+   annotations s-expression remain allocated.
+   Returns zero if no such key is present. */
+
+DDJVUAPI const char *
+ddjvu_anno_get_xmp(miniexp_t annotations, miniexp_t xmp);
 
 
 /* -------------------------------------------------- */

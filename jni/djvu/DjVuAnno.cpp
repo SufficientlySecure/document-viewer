@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: DjVuAnno.cpp,v 1.15 2007/12/02 03:58:29 leonb Exp $
-// $Name: release_3_5_22 $
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -210,6 +207,46 @@ GLObject::GLObject(GLObjectType xtype, const char * str) : type(xtype)
 GLObject::GLObject(const char * xname, const GPList<GLObject> & xlist) :
       type(LIST), name(xname), list(xlist) {}
 
+
+static GUTF8String make_c_string(GUTF8String string)
+{
+  GUTF8String buffer;
+  const char *data = (const char*)string;
+  int length = string.length();
+  buffer = GUTF8String("\"");
+  while (*data && length>0) 
+    {
+      int span = 0;
+      while (span<length && (unsigned char)(data[span])>=0x20 && 
+             data[span]!=0x7f && data[span]!='"' && data[span]!='\\' )
+        span++;
+      if (span > 0) 
+        {  
+          buffer = buffer + GUTF8String(data, span);
+          data += span;
+          length -= span;
+        }  
+      else 
+        {
+          char buf[8];
+          static const char *tr1 = "\"\\tnrbf";
+          static const char *tr2 = "\"\\\t\n\r\b\f";
+          sprintf(buf,"\\%03o", (int)(((unsigned char*)data)[span]));
+          for (int i=0; tr2[i]; i++)
+            if (data[span] == tr2[i])
+              buf[1] = tr1[i];
+          if (buf[1]<'0' || buf[1]>'3')
+            buf[2] = 0;
+          buffer = buffer + GUTF8String(buf);
+          data += 1;
+          length -= 1;
+        }
+    }
+  buffer = buffer + GUTF8String("\"");
+  return buffer;
+}
+
+
 void
 GLObject::print(ByteStream & str, int compact, int indent, int * cur_pos) const
 {
@@ -224,41 +261,7 @@ GLObject::print(ByteStream & str, int compact, int indent, int * cur_pos) const
     to_print=buffer.format("%d",number);
     break;
   case STRING:
-    {
-       int length = string.length();
-       const char *data = (const char*)string;
-       buffer = GUTF8String("\"");
-       while (*data && length>0) 
-         {
-           int span = 0;
-           while (span<length && (unsigned char)(data[span])>=0x20 && 
-                  data[span]!=0x7f && data[span]!='"' && data[span]!='\\' )
-             span++;
-           if (span > 0) 
-             {  
-               buffer = buffer + GUTF8String(data, span);
-               data += span;
-               length -= span;
-             }  
-           else 
-             {
-               char buf[8];
-               static const char *tr1 = "\"\\tnrbf";
-               static const char *tr2 = "\"\\\t\n\r\b\f";
-               sprintf(buf,"\\%03o", (int)(((unsigned char*)data)[span]));
-               for (int i=0; tr2[i]; i++)
-                 if (data[span] == tr2[i])
-                   buf[1] = tr1[i];
-               if (buf[1]<'0' || buf[1]>'3')
-                 buf[2] = 0;
-               buffer = buffer + GUTF8String(buf);
-               data += 1;
-               length -= 1;
-             }
-         }
-       buffer = buffer + GUTF8String("\"");
-       to_print = buffer;
-    }
+    to_print=make_c_string(string);
     break;
   case SYMBOL:
     to_print=buffer.format("%s",(const char *)symbol);
@@ -670,6 +673,7 @@ static const int align_strings_size=sizeof(align_strings)/sizeof(const char *);
 #define HALIGN_TAG	"halign"
 #define VALIGN_TAG	"valign"
 #define METADATA_TAG    "metadata"
+#define XMP_TAG         "xmp"
 
 static const unsigned long default_bg_color=0xffffffff;
 
@@ -764,9 +768,8 @@ DjVuANT::decode(class GLParser & parser)
    hor_align=get_hor_align(parser);
    ver_align=get_ver_align(parser);
    map_areas=get_map_areas(parser);
-#ifndef NO_METADATA_IN_ANT_CHUNK
    metadata=get_metadata(parser); 
-#endif
+   xmpmetadata=get_xmpmetadata(parser);
 }
 
 
@@ -1095,11 +1098,10 @@ DjVuANT::get_ver_align(GLParser & parser)
   return retval;
 }
 
-#ifndef NO_METADATA_IN_ANT_CHUNK
 GMap<GUTF8String, GUTF8String>
 DjVuANT::get_metadata(GLParser & parser)
 {
-  DEBUG_MSG("DjVuANT::get_map_areas(): forming and returning back list of map areas\n");
+  DEBUG_MSG("DjVuANT::get_metadata(): forming and returning metadata table\n");
   DEBUG_MAKE_INDENT(3);
   
   GMap<GUTF8String, GUTF8String> mdata;
@@ -1128,7 +1130,35 @@ DjVuANT::get_metadata(GLParser & parser)
     }
   return mdata;
 }
-#endif
+
+GUTF8String
+DjVuANT::get_xmpmetadata(GLParser & parser)
+{
+  DEBUG_MSG("DjVuANT::get_xmpmetadata(): returning xmp metadata string\n");
+  DEBUG_MAKE_INDENT(3);
+  
+  GUTF8String xmp;
+  GPList<GLObject> list=parser.get_list();
+  for(GPosition pos=list;pos;++pos)
+    {
+      GLObject &obj = *list[pos];
+      if (obj.get_type()==GLObject::LIST && obj.get_name()==XMP_TAG)  
+        { 
+          G_TRY 
+            {
+              if (obj.get_list().size() >= 1)
+                {
+                  GLObject &el = *obj[0];
+                  xmp = el.get_string();
+                  break;
+                }
+            } 
+          G_CATCH_ALL { } G_ENDCATCH;
+        }
+    }
+  return xmp;
+}
+
 
 GPList<GMapArea>
 DjVuANT::get_map_areas(GLParser & parser)
@@ -1332,18 +1362,25 @@ DjVuANT::encode_raw(void) const
       parser.parse(buffer);
    }
       //*** Metadata
-#ifndef NO_METADATA_IN_ANT_CHUNK
    del_all_items(METADATA_TAG, parser);
    if (!metadata.isempty())
      {
        GUTF8String mdatabuffer("(");
        mdatabuffer +=  METADATA_TAG ;
        for (GPosition pos=metadata; pos; ++pos)
-         mdatabuffer +=" (" + metadata.key(pos)+" \""+metadata[pos]+"\")";
+         mdatabuffer +=" (" + metadata.key(pos) + make_c_string(metadata[pos]) + ")";
        mdatabuffer += " )";
        parser.parse(mdatabuffer);
      }
-#endif   
+      //*** XMP Metadata
+   del_all_items(XMP_TAG, parser);
+   if (!xmpmetadata)
+     {
+       GUTF8String mdatabuffer("(");
+       mdatabuffer +=  XMP_TAG;
+       mdatabuffer += " " + make_c_string(xmpmetadata) + ")";
+       parser.parse(mdatabuffer);
+     }
      //*** Mapareas
    del_all_items(GMapArea::MAPAREA_TAG, parser);
    for(GPosition pos=map_areas;pos;++pos)
@@ -1373,13 +1410,10 @@ GP<DjVuANT>
 DjVuANT::copy(void) const
 {
    GP<DjVuANT> ant=new DjVuANT(*this);
-
-
       // Now process the list of hyperlinks.
    ant->map_areas.empty();
    for(GPosition pos=map_areas;pos;++pos)
       ant->map_areas.append(map_areas[pos]->get_copy());
-
    return ant;
 }
 

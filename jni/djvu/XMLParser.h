@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: XMLParser.h,v 1.11 2008/01/27 11:36:27 leonb Exp $
-// $Name: release_3_5_22 $
 
 #ifndef _LT_XMLPARSER__
 #define _LT_XMLPARSER__
@@ -100,9 +97,9 @@ protected:
 public:
   static GP<lt_XMLParser> create(void);
   /// Parse the specified bytestream.
-  virtual void parse(const GP<ByteStream> &bs) = 0;
+  virtual void parse(const GP<ByteStream> &bs, GURL *pdjvufile=0) = 0;
   /// Parse the specified tags - this one does all the work
-  virtual void parse(const lt_XMLTags &tags) = 0;
+  virtual void parse(const lt_XMLTags &tags, GURL *pdjvufile=0) = 0;
   /// write to disk.
   virtual void save(void) = 0;
   /// erase.

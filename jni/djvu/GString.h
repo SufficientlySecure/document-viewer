@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-//
-// $Id: GString.h,v 1.25 2009/05/17 23:57:42 leonb Exp $
-// $Name: release_3_5_22 $
 
 #ifndef _GSTRING_H_
 #define _GSTRING_H_
@@ -104,8 +101,7 @@
 // attempt to use the type system to enforce coding policies.
 // This could be fixed.  But there are better things to do in djvulibre.
     
-    @version
-    #$Id: GString.h,v 1.25 2009/05/17 23:57:42 leonb Exp $# */
+*/
 //@{
 
 
@@ -117,6 +113,7 @@
 #ifdef WIN32
 # include <windows.h>
 # define HAS_WCHAR 1
+# define HAS_WCTYPE 1
 # define HAS_MBSTATE 1
 #endif
 
@@ -126,10 +123,19 @@
 # endif
 #endif
 
-#if !defined(AUTOCONF) || HAVE_STDINT_H
+#if HAVE_STDINT_H
 # include <stdint.h>
 #elif HAVE_INTTYPES_H
 # include <inttypes.h>
+#else
+# ifdef WIN32
+typedef unsigned __int32 uint32_t;
+typedef unsigned __int16 uint16_t;
+# else
+# pragma message("Please verify defs for uint32_t and uint16_t")
+typedef unsigned int   uint32_t // verify
+typedef unsigned short uint16_t // verify
+# endif
 #endif
 
 #ifdef HAVE_NAMESPACES

@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: GPixmap.h,v 1.10 2007/05/19 03:07:33 leonb Exp $
-// $Name: release_3_5_22 $
 
 #ifndef _GPIXMAP_H_
 #define _GPIXMAP_H_
@@ -80,8 +77,7 @@
     Generic support for color images.
     @author
     L\'eon Bottou <leonb@research.att.com>
-    @version
-    #$Id: GPixmap.h,v 1.10 2007/05/19 03:07:33 leonb Exp $# */
+*/
 //@{
 
 
@@ -335,6 +331,9 @@ public:
       map #bm# (see \Ref{blend}). */
   void stencil(const GBitmap *bm, 
                const GPixmap *pm, int pms, 
+               const GRect *pmr, double corr, GPixel white);
+  void stencil(const GBitmap *bm, 
+               const GPixmap *pm, int pms, 
                const GRect *pmr, double corr=1.0);
   //@}
   
@@ -364,14 +363,17 @@ public:
       these arguments eliminates dithering artifacts on the tile
       boundaries. */
   void ordered_32k_dither(int xmin=0, int ymin=0);
-  /** Applies a luminance gamma correction factor of #corr#.  Values greater than
-      #1.0# make the image brighter.  Values smaller than #1.0# make the image
-      darker.  The documentation of program \Ref{ppmcoco} explains how to
+  /** Applies a luminance gamma correction factor of #corr#.  
+      Values greater than #1.0# make the image brighter.  
+      Values smaller than #1.0# make the image darker.  
+      The documentation of program \Ref{ppmcoco} explains how to
       properly use this function. */
   void color_correct(double corr);
+  void color_correct(double corr, GPixel white);
   /** Applies a luminance gamma correction to an array of pixels. 
       This function is {\em static} and does not modify this pixmap. */
-  static void color_correct(double corr, GPixel *pixels, int npixels);
+  static void color_correct(double corr, GPixel *pix, int npix);
+  static void color_correct(double corr, GPixel white, GPixel *pix, int npix);
 
   //@}
   

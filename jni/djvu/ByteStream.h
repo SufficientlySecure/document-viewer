@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: ByteStream.h,v 1.16 2007/05/19 03:07:33 leonb Exp $
-// $Name: release_3_5_22 $
 
 #ifndef _BYTESTREAM_H
 #define _BYTESTREAM_H
@@ -97,9 +94,7 @@
 // Our original implementation consisted of multiple classes.
 // <http://prdownloads.sourceforge.net/djvu/DjVu2_2b-src.tgz>.
 
-
-    @version
-    #$Id: ByteStream.h,v 1.16 2007/05/19 03:07:33 leonb Exp $# */
+*/
 //@{
 
 

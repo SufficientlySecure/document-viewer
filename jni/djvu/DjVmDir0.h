@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: DjVmDir0.h,v 1.9 2007/03/25 20:48:29 leonb Exp $
-// $Name: release_3_5_22 $
 
 #ifndef _DJVMDIR0_H
 #define _DJVMDIR0_H
@@ -91,7 +88,7 @@ class ByteStream;
 
     @memo Directory of DjVu all-in-one-file DjVu documents.
     @author Andrei Erofeev <eaf@geocities.com>
-    @version #$Id: DjVmDir0.h,v 1.9 2007/03/25 20:48:29 leonb Exp $# */
+*/
 
 //@{
 

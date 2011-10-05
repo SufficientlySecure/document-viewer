@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: GString.cpp,v 1.27 2009/05/17 23:57:42 leonb Exp $
-// $Name: release_3_5_22 $
 
 // From: Leon Bottou, 1/31/2002
 // This file has very little to do with my initial implementation.
@@ -1245,18 +1242,19 @@ GStringRep::getbuf(int n) const
 }
 
 const char *
-GStringRep::isCharType(
-  bool (*xiswtest)(const unsigned long wc), const char *ptr, const bool reverse) const
+GStringRep::isCharType(bool (*xiswtest)(const unsigned long wc), 
+                       const char *ptr, 
+                       const bool reverse) const
 {
-  char const * xptr=ptr;
+  const char *xptr = ptr;
   unsigned long w=getValidUCS4(xptr);
   if(ptr != xptr)
-  {
-    if (sizeof(wchar_t) == 2)
-	w &= 0xffff;
-    if (reverse ^ xiswtest(w))
-	ptr = xptr;
-  }
+    {
+      if (sizeof(wchar_t) == 2)
+        w &= 0xffff;
+      if (reverse ^ xiswtest(w))
+        ptr = xptr;
+    }
   return ptr;
 }
 
@@ -1296,7 +1294,7 @@ bool
 GStringRep::giswspace(const unsigned long w)
 {
 #if HAS_WCTYPE
-  return iswspace((wchar_t)w);
+  return !!iswspace((wchar_t)w);
 #else
   return (w & ~0xff) ? false : !!isspace((int)(w & 0xff));
 #endif
@@ -1306,9 +1304,9 @@ bool
 GStringRep::giswupper(const unsigned long w)
 {
 #if HAS_WCTYPE
-  return iswupper((wchar_t)w);
+  return !!iswupper((wchar_t)w);
 #else
-  return (w & ~0xff) ? false : isupper((int)(w & 0xff));
+  return (w & ~0xff) ? false : !!isupper((int)(w & 0xff));
 #endif
 }
 
@@ -1316,9 +1314,9 @@ bool
 GStringRep::giswlower(const unsigned long w)
 {
 #if HAS_WCTYPE
-  return iswlower((wchar_t)w);
+  return !!iswlower((wchar_t)w);
 #else
-  return (w & ~0xff) ? false : islower((int)(w & 0xff));
+  return (w & ~0xff) ? false : !!islower((int)(w & 0xff));
 #endif
 }
 
@@ -1878,7 +1876,7 @@ GStringRep::UTF8::toNative(const EscapeMode escape) const
         }
         else
         {
-    	  *r++ = '?';
+          *r++ = '?';
         }
       }
     }

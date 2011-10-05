@@ -52,9 +52,6 @@
 //C- | TO ANY WARRANTY OF NON-INFRINGEMENT, OR ANY IMPLIED WARRANTY OF
 //C- | MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 //C- +------------------------------------------------------------------
-// 
-// $Id: DjVuImage.h,v 1.11 2007/05/19 03:07:33 leonb Exp $
-// $Name: release_3_5_22 $
 
 #ifndef _DJVUIMAGE_H
 #define _DJVUIMAGE_H
@@ -101,8 +98,7 @@
     @author
     L\'eon Bottou <leonb@research.att.com> - initial implementation
     Andrei Erofeev <eaf@geocities.com> - multipage support
-    @version
-    #$Id: DjVuImage.h,v 1.11 2007/05/19 03:07:33 leonb Exp $# */
+*/
 //@{
 
 
@@ -352,7 +348,10 @@ public:
       value, zero, means that no color correction should be performed. 
       This function returns a null pointer if there is not enough information
       in the DjVu image to properly render the desired image. */
-  GP<GPixmap>  get_pixmap(const GRect &rect, const GRect &all, double gamma=0) const;
+  GP<GPixmap>  get_pixmap(const GRect &rect, const GRect &all, 
+                          double gamma, GPixel white) const;
+  GP<GPixmap>  get_pixmap(const GRect &rect, const GRect &all, 
+                          double gamma=0) const;
   /** Renders the mask of the foreground layer of the DjVu image.  This
       functions is a wrapper for \Ref{JB2Image::get_bitmap}.  Argument #align#
       specified the alignment of the rows of the returned images.  Setting
@@ -361,7 +360,8 @@ public:
       byte) boundary.  This function returns a null pointer if there is not
       enough information in the DjVu image to properly render the desired
       image. */
-  GP<GBitmap>  get_bitmap(const GRect &rect, const GRect &all, int align = 1) const;
+  GP<GBitmap>  get_bitmap(const GRect &rect, const GRect &all, 
+                          int align = 1) const;
   /** Renders the background layer of the DjVu image.  Rectangles #rect# and
       #all# are used as explained above. Color correction is performed
       according to argument #gamma#, which represents the gamma coefficient of
@@ -369,7 +369,10 @@ public:
       value, zero, means that no color correction should be performed.  This
       function returns a null pointer if there is not enough information in
       the DjVu image to properly render the desired image. */
-  GP<GPixmap>  get_bg_pixmap(const GRect &rect, const GRect &all, double gamma=0) const;
+  GP<GPixmap>  get_bg_pixmap(const GRect &rect, const GRect &all, 
+                             double gamma, GPixel white) const;
+  GP<GPixmap>  get_bg_pixmap(const GRect &rect, const GRect &all, 
+                             double gamma=0) const;
   /** Renders the foreground layer of the DjVu image.  Rectangles #rect# and
       #all# are used as explained above. Color correction is performed
       according to argument #gamma#, which represents the gamma coefficient of
@@ -377,7 +380,10 @@ public:
       value, zero, means that no color correction should be performed.  This
       function returns a null pointer if there is not enough information in
       the DjVu image to properly render the desired image. */
-  GP<GPixmap>  get_fg_pixmap(const GRect &rect, const GRect &all, double gamma=0) const;
+  GP<GPixmap>  get_fg_pixmap(const GRect &rect, const GRect &all, 
+                             double gamma, GPixel white) const;
+  GP<GPixmap>  get_fg_pixmap(const GRect &rect, const GRect &all, 
+                             double gamma=0) const;
 
 
   /** set the rotation count(angle) in counter clock wise for the image
@@ -409,17 +415,20 @@ public:
   virtual void notify_chunk_done(const DjVuPort *, const GUTF8String &name);
 
   // SUPERSEDED
-  GP<GPixmap>  get_pixmap(const GRect &rect, int subs=1, double gamma=0) const;
-  GP<GBitmap>  get_bitmap(const GRect &rect, int subs=1, int align = 1) const;
-  GP<GPixmap>  get_bg_pixmap(const GRect &rect, int subs=1, double gamma=0) const;
-  GP<GPixmap>  get_fg_pixmap(const GRect &rect, int subs=1, double gamma=0) const;
+  GP<GPixmap>  get_pixmap(const GRect &r, int s=1, double g=0) const;
+  GP<GPixmap>  get_pixmap(const GRect &r, int s, double g, GPixel w) const;
+  GP<GBitmap>  get_bitmap(const GRect &r, int s=1, int align = 1) const;
+  GP<GPixmap>  get_bg_pixmap(const GRect &r, int s=1, double g=0) const;
+  GP<GPixmap>  get_bg_pixmap(const GRect &r, int s, double g, GPixel w) const;
+  GP<GPixmap>  get_fg_pixmap(const GRect &r, int s=1, double g=0) const;
+  GP<GPixmap>  get_fg_pixmap(const GRect &r, int s, double g, GPixel w) const;
 private:
   GP<DjVuFile>		file;
   int			rotate_count;
   bool			relayout_sent;
   
   // HELPERS
-  int stencil(GPixmap *pm, const GRect &rect, int subs, double gcorr) const;
+  int stencil(GPixmap *pm, const GRect &rect, int s, double g, GPixel w) const;
   GP<DjVuInfo>		get_info(const GP<DjVuFile> & file) const;
   GP<IW44Image>		get_bg44(const GP<DjVuFile> & file) const;
   GP<GPixmap>		get_bgpm(const GP<DjVuFile> & file) const;

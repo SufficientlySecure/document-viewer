@@ -67,8 +67,10 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         PageTreeNode[] children = page.nodes.getChildren(this);
 
         if (viewState.zoom < oldZoom) {
-            if (LengthUtils.isNotEmpty(children) && !childrenRequired) {
-                hasChildren = page.nodes.recycleChildren(this, bitmapsToRecycle);
+            if (!childrenRequired) {
+                if (LengthUtils.isNotEmpty(children)) {
+                    hasChildren = page.nodes.recycleChildren(this, bitmapsToRecycle);
+                }
                 if (viewState.isNodeVisible(this, pageBounds) && getBitmap() == null) {
                     decodePageTreeNode(nodesToDecode);
                 }

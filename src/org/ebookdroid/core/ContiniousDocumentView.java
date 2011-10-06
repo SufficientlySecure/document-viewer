@@ -61,8 +61,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
             return;
         }
 
-        // on scrollChanged can be called from scrollTo just after new layout applied so we should wait for relayout
-        base.getActivity().runOnUiThread(new Runnable() {
+        Runnable r = new Runnable() {
 
             @Override
             public void run() {
@@ -75,27 +74,28 @@ public class ContiniousDocumentView extends AbstractDocumentView {
                     redrawView(viewState);
                 }
             }
-        });
+        };
 
+        // on scrollChanged can be called from scrollTo just after new layout applied so we should wait for relayout
+        base.getActivity().runOnUiThread(r);
+        // r.run();
     }
 
     @Override
-    protected final void verticalConfigScroll(final int direction) {
+    public final void verticalConfigScroll(final int direction) {
         final int scrollheight = SettingsManager.getAppSettings().getScrollHeight();
         final int dy = (int) (direction * getHeight() * (scrollheight / 100.0));
 
         getScroller().startScroll(getScrollX(), getScrollY(), 0, dy);
-        scrollBy(0, dy);
 
         redrawView();
     }
 
     @Override
-    protected final void verticalDpadScroll(final int direction) {
+    public final void verticalDpadScroll(final int direction) {
         final int dy = direction * getHeight() / 2;
 
         getScroller().startScroll(getScrollX(), getScrollY(), 0, dy);
-        scrollBy(0, dy);
 
         redrawView();
     }
@@ -114,7 +114,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    public synchronized final void drawView(final Canvas canvas, final ViewState viewState) {
+    public synchronized final void drawView(final Canvas canvas, ViewState viewState) {
         final DocumentModel dm = getBase().getDocumentModel();
         for (int i = viewState.firstVisible; i <= viewState.lastVisible; i++) {
             final Page page = dm.getPageObject(i);
@@ -122,7 +122,9 @@ public class ContiniousDocumentView extends AbstractDocumentView {
                 page.draw(canvas, viewState);
             }
         }
-        // setCurrentPageByFirstVisible();
+        if(scroller.computeScrollOffset()) {
+            scrollTo(scroller.getCurrX(), scroller.getCurrY());
+        }
     }
 
     @Override

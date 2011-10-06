@@ -30,10 +30,14 @@
 	<property name="arm.mk" location="jni/Application.mk" />
 	<property name="cortex.a8.mk" location="jni/Application.arm7.a8.mk" />
 	<property name="cortex.a9.mk" location="jni/Application.arm7.a9.mk" />
+	<property name="cortex.a8.neon.mk" location="jni/Application.arm7.a8.neon.mk" />
+	<property name="cortex.a9.neon.mk" location="jni/Application.arm7.a9.neon.mk" />
 
 	<property name="arm.apk" location="apk/${package.name}-${manifest.version}.apk" />
 	<property name="cortex.a8.apk" value="apk/${package.name}-arm7-cortex-a8-${manifest.version}.apk" />
 	<property name="cortex.a9.apk" value="apk/${package.name}-arm7-cortex-a9-${manifest.version}.apk" />
+	<property name="cortex.a8.neon.apk" value="apk/${package.name}-arm7-cortex-a8-neon-${manifest.version}.apk" />
+	<property name="cortex.a9.neon.apk" value="apk/${package.name}-arm7-cortex-a9-neon-${manifest.version}.apk" />
 
 	<path id="project.libraries.src" path="thirdparty/junrar" />
 
@@ -83,14 +87,27 @@
 		</antcall>
 	</target>
 
-	<target name="make-cortex-a9-release">
+	<target name="make-cortex-a8-neon-release">
+		<antcall target="make-release" inheritall="true">
+			<param name="mk" value="${cortex.a8.neon.mk}" />
+			<param name="apk" value="${cortex.a8.neon.apk}" />
+		</antcall>
+	</target>
 
+	<target name="make-cortex-a9-release">
 		<antcall target="make-release">
 			<param name="mk" value="${cortex.a9.mk}" />
 			<param name="apk" value="${cortex.a9.apk}" />
 		</antcall>
 	</target>
 
-	<target name="make-all" depends="make-default-release, make-cortex-a8-release, make-cortex-a9-release">
+	<target name="make-cortex-a9-neon-release">
+		<antcall target="make-release">
+			<param name="mk" value="${cortex.a9.neon.mk}" />
+			<param name="apk" value="${cortex.a9.neon.apk}" />
+		</antcall>
+	</target>
+
+	<target name="make-all" depends="make-default-release, make-cortex-a8-release, make-cortex-a9-release, make-cortex-a8-neon-release, make-cortex-a9-neon-release">
 	</target>
 </project>

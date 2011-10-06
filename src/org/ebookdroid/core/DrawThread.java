@@ -78,12 +78,12 @@ public class DrawThread extends Thread {
         DrawTask task = null;
         try {
             task = queue.poll(1, TimeUnit.SECONDS);
-            if (task != null) {
-                final ArrayList<DrawTask> list = new ArrayList<DrawTask>();
-                if (queue.drainTo(list) > 0) {
-                    task = list.get(list.size() - 1);
-                }
-            }
+//            if (task != null) {
+//                final ArrayList<DrawTask> list = new ArrayList<DrawTask>();
+//                if (queue.drainTo(list) > 0) {
+//                    task = list.get(list.size() - 1);
+//                }
+//            }
         } catch (final InterruptedException e) {
             Thread.interrupted();
         }

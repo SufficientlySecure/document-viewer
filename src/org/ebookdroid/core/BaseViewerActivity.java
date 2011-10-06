@@ -540,15 +540,41 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         return this;
     }
 
+    
     @Override
-    public boolean onKeyDown(final int keyCode, final KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            closeActivity();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
+    public final boolean dispatchKeyEvent(final KeyEvent event) {
+            switch (event.getKeyCode()) {
+                case KeyEvent.KEYCODE_DPAD_DOWN:
+                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                        documentController.verticalDpadScroll(1);
+                    }
+                    return true;
+                case KeyEvent.KEYCODE_DPAD_UP:
+                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                        documentController.verticalDpadScroll(-1);
+                    }
+                    return true;
 
+                case KeyEvent.KEYCODE_VOLUME_UP:
+                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                        documentController.verticalConfigScroll(-1);
+                    }
+                    return true;
+                case KeyEvent.KEYCODE_VOLUME_DOWN:
+                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    documentController.verticalConfigScroll(1);
+                    }
+                    return true;
+                case KeyEvent.KEYCODE_BACK:
+                    if (event.getRepeatCount() == 0) {
+                        closeActivity();
+                    }
+                    return true;
+                default:
+                    return super.dispatchKeyEvent(event);
+            }
+    }
+    
     private void closeActivity() {
         SettingsManager.clearCurrentBookSettings();
         finish();

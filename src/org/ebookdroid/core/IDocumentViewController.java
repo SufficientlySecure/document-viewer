@@ -41,4 +41,8 @@ public interface IDocumentViewController {
     public static enum InvalidateSizeReason {
         INIT, LAYOUT, PAGE_ALIGN, ZOOM, PAGE_LOADED;
     }
+
+    void verticalDpadScroll(int i);
+
+    void verticalConfigScroll(int i);
 }

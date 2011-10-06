@@ -10,24 +10,26 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
-import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Scroller;
 
 public class ZoomRoll extends View {
 
+    private static final int MAX_VALUE = 10000;
+    private static final float MULTIPLIER = 400.0f;
+
     private final Bitmap left;
     private final Bitmap right;
     private final Bitmap center;
     private final Bitmap serifs;
-    private VelocityTracker velocityTracker;
     private final Scroller scroller;
-    private float lastX;
-    private static final int MAX_VALUE = 10000;
     private final ZoomModel zoomModel;
-    private static final float MULTIPLIER = 400.0f;
+
+    private final GestureDetector gestureDetector;
 
     public ZoomRoll(final Context context, final ZoomModel zoomModel) {
         super(context);
@@ -38,6 +40,7 @@ public class ZoomRoll extends View {
         serifs = BitmapFactory.decodeResource(context.getResources(), R.drawable.serifs);
 
         scroller = new Scroller(context);
+        gestureDetector = new GestureDetector(getContext(), new GestureListener());
 
         setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -75,35 +78,13 @@ public class ZoomRoll extends View {
     public boolean onTouchEvent(final MotionEvent ev) {
         super.onTouchEvent(ev);
 
-        if (velocityTracker == null) {
-            velocityTracker = VelocityTracker.obtain();
+        try {
+            Thread.sleep(16);
+        } catch (final InterruptedException e) {
+            Thread.interrupted();
         }
-        velocityTracker.addMovement(ev);
 
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                if (!scroller.isFinished()) {
-                    scroller.abortAnimation();
-                    zoomModel.commit();
-                }
-                lastX = ev.getX();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                setCurrentValue(getCurrentValue() - (ev.getX() - lastX));
-                lastX = ev.getX();
-                break;
-            case MotionEvent.ACTION_UP:
-                velocityTracker.computeCurrentVelocity(1000);
-                scroller.fling((int) getCurrentValue(), 0, (int) -velocityTracker.getXVelocity(), 0, 0, MAX_VALUE, 0, 0);
-                velocityTracker.recycle();
-                velocityTracker = null;
-                if (!scroller.computeScrollOffset()) {
-                    zoomModel.commit();
-                }
-                break;
-        }
-        invalidate();
-        return true;
+        return gestureDetector.onTouchEvent(ev);
     }
 
     @Override
@@ -130,4 +111,43 @@ public class ZoomRoll extends View {
         final float zoom = 1.0f + currentValue / MULTIPLIER;
         zoomModel.setZoom(zoom);
     }
+
+    protected class GestureListener extends SimpleOnGestureListener {
+
+        @Override
+        public boolean onDoubleTap(final MotionEvent e) {
+            setCurrentValue(0.0f);
+            return true;
+        }
+
+        @Override
+        public boolean onDown(final MotionEvent e) {
+            if (!scroller.isFinished()) {
+                scroller.abortAnimation();
+                zoomModel.commit();
+            }
+            return true;
+        }
+
+        @Override
+        public boolean onFling(final MotionEvent e1, final MotionEvent e2, final float vX, final float vY) {
+            scroller.fling((int) getCurrentValue(), 0, -(int)vX, 0, 0, MAX_VALUE, 0, 0);
+            return true;
+        }
+
+        @Override
+        public boolean onScroll(final MotionEvent e1, final MotionEvent e2, final float distanceX, final float distanceY) {
+            setCurrentValue(getCurrentValue() + distanceX);
+            return true;
+        }
+
+        @Override
+        public boolean onSingleTapUp(final MotionEvent e) {
+            if (!scroller.computeScrollOffset()) {
+                zoomModel.commit();
+            }
+            return true;
+        }
+    }
+
 }

@@ -222,6 +222,8 @@ public class GoToPageDialog extends Dialog {
         public View getView(final int index, View itemView, final ViewGroup parent) {
             if (itemView == null) {
                 itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.bookmark, parent, false);
+                final ProgressBar bar = (ProgressBar) itemView.findViewById(R.id.bookmarkPage);
+                bar.setProgressDrawable(base.getActivity().getResources().getDrawable(R.drawable.progress));
             }
 
             final Bookmark b = getBookmark(index);
@@ -230,9 +232,9 @@ public class GoToPageDialog extends Dialog {
             itemView.setOnLongClickListener(listener);
 
             final TextView text = (TextView) itemView.findViewById(R.id.bookmarkName);
+            final ProgressBar bar = (ProgressBar) itemView.findViewById(R.id.bookmarkPage);
             text.setText(b.getName());
 
-            final ProgressBar bar = (ProgressBar) itemView.findViewById(R.id.bookmarkPage);
             bar.setMax(base.getDocumentModel().getPageCount() - 1);
             bar.setProgress(b.getPage().viewIndex);
 

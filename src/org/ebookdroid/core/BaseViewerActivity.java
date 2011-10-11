@@ -130,53 +130,73 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
             @Override
             protected void onPreExecute() {
-                progressDialog = ProgressDialog.show(BaseViewerActivity.this, "", "Loading... Please wait", true);
+                LCTX.d("onPreExecute(): start");
+                try {
+                    progressDialog = ProgressDialog.show(BaseViewerActivity.this, "", "Loading... Please wait", true);
+                } catch (Throwable th) {
+                    LCTX.e("Unexpected error", th);
+                } finally {
+                    LCTX.d("onPreExecute(): finish");
+                }
             }
 
             @Override
             protected Exception doInBackground(final String... params) {
+                LCTX.d("doInBackground(): start");
                 try {
                     decodeService.open(params[0], params[1]);
                     return null;
                 } catch (final Exception e) {
                     LCTX.e(e.getMessage(), e);
                     return e;
+                } catch (final Throwable th) {
+                    LCTX.e("Unexpected error", th);
+                    return new Exception(th.getMessage());
+                } finally {
+                    LCTX.d("doInBackground(): finish");
                 }
             }
 
             @Override
             protected void onPostExecute(final Exception result) {
-                if (result == null) {
-                    zoomModel = new ZoomModel();
-                    initMultiTouchZoomIfAvailable();
-                    setContentView(frameLayout);
+                LCTX.d("onPostExecute(): start");
+                try {
+                    if (result == null) {
+                        zoomModel = new ZoomModel();
+                        initMultiTouchZoomIfAvailable();
+                        setContentView(frameLayout);
 
-                    documentModel = new DocumentModel(decodeService);
-                    documentModel.addEventListener(BaseViewerActivity.this);
-                    progressModel = new DecodingProgressModel();
-                    progressModel.addEventListener(BaseViewerActivity.this);
+                        documentModel = new DocumentModel(decodeService);
+                        documentModel.addEventListener(BaseViewerActivity.this);
+                        progressModel = new DecodingProgressModel();
+                        progressModel.addEventListener(BaseViewerActivity.this);
 
-                    SettingsManager.applyBookSettingsChanges(null, SettingsManager.getBookSettings(), null);
+                        SettingsManager.applyBookSettingsChanges(null, SettingsManager.getBookSettings(), null);
 
-                    if (documentModel != null) {
-                        final BookSettings bs = SettingsManager.getBookSettings();
-                        if (bs != null) {
-                            currentPageChanged(PageIndex.NULL, bs.getCurrentPage());
+                        if (documentModel != null) {
+                            final BookSettings bs = SettingsManager.getBookSettings();
+                            if (bs != null) {
+                                currentPageChanged(PageIndex.NULL, bs.getCurrentPage());
+                            }
+                        }
+
+                        setProgressBarIndeterminateVisibility(false);
+
+                        progressDialog.dismiss();
+                    } else {
+                        progressDialog.dismiss();
+
+                        final String msg = result.getMessage();
+                        if ("PDF needs a password!".equals(msg)) {
+                            askPassword(decodeService, fileName);
+                        } else {
+                            showErrorDlg(msg);
                         }
                     }
-
-                    setProgressBarIndeterminateVisibility(false);
-
-                    progressDialog.dismiss();
-                } else {
-                    progressDialog.dismiss();
-
-                    final String msg = result.getMessage();
-                    if ("PDF needs a password!".equals(msg)) {
-                        askPassword(decodeService, fileName);
-                    } else {
-                        showErrorDlg(msg);
-                    }
+                } catch (final Throwable th) {
+                    LCTX.e("Unexpected error", th);
+                } finally {
+                    LCTX.d("onPostExecute(): finish");
                 }
             }
         }.execute(fileName, password);
@@ -249,8 +269,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         zoomModel.addEventListener(documentController);
         documentController.getView().setLayoutParams(
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
-
-        documentController.showDocument();
 
         frameLayout.removeView(getZoomControls());
         frameLayout.addView(documentController.getView());
@@ -540,41 +558,40 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         return this;
     }
 
-    
     @Override
     public final boolean dispatchKeyEvent(final KeyEvent event) {
-            switch (event.getKeyCode()) {
-                case KeyEvent.KEYCODE_DPAD_DOWN:
-                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                        documentController.verticalDpadScroll(1);
-                    }
-                    return true;
-                case KeyEvent.KEYCODE_DPAD_UP:
-                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                        documentController.verticalDpadScroll(-1);
-                    }
-                    return true;
+        switch (event.getKeyCode()) {
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    documentController.verticalDpadScroll(1);
+                }
+                return true;
+            case KeyEvent.KEYCODE_DPAD_UP:
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    documentController.verticalDpadScroll(-1);
+                }
+                return true;
 
-                case KeyEvent.KEYCODE_VOLUME_UP:
-                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                        documentController.verticalConfigScroll(-1);
-                    }
-                    return true;
-                case KeyEvent.KEYCODE_VOLUME_DOWN:
-                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    documentController.verticalConfigScroll(-1);
+                }
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
                     documentController.verticalConfigScroll(1);
-                    }
-                    return true;
-                case KeyEvent.KEYCODE_BACK:
-                    if (event.getRepeatCount() == 0) {
-                        closeActivity();
-                    }
-                    return true;
-                default:
-                    return super.dispatchKeyEvent(event);
-            }
+                }
+                return true;
+            case KeyEvent.KEYCODE_BACK:
+                if (event.getRepeatCount() == 0) {
+                    closeActivity();
+                }
+                return true;
+            default:
+                return super.dispatchKeyEvent(event);
+        }
     }
-    
+
     private void closeActivity() {
         SettingsManager.clearCurrentBookSettings();
         finish();

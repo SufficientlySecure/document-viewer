@@ -6,18 +6,25 @@ import android.graphics.PixelXorXfermode;
 import android.text.TextPaint;
 
 public enum PagePaint {
-    DAY(Color.BLACK, Color.WHITE),
 
-    NIGHT(Color.WHITE, Color.BLACK);
+    /**
+     *
+     */
+    DAY(Color.BLACK, Color.WHITE, Color.BLACK),
+    /**
+     *
+     */
+    NIGHT(Color.WHITE, Color.BLACK, Color.BLACK);
 
     public final Paint bitmapPaint;
     public final Paint nightBitmapPaint;
     public final TextPaint textPaint = new TextPaint();
     public final Paint fillPaint = new Paint();
+    public final Paint backgroundFillPaint = new Paint();
     public final Paint decodingPaint = new Paint();
     public final Paint strokePaint = new Paint();
 
-    private PagePaint(final int textColor, final int fillColor) {
+    private PagePaint(final int textColor, final int fillColor, final int bgFillPaint) {
         bitmapPaint = new Paint();
         bitmapPaint.setFilterBitmap(true);
 
@@ -32,6 +39,9 @@ public enum PagePaint {
 
         fillPaint.setColor(fillColor);
         fillPaint.setStyle(Paint.Style.FILL);
+
+        backgroundFillPaint.setColor(bgFillPaint);
+        backgroundFillPaint.setStyle(Paint.Style.FILL);
 
         decodingPaint.setColor(Color.GRAY);
         decodingPaint.setStyle(Paint.Style.FILL);

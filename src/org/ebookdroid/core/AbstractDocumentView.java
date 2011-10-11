@@ -301,19 +301,6 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     }
 
     @Override
-    public final void showDocument() {
-        // use post to ensure that document view has width and height before decoding begin
-        post(new Runnable() {
-
-            @Override
-            public void run() {
-                init();
-                onZoomChanged(base.getZoomModel().getZoom());
-            }
-        });
-    }
-
-    @Override
     public final void goToPage(final int toPage) {
         if (isInitialized) {
             goToPageImpl(toPage);
@@ -407,6 +394,9 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
     protected boolean onLayoutChanged(final boolean changed, final int left, final int top, final int right,
             final int bottom) {
+        if (!isInitialized) {
+            init();
+        }
         if (changed && !layoutLocked) {
             if (isInitialized) {
                 ArrayList<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
@@ -532,6 +522,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
         @Override
         public boolean onDoubleTap(final MotionEvent e) {
+            // LCTX.d("onDoubleTap(" + e + ")");
             if (SettingsManager.getAppSettings().getZoomByDoubleTap()) {
                 getBase().getZoomModel().toggleZoomControls();
             }
@@ -558,7 +549,6 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
                 y = 0;
             }
             // LCTX.d("onFling(" + x + ", " + y + ")");
-            // scroller.computeScrollOffset();
             scroller.fling(getScrollX(), getScrollY(), -(int) x, -(int) y, l.left, l.right, l.top, l.bottom);
             redrawView();
             return true;
@@ -579,7 +569,8 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         }
 
         @Override
-        public boolean onSingleTapUp(final MotionEvent e) {
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            // LCTX.d("onSingleTapConfirmed(" + e + ")");
             float ts;
             if (SettingsManager.getAppSettings().getTapScroll()) {
                 final int tapsize = SettingsManager.getAppSettings().getTapSize();

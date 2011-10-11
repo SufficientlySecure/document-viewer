@@ -18,7 +18,9 @@ public interface IDocumentViewController {
 
     int getLastVisiblePage();
 
-    void showDocument();
+    void verticalDpadScroll(int i);
+
+    void verticalConfigScroll(int i);
 
     void redrawView();
 
@@ -42,7 +44,4 @@ public interface IDocumentViewController {
         INIT, LAYOUT, PAGE_ALIGN, ZOOM, PAGE_LOADED;
     }
 
-    void verticalDpadScroll(int i);
-
-    void verticalConfigScroll(int i);
 }

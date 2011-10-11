@@ -53,7 +53,7 @@ public class DecodeServiceBase implements DecodeService {
 
         @Override
         protected boolean removeEldestEntry(final Map.Entry<Integer, SoftReference<CodecPage>> eldest) {
-            if (this.size() > SettingsManager.getAppSettings().getPagesInMemory() + 1) {
+            if (this.size() > getCacheSize()) {
                 final SoftReference<CodecPage> value = eldest != null ? eldest.getValue() : null;
                 final CodecPage codecPage = value != null ? value.get() : null;
                 if (codecPage == null || codecPage.isRecycled()) {
@@ -251,6 +251,15 @@ public class DecodeServiceBase implements DecodeService {
         if (isRecycled.compareAndSet(false, true)) {
             executor.recycle();
         }
+    }
+
+    protected int getCacheSize() {
+        ViewState vs = viewState.get();
+        int minSize = 3;
+        if (vs !=  null) {
+            minSize = vs.lastVisible - vs.firstVisible + 1;
+        }
+        return Math.max(minSize, SettingsManager.getAppSettings().getPagesInMemory() + 1);
     }
 
     class Executor implements Runnable {

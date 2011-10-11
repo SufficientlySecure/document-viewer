@@ -72,7 +72,7 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
     }
 
     protected BitmapRef getBitmap(final Canvas canvas, final ViewState viewState) {
-        BitmapRef bitmap = BitmapManager.getBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.RGB_565);
+        final BitmapRef bitmap = BitmapManager.getBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.RGB_565);
 
         final PagePaint paint = viewState.nightMode ? PagePaint.NIGHT : PagePaint.DAY;
 

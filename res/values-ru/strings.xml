@@ -34,6 +34,10 @@
 	<string name="pref_brfiletypecbz_summary">"Показывать CBZ файлы"</string>
 	<string name="pref_brfiletypecbr_title">".cbr"</string>
 	<string name="pref_brfiletypecbr_summary">"Показывать CBR файлы"</string>
+    <string name="pref_brfiletypefb2_title">".fb2"</string>
+    <string name="pref_brfiletypefb2_summary">"Показывать FB2 файлы"</string>
+    <string name="pref_brfiletypefb2.zip_title">".fb2.zip"</string>
+    <string name="pref_brfiletypefb2.zip_summary">"Показывать FB2.ZIP файлы"</string>
 	<string name="list_rotation_auto">"Автоматически"</string>
 	<string name="list_rotation_land">"Форсировать альбом"</string>
 	<string name="list_rotation_port">"Форсировать портрет"</string>
@@ -120,4 +124,7 @@
 	<string name="pref_maximagesize_summary">"Макс. размер области при декодировании (в КБ)"</string>
 
     <string name="bookcase_shelves">"Книжные полки"</string>
+    <string name="recent_title">"Недавние книги"</string>
+    <string name="pref_usebookcase_title">"Использовать шкаф"</string>
+    <string name="pref_usebookcase_summary">"Использовать шкаф с обложками вместо списков"</string>
 </resources>

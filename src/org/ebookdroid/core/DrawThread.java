@@ -49,11 +49,11 @@ public class DrawThread extends Thread {
                 break;
             }
             canvas = null;
-            long interval = System.currentTimeMillis() - lastUpdate;
+            final long interval = System.currentTimeMillis() - lastUpdate;
             if (interval < TIME_INTERVAL) {
                 try {
                     Thread.sleep(TIME_INTERVAL - interval);
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
                     Thread.interrupted();
                 }
             }
@@ -88,7 +88,7 @@ public class DrawThread extends Thread {
     }
 
     private void performDrawing(final Canvas canvas, final DrawTask task) {
-        final PagePaint paint = task.viewState.nightMode ? PagePaint.NIGHT: PagePaint.DAY;
+        final PagePaint paint = task.viewState.nightMode ? PagePaint.NIGHT : PagePaint.DAY;
         canvas.drawRect(canvas.getClipBounds(), paint.backgroundFillPaint);
         view.drawView(canvas, task.viewState);
     }

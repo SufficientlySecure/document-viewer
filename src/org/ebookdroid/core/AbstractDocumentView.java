@@ -352,12 +352,6 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
     }
 
-    @Override
-    public abstract void verticalConfigScroll(int direction);
-
-    @Override
-    public abstract void verticalDpadScroll(int direction);
-
     protected abstract Rect getScrollLimits();
 
     @Override
@@ -399,7 +393,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         }
         if (changed && !layoutLocked) {
             if (isInitialized) {
-                ArrayList<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
+                final ArrayList<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
                 for (final Page page : base.getDocumentModel().getPages()) {
                     page.nodes.root.recycle(bitmapsToRecycle);
                 }
@@ -569,7 +563,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         }
 
         @Override
-        public boolean onSingleTapConfirmed(MotionEvent e) {
+        public boolean onSingleTapConfirmed(final MotionEvent e) {
             // LCTX.d("onSingleTapConfirmed(" + e + ")");
             float ts;
             if (SettingsManager.getAppSettings().getTapScroll()) {

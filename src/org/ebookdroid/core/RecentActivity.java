@@ -77,12 +77,12 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
 
         recentAdapter = new RecentAdapter(this);
         libraryAdapter = new FileListAdapter(this);
-        bookshelfAdapter = new BooksAdapter(this);
+        bookshelfAdapter = new BooksAdapter(this, recentAdapter);
 
         libraryButton = (ImageView) findViewById(R.id.recentlibrary);
 
         viewflipper = (ViewFlipper) findViewById(R.id.recentflip);
-        
+
         final View.OnClickListener handler = new View.OnClickListener() {
 
             @Override
@@ -101,13 +101,15 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
         if (SettingsManager.getAppSettings().getUseBookcase()) {
             viewflipper.addView(new BookcaseView(this, bookshelfAdapter), 0);
             libraryButton.setImageResource(R.drawable.actionbar_shelf);
+            recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), SettingsManager.getAppSettings()
+                    .getAllowedFileTypes());
         } else {
             viewflipper.addView(new RecentBooksView(this, recentAdapter), VIEW_RECENT);
             viewflipper.addView(new LibraryView(this, libraryAdapter), VIEW_LIBRARY);
 
             libraryButton.setOnClickListener(handler);
         }
-        
+
         final View recentBrowser = findViewById(R.id.recentbrowser);
         if (recentBrowser != null) {
             recentBrowser.setOnClickListener(handler);
@@ -154,6 +156,8 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
 
         if (SettingsManager.getAppSettings().getUseBookcase()) {
             bookshelfAdapter.startScan(SettingsManager.getAppSettings().getAllowedFileTypes());
+            recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), SettingsManager.getAppSettings()
+                    .getAllowedFileTypes());
         } else {
             if (viewflipper.getDisplayedChild() == VIEW_RECENT) {
                 if (SettingsManager.getRecentBook() == null) {
@@ -239,7 +243,7 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
         libraryAdapter.stopScan();
         bookshelfAdapter.stopScan();
         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-        Class<? extends Activity> activity = Activities.getByUri(uri);
+        final Class<? extends Activity> activity = Activities.getByUri(uri);
         if (activity != null) {
             intent.setClass(this, activity);
             // Issue 33
@@ -263,7 +267,7 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
 
             if (view == VIEW_LIBRARY) {
                 viewflipper.setDisplayedChild(VIEW_LIBRARY);
-                libraryButton.setImageResource(R.drawable.actionbar_recent);
+                libraryButton.setImageResource(R.drawable.actionbar_shelf);
                 libraryAdapter.startScan(filter);
             } else {
                 viewflipper.setDisplayedChild(VIEW_RECENT);
@@ -308,21 +312,25 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
             final File thumbnailFile = new File(cacheDir, md5 + ".thumbnail");
             if (thumbnailFile.exists()) {
 
-                Bitmap tmpbmp = BitmapFactory.decodeFile(thumbnailFile.getPath());
-                int width = tmpbmp.getWidth() + 33;
-                int height = tmpbmp.getHeight() + 23;
-                bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                final Bitmap tmpbmp = BitmapFactory.decodeFile(thumbnailFile.getPath());
+                if (tmpbmp == null) {
+                    thumbnailFile.delete();
+                } else {
+                    final int width = tmpbmp.getWidth() + 33;
+                    final int height = tmpbmp.getHeight() + 23;
+                    bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
-                bmp.eraseColor(Color.TRANSPARENT);
+                    bmp.eraseColor(Color.TRANSPARENT);
 
-                Canvas c = new Canvas(bmp);
+                    final Canvas c = new Canvas(bmp);
 
-                c.drawBitmap(cornerThmbBitmap, null, new Rect(0, 0, 33, 23), null);
-                c.drawBitmap(topThmbBitmap, null, new Rect(33, 0, width, 23), null);
-                c.drawBitmap(leftThmbBitmap, null, new Rect(0, 23, 33, height), null);
-                c.drawBitmap(tmpbmp, null, new Rect(33, 23, width, height), null);
+                    c.drawBitmap(cornerThmbBitmap, null, new Rect(0, 0, 33, 23), null);
+                    c.drawBitmap(topThmbBitmap, null, new Rect(33, 0, width, 23), null);
+                    c.drawBitmap(leftThmbBitmap, null, new Rect(0, 23, 33, height), null);
+                    c.drawBitmap(tmpbmp, null, new Rect(33, 23, width, height), null);
 
-                thumbnails.put(md5, new SoftReference<Bitmap>(bmp));
+                    thumbnails.put(md5, new SoftReference<Bitmap>(bmp));
+                }
             }
         }
 
@@ -334,15 +342,15 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
     }
 
     @Override
-    public void onAppSettingsChanged(AppSettings oldSettings, AppSettings newSettings, Diff diff) {
+    public void onAppSettingsChanged(final AppSettings oldSettings, final AppSettings newSettings, final Diff diff) {
         if (diff.isUseBookcaseChanged()) {
             // TODO
         }
     }
 
     @Override
-    public void onBookSettingsChanged(BookSettings oldSettings, BookSettings newSettings,
-            org.ebookdroid.core.settings.books.BookSettings.Diff diff, Diff appDiff) {
+    public void onBookSettingsChanged(final BookSettings oldSettings, final BookSettings newSettings,
+            final org.ebookdroid.core.settings.books.BookSettings.Diff diff, final Diff appDiff) {
 
     }
 }

@@ -23,14 +23,16 @@ public enum Activities {
 
     CBZ(CbzViewerActivity.class, "cbz"),
 
-    CBX(CbrViewerActivity.class, "cbr");
+    CBR(CbrViewerActivity.class, "cbr"),
+
+    FB2(null, "fb2", "fb2.zip");
 
     private final static Map<String, Class<? extends Activity>> extensionToActivity;
 
     static {
         extensionToActivity = new HashMap<String, Class<? extends Activity>>();
-        for(Activities a : values()) {
-            Class<? extends Activity> ac = a.getActivityClass();
+        for (final Activities a : values()) {
+            final Class<? extends Activity> ac = a.getActivityClass();
             for (final String ext : a.getExtensions()) {
                 extensionToActivity.put(ext.toLowerCase(), ac);
             }
@@ -60,8 +62,12 @@ public enum Activities {
 
     public static Class<? extends Activity> getByUri(final Uri uri) {
         final String uriString = uri.toString();
-        final String extension = uriString.substring(uriString.lastIndexOf('.') + 1);
-        return getByExtension(extension);
+        for (final String ext : extensionToActivity.keySet()) {
+            if (uriString.endsWith("." + ext)) {
+                return extensionToActivity.get(ext);
+            }
+        }
+        return null;
     }
 
     public static Class<? extends Activity> getByExtension(final String ext) {

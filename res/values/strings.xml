@@ -34,6 +34,10 @@
 	<string name="pref_brfiletypecbz_summary">"Show CBZ files"</string>
 	<string name="pref_brfiletypecbr_title">".cbr"</string>
 	<string name="pref_brfiletypecbr_summary">"Show CBR files"</string>
+    <string name="pref_brfiletypefb2_title">".fb2"</string>
+    <string name="pref_brfiletypefb2_summary">"Show FB2 files"</string>
+    <string name="pref_brfiletypefb2.zip_title">".fb2.zip"</string>
+    <string name="pref_brfiletypefb2.zip_summary">"Show FB2.ZIP files"</string>
 	<string name="list_rotation_auto">"Automatic"</string>
 	<string name="list_rotation_land">"Force landscape"</string>
 	<string name="list_rotation_port">"Force portrait"</string>
@@ -118,4 +122,7 @@
 	<string name="pref_maximagesize_summary">"Max slice size (in KB)"</string>
   
     <string name="bookcase_shelves">"Bookshelves"</string>
+    <string name="recent_title">"Recent books"</string>
+    <string name="pref_usebookcase_title">"Use bookcase view"</string>
+    <string name="pref_usebookcase_summary">"Use bookcase view instead of lists"</string>
 </resources>

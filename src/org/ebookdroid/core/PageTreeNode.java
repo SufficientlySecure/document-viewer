@@ -49,7 +49,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         this.childrenZoomThreshold = childrenZoomThreshold;
     }
 
-    public void recycle(List<BitmapRef> bitmapsToRecycle) {
+    public void recycle(final List<BitmapRef> bitmapsToRecycle) {
         stopDecodingThisNode("node recycling");
         holder.recycle(bitmapsToRecycle);
         hasChildren = page.nodes.recycleChildren(this, bitmapsToRecycle);
@@ -133,7 +133,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     protected void onChildLoaded(final PageTreeNode child, final ViewState viewState, final RectF bounds,
-            List<BitmapRef> bitmapsToRecycle) {
+            final List<BitmapRef> bitmapsToRecycle) {
         if (viewState.decodeMode == DecodeMode.LOW_MEMORY) {
             if (page.nodes.isHiddenByChildren(this, viewState, bounds)) {
                 holder.clearDirectRef(bitmapsToRecycle);
@@ -184,7 +184,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                     }
                     final RectF bounds = viewState.getBounds(page);
                     if (parent != null) {
-                        List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>(2);
+                        final List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>(2);
                         parent.onChildLoaded(PageTreeNode.this, viewState, bounds, bitmapsToRecycle);
                         BitmapManager.release(bitmapsToRecycle);
                     }
@@ -226,7 +226,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             return;
         }
 
-        Bitmap bitmap = viewState.nightMode ? holder.getNightBitmap(paint.nightBitmapPaint) : holder.getBitmap();
+        final Bitmap bitmap = viewState.nightMode ? holder.getNightBitmap(paint.nightBitmapPaint) : holder.getBitmap();
 
         if (bitmap != null) {
             canvas.drawBitmap(bitmap, holder.getBitmapBounds(), tr, paint.bitmapPaint);
@@ -357,7 +357,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         Rect bounds;
 
         public synchronized Bitmap getBitmap() {
-            Bitmap bmp = bitmap != null ? bitmap.getBitmap() : null;
+            final Bitmap bmp = bitmap != null ? bitmap.getBitmap() : null;
             if (bmp == null || bmp.isRecycled()) {
                 if (bitmap != null) {
                     BitmapManager.release(bitmap);
@@ -422,13 +422,13 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             }
         }
 
-        public synchronized void setBitmap(final BitmapRef ref, Rect bitmapBounds) {
+        public synchronized void setBitmap(final BitmapRef ref, final Rect bitmapBounds) {
             if (ref == null) {
                 return;
             }
 
             this.bounds = bitmapBounds;
-            List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>(2);
+            final List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>(2);
             recycle(bitmapsToRecycle);
             BitmapManager.release(bitmapsToRecycle);
 

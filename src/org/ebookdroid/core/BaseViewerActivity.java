@@ -133,7 +133,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
                 LCTX.d("onPreExecute(): start");
                 try {
                     progressDialog = ProgressDialog.show(BaseViewerActivity.this, "", "Loading... Please wait", true);
-                } catch (Throwable th) {
+                } catch (final Throwable th) {
                     LCTX.e("Unexpected error", th);
                 } finally {
                     LCTX.d("onPreExecute(): finish");

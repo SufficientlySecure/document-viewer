@@ -212,6 +212,11 @@
 		android:title="@string/pref_browser_category"
 		android:summary="@string/pref_browser_category_summary">
 
+		<CheckBoxPreference
+			android:key="usebookcase"
+			android:title="@string/pref_usebookcase_title"
+			android:summary="@string/pref_usebookcase_summary"
+			android:defaultValue="true" />
 		<EditTextPreference
 			android:key="brautoscandir"
 			android:title="@string/pref_brautoscandir_title"
@@ -256,6 +261,16 @@
 				android:title="@string/pref_brfiletypecbr_title"
 				android:summary="@string/pref_brfiletypecbr_summary"
 				android:defaultValue="true" />
+			<CheckBoxPreference
+				android:key="brfiletypefb2"
+				android:title="@string/pref_brfiletypefb2_title"
+				android:summary="@string/pref_brfiletypefb2_summary"
+				android:defaultValue="false" />
+			<CheckBoxPreference
+				android:key="brfiletypefb2.zip"
+				android:title="@string/pref_brfiletypefb2.zip_title"
+				android:summary="@string/pref_brfiletypefb2.zip_summary"
+				android:defaultValue="false" />
 		</PreferenceCategory>
 
 	</PreferenceScreen>

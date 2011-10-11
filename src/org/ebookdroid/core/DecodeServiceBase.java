@@ -206,11 +206,11 @@ public class DecodeServiceBase implements DecodeService {
         if (LCTX.isDebugEnabled()) {
             LCTX.d("Codec pages in cache: " + pages.size());
         }
-        for (Iterator<Map.Entry<Integer, SoftReference<CodecPage>>> i = pages.entrySet().iterator(); i.hasNext();) {
-            Map.Entry<Integer, SoftReference<CodecPage>> entry = i.next();
-            int index = entry.getKey();
-            SoftReference<CodecPage> ref = entry.getValue();
-            CodecPage page = ref != null ? ref.get() : null;
+        for (final Iterator<Map.Entry<Integer, SoftReference<CodecPage>>> i = pages.entrySet().iterator(); i.hasNext();) {
+            final Map.Entry<Integer, SoftReference<CodecPage>> entry = i.next();
+            final int index = entry.getKey();
+            final SoftReference<CodecPage> ref = entry.getValue();
+            final CodecPage page = ref != null ? ref.get() : null;
             if (page == null || page.isRecycled()) {
                 if (LCTX.isDebugEnabled()) {
                     LCTX.d("Remove auto-recycled codec page reference: " + index);
@@ -254,9 +254,9 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     protected int getCacheSize() {
-        ViewState vs = viewState.get();
+        final ViewState vs = viewState.get();
         int minSize = 3;
-        if (vs !=  null) {
+        if (vs != null) {
             minSize = vs.lastVisible - vs.firstVisible + 1;
         }
         return Math.max(minSize, SettingsManager.getAppSettings().getPagesInMemory() + 1);
@@ -527,7 +527,7 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     @Override
-    public void createThumbnail(File thumbnailFile, int width, int height) {
+    public void createThumbnail(final File thumbnailFile, int width, int height) {
         Bitmap thumbnail = document.getEmbeddedThumbnail();
         BitmapRef bmp = null;
         if (thumbnail != null) {
@@ -541,7 +541,7 @@ public class DecodeServiceBase implements DecodeService {
 
             thumbnail = Bitmap.createScaledBitmap(thumbnail, width, height, true);
         } else {
-            CodecPage page = getPage(0);
+            final CodecPage page = getPage(0);
             bmp = page.renderBitmap(width, height, new RectF(0, 0, 1, 1));
             thumbnail = bmp.getBitmap();
         }
@@ -549,10 +549,10 @@ public class DecodeServiceBase implements DecodeService {
         FileOutputStream out;
         try {
             out = new FileOutputStream(thumbnailFile);
-            bmp.getBitmap().compress(Bitmap.CompressFormat.JPEG, 50, out);
+            thumbnail.compress(Bitmap.CompressFormat.JPEG, 50, out);
             out.close();
-        } catch (FileNotFoundException e) {
-        } catch (IOException e) {
+        } catch (final FileNotFoundException e) {
+        } catch (final IOException e) {
         } finally {
             BitmapManager.release(bmp);
         }

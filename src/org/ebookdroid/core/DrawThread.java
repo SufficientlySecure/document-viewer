@@ -15,16 +15,13 @@ public class DrawThread extends Thread {
 
     private final SurfaceHolder surfaceHolder;
 
-    private final AbstractDocumentView view;
-
     private final BlockingQueue<DrawTask> queue = new ArrayBlockingQueue<DrawThread.DrawTask>(16, true);
 
     private long lastUpdate = 0;
     private static final long TIME_INTERVAL = 30;
 
-    public DrawThread(final SurfaceHolder surfaceHolder, final AbstractDocumentView view) {
+    public DrawThread(final SurfaceHolder surfaceHolder) {
         this.surfaceHolder = surfaceHolder;
-        this.view = view;
     }
 
     public void finish() {
@@ -75,12 +72,12 @@ public class DrawThread extends Thread {
         DrawTask task = null;
         try {
             task = queue.poll(1, TimeUnit.SECONDS);
-//            if (task != null) {
-//                final ArrayList<DrawTask> list = new ArrayList<DrawTask>();
-//                if (queue.drainTo(list) > 0) {
-//                    task = list.get(list.size() - 1);
-//                }
-//            }
+//          if (task != null) {
+//          final ArrayList<DrawTask> list = new ArrayList<DrawTask>();
+//          if (queue.drainTo(list) > 0) {
+//              task = list.get(list.size() - 1);
+//          }
+//      }
         } catch (final InterruptedException e) {
             Thread.interrupted();
         }
@@ -88,9 +85,9 @@ public class DrawThread extends Thread {
     }
 
     private void performDrawing(final Canvas canvas, final DrawTask task) {
-        final PagePaint paint = task.viewState.nightMode ? PagePaint.NIGHT : PagePaint.DAY;
+        final PagePaint paint = task.viewState.nightMode ? PagePaint.NIGHT: PagePaint.DAY;
         canvas.drawRect(canvas.getClipBounds(), paint.backgroundFillPaint);
-        view.drawView(canvas, task.viewState);
+        task.viewState.ctrl.drawView(canvas, task.viewState);
     }
 
     public void draw(final ViewState viewState) {

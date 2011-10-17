@@ -26,6 +26,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -36,6 +39,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -48,6 +52,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class BaseViewerActivity extends Activity implements IViewerActivity, DecodingProgressListener,
         CurrentPageListener, ISettingsChangeListener {
@@ -58,7 +63,9 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     public static final DisplayMetrics DM = new DisplayMetrics();
 
-    private IDocumentViewController documentController;
+    private BaseDocumentView view;
+    private final AtomicReference<IDocumentViewController> ctrl = new AtomicReference<IDocumentViewController>(
+            new EmptyContoller());
     private Toast pageNumberToast;
 
     private ZoomModel zoomModel;
@@ -92,6 +99,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         SettingsManager.addListener(this);
 
         frameLayout = createMainContainer();
+        view = new BaseDocumentView(this);
 
         initActivity();
 
@@ -253,25 +261,21 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     @Override
     public void createDocumentView() {
-        if (documentController != null) {
-            frameLayout.removeView(documentController.getView());
-            zoomModel.removeEventListener(documentController);
+        if (getDocumentController() != null) {
+            frameLayout.removeView(getView());
+            getZoomModel().removeEventListener(getDocumentController());
         }
 
         final BookSettings bs = SettingsManager.getBookSettings();
 
-        if (bs.singlePage) {
-            documentController = new SinglePageDocumentView(this);
-        } else {
-            documentController = new ContiniousDocumentView(this);
-        }
+        ctrl.set(bs.singlePage ? new SinglePageDocumentView(this) : new ContiniousDocumentView(this));
 
-        zoomModel.addEventListener(documentController);
-        documentController.getView().setLayoutParams(
-                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
+        getZoomModel().addEventListener(getDocumentController());
+        getView().setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
+                ViewGroup.LayoutParams.FILL_PARENT));
 
         frameLayout.removeView(getZoomControls());
-        frameLayout.addView(documentController.getView());
+        frameLayout.addView(getView());
         frameLayout.addView(getZoomControls());
     }
 
@@ -346,7 +350,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Called on creation options menu
-     *
+     * 
      * @param menu
      *            the main menu
      * @return true, if successful
@@ -362,7 +366,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     @Override
     public boolean onMenuOpened(final int featureId, final Menu menu) {
-        getDocumentController().changeLayoutLock(true);
+        getView().changeLayoutLock(true);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         return super.onMenuOpened(featureId, menu);
     }
@@ -379,7 +383,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
             @Override
             public void run() {
-                getDocumentController().changeLayoutLock(false);
+                getView().changeLayoutLock(false);
             }
         });
     }
@@ -411,7 +415,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
                                             + documentModel.getDecodeService().getPageCount(), 2000).show();
                             return;
                         }
-                        documentController.goToPage(pageNumber - 1);
+                        getDocumentController().goToPage(pageNumber - 1);
                     } else if (link.startsWith("http:")) {
                         final Intent i = new Intent(Intent.ACTION_VIEW);
                         i.setData(Uri.parse(link));
@@ -500,7 +504,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the zoom model.
-     *
+     * 
      * @return the zoom model
      */
     @Override
@@ -510,7 +514,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the multi touch zoom.
-     *
+     * 
      * @return the multi touch zoom
      */
     @Override
@@ -525,7 +529,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the decoding progress model.
-     *
+     * 
      * @return the decoding progress model
      */
     @Override
@@ -540,7 +544,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     @Override
     public IDocumentViewController getDocumentController() {
-        return documentController;
+        return ctrl.get();
     }
 
     @Override
@@ -549,8 +553,8 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     }
 
     @Override
-    public View getView() {
-        return documentController.getView();
+    public BaseDocumentView getView() {
+        return view;
     }
 
     @Override
@@ -560,28 +564,11 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     @Override
     public final boolean dispatchKeyEvent(final KeyEvent event) {
-        switch (event.getKeyCode()) {
-            case KeyEvent.KEYCODE_DPAD_DOWN:
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                    documentController.verticalDpadScroll(1);
-                }
-                return true;
-            case KeyEvent.KEYCODE_DPAD_UP:
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                    documentController.verticalDpadScroll(-1);
-                }
-                return true;
+        if (getDocumentController().dispatchKeyEvent(event)) {
+            return true;
+        }
 
-            case KeyEvent.KEYCODE_VOLUME_UP:
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                    documentController.verticalConfigScroll(-1);
-                }
-                return true;
-            case KeyEvent.KEYCODE_VOLUME_DOWN:
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                    documentController.verticalConfigScroll(1);
-                }
-                return true;
+        switch (event.getKeyCode()) {
             case KeyEvent.KEYCODE_BACK:
                 if (event.getRepeatCount() == 0) {
                     closeActivity();
@@ -677,4 +664,110 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         }
     }
 
+    private class EmptyContoller implements IDocumentViewController {
+
+        @Override
+        public void zoomChanged(final float newZoom, final float oldZoom) {
+        }
+
+        @Override
+        public void commitZoom() {
+        }
+
+        @Override
+        public void goToPage(final int page) {
+        }
+
+        @Override
+        public void invalidatePageSizes(final InvalidateSizeReason reason, final Page changedPage) {
+        }
+
+        @Override
+        public RectF getViewRect() {
+            return view.getViewRect();
+        }
+
+        @Override
+        public int getFirstVisiblePage() {
+            return 0;
+        }
+
+        @Override
+        public int calculateCurrentPage(final ViewState viewState) {
+            return 0;
+        }
+
+        @Override
+        public int getLastVisiblePage() {
+            return 0;
+        }
+
+        @Override
+        public void verticalDpadScroll(final int i) {
+        }
+
+        @Override
+        public void verticalConfigScroll(final int i) {
+        }
+
+        @Override
+        public void redrawView() {
+        }
+
+        @Override
+        public void redrawView(final ViewState viewState) {
+        }
+
+        @Override
+        public void setAlign(final PageAlign byResValue) {
+        }
+
+        @Override
+        public IViewerActivity getBase() {
+            return BaseViewerActivity.this;
+        }
+
+        @Override
+        public BaseDocumentView getView() {
+            return view;
+        }
+
+        @Override
+        public void updateAnimationType() {
+        }
+
+        @Override
+        public void updateMemorySettings() {
+        }
+
+        @Override
+        public void drawView(final Canvas canvas, final ViewState viewState) {
+        }
+
+        @Override
+        public boolean onLayoutChanged(final boolean layoutChanged, final boolean layoutLocked, final int left,
+                final int top, final int right, final int bottom) {
+            return false;
+        }
+
+        @Override
+        public Rect getScrollLimits() {
+            return new Rect(0, 0, 0, 0);
+        }
+
+        @Override
+        public boolean onTouchEvent(final MotionEvent ev) {
+            return false;
+        }
+
+        @Override
+        public void onScrollChanged(final int newPage, final int direction) {
+        }
+
+        @Override
+        public boolean dispatchKeyEvent(final KeyEvent event) {
+            return false;
+        }
+
+    }
 }

@@ -7,7 +7,6 @@ import org.ebookdroid.core.multitouch.MultiTouchZoom;
 
 import android.app.Activity;
 import android.content.Context;
-import android.view.View;
 
 public interface IViewerActivity {
 
@@ -19,7 +18,7 @@ public interface IViewerActivity {
 
     DocumentModel getDocumentModel();
 
-    View getView();
+    BaseDocumentView getView();
 
     IDocumentViewController getDocumentController();
 

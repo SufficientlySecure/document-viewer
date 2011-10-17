@@ -23,7 +23,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
                 final RectF bounds = page.getBounds(getBase().getZoomModel().getZoom());
 
                 dm.setCurrentPageIndex(page.index);
-                scrollTo(getScrollX(), Math.round(bounds.top - (viewRect.height() - bounds.height()) / 2));
+                getView().scrollTo(getScrollX(), Math.round(bounds.top - (viewRect.height() - bounds.height()) / 2));
             }
         }
     }
@@ -55,7 +55,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    protected final void onScrollChanged(final int newPage, final int direction) {
+    public final void onScrollChanged(final int newPage, final int direction) {
         // bounds could be not updated
         if (inZoom.get()) {
             return;
@@ -100,7 +100,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    protected final Rect getScrollLimits() {
+    public final Rect getScrollLimits() {
         final int width = getWidth();
         final int height = getHeight();
         final Page lpo = getBase().getDocumentModel().getLastPageObject();
@@ -121,19 +121,19 @@ public class ContiniousDocumentView extends AbstractDocumentView {
                 page.draw(canvas, viewState);
             }
         }
-        if (scroller.computeScrollOffset()) {
-            scrollTo(scroller.getCurrX(), scroller.getCurrY());
+        if (getScroller().computeScrollOffset()) {
+            getView().scrollTo(getScroller().getCurrX(), getScroller().getCurrY());
         }
     }
 
     @Override
-    protected final boolean onLayoutChanged(final boolean changed, final int left, final int top, final int right,
-            final int bottom) {
+    public final boolean onLayoutChanged(final boolean layoutChanged, boolean layoutLocked, final int left,
+            final int top, final int right, final int bottom) {
         int page = -1;
-        if (changed) {
+        if (layoutChanged) {
             page = base.getDocumentModel().getCurrentViewPageIndex();
         }
-        if (super.onLayoutChanged(changed, left, top, right, bottom)) {
+        if (super.onLayoutChanged(layoutChanged, layoutLocked, left, top, right, bottom)) {
             if (page > 0) {
                 goToPage(page);
             }

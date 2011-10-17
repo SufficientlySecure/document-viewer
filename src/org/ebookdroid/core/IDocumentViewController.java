@@ -1,9 +1,14 @@
 package org.ebookdroid.core;
 
-import android.graphics.RectF;
-import android.view.View;
+import org.ebookdroid.core.events.ZoomListener;
 
-public interface IDocumentViewController {
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+
+public interface IDocumentViewController extends ZoomListener {
 
     /* Page related methods */
     void goToPage(int page);
@@ -26,15 +31,13 @@ public interface IDocumentViewController {
 
     void redrawView(ViewState viewState);
 
-    void changeLayoutLock(boolean lock);
-
     void setAlign(PageAlign byResValue);
 
     /* Infrastructure methods */
 
     IViewerActivity getBase();
 
-    View getView();
+    BaseDocumentView getView();
 
     void updateAnimationType();
 
@@ -43,5 +46,17 @@ public interface IDocumentViewController {
     public static enum InvalidateSizeReason {
         INIT, LAYOUT, PAGE_ALIGN, ZOOM, PAGE_LOADED;
     }
+
+    void drawView(Canvas canvas, ViewState viewState);
+
+    boolean onLayoutChanged(boolean layoutChanged, boolean layoutLocked, int left, int top, int right, int bottom);
+
+    Rect getScrollLimits();
+
+    boolean onTouchEvent(MotionEvent ev);
+
+    void onScrollChanged(final int newPage, final int direction);
+
+    boolean dispatchKeyEvent(final KeyEvent event);
 
 }

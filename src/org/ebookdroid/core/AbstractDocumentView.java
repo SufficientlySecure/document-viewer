@@ -2,7 +2,6 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.core.bitmaps.BitmapManager;
 import org.ebookdroid.core.bitmaps.BitmapRef;
-import org.ebookdroid.core.events.ZoomListener;
 import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.utils.MathUtils;
@@ -12,10 +11,8 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.View;
 import android.widget.Scroller;
 
 import java.util.ArrayList;
@@ -23,24 +20,24 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class AbstractDocumentView extends SurfaceView implements ZoomListener, IDocumentViewController,
-        SurfaceHolder.Callback {
+public abstract class AbstractDocumentView implements IDocumentViewController {
 
     protected static final LogContext LCTX = LogContext.ROOT.lctx("View");
 
     public static final int DOUBLE_TAP_TIME = 500;
 
     protected final IViewerActivity base;
-    protected boolean isInitialized = false;
-    protected final Scroller scroller;
-    protected final AtomicBoolean inZoom = new AtomicBoolean();
-    protected PageAlign align;
 
-    protected DrawThread drawThread;
+    protected boolean isInitialized = false;
+
+    protected final AtomicBoolean inZoom = new AtomicBoolean();
+
+    protected PageAlign align;
 
     protected final PageIndex pageToGo;
 
     protected int firstVisiblePage;
+
     protected int lastVisiblePage;
 
     protected float initialZoom;
@@ -50,25 +47,18 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     protected GestureDetector gestureDetector;
 
     public AbstractDocumentView(final IViewerActivity baseActivity) {
-        super(baseActivity.getContext());
         this.base = baseActivity;
         this.align = SettingsManager.getBookSettings().pageAlign;
         this.firstVisiblePage = -1;
         this.lastVisiblePage = -1;
-        this.scroller = new Scroller(getContext());
 
-        this.gestureDetector = new GestureDetector(getContext(), new GestureListener());
+        this.gestureDetector = new GestureDetector(base.getView().getContext(), new GestureListener());
         this.pageToGo = SettingsManager.getBookSettings().getCurrentPage();
-
-        setKeepScreenOn(SettingsManager.getAppSettings().isKeepScreenOn());
-        setFocusable(true);
-        setFocusableInTouchMode(true);
-        getHolder().addCallback(this);
     }
 
     @Override
-    public final View getView() {
-        return this;
+    public final BaseDocumentView getView() {
+        return base.getView();
     }
 
     @Override
@@ -77,7 +67,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
     }
 
     protected final Scroller getScroller() {
-        return scroller;
+        return getView().getScroller();
     }
 
     protected final void init() {
@@ -96,14 +86,13 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
     protected abstract void goToPageImpl(final int toPage);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.IDocumentViewController#onScrollChanged(int, int)
+     */
     @Override
-    protected final void onScrollChanged(final int l, final int t, final int oldl, final int oldt) {
-        super.onScrollChanged(l, t, oldl, oldt);
-
-        onScrollChanged(-1, t - oldt);
-    }
-
-    protected void onScrollChanged(final int newPage, final int direction) {
+    public void onScrollChanged(final int newPage, final int direction) {
         // bounds could be not updated
         if (inZoom.get()) {
             return;
@@ -326,16 +315,58 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         final float ratio = newZoom / oldZoom;
         invalidatePageSizes(InvalidateSizeReason.ZOOM, null);
 
-        scrollTo((int) ((getScrollX() + getWidth() / 2) * ratio - getWidth() / 2),
+        getView().scrollTo((int) ((getScrollX() + getWidth() / 2) * ratio - getWidth() / 2),
                 (int) ((getScrollY() + getHeight() / 2) * ratio - getHeight() / 2));
 
         redrawView(onZoomChanged(newZoom));
     }
 
+    public int getScrollX() {
+        return base.getView().getScrollX();
+    }
+
+    public int getWidth() {
+        return base.getView().getWidth();
+    }
+
+    public int getScrollY() {
+        return base.getView().getScrollY();
+    }
+
+    public int getHeight() {
+        return base.getView().getHeight();
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(final KeyEvent event) {
+        switch (event.getKeyCode()) {
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    verticalDpadScroll(1);
+                }
+                return true;
+            case KeyEvent.KEYCODE_DPAD_UP:
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    verticalDpadScroll(-1);
+                }
+                return true;
+
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    verticalConfigScroll(-1);
+                }
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    verticalConfigScroll(1);
+                }
+                return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean onTouchEvent(final MotionEvent ev) {
-        super.onTouchEvent(ev);
-
         try {
             Thread.sleep(16);
         } catch (final InterruptedException e) {
@@ -352,46 +383,18 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
     }
 
-    protected abstract Rect getScrollLimits();
-
-    @Override
-    public final void scrollTo(final int x, final int y) {
-        final Runnable r = new Runnable() {
-
-            @Override
-            public void run() {
-                final Rect l = getScrollLimits();
-                AbstractDocumentView.super.scrollTo(MathUtils.adjust(x, l.left, l.right),
-                        MathUtils.adjust(y, l.top, l.bottom));
-            }
-        };
-
-        base.getActivity().runOnUiThread(r);
-    }
-
     @Override
     public final RectF getViewRect() {
-        return new RectF(getScrollX(), getScrollY(), getScrollX() + getWidth(), getScrollY() + getHeight());
+        return getView().getViewRect();
     }
 
     @Override
-    public void changeLayoutLock(final boolean lock) {
-        layoutLocked = lock;
-    }
-
-    @Override
-    protected final void onLayout(final boolean changed, final int left, final int top, final int right,
-            final int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        onLayoutChanged(changed, left, top, right, bottom);
-    }
-
-    protected boolean onLayoutChanged(final boolean changed, final int left, final int top, final int right,
-            final int bottom) {
+    public boolean onLayoutChanged(final boolean layoutChanged, final boolean layoutLocked, final int left,
+            final int top, final int right, final int bottom) {
         if (!isInitialized) {
             init();
         }
-        if (changed && !layoutLocked) {
+        if (layoutChanged && !layoutLocked) {
             if (isInitialized) {
                 final ArrayList<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
                 for (final Page page : base.getDocumentModel().getPages()) {
@@ -417,7 +420,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         }
         stopScroller();
         final float scrollScaleRatio = getScrollScaleRatio();
-        scrollTo((int) (getScrollX() * scrollScaleRatio), (int) (getScrollY() * scrollScaleRatio));
+        getView().scrollTo((int) (getScrollX() * scrollScaleRatio), (int) (getScrollY() * scrollScaleRatio));
     }
 
     private float getScrollScaleRatio() {
@@ -479,37 +482,17 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
         return lastVisiblePage;
     }
 
+    @Override
     public abstract void drawView(Canvas canvas, ViewState viewState);
 
     @Override
-    public final void surfaceChanged(final SurfaceHolder holder, final int format, final int width, final int height) {
-        redrawView();
-    }
-
-    @Override
     public final void redrawView() {
-        redrawView(new ViewState(this));
+        getView().redrawView(new ViewState(this));
     }
 
     @Override
     public final void redrawView(final ViewState viewState) {
-        if (viewState != null) {
-            if (drawThread != null) {
-                drawThread.draw(viewState);
-            }
-            base.getDecodeService().updateViewState(viewState);
-        }
-    }
-
-    @Override
-    public final void surfaceCreated(final SurfaceHolder holder) {
-        drawThread = new DrawThread(getHolder(), this);
-        drawThread.start();
-    }
-
-    @Override
-    public final void surfaceDestroyed(final SurfaceHolder holder) {
-        drawThread.finish();
+        getView().redrawView(viewState);
     }
 
     protected class GestureListener extends SimpleOnGestureListener {
@@ -525,8 +508,8 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
 
         @Override
         public boolean onDown(final MotionEvent e) {
-            if (!scroller.isFinished()) { // is flinging
-                scroller.forceFinished(true); // to stop flinging on touch
+            if (!getScroller().isFinished()) { // is flinging
+                getScroller().forceFinished(true); // to stop flinging on touch
             }
             // LCTX.d("onDown(" + e + ")");
             return true;
@@ -543,7 +526,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
                 y = 0;
             }
             // LCTX.d("onFling(" + x + ", " + y + ")");
-            scroller.fling(getScrollX(), getScrollY(), -(int) x, -(int) y, l.left, l.right, l.top, l.bottom);
+            getScroller().fling(getScrollX(), getScrollY(), -(int) x, -(int) y, l.left, l.right, l.top, l.bottom);
             redrawView();
             return true;
         }
@@ -558,7 +541,7 @@ public abstract class AbstractDocumentView extends SurfaceView implements ZoomLi
                 y = 0;
             }
             // LCTX.d("onScroll(" + x + ", " + y + ")");
-            scrollBy((int) x, (int) y);
+            getView().scrollBy((int) x, (int) y);
             return true;
         }
 

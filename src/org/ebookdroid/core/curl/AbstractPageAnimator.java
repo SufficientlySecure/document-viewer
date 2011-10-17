@@ -18,7 +18,9 @@ public abstract class AbstractPageAnimator implements PageAnimator {
     boolean bViewDrawn;
     protected int foreIndex = -1;
     protected int backIndex = -1;
+
     protected final SinglePageDocumentView view;
+
     /** Px / Draw call */
     protected int mCurlSpeed;
     /** Fixed update time used to create a smooth curl animation */
@@ -60,8 +62,8 @@ public abstract class AbstractPageAnimator implements PageAnimator {
     @Override
     public void init() {
         // The focus flags are needed
-        view.setFocusable(true);
-        view.setFocusableInTouchMode(true);
+        view.getView().setFocusable(true);
+        view.getView().setFocusableInTouchMode(true);
 
         mMovement = new Vector2D(0, 0);
         mFinger = new Vector2D(0, 0);

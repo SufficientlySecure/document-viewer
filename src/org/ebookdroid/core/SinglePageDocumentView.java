@@ -12,7 +12,7 @@ import android.view.MotionEvent;
 
 /**
  * The Class SinglePageDocumentView.
- * 
+ *
  * Used in single page view mode
  */
 public class SinglePageDocumentView extends AbstractDocumentView {
@@ -22,7 +22,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     /**
      * Instantiates a new single page document view.
-     * 
+     *
      * @param baseActivity
      *            the base activity
      */
@@ -63,7 +63,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    protected final Rect getScrollLimits() {
+    public final Rect getScrollLimits() {
         final int width = getWidth();
         final int height = getHeight();
         final float zoom = getBase().getZoomModel().getZoom();

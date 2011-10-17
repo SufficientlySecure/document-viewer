@@ -9,15 +9,28 @@ import android.view.MotionEvent;
 
 public class SinglePageView implements PageAnimator {
 
+    protected final PageAnimationType type;
+
     protected final SinglePageDocumentView view;
 
+    protected boolean bViewDrawn;
+
+    protected int foreIndex = -1;
+
+    protected int backIndex = -1;
+
     public SinglePageView(final SinglePageDocumentView view) {
+        this(PageAnimationType.NONE, view);
+    }
+
+    protected SinglePageView(PageAnimationType type, final SinglePageDocumentView view) {
+        this.type = type;
         this.view = view;
     }
 
     @Override
-    public PageAnimationType getType() {
-        return PageAnimationType.NONE;
+    public final PageAnimationType getType() {
+        return type;
     }
 
     @Override
@@ -49,14 +62,20 @@ public class SinglePageView implements PageAnimator {
     }
 
     @Override
-    public void resetPageIndexes(final int currentIndex) {
-    }
-
-    @Override
-    public void setViewDrawn(final boolean b) {
+    public final void resetPageIndexes(final int currentIndex) {
+        foreIndex = backIndex = currentIndex;
     }
 
     @Override
     public void FlipAnimationStep() {
+    }
+
+    @Override
+    public final void setViewDrawn(final boolean bViewDrawn) {
+        this.bViewDrawn = bViewDrawn;
+    }
+
+    public boolean isViewDrawn() {
+        return bViewDrawn;
     }
 }

@@ -1,7 +1,6 @@
 package org.ebookdroid.core.curl;
 
 import org.ebookdroid.core.Page;
-import org.ebookdroid.core.PageAlign;
 import org.ebookdroid.core.SinglePageDocumentView;
 import org.ebookdroid.core.ViewState;
 import org.ebookdroid.core.models.DocumentModel;
@@ -12,16 +11,7 @@ import android.view.MotionEvent;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public abstract class AbstractPageAnimator implements PageAnimator {
-
-    private final PageAnimationType type;
-
-    /** If false no draw call has been done */
-    boolean bViewDrawn;
-    protected int foreIndex = -1;
-    protected int backIndex = -1;
-
-    protected final SinglePageDocumentView view;
+public abstract class AbstractPageAnimator extends SinglePageView implements PageAnimator {
 
     /** Px / Draw call */
     protected int mCurlSpeed;
@@ -52,13 +42,7 @@ public abstract class AbstractPageAnimator implements PageAnimator {
     protected final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     public AbstractPageAnimator(final PageAnimationType type, final SinglePageDocumentView singlePageDocumentView) {
-        this.type = type;
-        this.view = singlePageDocumentView;
-    }
-
-    @Override
-    public final PageAnimationType getType() {
-        return type;
+        super(type, singlePageDocumentView);
     }
 
     @Override
@@ -73,24 +57,6 @@ public abstract class AbstractPageAnimator implements PageAnimator {
         // Set the default props
         mCurlSpeed = 30;
         mUpdateRate = 5;
-    }
-
-    @Override
-    public void setViewDrawn(final boolean bViewDrawn) {
-        this.bViewDrawn = bViewDrawn;
-    }
-
-    public boolean isViewDrawn() {
-        return bViewDrawn;
-    }
-
-    /**
-     * Reset page indexes.
-     */
-    @Override
-    public void resetPageIndexes(final int currentIndex) {
-        foreIndex = currentIndex;
-        backIndex = foreIndex;
     }
 
     @Override
@@ -221,6 +187,11 @@ public abstract class AbstractPageAnimator implements PageAnimator {
      */
     @Override
     public synchronized void draw(final Canvas canvas, final ViewState viewState) {
+        if (!enabled()) {
+            super.draw(canvas, viewState);
+            return;
+        }
+
         // We need to initialize all size data when we first draw the view
         if (!isViewDrawn()) {
             setViewDrawn(true);
@@ -252,9 +223,10 @@ public abstract class AbstractPageAnimator implements PageAnimator {
 
     @Override
     public boolean enabled() {
-        final PageAlign align = view.getAlign();
-        final float zoom = view.getBase().getZoomModel().getZoom();
-        return align == PageAlign.AUTO && zoom == 1.0f;
+//        final PageAlign align = view.getAlign();
+//        final float zoom = view.getBase().getZoomModel().getZoom();
+//        return align == PageAlign.AUTO && zoom == 1.0f;
+        return view.getScrollLimits().width() <= 0;
     }
 
     @Override

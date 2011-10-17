@@ -61,4 +61,9 @@ public class MultiTouchZoomImpl implements MultiTouchZoom {
     public void setResetLastPointAfterZoom(final boolean resetLastPointAfterZoom) {
         this.resetLastPointAfterZoom = resetLastPointAfterZoom;
     }
+
+    @Override
+    public boolean enabled() {
+        return true;
+    }
 }

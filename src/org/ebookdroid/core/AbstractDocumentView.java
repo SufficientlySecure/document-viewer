@@ -3,12 +3,14 @@ package org.ebookdroid.core;
 import org.ebookdroid.core.bitmaps.BitmapManager;
 import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.log.LogContext;
+import org.ebookdroid.core.multitouch.MultiTouchZoom;
 import org.ebookdroid.core.settings.SettingsManager;
+import org.ebookdroid.core.touch.DefaultGestureDetector;
+import org.ebookdroid.core.touch.IGestureDetector;
 import org.ebookdroid.utils.MathUtils;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -44,7 +46,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
 
     protected boolean layoutLocked;
 
-    protected GestureDetector gestureDetector;
+    protected List<IGestureDetector> detectors;
 
     public AbstractDocumentView(final IViewerActivity baseActivity) {
         this.base = baseActivity;
@@ -54,8 +56,17 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
         this.firstVisiblePage = -1;
         this.lastVisiblePage = -1;
 
-        this.gestureDetector = new GestureDetector(view.getContext(), new GestureListener());
+        this.detectors = initGestureDetectors(new ArrayList<IGestureDetector>(4));
         this.pageToGo = SettingsManager.getBookSettings().getCurrentPage();
+    }
+
+    protected List<IGestureDetector> initGestureDetectors(List<IGestureDetector> list) {
+        MultiTouchZoom multiTouchZoom = getBase().getMultiTouchZoom();
+        if (multiTouchZoom != null) {
+            list.add(multiTouchZoom);
+        }
+        list.add(new DefaultGestureDetector(view.getContext(), new GestureListener()));
+        return list;
     }
 
     @Override
@@ -308,7 +319,6 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
             initialZoom = oldZoom;
         }
 
-
         invalidatePageSizes(InvalidateSizeReason.ZOOM, null);
 
         view.invalidateScroll(newZoom, oldZoom);
@@ -361,20 +371,19 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
     }
 
     @Override
-    public boolean onTouchEvent(final MotionEvent ev) {
+    public final boolean onTouchEvent(final MotionEvent ev) {
         try {
             Thread.sleep(16);
         } catch (final InterruptedException e) {
             Thread.interrupted();
         }
 
-        if (getBase().getMultiTouchZoom() != null) {
-            if (getBase().getMultiTouchZoom().onTouchEvent(ev)) {
+        for(IGestureDetector d : detectors) {
+            if (d.enabled() && d.onTouchEvent(ev)) {
                 return true;
             }
         }
-
-        return gestureDetector.onTouchEvent(ev);
+        return false;
 
     }
 

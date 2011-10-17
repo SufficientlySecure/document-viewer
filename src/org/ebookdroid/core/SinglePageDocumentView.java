@@ -3,12 +3,17 @@ package org.ebookdroid.core;
 import org.ebookdroid.core.curl.PageAnimationType;
 import org.ebookdroid.core.curl.PageAnimator;
 import org.ebookdroid.core.models.DocumentModel;
+import org.ebookdroid.core.multitouch.MultiTouchZoom;
 import org.ebookdroid.core.settings.SettingsManager;
+import org.ebookdroid.core.touch.DefaultGestureDetector;
+import org.ebookdroid.core.touch.IGestureDetector;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.MotionEvent;
+
+import java.util.List;
 
 /**
  * The Class SinglePageDocumentView.
@@ -84,23 +89,16 @@ public class SinglePageDocumentView extends AbstractDocumentView {
         return new Rect(0, 0, 0, 0);
     }
 
-    @Override
-    public final boolean onTouchEvent(final MotionEvent event) {
-        if (isCurlerDisabled()) {
-            return super.onTouchEvent(event);
-        } else {
-            if (getBase().getMultiTouchZoom() != null) {
-                if (getBase().getMultiTouchZoom().onTouchEvent(event)) {
-                    return true;
-                }
-            }
 
-            if (!curler.handleTouchEvent(event)) {
-                return super.onTouchEvent(event);
-            } else {
-                return true;
-            }
+    @Override
+    protected List<IGestureDetector> initGestureDetectors(List<IGestureDetector> list) {
+        MultiTouchZoom multiTouchZoom = getBase().getMultiTouchZoom();
+        if (multiTouchZoom != null) {
+            list.add(multiTouchZoom);
         }
+        list.add(new CurlerProxy());
+        list.add(new DefaultGestureDetector(view.getContext(), new GestureListener()));
+        return list;
     }
 
     private boolean isCurlerDisabled() {
@@ -193,4 +191,16 @@ public class SinglePageDocumentView extends AbstractDocumentView {
         }
     }
 
+    private class CurlerProxy implements IGestureDetector {
+
+        @Override
+        public boolean enabled() {
+            return !isCurlerDisabled();
+        }
+
+        @Override
+        public boolean onTouchEvent(MotionEvent ev) {
+            return curler.handleTouchEvent(ev);
+        }
+    }
 }

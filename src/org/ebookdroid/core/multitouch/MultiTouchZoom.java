@@ -1,10 +1,8 @@
 package org.ebookdroid.core.multitouch;
 
-import android.view.MotionEvent;
+import org.ebookdroid.core.touch.IGestureDetector;
 
-public interface MultiTouchZoom {
-
-    boolean onTouchEvent(MotionEvent ev);
+public interface MultiTouchZoom extends IGestureDetector {
 
     boolean isResetLastPointAfterZoom();
 

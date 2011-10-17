@@ -6,11 +6,4 @@ public interface ZoomListener {
 
     void commitZoom();
 
-    public class CommitZoomEvent extends SafeEvent<ZoomListener> {
-
-        @Override
-        public void dispatchSafely(final ZoomListener listener) {
-            listener.commitZoom();
-        }
-    }
 }

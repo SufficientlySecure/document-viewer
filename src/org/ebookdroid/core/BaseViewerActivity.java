@@ -180,9 +180,9 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
                         setContentView(frameLayout);
 
                         documentModel = new DocumentModel(decodeService);
-                        documentModel.addEventListener(BaseViewerActivity.this);
+                        documentModel.addListener(BaseViewerActivity.this);
                         progressModel = new DecodingProgressModel();
-                        progressModel.addEventListener(BaseViewerActivity.this);
+                        progressModel.addListener(BaseViewerActivity.this);
 
                         SettingsManager.applyBookSettingsChanges(null, SettingsManager.getBookSettings(), null);
 
@@ -272,8 +272,8 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
                 this);
         IDocumentViewController oldDc = ctrl.getAndSet(newDc);
 
-        getZoomModel().removeEventListener(oldDc);
-        getZoomModel().addEventListener(getDocumentController());
+        getZoomModel().removeListener(oldDc);
+        getZoomModel().addListener(getDocumentController());
     }
 
     @Override

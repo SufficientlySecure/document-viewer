@@ -1,16 +1,19 @@
 package org.ebookdroid.core.models;
 
-import org.ebookdroid.core.events.BringUpZoomControlsEvent;
-import org.ebookdroid.core.events.EventDispatcher;
-import org.ebookdroid.core.events.ZoomChangedEvent;
+import org.ebookdroid.core.events.BringUpZoomControlsListener;
+import org.ebookdroid.core.events.ListenerProxy;
 import org.ebookdroid.core.events.ZoomListener;
 
-public class ZoomModel extends EventDispatcher {
+public class ZoomModel extends ListenerProxy {
 
     private float zoom = 1.0f;
     private static final float INCREMENT_DELTA = 0.05f;
     private boolean horizontalScrollEnabled;
     private boolean isCommited;
+
+    public ZoomModel() {
+        super(ZoomListener.class, BringUpZoomControlsListener.class);
+    }
 
     public void setZoom(float zoom) {
         zoom = Math.max(zoom, 1.0f);
@@ -18,7 +21,8 @@ public class ZoomModel extends EventDispatcher {
             final float oldZoom = this.zoom;
             this.zoom = zoom;
             isCommited = false;
-            dispatch(new ZoomChangedEvent(zoom, oldZoom));
+
+            this.<ZoomListener> getListener().zoomChanged(zoom, oldZoom);
         }
     }
 
@@ -35,7 +39,7 @@ public class ZoomModel extends EventDispatcher {
     }
 
     public void toggleZoomControls() {
-        dispatch(new BringUpZoomControlsEvent());
+        this.<BringUpZoomControlsListener> getListener().toggleZoomControls();
     }
 
     public void setHorizontalScrollEnabled(final boolean horizontalScrollEnabled) {
@@ -53,7 +57,7 @@ public class ZoomModel extends EventDispatcher {
     public void commit() {
         if (!isCommited) {
             isCommited = true;
-            dispatch(new ZoomListener.CommitZoomEvent());
+            this.<ZoomListener> getListener().commitZoom();
         }
     }
 }

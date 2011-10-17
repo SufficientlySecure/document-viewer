@@ -1,11 +1,12 @@
 package org.ebookdroid.core.curl;
 
+import org.ebookdroid.core.Page;
 import org.ebookdroid.core.ViewState;
+import org.ebookdroid.core.touch.IGestureDetector;
 
 import android.graphics.Canvas;
-import android.view.MotionEvent;
 
-public interface PageAnimator {
+public interface PageAnimator extends IGestureDetector {
 
     PageAnimationType getType();
 
@@ -13,15 +14,11 @@ public interface PageAnimator {
 
     void resetPageIndexes(final int currentIndex);
 
-    boolean handleTouchEvent(MotionEvent event);
-
     void draw(Canvas canvas, final ViewState viewState);
 
     void setViewDrawn(boolean b);
 
     void FlipAnimationStep();
 
-    int getBackIndex();
-
-    int getForeIndex();
+    boolean isPageVisible(final Page page, final ViewState viewState);
 }

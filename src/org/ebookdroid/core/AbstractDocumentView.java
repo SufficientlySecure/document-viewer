@@ -46,7 +46,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
 
     protected boolean layoutLocked;
 
-    protected List<IGestureDetector> detectors;
+    private List<IGestureDetector> detectors;
 
     public AbstractDocumentView(final IViewerActivity baseActivity) {
         this.base = baseActivity;
@@ -56,8 +56,14 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
         this.firstVisiblePage = -1;
         this.lastVisiblePage = -1;
 
-        this.detectors = initGestureDetectors(new ArrayList<IGestureDetector>(4));
         this.pageToGo = SettingsManager.getBookSettings().getCurrentPage();
+    }
+
+    protected List<IGestureDetector> getGestureDetectors() {
+        if (detectors == null) {
+            detectors = initGestureDetectors(new ArrayList<IGestureDetector>(4));
+        }
+        return detectors;
     }
 
     protected List<IGestureDetector> initGestureDetectors(List<IGestureDetector> list) {
@@ -378,7 +384,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
             Thread.interrupted();
         }
 
-        for(IGestureDetector d : detectors) {
+        for(IGestureDetector d : getGestureDetectors()) {
             if (d.enabled() && d.onTouchEvent(ev)) {
                 return true;
             }

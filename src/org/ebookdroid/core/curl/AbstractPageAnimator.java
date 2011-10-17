@@ -1,5 +1,7 @@
 package org.ebookdroid.core.curl;
 
+import org.ebookdroid.core.Page;
+import org.ebookdroid.core.PageAlign;
 import org.ebookdroid.core.SinglePageDocumentView;
 import org.ebookdroid.core.ViewState;
 import org.ebookdroid.core.models.DocumentModel;
@@ -92,13 +94,9 @@ public abstract class AbstractPageAnimator implements PageAnimator {
     }
 
     @Override
-    public int getForeIndex() {
-        return foreIndex;
-    }
-
-    @Override
-    public int getBackIndex() {
-        return backIndex;
+    public final boolean isPageVisible(final Page page, final ViewState viewState) {
+        final int pageIndex = page.index.viewIndex;
+        return pageIndex == this.foreIndex || pageIndex == this.backIndex;
     }
 
     /**
@@ -253,7 +251,14 @@ public abstract class AbstractPageAnimator implements PageAnimator {
     protected abstract void onFirstDrawEvent(Canvas canvas, final ViewState viewState);
 
     @Override
-    public boolean handleTouchEvent(final MotionEvent event) {
+    public boolean enabled() {
+        final PageAlign align = view.getAlign();
+        final float zoom = view.getBase().getZoomModel().getZoom();
+        return align == PageAlign.AUTO && zoom == 1.0f;
+    }
+
+    @Override
+    public boolean onTouchEvent(final MotionEvent event) {
         if (!bBlockTouchInput) {
 
             // Get our finger position

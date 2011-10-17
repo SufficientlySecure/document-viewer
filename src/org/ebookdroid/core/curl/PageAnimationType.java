@@ -74,6 +74,6 @@ public enum PageAnimationType {
                     break;
             }
         }
-        return null;
+        return new SinglePageView(singlePageDocumentView);
     }
 }

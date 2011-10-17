@@ -28,7 +28,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -123,6 +122,13 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     ProgressDialog progressDialog;
 
     private void initView() {
+
+        getView().setLayoutParams(
+                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
+
+        frameLayout.addView(getView());
+        frameLayout.addView(getZoomControls());
+
         final DecodeService decodeService = createDecodeService();
 
         final Uri uri = getIntent().getData();
@@ -170,7 +176,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
                 LCTX.d("onPostExecute(): start");
                 try {
                     if (result == null) {
-                        zoomModel = new ZoomModel();
                         initMultiTouchZoomIfAvailable();
                         setContentView(frameLayout);
 
@@ -253,30 +258,22 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     private void initMultiTouchZoomIfAvailable() {
         try {
             multiTouchZoom = ((MultiTouchZoom) Class.forName("org.ebookdroid.core.multitouch.MultiTouchZoomImpl")
-                    .getConstructor(ZoomModel.class).newInstance(zoomModel));
+                    .getConstructor(ZoomModel.class).newInstance(getZoomModel()));
         } catch (final Exception e) {
             System.out.println("Multi touch zoom is not available: " + e);
         }
     }
 
     @Override
-    public void createDocumentView() {
-        if (getDocumentController() != null) {
-            frameLayout.removeView(getView());
-            getZoomModel().removeEventListener(getDocumentController());
-        }
-
+    public void switchDocumentController() {
         final BookSettings bs = SettingsManager.getBookSettings();
 
-        ctrl.set(bs.singlePage ? new SinglePageDocumentView(this) : new ContiniousDocumentView(this));
+        IDocumentViewController newDc = bs.singlePage ? new SinglePageDocumentView(this) : new ContiniousDocumentView(
+                this);
+        IDocumentViewController oldDc = ctrl.getAndSet(newDc);
 
+        getZoomModel().removeEventListener(oldDc);
         getZoomModel().addEventListener(getDocumentController());
-        getView().setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
-                ViewGroup.LayoutParams.FILL_PARENT));
-
-        frameLayout.removeView(getZoomControls());
-        frameLayout.addView(getView());
-        frameLayout.addView(getZoomControls());
     }
 
     @Override
@@ -335,9 +332,8 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     private PageViewZoomControls getZoomControls() {
         if (zoomControls == null) {
-            zoomControls = new PageViewZoomControls(this, zoomModel);
+            zoomControls = new PageViewZoomControls(this, getZoomModel());
             zoomControls.setGravity(Gravity.RIGHT | Gravity.BOTTOM);
-            zoomModel.addEventListener(zoomControls);
         }
         return zoomControls;
     }
@@ -350,7 +346,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Called on creation options menu
-     * 
+     *
      * @param menu
      *            the main menu
      * @return true, if successful
@@ -441,7 +437,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
                 showDialog(DIALOG_GOTO);
                 return true;
             case R.id.mainmenu_zoom:
-                zoomModel.toggleZoomControls();
+                getZoomModel().toggleZoomControls();
                 return true;
             case R.id.mainmenu_outline:
                 showOutline();
@@ -457,7 +453,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
                 return true;
             case R.id.mainmenu_nightmode:
                 SettingsManager.getAppSettings().switchNightMode();
-                getDocumentController().redrawView();
+                view.redrawView();
                 return true;
             case R.id.mainmenu_bookmark:
                 addBookmark();
@@ -504,17 +500,20 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the zoom model.
-     * 
+     *
      * @return the zoom model
      */
     @Override
     public ZoomModel getZoomModel() {
+        if (zoomModel == null) {
+            zoomModel = new ZoomModel();
+        }
         return zoomModel;
     }
 
     /**
      * Gets the multi touch zoom.
-     * 
+     *
      * @return the multi touch zoom
      */
     @Override
@@ -529,7 +528,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the decoding progress model.
-     * 
+     *
      * @return the decoding progress model
      */
     @Override
@@ -615,11 +614,8 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
                 LCTX.e("Error on requestFeature call: " + th.getMessage());
             }
         }
-        final IDocumentViewController dc = getDocumentController();
-        if (dc != null) {
-            if (diff.isKeepScreenOnChanged()) {
-                dc.getView().setKeepScreenOn(newSettings.isKeepScreenOn());
-            }
+        if (diff.isKeepScreenOnChanged()) {
+            getView().setKeepScreenOn(newSettings.isKeepScreenOn());
         }
 
     }
@@ -631,7 +627,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         boolean redrawn = false;
         if (diff.isSinglePageChanged() || diff.isSplitPagesChanged()) {
             redrawn = true;
-            createDocumentView();
+            switchDocumentController();
         }
 
         if (diff.isZoomChanged() && diff.isFirstTime()) {
@@ -680,11 +676,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
         @Override
         public void invalidatePageSizes(final InvalidateSizeReason reason, final Page changedPage) {
-        }
-
-        @Override
-        public RectF getViewRect() {
-            return view.getViewRect();
         }
 
         @Override

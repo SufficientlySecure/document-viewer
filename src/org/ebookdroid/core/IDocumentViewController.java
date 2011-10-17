@@ -4,7 +4,6 @@ import org.ebookdroid.core.events.ZoomListener;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -14,8 +13,6 @@ public interface IDocumentViewController extends ZoomListener {
     void goToPage(int page);
 
     void invalidatePageSizes(InvalidateSizeReason reason, Page changedPage);
-
-    RectF getViewRect();
 
     int getFirstVisiblePage();
 

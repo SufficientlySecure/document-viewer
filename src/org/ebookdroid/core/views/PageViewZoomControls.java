@@ -15,11 +15,12 @@ public class PageViewZoomControls extends LinearLayout implements BringUpZoomCon
 
     public PageViewZoomControls(final Context context, final ZoomModel zoomModel) {
         super(context);
-        // show();
         hide();
         setOrientation(LinearLayout.HORIZONTAL);
         setGravity(Gravity.BOTTOM);
         addView(new ZoomRoll(context, zoomModel));
+
+        zoomModel.addEventListener(this);
     }
 
     @Override

@@ -43,7 +43,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
             }
             final ViewState viewState = updatePageVisibility(page.index.viewIndex, 0, getBase().getZoomModel()
                     .getZoom());
-            redrawView(viewState);
+            view.redrawView(viewState);
         }
     }
 

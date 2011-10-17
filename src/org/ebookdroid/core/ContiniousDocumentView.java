@@ -19,11 +19,11 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         if (toPage >= 0 && toPage < dm.getPageCount()) {
             final Page page = dm.getPageObject(toPage);
             if (page != null) {
-                final RectF viewRect = this.getViewRect();
+                final RectF viewRect = view.getViewRect();
                 final RectF bounds = page.getBounds(getBase().getZoomModel().getZoom());
 
                 dm.setCurrentPageIndex(page.index);
-                getView().scrollTo(getScrollX(), Math.round(bounds.top - (viewRect.height() - bounds.height()) / 2));
+                view.scrollTo(getScrollX(), Math.round(bounds.top - (viewRect.height() - bounds.height()) / 2));
             }
         }
     }
@@ -71,7 +71,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
                 final Page page = dm.getPageObject(viewState.currentIndex);
                 if (page != null) {
                     dm.setCurrentPageIndex(page.index);
-                    redrawView(viewState);
+                    view.redrawView(viewState);
                 }
             }
         };
@@ -85,18 +85,14 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         final int scrollheight = SettingsManager.getAppSettings().getScrollHeight();
         final int dy = (int) (direction * getHeight() * (scrollheight / 100.0));
 
-        getScroller().startScroll(getScrollX(), getScrollY(), 0, dy);
-
-        redrawView();
+        view.startPageScroll(dy);
     }
 
     @Override
     public final void verticalDpadScroll(final int direction) {
         final int dy = direction * getHeight() / 2;
 
-        getScroller().startScroll(getScrollX(), getScrollY(), 0, dy);
-
-        redrawView();
+        view.startPageScroll(dy);
     }
 
     @Override
@@ -121,9 +117,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
                 page.draw(canvas, viewState);
             }
         }
-        if (getScroller().computeScrollOffset()) {
-            getView().scrollTo(getScroller().getCurrX(), getScroller().getCurrY());
-        }
+        view.continueScroll();
     }
 
     @Override

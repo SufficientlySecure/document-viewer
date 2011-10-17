@@ -128,7 +128,7 @@ public class DocumentModel extends CurrentPageModel {
 
         final BookSettings bs = SettingsManager.getBookSettings();
 
-        if (base == null || base.getView() == null || bs == null) {
+        if (base == null || bs == null) {
             return;
         }
 

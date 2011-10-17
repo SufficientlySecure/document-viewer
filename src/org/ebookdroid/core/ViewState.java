@@ -12,6 +12,8 @@ import java.util.Map;
 public class ViewState {
 
     public final IDocumentViewController ctrl;
+    public final BaseDocumentView view;
+
     public final int currentIndex;
     public final int firstVisible;
     public final int lastVisible;
@@ -41,11 +43,13 @@ public class ViewState {
 
     public ViewState(final IDocumentViewController dc, final float zoom) {
         this.ctrl = dc;
+        this.view = dc.getView();
+
         this.firstVisible = dc.getFirstVisiblePage();
         this.lastVisible = dc.getLastVisiblePage();
 
-        this.realRect = new RectF(0, 0, dc.getView().getWidth(), dc.getView().getHeight());
-        this.viewRect = new RectF(dc.getViewRect());
+        this.realRect = new RectF(0, 0, view.getWidth(), view.getHeight());
+        this.viewRect = new RectF(view.getViewRect());
         this.zoom = zoom;
 
         DocumentModel dm = dc.getBase().getDocumentModel();
@@ -69,6 +73,8 @@ public class ViewState {
 
     public ViewState(final ViewState oldState, final IDocumentViewController dc) {
         this.ctrl = dc;
+        this.view = dc.getView();
+
         this.firstVisible = dc.getFirstVisiblePage();
         this.lastVisible = dc.getLastVisiblePage();
 
@@ -94,6 +100,8 @@ public class ViewState {
 
     public ViewState(final ViewState state) {
         this.ctrl = state.ctrl;
+        this.view = state.view;
+
         this.firstVisible = state.firstVisible;
         this.lastVisible = state.lastVisible;
 

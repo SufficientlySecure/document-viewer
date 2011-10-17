@@ -61,10 +61,6 @@ public abstract class AbstractPageAnimator implements PageAnimator {
 
     @Override
     public void init() {
-        // The focus flags are needed
-        view.getView().setFocusable(true);
-        view.getView().setFocusableInTouchMode(true);
-
         mMovement = new Vector2D(0, 0);
         mFinger = new Vector2D(0, 0);
         mOldMovement = new Vector2D(0, 0);

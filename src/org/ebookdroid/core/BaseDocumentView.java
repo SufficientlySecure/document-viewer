@@ -11,7 +11,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Scroller;
 
-public final  class BaseDocumentView extends SurfaceView implements SurfaceHolder.Callback {
+public final class BaseDocumentView extends SurfaceView implements SurfaceHolder.Callback {
 
     protected static final LogContext LCTX = LogContext.ROOT.lctx("View");
 
@@ -46,6 +46,42 @@ public final  class BaseDocumentView extends SurfaceView implements SurfaceHolde
 
     public final Scroller getScroller() {
         return scroller;
+    }
+
+    public final void invalidateScroll() {
+        stopScroller();
+
+        final float scrollScaleRatio = getScrollScaleRatio();
+        scrollTo((int) (getScrollX() * scrollScaleRatio), (int) (getScrollY() * scrollScaleRatio));
+    }
+
+    public final void invalidateScroll(final float newZoom, final float oldZoom) {
+        stopScroller();
+
+        final float ratio = newZoom / oldZoom;
+        scrollTo((int) ((getScrollX() + getWidth() / 2) * ratio - getWidth() / 2),
+                (int) ((getScrollY() + getHeight() / 2) * ratio - getHeight() / 2));
+    }
+
+    public void startPageScroll(final int dy) {
+        scroller.startScroll(getScrollX(), getScrollY(), 0, dy);
+        redrawView();
+    }
+
+    public void startFling(float vX, float vY, final Rect limits) {
+        scroller.fling(getScrollX(), getScrollY(), -(int) vX, -(int) vY, limits.left, limits.right, limits.top, limits.bottom);
+    }
+
+    public void continueScroll() {
+        if (scroller.computeScrollOffset()) {
+            scrollTo(scroller.getCurrX(), scroller.getCurrY());
+        }
+    }
+
+    public void forceFinishScroll() {
+        if (!scroller.isFinished()) { // is flinging
+            scroller.forceFinished(true); // to stop flinging on touch
+        }
     }
 
     @Override
@@ -102,8 +138,8 @@ public final  class BaseDocumentView extends SurfaceView implements SurfaceHolde
     }
 
     public void stopScroller() {
-        if (!getScroller().isFinished()) {
-            getScroller().abortAnimation();
+        if (!scroller.isFinished()) {
+            scroller.abortAnimation();
         }
     }
 

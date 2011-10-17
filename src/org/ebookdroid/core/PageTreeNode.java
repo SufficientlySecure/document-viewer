@@ -4,7 +4,6 @@ import org.ebookdroid.core.IDocumentViewController.InvalidateSizeReason;
 import org.ebookdroid.core.bitmaps.BitmapManager;
 import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.codec.CodecPage;
-import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.models.DecodingProgressModel;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.settings.SettingsManager;
@@ -24,7 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PageTreeNode implements DecodeService.DecodeCallback {
 
-    private static final LogContext LCTX = LogContext.ROOT.lctx("Imaging");
+    // private static final LogContext LCTX = LogContext.ROOT.lctx("Imaging");
 
     final Page page;
     final PageTreeNode parent;
@@ -165,7 +164,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     @Override
     public void decodeComplete(final CodecPage codecPage, final BitmapRef bitmap, final Rect bitmapBounds) {
-        page.base.getView().post(new Runnable() {
+        page.base.getActivity().runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
@@ -433,7 +432,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             BitmapManager.release(bitmapsToRecycle);
 
             this.bitmap = ref;
-            page.base.getView().postInvalidate();
         }
     }
 

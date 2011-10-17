@@ -8,12 +8,10 @@ import org.ebookdroid.utils.MathUtils;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.widget.Scroller;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,6 +25,8 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
     public static final int DOUBLE_TAP_TIME = 500;
 
     protected final IViewerActivity base;
+
+    protected final BaseDocumentView view;
 
     protected boolean isInitialized = false;
 
@@ -48,26 +48,24 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
 
     public AbstractDocumentView(final IViewerActivity baseActivity) {
         this.base = baseActivity;
+        this.view = base.getView();
+
         this.align = SettingsManager.getBookSettings().pageAlign;
         this.firstVisiblePage = -1;
         this.lastVisiblePage = -1;
 
-        this.gestureDetector = new GestureDetector(base.getView().getContext(), new GestureListener());
+        this.gestureDetector = new GestureDetector(view.getContext(), new GestureListener());
         this.pageToGo = SettingsManager.getBookSettings().getCurrentPage();
     }
 
     @Override
     public final BaseDocumentView getView() {
-        return base.getView();
+        return view;
     }
 
     @Override
     public final IViewerActivity getBase() {
         return base;
-    }
-
-    protected final Scroller getScroller() {
-        return getView().getScroller();
     }
 
     protected final void init() {
@@ -97,7 +95,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
         if (inZoom.get()) {
             return;
         }
-        redrawView();
+        view.redrawView();
     }
 
     public final ViewState updatePageVisibility(final int newPage, final int direction, final float zoom) {
@@ -310,15 +308,12 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
             initialZoom = oldZoom;
         }
 
-        stopScroller();
 
-        final float ratio = newZoom / oldZoom;
         invalidatePageSizes(InvalidateSizeReason.ZOOM, null);
 
-        getView().scrollTo((int) ((getScrollX() + getWidth() / 2) * ratio - getWidth() / 2),
-                (int) ((getScrollY() + getHeight() / 2) * ratio - getHeight() / 2));
+        view.invalidateScroll(newZoom, oldZoom);
 
-        redrawView(onZoomChanged(newZoom));
+        view.redrawView(onZoomChanged(newZoom));
     }
 
     public int getScrollX() {
@@ -384,11 +379,6 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
     }
 
     @Override
-    public final RectF getViewRect() {
-        return getView().getViewRect();
-    }
-
-    @Override
     public boolean onLayoutChanged(final boolean layoutChanged, final boolean layoutLocked, final int left,
             final int top, final int right, final int bottom) {
         if (!isInitialized) {
@@ -406,8 +396,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
                 invalidateScroll();
                 final float oldZoom = base.getZoomModel().getZoom();
                 initialZoom = 0;
-                final ViewState state = onZoomChanged(oldZoom);
-                redrawView(state);
+                view.redrawView(onZoomChanged(oldZoom));
                 return true;
             }
         }
@@ -418,25 +407,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
         if (!isInitialized) {
             return;
         }
-        stopScroller();
-        final float scrollScaleRatio = getScrollScaleRatio();
-        getView().scrollTo((int) (getScrollX() * scrollScaleRatio), (int) (getScrollY() * scrollScaleRatio));
-    }
-
-    private float getScrollScaleRatio() {
-        final Page page = getBase().getDocumentModel().getCurrentPageObject();
-        final float zoom = getBase().getZoomModel().getZoom();
-
-        if (page == null || page.getBounds(zoom) == null) {
-            return 0;
-        }
-        return getWidth() * zoom / page.getBounds(zoom).width();
-    }
-
-    private void stopScroller() {
-        if (!getScroller().isFinished()) {
-            getScroller().abortAnimation();
-        }
+        view.invalidateScroll();
     }
 
     /**
@@ -487,12 +458,12 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
 
     @Override
     public final void redrawView() {
-        getView().redrawView(new ViewState(this));
+        view.redrawView(new ViewState(this));
     }
 
     @Override
     public final void redrawView(final ViewState viewState) {
-        getView().redrawView(viewState);
+        view.redrawView(viewState);
     }
 
     protected class GestureListener extends SimpleOnGestureListener {
@@ -508,9 +479,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
 
         @Override
         public boolean onDown(final MotionEvent e) {
-            if (!getScroller().isFinished()) { // is flinging
-                getScroller().forceFinished(true); // to stop flinging on touch
-            }
+            view.forceFinishScroll();
             // LCTX.d("onDown(" + e + ")");
             return true;
         }
@@ -526,8 +495,8 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
                 y = 0;
             }
             // LCTX.d("onFling(" + x + ", " + y + ")");
-            getScroller().fling(getScrollX(), getScrollY(), -(int) x, -(int) y, l.left, l.right, l.top, l.bottom);
-            redrawView();
+            view.startFling(x, y, l);
+            view.redrawView();
             return true;
         }
 
@@ -541,7 +510,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
                 y = 0;
             }
             // LCTX.d("onScroll(" + x + ", " + y + ")");
-            getView().scrollBy((int) x, (int) y);
+            view.scrollBy((int) x, (int) y);
             return true;
         }
 

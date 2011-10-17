@@ -1,17 +1,16 @@
-package org.ebookdroid.core.multitouch;
+package org.ebookdroid.core.touch;
 
 import org.ebookdroid.core.models.ZoomModel;
 
 import android.view.MotionEvent;
 
-public class MultiTouchZoomImpl implements MultiTouchZoom {
+public class MultiTouchZoomImpl implements IMultiTouchZoom {
 
     private final ZoomModel zoomModel;
-    private boolean resetLastPointAfterZoom;
     private float lastZoomDistance;
     private boolean multiEventCatched;
 
-    public MultiTouchZoomImpl(final ZoomModel zoomModel) {
+    MultiTouchZoomImpl(final ZoomModel zoomModel) {
         this.zoomModel = zoomModel;
     }
 
@@ -25,7 +24,6 @@ public class MultiTouchZoomImpl implements MultiTouchZoom {
         if ((ev.getAction() & MotionEvent.ACTION_POINTER_UP) == MotionEvent.ACTION_POINTER_UP) {
             lastZoomDistance = 0;
             zoomModel.commit();
-            resetLastPointAfterZoom = true;
             multiEventCatched = true;
             return true;
         }
@@ -48,18 +46,11 @@ public class MultiTouchZoomImpl implements MultiTouchZoom {
 
     private float getZoomDistance(final MotionEvent ev) {
         // We do not need actual distance. Square also goes well.
-        return (float) ((ev.getX(0) - ev.getX(1)) * (ev.getX(0) - ev.getX(1)) + (ev.getY(0) - ev.getY(1))
-                * (ev.getY(0) - ev.getY(1)));
-    }
-
-    @Override
-    public boolean isResetLastPointAfterZoom() {
-        return resetLastPointAfterZoom;
-    }
-
-    @Override
-    public void setResetLastPointAfterZoom(final boolean resetLastPointAfterZoom) {
-        this.resetLastPointAfterZoom = resetLastPointAfterZoom;
+        float x0 = ev.getX(ev.getPointerId(0));
+        float x1 = ev.getX(ev.getPointerId(1));
+        float y0 = ev.getY(ev.getPointerId(0));
+        float y1 = ev.getY(ev.getPointerId(1));
+        return (float) ((x0 - x1) * (x0 - x1) + (y0 - y1) * (y0 - y1));
     }
 
     @Override

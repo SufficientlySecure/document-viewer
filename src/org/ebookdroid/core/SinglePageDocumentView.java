@@ -5,10 +5,10 @@ import org.ebookdroid.core.curl.PageAnimator;
 import org.ebookdroid.core.curl.PageAnimatorProxy;
 import org.ebookdroid.core.curl.SinglePageView;
 import org.ebookdroid.core.models.DocumentModel;
-import org.ebookdroid.core.multitouch.MultiTouchZoom;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.touch.DefaultGestureDetector;
 import org.ebookdroid.core.touch.IGestureDetector;
+import org.ebookdroid.core.touch.IMultiTouchZoom;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -90,10 +90,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     @Override
     protected List<IGestureDetector> initGestureDetectors(List<IGestureDetector> list) {
-        MultiTouchZoom multiTouchZoom = getBase().getMultiTouchZoom();
-        if (multiTouchZoom != null) {
-            list.add(multiTouchZoom);
-        }
+        list.add(IMultiTouchZoom.Factory.createImpl(base.getZoomModel()));
         list.add(curler);
         list.add(new DefaultGestureDetector(view.getContext(), new GestureListener()));
         return list;

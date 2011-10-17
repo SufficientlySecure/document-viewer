@@ -3,10 +3,10 @@ package org.ebookdroid.core;
 import org.ebookdroid.core.bitmaps.BitmapManager;
 import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.log.LogContext;
-import org.ebookdroid.core.multitouch.MultiTouchZoom;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.touch.DefaultGestureDetector;
 import org.ebookdroid.core.touch.IGestureDetector;
+import org.ebookdroid.core.touch.IMultiTouchZoom;
 import org.ebookdroid.utils.MathUtils;
 
 import android.graphics.Canvas;
@@ -67,10 +67,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
     }
 
     protected List<IGestureDetector> initGestureDetectors(List<IGestureDetector> list) {
-        MultiTouchZoom multiTouchZoom = getBase().getMultiTouchZoom();
-        if (multiTouchZoom != null) {
-            list.add(multiTouchZoom);
-        }
+        list.add(IMultiTouchZoom.Factory.createImpl(base.getZoomModel()));
         list.add(new DefaultGestureDetector(view.getContext(), new GestureListener()));
         return list;
     }

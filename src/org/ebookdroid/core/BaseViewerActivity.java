@@ -7,7 +7,6 @@ import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.models.DecodingProgressModel;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.models.ZoomModel;
-import org.ebookdroid.core.multitouch.MultiTouchZoom;
 import org.ebookdroid.core.settings.AppSettings;
 import org.ebookdroid.core.settings.BookSettingsActivity;
 import org.ebookdroid.core.settings.ISettingsChangeListener;
@@ -15,6 +14,7 @@ import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.settings.books.BookSettings;
 import org.ebookdroid.core.settings.books.Bookmark;
+import org.ebookdroid.core.touch.IMultiTouchZoom;
 import org.ebookdroid.core.utils.PathFromUri;
 import org.ebookdroid.core.views.PageViewZoomControls;
 import org.ebookdroid.utils.StringUtils;
@@ -73,8 +73,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     private FrameLayout frameLayout;
 
     private DecodingProgressModel progressModel;
-
-    private MultiTouchZoom multiTouchZoom;
 
     private DocumentModel documentModel;
     private String currentFilename;
@@ -176,7 +174,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
                 LCTX.d("onPostExecute(): start");
                 try {
                     if (result == null) {
-                        initMultiTouchZoomIfAvailable();
                         setContentView(frameLayout);
 
                         documentModel = new DocumentModel(decodeService);
@@ -253,15 +250,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
                 closeActivity();
             }
         });
-    }
-
-    private void initMultiTouchZoomIfAvailable() {
-        try {
-            multiTouchZoom = ((MultiTouchZoom) Class.forName("org.ebookdroid.core.multitouch.MultiTouchZoomImpl")
-                    .getConstructor(ZoomModel.class).newInstance(getZoomModel()));
-        } catch (final Exception e) {
-            System.out.println("Multi touch zoom is not available: " + e);
-        }
     }
 
     @Override
@@ -509,16 +497,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
             zoomModel = new ZoomModel();
         }
         return zoomModel;
-    }
-
-    /**
-     * Gets the multi touch zoom.
-     *
-     * @return the multi touch zoom
-     */
-    @Override
-    public MultiTouchZoom getMultiTouchZoom() {
-        return multiTouchZoom;
     }
 
     @Override

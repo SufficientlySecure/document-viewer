@@ -292,7 +292,7 @@ public class BooksAdapter extends BaseAdapter {
 
         private void scanDir(final File dir) {
             // Checks if scan should be continued
-            if (!inScan.get() || !dir.isDirectory()) {
+            if (!inScan.get() || !dir.isDirectory() || dir.getAbsolutePath().startsWith("/sys")) {
                 return;
             }
             final File[] list = dir.listFiles((FilenameFilter) filter);

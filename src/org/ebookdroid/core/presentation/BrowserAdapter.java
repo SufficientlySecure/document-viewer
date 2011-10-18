@@ -73,6 +73,9 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
     }
 
     public void setCurrentDirectory(final File currentDirectory) {
+        if (currentDirectory.getAbsolutePath().startsWith("/sys")) {
+            return;
+        }
         this.currentDirectory = currentDirectory;
 
         final File[] files = currentDirectory.listFiles(filter);

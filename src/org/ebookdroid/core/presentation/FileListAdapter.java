@@ -234,7 +234,7 @@ public class FileListAdapter extends BaseExpandableListAdapter {
 
         private void scanDir(final File dir) {
             // Checks if scan should be continued
-            if (!inScan.get() || !dir.isDirectory()) {
+            if (!inScan.get() || !dir.isDirectory() || dir.getAbsolutePath().startsWith("/sys")) {
                 return;
             }
             final String[] list = dir.list(filter);

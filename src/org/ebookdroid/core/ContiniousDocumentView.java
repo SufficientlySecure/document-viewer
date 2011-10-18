@@ -1,16 +1,25 @@
 package org.ebookdroid.core;
 
+import org.ebookdroid.R;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.settings.SettingsManager;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
 public class ContiniousDocumentView extends AbstractDocumentView {
 
+    protected static Bitmap dragBitmap;
+
     public ContiniousDocumentView(final IViewerActivity base) {
         super(base);
+        if (dragBitmap == null) {
+            dragBitmap = BitmapFactory.decodeResource(base.getContext().getResources(), R.drawable.drag);
+        }
     }
 
     @Override
@@ -117,6 +126,17 @@ public class ContiniousDocumentView extends AbstractDocumentView {
                 page.draw(canvas, viewState);
             }
         }
+
+        Rect l = getScrollLimits();
+        if (l.width() > 0) {
+            final Paint paint = new Paint();
+            paint.setFilterBitmap(true);
+            paint.setAntiAlias(true);
+            paint.setDither(true);
+            canvas.drawBitmap(dragBitmap, view.getWidth() - dragBitmap.getWidth(),
+                    view.getHeight() - dragBitmap.getHeight(), paint);
+        }
+
         view.continueScroll();
     }
 

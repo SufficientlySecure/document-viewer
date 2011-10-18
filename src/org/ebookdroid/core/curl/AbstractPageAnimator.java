@@ -47,6 +47,8 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
 
     @Override
     public void init() {
+        super.init();
+
         mMovement = new Vector2D(0, 0);
         mFinger = new Vector2D(0, 0);
         mOldMovement = new Vector2D(0, 0);

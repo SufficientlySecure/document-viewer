@@ -65,6 +65,8 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
 
     private Bitmap topThmbBitmap;
 
+    private View.OnClickListener handler;
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,7 +85,7 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
 
         viewflipper = (ViewFlipper) findViewById(R.id.recentflip);
 
-        final View.OnClickListener handler = new View.OnClickListener() {
+        handler = new View.OnClickListener() {
 
             @Override
             public void onClick(final View v) {
@@ -98,22 +100,13 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
             }
         };
 
-        if (SettingsManager.getAppSettings().getUseBookcase()) {
-            viewflipper.addView(new BookcaseView(this, bookshelfAdapter), 0);
-            libraryButton.setImageResource(R.drawable.actionbar_shelf);
-            recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), SettingsManager.getAppSettings()
-                    .getAllowedFileTypes());
-        } else {
-            viewflipper.addView(new RecentBooksView(this, recentAdapter), VIEW_RECENT);
-            viewflipper.addView(new LibraryView(this, libraryAdapter), VIEW_LIBRARY);
-
-            libraryButton.setOnClickListener(handler);
-        }
-
         final View recentBrowser = findViewById(R.id.recentbrowser);
         if (recentBrowser != null) {
             recentBrowser.setOnClickListener(handler);
         }
+
+        SettingsManager.addListener(this);
+        SettingsManager.applyAppSettingsChanges(null, SettingsManager.getAppSettings());
 
         final boolean shouldLoad = SettingsManager.getAppSettings().isLoadRecentBook();
         final BookSettings recent = SettingsManager.getRecentBook();
@@ -137,22 +130,6 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
     @Override
     protected void onResume() {
         super.onResume();
-
-        // Issue 33: 50% fail inside Djvu lib
-        // BookSettings last = SettingsManager.getBookSettings();
-        // if (last != null) {
-        // final File file = new File(last.getFileName());
-        // final boolean found = file != null ? file.exists() : false;
-        // if (found) {
-        // showDocument(Uri.fromFile(file));
-        // }
-        // }
-        // if (SettingsManager.getRecentBook() == null) {
-        // changeLibraryView(VIEW_LIBRARY);
-        // }
-        // else {
-        // changeLibraryView(VIEW_RECENT);
-        // }
 
         if (SettingsManager.getAppSettings().getUseBookcase()) {
             bookshelfAdapter.startScan(SettingsManager.getAppSettings().getAllowedFileTypes());
@@ -246,8 +223,6 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
         final Class<? extends Activity> activity = Activities.getByUri(uri);
         if (activity != null) {
             intent.setClass(this, activity);
-            // Issue 33
-            // startActivityIfNeeded(intent, -1);
             startActivity(intent);
         }
     }
@@ -267,7 +242,7 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
 
             if (view == VIEW_LIBRARY) {
                 viewflipper.setDisplayedChild(VIEW_LIBRARY);
-                libraryButton.setImageResource(R.drawable.actionbar_shelf);
+                libraryButton.setImageResource(R.drawable.actionbar_recent);
                 libraryAdapter.startScan(filter);
             } else {
                 viewflipper.setDisplayedChild(VIEW_RECENT);
@@ -344,7 +319,23 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
     @Override
     public void onAppSettingsChanged(final AppSettings oldSettings, final AppSettings newSettings, final Diff diff) {
         if (diff.isUseBookcaseChanged()) {
-            // TODO
+            viewflipper.removeAllViews();
+
+            if (SettingsManager.getAppSettings().getUseBookcase()) {
+                libraryButton.setImageResource(R.drawable.actionbar_shelf);
+                libraryButton.setOnClickListener(null);
+
+                viewflipper.addView(new BookcaseView(this, bookshelfAdapter), 0);
+
+                recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), SettingsManager.getAppSettings()
+                        .getAllowedFileTypes());
+            } else {
+                libraryButton.setImageResource(R.drawable.actionbar_library);
+                libraryButton.setOnClickListener(handler);
+
+                viewflipper.addView(new RecentBooksView(this, recentAdapter), VIEW_RECENT);
+                viewflipper.addView(new LibraryView(this, libraryAdapter), VIEW_LIBRARY);
+            }
         }
     }
 

@@ -1,35 +1,41 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearLayout1"
+    android:layout_width="160dip"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
-<LinearLayout
-  android:orientation="vertical"
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="160dip"
-  android:layout_height="fill_parent"
-  android:id="@+id/linearLayout1">
-  <ImageView
-    android:id="@+id/thumbnailImage"
-    android:layout_width="132dip"
-    android:layout_height="132dip"
-    android:gravity="center"
-    android:layout_gravity="center"
-    android:paddingLeft="14dip"
-    android:paddingRight="14dip">
-  </ImageView>
-  <TextView
-    android:text=""
-    android:id="@+id/thumbnailText"
-    android:layout_width="160dip"
-    android:layout_height="50dip"
-    android:gravity="center"
-    android:background="@drawable/border"
-    android:paddingBottom="8dip"
-    android:paddingTop="8dip"
-    android:paddingLeft="10dip"
-    android:paddingRight="10dip" />
-  <TextView
-    android:text=""
-    android:id="@+id/thumbnailPadding"
-    android:layout_width="160dip"
-    android:layout_height="12dip"
-    android:gravity="center" 
-    />
+    <TextView
+        android:id="@+id/thumbnailText"
+        android:layout_width="160dip"
+        android:layout_height="50dip"
+        android:gravity="center"
+        android:paddingBottom="2dip"
+        android:paddingLeft="1dip"
+        android:paddingRight="1dip"
+        android:paddingTop="0dip"
+        android:text="sample text"
+        android:textColor ="#DDD"
+        android:shadowColor="#DD000000"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="1.5"
+         />
+
+    <ImageView
+        android:id="@+id/thumbnailImage"
+        android:layout_width="132dip"
+        android:layout_height="132dip"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:paddingLeft="14dip"
+        android:paddingRight="14dip" >
+    </ImageView>
+
+    <TextView
+        android:id="@+id/thumbnailPadding"
+        android:layout_width="160dip"
+        android:layout_height="12dip"
+        android:gravity="center"
+        android:text="" />
+
 </LinearLayout>

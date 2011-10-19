@@ -141,7 +141,6 @@ public class BooksAdapter extends BaseAdapter {
         final ViewHolder holder = BaseViewHolder.getOrCreateViewHolder(ViewHolder.class, R.layout.thumbnail, view,
                 parent);
 
-        holder.textView.setTextColor(Color.BLACK);
         holder.textView.setText(StringUtils.cleanupTitle(getList(currentList).get(position).getName()));
 
         base.loadThumbnail(getList(currentList).get(position).getPath(), holder.imageView, R.drawable.book);

@@ -291,18 +291,21 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
                 if (tmpbmp == null) {
                     thumbnailFile.delete();
                 } else {
-                    final int width = tmpbmp.getWidth() + 33;
-                    final int height = tmpbmp.getHeight() + 23;
+                    int left = 15;
+                    int top = 10;
+                    final int width = tmpbmp.getWidth() + left;
+                    final int height = tmpbmp.getHeight() + top;
                     bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
                     bmp.eraseColor(Color.TRANSPARENT);
 
                     final Canvas c = new Canvas(bmp);
 
-                    c.drawBitmap(cornerThmbBitmap, null, new Rect(0, 0, 33, 23), null);
-                    c.drawBitmap(topThmbBitmap, null, new Rect(33, 0, width, 23), null);
-                    c.drawBitmap(leftThmbBitmap, null, new Rect(0, 23, 33, height), null);
-                    c.drawBitmap(tmpbmp, null, new Rect(33, 23, width, height), null);
+                    
+                    c.drawBitmap(cornerThmbBitmap, null, new Rect(0, 0, left, top), null);
+                    c.drawBitmap(topThmbBitmap, null, new Rect(left, 0, width, top), null);
+                    c.drawBitmap(leftThmbBitmap, null, new Rect(0, top, left, height), null);
+                    c.drawBitmap(tmpbmp, null, new Rect(left, top, width, height), null);
 
                     thumbnails.put(md5, new SoftReference<Bitmap>(bmp));
                 }

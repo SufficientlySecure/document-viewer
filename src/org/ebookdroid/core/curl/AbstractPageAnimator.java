@@ -1,10 +1,13 @@
 package org.ebookdroid.core.curl;
 
+import org.ebookdroid.R;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.SinglePageDocumentView;
 import org.ebookdroid.core.ViewState;
 import org.ebookdroid.core.models.DocumentModel;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.view.MotionEvent;
@@ -39,6 +42,8 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
     /** TRUE if the user moves the pages */
     protected boolean bUserMoves;
 
+    protected Bitmap arrowsBitmap;
+
     protected final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     public AbstractPageAnimator(final PageAnimationType type, final SinglePageDocumentView singlePageDocumentView) {
@@ -48,6 +53,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
     @Override
     public void init() {
         super.init();
+        arrowsBitmap = BitmapFactory.decodeResource(view.getBase().getContext().getResources(), R.drawable.arrows);
 
         mMovement = new Vector2D(0, 0);
         mFinger = new Vector2D(0, 0);
@@ -130,8 +136,8 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
         try {
             updateValues();
 
-            if (mA.x < 1) {
-                mA.x = 0;
+            if (mA.x < getLeftBound()) {
+                mA.x = getLeftBound() - 1;
             }
 
             if (mA.x > width - 1) {
@@ -141,7 +147,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
             lock.writeLock().unlock();
         }
         // Check for endings :D
-        if (mA.x <= 1 || mA.x >= width - 1) {
+        if (mA.x <= getLeftBound() || mA.x >= width - 1) {
             bFlipping = false;
             if (bFlipRight) {
                 view.goToPageImpl(backIndex);
@@ -167,6 +173,10 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
 
         // Force a new draw call
         view.redrawView();
+    }
+
+    protected float getLeftBound() {
+        return 1;
     }
 
     protected abstract void resetClipEdge();

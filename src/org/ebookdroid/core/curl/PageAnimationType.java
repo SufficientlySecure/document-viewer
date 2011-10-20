@@ -10,6 +10,8 @@ public enum PageAnimationType {
 
     CURLER_DYNAMIC("Dynamic curler", false),
 
+    CURLER_NATURAL("Natural curler", false),
+
     SLIDER("Slider", true),
 
     FADER("Fade in", true),
@@ -63,7 +65,9 @@ public enum PageAnimationType {
                 case CURLER:
                     return new SinglePageSimpleCurler(singlePageDocumentView);
                 case CURLER_DYNAMIC:
-                    return new SinglePageDynamicCurler(singlePageDocumentView);
+                  return new SinglePageDynamicCurler(singlePageDocumentView);
+                case CURLER_NATURAL:
+                    return new SinglePageNaturalCurler(singlePageDocumentView);
                 case SLIDER:
                     return new SinglePageSlider(singlePageDocumentView);
                 case FADER:

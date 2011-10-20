@@ -1,6 +1,5 @@
 package org.ebookdroid.core.curl;
 
-import org.ebookdroid.R;
 import org.ebookdroid.core.PagePaint;
 import org.ebookdroid.core.SinglePageDocumentView;
 import org.ebookdroid.core.ViewState;
@@ -8,13 +7,11 @@ import org.ebookdroid.core.bitmaps.BitmapManager;
 import org.ebookdroid.core.bitmaps.BitmapRef;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
 public abstract class AbstractPageSlider extends AbstractPageAnimator {
 
-    protected Bitmap arrowsBitmap;
 
     public AbstractPageSlider(final PageAnimationType type, final SinglePageDocumentView singlePageDocumentView) {
         super(type, singlePageDocumentView);
@@ -27,7 +24,6 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
     public void init() {
         super.init();
         mInitialEdgeOffset = 0;
-        arrowsBitmap = BitmapFactory.decodeResource(view.getBase().getContext().getResources(), R.drawable.arrows);
     }
 
     /**

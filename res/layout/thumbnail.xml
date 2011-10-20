@@ -23,18 +23,19 @@
 
     <ImageView
         android:id="@+id/thumbnailImage"
-        android:layout_width="132dip"
-        android:layout_height="132dip"
-        android:layout_gravity="center"
+        android:layout_width="134dip"
+        android:layout_height="134dip"
+        android:layout_gravity="bottom|center_horizontal"
         android:gravity="center"
-        android:paddingLeft="14dip"
-        android:paddingRight="14dip" >
+        android:paddingLeft="13dip"
+        android:paddingRight="13dip" 
+        android:scaleType="centerInside">
     </ImageView>
 
     <TextView
         android:id="@+id/thumbnailPadding"
         android:layout_width="160dip"
-        android:layout_height="12dip"
+        android:layout_height="10dip"
         android:gravity="center"
         android:text="" />
 

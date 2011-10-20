@@ -285,37 +285,44 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
         if (bmp == null) {
             final File cacheDir = getContext().getFilesDir();
             final File thumbnailFile = new File(cacheDir, md5 + ".thumbnail");
+            Bitmap tmpbmp = null;
+            boolean store = true;
             if (thumbnailFile.exists()) {
 
-                final Bitmap tmpbmp = BitmapFactory.decodeFile(thumbnailFile.getPath());
+                tmpbmp = BitmapFactory.decodeFile(thumbnailFile.getPath());
                 if (tmpbmp == null) {
                     thumbnailFile.delete();
-                } else {
-                    int left = 15;
-                    int top = 10;
-                    final int width = tmpbmp.getWidth() + left;
-                    final int height = tmpbmp.getHeight() + top;
-                    bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-
-                    bmp.eraseColor(Color.TRANSPARENT);
-
-                    final Canvas c = new Canvas(bmp);
-
-                    
-                    c.drawBitmap(cornerThmbBitmap, null, new Rect(0, 0, left, top), null);
-                    c.drawBitmap(topThmbBitmap, null, new Rect(left, 0, width, top), null);
-                    c.drawBitmap(leftThmbBitmap, null, new Rect(0, top, left, height), null);
-                    c.drawBitmap(tmpbmp, null, new Rect(left, top, width, height), null);
-
-                    thumbnails.put(md5, new SoftReference<Bitmap>(bmp));
+                    tmpbmp = Bitmap.createBitmap(160, 200, Bitmap.Config.ARGB_8888);
+                    tmpbmp.eraseColor(Color.WHITE);
+                    store = false;
                 }
+            } else {
+                tmpbmp = Bitmap.createBitmap(160, 200, Bitmap.Config.ARGB_8888);
+                tmpbmp.eraseColor(Color.WHITE);
+                store = false;
+            }
+            int left = 15;
+            int top = 10;
+            final int width = tmpbmp.getWidth() + left;
+            final int height = tmpbmp.getHeight() + top;
+            bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+            bmp.eraseColor(Color.TRANSPARENT);
+
+            final Canvas c = new Canvas(bmp);
+
+            c.drawBitmap(cornerThmbBitmap, null, new Rect(0, 0, left, top), null);
+            c.drawBitmap(topThmbBitmap, null, new Rect(left, 0, width, top), null);
+            c.drawBitmap(leftThmbBitmap, null, new Rect(0, top, left, height), null);
+            c.drawBitmap(tmpbmp, null, new Rect(left, top, width, height), null);
+
+            if (store){
+                thumbnails.put(md5, new SoftReference<Bitmap>(bmp));
             }
         }
 
         if (bmp != null) {
             imageView.setImageBitmap(bmp);
-        } else {
-            imageView.setImageResource(defaultResID);
         }
     }
 

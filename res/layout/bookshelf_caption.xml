@@ -1,33 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  android:orientation="horizontal"
-  android:background="@drawable/shelf_caption">
-  <ImageButton
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/ShelfLeftButton"
-    android:layout_weight="1"
-    android:layout_width="wrap_content"
-    android:src="@drawable/arrowleft"
-    android:background="@android:color/transparent" />
-  <TextView
-    android:id="@+id/ShelfCaption"
-    android:text="TextView"
-    android:layout_height="match_parent"
-    android:layout_width="wrap_content"
-    android:layout_gravity="fill_horizontal"
-    android:layout_weight="100"
-    android:gravity="center"
-    android:background="@android:color/transparent"
-    android:textSize="40dp" android:textColor="@color/actionbar_black"/>
-  <ImageButton
-    android:layout_height="wrap_content"
-    android:id="@+id/ShelfRightButton"
-    android:layout_width="wrap_content"
-    android:layout_weight="1"
-    android:src="@drawable/arrowright"
-    android:background="@android:color/transparent" />
+    android:background="@drawable/shelf_caption1"
+    android:orientation="horizontal" >
+
+    <ImageButton
+        android:id="@+id/ShelfLeftButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:src="@drawable/arrowleft" />
+
+    <TextView
+        android:id="@+id/ShelfCaption"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="fill_horizontal"
+        android:layout_weight="100"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:paddingBottom="6dip"
+        android:text="TextView"
+        android:textColor ="#DDD"
+        android:shadowColor="#DD000000"
+        android:shadowDx="2"
+        android:shadowDy="-2"
+        android:shadowRadius="1.5"
+        android:textSize="40dp" />
+
+    <ImageButton
+        android:id="@+id/ShelfRightButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:src="@drawable/arrowright" />
 
 </LinearLayout>

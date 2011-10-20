@@ -69,7 +69,7 @@ public class BookshelfView extends GridView implements OnItemClickListener {
 
     private void init(Context context) {
         final Resources resources = getResources();
-        final Bitmap shelfBackground = BitmapFactory.decodeResource(resources, R.drawable.shelf_panel);
+        final Bitmap shelfBackground = BitmapFactory.decodeResource(resources, R.drawable.shelf_panel1);
         if (shelfBackground != null) {
             mShelfWidth = shelfBackground.getWidth();
             mShelfHeight = shelfBackground.getHeight();

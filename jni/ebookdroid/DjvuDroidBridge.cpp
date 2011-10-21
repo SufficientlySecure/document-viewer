@@ -470,7 +470,8 @@ Java_org_ebookdroid_djvudroid_codec_DjvuPage_renderPage(JNIEnv *env,
                                     jfloat pageSliceY,
                                     jfloat pageSliceWidth,
                                     jfloat pageSliceHeight,
-                                    jintArray buffer)
+                                    jintArray buffer,
+                                    jint rendermode)
 {
 
 
@@ -492,7 +493,7 @@ Java_org_ebookdroid_djvudroid_codec_DjvuPage_renderPage(JNIEnv *env,
     ddjvu_format_set_y_direction(pixelFormat, TRUE);
 
     char *pBuffer = (char *)env->GetPrimitiveArrayCritical(buffer, 0);
-    jboolean result = ddjvu_page_render(page, DDJVU_RENDER_COLOR, &pageRect, &targetRect, pixelFormat, targetWidth * 4, pBuffer);
+    jboolean result = ddjvu_page_render(page, (ddjvu_render_mode_t)rendermode, &pageRect, &targetRect, pixelFormat, targetWidth * 4, pBuffer);
     env->ReleasePrimitiveArrayCritical(buffer, pBuffer, 0);
 
     ddjvu_format_release(pixelFormat);
@@ -522,7 +523,8 @@ Java_org_ebookdroid_djvudroid_codec_DjvuPage_renderPageBitmap(JNIEnv *env,
                                     jfloat pageSliceY,
                                     jfloat pageSliceWidth,
                                     jfloat pageSliceHeight,
-                                    jobject bitmap)
+                                    jobject bitmap,
+                                    jint rendermode)
 {
 //#ifdef USE_JNI_BITMAP_API
 
@@ -576,7 +578,7 @@ Java_org_ebookdroid_djvudroid_codec_DjvuPage_renderPageBitmap(JNIEnv *env,
     ddjvu_format_set_y_direction(pixelFormat, TRUE);
 
 //    jboolean result = ddjvu_page_render(page, DDJVU_RENDER_COLOR, &pageRect, &targetRect, pixelFormat, targetWidth * 4, (char*)pixels);
-    jboolean result = ddjvu_page_render(page, DDJVU_RENDER_COLOR, &pageRect, &targetRect, pixelFormat, targetWidth * 2, (char*)pixels);
+    jboolean result = ddjvu_page_render(page, (ddjvu_render_mode_t)rendermode, &pageRect, &targetRect, pixelFormat, targetWidth * 2, (char*)pixels);
 
     ddjvu_format_release(pixelFormat);
 

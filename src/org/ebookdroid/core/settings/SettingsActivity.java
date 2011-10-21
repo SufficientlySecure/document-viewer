@@ -49,7 +49,8 @@ public class SettingsActivity extends BaseSettingsActivity {
         decoratePreferences("brautoscandir");
         decoratePreferences("align", "animationType");
         decoratePreferences("book_align", "book_animationType");
-
+        decoratePreferences("djvu_rendering_mode");
+        
         if (SettingsManager.getBookSettings() == null) {
             final Preference bookPrefs = findPreference("book_prefs");
             if (bookPrefs != null) {

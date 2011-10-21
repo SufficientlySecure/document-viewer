@@ -1,278 +1,311 @@
 <?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:vudroid="http://schemas.android.com/apk/res/vudroid"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
 
-<PreferenceScreen
-	xmlns:vudroid="http://schemas.android.com/apk/res/vudroid"
-	xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceScreen
+        android:summary="@string/pref_ui_category_summary"
+        android:title="@string/pref_ui_category" >
 
-	<PreferenceScreen
-		android:title="@string/pref_ui_category"
-		android:summary="@string/pref_ui_category_summary">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="loadrecent"
+            android:summary="@string/pref_loadrecent_summary"
+            android:title="@string/pref_loadrecent_title" />
 
-		<CheckBoxPreference
-			android:key="loadrecent"
-			android:title="@string/pref_loadrecent_title"
-			android:summary="@string/pref_loadrecent_summary"
-			android:defaultValue="false" />
-		<CheckBoxPreference
-			android:key="nightmode"
-			android:title="@string/pref_nightmode_title"
-			android:summary="@string/pref_nightmode_summary"
-			android:defaultValue="false" />
-		<EditTextPreference
-			android:key="brightness"
-			android:title="@string/pref_brightness_title"
-			android:summary="@string/pref_brightness_summary"
-			android:maxLength="3"
-			android:defaultValue="100"
-			android:numeric="integer" />
-		<CheckBoxPreference
-			android:key="brightnessnightmodeonly"
-			android:title="@string/pref_brightnessnightmodeonly_title"
-			android:summary="@string/pref_brightnessnightmodeonly_summary"
-			android:defaultValue="false" />
-		<CheckBoxPreference
-			android:key="keepscreenon"
-			android:title="@string/pref_keepscreenon_title"
-			android:summary="@string/pref_keepscreenon_summary"
-			android:defaultValue="true" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="nightmode"
+            android:summary="@string/pref_nightmode_summary"
+            android:title="@string/pref_nightmode_title" />
 
-		<ListPreference
-			android:key="rotation"
-			android:title="@string/pref_rotation_title"
-			android:summary="@string/pref_rotation_summary"
-			android:entries="@array/list_rotation"
-			android:entryValues="@array/list_rotation_values"
-			android:defaultValue="Default" />
-		<CheckBoxPreference
-			android:key="fullscreen"
-			android:title="@string/pref_fullscreen_title"
-			android:summary="@string/pref_fullscreen_summary"
-			android:defaultValue="false" />
-		<CheckBoxPreference
-			android:key="title"
-			android:title="@string/pref_title_title"
-			android:summary="@string/pref_title_summary"
-			android:defaultValue="true" />
-		<CheckBoxPreference
-			android:key="pageintitle"
-			android:title="@string/pref_pageintitle_title"
-			android:summary="@string/pref_pageintitle_summary"
-			android:defaultValue="true"
-			android:dependency="title" />
-	</PreferenceScreen>
+        <EditTextPreference
+            android:defaultValue="100"
+            android:key="brightness"
+            android:maxLength="3"
+            android:numeric="integer"
+            android:summary="@string/pref_brightness_summary"
+            android:title="@string/pref_brightness_title" />
 
-	<PreferenceScreen
-		android:title="@string/pref_scroll_category"
-		android:summary="@string/pref_scroll_category_summary">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="brightnessnightmodeonly"
+            android:summary="@string/pref_brightnessnightmodeonly_summary"
+            android:title="@string/pref_brightnessnightmodeonly_title" />
 
-		<CheckBoxPreference
-			android:key="zoomdoubletap"
-			android:title="@string/pref_zoomdoubletap_title"
-			android:summary="@string/pref_zoomdoubletap_summary"
-			android:defaultValue="false" />
-		<CheckBoxPreference
-			android:key="tapscroll"
-			android:title="@string/pref_tap_title"
-			android:summary="@string/pref_tap_summary"
-			android:defaultValue="false" />
-		<EditTextPreference
-			android:key="tapsize"
-			android:title="@string/pref_tapsize_title"
-			android:summary="@string/pref_tapsize_summary"
-			android:maxLength="2"
-			android:defaultValue="10"
-			android:numeric="integer"
-			android:dependency="tapscroll" />
-		<EditTextPreference
-			android:key="scrollheight"
-			android:title="@string/pref_scroll_title"
-			android:summary="@string/pref_scroll_summary"
-			android:maxLength="3"
-			android:defaultValue="50"
-			android:numeric="integer" />
-	</PreferenceScreen>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="keepscreenon"
+            android:summary="@string/pref_keepscreenon_summary"
+            android:title="@string/pref_keepscreenon_title" />
 
-	<PreferenceScreen
-		android:title="@string/pref_memory_category"
-		android:summary="@string/pref_memory_category_summary">
+        <ListPreference
+            android:defaultValue="Default"
+            android:entries="@array/list_rotation"
+            android:entryValues="@array/list_rotation_values"
+            android:key="rotation"
+            android:summary="@string/pref_rotation_summary"
+            android:title="@string/pref_rotation_title" />
 
-		<EditTextPreference
-			android:key="pagesinmemory"
-			android:title="@string/pref_pagesinmemory_title"
-			android:summary="@string/pref_pagesinmemory_summary"
-			android:maxLength="3"
-			android:defaultValue="0"
-			android:numeric="integer" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="fullscreen"
+            android:summary="@string/pref_fullscreen_summary"
+            android:title="@string/pref_fullscreen_title" />
 
-		<ListPreference
-			android:key="decodemode"
-			android:title="@string/pref_decodemode_title"
-			android:summary="@string/pref_decodemode_summary"
-			android:entries="@array/list_decodemode"
-			android:entryValues="@array/list_decodemode_values"
-			android:defaultValue="Normal" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="title"
+            android:summary="@string/pref_title_summary"
+            android:title="@string/pref_title_title" />
 
-		<EditTextPreference
-			android:key="maximagesize"
-			android:title="@string/pref_maximagesize_title"
-			android:summary="@string/pref_maximagesize_summary"
-			android:maxLength="5"
-			android:defaultValue="256"
-			android:numeric="integer" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="title"
+            android:key="pageintitle"
+            android:summary="@string/pref_pageintitle_summary"
+            android:title="@string/pref_pageintitle_title" />
+    </PreferenceScreen>
 
-	</PreferenceScreen>
+    <PreferenceScreen
+        android:summary="@string/pref_scroll_category_summary"
+        android:title="@string/pref_scroll_category" >
 
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="zoomdoubletap"
+            android:summary="@string/pref_zoomdoubletap_summary"
+            android:title="@string/pref_zoomdoubletap_title" />
 
-	<PreferenceScreen
-		android:title="@string/pref_render_category"
-		android:summary="@string/pref_render_category_summary">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="tapscroll"
+            android:summary="@string/pref_tap_summary"
+            android:title="@string/pref_tap_title" />
 
-		<CheckBoxPreference
-			android:key="splitpages"
-			android:title="@string/pref_splitpages_title"
-			android:summary="@string/pref_splitpages_summary"
-			android:defaultValue="false" />
+        <EditTextPreference
+            android:defaultValue="10"
+            android:dependency="tapscroll"
+            android:key="tapsize"
+            android:maxLength="2"
+            android:numeric="integer"
+            android:summary="@string/pref_tapsize_summary"
+            android:title="@string/pref_tapsize_title" />
 
-		<CheckBoxPreference
-			android:key="singlepage"
-			android:title="@string/pref_singlepage_title"
-			android:summary="@string/pref_singlepage_summary"
-			android:defaultValue="false" />
+        <EditTextPreference
+            android:defaultValue="50"
+            android:key="scrollheight"
+            android:maxLength="3"
+            android:numeric="integer"
+            android:summary="@string/pref_scroll_summary"
+            android:title="@string/pref_scroll_title" />
+    </PreferenceScreen>
 
-		<PreferenceCategory
-			android:title="@string/pref_singlepage_category"
-			android:summary="@string/pref_singlepage_category_summary">
+    <PreferenceScreen
+        android:summary="@string/pref_memory_category_summary"
+        android:title="@string/pref_memory_category" >
 
-			<ListPreference
-				android:key="align"
-				android:title="@string/pref_align_title"
-				android:summary="@string/pref_align_summary"
-				android:entries="@array/list_align"
-				android:entryValues="@array/list_align_values"
-				android:defaultValue="By Width"
-				android:dependency="singlepage" />
+        <EditTextPreference
+            android:defaultValue="0"
+            android:key="pagesinmemory"
+            android:maxLength="3"
+            android:numeric="integer"
+            android:summary="@string/pref_pagesinmemory_summary"
+            android:title="@string/pref_pagesinmemory_title" />
 
-			<ListPreference
-				android:key="animationType"
-				android:title="@string/pref_animationtype_title"
-				android:summary="@string/pref_animationtype_summary"
-				android:entries="@array/list_animation"
-				android:entryValues="@array/list_animation_values"
-				android:defaultValue="None"
-				android:dependency="singlepage" />
+        <ListPreference
+            android:defaultValue="Normal"
+            android:entries="@array/list_decodemode"
+            android:entryValues="@array/list_decodemode_values"
+            android:key="decodemode"
+            android:summary="@string/pref_decodemode_summary"
+            android:title="@string/pref_decodemode_title" />
 
-		</PreferenceCategory>
+        <EditTextPreference
+            android:defaultValue="256"
+            android:key="maximagesize"
+            android:maxLength="5"
+            android:numeric="integer"
+            android:summary="@string/pref_maximagesize_summary"
+            android:title="@string/pref_maximagesize_title" />
+    </PreferenceScreen>
 
-	</PreferenceScreen>
+    <PreferenceScreen
+        android:summary="@string/pref_render_category_summary"
+        android:title="@string/pref_render_category" >
 
-	<PreferenceScreen
-		android:key="book_prefs"
-		android:title="@string/pref_book_category"
-		android:summary="@string/pref_book_category_summary">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="splitpages"
+            android:summary="@string/pref_splitpages_summary"
+            android:title="@string/pref_splitpages_title" />
 
-		<CheckBoxPreference
-			android:title="@string/pref_splitpages_title"
-			android:summary="@string/pref_splitpages_summary"
-			android:defaultValue="false"
-			android:key="book_splitpages" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="singlepage"
+            android:summary="@string/pref_singlepage_summary"
+            android:title="@string/pref_singlepage_title" />
 
-		<CheckBoxPreference
-			android:title="@string/pref_singlepage_title"
-			android:summary="@string/pref_singlepage_summary"
-			android:defaultValue="false"
-			android:key="book_singlepage" />
+        <PreferenceCategory
+            android:summary="@string/pref_singlepage_category_summary"
+            android:title="@string/pref_singlepage_category" >
 
-		<PreferenceCategory
-			android:title="@string/pref_singlepage_category"
-			android:summary="@string/pref_singlepage_category_summary">
+            <ListPreference
+                android:defaultValue="By Width"
+                android:dependency="singlepage"
+                android:entries="@array/list_align"
+                android:entryValues="@array/list_align_values"
+                android:key="align"
+                android:summary="@string/pref_align_summary"
+                android:title="@string/pref_align_title" />
 
-			<ListPreference
-				android:title="@string/pref_align_title"
-				android:summary="@string/pref_align_summary"
-				android:entries="@array/list_align"
-				android:entryValues="@array/list_align_values"
-				android:defaultValue="By Width"
-				android:dependency="book_singlepage"
-				android:key="book_align" />
+            <ListPreference
+                android:defaultValue="None"
+                android:dependency="singlepage"
+                android:entries="@array/list_animation"
+                android:entryValues="@array/list_animation_values"
+                android:key="animationType"
+                android:summary="@string/pref_animationtype_summary"
+                android:title="@string/pref_animationtype_title" />
+        </PreferenceCategory>
+    </PreferenceScreen>
 
-			<ListPreference
-				android:key="book_animationType"
-				android:title="@string/pref_animationtype_title"
-				android:summary="@string/pref_animationtype_summary"
-				android:entries="@array/list_animation"
-				android:entryValues="@array/list_animation_values"
-				android:defaultValue=""
-				android:dependency="book_singlepage" />
+    <PreferenceScreen
+        android:key="book_prefs"
+        android:summary="@string/pref_book_category_summary"
+        android:title="@string/pref_book_category" >
 
-		</PreferenceCategory>
-	</PreferenceScreen>
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="book_splitpages"
+            android:summary="@string/pref_splitpages_summary"
+            android:title="@string/pref_splitpages_title" />
 
-	<PreferenceScreen
-		android:key="browserscreen"
-		android:title="@string/pref_browser_category"
-		android:summary="@string/pref_browser_category_summary">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="book_singlepage"
+            android:summary="@string/pref_singlepage_summary"
+            android:title="@string/pref_singlepage_title" />
 
-		<CheckBoxPreference
-			android:key="usebookcase"
-			android:title="@string/pref_usebookcase_title"
-			android:summary="@string/pref_usebookcase_summary"
-			android:defaultValue="true" />
-		<EditTextPreference
-			android:key="brautoscandir"
-			android:title="@string/pref_brautoscandir_title"
-			android:summary="@string/pref_brautoscandir_summary"
-			android:defaultValue="/sdcard" />
-		<PreferenceCategory
-			android:key="brfiletypesscreen"
-			android:title="@string/pref_brbrfiletypesscreen_title"
-			android:summary="@string/pref_brbrfiletypesscreen_summary">
-			<CheckBoxPreference
-				android:key="brfiletypedjvu"
-				android:title="@string/pref_brfiletypedjvu_title"
-				android:summary="@string/pref_brfiletypedjvu_summary"
-				android:defaultValue="true" />
-			<CheckBoxPreference
-				android:key="brfiletypedjv"
-				android:title="@string/pref_brfiletypedjv_title"
-				android:summary="@string/pref_brfiletypedjv_summary"
-				android:defaultValue="true" />
-			<CheckBoxPreference
-				android:key="brfiletypepdf"
-				android:title="@string/pref_brfiletypepdf_title"
-				android:summary="@string/pref_brfiletypepdf_summary"
-				android:defaultValue="true" />
-			<CheckBoxPreference
-				android:key="brfiletypexps"
-				android:title="@string/pref_brfiletypexps_title"
-				android:summary="@string/pref_brfiletypexps_summary"
-				android:defaultValue="true" />
-			<CheckBoxPreference
-				android:key="brfiletypeoxps"
-				android:title="@string/pref_brfiletypeoxps_title"
-				android:summary="@string/pref_brfiletypeoxps_summary"
-				android:defaultValue="true" />
-			<CheckBoxPreference
-				android:key="brfiletypecbz"
-				android:title="@string/pref_brfiletypecbz_title"
-				android:summary="@string/pref_brfiletypecbz_summary"
-				android:defaultValue="true" />
-			<CheckBoxPreference
-				android:key="brfiletypecbr"
-				android:title="@string/pref_brfiletypecbr_title"
-				android:summary="@string/pref_brfiletypecbr_summary"
-				android:defaultValue="true" />
-			<CheckBoxPreference
-				android:key="brfiletypefb2"
-				android:title="@string/pref_brfiletypefb2_title"
-				android:summary="@string/pref_brfiletypefb2_summary"
-				android:defaultValue="false" />
-			<CheckBoxPreference
-				android:key="brfiletypefb2.zip"
-				android:title="@string/pref_brfiletypefb2.zip_title"
-				android:summary="@string/pref_brfiletypefb2.zip_summary"
-				android:defaultValue="false" />
-		</PreferenceCategory>
+        <PreferenceCategory
+            android:summary="@string/pref_singlepage_category_summary"
+            android:title="@string/pref_singlepage_category" >
 
-	</PreferenceScreen>
+            <ListPreference
+                android:defaultValue="By Width"
+                android:dependency="book_singlepage"
+                android:entries="@array/list_align"
+                android:entryValues="@array/list_align_values"
+                android:key="book_align"
+                android:summary="@string/pref_align_summary"
+                android:title="@string/pref_align_title" />
+
+            <ListPreference
+                android:defaultValue=""
+                android:dependency="book_singlepage"
+                android:entries="@array/list_animation"
+                android:entryValues="@array/list_animation_values"
+                android:key="book_animationType"
+                android:summary="@string/pref_animationtype_summary"
+                android:title="@string/pref_animationtype_title" />
+        </PreferenceCategory>
+    </PreferenceScreen>
+
+    <PreferenceScreen
+        android:key="browserscreen"
+        android:summary="@string/pref_browser_category_summary"
+        android:title="@string/pref_browser_category" >
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="usebookcase"
+            android:summary="@string/pref_usebookcase_summary"
+            android:title="@string/pref_usebookcase_title" />
+
+        <EditTextPreference
+            android:defaultValue="/sdcard"
+            android:key="brautoscandir"
+            android:summary="@string/pref_brautoscandir_summary"
+            android:title="@string/pref_brautoscandir_title" />
+
+        <PreferenceCategory
+            android:key="brfiletypesscreen"
+            android:summary="@string/pref_brbrfiletypesscreen_summary"
+            android:title="@string/pref_brbrfiletypesscreen_title" >
+
+            <CheckBoxPreference
+                android:defaultValue="true"
+                android:key="brfiletypedjvu"
+                android:summary="@string/pref_brfiletypedjvu_summary"
+                android:title="@string/pref_brfiletypedjvu_title" />
+
+            <CheckBoxPreference
+                android:defaultValue="true"
+                android:key="brfiletypedjv"
+                android:summary="@string/pref_brfiletypedjv_summary"
+                android:title="@string/pref_brfiletypedjv_title" />
+
+            <CheckBoxPreference
+                android:defaultValue="true"
+                android:key="brfiletypepdf"
+                android:summary="@string/pref_brfiletypepdf_summary"
+                android:title="@string/pref_brfiletypepdf_title" />
+
+            <CheckBoxPreference
+                android:defaultValue="true"
+                android:key="brfiletypexps"
+                android:summary="@string/pref_brfiletypexps_summary"
+                android:title="@string/pref_brfiletypexps_title" />
+
+            <CheckBoxPreference
+                android:defaultValue="true"
+                android:key="brfiletypeoxps"
+                android:summary="@string/pref_brfiletypeoxps_summary"
+                android:title="@string/pref_brfiletypeoxps_title" />
+
+            <CheckBoxPreference
+                android:defaultValue="true"
+                android:key="brfiletypecbz"
+                android:summary="@string/pref_brfiletypecbz_summary"
+                android:title="@string/pref_brfiletypecbz_title" />
+
+            <CheckBoxPreference
+                android:defaultValue="true"
+                android:key="brfiletypecbr"
+                android:summary="@string/pref_brfiletypecbr_summary"
+                android:title="@string/pref_brfiletypecbr_title" />
+
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:key="brfiletypefb2"
+                android:summary="@string/pref_brfiletypefb2_summary"
+                android:title="@string/pref_brfiletypefb2_title" />
+
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:key="brfiletypefb2.zip"
+                android:summary="@string/pref_brfiletypefb2.zip_summary"
+                android:title="@string/pref_brfiletypefb2.zip_title" />
+        </PreferenceCategory>
+
+        <PreferenceScreen
+            android:key="brfiletypespecific"
+            android:summary="@string/pref_brfiletypespecific_summary"
+            android:title="@string/pref_brfiletypespecific_title" >
+
+            <PreferenceCategory
+                android:key="brfiletypespecificdjvu"
+                android:summary="@string/pref_brfiletypespecificdjvu_summary"
+                android:title="@string/pref_brfiletypespecificdjvu_title" >
+
+                <ListPreference
+                    android:defaultValue="0"
+                    android:entries="@array/list_djvu_rendering_mode"
+                    android:entryValues="@array/list_djvu_rendering_mode_values"
+                    android:key="djvu_rendering_mode"
+                    android:summary="@string/pref_djvu_rendering_mode_summary"
+                    android:title="@string/pref_djvu_rendering_mode_title" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+    </PreferenceScreen>
 
 </PreferenceScreen>

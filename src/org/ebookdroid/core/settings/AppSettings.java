@@ -286,7 +286,15 @@ public class AppSettings {
         }
         return animationType;
     }
-
+    
+    public int getDjvuRenderingMode() {
+        try {
+        return Integer.parseInt(prefs.getString("djvu_rendering_mode", "0"));
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+    
     void clearPseudoBookSettings() {
         final Editor editor = prefs.edit();
         editor.remove("book");

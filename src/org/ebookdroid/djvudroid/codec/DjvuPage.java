@@ -3,6 +3,7 @@ package org.ebookdroid.djvudroid.codec;
 import org.ebookdroid.core.bitmaps.BitmapManager;
 import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.codec.CodecPage;
+import org.ebookdroid.core.settings.SettingsManager;
 
 import android.graphics.Bitmap;
 import android.graphics.RectF;
@@ -30,12 +31,12 @@ public class DjvuPage implements CodecPage {
     private static native boolean isDecodingDone(long pageHandle);
 
     private static native boolean renderPage(long pageHandle, int targetWidth, int targetHeight, float pageSliceX,
-            float pageSliceY, float pageSliceWidth, float pageSliceHeight, int[] buffer);
+            float pageSliceY, float pageSliceWidth, float pageSliceHeight, int[] buffer, int renderMode);
 
     private static native boolean isNativeGraphicsAvailable();
 
     private static native boolean renderPageBitmap(long pageHandle, int targetWidth, int targetHeight,
-            float pageSliceX, float pageSliceY, float pageSliceWidth, float pageSliceHeight, Bitmap bitmap);
+            float pageSliceX, float pageSliceY, float pageSliceWidth, float pageSliceHeight, Bitmap bitmap, int renderMode);
 
     private static native void free(long pageHandle);
 
@@ -54,7 +55,7 @@ public class DjvuPage implements CodecPage {
         if (useNativeGraphics) {
             BitmapRef bmp = BitmapManager.getBitmap(width, height, Bitmap.Config.RGB_565);
             if (renderPageBitmap(pageHandle, width, height, pageSliceBounds.left, pageSliceBounds.top,
-                    pageSliceBounds.width(), pageSliceBounds.height(), bmp.getBitmap())) {
+                    pageSliceBounds.width(), pageSliceBounds.height(), bmp.getBitmap(), SettingsManager.getAppSettings().getDjvuRenderingMode())) {
                 return bmp;
             } else {
                 BitmapManager.release(bmp);
@@ -64,7 +65,7 @@ public class DjvuPage implements CodecPage {
 
         final int[] buffer = new int[width * height];
         renderPage(pageHandle, width, height, pageSliceBounds.left, pageSliceBounds.top, pageSliceBounds.width(),
-                pageSliceBounds.height(), buffer);
+                pageSliceBounds.height(), buffer, SettingsManager.getAppSettings().getDjvuRenderingMode());
         BitmapRef b = BitmapManager.getBitmap(width, height, Bitmap.Config.RGB_565);
         b.getBitmap().setPixels(buffer, 0, width, 0, 0, width, height);
         return b;

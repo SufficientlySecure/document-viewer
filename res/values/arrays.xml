@@ -86,4 +86,26 @@
 		<item>Normal</item>
 		<item>Low</item>
 	</string-array>
+
+	<string-array
+		name="list_djvu_rendering_mode"
+		translatable="false">
+		<item>@string/list_djvu_rendering_mode_0</item>
+		<item>@string/list_djvu_rendering_mode_1</item>
+		<item>@string/list_djvu_rendering_mode_2</item>
+		<item>@string/list_djvu_rendering_mode_3</item>
+		<item>@string/list_djvu_rendering_mode_4</item>
+		<item>@string/list_djvu_rendering_mode_5</item>
+	</string-array>
+	<string-array
+		name="list_djvu_rendering_mode_values"
+		translatable="false">
+		<item>0</item>
+		<item>1</item>
+		<item>2</item>
+		<item>3</item>
+		<item>4</item>
+		<item>5</item>
+	</string-array>
+	    
 </resources>

@@ -38,6 +38,21 @@
     <string name="pref_brfiletypefb2_summary">"Show FB2 files"</string>
     <string name="pref_brfiletypefb2.zip_title">".fb2.zip"</string>
     <string name="pref_brfiletypefb2.zip_summary">"Show FB2.ZIP files"</string>
+
+    <string name="pref_brfiletypespecific_title">"Format specific"</string>
+    <string name="pref_brfiletypespecific_summary">"Settings for each individual file format"</string>
+    <string name="pref_brfiletypespecificdjvu_title">"DJVU"</string>
+    <string name="pref_brfiletypespecificdjvu_summary">"DJVU format specific settings"</string>
+    <string name="pref_djvu_rendering_mode_title">"Rendering mode"</string>
+    <string name="pref_djvu_rendering_mode_summary">"Page rendering mode"</string>
+
+    <string name="list_djvu_rendering_mode_0">"Color"</string>
+    <string name="list_djvu_rendering_mode_1">"Black"</string>
+    <string name="list_djvu_rendering_mode_2">"Color only"</string>
+    <string name="list_djvu_rendering_mode_3">"Mask only"</string>
+    <string name="list_djvu_rendering_mode_4">"Background only"</string>
+    <string name="list_djvu_rendering_mode_5">"Foreground only"</string>
+        
 	<string name="list_rotation_auto">"Automatic"</string>
 	<string name="list_rotation_land">"Force landscape"</string>
 	<string name="list_rotation_port">"Force portrait"</string>

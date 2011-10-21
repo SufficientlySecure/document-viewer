@@ -38,7 +38,22 @@
     <string name="pref_brfiletypefb2_summary">"Показывать FB2 файлы"</string>
     <string name="pref_brfiletypefb2.zip_title">".fb2.zip"</string>
     <string name="pref_brfiletypefb2.zip_summary">"Показывать FB2.ZIP файлы"</string>
-	<string name="list_rotation_auto">"Автоматически"</string>
+    
+    <string name="pref_brfiletypespecific_title">"Особые настройки"</string>
+    <string name="pref_brfiletypespecific_summary">"Настройки специфичные для формата"</string>
+    <string name="pref_brfiletypespecificdjvu_title">"DJVU"</string>
+    <string name="pref_brfiletypespecificdjvu_summary">"Настройки для DJVU"</string>
+    <string name="pref_djvu_rendering_mode_title">"Режим отрисовки"</string>
+    <string name="pref_djvu_rendering_mode_summary">"Редим отрисовки страницы"</string>
+
+    <string name="list_djvu_rendering_mode_0">"Цветной"</string>
+    <string name="list_djvu_rendering_mode_1">"Черно/белый"</string>
+    <string name="list_djvu_rendering_mode_2">"Только цвет"</string>
+    <string name="list_djvu_rendering_mode_3">"Только маска"</string>
+    <string name="list_djvu_rendering_mode_4">"Только фоновый слой"</string>
+    <string name="list_djvu_rendering_mode_5">"Только основной слой"</string>
+    
+  	<string name="list_rotation_auto">"Автоматически"</string>
 	<string name="list_rotation_land">"Форсировать альбом"</string>
 	<string name="list_rotation_port">"Форсировать портрет"</string>
 	<string name="menu_close">Закрыть</string>

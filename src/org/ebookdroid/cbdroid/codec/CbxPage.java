@@ -14,6 +14,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -47,7 +48,7 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
                 opts.inJustDecodeBounds = onlyBounds;
                 opts.inSampleSize = scale;
 
-                final Bitmap bitmap = BitmapFactory.decodeStream(is, null, opts);
+                final Bitmap bitmap = BitmapFactory.decodeStream(new BufferedInputStream(is), null, opts);
                 pageInfo = new CodecPageInfo();
                 if (onlyBounds) {
                     pageInfo.setHeight(opts.outHeight * scale);

@@ -11,6 +11,8 @@ import android.graphics.RectF;
 
 public class PdfPage implements CodecPage {
 
+    private static final boolean useFzGeometry = true;
+
     private static final boolean useNativeGraphics;
 
     static {
@@ -20,11 +22,13 @@ public class PdfPage implements CodecPage {
     private long pageHandle;
     private final long docHandle;
     private final RectF mediaBox;
+    private final int rotation;
 
     private PdfPage(final long pageHandle, final long docHandle) {
         this.pageHandle = pageHandle;
         this.docHandle = docHandle;
         this.mediaBox = getMediaBox();
+        this.rotation = getRotate(pageHandle);
     }
 
     @Override
@@ -39,13 +43,74 @@ public class PdfPage implements CodecPage {
 
     @Override
     public BitmapRef renderBitmap(final int width, final int height, final RectF pageSliceBounds) {
+        final float[] matrixArray = useFzGeometry ? calculateFz(width, height, pageSliceBounds) : calculate(width,
+                height, pageSliceBounds);
+        return render(new Rect(0, 0, width, height), matrixArray);
+    }
+
+    private float[] calculate(final int width, final int height, final RectF pageSliceBounds) {
         final Matrix matrix = new Matrix();
         matrix.postTranslate(-mediaBox.left, -mediaBox.top);
         matrix.postScale(width / mediaBox.width(), -height / mediaBox.height());
         matrix.postTranslate(0, height);
         matrix.postTranslate(-pageSliceBounds.left * width, -pageSliceBounds.top * height);
         matrix.postScale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height());
-        return render(new Rect(0, 0, width, height), matrix);
+
+        final float[] matrixSource = new float[9];
+        final float[] matrixArray = new float[6];
+
+        matrix.getValues(matrixSource);
+        matrixArray[0] = matrixSource[0];
+        matrixArray[1] = matrixSource[3];
+        matrixArray[2] = matrixSource[1];
+        matrixArray[3] = matrixSource[4];
+        matrixArray[4] = matrixSource[2];
+        matrixArray[5] = matrixSource[5];
+
+        return matrixArray;
+    }
+
+    private float[] calculateFz(final int width, final int height, final RectF pageSliceBounds) {
+        FzGeometry.fz_matrix matrix = FzGeometry.fz_identity;
+
+        // Check rotation
+        switch (this.rotation) {
+            case 90:
+                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(-mediaBox.left, -mediaBox.bottom));
+                break;
+            case 180:
+                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(-mediaBox.right, -mediaBox.bottom));
+                break;
+            case 270:
+                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(-mediaBox.right, -mediaBox.top));
+                break;
+            case 0:
+            default:
+                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(-mediaBox.left, -mediaBox.top));
+                break;
+        }
+
+        matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_rotate(rotation));
+
+        matrix = FzGeometry.fz_concat(matrix,
+                FzGeometry.fz_scale(width / mediaBox.width(), -height / mediaBox.height()));
+        matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(0, height));
+
+        matrix = FzGeometry.fz_concat(matrix,
+                FzGeometry.fz_translate(-pageSliceBounds.left * width, -pageSliceBounds.top * height));
+        matrix = FzGeometry.fz_concat(matrix,
+                FzGeometry.fz_scale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height()));
+
+        final float[] matrixArray = new float[6];
+
+        matrixArray[0] = matrix.a;
+        matrixArray[1] = matrix.b;
+        matrixArray[2] = matrix.c;
+        matrixArray[3] = matrix.d;
+        matrixArray[4] = matrix.e;
+        matrixArray[5] = matrix.f;
+
+        return matrixArray;
     }
 
     static PdfPage createPage(final long dochandle, final int pageno) {
@@ -77,29 +142,21 @@ public class PdfPage implements CodecPage {
         return new RectF(box[0], box[1], box[2], box[3]);
     }
 
-    public BitmapRef render(final Rect viewbox, final Matrix matrix) {
+    public BitmapRef render(final Rect viewbox, final float[] ctm) {
         final int[] mRect = new int[4];
         mRect[0] = viewbox.left;
         mRect[1] = viewbox.top;
         mRect[2] = viewbox.right;
         mRect[3] = viewbox.bottom;
 
-        final float[] matrixSource = new float[9];
-        final float[] matrixArray = new float[6];
-        matrix.getValues(matrixSource);
-        matrixArray[0] = matrixSource[0];
-        matrixArray[1] = matrixSource[3];
-        matrixArray[2] = matrixSource[1];
-        matrixArray[3] = matrixSource[4];
-        matrixArray[4] = matrixSource[2];
-        matrixArray[5] = matrixSource[5];
-
         final int width = viewbox.width();
         final int height = viewbox.height();
 
+        System.out.println(String.format("Matrix: %f %f %f %f %f %f", ctm[0], ctm[1], ctm[2], ctm[3], ctm[4], ctm[5]));
+
         if (useNativeGraphics) {
-            BitmapRef bmp = BitmapManager.getBitmap(width, height, Bitmap.Config.ARGB_8888);
-            if (renderPageBitmap(docHandle, pageHandle, mRect, matrixArray, bmp.getBitmap())) {
+            final BitmapRef bmp = BitmapManager.getBitmap(width, height, Bitmap.Config.ARGB_8888);
+            if (renderPageBitmap(docHandle, pageHandle, mRect, ctm, bmp.getBitmap())) {
                 return bmp;
             } else {
                 BitmapManager.release(bmp);
@@ -108,8 +165,8 @@ public class PdfPage implements CodecPage {
         }
 
         final int[] bufferarray = new int[width * height];
-        renderPage(docHandle, pageHandle, mRect, matrixArray, bufferarray);
-        BitmapRef b = BitmapManager.getBitmap(width, height, Bitmap.Config.RGB_565);
+        renderPage(docHandle, pageHandle, mRect, ctm, bufferarray);
+        final BitmapRef b = BitmapManager.getBitmap(width, height, Bitmap.Config.RGB_565);
         b.getBitmap().setPixels(bufferarray, 0, width, 0, 0, width, height);
         return b;
     }

@@ -14,7 +14,7 @@ import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.settings.books.BookSettings;
 import org.ebookdroid.core.settings.books.Bookmark;
-import org.ebookdroid.core.touch.IMultiTouchZoom;
+import org.ebookdroid.core.touch.TouchManager;
 import org.ebookdroid.core.utils.PathFromUri;
 import org.ebookdroid.core.views.PageViewZoomControls;
 import org.ebookdroid.utils.StringUtils;
@@ -596,6 +596,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
             getView().setKeepScreenOn(newSettings.isKeepScreenOn());
         }
 
+        TouchManager.applyOldStyleSettings(newSettings);
     }
 
     @Override

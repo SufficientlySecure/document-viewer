@@ -7,6 +7,7 @@ import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.touch.DefaultGestureDetector;
 import org.ebookdroid.core.touch.IGestureDetector;
 import org.ebookdroid.core.touch.IMultiTouchZoom;
+import org.ebookdroid.core.touch.TouchManager;
 import org.ebookdroid.utils.MathUtils;
 
 import android.graphics.Canvas;
@@ -57,6 +58,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
         this.lastVisiblePage = -1;
 
         this.pageToGo = SettingsManager.getBookSettings().getCurrentPage();
+
     }
 
     protected List<IGestureDetector> getGestureDetectors() {
@@ -100,7 +102,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.core.IDocumentViewController#onScrollChanged(int, int)
      */
     @Override
@@ -219,7 +221,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.core.events.ZoomListener#commitZoom()
      */
     @Override
@@ -310,7 +312,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.core.events.ZoomListener#zoomChanged(float, float)
      */
     @Override
@@ -381,7 +383,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
             Thread.interrupted();
         }
 
-        for(IGestureDetector d : getGestureDetectors()) {
+        for (IGestureDetector d : getGestureDetectors()) {
             if (d.enabled() && d.onTouchEvent(ev)) {
                 return true;
             }
@@ -424,7 +426,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
 
     /**
      * Sets the page align flag.
-     *
+     * 
      * @param align
      *            the new flag indicating align
      */
@@ -446,7 +448,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
 
     /**
      * Checks if view is initialized.
-     *
+     * 
      * @return true, if is initialized
      */
     protected final boolean isInitialized() {
@@ -478,15 +480,27 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
         view.redrawView(viewState);
     }
 
+    protected boolean processTap(TouchManager.Touch type, MotionEvent e) {
+        String action = TouchManager.getInstance().getAction(type, e.getX(), e.getY(), getWidth(), getHeight());
+        if ("toggleZoomControls".equals(action)) {
+            getBase().getZoomModel().toggleZoomControls();
+            return true;
+        } else if ("verticalConfigScrollUp".equals(action)) {
+            verticalConfigScroll(-1);
+            return true;
+        } else if ("verticalConfigScrollDown".equals(action)) {
+            verticalConfigScroll(1);
+            return true;
+        }
+        return false;
+    }
+
     protected class GestureListener extends SimpleOnGestureListener {
 
         @Override
         public boolean onDoubleTap(final MotionEvent e) {
             // LCTX.d("onDoubleTap(" + e + ")");
-            if (SettingsManager.getAppSettings().getZoomByDoubleTap()) {
-                getBase().getZoomModel().toggleZoomControls();
-            }
-            return true;
+            return processTap(TouchManager.Touch.DoubleTap, e);
         }
 
         @Override
@@ -529,22 +543,13 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
         @Override
         public boolean onSingleTapConfirmed(final MotionEvent e) {
             // LCTX.d("onSingleTapConfirmed(" + e + ")");
-            float ts;
-            if (SettingsManager.getAppSettings().getTapScroll()) {
-                final int tapsize = SettingsManager.getAppSettings().getTapSize();
+            return processTap(TouchManager.Touch.SingleTap, e);
+        }
 
-                ts = (float) tapsize / 100;
-                if (ts > 0.5) {
-                    ts = 0.5f;
-                }
-                if (e.getY() / getHeight() < ts) {
-                    verticalConfigScroll(-1);
-                } else if (e.getY() / getHeight() > (1 - ts)) {
-                    verticalConfigScroll(1);
-                }
-                return true;
-            }
-            return false;
+        @Override
+        public void onLongPress(MotionEvent e) {
+            // TODO Auto-generated method stub
+            processTap(TouchManager.Touch.LongTap, e);
         }
     }
 }

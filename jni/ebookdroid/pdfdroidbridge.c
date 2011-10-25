@@ -194,38 +194,46 @@ JNIEXPORT jint JNICALL
 
     fz_error error = 0;
     fz_obj *pageobj = NULL;
-    fz_obj *obj = NULL;
     fz_obj *rotateobj = NULL;
 
-    fz_bbox bbox;
-    fz_bbox mediabox;
+	fz_obj *obj;
+	fz_bbox bbox;
+    fz_rect mediabox;
 
     int rotate = 0;
 
     pageobj = doc->xref->page_objs[pageNumber - 1];
 
-    obj = fz_dict_gets(pageobj, "MediaBox");
-    bbox = fz_round_rect(pdf_to_rect(obj));
-    if (fz_is_empty_rect(pdf_to_rect(obj)))
-    {
-        fz_warn("cannot find page size for page %d", pageNumber + 1);
-        bbox.x0 = 0;
-        bbox.y0 = 0;
-        bbox.x1 = 612;
-        bbox.y1 = 792;
-    }
+	obj = fz_dict_gets(pageobj, "MediaBox");
+	bbox = fz_round_rect(pdf_to_rect(obj));
+	if (fz_is_empty_rect(pdf_to_rect(obj)))
+	{
+		fz_warn("cannot find page size for page %d", pageNumber + 1);
+		bbox.x0 = 0;
+		bbox.y0 = 0;
+		bbox.x1 = 612;
+		bbox.y1 = 792;
+	}
 
-    obj = fz_dict_gets(pageobj, "CropBox");
-    if (fz_is_array(obj))
-    {
-        fz_bbox cropbox = fz_round_rect(pdf_to_rect(obj));
-        bbox = fz_intersect_bbox(bbox, cropbox);
-    }
+	obj = fz_dict_gets(pageobj, "CropBox");
+	if (fz_is_array(obj))
+	{
+		fz_bbox cropbox = fz_round_rect(pdf_to_rect(obj));
+		bbox = fz_intersect_bbox(bbox, cropbox);
+	}
 
-    mediabox.x0 = MIN(bbox.x0, bbox.x1);
-    mediabox.y0 = MIN(bbox.y0, bbox.y1);
-    mediabox.x1 = MAX(bbox.x0, bbox.x1);
-    mediabox.y1 = MAX(bbox.y0, bbox.y1);
+	mediabox.x0 = MIN(bbox.x0, bbox.x1);
+	mediabox.y0 = MIN(bbox.y0, bbox.y1);
+	mediabox.x1 = MAX(bbox.x0, bbox.x1);
+	mediabox.y1 = MAX(bbox.y0, bbox.y1);
+
+	if (mediabox.x1 - mediabox.x0 < 1 || mediabox.y1 - mediabox.y0 < 1)
+	{
+		fz_warn("invalid page size in page %d", pageNumber + 1);
+		mediabox = fz_unit_rect;
+	}
+
+	DEBUG("Mediabox: %f %f %f %f", mediabox.x0, mediabox.y0, mediabox.x1, mediabox.y1);
 
     rotateobj = fz_dict_gets(pageobj, "Rotate");
     if (fz_is_int(rotateobj))
@@ -239,11 +247,14 @@ JNIEXPORT jint JNICALL
         return(-1);
     }
 
+	int width = mediabox.x1 - mediabox.x0;
+	int height = mediabox.y1 - mediabox.y0;
+
     fid = (*env)->GetFieldID(env,clazz,"width","I");
-    (*env)->SetIntField(env,cpi,fid,mediabox.x1 - mediabox.x0);
+    (*env)->SetIntField(env,cpi,fid,width);
 
     fid = (*env)->GetFieldID(env,clazz,"height","I");
-    (*env)->SetIntField(env,cpi,fid,mediabox.y1 - mediabox.y0);
+    (*env)->SetIntField(env,cpi,fid,height);
 
     fid = (*env)->GetFieldID(env,clazz,"dpi","I");
     (*env)->SetIntField(env,cpi,fid,0);
@@ -272,7 +283,7 @@ JNIEXPORT jobject JNICALL
 
 	pdf_page *page = NULL;
 
-	fz_error* error = pdf_load_page(&page, doc->xref, pageno - 1);
+	fz_error* error = (fz_error*)pdf_load_page(&page, doc->xref, pageno - 1);
 
 	if(!error && page && page->links) {
 	    jclass arrayListClass = (*env)->FindClass(env,"java/util/ArrayList");

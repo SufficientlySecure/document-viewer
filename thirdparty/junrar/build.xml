@@ -1,0 +1,43 @@
+<project name="JUnrar" basedir="." default="release">
+
+	<property file="../../build.${user.name}.properties" />
+	<property file="../../build.properties" />
+	<property file="../../project.properties" />
+
+	<tstamp>
+		<format property="debug.version" pattern="yyyyMMdd.HHmmss" />
+	</tstamp>
+
+	<property name="android.jar" value="${sdk.dir}/platforms/${target}/android.jar" />
+
+	<property name="out.dir" value="../../target" />
+	<property name="out.absolute.dir" location="${out.dir}" />
+	<property name="out.classes.absolute.dir" location="${out.dir}/junrar/classes" />
+
+	<path id="android.target.classpath">
+		<fileset dir="${sdk.dir}/platforms/${target}/">
+			<include name="android.jar" />
+		</fileset>
+	</path>
+
+	<target name="release">
+		
+		<mkdir dir="${out.classes.absolute.dir}" />
+		
+        <javac encoding="${java.encoding}"
+                source="${java.source}" target="${java.target}"
+                debug="true" extdirs=""
+                destdir="${out.classes.absolute.dir}"
+                bootclasspathref="android.target.classpath"
+                verbose="${verbose}" >
+            <src path="." />
+        </javac>
+		
+		<jar basedir="${out.classes.absolute.dir}" destfile="../../libs/junrar.jar" />
+	</target>
+	
+	<target name="all" />
+	<target name="clean" >
+	</target>
+	
+</project>

@@ -2,7 +2,7 @@
 
 	<property file="build.${user.name}.properties" />
 	<property file="build.properties" />
-	<property file="default.properties" />
+	<property file="project.properties" />
 
 	<tstamp>
 		<format property="debug.version" pattern="yyyyMMdd.HHmmss" />
@@ -25,7 +25,7 @@
 	<xpath input="AndroidManifest.xml" expression="/manifest/@android:versionName" output="manifest.version" />
 
 	<property name="out.debug.file" location="${out.absolute.dir}/${ant.project.name}-${debug.version}.apk" />
-	<property name="out.release.file" location="${out.absolute.dir}/${ant.project.name}-${debug.version}.apk" />
+	<property name="out.release.file" location="${out.absolute.dir}/${ant.project.name}-release.apk" />
 
 	<property name="arm.mk" location="jni/Application.mk" />
 	<property name="cortex.a8.mk" location="jni/Application.arm7.a8.mk" />
@@ -39,7 +39,7 @@
 	<property name="cortex.a8.neon.apk" value="apk/${package.name}-arm7-cortex-a8-neon-${manifest.version}.apk" />
 	<property name="cortex.a9.neon.apk" value="apk/${package.name}-arm7-cortex-a9-neon-${manifest.version}.apk" />
 
-	<path id="project.libraries.src" path="thirdparty/junrar" />
+	<path id="project.libraries" path="thirdparty/junrar" />
 
 	<path id="project.libraries.jars" />
 	<path id="project.libraries.libs" />
@@ -50,12 +50,11 @@
 		</fileset>
 	</path>
 
-	<import file="${sdk.dir}/tools/ant/pre_setup.xml" />
-	<import file="${sdk.dir}/tools/ant/main_rules.xml" />
+	<import file="${sdk.dir}/tools/ant/build.xml" />
 
 	<mkdir dir="apk" />
 
-	<target name="make-release">
+	<target name="make-release" >
 
 		<delete dir="obj" />
 		<mkdir dir="obj" />

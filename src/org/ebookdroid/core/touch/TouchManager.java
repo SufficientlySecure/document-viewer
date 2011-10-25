@@ -39,22 +39,13 @@ public class TouchManager {
     }
 
     public String getAction(final Touch type, final float x, final float y, final float width, final float height) {
-        final Region region = getRegion(x, y, width, height);
-        if (region != null) {
-            final ActionRef action = region.getAction(type);
-            if (action != null && action.enabled) {
-                return action.name;
-            }
-        }
-        return null;
-    }
-
-    public Region getRegion(final float x, final float y, final float width, final float height) {
         for (final Region r : regions) {
-            final RectF rect = new RectF(width * r.rect.left / 100.0f, height * r.rect.top / 100.0f, width
-                    * r.rect.right / 100.0f, height * r.rect.bottom / 100.0f);
+            final RectF rect = r.getActualRect(width, height);
             if (rect.left <= x && x < rect.right && rect.top <= y && y < rect.bottom) {
-                return r;
+                final ActionRef action = r.getAction(type);
+                if (action != null && action.enabled) {
+                    return action.name;
+                }
             }
         }
         return null;
@@ -92,6 +83,12 @@ public class TouchManager {
             actions[type.ordinal()] = a;
             return a;
         }
+
+        public RectF getActualRect(final float width, final float height) {
+            return new RectF(width * rect.left / 100.0f, height * rect.top / 100.0f, width * rect.right / 100.0f,
+                    height * rect.bottom / 100.0f);
+        }
+
     }
 
     public static class ActionRef {

@@ -33,12 +33,34 @@ public class PdfPage implements CodecPage {
 
     @Override
     public int getWidth() {
-        return PdfContext.getWidthInPixels(mediaBox.width());
+        // Check rotation
+        switch (this.rotation) {
+            case 90:
+                return PdfContext.getWidthInPixels(mediaBox.height());
+            case 180:
+                return PdfContext.getWidthInPixels(mediaBox.width());
+            case 270:
+                return PdfContext.getWidthInPixels(mediaBox.height());
+            case 0:
+            default:
+                return PdfContext.getWidthInPixels(mediaBox.width());
+        }
     }
 
     @Override
     public int getHeight() {
-        return PdfContext.getHeightInPixels(mediaBox.height());
+        // Check rotation
+        switch (this.rotation) {
+            case 90:
+                return PdfContext.getHeightInPixels(mediaBox.width());
+            case 180:
+                return PdfContext.getHeightInPixels(mediaBox.height());
+            case 270:
+                return PdfContext.getHeightInPixels(mediaBox.width());
+            case 0:
+            default:
+                return PdfContext.getHeightInPixels(mediaBox.height());
+        }
     }
 
     @Override

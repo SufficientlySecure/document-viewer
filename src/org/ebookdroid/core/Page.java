@@ -30,9 +30,9 @@ public class Page {
         this.base = base;
         this.index = index;
         this.pageType = pt != null ? pt : PageType.FULL_PAGE;
-        this.bounds = new RectF(0, 0, cpi.getWidth(), cpi.getHeight());
+        this.bounds = new RectF(0, 0, cpi.width, cpi.height);
 
-        setAspectRatio(cpi.getWidth(), cpi.getHeight());
+        setAspectRatio(cpi.width, cpi.height);
 
         nodes = new PageTree(this);
     }

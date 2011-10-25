@@ -135,8 +135,8 @@ public class DocumentModel extends CurrentPageModel {
         final View view = base.getView();
 
         final CodecPageInfo defCpi = new CodecPageInfo();
-        defCpi.setWidth(view.getWidth());
-        defCpi.setHeight(view.getHeight());
+        defCpi.width = (view.getWidth());
+        defCpi.height = (view.getHeight());
 
         int viewIndex = 0;
 
@@ -147,7 +147,7 @@ public class DocumentModel extends CurrentPageModel {
 
             for (int docIndex = 0; docIndex < infos.length; docIndex++) {
                 if (!bs.splitPages || infos[docIndex] == null
-                        || (infos[docIndex].getWidth() < infos[docIndex].getHeight())) {
+                        || (infos[docIndex].width < infos[docIndex].height)) {
                     final Page page = new Page(base, new PageIndex(docIndex, viewIndex++), PageType.FULL_PAGE,
                             infos[docIndex] != null ? infos[docIndex] : defCpi);
                     list.add(page);
@@ -178,10 +178,10 @@ public class DocumentModel extends CurrentPageModel {
             return;
         }
         int width = 200, height = 200;
-        if (info.getHeight() > info.getWidth()) {
-            width = 200 * info.getWidth() / info.getHeight();
+        if (info.height > info.width) {
+            width = 200 * info.width / info.height;
         } else {
-            height = 200 * info.getHeight() / info.getWidth();
+            height = 200 * info.height / info.width;
         }
 
         decodeService.createThumbnail(thumbnailFile, width, height);
@@ -230,9 +230,9 @@ public class DocumentModel extends CurrentPageModel {
                 final CodecPageInfo[] infos = new CodecPageInfo[pages];
                 for (int i = 0; i < infos.length; i++) {
                     final CodecPageInfo cpi = new CodecPageInfo();
-                    cpi.setWidth(in.readInt());
-                    cpi.setHeight(in.readInt());
-                    if (cpi.getWidth() != -1 && cpi.getHeight() != -1) {
+                    cpi.width = (in.readInt());
+                    cpi.height = (in.readInt());
+                    if (cpi.width != -1 && cpi.height != -1) {
                         infos[i] = cpi;
                     }
                 }
@@ -263,8 +263,8 @@ public class DocumentModel extends CurrentPageModel {
                 out.writeInt(infos.length);
                 for (int i = 0; i < infos.length; i++) {
                     if (infos[i] != null) {
-                        out.writeInt(infos[i].getWidth());
-                        out.writeInt(infos[i].getHeight());
+                        out.writeInt(infos[i].width);
+                        out.writeInt(infos[i].height);
                     } else {
                         out.writeInt(-1);
                         out.writeInt(-1);

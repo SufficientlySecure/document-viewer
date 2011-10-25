@@ -51,11 +51,11 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
                 final Bitmap bitmap = BitmapFactory.decodeStream(new BufferedInputStream(is), null, opts);
                 pageInfo = new CodecPageInfo();
                 if (onlyBounds) {
-                    pageInfo.setHeight(opts.outHeight * scale);
-                    pageInfo.setWidth(opts.outWidth * scale);
+                    pageInfo.height = (opts.outHeight * scale);
+                    pageInfo.width = (opts.outWidth * scale);
                 } else {
-                    pageInfo.setHeight(bitmap.getHeight() * scale);
-                    pageInfo.setWidth(bitmap.getWidth() * scale);
+                    pageInfo.height = (bitmap.getHeight() * scale);
+                    pageInfo.width = (bitmap.getWidth() * scale);
                 }
                 return bitmap;
             } finally {
@@ -77,12 +77,12 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
 
     @Override
     public int getHeight() {
-        return getPageInfo().getHeight();
+        return getPageInfo().height;
     }
 
     @Override
     public int getWidth() {
-        return getPageInfo().getWidth();
+        return getPageInfo().width;
     }
 
     @Override

@@ -46,20 +46,17 @@ public class PdfDocument extends AbstractCodecDocument {
             return null;
         } else {
             // Check rotation
+            info.rotation = (360 + info.rotation) %360;
             switch (info.rotation) {
                 case 90:
-                    info.width = (PdfContext.getHeightInPixels(info.height));
-                    info.height = (PdfContext.getWidthInPixels(info.width));
-                case 180:
-                    info.height = (PdfContext.getHeightInPixels(info.height));
-                    info.width = (PdfContext.getWidthInPixels(info.width));
                 case 270:
-                    info.width = (PdfContext.getHeightInPixels(info.height));
-                    info.height = (PdfContext.getWidthInPixels(info.width));
+                    info.width = (PdfContext.getWidthInPixels(info.height));
+                    info.height = (PdfContext.getHeightInPixels(info.width));
                 case 0:
+                case 180:
                 default:
-                    info.height = (PdfContext.getHeightInPixels(info.height));
                     info.width = (PdfContext.getWidthInPixels(info.width));
+                    info.height = (PdfContext.getHeightInPixels(info.height));
             }
             return info;
         }

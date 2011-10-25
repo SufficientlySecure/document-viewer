@@ -29,6 +29,8 @@ import java.util.List;
 
 public class DocumentModel extends CurrentPageModel {
 
+    private static final boolean CACHE_ENABLED = false;
+
     private static final Page[] EMPTY_PAGES = {};
 
     private DecodeService decodeService;
@@ -82,7 +84,7 @@ public class DocumentModel extends CurrentPageModel {
 
     /**
      * Gets the current page object.
-     *
+     * 
      * @return the current page object
      */
     public Page getCurrentPageObject() {
@@ -91,7 +93,7 @@ public class DocumentModel extends CurrentPageModel {
 
     /**
      * Gets the next page object.
-     *
+     * 
      * @return the next page object
      */
     public Page getNextPageObject() {
@@ -100,7 +102,7 @@ public class DocumentModel extends CurrentPageModel {
 
     /**
      * Gets the prev page object.
-     *
+     * 
      * @return the prev page object
      */
     public Page getPrevPageObject() {
@@ -109,7 +111,7 @@ public class DocumentModel extends CurrentPageModel {
 
     /**
      * Gets the last page object.
-     *
+     * 
      * @return the last page object
      */
     public Page getLastPageObject() {
@@ -146,8 +148,7 @@ public class DocumentModel extends CurrentPageModel {
             final CodecPageInfo[] infos = retrievePagesInfo(base, bs);
 
             for (int docIndex = 0; docIndex < infos.length; docIndex++) {
-                if (!bs.splitPages || infos[docIndex] == null
-                        || (infos[docIndex].width < infos[docIndex].height)) {
+                if (!bs.splitPages || infos[docIndex] == null || (infos[docIndex].width < infos[docIndex].height)) {
                     final Page page = new Page(base, new PageIndex(docIndex, viewIndex++), PageType.FULL_PAGE,
                             infos[docIndex] != null ? infos[docIndex] : defCpi);
                     list.add(page);
@@ -161,7 +162,7 @@ public class DocumentModel extends CurrentPageModel {
                 }
             }
             pages = list.toArray(new Page[list.size()]);
-            if (infos.length > 0){
+            if (infos.length > 0) {
                 createBookThumbnail(base, bs, infos[0]);
             }
         } finally {
@@ -189,23 +190,25 @@ public class DocumentModel extends CurrentPageModel {
 
     private CodecPageInfo[] retrievePagesInfo(final IViewerActivity base, final BookSettings bs) {
 
-        final File cacheDir = base.getContext().getFilesDir();
-
         final String md5 = StringUtils.md5(bs.fileName);
+        final File cacheDir = base.getContext().getFilesDir();
         final File pagesFile = new File(cacheDir, md5 + ".cache");
-        if (md5 != null) {
-            if (pagesFile.exists()) {
-                final CodecPageInfo[] infos = loadPagesInfo(pagesFile);
-                if (infos != null) {
-                    boolean nullInfoFound = false;
-                    for (CodecPageInfo info : infos) {
-                        if (info == null) {
-                            nullInfoFound = true;
-                            break;
+
+        if (CACHE_ENABLED) {
+            if (md5 != null) {
+                if (pagesFile.exists()) {
+                    final CodecPageInfo[] infos = loadPagesInfo(pagesFile);
+                    if (infos != null) {
+                        boolean nullInfoFound = false;
+                        for (CodecPageInfo info : infos) {
+                            if (info == null) {
+                                nullInfoFound = true;
+                                break;
+                            }
                         }
-                    }
-                    if (!nullInfoFound) {
-                        return infos;
+                        if (!nullInfoFound) {
+                            return infos;
+                        }
                     }
                 }
             }
@@ -214,6 +217,8 @@ public class DocumentModel extends CurrentPageModel {
         final CodecPageInfo[] infos = new CodecPageInfo[getDecodeService().getPageCount()];
         for (int i = 0; i < infos.length; i++) {
             infos[i] = getDecodeService().getPageInfo(i);
+            System.out.println("PageInfo " + i + ": rotation=" + infos[i].rotation + ", width=" + infos[i].width + ", height="
+                    + infos[i].height);
         }
 
         if (md5 != null) {
@@ -282,7 +287,6 @@ public class DocumentModel extends CurrentPageModel {
             LCTX.e("Saving pages cache failed: " + ex.getMessage());
         }
     }
-
 
     private final class PageIterator implements Iterable<Page>, Iterator<Page> {
 

@@ -739,5 +739,9 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
             return false;
         }
 
+        @Override
+        public ViewState updatePageVisibility(int newPage, int direction, float zoom) {
+            return new ViewState(this);
+        }
     }
 }

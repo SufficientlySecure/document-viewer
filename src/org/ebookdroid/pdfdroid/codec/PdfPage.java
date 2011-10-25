@@ -28,20 +28,18 @@ public class PdfPage implements CodecPage {
         this.pageHandle = pageHandle;
         this.docHandle = docHandle;
         this.mediaBox = getMediaBox();
-        this.rotation = getRotate(pageHandle);
+        this.rotation = (360 + getRotate(pageHandle)) % 360;
     }
 
     @Override
     public int getWidth() {
         // Check rotation
-        switch (this.rotation) {
+        switch (rotation) {
             case 90:
-                return PdfContext.getWidthInPixels(mediaBox.height());
-            case 180:
-                return PdfContext.getWidthInPixels(mediaBox.width());
             case 270:
                 return PdfContext.getWidthInPixels(mediaBox.height());
             case 0:
+            case 180:
             default:
                 return PdfContext.getWidthInPixels(mediaBox.width());
         }
@@ -50,14 +48,12 @@ public class PdfPage implements CodecPage {
     @Override
     public int getHeight() {
         // Check rotation
-        switch (this.rotation) {
+        switch (rotation) {
             case 90:
-                return PdfContext.getHeightInPixels(mediaBox.width());
-            case 180:
-                return PdfContext.getHeightInPixels(mediaBox.height());
             case 270:
                 return PdfContext.getHeightInPixels(mediaBox.width());
             case 0:
+            case 180:
             default:
                 return PdfContext.getHeightInPixels(mediaBox.height());
         }
@@ -99,29 +95,31 @@ public class PdfPage implements CodecPage {
         switch (this.rotation) {
             case 90:
                 matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(-mediaBox.left, -mediaBox.bottom));
+                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_rotate(rotation));
+                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_scale(width / mediaBox.height(), -height / mediaBox.width()));
                 break;
             case 180:
                 matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(-mediaBox.right, -mediaBox.bottom));
+                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_rotate(rotation));
+                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_scale(width / mediaBox.width(), -height / mediaBox.height()));
                 break;
             case 270:
-                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(-mediaBox.right, -mediaBox.top));
+                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(-mediaBox.left, -mediaBox.top));
+                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_rotate(-rotation));
+                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(mediaBox.height(), 0));
+                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_scale(width / mediaBox.height(), -height / mediaBox.width()));
                 break;
             case 0:
             default:
                 matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(-mediaBox.left, -mediaBox.top));
+                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_scale(width / mediaBox.width(), -height / mediaBox.height()));
                 break;
         }
 
-        matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_rotate(rotation));
-
-        matrix = FzGeometry.fz_concat(matrix,
-                FzGeometry.fz_scale(width / mediaBox.width(), -height / mediaBox.height()));
         matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(0, height));
-
-        matrix = FzGeometry.fz_concat(matrix,
-                FzGeometry.fz_translate(-pageSliceBounds.left * width, -pageSliceBounds.top * height));
-        matrix = FzGeometry.fz_concat(matrix,
-                FzGeometry.fz_scale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height()));
+        
+        matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(-pageSliceBounds.left * width, -pageSliceBounds.top * height));
+        matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_scale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height()));
 
         final float[] matrixArray = new float[6];
 

@@ -175,11 +175,15 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 final DocumentModel dm = page.base.getDocumentModel();
 
                 if (dc != null && dm != null) {
+                    System.out.println("PageInfo " + page.index.docIndex + ": width=" + codecPage.getWidth()
+                            + ", height=" + codecPage.getHeight());
+
                     final boolean changed = page.setAspectRatio(codecPage);
 
-                    final ViewState viewState = new ViewState(dc);
+                    ViewState viewState = new ViewState(dc);
                     if (changed) {
                         dc.invalidatePageSizes(InvalidateSizeReason.PAGE_LOADED, page);
+                        viewState = dc.updatePageVisibility(page.index.viewIndex, 0, viewState.zoom);
                     }
                     final RectF bounds = viewState.getBounds(page);
                     if (parent != null) {

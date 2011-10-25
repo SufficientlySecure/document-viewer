@@ -187,45 +187,63 @@ JNIEXPORT jint JNICALL
                                     jint pageNumber,
                                     jobject cpi)
 {
-
     renderdocument_t *doc = (renderdocument_t*) (long)handle;
-
-///
-
 
     jclass clazz;
     jfieldID fid;
 
     fz_error error = 0;
     fz_obj *pageobj = NULL;
-    fz_obj *boxobj = NULL;
-    fz_rect bbox;
+    fz_obj *obj = NULL;
     fz_obj *rotateobj = NULL;
+
+    fz_bbox bbox;
+    fz_bbox mediabox;
+
     int rotate = 0;
 
     pageobj = doc->xref->page_objs[pageNumber - 1];
-    boxobj = fz_dict_gets(pageobj, "MediaBox");
-    if (boxobj == NULL)
-      boxobj = fz_dict_gets(pageobj, "CropBox");
-    bbox = pdf_to_rect(boxobj);
+
+    obj = fz_dict_gets(pageobj, "MediaBox");
+    bbox = fz_round_rect(pdf_to_rect(obj));
+    if (fz_is_empty_rect(pdf_to_rect(obj)))
+    {
+        fz_warn("cannot find page size for page %d", pageNumber + 1);
+        bbox.x0 = 0;
+        bbox.y0 = 0;
+        bbox.x1 = 612;
+        bbox.y1 = 792;
+    }
+
+    obj = fz_dict_gets(pageobj, "CropBox");
+    if (fz_is_array(obj))
+    {
+        fz_bbox cropbox = fz_round_rect(pdf_to_rect(obj));
+        bbox = fz_intersect_bbox(bbox, cropbox);
+    }
+
+    mediabox.x0 = MIN(bbox.x0, bbox.x1);
+    mediabox.y0 = MIN(bbox.y0, bbox.y1);
+    mediabox.x1 = MAX(bbox.x0, bbox.x1);
+    mediabox.y1 = MAX(bbox.y0, bbox.y1);
 
     rotateobj = fz_dict_gets(pageobj, "Rotate");
     if (fz_is_int(rotateobj))
-	rotate = fz_to_int(rotateobj);
-    else
-	rotate = 0;
+    {
+        rotate = fz_to_int(rotateobj);
+    } 
 
     clazz = (*env)->GetObjectClass(env,cpi);
     if (0 == clazz)
     {
-	return(-1);
+        return(-1);
     }
 
     fid = (*env)->GetFieldID(env,clazz,"width","I");
-    (*env)->SetIntField(env,cpi,fid,bbox.x1 - bbox.x0);
+    (*env)->SetIntField(env,cpi,fid,mediabox.x1 - mediabox.x0);
 
     fid = (*env)->GetFieldID(env,clazz,"height","I");
-    (*env)->SetIntField(env,cpi,fid,bbox.y1 - bbox.y0);
+    (*env)->SetIntField(env,cpi,fid,mediabox.y1 - mediabox.y0);
 
     fid = (*env)->GetFieldID(env,clazz,"dpi","I");
     (*env)->SetIntField(env,cpi,fid,0);
@@ -236,47 +254,6 @@ JNIEXPORT jint JNICALL
     fid = (*env)->GetFieldID(env,clazz,"version","I");
     (*env)->SetIntField(env,cpi,fid,0);
     return 0;
-
-///
-
-
-
-//	DEBUG("PdfDocument.getPageInfo = %p", doc);
-/*
-	pdf_page *page = NULL;
-
-
-
-	fz_error* error = pdf_load_page(&page, doc->xref, pageNumber - 1);
-
-	if(!error && page)
-	{
-	    clazz = (*env)->GetObjectClass(env,cpi);
-	    if (0 == clazz)
-	    {
-		return(-1);
-	    }
-
-	    fid = (*env)->GetFieldID(env,clazz,"width","I");
-	    (*env)->SetIntField(env,cpi,fid,page->mediabox.x1 - page->mediabox.x0);
-
-	    fid = (*env)->GetFieldID(env,clazz,"height","I");
-	    (*env)->SetIntField(env,cpi,fid,page->mediabox.y1 - page->mediabox.y0);
-
-	    fid = (*env)->GetFieldID(env,clazz,"dpi","I");
-	    (*env)->SetIntField(env,cpi,fid,0);
-
-	    fid = (*env)->GetFieldID(env,clazz,"rotation","I");
-	    (*env)->SetIntField(env,cpi,fid,page->rotate);
-
-	    fid = (*env)->GetFieldID(env,clazz,"version","I");
-	    (*env)->SetIntField(env,cpi,fid,0);
-
-    	    pdf_free_page(page);
-    	    return 0;
-	}
-	return(-1);
-    */
 }
 
 
@@ -440,7 +417,7 @@ JNIEXPORT void JNICALL
 	renderpage_t *page = (renderpage_t*) (long)handle;
 	jfloat *bbox = (*env)->GetPrimitiveArrayCritical(env, mediabox, 0);
 	if(!bbox) return;
-//	DEBUG("Mediabox: %f %f %f %f", page->page->mediabox.x0, page->page->mediabox.y0, page->page->mediabox.x1, page->page->mediabox.y1);
+	DEBUG("Mediabox: %f %f %f %f", page->page->mediabox.x0, page->page->mediabox.y0, page->page->mediabox.x1, page->page->mediabox.y1);
 	bbox[0] = page->page->mediabox.x0;
 	bbox[1] = page->page->mediabox.y0;
 	bbox[2] = page->page->mediabox.x1;

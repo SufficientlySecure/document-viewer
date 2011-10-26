@@ -67,6 +67,8 @@ public class AppSettings {
 
     private Boolean useBookcase;
 
+    private Integer djvuRenderingMode;
+
     AppSettings(final Context context) {
         this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
@@ -286,15 +288,14 @@ public class AppSettings {
         }
         return animationType;
     }
-    
+
     public int getDjvuRenderingMode() {
-        try {
-        return Integer.parseInt(prefs.getString("djvu_rendering_mode", "0"));
-        } catch (Exception e) {
-            return 0;
+        if (djvuRenderingMode == null) {
+            djvuRenderingMode = getIntValue("djvu_rendering_mode", 0);
         }
+        return djvuRenderingMode;
     }
-    
+
     void clearPseudoBookSettings() {
         final Editor editor = prefs.edit();
         editor.remove("book");
@@ -359,6 +360,7 @@ public class AppSettings {
         private static final int D_LoadRecent = 0x0001 << 13;
         private static final int D_MaxImageSize = 0x0001 << 14;
         private static final int D_UseBookcase = 0x0001 << 15;
+        private static final int D_DjvuRenderingMode = 0x0001 << 16;
 
         private int mask;
         private final boolean firstTime;
@@ -413,6 +415,9 @@ public class AppSettings {
                 }
                 if (firstTime || olds.getUseBookcase() != news.getUseBookcase()) {
                     mask |= D_UseBookcase;
+                }
+                if (firstTime || olds.getDjvuRenderingMode() != news.getDjvuRenderingMode()) {
+                    mask |= D_DjvuRenderingMode;
                 }
             }
         }
@@ -485,6 +490,9 @@ public class AppSettings {
             return 0 != (mask & D_UseBookcase);
         }
 
+        public boolean isDjvuRenderingModeChanged() {
+            return 0 != (mask & D_DjvuRenderingMode);
+        }
     }
 
 }

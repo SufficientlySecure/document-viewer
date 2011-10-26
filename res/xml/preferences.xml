@@ -167,6 +167,27 @@
                 android:summary="@string/pref_animationtype_summary"
                 android:title="@string/pref_animationtype_title" />
         </PreferenceCategory>
+        
+        <PreferenceScreen
+            android:key="brfiletypespecific"
+            android:summary="@string/pref_brfiletypespecific_summary"
+            android:title="@string/pref_brfiletypespecific_title" >
+
+            <PreferenceCategory
+                android:key="brfiletypespecificdjvu"
+                android:summary="@string/pref_brfiletypespecificdjvu_summary"
+                android:title="@string/pref_brfiletypespecificdjvu_title" >
+
+                <ListPreference
+                    android:defaultValue="0"
+                    android:entries="@array/list_djvu_rendering_mode"
+                    android:entryValues="@array/list_djvu_rendering_mode_values"
+                    android:key="djvu_rendering_mode"
+                    android:summary="@string/pref_djvu_rendering_mode_summary"
+                    android:title="@string/pref_djvu_rendering_mode_title" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+
     </PreferenceScreen>
 
     <PreferenceScreen
@@ -286,26 +307,6 @@
                 android:summary="@string/pref_brfiletypefb2.zip_summary"
                 android:title="@string/pref_brfiletypefb2.zip_title" />
         </PreferenceCategory>
-
-        <PreferenceScreen
-            android:key="brfiletypespecific"
-            android:summary="@string/pref_brfiletypespecific_summary"
-            android:title="@string/pref_brfiletypespecific_title" >
-
-            <PreferenceCategory
-                android:key="brfiletypespecificdjvu"
-                android:summary="@string/pref_brfiletypespecificdjvu_summary"
-                android:title="@string/pref_brfiletypespecificdjvu_title" >
-
-                <ListPreference
-                    android:defaultValue="0"
-                    android:entries="@array/list_djvu_rendering_mode"
-                    android:entryValues="@array/list_djvu_rendering_mode_values"
-                    android:key="djvu_rendering_mode"
-                    android:summary="@string/pref_djvu_rendering_mode_summary"
-                    android:title="@string/pref_djvu_rendering_mode_title" />
-            </PreferenceCategory>
-        </PreferenceScreen>
     </PreferenceScreen>
 
 </PreferenceScreen>

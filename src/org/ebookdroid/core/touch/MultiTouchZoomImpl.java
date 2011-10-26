@@ -10,7 +10,7 @@ public class MultiTouchZoomImpl implements IMultiTouchZoom {
     private float lastZoomDistance;
     private boolean multiEventCatched;
 
-    MultiTouchZoomImpl(final ZoomModel zoomModel) {
+    public MultiTouchZoomImpl(final ZoomModel zoomModel) {
         this.zoomModel = zoomModel;
     }
 

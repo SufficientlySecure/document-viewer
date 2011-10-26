@@ -36,6 +36,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     final RectF pageSliceBounds;
     final Matrix matrix = new Matrix();
 
+    float bitmapZoom = 1;
     boolean hasChildren = false;
 
     PageTreeNode(final Page page, final PageTreeNode parent, final long id, final RectF localPageSliceBounds,
@@ -71,7 +72,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                     hasChildren = page.nodes.recycleChildren(this, bitmapsToRecycle);
                 }
                 if (viewState.isNodeVisible(this, pageBounds) && getBitmap() == null) {
-                    decodePageTreeNode(nodesToDecode);
+                    decodePageTreeNode(nodesToDecode, viewState);
                 }
             }
             return true;
@@ -81,7 +82,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             if (LengthUtils.isEmpty(children)) {
                 hasChildren = true;
                 stopDecodingThisNode("children created");
-                children = page.nodes.createChildren(this, childrenZoomThreshold * childrenZoomThreshold);
+                children = page.nodes.createChildren(this, calculateChildThreshold());
             }
 
             for (final PageTreeNode child : children) {
@@ -91,10 +92,18 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             return true;
         }
 
-        if (getBitmap() == null) {
-            decodePageTreeNode(nodesToDecode);
+        if (getBitmap() == null || isReDecodingRequired(viewState)) {
+            decodePageTreeNode(nodesToDecode, viewState);
         }
         return true;
+    }
+
+    private boolean isReDecodingRequired(final ViewState viewState) {
+        return viewState.zoom > 1.2 * bitmapZoom;
+    }
+
+    protected float calculateChildThreshold() {
+        return childrenZoomThreshold * childrenZoomThreshold;
     }
 
     public boolean onPositionChanged(final ViewState viewState, final RectF pageBounds,
@@ -118,7 +127,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         if (childrenRequired) {
             hasChildren = true;
             stopDecodingThisNode("children created");
-            children = page.nodes.createChildren(this, childrenZoomThreshold * childrenZoomThreshold);
+            children = page.nodes.createChildren(this, calculateChildThreshold());
             for (final PageTreeNode child : children) {
                 child.onPositionChanged(viewState, pageBounds, nodesToDecode, bitmapsToRecycle);
             }
@@ -126,7 +135,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         }
 
         if (getBitmap() == null) {
-            decodePageTreeNode(nodesToDecode);
+            decodePageTreeNode(nodesToDecode, viewState);
         }
         return true;
     }
@@ -156,8 +165,9 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         return size >= SettingsManager.getAppSettings().getMaxImageSize();
     }
 
-    protected void decodePageTreeNode(final List<PageTreeNode> nodesToDecode) {
+    protected void decodePageTreeNode(final List<PageTreeNode> nodesToDecode, ViewState viewState) {
         if (setDecodingNow(true)) {
+            bitmapZoom = viewState.zoom;
             nodesToDecode.add(this);
         }
     }
@@ -175,9 +185,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 final DocumentModel dm = page.base.getDocumentModel();
 
                 if (dc != null && dm != null) {
-                    System.out.println("PageInfo " + page.index.docIndex + ": width=" + codecPage.getWidth()
-                            + ", height=" + codecPage.getHeight());
-
                     final boolean changed = page.setAspectRatio(codecPage);
 
                     ViewState viewState = new ViewState(dc);

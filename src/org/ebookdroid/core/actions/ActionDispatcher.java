@@ -16,14 +16,14 @@ public class ActionDispatcher {
     private static final LogContext LCTX = LogContext.ROOT.lctx("Actions");
 
     private final Activity m_base;
-    
+
     private final IActionController<?> m_controller;
 
     private final ThreadPoolExecutor m_pool;
 
     /**
      * Constructor
-     * 
+     *
      * @param controller
      *            owner controller
      */
@@ -33,7 +33,7 @@ public class ActionDispatcher {
 
     /**
      * Constructor
-     * 
+     *
      * @param controller
      *            owner controller
      * @param pool
@@ -47,7 +47,7 @@ public class ActionDispatcher {
 
     /**
      * Invoke action.
-     * 
+     *
      * @param type
      *            the invokation type
      * @param actionId
@@ -55,8 +55,8 @@ public class ActionDispatcher {
      * @param parameters
      *            action parameters
      */
-    public void invoke(final InvokationType type, final String actionId, final Object... parameters) {
-        ActionEx action = new ActionEx(m_controller, null, actionId);
+    public void invoke(final InvokationType type, final int actionId, final Object... parameters) {
+        ActionEx action = new ActionEx(m_controller, actionId);
         action.putValue(PARAMETERS, parameters);
 
         invoke(type, action);
@@ -64,7 +64,7 @@ public class ActionDispatcher {
 
     /**
      * Invoke action.
-     * 
+     *
      * @param type
      *            the invokation type
      * @param action

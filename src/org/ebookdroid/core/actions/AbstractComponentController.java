@@ -1,16 +1,16 @@
 package org.ebookdroid.core.actions;
 
 import org.ebookdroid.core.log.LogContext;
-import org.ebookdroid.utils.LengthUtils;
 
 import android.app.Activity;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * This class defines base features for action controller.
- * 
+ *
  * @param <ManagedComponent>
  *            manager GUI component class
  */
@@ -18,9 +18,7 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
 
     protected static final LogContext LCTX = LogContext.ROOT.lctx("Actions");
 
-    private final HashMap<String, ActionEx> m_actions = new HashMap<String, ActionEx>();
-
-    private final HashMap<String, ActionEx> m_categoryActions = new HashMap<String, ActionEx>();
+    private final Map<Integer, ActionEx> m_actions = new LinkedHashMap<Integer, ActionEx>();
 
     private final ReentrantReadWriteLock m_actionsLock = new ReentrantReadWriteLock();
 
@@ -32,7 +30,7 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
 
     /**
      * Constructor
-     * 
+     *
      * @param managedComponent
      *            managed component
      */
@@ -42,7 +40,7 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
 
     /**
      * Constructor.
-     * 
+     *
      * @param parent
      *            the parent controller
      * @param managedComponent
@@ -81,13 +79,13 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
 
     /**
      * Searches for an action by the given id
-     * 
+     *
      * @param id
      *            action id
      * @return an instance of {@link ActionEx} object or <code>null</code>
      * @see IActionController#getAction(java.lang.String)
      */
-    public ActionEx getAction(final String id) {
+    public ActionEx getAction(final int id) {
         m_actionsLock.readLock().lock();
         try {
             ActionEx actionEx = m_actions.get(id);
@@ -101,50 +99,20 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
     }
 
     /**
-     * Searches for a global action by the given action category.
-     * 
-     * @param category
-     *            action category
-     * @return an instance of the {@link ActionEx} object or <code>null</code>
-     * @see IActionController#getActionByCategory(java.lang.String)
-     */
-    public ActionEx getActionByCategory(final String category) {
-        m_actionsLock.readLock().lock();
-        try {
-            return m_categoryActions.get(category);
-        } finally {
-            m_actionsLock.readLock().unlock();
-        }
-    }
-
-    /**
-     * Creates an action
-     * 
-     * @param id
-     *            action id
-     * @return an instance of {@link ActionEx} object or <code>null</code>
-     */
-    public ActionEx getOrCreateAction(final String id) {
-        return getOrCreateAction(null, id);
-    }
-
-    /**
      * Creates and register a global action
-     * 
-     * @param category
-     *            action category
+     *
      * @param id
      *            action id
      * @return an instance of {@link ActionEx} object
      * @see IActionController#getOrCreateAction(String, String, IActionParameter[])
      */
-    public ActionEx getOrCreateAction(final String category, final String id) {
+    public ActionEx getOrCreateAction(final int id) {
         ActionEx result = null;
         m_actionsLock.writeLock().lock();
         try {
             result = getAction(id);
             if (result == null) {
-                result = createAction(category, id);
+                result = createAction(id);
                 try {
                     ActionInitControllerMethod.getInstance().invoke(this, result);
                 } catch (Throwable e) {
@@ -152,9 +120,6 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
                 }
 
                 m_actions.put(result.getId(), result);
-                if (LengthUtils.isNotEmpty(category)) {
-                    m_categoryActions.put(category, result);
-                }
             }
         } finally {
             m_actionsLock.writeLock().unlock();
@@ -165,23 +130,7 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
 
     /**
      * Creates an action
-     * 
-     * @param id
-     *            action id
-     * @param parameters
-     *            action parameters
-     * @return an instance of {@link ActionEx} object
-     * @see IActionController#createAction(String, IActionParameter[])
-     */
-    public ActionEx createAction(final String id, final IActionParameter... parameters) {
-        return createAction(null, id, parameters);
-    }
-
-    /**
-     * Creates an action
-     * 
-     * @param category
-     *            action category
+     *
      * @param id
      *            action id
      * @param parameters
@@ -189,8 +138,8 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
      * @return an instance of {@link ActionEx} object
      * @see IActionController#createAction(String, String, IActionParameter[])
      */
-    public ActionEx createAction(final String category, final String id, final IActionParameter... parameters) {
-        ActionEx result = new ActionEx(this, category, id);
+    public ActionEx createAction(final int id, final IActionParameter... parameters) {
+        ActionEx result = new ActionEx(this, id);
 
         result.putValue(MANAGED_COMPONENT_PROPERTY, getManagedComponent());
         result.putValue(COMPONENT_CONTROLLER_PROPERTY, this);
@@ -208,9 +157,6 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
         m_actionsLock.writeLock().lock();
         try {
             m_actions.put(result.getId(), result);
-            if (LengthUtils.isNotEmpty(category)) {
-                m_categoryActions.put(category, result);
-            }
         } finally {
             m_actionsLock.writeLock().unlock();
         }

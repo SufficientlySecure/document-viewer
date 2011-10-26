@@ -1,5 +1,6 @@
 package org.ebookdroid.core;
 
+import org.ebookdroid.R;
 import org.ebookdroid.core.actions.ActionController;
 import org.ebookdroid.core.actions.ActionEx;
 import org.ebookdroid.core.actions.ActionMethod;
@@ -66,8 +67,8 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
         this.pageToGo = SettingsManager.getBookSettings().getCurrentPage();
 
         this.actionController = new ActionController<AbstractDocumentView>(base.getActivity(), base.getActionController(), this);
-        this.actionController.createAction("verticalConfigScrollUp", new Constant("direction", -1));
-        this.actionController.createAction("verticalConfigScrollDown", new Constant("direction", +1));
+        this.actionController.createAction(R.id.actions_verticalConfigScrollUp, new Constant("direction", -1));
+        this.actionController.createAction(R.id.actions_verticalConfigScrollDown, new Constant("direction", +1));
     }
 
     protected List<IGestureDetector> getGestureDetectors() {
@@ -111,7 +112,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IDocumentViewController#onScrollChanged(int, int)
      */
     @Override
@@ -230,7 +231,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.events.ZoomListener#commitZoom()
      */
     @Override
@@ -321,7 +322,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.events.ZoomListener#zoomChanged(float, float)
      */
     @Override
@@ -435,7 +436,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
 
     /**
      * Sets the page align flag.
-     * 
+     *
      * @param align
      *            the new flag indicating align
      */
@@ -457,7 +458,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
 
     /**
      * Checks if view is initialized.
-     * 
+     *
      * @return true, if is initialized
      */
     protected final boolean isInitialized() {
@@ -489,15 +490,15 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
         view.redrawView(viewState);
     }
 
-    @ActionMethod(ids = {"verticalConfigScrollUp", "verticalConfigScrollDown"})
+    @ActionMethod(ids = {R.id.actions_verticalConfigScrollUp, R.id.actions_verticalConfigScrollDown})
     public void verticalConfigScroll(ActionEx action) {
         int direction = action.getParameter("direction");
         verticalConfigScroll(direction);
     }
 
     protected boolean processTap(TouchManager.Touch type, MotionEvent e) {
-        String actionName = TouchManager.getInstance().getAction(type, e.getX(), e.getY(), getWidth(), getHeight());
-        ActionEx action = actionName != null ? actionController.getAction(actionName) : null;
+        Integer actionId = TouchManager.getInstance().getAction(type, e.getX(), e.getY(), getWidth(), getHeight());
+        ActionEx action = actionId != null ? actionController.getAction(actionId) : null;
         if (action != null) {
             action.run();
             return true;

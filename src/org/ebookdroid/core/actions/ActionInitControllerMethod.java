@@ -22,14 +22,14 @@ public final class ActionInitControllerMethod {
 
     /**
      * Constructor
-     * 
+     *
      */
     private ActionInitControllerMethod() {
     }
 
     /**
      * Invokes controller method for the given controller and action
-     * 
+     *
      * @param action
      *            action
      * @return execution result
@@ -47,7 +47,7 @@ public final class ActionInitControllerMethod {
     /**
      * @return {@link Method}
      */
-    Object[] getInitCall(IActionController<?> controller, String actionId) {
+    Object[] getInitCall(IActionController<?> controller, int actionId) {
         Object[] call = { null, null };
         for (IActionController<?> c = controller; call[0] == null && c != null; c = c.getParent()) {
             call[0] = getMethod(c.getManagedComponent(), actionId);
@@ -67,15 +67,15 @@ public final class ActionInitControllerMethod {
 
     /**
      * Gets the method.
-     * 
+     *
      * @param target
      *            a possible action target
      * @param actionId
      *            the action id
-     * 
+     *
      * @return the method
      */
-    private static synchronized Method getMethod(final Object target, final String actionId) {
+    private static synchronized Method getMethod(final Object target, final int actionId) {
         final Class<? extends Object> clazz = target.getClass();
 
         Map<String, Method> methods = s_methods.get(clazz);
@@ -88,10 +88,10 @@ public final class ActionInitControllerMethod {
 
     /**
      * Gets the method.
-     * 
+     *
      * @param clazz
      *            an action target class
-     * 
+     *
      * @return the map of action methods method
      */
     private static Map<String, Method> getActionMethods(final Class<?> clazz) {

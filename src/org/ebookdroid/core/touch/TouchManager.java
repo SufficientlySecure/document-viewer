@@ -1,5 +1,6 @@
 package org.ebookdroid.core.touch;
 
+import org.ebookdroid.R;
 import org.ebookdroid.core.settings.AppSettings;
 
 import android.graphics.Rect;
@@ -22,15 +23,15 @@ public class TouchManager {
 
         {
             final Region r = instance.addRegion(0, 0, 100, 100);
-            r.setAction(Touch.DoubleTap, newSettings.getZoomByDoubleTap(), "toggleZoomControls");
+            r.setAction(Touch.DoubleTap, newSettings.getZoomByDoubleTap(), R.id.mainmenu_zoom);
         }
         {
             final Region r = instance.addRegion(0, 0, 100, newSettings.getTapSize());
-            r.setAction(Touch.SingleTap, newSettings.getTapScroll(), "verticalConfigScrollUp");
+            r.setAction(Touch.SingleTap, newSettings.getTapScroll(), R.id.actions_verticalConfigScrollUp);
         }
         {
             final Region r = instance.addRegion(0, 100 - newSettings.getTapSize(), 100, 100);
-            r.setAction(Touch.SingleTap, newSettings.getTapScroll(), "verticalConfigScrollDown");
+            r.setAction(Touch.SingleTap, newSettings.getTapScroll(), R.id.actions_verticalConfigScrollDown);
         }
     }
 
@@ -38,13 +39,13 @@ public class TouchManager {
         regions.clear();
     }
 
-    public String getAction(final Touch type, final float x, final float y, final float width, final float height) {
+    public Integer getAction(final Touch type, final float x, final float y, final float width, final float height) {
         for (final Region r : regions) {
             final RectF rect = r.getActualRect(width, height);
             if (rect.left <= x && x < rect.right && rect.top <= y && y < rect.bottom) {
                 final ActionRef action = r.getAction(type);
                 if (action != null && action.enabled) {
-                    return action.name;
+                    return action.id;
                 }
             }
         }
@@ -78,8 +79,8 @@ public class TouchManager {
             return actions[type.ordinal()];
         }
 
-        public ActionRef setAction(final Touch type, final boolean enabled, final String name) {
-            final ActionRef a = new ActionRef(type, enabled, name);
+        public ActionRef setAction(final Touch type, final boolean enabled, final int id) {
+            final ActionRef a = new ActionRef(type, enabled, id);
             actions[type.ordinal()] = a;
             return a;
         }
@@ -94,13 +95,13 @@ public class TouchManager {
     public static class ActionRef {
 
         public final Touch type;
-        public final String name;
+        public final int id;
         public boolean enabled;
 
-        public ActionRef(final Touch type, final boolean enabled, final String name) {
+        public ActionRef(final Touch type, final boolean enabled, final int id) {
             this.type = type;
             this.enabled = enabled;
-            this.name = name;
+            this.id = id;
         }
     }
 }

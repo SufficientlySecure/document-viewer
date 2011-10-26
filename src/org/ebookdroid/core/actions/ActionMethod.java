@@ -12,5 +12,5 @@ public @interface ActionMethod {
     /**
      * id of primary action called this method.
      */
-    String[] ids();
+    int[] ids();
 }

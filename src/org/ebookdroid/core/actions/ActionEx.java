@@ -2,25 +2,21 @@ package org.ebookdroid.core.actions;
 
 import org.ebookdroid.core.log.LogContext;
 
+import android.content.DialogInterface;
 import android.drm.DrmStore.Action;
+import android.view.View;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class ActionEx implements Runnable {
+public class ActionEx implements Runnable, View.OnClickListener, DialogInterface.OnClickListener {
 
     private static final LogContext LOGGER = LogContext.ROOT.lctx("Actions");
 
     private static final String SHORT_DESCRIPTION = "ShortDescription";
-    
-    private static final String PARAMETER_SOURCE_SELECTED = "SourceSelected";
 
-    private static final String PARAMETER_ITEM_SELECTED = "ItemSelected";
-
-    private String m_category;
-
-    private String m_id;
+    private int m_id;
 
     private String m_text;
 
@@ -32,7 +28,7 @@ public class ActionEx implements Runnable {
 
     /**
      * Constructor
-     * 
+     *
      * @param controller
      *            action controller
      * @param category
@@ -40,33 +36,23 @@ public class ActionEx implements Runnable {
      * @param id
      *            action id
      */
-    ActionEx(final IActionController<?> controller, final String category, final String id) {
-        m_category = category;
+    ActionEx(final IActionController<?> controller, final int id) {
         m_id = id;
         m_method = new ActionControllerMethod(controller, id);
     }
 
     /**
-     * Returns the action's category.
-     * 
-     * @return the category
-     */
-    public String getCategory() {
-        return m_category;
-    }
-
-    /**
      * Returns the action's id.
-     * 
+     *
      * @return the id
      */
-    public String getId() {
+    public int getId() {
         return m_id;
     }
 
     /**
      * Returns the action's text.
-     * 
+     *
      * @return the actions text
      * @see #setName
      */
@@ -76,7 +62,7 @@ public class ActionEx implements Runnable {
 
     /**
      * Returns the action's description.
-     * 
+     *
      * @return the actions description
      * @see #setDescription
      */
@@ -86,7 +72,7 @@ public class ActionEx implements Runnable {
 
     /**
      * Sets the action's description.
-     * 
+     *
      * @param description
      *            the string used to set the action's description
      * @see #getDescription
@@ -106,7 +92,7 @@ public class ActionEx implements Runnable {
 
     /**
      * Returns component managed by action controller created this action.
-     * 
+     *
      * @param <ManagedComponent>
      *            managed component type
      * @return component managed by action controller created this action
@@ -117,7 +103,7 @@ public class ActionEx implements Runnable {
 
     /**
      * Gets the <code>Object</code> associated with the specified key.
-     * 
+     *
      * @param key
      *            a string containing the specified <code>key</code>
      * @return the binding <code>Object</code> stored with this key; if
@@ -129,13 +115,14 @@ public class ActionEx implements Runnable {
         return m_values.get(key);
     }
 
-    public void putValue(final String key, final Object value) {
+    public ActionEx putValue(final String key, final Object value) {
         m_values.put(key, value);
+        return this;
     }
 
     /**
      * Gets the <code>Object</code> associated with the specified key.
-     * 
+     *
      * @param <T>
      *            parameter type
      * @param key
@@ -151,7 +138,7 @@ public class ActionEx implements Runnable {
 
     /**
      * Gets the <code>Object</code> associated with the specified key.
-     * 
+     *
      * @param <T>
      *            parameter type
      * @param key
@@ -169,35 +156,14 @@ public class ActionEx implements Runnable {
     }
 
     /**
-     * Return source button (or menu item) state.
-     * 
-     * @return {@link Boolean#TRUE} if button is selected, {@link Boolean#FALSE} if not and <code>null</code> if
-     *         original event was not produced by button.
-     */
-    public Boolean isSourceSelected() {
-        return getParameter(PARAMETER_SOURCE_SELECTED);
-    }
-
-    /**
-     * Return selected combobox item.
-     * 
-     * @param <T>
-     *            selected item type
-     * @return selected item or <code>null</code>.
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T getSelectedItem() {
-        return (T) getParameter(PARAMETER_ITEM_SELECTED);
-    }
-
-    /**
      * Adds a parameter to the action
-     * 
+     *
      * @param parameter
      *            action parameter to set
      */
-    public void addParameter(final IActionParameter parameter) {
+    public ActionEx addParameter(final IActionParameter parameter) {
         m_actionParameters.put(parameter.getName(), parameter);
+        return this;
     }
 
     @Override
@@ -205,12 +171,27 @@ public class ActionEx implements Runnable {
         ActionControllerMethod method = getMethod();
         try {
             setParameters();
-
             method.invoke(this);
-
         } catch (Throwable th) {
-            LOGGER.e("Action "+getId()+" failed on execution: ", th);
+            LOGGER.e("Action " + getId() + " failed on execution: ", th);
         } finally {
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (getMethod().isValid()) {
+            this.putValue(IActionController.VIEW_PROPERTY, view);
+            run();
+        }
+    }
+
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        if (getMethod().isValid()) {
+            this.putValue(IActionController.DIALOG_PROPERTY, dialog);
+            this.putValue(IActionController.DIALOG_ITEM_PROPERTY, which);
+            this.run();
         }
     }
 
@@ -222,4 +203,5 @@ public class ActionEx implements Runnable {
             putValue(entry.getKey(), entry.getValue().getValue());
         }
     }
+
 }

@@ -9,11 +9,11 @@ import java.util.Map;
 
 public class ActionControllerMethod
 {
-    private static HashMap<Class<?>, Map<String, Method>> s_methods = new HashMap<Class<?>, Map<String, Method>>();
+    private static HashMap<Class<?>, Map<Integer, Method>> s_methods = new HashMap<Class<?>, Map<Integer, Method>>();
 
     private final IActionController<?> m_controller;
 
-    private final String m_actionId;
+    private final int m_actionId;
 
     private Object m_target;
 
@@ -27,7 +27,7 @@ public class ActionControllerMethod
      * @param controller action controller
      * @param actionId action id
      */
-    ActionControllerMethod(final IActionController<?> controller, final String actionId)
+    ActionControllerMethod(final IActionController<?> controller, final int actionId)
     {
         m_controller = controller;
         m_actionId = actionId;
@@ -108,11 +108,11 @@ public class ActionControllerMethod
      *
      * @return the method
      */
-    private static synchronized Method getMethod(final Object target, final String actionId)
+    private static synchronized Method getMethod(final Object target, final int actionId)
     {
         Class<? extends Object> clazz = target.getClass();
 
-        Map<String, Method> methods = s_methods.get(clazz);
+        Map<Integer, Method> methods = s_methods.get(clazz);
         if (methods == null)
         {
             methods = getActionMethods(clazz);
@@ -128,9 +128,9 @@ public class ActionControllerMethod
      *
      * @return the map of action methods method
      */
-    private static Map<String, Method> getActionMethods(final Class<?> clazz)
+    private static Map<Integer, Method> getActionMethods(final Class<?> clazz)
     {
-        final HashMap<String, Method> result = new HashMap<String, Method>();
+        final Map<Integer, Method> result = new HashMap<Integer, Method>();
 
         final Method[] methods = clazz.getMethods();
         for(final Method method : methods)
@@ -144,7 +144,7 @@ public class ActionControllerMethod
                     final ActionMethod annotation = method.getAnnotation(ActionMethod.class);
                     if (annotation != null)
                     {
-                        for(String id : annotation.ids())
+                        for(int id : annotation.ids())
                         {
                             result.put(id, method);
                         }

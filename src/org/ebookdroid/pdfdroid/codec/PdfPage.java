@@ -5,13 +5,10 @@ import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.codec.CodecPage;
 
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
 public class PdfPage implements CodecPage {
-
-    private static final boolean useFzGeometry = true;
 
     private static final boolean useNativeGraphics;
 
@@ -61,31 +58,8 @@ public class PdfPage implements CodecPage {
 
     @Override
     public BitmapRef renderBitmap(final int width, final int height, final RectF pageSliceBounds) {
-        final float[] matrixArray = useFzGeometry ? calculateFz(width, height, pageSliceBounds) : calculate(width,
-                height, pageSliceBounds);
+        final float[] matrixArray = calculateFz(width, height, pageSliceBounds);
         return render(new Rect(0, 0, width, height), matrixArray);
-    }
-
-    private float[] calculate(final int width, final int height, final RectF pageSliceBounds) {
-        final Matrix matrix = new Matrix();
-        matrix.postTranslate(-mediaBox.left, -mediaBox.top);
-        matrix.postScale(width / mediaBox.width(), -height / mediaBox.height());
-        matrix.postTranslate(0, height);
-        matrix.postTranslate(-pageSliceBounds.left * width, -pageSliceBounds.top * height);
-        matrix.postScale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height());
-
-        final float[] matrixSource = new float[9];
-        final float[] matrixArray = new float[6];
-
-        matrix.getValues(matrixSource);
-        matrixArray[0] = matrixSource[0];
-        matrixArray[1] = matrixSource[3];
-        matrixArray[2] = matrixSource[1];
-        matrixArray[3] = matrixSource[4];
-        matrixArray[4] = matrixSource[2];
-        matrixArray[5] = matrixSource[5];
-
-        return matrixArray;
     }
 
     private float[] calculateFz(final int width, final int height, final RectF pageSliceBounds) {
@@ -171,8 +145,6 @@ public class PdfPage implements CodecPage {
 
         final int width = viewbox.width();
         final int height = viewbox.height();
-
-        System.out.println(String.format("Matrix: %f %f %f %f %f %f", ctm[0], ctm[1], ctm[2], ctm[3], ctm[4], ctm[5]));
 
         if (useNativeGraphics) {
             final BitmapRef bmp = BitmapManager.getBitmap(width, height, Bitmap.Config.ARGB_8888);

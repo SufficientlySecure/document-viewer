@@ -29,7 +29,7 @@ import java.util.List;
 
 public class DocumentModel extends CurrentPageModel {
 
-    private static final boolean CACHE_ENABLED = false;
+    private static final boolean CACHE_ENABLED = true;
 
     private static final Page[] EMPTY_PAGES = {};
 
@@ -217,8 +217,6 @@ public class DocumentModel extends CurrentPageModel {
         final CodecPageInfo[] infos = new CodecPageInfo[getDecodeService().getPageCount()];
         for (int i = 0; i < infos.length; i++) {
             infos[i] = getDecodeService().getPageInfo(i);
-            System.out.println("PageInfo " + i + ": rotation=" + infos[i].rotation + ", width=" + infos[i].width + ", height="
-                    + infos[i].height);
         }
 
         if (md5 != null) {

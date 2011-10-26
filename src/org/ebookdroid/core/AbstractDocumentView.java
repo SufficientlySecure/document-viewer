@@ -1,5 +1,9 @@
 package org.ebookdroid.core;
 
+import org.ebookdroid.core.actions.ActionController;
+import org.ebookdroid.core.actions.ActionEx;
+import org.ebookdroid.core.actions.ActionMethod;
+import org.ebookdroid.core.actions.params.Constant;
 import org.ebookdroid.core.bitmaps.BitmapManager;
 import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.log.LogContext;
@@ -49,6 +53,8 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
 
     private List<IGestureDetector> detectors;
 
+    private final ActionController<AbstractDocumentView> actionController;
+
     public AbstractDocumentView(final IViewerActivity baseActivity) {
         this.base = baseActivity;
         this.view = base.getView();
@@ -59,6 +65,9 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
 
         this.pageToGo = SettingsManager.getBookSettings().getCurrentPage();
 
+        this.actionController = new ActionController<AbstractDocumentView>(base.getActivity(), base.getActionController(), this);
+        this.actionController.createAction("verticalConfigScrollUp", new Constant("direction", -1));
+        this.actionController.createAction("verticalConfigScrollDown", new Constant("direction", +1));
     }
 
     protected List<IGestureDetector> getGestureDetectors() {
@@ -480,16 +489,17 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
         view.redrawView(viewState);
     }
 
+    @ActionMethod(ids = {"verticalConfigScrollUp", "verticalConfigScrollDown"})
+    public void verticalConfigScroll(ActionEx action) {
+        int direction = action.getParameter("direction");
+        verticalConfigScroll(direction);
+    }
+
     protected boolean processTap(TouchManager.Touch type, MotionEvent e) {
-        String action = TouchManager.getInstance().getAction(type, e.getX(), e.getY(), getWidth(), getHeight());
-        if ("toggleZoomControls".equals(action)) {
-            getBase().getZoomModel().toggleZoomControls();
-            return true;
-        } else if ("verticalConfigScrollUp".equals(action)) {
-            verticalConfigScroll(-1);
-            return true;
-        } else if ("verticalConfigScrollDown".equals(action)) {
-            verticalConfigScroll(1);
+        String actionName = TouchManager.getInstance().getAction(type, e.getX(), e.getY(), getWidth(), getHeight());
+        ActionEx action = actionName != null ? actionController.getAction(actionName) : null;
+        if (action != null) {
+            action.run();
             return true;
         }
         return false;

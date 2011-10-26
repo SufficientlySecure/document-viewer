@@ -1,6 +1,10 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.R;
+import org.ebookdroid.core.actions.ActionController;
+import org.ebookdroid.core.actions.ActionEx;
+import org.ebookdroid.core.actions.ActionMethod;
+import org.ebookdroid.core.actions.IActionController;
 import org.ebookdroid.core.events.CurrentPageListener;
 import org.ebookdroid.core.events.DecodingProgressListener;
 import org.ebookdroid.core.log.LogContext;
@@ -68,6 +72,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     private Toast pageNumberToast;
 
     private ZoomModel zoomModel;
+
     private PageViewZoomControls zoomControls;
 
     private FrameLayout frameLayout;
@@ -75,7 +80,10 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     private DecodingProgressModel progressModel;
 
     private DocumentModel documentModel;
+
     private String currentFilename;
+
+    private ActionController<BaseViewerActivity> actions;
 
     /**
      * Instantiates a new base viewer activity.
@@ -94,6 +102,9 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         getWindowManager().getDefaultDisplay().getMetrics(DM);
 
         SettingsManager.addListener(this);
+
+        actions = new ActionController<BaseViewerActivity>(this, this);
+        actions.createAction("toggleZoomControls");
 
         frameLayout = createMainContainer();
         view = new BaseDocumentView(this);
@@ -334,7 +345,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Called on creation options menu
-     *
+     * 
      * @param menu
      *            the main menu
      * @return true, if successful
@@ -488,7 +499,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the zoom model.
-     *
+     * 
      * @return the zoom model
      */
     @Override
@@ -506,7 +517,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the decoding progress model.
-     *
+     * 
      * @return the decoding progress model
      */
     @Override
@@ -537,6 +548,15 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     @Override
     public Activity getActivity() {
         return this;
+    }
+
+    public IActionController<?> getActionController() {
+        return actions;
+    }
+
+    @ActionMethod(ids = "toggleZoomControls")
+    public void toggleZoomControls(ActionEx action) {
+        zoomControls.toggleZoomControls();
     }
 
     @Override

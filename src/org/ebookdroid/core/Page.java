@@ -99,9 +99,9 @@ public class Page {
         bounds = pageBounds;
     }
 
-    public boolean onZoomChanged(final float oldZoom, final ViewState viewState, final List<PageTreeNode> nodesToDecode, List<BitmapRef> bitmapsToRecycle) {
+    public boolean onZoomChanged(final float oldZoom, final ViewState viewState, boolean committed, final List<PageTreeNode> nodesToDecode, List<BitmapRef> bitmapsToRecycle) {
         if (!recycled) {
-            return nodes.root.onZoomChanged(oldZoom, viewState, viewState.getBounds(this), nodesToDecode, bitmapsToRecycle);
+            return nodes.root.onZoomChanged(oldZoom, viewState, committed, viewState.getBounds(this), nodesToDecode, bitmapsToRecycle);
         }
         return false;
     }

@@ -239,11 +239,11 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
         inZoom.set(false);
         final float newZoom = base.getZoomModel().getZoom();
         SettingsManager.zoomChanged(newZoom);
-        onZoomChanged(newZoom);
+        onZoomChanged(newZoom, true);
         initialZoom = newZoom;
     }
 
-    protected ViewState onZoomChanged(final float newZoom) {
+    protected ViewState onZoomChanged(final float newZoom, boolean committed) {
         if (initialZoom != newZoom) {
             BitmapManager.increateGeneration();
         }
@@ -261,7 +261,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
                 newState.lastCached);
 
         for (final Page page : getBase().getDocumentModel().getPages(minIndex, maxIndex + 1)) {
-            page.onZoomChanged(initialZoom, newState, nodesToDecode, bitmapsToRecycle);
+            page.onZoomChanged(initialZoom, newState, committed, nodesToDecode, bitmapsToRecycle);
         }
         BitmapManager.release(bitmapsToRecycle);
 
@@ -269,7 +269,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
             decodePageTreeNodes(newState, nodesToDecode);
         }
 
-        LCTX.d("onZoomChanged: " + newState + " => " + nodesToDecode.size());
+        LCTX.d("onZoomChanged: " + committed + ", " + newState + " => " + nodesToDecode.size());
 
         return newState;
     }
@@ -282,7 +282,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
         final List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
 
         for (final Page page : getBase().getDocumentModel().getPages()) {
-            page.onZoomChanged(0, viewState, nodesToDecode, bitmapsToRecycle);
+            page.onZoomChanged(0, viewState, true, nodesToDecode, bitmapsToRecycle);
         }
         BitmapManager.release(bitmapsToRecycle);
 
@@ -338,7 +338,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
 
         view.invalidateScroll(newZoom, oldZoom);
 
-        view.redrawView(onZoomChanged(newZoom));
+        view.redrawView(onZoomChanged(newZoom, false));
     }
 
     public int getScrollX() {
@@ -420,7 +420,7 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
                 invalidateScroll();
                 final float oldZoom = base.getZoomModel().getZoom();
                 initialZoom = 0;
-                view.redrawView(onZoomChanged(oldZoom));
+                view.redrawView(onZoomChanged(oldZoom, true));
                 return true;
             }
         }

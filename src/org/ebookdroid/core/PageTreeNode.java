@@ -55,8 +55,8 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         hasChildren = page.nodes.recycleChildren(this, bitmapsToRecycle);
     }
 
-    public boolean onZoomChanged(final float oldZoom, final ViewState viewState, final RectF pageBounds,
-            final List<PageTreeNode> nodesToDecode, final List<BitmapRef> bitmapsToRecycle) {
+    public boolean onZoomChanged(final float oldZoom, final ViewState viewState, boolean committed,
+            final RectF pageBounds, final List<PageTreeNode> nodesToDecode, final List<BitmapRef> bitmapsToRecycle) {
         if (!viewState.isNodeKeptInMemory(this, pageBounds)) {
             recycle(bitmapsToRecycle);
             return false;
@@ -86,20 +86,23 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             }
 
             for (final PageTreeNode child : children) {
-                child.onZoomChanged(oldZoom, viewState, pageBounds, nodesToDecode, bitmapsToRecycle);
+                child.onZoomChanged(oldZoom, viewState, committed, pageBounds, nodesToDecode, bitmapsToRecycle);
             }
 
             return true;
         }
 
-        if (getBitmap() == null || isReDecodingRequired(viewState)) {
+        if (isReDecodingRequired(committed, viewState)) {
+            stopDecodingThisNode("Zoom changed");
+            decodePageTreeNode(nodesToDecode, viewState);
+        } else if (getBitmap() == null) {
             decodePageTreeNode(nodesToDecode, viewState);
         }
         return true;
     }
 
-    private boolean isReDecodingRequired(final ViewState viewState) {
-        return viewState.zoom > 1.2 * bitmapZoom;
+    private boolean isReDecodingRequired(final boolean committed, final ViewState viewState) {
+        return (committed && viewState.zoom != bitmapZoom) || viewState.zoom > 1.2 * bitmapZoom;
     }
 
     protected float calculateChildThreshold() {
@@ -283,7 +286,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     /**
      * Gets the parent node.
-     *
+     * 
      * @return the parent node
      */
     public PageTreeNode getParent() {

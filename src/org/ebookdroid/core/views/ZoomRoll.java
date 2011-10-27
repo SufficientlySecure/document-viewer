@@ -30,6 +30,7 @@ public class ZoomRoll extends View {
     private final ZoomModel zoomModel;
 
     private final GestureDetector gestureDetector;
+    private boolean inTouch;
 
     public ZoomRoll(final Context context, final ZoomModel zoomModel) {
         super(context);
@@ -84,6 +85,10 @@ public class ZoomRoll extends View {
             Thread.interrupted();
         }
 
+        if ((ev.getAction() & MotionEvent.ACTION_UP) == MotionEvent.ACTION_UP) {
+            inTouch = false;
+        }
+        
         return gestureDetector.onTouchEvent(ev);
     }
 
@@ -92,7 +97,7 @@ public class ZoomRoll extends View {
         if (scroller.computeScrollOffset()) {
             setCurrentValue(scroller.getCurrX());
             invalidate();
-        } else {
+        } else if (!inTouch) {
             zoomModel.commit();
         }
     }
@@ -122,6 +127,7 @@ public class ZoomRoll extends View {
 
         @Override
         public boolean onDown(final MotionEvent e) {
+            inTouch = true;
             if (!scroller.isFinished()) {
                 scroller.abortAnimation();
                 zoomModel.commit();
@@ -138,14 +144,15 @@ public class ZoomRoll extends View {
         @Override
         public boolean onScroll(final MotionEvent e1, final MotionEvent e2, final float distanceX, final float distanceY) {
             setCurrentValue(getCurrentValue() + distanceX);
+            scroller.computeScrollOffset();
             return true;
         }
 
         @Override
         public boolean onSingleTapUp(final MotionEvent e) {
-            if (!scroller.computeScrollOffset()) {
-                zoomModel.commit();
-            }
+            scroller.computeScrollOffset();
+            inTouch = false;
+            zoomModel.commit();
             return true;
         }
     }

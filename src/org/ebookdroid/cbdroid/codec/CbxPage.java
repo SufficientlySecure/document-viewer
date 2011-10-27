@@ -64,7 +64,8 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
                 } catch (final IOException ex) {
                 }
                 if (CbxDocument.LCTX.isDebugEnabled()) {
-                    CbxDocument.LCTX.d("Finishing" + (onlyBounds ? " partial" : "full") + " decompressing: " + entry.getName());
+                    CbxDocument.LCTX.d("Finishing" + (onlyBounds ? " partial" : "full") + " decompressing: "
+                            + entry.getName());
                 }
             }
         } catch (final Throwable e) {
@@ -87,6 +88,10 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
 
     @Override
     public void recycle() {
+        if (storedBitmap != null) {
+            storedBitmap.recycle();
+            storedBitmap = null;
+        }
     }
 
     @Override
@@ -94,55 +99,57 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
         return false;
     }
 
+    private Bitmap storedBitmap;
+    private int storedScale = Integer.MAX_VALUE;
+
     @Override
     public BitmapRef renderBitmap(final int width, final int height, final RectF pageSliceBounds) {
         if (getPageInfo() == null) {
             return null;
         }
-        Bitmap bitmap = null;
-        try {
+        float requiredWidth = (float) width / pageSliceBounds.width();
+        float requiredHeight = (float) height / pageSliceBounds.height();
 
-            float requiredWidth = (float) width / pageSliceBounds.width();
-            float requiredHeight = (float) height / pageSliceBounds.height();
-
-            int scale = 1;
-            int widthTmp = getWidth();
-            int heightTmp = getHeight();
-            while (true) {
-                if (widthTmp / 2 < requiredWidth || heightTmp / 2 < requiredHeight) {
-                    break;
-                }
-                widthTmp /= 2;
-                heightTmp /= 2;
-
-                scale *= 2;
+        int scale = 1;
+        int widthTmp = getWidth();
+        int heightTmp = getHeight();
+        while (true) {
+            if (widthTmp / 2 < requiredWidth || heightTmp / 2 < requiredHeight) {
+                break;
             }
+            widthTmp /= 2;
+            heightTmp /= 2;
 
-            bitmap = decode(false, scale);
-            if (bitmap == null) {
-                return null;
-            }
-
-            final Matrix matrix = new Matrix();
-            matrix.postScale((float) width / bitmap.getWidth(), (float) height / bitmap.getHeight());
-            matrix.postTranslate(-pageSliceBounds.left * width, -pageSliceBounds.top * height);
-            matrix.postScale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height());
-
-            final BitmapRef bmp = BitmapManager.getBitmap(width, height, Bitmap.Config.RGB_565);
-
-            final Canvas c = new Canvas(bmp.getBitmap());
-            final Paint paint = new Paint();
-            paint.setFilterBitmap(true);
-            paint.setAntiAlias(true);
-            paint.setDither(true);
-            c.drawBitmap(bitmap, matrix, paint);
-
-            return bmp;
-        } finally {
-            if (bitmap != null) {
-                bitmap.recycle();
-            }
+            scale *= 2;
         }
+
+        CbxDocument.LCTX.d("storedScale="+storedScale+", scale="+scale+", "+(storedBitmap==null));
+        if (storedBitmap == null || storedScale > scale) {
+            if (storedBitmap != null && !storedBitmap.isRecycled()) {
+                storedBitmap.recycle();
+            }
+            storedBitmap = decode(false, scale);
+            storedScale = scale;
+        }
+        if (storedBitmap == null) {
+            return null;
+        }
+
+        final Matrix matrix = new Matrix();
+        matrix.postScale((float) width / storedBitmap.getWidth(), (float) height / storedBitmap.getHeight());
+        matrix.postTranslate(-pageSliceBounds.left * width, -pageSliceBounds.top * height);
+        matrix.postScale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height());
+
+        final BitmapRef bmp = BitmapManager.getBitmap(width, height, Bitmap.Config.RGB_565);
+
+        final Canvas c = new Canvas(bmp.getBitmap());
+        final Paint paint = new Paint();
+        paint.setFilterBitmap(true);
+        paint.setAntiAlias(true);
+        paint.setDither(true);
+        c.drawBitmap(storedBitmap, matrix, paint);
+
+        return bmp;
     }
 
     public CodecPageInfo getPageInfo() {

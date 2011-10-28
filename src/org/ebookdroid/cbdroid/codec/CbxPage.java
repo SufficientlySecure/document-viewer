@@ -201,7 +201,7 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
                 src.hasAlpha());
         src.fillAlpha(0x00);
         
-        nativeHq4x(src.getPixels(), dest.getPixels(), src.getWidth(), src.getHeight());
+        nativeHq3x(src.getPixels(), dest.getPixels(), src.getWidth(), src.getHeight());
         dest.fillAlpha(0xFF);
         return dest.toBitmap();
     }
@@ -218,5 +218,6 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
     }
     
     private static native void nativeHq2x(int[] src, int[] dst, int width, int height);
+    private static native void nativeHq3x(int[] src, int[] dst, int width, int height);
     private static native void nativeHq4x(int[] src, int[] dst, int width, int height);
 }

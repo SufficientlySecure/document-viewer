@@ -1,6 +1,7 @@
 package org.ebookdroid.core.touch;
 
 import org.ebookdroid.R;
+import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.settings.AppSettings;
 
 import android.graphics.Rect;
@@ -9,6 +10,8 @@ import android.graphics.RectF;
 import java.util.LinkedList;
 
 public class TouchManager {
+
+    private static final LogContext LCTX = LogContext.ROOT.lctx("Actions");
 
     private static final TouchManager instance = new TouchManager();
 
@@ -40,10 +43,13 @@ public class TouchManager {
     }
 
     public Integer getAction(final Touch type, final float x, final float y, final float width, final float height) {
+        LCTX.d("getAction(" + type + ", " + x + ", " + y + ", " + width + ", " + height + ")");
         for (final Region r : regions) {
             final RectF rect = r.getActualRect(width, height);
+            LCTX.d("Region: " + rect);
             if (rect.left <= x && x < rect.right && rect.top <= y && y < rect.bottom) {
                 final ActionRef action = r.getAction(type);
+                LCTX.d("Action: " + action);
                 if (action != null && action.enabled) {
                     return action.id;
                 }
@@ -102,6 +108,11 @@ public class TouchManager {
             this.type = type;
             this.enabled = enabled;
             this.id = id;
+        }
+
+        @Override
+        public String toString() {
+            return type + ", " + id + ",  " + enabled;
         }
     }
 }

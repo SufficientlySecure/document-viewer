@@ -1,7 +1,7 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.R;
-import org.ebookdroid.core.actions.ActionController;
+import org.ebookdroid.core.actions.AbstractComponentController;
 import org.ebookdroid.core.actions.ActionEx;
 import org.ebookdroid.core.actions.ActionMethod;
 import org.ebookdroid.core.actions.params.Constant;
@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class AbstractDocumentView implements IDocumentViewController {
+public abstract class AbstractDocumentView extends AbstractComponentController<BaseDocumentView> implements IDocumentViewController {
 
     protected static final LogContext LCTX = LogContext.ROOT.lctx("View");
 
@@ -54,9 +54,9 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
 
     private List<IGestureDetector> detectors;
 
-    private final ActionController<AbstractDocumentView> actionController;
-
     public AbstractDocumentView(final IViewerActivity baseActivity) {
+        super(baseActivity.getActivity(), baseActivity.getActionController(), baseActivity.getView());
+        
         this.base = baseActivity;
         this.view = base.getView();
 
@@ -66,9 +66,8 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
 
         this.pageToGo = SettingsManager.getBookSettings().getCurrentPage();
 
-        this.actionController = new ActionController<AbstractDocumentView>(base.getActivity(), base.getActionController(), this);
-        this.actionController.createAction(R.id.actions_verticalConfigScrollUp, new Constant("direction", -1));
-        this.actionController.createAction(R.id.actions_verticalConfigScrollDown, new Constant("direction", +1));
+        createAction(R.id.actions_verticalConfigScrollUp, new Constant("direction", -1));
+        createAction(R.id.actions_verticalConfigScrollDown, new Constant("direction", +1));
     }
 
     protected List<IGestureDetector> getGestureDetectors() {
@@ -498,10 +497,13 @@ public abstract class AbstractDocumentView implements IDocumentViewController {
 
     protected boolean processTap(TouchManager.Touch type, MotionEvent e) {
         Integer actionId = TouchManager.getInstance().getAction(type, e.getX(), e.getY(), getWidth(), getHeight());
-        ActionEx action = actionId != null ? actionController.getAction(actionId) : null;
+        ActionEx action = actionId != null ? getOrCreateAction(actionId) : null;
         if (action != null) {
+            LCTX.d("Touch action: " + action.getId() + ", " + action.getMethod().toString());
             action.run();
             return true;
+        } else {
+            LCTX.d("Touch action not found");
         }
         return false;
     }

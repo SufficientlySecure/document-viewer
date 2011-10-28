@@ -7,11 +7,11 @@ import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.core.PageType;
 import org.ebookdroid.core.bitmaps.BitmapManager;
 import org.ebookdroid.core.bitmaps.BitmapRef;
+import org.ebookdroid.core.cache.CacheManager;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.settings.books.BookSettings;
 import org.ebookdroid.utils.LengthUtils;
-import org.ebookdroid.utils.StringUtils;
 
 import android.view.View;
 
@@ -171,10 +171,7 @@ public class DocumentModel extends CurrentPageModel {
     }
 
     private void createBookThumbnail(final IViewerActivity base, final BookSettings bs, CodecPageInfo info) {
-        final File cacheDir = base.getContext().getFilesDir();
-
-        final String md5 = StringUtils.md5(bs.fileName);
-        final File thumbnailFile = new File(cacheDir, md5 + ".thumbnail");
+        final File thumbnailFile = CacheManager.getThumbnailFile(bs.fileName);
         if (thumbnailFile.exists()) {
             return;
         }
@@ -189,26 +186,21 @@ public class DocumentModel extends CurrentPageModel {
     }
 
     private CodecPageInfo[] retrievePagesInfo(final IViewerActivity base, final BookSettings bs) {
-
-        final String md5 = StringUtils.md5(bs.fileName);
-        final File cacheDir = base.getContext().getFilesDir();
-        final File pagesFile = new File(cacheDir, md5 + ".cache");
+        final File pagesFile = CacheManager.getPageFile(bs.fileName);
 
         if (CACHE_ENABLED) {
-            if (md5 != null) {
-                if (pagesFile.exists()) {
-                    final CodecPageInfo[] infos = loadPagesInfo(pagesFile);
-                    if (infos != null) {
-                        boolean nullInfoFound = false;
-                        for (CodecPageInfo info : infos) {
-                            if (info == null) {
-                                nullInfoFound = true;
-                                break;
-                            }
+            if (pagesFile.exists()) {
+                final CodecPageInfo[] infos = loadPagesInfo(pagesFile);
+                if (infos != null) {
+                    boolean nullInfoFound = false;
+                    for (CodecPageInfo info : infos) {
+                        if (info == null) {
+                            nullInfoFound = true;
+                            break;
                         }
-                        if (!nullInfoFound) {
-                            return infos;
-                        }
+                    }
+                    if (!nullInfoFound) {
+                        return infos;
                     }
                 }
             }
@@ -219,7 +211,7 @@ public class DocumentModel extends CurrentPageModel {
             infos[i] = getDecodeService().getPageInfo(i);
         }
 
-        if (md5 != null) {
+        if (CACHE_ENABLED) {
             storePagesInfo(pagesFile, infos);
         }
         return infos;

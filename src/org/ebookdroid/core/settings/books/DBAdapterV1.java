@@ -38,11 +38,13 @@ class DBAdapterV1 implements IDBAdapter {
             // ...
             ");";
 
-    public static final String DB_1_BOOK_GET_ALL = "SELECT book, last_updated, doc_page, view_page, zoom, single_page, page_align, page_animation, split_pages FROM book_settings ORDER BY last_updated DESC";
+    public static final String DB_1_BOOK_GET_ALL = "SELECT book, last_updated, doc_page, view_page, zoom, single_page, page_align, page_animation, split_pages FROM book_settings where last_updated > 0 ORDER BY last_updated DESC";
 
     public static final String DB_1_BOOK_GET_ONE = "SELECT book, last_updated, doc_page, view_page, zoom, single_page, page_align, page_animation, split_pages FROM book_settings WHERE book=?";
 
     public static final String DB_1_BOOK_STORE = "INSERT OR REPLACE INTO book_settings (book, last_updated, doc_page, view_page, zoom, single_page, page_align, page_animation, split_pages) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    public static final String DB_1_BOOK_CLEAR_RECENT = "UPDATE book_settings set last_updated = 0";
 
     public static final String DB_1_BOOK_DROP_ALL = "DROP TABLE IF EXISTS book_settings ";
 
@@ -160,6 +162,12 @@ class DBAdapterV1 implements IDBAdapter {
         return false;
     }
 
+    
+    @Override
+    public boolean deleteAllBookmarks() {
+        return false;
+    }
+
     @Override
     public boolean updateBookmarks(final BookSettings book) {
         return false;
@@ -167,6 +175,27 @@ class DBAdapterV1 implements IDBAdapter {
 
     @Override
     public boolean deleteBookmarks(final String book, final List<Bookmark> bookmarks) {
+        return false;
+    }
+
+    @Override
+    public boolean clearRecent() {
+        try {
+            final SQLiteDatabase db = manager.getWritableDatabase();
+            try {
+                db.beginTransaction();
+
+                db.execSQL(DB_1_BOOK_CLEAR_RECENT, new Object[] {});
+
+                db.setTransactionSuccessful();
+
+                return true;
+            } finally {
+                endTransaction(db);
+            }
+        } catch (final Throwable th) {
+            LCTX.e("Update book settings failed: ", th);
+        }
         return false;
     }
 

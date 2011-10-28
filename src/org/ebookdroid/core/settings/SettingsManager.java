@@ -102,6 +102,24 @@ public class SettingsManager {
         }
     }
 
+    public static void clearAllRecentBookSettings() {
+        lock.writeLock().lock();
+        try {
+            db.clearRecent();
+            bookSettings.clear();
+
+            final AppSettings apps = getAppSettings();
+            if (current != null) {
+                apps.clearPseudoBookSettings();
+                apps.updatePseudoBookSettings(current);
+            } else {
+                apps.clearPseudoBookSettings();
+            }
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
     public static void deleteAllBookSettings() {
         lock.writeLock().lock();
         try {
@@ -114,6 +132,19 @@ public class SettingsManager {
                 apps.updatePseudoBookSettings(current);
             } else {
                 apps.clearPseudoBookSettings();
+            }
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    public static void deleteAllBookmarks() {
+        lock.writeLock().lock();
+        try {
+            db.deleteAllBookmarks();
+            bookSettings.clear();
+            if (current != null) {
+                current.bookmarks.clear();
             }
         } finally {
             lock.writeLock().unlock();

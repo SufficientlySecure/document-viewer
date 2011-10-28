@@ -1,5 +1,6 @@
 package org.ebookdroid.core.actions;
 
+import org.ebookdroid.R;
 import org.ebookdroid.core.log.LogContext;
 
 import android.app.Activity;
@@ -40,7 +41,7 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
 
     /**
      * Constructor.
-     *
+     * 
      * @param parent
      *            the parent controller
      * @param managedComponent
@@ -57,6 +58,7 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
      * @return the parent controller
      * @see IActionController#getParent()
      */
+    @Override
     public IActionController<?> getParent() {
         return m_parent;
     }
@@ -65,6 +67,7 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
      * @return the managed component
      * @see IActionController#getManagedComponent()
      */
+    @Override
     public ManagedComponent getManagedComponent() {
         return m_managedComponent;
     }
@@ -73,6 +76,7 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
      * @return the action dispatcher
      * @see IActionController#getDispatcher()
      */
+    @Override
     public ActionDispatcher getDispatcher() {
         return m_dispatcher;
     }
@@ -85,12 +89,19 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
      * @return an instance of {@link ActionEx} object or <code>null</code>
      * @see IActionController#getAction(java.lang.String)
      */
+    @Override
     public ActionEx getAction(final int id) {
         m_actionsLock.readLock().lock();
         try {
             ActionEx actionEx = m_actions.get(id);
             if (actionEx == null && m_parent != null) {
                 actionEx = m_parent.getAction(id);
+            }
+            if (actionEx != null) {
+                actionEx.putValue(DIALOG_PROPERTY, null);
+                actionEx.putValue(DIALOG_ITEM_PROPERTY, null);
+                actionEx.putValue(DIALOG_SELECTED_ITEMS_PROPERTY, null);
+                actionEx.putValue(VIEW_PROPERTY, null);
             }
             return actionEx;
         } finally {
@@ -106,6 +117,7 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
      * @return an instance of {@link ActionEx} object
      * @see IActionController#getOrCreateAction(String, String, IActionParameter[])
      */
+    @Override
     public ActionEx getOrCreateAction(final int id) {
         ActionEx result = null;
         m_actionsLock.writeLock().lock();
@@ -115,7 +127,7 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
                 result = createAction(id);
                 try {
                     ActionInitControllerMethod.getInstance().invoke(this, result);
-                } catch (Throwable e) {
+                } catch (final Throwable e) {
                     LCTX.e("Action " + result.name + "initialization failed: ", e);
                 }
 
@@ -138,19 +150,20 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
      * @return an instance of {@link ActionEx} object
      * @see IActionController#createAction(String, String, IActionParameter[])
      */
+    @Override
     public ActionEx createAction(final int id, final IActionParameter... parameters) {
-        ActionEx result = new ActionEx(this, id);
+        final ActionEx result = new ActionEx(this, id);
 
         result.putValue(MANAGED_COMPONENT_PROPERTY, getManagedComponent());
         result.putValue(COMPONENT_CONTROLLER_PROPERTY, this);
 
-        for (IActionParameter actionParameter : parameters) {
+        for (final IActionParameter actionParameter : parameters) {
             result.addParameter(actionParameter);
         }
 
         try {
             ActionInitControllerMethod.getInstance().invoke(this, result);
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             LCTX.e("Action " + id + "initialization failed: ", e);
         }
 
@@ -162,5 +175,9 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
         }
 
         return result;
+    }
+
+    @ActionMethod(ids = R.id.actions_no_action)
+    public void noAction(final ActionEx action) {
     }
 }

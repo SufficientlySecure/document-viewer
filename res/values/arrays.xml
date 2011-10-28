@@ -107,5 +107,14 @@
 		<item>4</item>
 		<item>5</item>
 	</string-array>
-	    
+
+	<string-array
+		name="list_clear_recent_mode"
+		translatable="true">
+		<item>@string/list_clear_recent_mode_clear_recent_list</item>
+		<item>@string/list_clear_recent_mode_delete_bookmarks</item>
+		<item>@string/list_clear_recent_mode_delete_book_settings</item>
+		<item>@string/list_clear_recent_mode_delete_cached_data</item>
+	</string-array>
+
 </resources>

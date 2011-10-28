@@ -4,6 +4,7 @@ import org.ebookdroid.R;
 import org.ebookdroid.core.actions.ActionController;
 import org.ebookdroid.core.actions.ActionEx;
 import org.ebookdroid.core.actions.ActionMethod;
+import org.ebookdroid.core.cache.CacheManager;
 import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.presentation.BooksAdapter;
 import org.ebookdroid.core.presentation.FileListAdapter;
@@ -18,7 +19,6 @@ import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.core.views.BookcaseView;
 import org.ebookdroid.core.views.LibraryView;
 import org.ebookdroid.core.views.RecentBooksView;
-import org.ebookdroid.utils.StringUtils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -48,6 +48,11 @@ import java.util.Map;
 public class RecentActivity extends Activity implements IBrowserActivity, ISettingsChangeListener {
 
     public static final LogContext LCTX = LogContext.ROOT.lctx("Core");
+
+    private static final int CLEAR_RECENT_LIST = 0;
+    private static final int DELETE_BOOKMARKS = 1;
+    private static final int DELETE_BOOK_SETTINGS = 2;
+    private static final int ERASE_DISK_CACHE = 3;
 
     private static final int VIEW_RECENT = 0;
     private static final int VIEW_LIBRARY = 1;
@@ -150,11 +155,12 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
         actions.getOrCreateAction(view.getId()).onClick(view);
     }
 
-    @ActionMethod(ids=R.id.recentmenu_cleanrecent)
+    @ActionMethod(ids = R.id.recentmenu_cleanrecent)
     public void showClearRecentDialog(final ActionEx action) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.clear_recent_title);
-        builder.setMessage(R.string.clear_recent_text);
+        builder.setMultiChoiceItems(R.array.list_clear_recent_mode, null,
+                actions.getOrCreateAction(R.id.actions_clearRecent));
         builder.setPositiveButton(R.string.password_ok, actions.getOrCreateAction(R.id.actions_clearRecent));
         builder.setNegativeButton(R.string.password_cancel, actions.getOrCreateAction(R.id.actions_no_action));
         builder.show();
@@ -162,12 +168,30 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
 
     @ActionMethod(ids = R.id.actions_clearRecent)
     public void doClearRecent(ActionEx action) {
-        SettingsManager.deleteAllBookSettings();
-        recentAdapter.clearBooks();
-        libraryAdapter.notifyDataSetInvalidated();
+        if (action.isDialogItemSelected(ERASE_DISK_CACHE)) {
+            CacheManager.clear();
+            recentAdapter.notifyDataSetInvalidated();
+            libraryAdapter.notifyDataSetInvalidated();
+        }
+
+        if (action.isDialogItemSelected(DELETE_BOOK_SETTINGS)) {
+            SettingsManager.deleteAllBookSettings();
+            recentAdapter.clearBooks();
+            libraryAdapter.notifyDataSetInvalidated();
+        } else {
+            if (action.isDialogItemSelected(CLEAR_RECENT_LIST)) {
+                SettingsManager.clearAllRecentBookSettings();
+                recentAdapter.clearBooks();
+                libraryAdapter.notifyDataSetInvalidated();
+            }
+            if (action.isDialogItemSelected(DELETE_BOOKMARKS)) {
+                SettingsManager.deleteAllBookmarks();
+            }
+        }
+
     }
 
-    @ActionMethod(ids=R.id.recentmenu_settings)
+    @ActionMethod(ids = R.id.recentmenu_settings)
     public void showSettings(ActionEx action) {
         libraryAdapter.stopScan();
         bookshelfAdapter.stopScan();
@@ -226,7 +250,7 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
         }
     }
 
-    @ActionMethod(ids=R.id.recent_showlibrary)
+    @ActionMethod(ids = R.id.recent_showlibrary)
     public void goLibrary(final ActionEx action) {
         if (!SettingsManager.getAppSettings().getUseBookcase()) {
             if (viewflipper.getDisplayedChild() == VIEW_RECENT) {
@@ -237,7 +261,7 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
         }
     }
 
-    @ActionMethod(ids=R.id.recent_showbrowser)
+    @ActionMethod(ids = R.id.recent_showbrowser)
     public void goFileBrowser(final ActionEx action) {
         final Intent myIntent = new Intent(RecentActivity.this, BrowserActivity.class);
         startActivity(myIntent);
@@ -255,12 +279,10 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
 
     @Override
     public void loadThumbnail(final String path, final ImageView imageView, final int defaultResID) {
-        final String md5 = StringUtils.md5(path);
-        final SoftReference<Bitmap> ref = thumbnails.get(md5);
+        final SoftReference<Bitmap> ref = thumbnails.get(path);
         Bitmap bmp = ref != null ? ref.get() : null;
         if (bmp == null) {
-            final File cacheDir = getContext().getFilesDir();
-            final File thumbnailFile = new File(cacheDir, md5 + ".thumbnail");
+            final File thumbnailFile = CacheManager.getThumbnailFile(path);
             Bitmap tmpbmp = null;
             boolean store = true;
             if (thumbnailFile.exists()) {
@@ -293,7 +315,7 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
             c.drawBitmap(tmpbmp, null, new Rect(left, top, width, height), null);
 
             if (store) {
-                thumbnails.put(md5, new SoftReference<Bitmap>(bmp));
+                thumbnails.put(path, new SoftReference<Bitmap>(bmp));
             }
         }
 

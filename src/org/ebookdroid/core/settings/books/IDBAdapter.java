@@ -22,10 +22,14 @@ interface IDBAdapter {
 
     boolean storeBookSettings(final Collection<BookSettings> bs);
 
+    boolean clearRecent();
+
     boolean deleteAll();
 
     boolean updateBookmarks(final BookSettings book);
 
     boolean deleteBookmarks(final String book, final List<Bookmark> bookmarks);
+
+    boolean deleteAllBookmarks();
 
 }

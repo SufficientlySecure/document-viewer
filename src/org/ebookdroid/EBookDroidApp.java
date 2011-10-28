@@ -1,5 +1,6 @@
 package org.ebookdroid;
 
+import org.ebookdroid.core.cache.CacheManager;
 import org.ebookdroid.core.log.EmergencyHandler;
 import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.settings.SettingsManager;
@@ -17,6 +18,7 @@ public class EBookDroidApp extends Application {
         EmergencyHandler.init(this);
         LogContext.init(this);
         SettingsManager.init(this);
+        CacheManager.init(this);
         EBookDroidApp.context = getApplicationContext();
     }
 

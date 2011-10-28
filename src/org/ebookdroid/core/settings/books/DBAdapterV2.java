@@ -70,6 +70,29 @@ class DBAdapterV2 extends DBAdapterV1 {
     }
 
     @Override
+    public boolean deleteAllBookmarks() {
+        try {
+            final SQLiteDatabase db = manager.getWritableDatabase();
+            try {
+                db.beginTransaction();
+
+                db.execSQL(DB_2_BOOKMARK_DROP_ALL, new Object[] {});
+                db.execSQL(DB_2_BOOKMARK_CREATE);
+
+                db.setTransactionSuccessful();
+
+                return true;
+            } finally {
+                endTransaction(db);
+            }
+        } catch (final Throwable th) {
+            LCTX.e("Update book settings failed: ", th);
+        }
+        return false;
+    }
+
+    
+    @Override
     public boolean deleteBookmarks(final String book, final List<Bookmark> bookmarks) {
         try {
             final SQLiteDatabase db = manager.getWritableDatabase();

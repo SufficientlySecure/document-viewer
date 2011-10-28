@@ -28,6 +28,8 @@ public interface IActionController<ManagedComponent> {
 
     String DIALOG_ITEM_PROPERTY = "DialogItem";
 
+    String DIALOG_SELECTED_ITEMS_PROPERTY = "DialogSelectedItems";
+    
     /**
      * @return the parent controller
      */

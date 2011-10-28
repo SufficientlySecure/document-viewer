@@ -5,6 +5,7 @@ import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.utils.LengthUtils;
 
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.drm.DrmStore.Action;
 import android.view.View;
 
@@ -15,7 +16,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class ActionEx implements Runnable, View.OnClickListener, DialogInterface.OnClickListener {
+public class ActionEx implements Runnable, View.OnClickListener, DialogInterface.OnClickListener,
+        OnMultiChoiceClickListener {
 
     private static final LogContext LCTX = LogContext.ROOT.lctx("Actions");
 
@@ -138,7 +140,7 @@ public class ActionEx implements Runnable, View.OnClickListener, DialogInterface
      */
     @SuppressWarnings("unchecked")
     public <T> T getParameter(final String key, final T defaultValue) {
-        Object value = getParameter(key);
+        final Object value = getParameter(key);
         return (T) (value != null ? value : defaultValue);
     }
 
@@ -156,51 +158,66 @@ public class ActionEx implements Runnable, View.OnClickListener, DialogInterface
     @Override
     public void run() {
         try {
-            ActionControllerMethod method = getMethod();
+            final ActionControllerMethod method = getMethod();
             setParameters();
             LCTX.d("Execute action: " + name + ": " + m_values);
             method.invoke(this);
-        } catch (Throwable th) {
+        } catch (final Throwable th) {
             LCTX.e("Action " + name + " failed on execution: ", th);
         } finally {
         }
     }
 
     @Override
-    public void onClick(View view) {
+    public void onClick(final View view) {
         this.putValue(IActionController.VIEW_PROPERTY, view);
         run();
     }
 
     @Override
-    public void onClick(DialogInterface dialog, int which) {
+    public void onClick(final DialogInterface dialog, final int which) {
         this.putValue(IActionController.DIALOG_PROPERTY, dialog);
         this.putValue(IActionController.DIALOG_ITEM_PROPERTY, which);
         this.run();
+    }
+
+    public boolean isDialogItemSelected(int which) {
+        Map<Integer, Boolean> map = this.getParameter(IActionController.DIALOG_SELECTED_ITEMS_PROPERTY);
+        return map != null ? map.get(which) == Boolean.TRUE : false;
+    }
+
+    @Override
+    public void onClick(final DialogInterface dialog, final int which, final boolean isChecked) {
+        Map<Integer, Boolean> map = this.getParameter(IActionController.DIALOG_SELECTED_ITEMS_PROPERTY);
+        if (map == null) {
+            map = new HashMap<Integer, Boolean>();
+            this.putValue(IActionController.DIALOG_SELECTED_ITEMS_PROPERTY, map);
+        }
+        map.put(which, isChecked);
     }
 
     /**
      * Sets parameter values to the action
      */
     private void setParameters() {
-        for (Entry<String, IActionParameter> entry : m_actionParameters.entrySet()) {
+        for (final Entry<String, IActionParameter> entry : m_actionParameters.entrySet()) {
             putValue(entry.getKey(), entry.getValue().getValue());
         }
     }
 
     private static Map<Integer, String> s_names;
 
-    private static String getActionName(int id) {
+    private static String getActionName(final int id) {
         if (s_names == null) {
             s_names = new HashMap<Integer, String>();
-            for (Field f : R.id.class.getFields()) {
-                int modifiers = f.getModifiers();
+            for (final Field f : R.id.class.getFields()) {
+                final int modifiers = f.getModifiers();
                 if (Modifier.isPublic(modifiers) && Modifier.isStatic(modifiers) && Modifier.isFinal(modifiers)) {
                     if (f.getType() == int.class) {
                         try {
-                            int value = f.getInt(null);
+                            final int value = f.getInt(null);
                             s_names.put(value, f.getName());
-                        } catch (Throwable th) {
+                        } catch (final Throwable th) {
                         }
                     }
                 }

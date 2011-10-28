@@ -63,7 +63,7 @@
 	<string name="menu_nightmode">Day/Night</string>
 	<string name="menu_settings">All Settings</string>
 	<string name="menu_booksettings">Book Settings</string>
-	<string name="menu_cleanrecent">Clear Recent</string>
+	<string name="menu_cleanrecent">Clear Data</string>
 	<string name="menu_add_bookmark">Add bookmark</string>
 	<string name="dialog_title_goto_page">Go to page</string>
 	<string name="button_goto_page">Go to page</string>
@@ -136,9 +136,15 @@
 	<string name="list_decodemode_low">"Low memory mode - slice size limit used"</string>
 	<string name="pref_maximagesize_title">"Max slice size"</string>
 	<string name="pref_maximagesize_summary">"Max slice size (in KB)"</string>
-  
+
     <string name="bookcase_shelves">"Bookshelves"</string>
     <string name="recent_title">"Recent books"</string>
     <string name="pref_usebookcase_title">"Use bookcase view"</string>
     <string name="pref_usebookcase_summary">"Use bookcase view instead of lists"</string>
+
+	<string name="list_clear_recent_mode_clear_recent_list">Clear list of recent books</string>
+	<string name="list_clear_recent_mode_delete_bookmarks">Delete all bookmarks</string>
+	<string name="list_clear_recent_mode_delete_book_settings">Delete all book settings</string>
+	<string name="list_clear_recent_mode_delete_cached_data">Delete all cached data from disk</string>
+
 </resources>

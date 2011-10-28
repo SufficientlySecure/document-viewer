@@ -63,7 +63,7 @@
 	<string name="menu_nightmode">День/Ночь</string>
 	<string name="menu_settings">Все настройки</string>
 	<string name="menu_booksettings">Настройки книги</string>
-	<string name="menu_cleanrecent">Очистить Недавние</string>
+	<string name="menu_cleanrecent">Очистить данные</string>
 	<string name="menu_add_bookmark">Добавить закладку</string>
 	<string name="dialog_title_goto_page">Страница</string>
 	<string name="button_goto_page">Перейти</string>
@@ -143,4 +143,10 @@
     <string name="recent_title">"Недавние книги"</string>
     <string name="pref_usebookcase_title">"Использовать шкаф"</string>
     <string name="pref_usebookcase_summary">"Использовать шкаф с обложками вместо списков"</string>
+    
+	<string name="list_clear_recent_mode_clear_recent_list">Очистить список недавно прочитанных</string>
+	<string name="list_clear_recent_mode_delete_bookmarks">Удалить все закладки</string>
+	<string name="list_clear_recent_mode_delete_book_settings">Удалить все настройки книг</string>
+	<string name="list_clear_recent_mode_delete_cached_data">Удалить все кэшированные файлы</string>
+
 </resources>

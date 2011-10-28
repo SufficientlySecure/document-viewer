@@ -129,8 +129,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         SettingsManager.applyAppSettingsChanges(null, SettingsManager.getAppSettings());
     }
 
-    ProgressDialog progressDialog;
-
     private void initView() {
 
         getView().setLayoutParams(
@@ -138,90 +136,24 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
         frameLayout.addView(getView());
         frameLayout.addView(getZoomControls());
+        setContentView(frameLayout);
 
         final DecodeService decodeService = createDecodeService();
+        documentModel = new DocumentModel(decodeService);
+        documentModel.addListener(BaseViewerActivity.this);
+        progressModel = new DecodingProgressModel();
+        progressModel.addListener(BaseViewerActivity.this);
 
         final Uri uri = getIntent().getData();
         final String fileName = PathFromUri.retrieve(getContentResolver(), uri);
-
         SettingsManager.init(fileName);
+        SettingsManager.applyBookSettingsChanges(null, SettingsManager.getBookSettings(), null);
 
         startDecoding(decodeService, fileName, "");
     }
 
     private void startDecoding(final DecodeService decodeService, final String fileName, final String password) {
-        new AsyncTask<String, Void, Exception>() {
-
-            @Override
-            protected void onPreExecute() {
-                LCTX.d("onPreExecute(): start");
-                try {
-                    progressDialog = ProgressDialog.show(BaseViewerActivity.this, "", "Loading... Please wait", true);
-                } catch (final Throwable th) {
-                    LCTX.e("Unexpected error", th);
-                } finally {
-                    LCTX.d("onPreExecute(): finish");
-                }
-            }
-
-            @Override
-            protected Exception doInBackground(final String... params) {
-                LCTX.d("doInBackground(): start");
-                try {
-                    decodeService.open(params[0], params[1]);
-                    return null;
-                } catch (final Exception e) {
-                    LCTX.e(e.getMessage(), e);
-                    return e;
-                } catch (final Throwable th) {
-                    LCTX.e("Unexpected error", th);
-                    return new Exception(th.getMessage());
-                } finally {
-                    LCTX.d("doInBackground(): finish");
-                }
-            }
-
-            @Override
-            protected void onPostExecute(final Exception result) {
-                LCTX.d("onPostExecute(): start");
-                try {
-                    if (result == null) {
-                        setContentView(frameLayout);
-
-                        documentModel = new DocumentModel(decodeService);
-                        documentModel.addListener(BaseViewerActivity.this);
-                        progressModel = new DecodingProgressModel();
-                        progressModel.addListener(BaseViewerActivity.this);
-
-                        SettingsManager.applyBookSettingsChanges(null, SettingsManager.getBookSettings(), null);
-
-                        if (documentModel != null) {
-                            final BookSettings bs = SettingsManager.getBookSettings();
-                            if (bs != null) {
-                                currentPageChanged(PageIndex.NULL, bs.getCurrentPage());
-                            }
-                        }
-
-                        setProgressBarIndeterminateVisibility(false);
-
-                        progressDialog.dismiss();
-                    } else {
-                        progressDialog.dismiss();
-
-                        final String msg = result.getMessage();
-                        if ("PDF needs a password!".equals(msg)) {
-                            askPassword(decodeService, fileName);
-                        } else {
-                            showErrorDlg(msg);
-                        }
-                    }
-                } catch (final Throwable th) {
-                    LCTX.e("Unexpected error", th);
-                } finally {
-                    LCTX.d("onPostExecute(): finish");
-                }
-            }
-        }.execute(fileName, password);
+        new BookLoadTask(decodeService, fileName, password).execute();
     }
 
     private void askPassword(final DecodeService decodeService, final String fileName) {
@@ -257,7 +189,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     }
 
     @Override
-    public void switchDocumentController() {
+    public IDocumentViewController switchDocumentController() {
         final BookSettings bs = SettingsManager.getBookSettings();
 
         final IDocumentViewController newDc = bs.singlePage ? new SinglePageDocumentView(this)
@@ -265,7 +197,9 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         final IDocumentViewController oldDc = ctrl.getAndSet(newDc);
 
         getZoomModel().removeListener(oldDc);
-        getZoomModel().addListener(getDocumentController());
+        getZoomModel().addListener(newDc);
+
+        return newDc;
     }
 
     @Override
@@ -338,7 +272,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Called on creation options menu
-     *
+     * 
      * @param menu
      *            the main menu
      * @return true, if successful
@@ -495,7 +429,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the zoom model.
-     *
+     * 
      * @return the zoom model
      */
     @Override
@@ -513,7 +447,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the decoding progress model.
-     *
+     * 
      * @return the decoding progress model
      */
     @Override
@@ -624,7 +558,11 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         boolean redrawn = false;
         if (diff.isSinglePageChanged() || diff.isSplitPagesChanged()) {
             redrawn = true;
-            switchDocumentController();
+            IDocumentViewController newDc = switchDocumentController();
+            if (!diff.isFirstTime()) {
+                newDc.init();
+                newDc.show();
+            }
         }
 
         if (diff.isZoomChanged() && diff.isFirstTime()) {
@@ -633,27 +571,92 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         }
 
         final IDocumentViewController dc = getDocumentController();
-        if (dc != null) {
+        if (diff.isPageAlignChanged()) {
+            dc.setAlign(newSettings.pageAlign);
+        }
 
-            if (diff.isPageAlignChanged()) {
-                dc.setAlign(newSettings.pageAlign);
-            }
+        if (diff.isAnimationTypeChanged()) {
+            dc.updateAnimationType();
+        }
 
-            if (diff.isAnimationTypeChanged()) {
-                dc.updateAnimationType();
-            }
-
-            if (!redrawn && appDiff != null) {
-                if (appDiff.isMaxImageSizeChanged() || appDiff.isPagesInMemoryChanged()
-                        || appDiff.isDecodeModeChanged()) {
-                    dc.updateMemorySettings();
-                }
+        if (!redrawn && appDiff != null) {
+            if (appDiff.isMaxImageSizeChanged() || appDiff.isPagesInMemoryChanged() || appDiff.isDecodeModeChanged()) {
+                dc.updateMemorySettings();
             }
         }
 
         final DocumentModel dm = getDocumentModel();
-        if (dm != null) {
-            currentPageChanged(PageIndex.NULL, dm.getCurrentIndex());
+        currentPageChanged(PageIndex.NULL, dm.getCurrentIndex());
+    }
+
+    private final class BookLoadTask extends AsyncTask<String, Void, Exception> {
+
+        private final DecodeService m_decodeService;
+        private final String m_fileName;
+        private final String m_password;
+        private ProgressDialog progressDialog;
+
+        private BookLoadTask(DecodeService decodeService, String fileName, String password) {
+            m_decodeService = decodeService;
+            m_fileName = fileName;
+            m_password = password;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            LCTX.d("onPreExecute(): start");
+            try {
+                progressDialog = ProgressDialog.show(BaseViewerActivity.this, "", "Loading... Please wait", true);
+            } catch (final Throwable th) {
+                LCTX.e("Unexpected error", th);
+            } finally {
+                LCTX.d("onPreExecute(): finish");
+            }
+        }
+
+        @Override
+        protected Exception doInBackground(final String... params) {
+            LCTX.d("doInBackground(): start");
+            try {
+                m_decodeService.open(m_fileName, m_password);
+                getDocumentController().init();
+                return null;
+            } catch (final Exception e) {
+                LCTX.e(e.getMessage(), e);
+                return e;
+            } catch (final Throwable th) {
+                LCTX.e("Unexpected error", th);
+                return new Exception(th.getMessage());
+            } finally {
+                LCTX.d("doInBackground(): finish");
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final Exception result) {
+            LCTX.d("onPostExecute(): start");
+            try {
+                if (result == null) {
+                    getDocumentController().show();
+
+                    setProgressBarIndeterminateVisibility(false);
+
+                    progressDialog.dismiss();
+                } else {
+                    progressDialog.dismiss();
+
+                    final String msg = result.getMessage();
+                    if ("PDF needs a password!".equals(msg)) {
+                        askPassword(m_decodeService, m_fileName);
+                    } else {
+                        showErrorDlg(msg);
+                    }
+                }
+            } catch (final Throwable th) {
+                LCTX.e("Unexpected error", th);
+            } finally {
+                LCTX.d("onPostExecute(): finish");
+            }
         }
     }
 
@@ -760,6 +763,12 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         @Override
         public ViewState updatePageVisibility(final int newPage, final int direction, final float zoom) {
             return new ViewState(this);
+        }
+
+        public void show() {
+        }
+
+        public final void init() {
         }
     }
 }

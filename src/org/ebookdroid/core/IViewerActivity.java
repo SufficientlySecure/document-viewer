@@ -28,5 +28,5 @@ public interface IViewerActivity {
 
     DecodingProgressModel getDecodingProgressModel();
 
-    void switchDocumentController();
+    IDocumentViewController switchDocumentController();
 }

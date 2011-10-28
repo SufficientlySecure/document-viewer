@@ -9,6 +9,10 @@ import android.view.MotionEvent;
 
 public interface IDocumentViewController extends ZoomListener {
 
+    void init();
+
+    void show();
+
     /* Page related methods */
     void goToPage(int page);
 

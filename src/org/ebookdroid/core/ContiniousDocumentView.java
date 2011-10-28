@@ -144,7 +144,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     public final boolean onLayoutChanged(final boolean layoutChanged, boolean layoutLocked, final int left,
             final int top, final int right, final int bottom) {
         int page = -1;
-        if (layoutChanged) {
+        if (isShown && layoutChanged) {
             page = base.getDocumentModel().getCurrentViewPageIndex();
         }
         if (super.onLayoutChanged(layoutChanged, layoutLocked, left, top, right, bottom)) {
@@ -161,7 +161,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
      */
     @Override
     public synchronized final void invalidatePageSizes(final InvalidateSizeReason reason, final Page changedPage) {
-        if (!isInitialized()) {
+        if (!isShown()) {
             return;
         }
 

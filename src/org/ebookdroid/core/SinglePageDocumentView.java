@@ -106,7 +106,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
      */
     @Override
     public final void invalidatePageSizes(final InvalidateSizeReason reason, final Page changedPage) {
-        if (!isInitialized()) {
+        if (!isShown()) {
             return;
         }
         if (reason == InvalidateSizeReason.ZOOM) {

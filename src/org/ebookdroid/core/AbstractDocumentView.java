@@ -26,7 +26,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class AbstractDocumentView extends AbstractComponentController<BaseDocumentView> implements IDocumentViewController {
+public abstract class AbstractDocumentView extends AbstractComponentController<BaseDocumentView> implements
+        IDocumentViewController {
 
     protected static final LogContext LCTX = LogContext.ROOT.lctx("View");
 
@@ -37,6 +38,8 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
     protected final BaseDocumentView view;
 
     protected boolean isInitialized = false;
+
+    protected boolean isShown = false;
 
     protected final AtomicBoolean inZoom = new AtomicBoolean();
 
@@ -56,7 +59,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     public AbstractDocumentView(final IViewerActivity baseActivity) {
         super(baseActivity.getActivity(), baseActivity.getActionController(), baseActivity.getView());
-        
+
         this.base = baseActivity;
         this.view = base.getView();
 
@@ -68,6 +71,8 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
         createAction(R.id.actions_verticalConfigScrollUp, new Constant("direction", -1));
         createAction(R.id.actions_verticalConfigScrollDown, new Constant("direction", +1));
+        createAction(R.id.actions_verticalDpadScrollUp, new Constant("direction", -1));
+        createAction(R.id.actions_verticalDpadScrollDown, new Constant("direction", -1));
     }
 
     protected List<IGestureDetector> getGestureDetectors() {
@@ -93,25 +98,30 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
         return base;
     }
 
-    protected final void init() {
-        if (isInitialized) {
-            return;
+    @Override
+    public final void init() {
+        if (!isInitialized) {
+            getBase().getDocumentModel().initPages(base);
+            isInitialized = true;
         }
+    }
 
-        getBase().getDocumentModel().initPages(base);
-        isInitialized = true;
-        invalidatePageSizes(InvalidateSizeReason.INIT, null);
-        invalidateScroll();
-
-        final Page page = pageToGo.getActualPage(base.getDocumentModel(), SettingsManager.getBookSettings());
-        goToPageImpl(page != null ? page.index.viewIndex : 0);
+    @Override
+    public final void show() {
+        if (isInitialized && !isShown) {
+            isShown = true;
+            invalidatePageSizes(InvalidateSizeReason.INIT, null);
+            invalidateScroll();
+            final Page page = pageToGo.getActualPage(base.getDocumentModel(), SettingsManager.getBookSettings());
+            goToPageImpl(page != null ? page.index.viewIndex : 0);
+        }
     }
 
     protected abstract void goToPageImpl(final int toPage);
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.core.IDocumentViewController#onScrollChanged(int, int)
      */
     @Override
@@ -230,7 +240,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.core.events.ZoomListener#commitZoom()
      */
     @Override
@@ -314,19 +324,19 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     @Override
     public final void goToPage(final int toPage) {
-        if (isInitialized) {
+        if (isShown) {
             goToPageImpl(toPage);
         }
     }
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.core.events.ZoomListener#zoomChanged(float, float)
      */
     @Override
     public final void zoomChanged(final float newZoom, final float oldZoom) {
-        if (!isInitialized) {
+        if (!isShown) {
             return;
         }
         if (inZoom.compareAndSet(false, true)) {
@@ -404,11 +414,8 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
     @Override
     public boolean onLayoutChanged(final boolean layoutChanged, final boolean layoutLocked, final int left,
             final int top, final int right, final int bottom) {
-        if (!isInitialized) {
-            init();
-        }
         if (layoutChanged && !layoutLocked) {
-            if (isInitialized) {
+            if (isShown) {
                 final ArrayList<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
                 for (final Page page : base.getDocumentModel().getPages()) {
                     page.nodes.root.recycle(bitmapsToRecycle);
@@ -427,7 +434,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
     }
 
     protected final void invalidateScroll() {
-        if (!isInitialized) {
+        if (!isShown) {
             return;
         }
         view.invalidateScroll();
@@ -435,7 +442,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * Sets the page align flag.
-     *
+     * 
      * @param align
      *            the new flag indicating align
      */
@@ -457,11 +464,11 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * Checks if view is initialized.
-     *
+     * 
      * @return true, if is initialized
      */
-    protected final boolean isInitialized() {
-        return isInitialized;
+    protected final boolean isShown() {
+        return isShown;
     }
 
     protected abstract boolean isPageVisibleImpl(final Page page, final ViewState viewState);
@@ -489,10 +496,16 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
         view.redrawView(viewState);
     }
 
-    @ActionMethod(ids = {R.id.actions_verticalConfigScrollUp, R.id.actions_verticalConfigScrollDown})
+    @ActionMethod(ids = { R.id.actions_verticalConfigScrollUp, R.id.actions_verticalConfigScrollDown })
     public void verticalConfigScroll(ActionEx action) {
         int direction = action.getParameter("direction");
         verticalConfigScroll(direction);
+    }
+
+    @ActionMethod(ids = { R.id.actions_verticalDpadScrollUp, R.id.actions_verticalDpadScrollDown })
+    public void verticalDpadScroll(ActionEx action) {
+        int direction = action.getParameter("direction");
+        verticalDpadScroll(direction);
     }
 
     protected boolean processTap(TouchManager.Touch type, MotionEvent e) {

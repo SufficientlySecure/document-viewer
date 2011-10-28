@@ -9,4 +9,6 @@
 
    <item android:id="@+id/actions_verticalConfigScrollUp" />
    <item android:id="@+id/actions_verticalConfigScrollDown" />
+   <item android:id="@+id/actions_verticalDpadScrollUp" />
+   <item android:id="@+id/actions_verticalDpadScrollDown" />
 </menu>

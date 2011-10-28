@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 import java.io.BufferedInputStream;
@@ -107,6 +108,9 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
         if (getPageInfo() == null) {
             return null;
         }
+
+        CbxDocument.LCTX.d("Rendering bitmap: [" + width + ", " + height + "] :" + pageSliceBounds);
+
         float requiredWidth = (float) width / pageSliceBounds.width();
         float requiredHeight = (float) height / pageSliceBounds.height();
 
@@ -123,7 +127,7 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
             scale *= 2;
         }
 
-        CbxDocument.LCTX.d("storedScale="+storedScale+", scale="+scale+", "+(storedBitmap==null));
+        CbxDocument.LCTX.d("storedScale=" + storedScale + ", scale=" + scale + ", " + (storedBitmap == null));
         if (storedBitmap == null || storedScale > scale) {
             if (storedBitmap != null && !storedBitmap.isRecycled()) {
                 storedBitmap.recycle();
@@ -135,11 +139,6 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
             return null;
         }
 
-        final Matrix matrix = new Matrix();
-        matrix.postScale((float) width / storedBitmap.getWidth(), (float) height / storedBitmap.getHeight());
-        matrix.postTranslate(-pageSliceBounds.left * width, -pageSliceBounds.top * height);
-        matrix.postScale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height());
-
         final BitmapRef bmp = BitmapManager.getBitmap(width, height, Bitmap.Config.RGB_565);
 
         final Canvas c = new Canvas(bmp.getBitmap());
@@ -147,8 +146,12 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
         paint.setFilterBitmap(true);
         paint.setAntiAlias(true);
         paint.setDither(true);
-        c.drawBitmap(storedBitmap, matrix, paint);
 
+        Rect srcRect = new Rect((int) (pageSliceBounds.left * storedBitmap.getWidth()),
+                (int) (pageSliceBounds.top * storedBitmap.getHeight()),
+                (int) (pageSliceBounds.right * storedBitmap.getWidth()),
+                (int) (pageSliceBounds.bottom * storedBitmap.getHeight()));
+        c.drawBitmap(storedBitmap, srcRect, new Rect(0,0,width, height), paint);
         return bmp;
     }
 

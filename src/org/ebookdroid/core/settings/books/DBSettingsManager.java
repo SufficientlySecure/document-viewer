@@ -32,7 +32,6 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter {
         }
     }
 
-    @Override
     public void onDowngrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
         // Downgrage from v2 to v1
         if (oldVersion == 2 && newVersion == 1) {

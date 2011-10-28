@@ -4,6 +4,8 @@ import org.ebookdroid.R;
 import org.ebookdroid.core.actions.AbstractComponentController;
 import org.ebookdroid.core.actions.ActionEx;
 import org.ebookdroid.core.actions.ActionMethod;
+import org.ebookdroid.core.actions.ActionMethodDef;
+import org.ebookdroid.core.actions.ActionTarget;
 import org.ebookdroid.core.actions.params.Constant;
 import org.ebookdroid.core.bitmaps.BitmapManager;
 import org.ebookdroid.core.bitmaps.BitmapRef;
@@ -26,6 +28,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@ActionTarget(
+// action list
+actions = {
+// actions
+        @ActionMethodDef(id = R.id.actions_verticalConfigScrollUp, method = "verticalConfigScroll"),
+        @ActionMethodDef(id = R.id.actions_verticalConfigScrollDown, method = "verticalConfigScroll"),
+        @ActionMethodDef(id = R.id.actions_verticalDpadScrollUp, method = "verticalDpadScroll"),
+        @ActionMethodDef(id = R.id.actions_verticalDpadScrollDown, method = "verticalDpadScroll"),
+// no more
+})
 public abstract class AbstractDocumentView extends AbstractComponentController<BaseDocumentView> implements
         IDocumentViewController {
 

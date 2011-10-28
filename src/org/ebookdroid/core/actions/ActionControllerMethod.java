@@ -1,6 +1,7 @@
 package org.ebookdroid.core.actions;
 
 import org.ebookdroid.core.log.LogContext;
+import org.ebookdroid.core.utils.AndroidVersion;
 import org.ebookdroid.utils.LengthUtils;
 
 import java.lang.reflect.Method;
@@ -136,16 +137,32 @@ public class ActionControllerMethod {
     private static Map<Integer, Method> getActionMethods(final Class<?> clazz) {
         final Map<Integer, Method> result = new HashMap<Integer, Method>();
 
-        final Method[] methods = clazz.getMethods();
-        for (final Method method : methods) {
-            final int modifiers = method.getModifiers();
-            if (Modifier.isPublic(modifiers) && !Modifier.isStatic(modifiers)) {
-                final Class<?>[] args = method.getParameterTypes();
-                if (LengthUtils.length(args) == 1 && ActionEx.class.equals(args[0])) {
-                    final ActionMethod annotation = method.getAnnotation(ActionMethod.class);
-                    if (annotation != null) {
-                        for (int id : annotation.ids()) {
-                            result.put(id, method);
+        if (AndroidVersion.is1x) {
+            if (clazz.isAnnotationPresent(ActionTarget.class)) {
+                ActionTarget a = clazz.getAnnotation(ActionTarget.class);
+                for(ActionMethodDef def : a.actions()) {
+                    try {
+                        Method m = clazz.getMethod(def.method(), ActionEx.class);
+                        result.put(def.id(), m);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        } else {
+            final Method[] methods = clazz.getMethods();
+            for (final Method method : methods) {
+                final int modifiers = method.getModifiers();
+                if (Modifier.isPublic(modifiers) && !Modifier.isStatic(modifiers)) {
+                    final Class<?>[] args = method.getParameterTypes();
+                    if (LengthUtils.length(args) == 1 && ActionEx.class.equals(args[0])) {
+                        if (method.isAnnotationPresent(ActionMethod.class)) {
+                            final ActionMethod annotation = method.getAnnotation(ActionMethod.class);
+                            if (annotation != null) {
+                                for (int id : annotation.ids()) {
+                                    result.put(id, method);
+                                }
+                            }
                         }
                     }
                 }

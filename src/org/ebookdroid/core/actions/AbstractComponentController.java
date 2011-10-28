@@ -15,6 +15,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @param <ManagedComponent>
  *            manager GUI component class
  */
+@ActionTarget(actions = { @ActionMethodDef(id = R.id.actions_no_action, method = "noAction") })
 public abstract class AbstractComponentController<ManagedComponent> implements IActionController<ManagedComponent> {
 
     protected static final LogContext LCTX = LogContext.ROOT.lctx("Actions");
@@ -125,13 +126,6 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
             result = getAction(id);
             if (result == null) {
                 result = createAction(id);
-                try {
-                    ActionInitControllerMethod.getInstance().invoke(this, result);
-                } catch (final Throwable e) {
-                    LCTX.e("Action " + result.name + "initialization failed: ", e);
-                }
-
-                m_actions.put(result.id, result);
             }
         } finally {
             m_actionsLock.writeLock().unlock();
@@ -159,12 +153,6 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
 
         for (final IActionParameter actionParameter : parameters) {
             result.addParameter(actionParameter);
-        }
-
-        try {
-            ActionInitControllerMethod.getInstance().invoke(this, result);
-        } catch (final Throwable e) {
-            LCTX.e("Action " + id + "initialization failed: ", e);
         }
 
         m_actionsLock.writeLock().lock();

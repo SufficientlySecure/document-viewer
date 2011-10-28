@@ -4,6 +4,8 @@ import org.ebookdroid.R;
 import org.ebookdroid.core.actions.ActionController;
 import org.ebookdroid.core.actions.ActionEx;
 import org.ebookdroid.core.actions.ActionMethod;
+import org.ebookdroid.core.actions.ActionMethodDef;
+import org.ebookdroid.core.actions.ActionTarget;
 import org.ebookdroid.core.actions.IActionController;
 import org.ebookdroid.core.actions.params.Constant;
 import org.ebookdroid.core.events.CurrentPageListener;
@@ -56,6 +58,23 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+@ActionTarget(
+// action list
+actions = {
+        // start
+        @ActionMethodDef(id = R.id.actions_addBookmark, method = "addBookmark"),
+        @ActionMethodDef(id = R.id.mainmenu_close, method = "closeActivity"),
+        @ActionMethodDef(id = R.id.actions_gotoOutlineItem, method="gotoOutlineItem"),
+        @ActionMethodDef(id = R.id.actions_redecodingWithPassord, method="redecodingWithPassord"),
+        @ActionMethodDef(id = R.id.mainmenu_settings, method="showAppSettings"),
+        @ActionMethodDef(id = R.id.mainmenu_bookmark, method="showBookmarkDialog"),
+        @ActionMethodDef(id = R.id.mainmenu_booksettings, method="showBookSettings"),
+        @ActionMethodDef(id = R.id.mainmenu_goto_page, method="showDialog"),
+        @ActionMethodDef(id = R.id.mainmenu_outline, method="showOutline"),
+        @ActionMethodDef(id = R.id.mainmenu_nightmode, method="toggleNightMode"),
+        @ActionMethodDef(id = R.id.mainmenu_zoom, method="toggleZoomControls"),
+// finish
+})
 public abstract class BaseViewerActivity extends Activity implements IViewerActivity, DecodingProgressListener,
         CurrentPageListener, ISettingsChangeListener {
 
@@ -638,6 +657,9 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
             try {
                 if (result == null) {
                     getDocumentController().show();
+
+                    final DocumentModel dm = getDocumentModel();
+                    currentPageChanged(PageIndex.NULL, dm.getCurrentIndex());
 
                     setProgressBarIndeterminateVisibility(false);
 

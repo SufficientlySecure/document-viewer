@@ -6,7 +6,6 @@ import org.ebookdroid.utils.LengthUtils;
 
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
-import android.drm.DrmStore.Action;
 import android.view.View;
 
 import java.lang.reflect.Field;
@@ -207,7 +206,7 @@ public class ActionEx implements Runnable, View.OnClickListener, DialogInterface
 
     private static Map<Integer, String> s_names;
 
-    private static String getActionName(final int id) {
+    public static String getActionName(final int id) {
         if (s_names == null) {
             s_names = new HashMap<Integer, String>();
             for (final Field f : R.id.class.getFields()) {

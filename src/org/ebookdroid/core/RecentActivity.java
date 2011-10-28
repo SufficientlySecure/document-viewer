@@ -4,6 +4,8 @@ import org.ebookdroid.R;
 import org.ebookdroid.core.actions.ActionController;
 import org.ebookdroid.core.actions.ActionEx;
 import org.ebookdroid.core.actions.ActionMethod;
+import org.ebookdroid.core.actions.ActionMethodDef;
+import org.ebookdroid.core.actions.ActionTarget;
 import org.ebookdroid.core.cache.CacheManager;
 import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.presentation.BooksAdapter;
@@ -45,6 +47,17 @@ import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Map;
 
+@ActionTarget(
+// actions
+actions = {
+        // start
+        @ActionMethodDef(id = R.id.recentmenu_cleanrecent, method = "showClearRecentDialog"),
+        @ActionMethodDef(id = R.id.recent_showbrowser, method = "goFileBrowser"),
+        @ActionMethodDef(id = R.id.recent_showlibrary, method = "goLibrary"),
+        @ActionMethodDef(id = R.id.recentmenu_settings, method = "showSettings"),
+        @ActionMethodDef(id = R.id.actions_clearRecent, method = "doClearRecent"),
+// finish
+})
 public class RecentActivity extends Activity implements IBrowserActivity, ISettingsChangeListener {
 
     public static final LogContext LCTX = LogContext.ROOT.lctx("Core");

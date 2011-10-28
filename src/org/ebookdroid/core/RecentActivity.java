@@ -1,6 +1,9 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.R;
+import org.ebookdroid.core.actions.ActionController;
+import org.ebookdroid.core.actions.ActionEx;
+import org.ebookdroid.core.actions.ActionMethod;
 import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.presentation.BooksAdapter;
 import org.ebookdroid.core.presentation.FileListAdapter;
@@ -20,7 +23,6 @@ import org.ebookdroid.utils.StringUtils;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -65,13 +67,15 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
 
     private Bitmap topThmbBitmap;
 
-    private View.OnClickListener handler;
+    private ActionController<RecentActivity> actions;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.recent);
+
+        actions = new ActionController<RecentActivity>(this, this);
 
         cornerThmbBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.bt_corner);
         leftThmbBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.bt_left);
@@ -81,29 +85,9 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
         libraryAdapter = new FileListAdapter(this);
         bookshelfAdapter = new BooksAdapter(this, recentAdapter);
 
-        libraryButton = (ImageView) findViewById(R.id.recentlibrary);
+        libraryButton = (ImageView) findViewById(R.id.recent_showlibrary);
 
         viewflipper = (ViewFlipper) findViewById(R.id.recentflip);
-
-        handler = new View.OnClickListener() {
-
-            @Override
-            public void onClick(final View v) {
-                switch (v.getId()) {
-                    case R.id.recentlibrary:
-                        goLibrary(v);
-                        break;
-                    case R.id.recentbrowser:
-                        goFileBrowser(v);
-                        break;
-                }
-            }
-        };
-
-        final View recentBrowser = findViewById(R.id.recentbrowser);
-        if (recentBrowser != null) {
-            recentBrowser.setOnClickListener(handler);
-        }
 
         SettingsManager.addListener(this);
         SettingsManager.applyAppSettingsChanges(null, SettingsManager.getAppSettings());
@@ -158,43 +142,33 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.recentmenu_cleanrecent:
-                clearRecent(null);
-                return true;
-            case R.id.recentmenu_settings:
-                showSettings(null);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
+        actions.getOrCreateAction(item.getItemId()).run();
+        return true;
     }
 
-    public void clearRecent(final View view) {
-        final class EmptyDialogButtonListener implements DialogInterface.OnClickListener {
+    public void onButtonClick(final View view) {
+        actions.getOrCreateAction(view.getId()).onClick(view);
+    }
 
-            @Override
-            public void onClick(final DialogInterface dialog, final int whichButton) {
-            }
-        }
-
+    @ActionMethod(ids=R.id.recentmenu_cleanrecent)
+    public void showClearRecentDialog(final ActionEx action) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.clear_recent_title);
         builder.setMessage(R.string.clear_recent_text);
-        builder.setPositiveButton(R.string.password_ok, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(final DialogInterface dialog, final int whichButton) {
-                SettingsManager.deleteAllBookSettings();
-                recentAdapter.clearBooks();
-
-                libraryAdapter.notifyDataSetInvalidated();
-            }
-        });
-        builder.setNegativeButton(R.string.password_cancel, new EmptyDialogButtonListener()).show();
-
+        builder.setPositiveButton(R.string.password_ok, actions.getOrCreateAction(R.id.actions_clearRecent));
+        builder.setNegativeButton(R.string.password_cancel, actions.getOrCreateAction(R.id.actions_no_action));
+        builder.show();
     }
 
-    public void showSettings(final View view) {
+    @ActionMethod(ids = R.id.actions_clearRecent)
+    public void doClearRecent(ActionEx action) {
+        SettingsManager.deleteAllBookSettings();
+        recentAdapter.clearBooks();
+        libraryAdapter.notifyDataSetInvalidated();
+    }
+
+    @ActionMethod(ids=R.id.recentmenu_settings)
+    public void showSettings(ActionEx action) {
         libraryAdapter.stopScan();
         bookshelfAdapter.stopScan();
         final Intent i = new Intent(RecentActivity.this, SettingsActivity.class);
@@ -252,7 +226,8 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
         }
     }
 
-    public void goLibrary(final View view) {
+    @ActionMethod(ids=R.id.recent_showlibrary)
+    public void goLibrary(final ActionEx action) {
         if (!SettingsManager.getAppSettings().getUseBookcase()) {
             if (viewflipper.getDisplayedChild() == VIEW_RECENT) {
                 changeLibraryView(VIEW_LIBRARY);
@@ -262,7 +237,8 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
         }
     }
 
-    public void goFileBrowser(final View view) {
+    @ActionMethod(ids=R.id.recent_showbrowser)
+    public void goFileBrowser(final ActionEx action) {
         final Intent myIntent = new Intent(RecentActivity.this, BrowserActivity.class);
         startActivity(myIntent);
     }
@@ -316,7 +292,7 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
             c.drawBitmap(leftThmbBitmap, null, new Rect(0, top, left, height), null);
             c.drawBitmap(tmpbmp, null, new Rect(left, top, width, height), null);
 
-            if (store){
+            if (store) {
                 thumbnails.put(md5, new SoftReference<Bitmap>(bmp));
             }
         }
@@ -333,7 +309,6 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
 
             if (SettingsManager.getAppSettings().getUseBookcase()) {
                 libraryButton.setImageResource(R.drawable.actionbar_shelf);
-                libraryButton.setOnClickListener(null);
 
                 viewflipper.addView(new BookcaseView(this, bookshelfAdapter), 0);
 
@@ -341,7 +316,6 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
                         .getAllowedFileTypes());
             } else {
                 libraryButton.setImageResource(R.drawable.actionbar_library);
-                libraryButton.setOnClickListener(handler);
 
                 viewflipper.addView(new RecentBooksView(this, recentAdapter), VIEW_RECENT);
                 viewflipper.addView(new LibraryView(this, libraryAdapter), VIEW_LIBRARY);

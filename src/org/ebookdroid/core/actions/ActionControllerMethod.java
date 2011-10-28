@@ -1,19 +1,24 @@
 package org.ebookdroid.core.actions;
 
+import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.utils.LengthUtils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ActionControllerMethod {
+
+    private static final LogContext LCTX = LogContext.ROOT.lctx("Actions");
 
     private static HashMap<Class<?>, Map<Integer, Method>> s_methods = new HashMap<Class<?>, Map<Integer, Method>>();
 
     private final IActionController<?> m_controller;
 
-    private final int m_actionId;
+    private final ActionEx m_action;
 
     private Object m_target;
 
@@ -29,9 +34,9 @@ public class ActionControllerMethod {
      * @param actionId
      *            action id
      */
-    ActionControllerMethod(final IActionController<?> controller, final int actionId) {
+    ActionControllerMethod(final IActionController<?> controller, final ActionEx action) {
         m_controller = controller;
-        m_actionId = actionId;
+        m_action = action;
     }
 
     /**
@@ -74,22 +79,26 @@ public class ActionControllerMethod {
      */
     Method getMethod() {
         if (m_method == null && m_errorInfo == null) {
-            m_method = getMethod(m_controller.getManagedComponent(), m_actionId);
-            m_target = m_method != null ? m_controller.getManagedComponent() : null;
+            List<String> classes = new ArrayList<String>();
 
             for (IActionController<?> c = m_controller; m_method == null && c != null; c = c.getParent()) {
-                m_method = getMethod(c.getManagedComponent(), m_actionId);
+                classes.add(c.getManagedComponent().getClass().getSimpleName());
+                classes.add(c.getClass().getSimpleName());
+
+                m_method = getMethod(c.getManagedComponent(), m_action.id);
                 m_target = m_method != null ? c.getManagedComponent() : null;
                 if (m_method == null) {
-                    m_method = getMethod(c, m_actionId);
+                    m_method = getMethod(c, m_action.id);
                     m_target = m_method != null ? c : null;
                 }
             }
 
             if (m_method == null) {
-                String text = "No appropriate method found for action " + m_actionId + " in class "
-                        + m_controller.getClass();
+                String text = "No appropriate method found for action " + m_action.name + " in the following classes: "
+                        + classes;
                 m_errorInfo = new NoSuchMethodException(text);
+            } else {
+                LCTX.d("Action method found for " + m_action.name + ": " + m_method);
             }
         }
         return m_method;
@@ -148,6 +157,6 @@ public class ActionControllerMethod {
     @Override
     public String toString() {
         Method m = getMethod();
-        return m_actionId + ", " + (m != null ? m : "no method: " + m_errorInfo.getMessage());
+        return (m != null ? "" + m : "no method: " + m_errorInfo.getMessage());
     }
 }

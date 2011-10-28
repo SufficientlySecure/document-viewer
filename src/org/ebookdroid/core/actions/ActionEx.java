@@ -1,34 +1,39 @@
 package org.ebookdroid.core.actions;
 
+import org.ebookdroid.R;
 import org.ebookdroid.core.log.LogContext;
+import org.ebookdroid.utils.LengthUtils;
 
 import android.content.DialogInterface;
 import android.drm.DrmStore.Action;
 import android.view.View;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 public class ActionEx implements Runnable, View.OnClickListener, DialogInterface.OnClickListener {
 
-    private static final LogContext LOGGER = LogContext.ROOT.lctx("Actions");
+    private static final LogContext LCTX = LogContext.ROOT.lctx("Actions");
 
     private static final String SHORT_DESCRIPTION = "ShortDescription";
 
-    private int m_id;
+    public final int id;
 
-    private String m_text;
+    public final String name;
 
-    private ActionControllerMethod m_method;
+    private final ActionControllerMethod m_method;
 
-    private Map<String, Object> m_values = new LinkedHashMap<String, Object>();
+    private final Map<String, Object> m_values = new LinkedHashMap<String, Object>();
 
-    private Map<String, IActionParameter> m_actionParameters = new LinkedHashMap<String, IActionParameter>();
+    private final Map<String, IActionParameter> m_actionParameters = new LinkedHashMap<String, IActionParameter>();
 
     /**
      * Constructor
-     *
+     * 
      * @param controller
      *            action controller
      * @param category
@@ -37,32 +42,14 @@ public class ActionEx implements Runnable, View.OnClickListener, DialogInterface
      *            action id
      */
     ActionEx(final IActionController<?> controller, final int id) {
-        m_id = id;
-        m_method = new ActionControllerMethod(controller, id);
-    }
-
-    /**
-     * Returns the action's id.
-     *
-     * @return the id
-     */
-    public int getId() {
-        return m_id;
-    }
-
-    /**
-     * Returns the action's text.
-     *
-     * @return the actions text
-     * @see #setName
-     */
-    public String getText() {
-        return m_text;
+        this.id = id;
+        this.name = getActionName(id);
+        this.m_method = new ActionControllerMethod(controller, this);
     }
 
     /**
      * Returns the action's description.
-     *
+     * 
      * @return the actions description
      * @see #setDescription
      */
@@ -72,7 +59,7 @@ public class ActionEx implements Runnable, View.OnClickListener, DialogInterface
 
     /**
      * Sets the action's description.
-     *
+     * 
      * @param description
      *            the string used to set the action's description
      * @see #getDescription
@@ -92,7 +79,7 @@ public class ActionEx implements Runnable, View.OnClickListener, DialogInterface
 
     /**
      * Returns component managed by action controller created this action.
-     *
+     * 
      * @param <ManagedComponent>
      *            managed component type
      * @return component managed by action controller created this action
@@ -103,7 +90,7 @@ public class ActionEx implements Runnable, View.OnClickListener, DialogInterface
 
     /**
      * Gets the <code>Object</code> associated with the specified key.
-     *
+     * 
      * @param key
      *            a string containing the specified <code>key</code>
      * @return the binding <code>Object</code> stored with this key; if
@@ -122,7 +109,7 @@ public class ActionEx implements Runnable, View.OnClickListener, DialogInterface
 
     /**
      * Gets the <code>Object</code> associated with the specified key.
-     *
+     * 
      * @param <T>
      *            parameter type
      * @param key
@@ -138,7 +125,7 @@ public class ActionEx implements Runnable, View.OnClickListener, DialogInterface
 
     /**
      * Gets the <code>Object</code> associated with the specified key.
-     *
+     * 
      * @param <T>
      *            parameter type
      * @param key
@@ -157,7 +144,7 @@ public class ActionEx implements Runnable, View.OnClickListener, DialogInterface
 
     /**
      * Adds a parameter to the action
-     *
+     * 
      * @param parameter
      *            action parameter to set
      */
@@ -168,31 +155,28 @@ public class ActionEx implements Runnable, View.OnClickListener, DialogInterface
 
     @Override
     public void run() {
-        ActionControllerMethod method = getMethod();
         try {
+            ActionControllerMethod method = getMethod();
             setParameters();
+            LCTX.d("Execute action: " + name + ": " + m_values);
             method.invoke(this);
         } catch (Throwable th) {
-            LOGGER.e("Action " + getId() + " failed on execution: ", th);
+            LCTX.e("Action " + name + " failed on execution: ", th);
         } finally {
         }
     }
 
     @Override
     public void onClick(View view) {
-        if (getMethod().isValid()) {
-            this.putValue(IActionController.VIEW_PROPERTY, view);
-            run();
-        }
+        this.putValue(IActionController.VIEW_PROPERTY, view);
+        run();
     }
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
-        if (getMethod().isValid()) {
-            this.putValue(IActionController.DIALOG_PROPERTY, dialog);
-            this.putValue(IActionController.DIALOG_ITEM_PROPERTY, which);
-            this.run();
-        }
+        this.putValue(IActionController.DIALOG_PROPERTY, dialog);
+        this.putValue(IActionController.DIALOG_ITEM_PROPERTY, which);
+        this.run();
     }
 
     /**
@@ -204,4 +188,24 @@ public class ActionEx implements Runnable, View.OnClickListener, DialogInterface
         }
     }
 
+    private static Map<Integer, String> s_names;
+
+    private static String getActionName(int id) {
+        if (s_names == null) {
+            s_names = new HashMap<Integer, String>();
+            for (Field f : R.id.class.getFields()) {
+                int modifiers = f.getModifiers();
+                if (Modifier.isPublic(modifiers) && Modifier.isStatic(modifiers) && Modifier.isFinal(modifiers)) {
+                    if (f.getType() == int.class) {
+                        try {
+                            int value = f.getInt(null);
+                            s_names.put(value, f.getName());
+                        } catch (Throwable th) {
+                        }
+                    }
+                }
+            }
+        }
+        return LengthUtils.safeString(s_names.get(id), "0x" + Integer.toHexString(id));
+    }
 }

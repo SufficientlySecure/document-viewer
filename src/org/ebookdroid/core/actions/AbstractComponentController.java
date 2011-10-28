@@ -116,10 +116,10 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
                 try {
                     ActionInitControllerMethod.getInstance().invoke(this, result);
                 } catch (Throwable e) {
-                    LCTX.e("Action " + id + "initialization failed: ", e);
+                    LCTX.e("Action " + result.name + "initialization failed: ", e);
                 }
 
-                m_actions.put(result.getId(), result);
+                m_actions.put(result.id, result);
             }
         } finally {
             m_actionsLock.writeLock().unlock();
@@ -156,7 +156,7 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
 
         m_actionsLock.writeLock().lock();
         try {
-            m_actions.put(result.getId(), result);
+            m_actions.put(result.id, result);
         } finally {
             m_actionsLock.writeLock().unlock();
         }

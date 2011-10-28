@@ -73,7 +73,7 @@ public class ActionDispatcher {
     private void invoke(final InvokationType type, final ActionEx action) {
         ActionControllerMethod method = action.getMethod();
         if (!method.isValid()) {
-            LCTX.e("The action method for action "  + action.getId() + " is not valid: ", method.getErrorInfo());
+            LCTX.e("The action method for action "  + action.name + " is not valid: ", method.getErrorInfo());
             return;
         }
 

@@ -11,4 +11,7 @@
    <item android:id="@+id/actions_verticalConfigScrollDown" />
    <item android:id="@+id/actions_verticalDpadScrollUp" />
    <item android:id="@+id/actions_verticalDpadScrollDown" />
+   
+   <item android:id="@+id/actions_clearRecent" />
+   
 </menu>

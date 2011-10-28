@@ -37,7 +37,7 @@ public final class ActionInitControllerMethod {
      *             thrown by reflection API or executed method
      */
     Object invoke(IActionController<?> controller, ActionEx action) throws Throwable {
-        final Object m[] = getInitCall(controller, action.getId());
+        final Object m[] = getInitCall(controller, action.id);
         if (m[0] != null) {
             return ((Method) m[0]).invoke(m[1], action);
         }

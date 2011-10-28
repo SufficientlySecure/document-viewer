@@ -512,7 +512,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
         Integer actionId = TouchManager.getInstance().getAction(type, e.getX(), e.getY(), getWidth(), getHeight());
         ActionEx action = actionId != null ? getOrCreateAction(actionId) : null;
         if (action != null) {
-            LCTX.d("Touch action: " + action.getId() + ", " + action.getMethod().toString());
+            LCTX.d("Touch action: " + action.name + ", " + action.getMethod().toString());
             action.run();
             return true;
         } else {

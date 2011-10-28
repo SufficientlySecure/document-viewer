@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -151,7 +150,30 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
                 (int) (pageSliceBounds.top * storedBitmap.getHeight()),
                 (int) (pageSliceBounds.right * storedBitmap.getWidth()),
                 (int) (pageSliceBounds.bottom * storedBitmap.getHeight()));
-        c.drawBitmap(storedBitmap, srcRect, new Rect(0,0,width, height), paint);
+        
+        float scaleFactor = (float)width/(float)srcRect.width();
+        CbxDocument.LCTX.d("Scale factor:"+scaleFactor);
+        if (scaleFactor > 4.5) {
+            CbxDocument.LCTX.d("Calling Native HQ4x");   
+            RawBitmap src = new RawBitmap(storedBitmap, srcRect);
+            Bitmap scaled = scaleHq4x(src);
+            c.drawBitmap(scaled, null, new Rect(0,0,width, height), paint);
+            scaled.recycle();
+        } else if (scaleFactor > 3.5) {
+            CbxDocument.LCTX.d("Calling Native HQ3x");   
+            RawBitmap src = new RawBitmap(storedBitmap, srcRect);
+            Bitmap scaled = scaleHq3x(src);
+            c.drawBitmap(scaled, null, new Rect(0,0,width, height), paint);
+            scaled.recycle();
+        } else if (scaleFactor > 2.5) {
+            CbxDocument.LCTX.d("Calling Native HQ2x");   
+            RawBitmap src = new RawBitmap(storedBitmap, srcRect);
+            Bitmap scaled = scaleHq2x(src);
+            c.drawBitmap(scaled, null, new Rect(0,0,width, height), paint);
+            scaled.recycle();
+        } else {
+            c.drawBitmap(storedBitmap, srcRect, new Rect(0,0,width, height), paint);
+        }
         return bmp;
     }
 
@@ -161,4 +183,40 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
         }
         return pageInfo;
     }
+    
+    private static Bitmap scaleHq4x(RawBitmap src) {
+        RawBitmap dest = new RawBitmap(src.getWidth() * 4,
+                src.getHeight() * 4,
+                src.hasAlpha());
+        src.fillAlpha(0x00);
+        
+        nativeHq4x(src.getPixels(), dest.getPixels(), src.getWidth(), src.getHeight());
+        dest.fillAlpha(0xFF);
+        return dest.toBitmap();
+    }
+
+    private static Bitmap scaleHq3x(RawBitmap src) {
+        RawBitmap dest = new RawBitmap(src.getWidth() * 3,
+                src.getHeight() * 3,
+                src.hasAlpha());
+        src.fillAlpha(0x00);
+        
+        nativeHq4x(src.getPixels(), dest.getPixels(), src.getWidth(), src.getHeight());
+        dest.fillAlpha(0xFF);
+        return dest.toBitmap();
+    }
+    
+    private static Bitmap scaleHq2x(RawBitmap src) {
+        RawBitmap dest = new RawBitmap(src.getWidth() * 2,
+                src.getHeight() * 2,
+                src.hasAlpha());
+        src.fillAlpha(0x00);
+        
+        nativeHq2x(src.getPixels(), dest.getPixels(), src.getWidth(), src.getHeight());
+        dest.fillAlpha(0xFF);
+        return dest.toBitmap();
+    }
+    
+    private static native void nativeHq2x(int[] src, int[] dst, int width, int height);
+    private static native void nativeHq4x(int[] src, int[] dst, int width, int height);
 }

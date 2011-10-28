@@ -1,5 +1,6 @@
 package org.ebookdroid.cbdroid.codec;
 
+import org.ebookdroid.core.EBookDroidLibraryLoader;
 import org.ebookdroid.core.codec.AbstractCodecContext;
 import org.ebookdroid.core.codec.CodecDocument;
 import org.ebookdroid.core.utils.archives.ArchiveEntry;
@@ -10,6 +11,10 @@ import java.io.IOException;
 
 public class CbxContext<ArchiveEntryType extends ArchiveEntry> extends AbstractCodecContext {
 
+    static {
+        EBookDroidLibraryLoader.load();
+    }
+    
     private final CbxArchiveFactory<ArchiveEntryType> factory;
 
     public CbxContext(final CbxArchiveFactory<ArchiveEntryType> factory) {

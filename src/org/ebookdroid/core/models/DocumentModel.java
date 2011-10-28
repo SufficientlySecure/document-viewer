@@ -29,7 +29,7 @@ import java.util.List;
 
 public class DocumentModel extends CurrentPageModel {
 
-    private static final boolean CACHE_ENABLED = false;
+    private static final boolean CACHE_ENABLED = true;
 
     private static final Page[] EMPTY_PAGES = {};
 

@@ -122,6 +122,7 @@ public class ZoomRoll extends View {
         @Override
         public boolean onDoubleTap(final MotionEvent e) {
             setCurrentValue(0.0f);
+            zoomModel.commit();
             return true;
         }
 

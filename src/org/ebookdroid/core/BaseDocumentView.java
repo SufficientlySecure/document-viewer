@@ -2,6 +2,7 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.settings.SettingsManager;
+import org.ebookdroid.utils.Flag;
 import org.ebookdroid.utils.MathUtils;
 
 import android.graphics.Rect;
@@ -10,6 +11,9 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Scroller;
+
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 public final class BaseDocumentView extends SurfaceView implements SurfaceHolder.Callback {
 
@@ -69,7 +73,8 @@ public final class BaseDocumentView extends SurfaceView implements SurfaceHolder
     }
 
     public void startFling(float vX, float vY, final Rect limits) {
-        scroller.fling(getScrollX(), getScrollY(), -(int) vX, -(int) vY, limits.left, limits.right, limits.top, limits.bottom);
+        scroller.fling(getScrollX(), getScrollY(), -(int) vX, -(int) vY, limits.left, limits.right, limits.top,
+                limits.bottom);
     }
 
     public void continueScroll() {
@@ -120,11 +125,27 @@ public final class BaseDocumentView extends SurfaceView implements SurfaceHolder
         layoutLocked = lock;
     }
 
+    private final AtomicReference<Rect> layout = new AtomicReference<Rect>();
+
+    private final Flag layoutFlag = new Flag();
+
     @Override
     protected final void onLayout(final boolean layoutChanged, final int left, final int top, final int right,
             final int bottom) {
         super.onLayout(layoutChanged, left, top, right, bottom);
-        base.getDocumentController().onLayoutChanged(layoutChanged, layoutLocked, left, top, right, bottom);
+
+        Rect oldLayout = layout.getAndSet(new Rect(left, top, right, bottom));
+        base.getDocumentController().onLayoutChanged(layoutChanged, layoutLocked, oldLayout, layout.get());
+
+        if (oldLayout == null) {
+            layoutFlag.set();
+        }
+    }
+
+    public final void waitForInitialization() {
+        while (!layoutFlag.get()) {
+            layoutFlag.waitFor(TimeUnit.SECONDS, 1);
+        }
     }
 
     public float getScrollScaleRatio() {

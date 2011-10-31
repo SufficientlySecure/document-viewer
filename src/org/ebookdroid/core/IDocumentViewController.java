@@ -50,7 +50,7 @@ public interface IDocumentViewController extends ZoomListener {
 
     void drawView(Canvas canvas, ViewState viewState);
 
-    boolean onLayoutChanged(boolean layoutChanged, boolean layoutLocked, int left, int top, int right, int bottom);
+    boolean onLayoutChanged(boolean layoutChanged, boolean layoutLocked, Rect oldLaout, Rect newLayout);
 
     Rect getScrollLimits();
 

@@ -172,7 +172,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     }
 
     private void startDecoding(final DecodeService decodeService, final String fileName, final String password) {
-        new BookLoadTask(decodeService, fileName, password).execute();
+        new BookLoadTask(decodeService, fileName, password).execute(" ");
     }
 
     private void askPassword(final DecodeService decodeService, final String fileName) {
@@ -637,6 +637,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         protected Exception doInBackground(final String... params) {
             LCTX.d("doInBackground(): start");
             try {
+                getView().waitForInitialization();
                 m_decodeService.open(m_fileName, m_password);
                 getDocumentController().init();
                 return null;
@@ -757,9 +758,9 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         public void drawView(final Canvas canvas, final ViewState viewState) {
         }
 
+        
         @Override
-        public boolean onLayoutChanged(final boolean layoutChanged, final boolean layoutLocked, final int left,
-                final int top, final int right, final int bottom) {
+        public boolean onLayoutChanged(boolean layoutChanged, boolean layoutLocked, Rect oldLaout, Rect newLayout) {
             return false;
         }
 

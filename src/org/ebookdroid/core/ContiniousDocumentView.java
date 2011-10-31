@@ -141,13 +141,12 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    public final boolean onLayoutChanged(final boolean layoutChanged, boolean layoutLocked, final int left,
-            final int top, final int right, final int bottom) {
+    public final boolean onLayoutChanged(final boolean layoutChanged, boolean layoutLocked, Rect oldLaout, Rect newLayout) {
         int page = -1;
         if (isShown && layoutChanged) {
             page = base.getDocumentModel().getCurrentViewPageIndex();
         }
-        if (super.onLayoutChanged(layoutChanged, layoutLocked, left, top, right, bottom)) {
+        if (super.onLayoutChanged(layoutChanged, layoutLocked, oldLaout, newLayout)) {
             if (page > 0) {
                 goToPage(page);
             }

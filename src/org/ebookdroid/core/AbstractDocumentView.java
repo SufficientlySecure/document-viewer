@@ -424,8 +424,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
     }
 
     @Override
-    public boolean onLayoutChanged(final boolean layoutChanged, final boolean layoutLocked, final int left,
-            final int top, final int right, final int bottom) {
+    public boolean onLayoutChanged(final boolean layoutChanged, final boolean layoutLocked, Rect oldLaout, Rect newLayout) {
         if (layoutChanged && !layoutLocked) {
             if (isShown) {
                 final ArrayList<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();

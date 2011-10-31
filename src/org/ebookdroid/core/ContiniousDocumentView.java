@@ -25,14 +25,22 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     @Override
     protected final void goToPageImpl(final int toPage) {
         final DocumentModel dm = getBase().getDocumentModel();
-        if (toPage >= 0 && toPage < dm.getPageCount()) {
+        int pageCount = dm.getPageCount();
+        if (toPage >= 0 && toPage < pageCount) {
             final Page page = dm.getPageObject(toPage);
             if (page != null) {
                 final RectF viewRect = view.getViewRect();
                 final RectF bounds = page.getBounds(getBase().getZoomModel().getZoom());
-
                 dm.setCurrentPageIndex(page.index);
                 view.scrollTo(getScrollX(), Math.round(bounds.top - (viewRect.height() - bounds.height()) / 2));
+            } else {
+                if (LCTX.isDebugEnabled()) {
+                    LCTX.d("No page found for index: " + toPage);
+                }
+            }
+        } else {
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("Bad page index: " + toPage + ", page count: " + pageCount);
             }
         }
     }
@@ -141,7 +149,8 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    public final boolean onLayoutChanged(final boolean layoutChanged, boolean layoutLocked, Rect oldLaout, Rect newLayout) {
+    public final boolean onLayoutChanged(final boolean layoutChanged, boolean layoutLocked, Rect oldLaout,
+            Rect newLayout) {
         int page = -1;
         if (isShown && layoutChanged) {
             page = base.getDocumentModel().getCurrentViewPageIndex();
@@ -160,7 +169,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
      */
     @Override
     public synchronized final void invalidatePageSizes(final InvalidateSizeReason reason, final Page changedPage) {
-        if (!isShown()) {
+        if (!isInitialized) {
             return;
         }
 

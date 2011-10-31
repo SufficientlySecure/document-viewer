@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @ActionTarget(
 // action list
 actions = {
-// actions
+        // actions
         @ActionMethodDef(id = R.id.actions_verticalConfigScrollUp, method = "verticalConfigScroll"),
         @ActionMethodDef(id = R.id.actions_verticalConfigScrollDown, method = "verticalConfigScroll"),
         @ActionMethodDef(id = R.id.actions_verticalDpadScrollUp, method = "verticalDpadScroll"),
@@ -113,8 +113,11 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
     @Override
     public final void init() {
         if (!isInitialized) {
-            getBase().getDocumentModel().initPages(base);
-            isInitialized = true;
+            try {
+                getBase().getDocumentModel().initPages(base);
+            } finally {
+                isInitialized = true;
+            }
         }
     }
 
@@ -122,10 +125,17 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
     public final void show() {
         if (isInitialized && !isShown) {
             isShown = true;
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("Showing view content...");
+            }
             invalidatePageSizes(InvalidateSizeReason.INIT, null);
             invalidateScroll();
             final Page page = pageToGo.getActualPage(base.getDocumentModel(), SettingsManager.getBookSettings());
             goToPageImpl(page != null ? page.index.viewIndex : 0);
+        } else {
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("View is not initialized yet");
+            }
         }
     }
 
@@ -424,7 +434,8 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
     }
 
     @Override
-    public boolean onLayoutChanged(final boolean layoutChanged, final boolean layoutLocked, Rect oldLaout, Rect newLayout) {
+    public boolean onLayoutChanged(final boolean layoutChanged, final boolean layoutLocked, Rect oldLaout,
+            Rect newLayout) {
         if (layoutChanged && !layoutLocked) {
             if (isShown) {
                 final ArrayList<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();

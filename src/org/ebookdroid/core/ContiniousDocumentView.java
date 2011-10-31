@@ -78,10 +78,14 @@ public class ContiniousDocumentView extends AbstractDocumentView {
             return;
         }
 
+        LCTX.d("onScrollChanged(" + newPage + ", " + direction + ")");
+        
         final Runnable r = new Runnable() {
 
             @Override
             public void run() {
+                LCTX.d("onScrollChanged(" + newPage + ", " + direction + ").run()");
+
                 final ViewState viewState = updatePageVisibility(newPage, direction, getBase().getZoomModel().getZoom());
 
                 final DocumentModel dm = getBase().getDocumentModel();

@@ -128,10 +128,15 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
             if (LCTX.isDebugEnabled()) {
                 LCTX.d("Showing view content...");
             }
+
             invalidatePageSizes(InvalidateSizeReason.INIT, null);
-            invalidateScroll();
+
             final Page page = pageToGo.getActualPage(base.getDocumentModel(), SettingsManager.getBookSettings());
-            goToPageImpl(page != null ? page.index.viewIndex : 0);
+            int toPage = page != null ? page.index.viewIndex : 0;
+
+            updatePageVisibility(toPage, 0, base.getZoomModel().getZoom());
+            goToPageImpl(toPage);
+
         } else {
             if (LCTX.isDebugEnabled()) {
                 LCTX.d("View is not initialized yet");
@@ -152,6 +157,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
         if (inZoom.get()) {
             return;
         }
+        LCTX.d("onScrollChanged(" + newPage + ", " + direction + ")");
         view.redrawView();
     }
 
@@ -267,6 +273,11 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
      */
     @Override
     public final void commitZoom() {
+        if (!isShown) {
+            return;
+        }
+
+        LCTX.d("commitZoom()");
         inZoom.set(false);
         final float newZoom = base.getZoomModel().getZoom();
         SettingsManager.zoomChanged(newZoom);
@@ -361,6 +372,9 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
         if (!isShown) {
             return;
         }
+
+        LCTX.d("zoomChanged(" + newZoom + ", " + oldZoom + ")");
+
         if (inZoom.compareAndSet(false, true)) {
             initialZoom = oldZoom;
         }
@@ -436,6 +450,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
     @Override
     public boolean onLayoutChanged(final boolean layoutChanged, final boolean layoutLocked, Rect oldLaout,
             Rect newLayout) {
+        LCTX.d("onLayoutChanged(" + layoutChanged + ", " + layoutLocked + "," + oldLaout + ", " + newLayout + ")");
         if (layoutChanged && !layoutLocked) {
             if (isShown) {
                 final ArrayList<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();

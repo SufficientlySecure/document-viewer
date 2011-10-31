@@ -64,15 +64,15 @@ actions = {
         // start
         @ActionMethodDef(id = R.id.actions_addBookmark, method = "addBookmark"),
         @ActionMethodDef(id = R.id.mainmenu_close, method = "closeActivity"),
-        @ActionMethodDef(id = R.id.actions_gotoOutlineItem, method="gotoOutlineItem"),
-        @ActionMethodDef(id = R.id.actions_redecodingWithPassord, method="redecodingWithPassord"),
-        @ActionMethodDef(id = R.id.mainmenu_settings, method="showAppSettings"),
-        @ActionMethodDef(id = R.id.mainmenu_bookmark, method="showBookmarkDialog"),
-        @ActionMethodDef(id = R.id.mainmenu_booksettings, method="showBookSettings"),
-        @ActionMethodDef(id = R.id.mainmenu_goto_page, method="showDialog"),
-        @ActionMethodDef(id = R.id.mainmenu_outline, method="showOutline"),
-        @ActionMethodDef(id = R.id.mainmenu_nightmode, method="toggleNightMode"),
-        @ActionMethodDef(id = R.id.mainmenu_zoom, method="toggleZoomControls"),
+        @ActionMethodDef(id = R.id.actions_gotoOutlineItem, method = "gotoOutlineItem"),
+        @ActionMethodDef(id = R.id.actions_redecodingWithPassord, method = "redecodingWithPassord"),
+        @ActionMethodDef(id = R.id.mainmenu_settings, method = "showAppSettings"),
+        @ActionMethodDef(id = R.id.mainmenu_bookmark, method = "showBookmarkDialog"),
+        @ActionMethodDef(id = R.id.mainmenu_booksettings, method = "showBookSettings"),
+        @ActionMethodDef(id = R.id.mainmenu_goto_page, method = "showDialog"),
+        @ActionMethodDef(id = R.id.mainmenu_outline, method = "showOutline"),
+        @ActionMethodDef(id = R.id.mainmenu_nightmode, method = "toggleNightMode"),
+        @ActionMethodDef(id = R.id.mainmenu_zoom, method = "toggleZoomControls"),
 // finish
 })
 public abstract class BaseViewerActivity extends Activity implements IViewerActivity, DecodingProgressListener,
@@ -172,7 +172,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
     }
 
     private void startDecoding(final DecodeService decodeService, final String fileName, final String password) {
-        new BookLoadTask(decodeService, fileName, password).execute(" ");
+        getView().post(new BookLoadTask(decodeService, fileName, password));
     }
 
     private void askPassword(final DecodeService decodeService, final String fileName) {
@@ -608,17 +608,22 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         currentPageChanged(PageIndex.NULL, dm.getCurrentIndex());
     }
 
-    private final class BookLoadTask extends AsyncTask<String, Void, Exception> {
+    public final class BookLoadTask extends AsyncTask<String, Void, Exception> implements Runnable {
 
         private final DecodeService m_decodeService;
         private final String m_fileName;
         private final String m_password;
         private ProgressDialog progressDialog;
 
-        private BookLoadTask(DecodeService decodeService, String fileName, String password) {
+        public BookLoadTask(DecodeService decodeService, String fileName, String password) {
             m_decodeService = decodeService;
             m_fileName = fileName;
             m_password = password;
+        }
+
+        @Override
+        public void run() {
+            execute(" ");
         }
 
         @Override
@@ -758,7 +763,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         public void drawView(final Canvas canvas, final ViewState viewState) {
         }
 
-        
         @Override
         public boolean onLayoutChanged(boolean layoutChanged, boolean layoutLocked, Rect oldLaout, Rect newLayout) {
             return false;

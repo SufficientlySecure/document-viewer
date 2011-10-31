@@ -252,7 +252,7 @@ public class AppSettings {
 
     public boolean getUseBookcase() {
         if (useBookcase == null) {
-            useBookcase = prefs.getBoolean("usebookcase", false);
+            useBookcase = prefs.getBoolean("usebookcase", true);
         }
         return useBookcase;
     }

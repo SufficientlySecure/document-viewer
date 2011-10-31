@@ -5,17 +5,30 @@ import org.ebookdroid.core.EBookDroidLibraryLoader;
 import org.ebookdroid.core.codec.AbstractCodecContext;
 import org.ebookdroid.core.codec.CodecDocument;
 
+import android.graphics.Bitmap;
 import android.util.DisplayMetrics;
 
 import java.lang.reflect.Field;
 
 public class PdfContext extends AbstractCodecContext {
 
+    public static final boolean useNativeGraphics;
+
+    public static final Bitmap.Config BITMAP_CFG = Bitmap.Config.RGB_565;
+
+    public static final Bitmap.Config NATIVE_BITMAP_CFG = Bitmap.Config.ARGB_8888;
+
     private static final Field DENSITY_DPI_FIELD;
 
     static {
         EBookDroidLibraryLoader.load();
         DENSITY_DPI_FIELD = getDensityDPIField();
+        useNativeGraphics = isNativeGraphicsAvailable();
+    }
+
+    @Override
+    public Bitmap.Config getBitmapConfig() {
+        return useNativeGraphics ? NATIVE_BITMAP_CFG : BITMAP_CFG;
     }
 
     private static Field getDensityDPIField() {
@@ -57,4 +70,6 @@ public class PdfContext extends AbstractCodecContext {
         }
         return 120;
     }
+
+    private static native boolean isNativeGraphicsAvailable();
 }

@@ -1,5 +1,7 @@
 package org.ebookdroid.core.codec;
 
+import android.graphics.Bitmap;
+
 import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class AbstractCodecContext implements CodecContext {
@@ -70,5 +72,15 @@ public abstract class AbstractCodecContext implements CodecContext {
     @Override
     public boolean isPageSizeCacheable() {
         return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.codec.CodecContext#getBitmapConfig()
+     */
+    @Override
+    public Bitmap.Config getBitmapConfig() {
+        return Bitmap.Config.RGB_565;
     }
 }

@@ -1,5 +1,7 @@
 package org.ebookdroid.core.codec;
 
+import android.graphics.Bitmap;
+
 public interface CodecContext {
 
     /**
@@ -30,4 +32,5 @@ public interface CodecContext {
 
     boolean isPageSizeCacheable();
 
+    Bitmap.Config getBitmapConfig();
 }

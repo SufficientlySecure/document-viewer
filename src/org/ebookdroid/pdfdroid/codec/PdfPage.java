@@ -10,12 +10,6 @@ import android.graphics.RectF;
 
 public class PdfPage implements CodecPage {
 
-    private static final boolean useNativeGraphics;
-
-    static {
-        useNativeGraphics = isNativeGraphicsAvailable();
-    }
-
     private long pageHandle;
     private final long docHandle;
     private final RectF mediaBox;
@@ -146,8 +140,8 @@ public class PdfPage implements CodecPage {
         final int width = viewbox.width();
         final int height = viewbox.height();
 
-        if (useNativeGraphics) {
-            final BitmapRef bmp = BitmapManager.getBitmap(width, height, Bitmap.Config.ARGB_8888);
+        if (PdfContext.useNativeGraphics) {
+            final BitmapRef bmp = BitmapManager.getBitmap(width, height, PdfContext.NATIVE_BITMAP_CFG);
             if (renderPageBitmap(docHandle, pageHandle, mRect, ctm, bmp.getBitmap())) {
                 return bmp;
             } else {
@@ -158,7 +152,7 @@ public class PdfPage implements CodecPage {
 
         final int[] bufferarray = new int[width * height];
         renderPage(docHandle, pageHandle, mRect, ctm, bufferarray);
-        final BitmapRef b = BitmapManager.getBitmap(width, height, Bitmap.Config.RGB_565);
+        final BitmapRef b = BitmapManager.getBitmap(width, height, PdfContext.BITMAP_CFG);
         b.getBitmap().setPixels(bufferarray, 0, width, 0, 0, width, height);
         return b;
     }
@@ -174,8 +168,6 @@ public class PdfPage implements CodecPage {
 
     private static native void renderPage(long dochandle, long pagehandle, int[] viewboxarray, float[] matrixarray,
             int[] bufferarray);
-
-    private static native boolean isNativeGraphicsAvailable();
 
     private static native boolean renderPageBitmap(long dochandle, long pagehandle, int[] viewboxarray,
             float[] matrixarray, Bitmap bitmap);

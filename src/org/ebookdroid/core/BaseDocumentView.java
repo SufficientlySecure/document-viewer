@@ -165,6 +165,7 @@ public final class BaseDocumentView extends SurfaceView implements SurfaceHolder
     public final void surfaceCreated(final SurfaceHolder holder) {
         drawThread = new DrawThread(getHolder());
         drawThread.start();
+        holder.setFormat(base.getDecodeService().getPixelFormat());
     }
 
     @Override

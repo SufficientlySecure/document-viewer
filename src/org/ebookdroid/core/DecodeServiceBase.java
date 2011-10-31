@@ -11,6 +11,8 @@ import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.settings.SettingsManager;
 
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
@@ -74,6 +76,23 @@ public class DecodeServiceBase implements DecodeService {
 
     public DecodeServiceBase(final CodecContext codecContext) {
         this.codecContext = codecContext;
+    }
+
+    @Override
+    public int getPixelFormat() {
+        Config cfg = this.codecContext.getBitmapConfig();
+        switch (cfg) {
+            case ALPHA_8:
+                return PixelFormat.A_8;
+            case ARGB_4444:
+                return PixelFormat.RGBA_4444;
+            case RGB_565:
+                return PixelFormat.RGB_565;
+            case ARGB_8888:
+                return PixelFormat.RGBA_8888;
+            default:
+                return PixelFormat.RGB_565;
+        }
     }
 
     @Override

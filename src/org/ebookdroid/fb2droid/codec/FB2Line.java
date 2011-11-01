@@ -104,6 +104,10 @@ public class FB2Line {
         }
         if (footnotes == null) {
             footnotes = new ArrayList<FB2Line>();
+            FB2Line lastLine = new FB2Line();
+            footnotes.add(lastLine);
+            lastLine.append(new FB2HorizontalRule(FB2Page.PAGE_WIDTH / 4, RenderingStyle.FOOTNOTE_SIZE));
+            lastLine.applyJustification(JustificationMode.Left);
         }
         footnotes.addAll(noteLines);
     }

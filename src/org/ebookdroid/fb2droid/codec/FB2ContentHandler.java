@@ -82,10 +82,6 @@ public class FB2ContentHandler extends FB2BaseHandler {
                     noteLines = new ArrayList<FB2Line>();
                     FB2Line lastLine = new FB2Line();
                     noteLines.add(lastLine);
-                    lastLine.append(new FB2HorizontalRule(FB2Page.PAGE_WIDTH / 4, RenderingStyle.FOOTNOTE_SIZE));
-                    lastLine.applyJustification(JustificationMode.Left);
-                    lastLine = new FB2Line();
-                    noteLines.add(lastLine);
                     lastLine.append(new FB2TextElement(n.toCharArray(), 0, n.length(), crs)).append(
                             new FB2LineWhiteSpace((int) crs.getTextPaint().measureText(" "), crs.textSize, false));
                 }
@@ -260,7 +256,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
         if (parsingBinary) {
             tmpBinaryContents.append(ch, start, length);
         } else if (parsingNotesP && noteLines != null) {
-            final int space = (int) crs.getTextPaint().measureText(" ");
+            final int space = (int) crs.getTextPaint().spaceSize;
             final int count = StringUtils.split(ch, start, length, starts, lengths);
 
             if (count > 0) {
@@ -319,7 +315,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
                 }
                 if (Character.isWhitespace(ch[start + length - 1])) {
                     markup.add(FB2MarkupNoSpace._instance);
-                    markup.add(new FB2LineWhiteSpace((int) crs.getTextPaint().measureText(" "), crs.textSize, true));
+                    markup.add(new FB2LineWhiteSpace((int) crs.getTextPaint().spaceSize, crs.textSize, true));
                 }
                 spaceNeeded = false;
             }

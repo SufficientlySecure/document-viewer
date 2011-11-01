@@ -47,12 +47,10 @@ public class FB2Document implements CodecDocument {
     boolean insertSpace = true;
 
     public FB2Document(final String fileName) {
-        final String encoding = getEncoding(fileName);
-
         final SAXParserFactory spf = SAXParserFactory.newInstance();
 
         final long t2 = System.currentTimeMillis();
-        final List<FB2MarkupElement> markup = parseContent(spf, fileName, encoding);
+        final List<FB2MarkupElement> markup = parseContent(spf, fileName);
         final long t3 = System.currentTimeMillis();
         System.out.println("SAX parser: " + (t3 - t2) + " ms");
         createDocumentMarkup(markup);
@@ -70,7 +68,7 @@ public class FB2Document implements CodecDocument {
         markup.clear();
     }
 
-    private List<FB2MarkupElement> parseContent(final SAXParserFactory spf, final String fileName, final String encoding) {
+    private List<FB2MarkupElement> parseContent(final SAXParserFactory spf, final String fileName) {
         final FB2ContentHandler h = new FB2ContentHandler(this);
         try {
             final SAXParser parser = spf.newSAXParser();
@@ -91,6 +89,40 @@ public class FB2Document implements CodecDocument {
                 inStream = new FileInputStream(fileName);
             }
             if (inStream != null) {
+
+                String encoding = "utf-8";
+                final char[] buffer = new char[256];
+                boolean found = false;
+                int len = 0;
+                while (len < 256) {
+                    char c = (char) inStream.read();
+                    buffer[len++] = c;
+                    if (c == '>') {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) {
+                    final String xmlheader = new String(buffer, 0, len).trim();
+                    if (xmlheader.startsWith("<?xml") && xmlheader.endsWith("?>")) {
+                        int index = xmlheader.indexOf("encoding");
+                        if (index > 0) {
+                            int startIndex = xmlheader.indexOf('"', index);
+                            if (startIndex > 0) {
+                                int endIndex = xmlheader.indexOf('"', startIndex + 1);
+                                if (endIndex > 0) {
+                                    encoding = xmlheader.substring(startIndex + 1, endIndex);
+                                    System.out.println("XML encoding:" + encoding);
+                                }
+                            }
+                        }
+                    } else {
+                        throw new RuntimeException("FB2 document can not be opened: " + "Invalid header");
+                    }
+                } else {
+                    throw new RuntimeException("FB2 document can not be opened: " + "Header not found");
+                }
+
                 final Reader isr = new BufferedReader(new InputStreamReader(inStream, encoding), 1024 * 1024);
                 final InputSource is = new InputSource();
                 is.setCharacterStream(isr);
@@ -102,37 +134,6 @@ public class FB2Document implements CodecDocument {
             throw new RuntimeException("FB2 document can not be opened: " + e.getMessage(), e);
         }
         return h.markup;
-    }
-
-    private String getEncoding(final String fileName) {
-        try {
-            InputStream inStream = null;
-
-            if (fileName.endsWith("zip")) {
-                final ZipArchive zipArchive = new ZipArchive(new File(fileName));
-                final Enumeration<ZipArchiveEntry> entries = zipArchive.entries();
-                while (entries.hasMoreElements()) {
-                    final ZipArchiveEntry entry = entries.nextElement();
-                    if (!entry.isDirectory() && entry.getName().endsWith("fb2")) {
-                        inStream = entry.open();
-                        break;
-                    }
-                }
-            } else {
-                inStream = new FileInputStream(fileName);
-            }
-            if (inStream != null) {
-                final byte[] buffer = new byte[100];
-                inStream.read(buffer);
-                final Pattern p = Pattern.compile("encoding=\"(.*?)\"");
-                final Matcher matcher = p.matcher(new String(buffer));
-                if (matcher.find()) {
-                    return matcher.group(1);
-                }
-            }
-        } catch (final IOException e) {
-        }
-        return "UTF-8";
     }
 
     void appendLine(final FB2Line line) {

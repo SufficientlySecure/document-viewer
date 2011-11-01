@@ -2,12 +2,14 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.R;
 import org.ebookdroid.core.actions.ActionController;
+import org.ebookdroid.core.actions.ActionDialogBuilder;
 import org.ebookdroid.core.actions.ActionEx;
 import org.ebookdroid.core.actions.ActionMethod;
 import org.ebookdroid.core.actions.ActionMethodDef;
 import org.ebookdroid.core.actions.ActionTarget;
 import org.ebookdroid.core.actions.IActionController;
 import org.ebookdroid.core.actions.params.Constant;
+import org.ebookdroid.core.actions.params.EditableValue;
 import org.ebookdroid.core.events.CurrentPageListener;
 import org.ebookdroid.core.events.DecodingProgressListener;
 import org.ebookdroid.core.log.LogContext;
@@ -419,19 +421,15 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         input.setText(getString(R.string.text_page) + " " + (page + 1));
         input.selectAll();
 
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.menu_add_bookmark)
-                .setMessage(message)
-                .setView(input)
-                .setPositiveButton(R.string.password_ok,
-                        actions.getOrCreateAction(R.id.actions_addBookmark).putValue("input", input))
-                .setNegativeButton(R.string.password_cancel, actions.getOrCreateAction(R.id.actions_no_action)).show();
+        ActionDialogBuilder builder = new ActionDialogBuilder(actions);
+        builder.setTitle(R.string.menu_add_bookmark).setMessage(message).setView(input);
+        builder.setPositiveButton(R.id.actions_addBookmark, new EditableValue("input", input));
+        builder.setNegativeButton().show();
     }
 
     @ActionMethod(ids = R.id.actions_addBookmark)
     public void addBookmark(ActionEx action) {
-        final EditText input = action.getParameter("input");
-        final Editable value = input.getText();
+        final Editable value = action.getParameter("input");
         final BookSettings bs = SettingsManager.getBookSettings();
         bs.bookmarks.add(new Bookmark(getDocumentModel().getCurrentIndex(), value.toString()));
         SettingsManager.edit(bs).commit();

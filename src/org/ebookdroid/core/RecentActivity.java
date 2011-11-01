@@ -2,6 +2,7 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.R;
 import org.ebookdroid.core.actions.ActionController;
+import org.ebookdroid.core.actions.ActionDialogBuilder;
 import org.ebookdroid.core.actions.ActionEx;
 import org.ebookdroid.core.actions.ActionMethod;
 import org.ebookdroid.core.actions.ActionMethodDef;
@@ -23,7 +24,6 @@ import org.ebookdroid.core.views.LibraryView;
 import org.ebookdroid.core.views.RecentBooksView;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -170,12 +170,12 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
 
     @ActionMethod(ids = R.id.recentmenu_cleanrecent)
     public void showClearRecentDialog(final ActionEx action) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final ActionDialogBuilder builder = new ActionDialogBuilder(actions);
+        
         builder.setTitle(R.string.clear_recent_title);
-        builder.setMultiChoiceItems(R.array.list_clear_recent_mode, null,
-                actions.getOrCreateAction(R.id.actions_clearRecent));
-        builder.setPositiveButton(R.string.password_ok, actions.getOrCreateAction(R.id.actions_clearRecent));
-        builder.setNegativeButton(R.string.password_cancel, actions.getOrCreateAction(R.id.actions_no_action));
+        builder.setMultiChoiceItems(R.array.list_clear_recent_mode, R.id.actions_clearRecent);
+        builder.setPositiveButton(R.id.actions_clearRecent);
+        builder.setNegativeButton();
         builder.show();
     }
 

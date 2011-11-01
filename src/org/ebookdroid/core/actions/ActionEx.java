@@ -6,17 +6,22 @@ import org.ebookdroid.utils.LengthUtils;
 
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
+import android.drm.DrmStore.Action;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class ActionEx implements Runnable, View.OnClickListener, DialogInterface.OnClickListener,
-        OnMultiChoiceClickListener {
+public class ActionEx implements Runnable, View.OnClickListener, View.OnLongClickListener,
+        DialogInterface.OnClickListener, OnMultiChoiceClickListener, TextView.OnEditorActionListener {
 
     private static final LogContext LCTX = LogContext.ROOT.lctx("Actions");
 
@@ -161,6 +166,8 @@ public class ActionEx implements Runnable, View.OnClickListener, DialogInterface
             setParameters();
             LCTX.d("Execute action: " + name + ": " + m_values);
             method.invoke(this);
+        } catch (InvocationTargetException ex) {
+            LCTX.e("Action " + name + " failed on execution: ", ex.getCause());
         } catch (final Throwable th) {
             LCTX.e("Action " + name + " failed on execution: ", th);
         } finally {
@@ -174,14 +181,21 @@ public class ActionEx implements Runnable, View.OnClickListener, DialogInterface
     }
 
     @Override
+    public boolean onLongClick(final View view) {
+        this.putValue(IActionController.VIEW_PROPERTY, view);
+        run();
+        return true;
+    }
+
+    @Override
     public void onClick(final DialogInterface dialog, final int which) {
         this.putValue(IActionController.DIALOG_PROPERTY, dialog);
         this.putValue(IActionController.DIALOG_ITEM_PROPERTY, which);
         this.run();
     }
 
-    public boolean isDialogItemSelected(int which) {
-        Map<Integer, Boolean> map = this.getParameter(IActionController.DIALOG_SELECTED_ITEMS_PROPERTY);
+    public boolean isDialogItemSelected(final int which) {
+        final Map<Integer, Boolean> map = this.getParameter(IActionController.DIALOG_SELECTED_ITEMS_PROPERTY);
         return map != null ? map.get(which) == Boolean.TRUE : false;
     }
 
@@ -193,6 +207,16 @@ public class ActionEx implements Runnable, View.OnClickListener, DialogInterface
             this.putValue(IActionController.DIALOG_SELECTED_ITEMS_PROPERTY, map);
         }
         map.put(which, isChecked);
+    }
+
+    @Override
+    public boolean onEditorAction(final TextView textView, final int actionId, final KeyEvent keyEvent) {
+        if (actionId == EditorInfo.IME_NULL || actionId == EditorInfo.IME_ACTION_DONE) {
+            this.putValue(IActionController.VIEW_PROPERTY, textView);
+            run();
+            return true;
+        }
+        return false;
     }
 
     /**

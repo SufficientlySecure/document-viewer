@@ -15,11 +15,11 @@ public class ActionDispatcher {
 
     private static final LogContext LCTX = LogContext.ROOT.lctx("Actions");
 
-    private final Activity m_base;
+    final Activity m_base;
 
-    private final IActionController<?> m_controller;
+    final IActionController<?> m_controller;
 
-    private final ThreadPoolExecutor m_pool;
+    final ThreadPoolExecutor m_pool;
 
     /**
      * Constructor

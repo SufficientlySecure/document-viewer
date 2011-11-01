@@ -4,6 +4,7 @@ import org.ebookdroid.R;
 import org.ebookdroid.core.log.LogContext;
 
 import android.app.Activity;
+import android.content.Context;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -53,6 +54,16 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
         m_parent = parent;
         m_managedComponent = managedComponent;
         m_dispatcher = new ActionDispatcher(base, this);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.actions.IActionController#getBase()
+     */
+    @Override
+    public Context getContext() {
+        return m_dispatcher.m_base;
     }
 
     /**

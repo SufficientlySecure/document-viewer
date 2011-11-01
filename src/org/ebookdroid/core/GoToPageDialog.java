@@ -1,21 +1,26 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.R;
+import org.ebookdroid.core.actions.ActionController;
+import org.ebookdroid.core.actions.ActionDialogBuilder;
+import org.ebookdroid.core.actions.ActionEx;
+import org.ebookdroid.core.actions.ActionMethod;
+import org.ebookdroid.core.actions.ActionMethodDef;
+import org.ebookdroid.core.actions.ActionTarget;
+import org.ebookdroid.core.actions.IActionController;
+import org.ebookdroid.core.actions.params.Constant;
+import org.ebookdroid.core.actions.params.EditableValue;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.settings.books.BookSettings;
 import org.ebookdroid.core.settings.books.Bookmark;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.text.Editable;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,14 +31,31 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+@ActionTarget(
+// action
+actions = {
+        // start
+        @ActionMethodDef(id = R.id.actions_addBookmark, method = "addBookmark"),
+        @ActionMethodDef(id = R.id.actions_deleteAllBookmarks, method = "deleteAllBookmarks"),
+        @ActionMethodDef(id = R.id.actions_gotoPage, method = "goToPageAndDismiss"),
+        @ActionMethodDef(id = R.id.actions_removeBookmark, method = "removeBookmark"),
+        @ActionMethodDef(id = R.id.mainmenu_bookmark, method = "showAddBookmarkDlg"),
+        @ActionMethodDef(id = R.id.actions_showDeleteAllBookmarksDlg, method = "showDeleteAllBookmarksDlg"),
+        @ActionMethodDef(id = R.id.actions_showDeleteBookmarkDlg, method = "showDeleteBookmarkDlg"),
+        @ActionMethodDef(id = R.id.actions_setBookmarkedPage, method = "updateControls")
+// finish
+})
 public class GoToPageDialog extends Dialog {
 
     final IViewerActivity base;
     BookmarkAdapter adapter;
+    ActionController<GoToPageDialog> actions;
 
     public GoToPageDialog(final IViewerActivity base) {
         super(base.getContext());
         this.base = base;
+        this.actions = new ActionController<GoToPageDialog>(base.getActivity(), this);
+
         setTitle(R.string.dialog_title_goto_page);
         setContentView(R.layout.gotopage);
 
@@ -42,30 +64,11 @@ public class GoToPageDialog extends Dialog {
         final EditText editText = (EditText) findViewById(R.id.pageNumberTextEdit);
 
         final View bookmarksHeader = findViewById(R.id.bookmarkHeader);
-        final BookmarkHeaderListener listener = new BookmarkHeaderListener(base);
-        bookmarksHeader.setOnClickListener(listener);
-        bookmarksHeader.setOnLongClickListener(listener);
+        bookmarksHeader.setOnClickListener(actions.getOrCreateAction(R.id.mainmenu_bookmark));
+        bookmarksHeader.setOnLongClickListener(actions.getOrCreateAction(R.id.actions_showDeleteAllBookmarksDlg));
 
-        button.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(final View view) {
-                goToPageAndDismiss();
-            }
-        });
-
-        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-
-            @Override
-            public boolean onEditorAction(final TextView textView, final int actionId, final KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_NULL || actionId == EditorInfo.IME_ACTION_DONE) {
-                    goToPageAndDismiss();
-                    return true;
-                }
-
-                return false;
-            }
-        });
+        button.setOnClickListener(actions.getOrCreateAction(R.id.actions_gotoPage));
+        editText.setOnEditorActionListener(actions.getOrCreateAction(R.id.actions_gotoPage));
 
         seekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
@@ -113,19 +116,91 @@ public class GoToPageDialog extends Dialog {
         adapter = null;
     }
 
-    private void goToPageAndDismiss() {
+    @ActionMethod(ids = R.id.actions_gotoPage)
+    public void goToPageAndDismiss(final ActionEx action) {
         navigateToPage();
         dismiss();
     }
 
-    public void updateControls(final Bookmark bookmark) {
-        Page actualPage = bookmark.getPage().getActualPage(base.getDocumentModel(), adapter.bookSettings);
+    @ActionMethod(ids = R.id.actions_setBookmarkedPage)
+    public void updateControls(final ActionEx action) {
+        final View view = action.getParameter(IActionController.VIEW_PROPERTY);
+        final Bookmark bookmark = (Bookmark) view.getTag();
+        final Page actualPage = bookmark.getPage().getActualPage(base.getDocumentModel(), adapter.bookSettings);
         if (actualPage != null) {
             updateControls(actualPage.index.viewIndex, true);
         }
     }
 
-    private void updateControls(final int viewIndex, boolean updateBar) {
+    @ActionMethod(ids = R.id.actions_showDeleteBookmarkDlg)
+    public void showDeleteBookmarkDlg(final ActionEx action) {
+        final View view = action.getParameter(IActionController.VIEW_PROPERTY);
+        final Bookmark bookmark = (Bookmark) view.getTag();
+        if (bookmark.isService()) {
+            return;
+        }
+
+        final ActionDialogBuilder builder = new ActionDialogBuilder(actions);
+        builder.setTitle(R.string.del_bookmark_title);
+        builder.setMessage(R.string.del_bookmark_text);
+        builder.setPositiveButton(R.id.actions_removeBookmark, new Constant("bookmark", bookmark));
+        builder.setNegativeButton().show();
+    }
+
+    @ActionMethod(ids = R.id.actions_removeBookmark)
+    public void removeBookmark(final ActionEx action) {
+        final Bookmark bookmark = action.getParameter("bookmark");
+        adapter.remove(bookmark);
+    }
+
+    @ActionMethod(ids = R.id.mainmenu_bookmark)
+    public void showAddBookmarkDlg(final ActionEx action) {
+        final Context context = getContext();
+
+        final SeekBar seekbar = (SeekBar) findViewById(R.id.seekbar);
+        final int viewIndex = seekbar.getProgress();
+
+        final EditText input = new EditText(context);
+        input.setText(context.getString(R.string.text_page) + " " + (viewIndex + 1));
+        input.selectAll();
+
+        final ActionDialogBuilder builder = new ActionDialogBuilder(actions);
+        builder.setTitle(R.string.menu_add_bookmark);
+        builder.setMessage(R.string.add_bookmark_name);
+        builder.setView(input);
+        builder.setPositiveButton(R.id.actions_addBookmark, new EditableValue("input", input), new Constant(
+                "viewIndex", viewIndex));
+        builder.setNegativeButton().show();
+    }
+
+    @ActionMethod(ids = R.id.actions_addBookmark)
+    public void addBookmark(final ActionEx action) {
+        final Integer viewIndex = action.getParameter("viewIndex");
+        final Editable value = action.getParameter("input");
+        final Page page = base.getDocumentModel().getPageObject(viewIndex);
+        adapter.add(new Bookmark(page.index, value.toString()));
+        adapter.notifyDataSetChanged();
+    }
+
+    @ActionMethod(ids = R.id.actions_showDeleteAllBookmarksDlg)
+    public void showDeleteAllBookmarksDlg(final ActionEx action) {
+        if (!adapter.hasUserBookmarks()) {
+            return;
+        }
+
+        final ActionDialogBuilder builder = new ActionDialogBuilder(actions);
+        builder.setTitle(R.string.clear_bookmarks_title);
+        builder.setMessage(R.string.clear_bookmarks_text);
+        builder.setPositiveButton(R.id.actions_deleteAllBookmarks);
+        builder.setNegativeButton().show();
+    }
+
+    @ActionMethod(ids = R.id.actions_deleteAllBookmarks)
+    public void deleteAllBookmarks(final ActionEx action) {
+        adapter.clear();
+    }
+
+    private void updateControls(final int viewIndex, final boolean updateBar) {
         final SeekBar seekbar = (SeekBar) findViewById(R.id.seekbar);
         final EditText editText = (EditText) findViewById(R.id.pageNumberTextEdit);
 
@@ -161,10 +236,11 @@ public class GoToPageDialog extends Dialog {
         final Bookmark start;
         final Bookmark end;
 
-        public BookmarkAdapter(final Page lastPage, BookSettings bookSettings) {
+        public BookmarkAdapter(final Page lastPage, final BookSettings bookSettings) {
             this.bookSettings = bookSettings;
             this.start = new Bookmark(PageIndex.FIRST, getContext().getString(R.string.bookmark_start), true);
-            this.end = new Bookmark(lastPage != null ? lastPage.index : PageIndex.FIRST, getContext().getString(R.string.bookmark_end), true);
+            this.end = new Bookmark(lastPage != null ? lastPage.index : PageIndex.FIRST, getContext().getString(
+                    R.string.bookmark_end), true);
         }
 
         public void add(final Bookmark... bookmarks) {
@@ -227,9 +303,9 @@ public class GoToPageDialog extends Dialog {
             }
 
             final Bookmark b = getBookmark(index);
-            final BookmarkListener listener = new BookmarkListener(b);
-            itemView.setOnClickListener(listener);
-            itemView.setOnLongClickListener(listener);
+            itemView.setTag(b);
+            itemView.setOnClickListener(actions.getOrCreateAction(R.id.actions_setBookmarkedPage));
+            itemView.setOnLongClickListener(actions.getOrCreateAction(R.id.actions_showDeleteBookmarkDlg));
 
             final TextView text = (TextView) itemView.findViewById(R.id.bookmarkName);
             final ProgressBar bar = (ProgressBar) itemView.findViewById(R.id.bookmarkPage);
@@ -241,109 +317,4 @@ public class GoToPageDialog extends Dialog {
             return itemView;
         }
     }
-
-    private final class BookmarkListener implements View.OnClickListener, View.OnLongClickListener {
-
-        private final Bookmark bookmark;
-
-        private BookmarkListener(final Bookmark bookmark) {
-            this.bookmark = bookmark;
-        }
-
-        @Override
-        public void onClick(final View v) {
-            updateControls(bookmark);
-        }
-
-        @Override
-        public boolean onLongClick(final View v) {
-            if (bookmark.isService()) {
-                return false;
-            }
-            final Context context = getContext();
-
-            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle(R.string.del_bookmark_title);
-            builder.setMessage(R.string.del_bookmark_text);
-            builder.setPositiveButton(R.string.password_ok, new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(final DialogInterface dialog, final int whichButton) {
-                    adapter.remove(bookmark);
-                }
-            });
-            builder.setNegativeButton(R.string.password_cancel, new EmptyDialogButtonListener()).show();
-
-            return false;
-        }
-    }
-
-    private final class BookmarkHeaderListener implements View.OnClickListener, View.OnLongClickListener {
-
-        private final IViewerActivity m_base;
-
-        private BookmarkHeaderListener(final IViewerActivity base) {
-            m_base = base;
-        }
-
-        @Override
-        public void onClick(final View v) {
-            final Context context = getContext();
-
-            final SeekBar seekbar = (SeekBar) findViewById(R.id.seekbar);
-            final int viewIndex = seekbar.getProgress();
-
-            final EditText input = new EditText(context);
-            input.setText(context.getString(R.string.text_page) + " " + (viewIndex + 1));
-            input.selectAll();
-
-            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle(R.string.menu_add_bookmark);
-            builder.setMessage(R.string.add_bookmark_name);
-            builder.setView(input);
-            builder.setPositiveButton(R.string.password_ok, new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(final DialogInterface dialog, final int whichButton) {
-                    final Editable value = input.getText();
-                    Page page = m_base.getDocumentModel().getPageObject(viewIndex);
-                    adapter.add(new Bookmark(page.index, value.toString()));
-                    adapter.notifyDataSetChanged();
-                }
-            });
-            builder.setNegativeButton(R.string.password_cancel, new EmptyDialogButtonListener()).show();
-        }
-
-        @Override
-        public boolean onLongClick(final View v) {
-            if (!adapter.hasUserBookmarks()) {
-                return false;
-            }
-
-            final Context context = getContext();
-
-            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle(R.string.clear_bookmarks_title);
-            builder.setMessage(R.string.clear_bookmarks_text);
-            builder.setPositiveButton(R.string.password_ok, new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(final DialogInterface dialog, final int whichButton) {
-                    adapter.clear();
-                }
-            });
-            builder.setNegativeButton(R.string.password_cancel, new EmptyDialogButtonListener()).show();
-
-            return false;
-        }
-
-    }
-
-    private final class EmptyDialogButtonListener implements DialogInterface.OnClickListener {
-
-        @Override
-        public void onClick(final DialogInterface dialog, final int whichButton) {
-        }
-    }
-
 }

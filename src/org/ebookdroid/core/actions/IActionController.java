@@ -1,5 +1,6 @@
 package org.ebookdroid.core.actions;
 
+import android.content.Context;
 
 /**
  * This interface defines base features for component controller.
@@ -29,7 +30,12 @@ public interface IActionController<ManagedComponent> {
     String DIALOG_ITEM_PROPERTY = "DialogItem";
 
     String DIALOG_SELECTED_ITEMS_PROPERTY = "DialogSelectedItems";
-    
+
+    /**
+     * @return the base context
+     */
+    Context getContext();
+
     /**
      * @return the parent controller
      */

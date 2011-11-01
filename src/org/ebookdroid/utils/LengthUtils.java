@@ -96,6 +96,28 @@ public final class LengthUtils {
   }
 
   /**
+   * Checks if the given array is not empty.
+   *
+   * @param array
+   *          array to check
+   * @return <code>true</code> if the given reference is not <code>null</code> and string is not empty
+   */
+  public static boolean isNotEmpty(final boolean[] array) {
+    return length(array) > 0;
+  }
+
+  /**
+   * Checks if the given array is empty.
+   *
+   * @param array
+   *          array to check
+   * @return <code>true</code> if the given reference is <code>null</code> or array is empty
+   */
+  public static boolean isEmpty(final boolean[] array) {
+    return length(array) == 0;
+  }
+
+  /**
    * Checks if the given array is empty.
    *
    * @param array
@@ -301,6 +323,17 @@ public final class LengthUtils {
    * @return real array length or <code>0</code> if reference is <code>null</code>
    */
   public static int length(final Object[] arr) {
+    return arr != null ? arr.length : 0;
+  }
+
+  /**
+   * Safely calculates an array length.
+   *
+   * @param arr
+   *          array
+   * @return real array length or <code>0</code> if reference is <code>null</code>
+   */
+  public static int length(final boolean[] arr) {
     return arr != null ? arr.length : 0;
   }
 

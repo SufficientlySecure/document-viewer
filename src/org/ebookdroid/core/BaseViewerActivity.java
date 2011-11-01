@@ -72,7 +72,7 @@ actions = {
         @ActionMethodDef(id = R.id.mainmenu_goto_page, method = "showDialog"),
         @ActionMethodDef(id = R.id.mainmenu_outline, method = "showOutline"),
         @ActionMethodDef(id = R.id.mainmenu_nightmode, method = "toggleNightMode"),
-        @ActionMethodDef(id = R.id.mainmenu_zoom, method = "toggleZoomControls"),
+        @ActionMethodDef(id = R.id.mainmenu_zoom, method = "toggleZoomControls")
 // finish
 })
 public abstract class BaseViewerActivity extends Activity implements IViewerActivity, DecodingProgressListener,
@@ -331,7 +331,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     @ActionMethod(ids = R.id.actions_gotoOutlineItem)
     public void gotoOutlineItem(final ActionEx action) {
-        final int item = action.getParameter(IActionController.DIALOG_ITEM_PROPERTY);
+        final Integer item = action.getParameter(IActionController.DIALOG_ITEM_PROPERTY);
         final List<OutlineLink> outline = action.getParameter("outline");
 
         final String link = outline.get(item).getLink();
@@ -375,7 +375,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     @ActionMethod(ids = R.id.mainmenu_goto_page)
     public void showDialog(final ActionEx action) {
-        final int dialogId = action.getParameter("dialogId");
+        final Integer dialogId = action.getParameter("dialogId");
         showDialog(dialogId);
     }
 

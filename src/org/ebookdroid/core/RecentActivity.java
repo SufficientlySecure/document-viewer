@@ -55,7 +55,7 @@ actions = {
         @ActionMethodDef(id = R.id.recent_showbrowser, method = "goFileBrowser"),
         @ActionMethodDef(id = R.id.recent_showlibrary, method = "goLibrary"),
         @ActionMethodDef(id = R.id.recentmenu_settings, method = "showSettings"),
-        @ActionMethodDef(id = R.id.actions_clearRecent, method = "doClearRecent"),
+        @ActionMethodDef(id = R.id.actions_clearRecent, method = "doClearRecent")
 // finish
 })
 public class RecentActivity extends Activity implements IBrowserActivity, ISettingsChangeListener {

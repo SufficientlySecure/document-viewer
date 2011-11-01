@@ -35,7 +35,7 @@ actions = {
         @ActionMethodDef(id = R.id.actions_verticalConfigScrollUp, method = "verticalConfigScroll"),
         @ActionMethodDef(id = R.id.actions_verticalConfigScrollDown, method = "verticalConfigScroll"),
         @ActionMethodDef(id = R.id.actions_verticalDpadScrollUp, method = "verticalDpadScroll"),
-        @ActionMethodDef(id = R.id.actions_verticalDpadScrollDown, method = "verticalDpadScroll"),
+        @ActionMethodDef(id = R.id.actions_verticalDpadScrollDown, method = "verticalDpadScroll")
 // no more
 })
 public abstract class AbstractDocumentView extends AbstractComponentController<BaseDocumentView> implements
@@ -535,13 +535,13 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     @ActionMethod(ids = { R.id.actions_verticalConfigScrollUp, R.id.actions_verticalConfigScrollDown })
     public void verticalConfigScroll(ActionEx action) {
-        int direction = action.getParameter("direction");
+        Integer direction = action.getParameter("direction");
         verticalConfigScroll(direction);
     }
 
     @ActionMethod(ids = { R.id.actions_verticalDpadScrollUp, R.id.actions_verticalDpadScrollDown })
     public void verticalDpadScroll(ActionEx action) {
-        int direction = action.getParameter("direction");
+        Integer direction = action.getParameter("direction");
         verticalDpadScroll(direction);
     }
 

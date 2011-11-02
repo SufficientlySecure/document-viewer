@@ -7,16 +7,13 @@ import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.utils.archives.zip.ZipArchive;
 import org.ebookdroid.core.utils.archives.zip.ZipArchiveEntry;
-import org.ebookdroid.fb2droid.codec.xml.CustomKXmlParser;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Xml;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -24,17 +21,11 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
-import org.xml.sax.helpers.AttributesImpl;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 public class FB2Document implements CodecDocument {
 
@@ -131,10 +122,8 @@ public class FB2Document implements CodecDocument {
                 final Reader isr = new BufferedReader(new InputStreamReader(inStream, encoding), 1024 * 1024);
                 final InputSource is = new InputSource();
                 is.setCharacterStream(isr);
-//                final SAXParser parser = spf.newSAXParser();
-//                parser.parse(is, h);
-                
-                parse(isr, h);
+                final SAXParser parser = spf.newSAXParser();
+                parser.parse(is, h);
             }
         } catch (final StopParsingException e) {
             // do nothing
@@ -144,41 +133,6 @@ public class FB2Document implements CodecDocument {
         return h.markup;
     }
 
-    private void parse(Reader in, FB2ContentHandler h) throws StopParsingException {
-        CustomKXmlParser parser = new CustomKXmlParser();
-        try {
-            AttributesImpl attributes = new AttributesImpl();
-            parser.setInput(in);
-            int eventType = parser.getEventType();
-            while (eventType != XmlPullParser.END_DOCUMENT){
-                switch (eventType) {
-                    case XmlPullParser.START_TAG:
-                        int attributeCount = parser.getAttributeCount();
-                        attributes.clear();
-                        for (int i= 0; i < attributeCount; i++) {
-                            attributes.addAttribute("", "", parser.getAttributeName(i), parser.getAttributeType(i), parser.getAttributeValue(i));
-                        }
-                        h.startElement("", "", parser.getName(), attributes);
-                        break;
-                    case XmlPullParser.TEXT:
-                        int[] holder = new int[2];
-                        char[] text = parser.getTextCharacters(holder );
-                        if (text != null) {
-                            h.characters(text, holder[0], holder[1]);
-                        }
-                        break;
-                    case XmlPullParser.END_TAG:
-                        h.endElement("", "", parser.getName());
-                        break;
-                    default:
-                        break;
-                }
-                eventType = parser.next();
-            }
-        } catch (Exception e) {
-            
-        }
-    }
 
     void appendLine(final FB2Line line) {
         FB2Page lastPage = FB2Page.getLastPage(pages);

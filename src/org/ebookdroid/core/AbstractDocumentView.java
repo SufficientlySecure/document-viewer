@@ -546,7 +546,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
     }
 
     protected boolean processTap(TouchManager.Touch type, MotionEvent e) {
-        Integer actionId = TouchManager.getInstance().getAction(type, e.getX(), e.getY(), getWidth(), getHeight());
+        Integer actionId = TouchManager.getAction(type, e.getX(), e.getY(), getWidth(), getHeight());
         ActionEx action = actionId != null ? getOrCreateAction(actionId) : null;
         if (action != null) {
             LCTX.d("Touch action: " + action.name + ", " + action.getMethod().toString());

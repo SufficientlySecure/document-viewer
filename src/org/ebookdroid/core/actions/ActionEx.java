@@ -6,7 +6,6 @@ import org.ebookdroid.utils.LengthUtils;
 
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
-import android.drm.DrmStore.Action;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -122,7 +121,6 @@ public class ActionEx implements Runnable, View.OnClickListener, View.OnLongClic
      *            a string containing the specified <code>key</code>
      * @return the binding <code>Object</code> stored with this key; if
      *         there are no keys, it will return defaultValue parameter
-     * @see Action#getValue(String)
      */
     @SuppressWarnings("unchecked")
     public <T> T getParameter(final String key) {
@@ -140,7 +138,6 @@ public class ActionEx implements Runnable, View.OnClickListener, View.OnLongClic
      *            default value
      * @return the binding <code>Object</code> stored with this key; if
      *         there are no keys, it will return defaultValue parameter
-     * @see Action#getValue(String)
      */
     @SuppressWarnings("unchecked")
     public <T> T getParameter(final String key, final T defaultValue) {

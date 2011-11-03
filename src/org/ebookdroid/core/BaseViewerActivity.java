@@ -23,8 +23,10 @@ import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.settings.books.BookSettings;
 import org.ebookdroid.core.settings.books.Bookmark;
 import org.ebookdroid.core.touch.TouchManager;
+import org.ebookdroid.core.touch.TouchManagerView;
 import org.ebookdroid.core.utils.PathFromUri;
 import org.ebookdroid.core.views.PageViewZoomControls;
+import org.ebookdroid.core.views.ViewEffects;
 import org.ebookdroid.utils.StringUtils;
 
 import android.app.Activity;
@@ -45,6 +47,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -72,11 +75,12 @@ actions = {
         @ActionMethodDef(id = R.id.mainmenu_goto_page, method = "showDialog"),
         @ActionMethodDef(id = R.id.mainmenu_outline, method = "showOutline"),
         @ActionMethodDef(id = R.id.mainmenu_nightmode, method = "toggleNightMode"),
-        @ActionMethodDef(id = R.id.mainmenu_zoom, method = "toggleZoomControls")
+        @ActionMethodDef(id = R.id.mainmenu_zoom, method = "toggleControls"),
+        @ActionMethodDef(id = R.id.actions_toggleTouchManagerView, method = "toggleControls")
 // finish
 })
-public abstract class BaseViewerActivity extends AbstractActionActivity implements IViewerActivity, DecodingProgressListener,
-        CurrentPageListener, ISettingsChangeListener {
+public abstract class BaseViewerActivity extends AbstractActionActivity implements IViewerActivity,
+        DecodingProgressListener, CurrentPageListener, ISettingsChangeListener {
 
     public static final LogContext LCTX = LogContext.ROOT.lctx("Core");
 
@@ -103,6 +107,8 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     private String currentFilename;
 
+    private TouchManagerView touchView;
+
     /**
      * Instantiates a new base viewer activity.
      */
@@ -127,8 +133,10 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         view = new BaseDocumentView(this);
 
         initActivity();
-
         initView();
+
+        actions.createAction(R.id.mainmenu_zoom).putValue("view", getZoomControls());
+        actions.createAction(R.id.actions_toggleTouchManagerView).putValue("view", getTouchView());
     }
 
     @Override
@@ -152,6 +160,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
         frameLayout.addView(getView());
         frameLayout.addView(getZoomControls());
+        frameLayout.addView(getTouchView());
         setContentView(frameLayout);
 
         final DecodeService decodeService = createDecodeService();
@@ -166,6 +175,13 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         SettingsManager.applyBookSettingsChanges(null, SettingsManager.getBookSettings(), null);
 
         startDecoding(decodeService, fileName, "");
+    }
+
+    private TouchManagerView getTouchView() {
+        if (touchView == null) {
+            touchView = new TouchManagerView(this);
+        }
+        return touchView;
     }
 
     private void startDecoding(final DecodeService decodeService, final String fileName, final String password) {
@@ -405,14 +421,14 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         input.setText(getString(R.string.text_page) + " " + (page + 1));
         input.selectAll();
 
-        ActionDialogBuilder builder = new ActionDialogBuilder(actions);
+        final ActionDialogBuilder builder = new ActionDialogBuilder(actions);
         builder.setTitle(R.string.menu_add_bookmark).setMessage(message).setView(input);
         builder.setPositiveButton(R.id.actions_addBookmark, new EditableValue("input", input));
         builder.setNegativeButton().show();
     }
 
     @ActionMethod(ids = R.id.actions_addBookmark)
-    public void addBookmark(ActionEx action) {
+    public void addBookmark(final ActionEx action) {
         final Editable value = action.getParameter("input");
         final BookSettings bs = SettingsManager.getBookSettings();
         bs.bookmarks.add(new Bookmark(getDocumentModel().getCurrentIndex(), value.toString()));
@@ -486,9 +502,10 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         return actions;
     }
 
-    @ActionMethod(ids = R.id.mainmenu_zoom)
-    public void toggleZoomControls(final ActionEx action) {
-        zoomControls.toggleZoomControls();
+    @ActionMethod(ids = { R.id.mainmenu_zoom, R.id.actions_toggleTouchManagerView })
+    public void toggleControls(final ActionEx action) {
+        final View view = action.getParameter("view");
+        ViewEffects.toggleControls(view);
     }
 
     @Override
@@ -559,7 +576,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         boolean redrawn = false;
         if (diff.isSinglePageChanged() || diff.isSplitPagesChanged()) {
             redrawn = true;
-            IDocumentViewController newDc = switchDocumentController();
+            final IDocumentViewController newDc = switchDocumentController();
             if (!diff.isFirstTime()) {
                 newDc.init();
                 newDc.show();
@@ -597,7 +614,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         private final String m_password;
         private ProgressDialog progressDialog;
 
-        public BookLoadTask(DecodeService decodeService, String fileName, String password) {
+        public BookLoadTask(final DecodeService decodeService, final String fileName, final String password) {
             m_decodeService = decodeService;
             m_fileName = fileName;
             m_password = password;
@@ -746,7 +763,8 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         }
 
         @Override
-        public boolean onLayoutChanged(boolean layoutChanged, boolean layoutLocked, Rect oldLaout, Rect newLayout) {
+        public boolean onLayoutChanged(final boolean layoutChanged, final boolean layoutLocked, final Rect oldLaout,
+                final Rect newLayout) {
             return false;
         }
 
@@ -774,9 +792,11 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
             return new ViewState(this);
         }
 
+        @Override
         public void show() {
         }
 
+        @Override
         public final void init() {
         }
     }

@@ -1,6 +1,5 @@
 package org.ebookdroid.core.models;
 
-import org.ebookdroid.core.events.BringUpZoomControlsListener;
 import org.ebookdroid.core.events.ListenerProxy;
 import org.ebookdroid.core.events.ZoomListener;
 
@@ -12,7 +11,7 @@ public class ZoomModel extends ListenerProxy {
     private boolean isCommited;
 
     public ZoomModel() {
-        super(ZoomListener.class, BringUpZoomControlsListener.class);
+        super(ZoomListener.class);
     }
 
     public void setZoom(float zoom) {
@@ -36,10 +35,6 @@ public class ZoomModel extends ListenerProxy {
 
     public void decreaseZoom() {
         setZoom(getZoom() - INCREMENT_DELTA);
-    }
-
-    public void toggleZoomControls() {
-        this.<BringUpZoomControlsListener> getListener().toggleZoomControls();
     }
 
     public void setHorizontalScrollEnabled(final boolean horizontalScrollEnabled) {

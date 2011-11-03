@@ -13,6 +13,10 @@ public class MathUtils {
         return new Rect((int) rect.left, (int) rect.top, (int) rect.right, (int) rect.bottom);
     }
 
+    public static Rect rect(final float left, final float top, final float right, float bottom) {
+        return new Rect((int) left, (int) top, (int) right, (int) bottom);
+    }
+
     public static RectF zoom(final RectF rect, float zoom) {
         return new RectF(zoom *  rect.left, zoom * rect.top, zoom * rect.right, zoom * rect.bottom);
     }
@@ -41,4 +45,20 @@ public class MathUtils {
         return max;
     }
 
+    public static float fmin(float... values) {
+        float min = Float.MAX_VALUE;
+        for(float v : values) {
+            min = Math.min(v, min);
+        }
+        return min;
+    }
+
+    public static float fmax(float... values) {
+        float max = Float.MIN_VALUE;
+        for(float v : values) {
+            max = Math.max(v, max);
+        }
+        return max;
+    }
+    
 }

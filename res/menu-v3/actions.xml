@@ -5,6 +5,7 @@
    <item android:id="@+id/actions_gotoOutlineItem" />
    <item android:id="@+id/actions_addBookmark" />
    <item android:id="@+id/actions_no_action" />
+   <item android:id="@+id/actions_toggleTouchManagerView" />
 
 
    <item android:id="@+id/actions_verticalConfigScrollUp" />

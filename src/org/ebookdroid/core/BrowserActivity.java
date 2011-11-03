@@ -1,6 +1,10 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.R;
+import org.ebookdroid.core.actions.ActionEx;
+import org.ebookdroid.core.actions.ActionMethod;
+import org.ebookdroid.core.actions.ActionMethodDef;
+import org.ebookdroid.core.actions.ActionTarget;
 import org.ebookdroid.core.presentation.BrowserAdapter;
 import org.ebookdroid.core.settings.SettingsActivity;
 import org.ebookdroid.core.settings.SettingsManager;
@@ -16,8 +20,6 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
@@ -25,7 +27,17 @@ import android.widget.ViewFlipper;
 import java.io.File;
 import java.io.FileFilter;
 
-public class BrowserActivity extends Activity implements IBrowserActivity {
+@ActionTarget(
+// action list
+actions = {
+        // start
+        @ActionMethodDef(id = R.id.browserhome, method = "goHome"),
+        @ActionMethodDef(id = R.id.browserupfolder, method = "goUp"),
+        @ActionMethodDef(id = R.id.browsermenu_settings, method = "showSettings"),
+        @ActionMethodDef(id = R.id.browserrecent, method = "goRecent")
+// finish
+})
+public class BrowserActivity extends AbstractActionActivity implements IBrowserActivity {
 
     private BrowserAdapter adapter;
     protected final FileFilter filter;
@@ -49,28 +61,6 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
         header = (TextView) findViewById(R.id.browsertext);
         viewflipper = (ViewFlipper) findViewById(R.id.browserflip);
         viewflipper.addView(new FileBrowserView(this, adapter));
-
-        final View.OnClickListener handler = new View.OnClickListener() {
-
-            @Override
-            public void onClick(final View v) {
-                switch (v.getId()) {
-                    case R.id.browserhome:
-                        goHome(v);
-                        break;
-                    case R.id.browserrecent:
-                        goRecent(v);
-                        break;
-                    case R.id.browserupfolder:
-                        goUp(v);
-                        break;
-                }
-            }
-        };
-
-        findViewById(R.id.browserhome).setOnClickListener(handler);
-        findViewById(R.id.browserrecent).setOnClickListener(handler);
-        findViewById(R.id.browserupfolder).setOnClickListener(handler);
     }
 
     @Override
@@ -89,24 +79,13 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
-
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.browsermenu, menu);
-
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.browsermenu_settings:
-                showSettings(null);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void goHome(final View view) {
+    @ActionMethod(ids = R.id.browserhome)
+    public void goHome(final ActionEx action) {
         final File sdcardPath = new File("/sdcard");
         if (sdcardPath.exists()) {
             setCurrentDir(sdcardPath);
@@ -115,7 +94,8 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
         }
     }
 
-    public void goUp(final View view) {
+    @ActionMethod(ids = R.id.browserupfolder)
+    public void goUp(final ActionEx action) {
         final File dir = adapter.getCurrentDirectory();
         final File parent = dir != null ? dir.getParentFile() : null;
         if (parent != null) {
@@ -123,9 +103,17 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
         }
     }
 
-    public void showSettings(final View view) {
+    @ActionMethod(ids = R.id.browsermenu_settings)
+    public void showSettings(final ActionEx action) {
         final Intent i = new Intent(BrowserActivity.this, SettingsActivity.class);
         startActivity(i);
+    }
+
+    @ActionMethod(ids = R.id.browserrecent)
+    public void goRecent(final ActionEx action) {
+        final Intent myIntent = new Intent(BrowserActivity.this, RecentActivity.class);
+        startActivity(myIntent);
+        finish();
     }
 
     @Override
@@ -164,12 +152,6 @@ public class BrowserActivity extends Activity implements IBrowserActivity {
             return true;
         }
         return super.onKeyDown(keyCode, event);
-    }
-
-    public void goRecent(final View view) {
-        final Intent myIntent = new Intent(BrowserActivity.this, RecentActivity.class);
-        startActivity(myIntent);
-        finish();
     }
 
     @Override

@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@android:color/transparent"
+        android:onClick="onButtonClick"
         android:src="@drawable/arrowleft" />
 
     <TextView
@@ -20,14 +21,16 @@
         android:layout_gravity="fill_horizontal"
         android:layout_weight="100"
         android:background="@android:color/transparent"
+        android:clickable="true"
         android:gravity="center"
+        android:onClick="onButtonClick"
         android:paddingBottom="6dip"
-        android:text="TextView"
-        android:textColor ="#DDD"
         android:shadowColor="#DD000000"
         android:shadowDx="2"
         android:shadowDy="-2"
         android:shadowRadius="1.5"
+        android:text="TextView"
+        android:textColor="#DDD"
         android:textSize="40dp" />
 
     <ImageButton
@@ -36,6 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@android:color/transparent"
+        android:onClick="onButtonClick"
         android:src="@drawable/arrowright" />
 
 </LinearLayout>

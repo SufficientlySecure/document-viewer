@@ -1,7 +1,6 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.R;
-import org.ebookdroid.core.actions.ActionController;
 import org.ebookdroid.core.actions.ActionDialogBuilder;
 import org.ebookdroid.core.actions.ActionEx;
 import org.ebookdroid.core.actions.ActionMethod;
@@ -45,7 +44,6 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -77,7 +75,7 @@ actions = {
         @ActionMethodDef(id = R.id.mainmenu_zoom, method = "toggleZoomControls")
 // finish
 })
-public abstract class BaseViewerActivity extends Activity implements IViewerActivity, DecodingProgressListener,
+public abstract class BaseViewerActivity extends AbstractActionActivity implements IViewerActivity, DecodingProgressListener,
         CurrentPageListener, ISettingsChangeListener {
 
     public static final LogContext LCTX = LogContext.ROOT.lctx("Core");
@@ -105,8 +103,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     private String currentFilename;
 
-    private ActionController<BaseViewerActivity> actions;
-
     /**
      * Instantiates a new base viewer activity.
      */
@@ -125,7 +121,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
         SettingsManager.addListener(this);
 
-        actions = new ActionController<BaseViewerActivity>(this, this);
         actions.createAction(R.id.mainmenu_goto_page, new Constant("dialogId", DIALOG_GOTO));
 
         frameLayout = createMainContainer();
@@ -293,7 +288,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Called on creation options menu
-     * 
+     *
      * @param menu
      *            the main menu
      * @return true, if successful
@@ -400,17 +395,6 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
         view.redrawView();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        final int actionId = item.getItemId();
-        final ActionEx action = actions.getOrCreateAction(actionId);
-        if (action.getMethod().isValid()) {
-            action.run();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     @ActionMethod(ids = R.id.mainmenu_bookmark)
     public void showBookmarkDialog(final ActionEx action) {
         final int page = getDocumentModel().getCurrentViewPageIndex();
@@ -446,7 +430,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the zoom model.
-     * 
+     *
      * @return the zoom model
      */
     @Override
@@ -464,7 +448,7 @@ public abstract class BaseViewerActivity extends Activity implements IViewerActi
 
     /**
      * Gets the decoding progress model.
-     * 
+     *
      * @return the decoding progress model
      */
     @Override

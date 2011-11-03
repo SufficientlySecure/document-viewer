@@ -1,12 +1,12 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.R;
-import org.ebookdroid.core.actions.ActionController;
 import org.ebookdroid.core.actions.ActionDialogBuilder;
 import org.ebookdroid.core.actions.ActionEx;
 import org.ebookdroid.core.actions.ActionMethod;
 import org.ebookdroid.core.actions.ActionMethodDef;
 import org.ebookdroid.core.actions.ActionTarget;
+import org.ebookdroid.core.actions.IActionController;
 import org.ebookdroid.core.cache.CacheManager;
 import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.presentation.BooksAdapter;
@@ -36,7 +36,6 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -55,10 +54,14 @@ actions = {
         @ActionMethodDef(id = R.id.recent_showbrowser, method = "goFileBrowser"),
         @ActionMethodDef(id = R.id.recent_showlibrary, method = "goLibrary"),
         @ActionMethodDef(id = R.id.recentmenu_settings, method = "showSettings"),
-        @ActionMethodDef(id = R.id.actions_clearRecent, method = "doClearRecent")
+        @ActionMethodDef(id = R.id.actions_clearRecent, method = "doClearRecent"),
+        @ActionMethodDef(id = R.id.ShelfCaption, method = "showSelectShelfDlg"),
+        @ActionMethodDef(id = R.id.actions_selectShelf, method = "selectShelf"),
+        @ActionMethodDef(id = R.id.ShelfLeftButton, method = "selectPrevShelf"),
+        @ActionMethodDef(id = R.id.ShelfRightButton, method = "selectNextShelf")
 // finish
 })
-public class RecentActivity extends Activity implements IBrowserActivity, ISettingsChangeListener {
+public class RecentActivity extends AbstractActionActivity implements IBrowserActivity, ISettingsChangeListener {
 
     public static final LogContext LCTX = LogContext.ROOT.lctx("Core");
 
@@ -85,15 +88,11 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
 
     private Bitmap topThmbBitmap;
 
-    private ActionController<RecentActivity> actions;
-
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.recent);
-
-        actions = new ActionController<RecentActivity>(this, this);
 
         cornerThmbBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.bt_corner);
         leftThmbBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.bt_left);
@@ -158,20 +157,10 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        actions.getOrCreateAction(item.getItemId()).run();
-        return true;
-    }
-
-    public void onButtonClick(final View view) {
-        actions.getOrCreateAction(view.getId()).onClick(view);
-    }
-
     @ActionMethod(ids = R.id.recentmenu_cleanrecent)
     public void showClearRecentDialog(final ActionEx action) {
         final ActionDialogBuilder builder = new ActionDialogBuilder(actions);
-        
+
         builder.setTitle(R.string.clear_recent_title);
         builder.setMultiChoiceItems(R.array.list_clear_recent_mode, R.id.actions_clearRecent);
         builder.setPositiveButton(R.id.actions_clearRecent);
@@ -261,6 +250,34 @@ public class RecentActivity extends Activity implements IBrowserActivity, ISetti
                 recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), filter);
             }
         }
+    }
+
+    @ActionMethod(ids = R.id.ShelfCaption)
+    public void showSelectShelfDlg(ActionEx action) {
+        final String[] names = bookshelfAdapter.getListNames();
+
+        if ((names != null) && (names.length > 0)) {
+            final ActionDialogBuilder builder = new ActionDialogBuilder(actions);
+            builder.setTitle(R.string.bookcase_shelves);
+            builder.setItems(names, actions.getOrCreateAction(R.id.actions_selectShelf));
+            builder.show();
+        }
+    }
+
+    @ActionMethod(ids = R.id.actions_selectShelf)
+    public void selectShelf(ActionEx action) {
+        Integer item = action.getParameter(IActionController.DIALOG_ITEM_PROPERTY);
+        bookshelfAdapter.setCurrentList(item);
+    }
+
+    @ActionMethod(ids = R.id.ShelfLeftButton)
+    public void selectPrevShelf(ActionEx action) {
+        bookshelfAdapter.prevList();
+    }
+
+    @ActionMethod(ids = R.id.ShelfRightButton)
+    public void selectNextShelf(ActionEx action) {
+        bookshelfAdapter.nextList();
     }
 
     @ActionMethod(ids = R.id.recent_showlibrary)

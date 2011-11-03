@@ -1,6 +1,7 @@
 package org.ebookdroid.core.touch;
 
 import org.ebookdroid.R;
+import org.ebookdroid.core.actions.ActionEx;
 import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.settings.AppSettings;
 
@@ -112,7 +113,7 @@ public class TouchManager {
 
         @Override
         public String toString() {
-            return type + ", " + id + ",  " + enabled;
+            return type + ", " + ActionEx.getActionName(id) + ",  " + enabled;
         }
     }
 }

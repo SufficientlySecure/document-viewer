@@ -1,50 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/mainscreen"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:layout_gravity="center">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainscreen"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="center" >
 
-	<LinearLayout style="@style/action_bar">
-		<ImageView
-			android:id="@+id/browserhome"
-			style="@style/action_bar_icon"
-			android:src="@drawable/home" />
+    <LinearLayout style="@style/action_bar" >
 
-		<View style="@style/action_bar_separator" />
+        <ImageView
+            android:id="@+id/browserhome"
+            style="@style/action_bar_icon"
+            android:onClick="onButtonClick"
+            android:src="@drawable/home" />
 
-		<TextView
-			style="@style/action_bar_title"
-			android:id="@+id/browsertext" />
+        <View style="@style/action_bar_separator" />
 
-		<ImageView
-			android:id="@+id/browserupfolder"
-			style="@style/action_bar_action"
-			android:src="@drawable/arrowup_enabled" />
+        <TextView
+            android:id="@+id/browsertext"
+            style="@style/action_bar_title" />
 
-		<View style="@style/action_bar_separator" />
+        <ImageView
+            android:id="@+id/browserupfolder"
+            style="@style/action_bar_action"
+            android:onClick="onButtonClick"
+            android:src="@drawable/arrowup_enabled" />
 
-		<ImageView
-			android:id="@+id/browserrecent"
-			style="@style/action_bar_action"
-			android:src="@drawable/actionbar_recent" />
+        <View style="@style/action_bar_separator" />
 
-		<View style="@style/action_bar_separator" />
+        <ImageView
+            android:id="@+id/browserrecent"
+            style="@style/action_bar_action"
+            android:onClick="onButtonClick"
+            android:src="@drawable/actionbar_recent" />
 
-		<ImageView
-			style="@style/action_bar_action"
-			android:src="@drawable/settings"
-			android:onClick="showSettings" />
+        <View style="@style/action_bar_separator" />
 
-	</LinearLayout>
+        <ImageView
+            android:id="@+id/browsermenu_settings"
+            style="@style/action_bar_action"
+            android:onClick="onButtonClick"
+            android:src="@drawable/settings" />
+    </LinearLayout>
 
-	<ViewFlipper
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="@dimen/actionbar_height"
-		android:gravity="center"
-		android:orientation="vertical"
-		android:id="@+id/browserflip" />
+    <ViewFlipper
+        android:id="@+id/browserflip"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/actionbar_height"
+        android:gravity="center"
+        android:orientation="vertical" />
 
 </RelativeLayout>

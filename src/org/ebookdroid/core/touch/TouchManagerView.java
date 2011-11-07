@@ -204,7 +204,10 @@ public class TouchManagerView extends View {
     }
 
     protected void processRegion(final Region current) {
-        LCTX.d("processRegion(" + current + ")");
+        if (profile != null) {
+            LCTX.d("processRegion(" + current + ")");
+            profile.addRegion(current);
+        }
     }
 
     protected boolean processTap(final TouchManager.Touch type, final MotionEvent e) {

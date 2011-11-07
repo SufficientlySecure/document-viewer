@@ -109,6 +109,10 @@ public class TouchManager {
 
         public Region addRegion(final int left, final int top, final int right, final int bottom) {
             final Region r = new Region(new Rect(left, top, right, bottom));
+            return addRegion(r);
+        }
+
+        public Region addRegion(final Region r) {
             regions.addFirst(r);
             return r;
         }

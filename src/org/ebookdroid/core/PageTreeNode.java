@@ -14,6 +14,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
@@ -38,6 +39,8 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     float bitmapZoom = 1;
     boolean hasChildren = false;
+    private boolean cropped;
+    private RectF croppedBounds = null;
 
     PageTreeNode(final Page page, final PageTreeNode parent, final long id, final RectF localPageSliceBounds,
             final float childrenZoomThreshold) {
@@ -177,6 +180,20 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     @Override
     public void decodeComplete(final CodecPage codecPage, final BitmapRef bitmap, final Rect bitmapBounds) {
+        if (id == 0 && !cropped) {
+            float avgLum = calculateAvgLum(bitmap, bitmapBounds);
+            float left = getLeftBound(bitmap, bitmapBounds, avgLum);
+            float right = getRightBound(bitmap, bitmapBounds, avgLum);
+            float top = getTopBound(bitmap, bitmapBounds, avgLum);
+            float bottom = getBottomBound(bitmap, bitmapBounds, avgLum);
+
+            croppedBounds = new RectF(left * pageSliceBounds.width() + pageSliceBounds.left, top
+                    * pageSliceBounds.height() + pageSliceBounds.top, right * pageSliceBounds.width()
+                    + pageSliceBounds.left, bottom * pageSliceBounds.height() + pageSliceBounds.top);
+            cropped = true;
+            
+        }
+
         page.base.getActivity().runOnUiThread(new Runnable() {
 
             @Override
@@ -207,6 +224,133 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 }
             }
         });
+    }
+
+    private float getLeftBound(BitmapRef bitmap, Rect bitmapBounds, float avgLum) {
+        Bitmap bmp = bitmap.getBitmap();
+        final int w = bmp.getWidth() / 3;
+        int whiteCount = 0;
+        int x = 0;
+        int lineSize = 5;
+        for (x = bitmapBounds.left; x < bitmapBounds.left + w; x += lineSize) {
+            boolean white = isRectWhite(bmp, x, bitmapBounds.top + 20, x + lineSize, bitmapBounds.bottom - 20, avgLum);
+            if (white) {
+                whiteCount++;
+            } else {
+                if (whiteCount >= 1) {
+                    return (float) (x - bitmapBounds.left) / bitmapBounds.width();
+                }
+                whiteCount = 0;
+            }
+        }
+        return whiteCount > 0 ? (float) (x - bitmapBounds.left) / bitmapBounds.width() : 0;
+    }
+
+    private float getTopBound(BitmapRef bitmap, Rect bitmapBounds, float avgLum) {
+        Bitmap bmp = bitmap.getBitmap();
+        final int h = bmp.getHeight() / 3;
+        int whiteCount = 0;
+        int y = 0;
+        int lineSize = 5;
+        for (y = bitmapBounds.top; y < bitmapBounds.top + h; y += lineSize) {
+            boolean white = isRectWhite(bmp, bitmapBounds.left + 20, y, bitmapBounds.right - 20, y + lineSize, avgLum);
+            if (white) {
+                whiteCount++;
+            } else {
+                if (whiteCount >= 1) {
+                    return (float) (y - bitmapBounds.top) / bitmapBounds.height();
+                }
+                whiteCount = 0;
+            }
+        }
+        return whiteCount > 0 ? (float) (y - bitmapBounds.top) / bitmapBounds.height() : 0;
+    }
+
+    private float getRightBound(BitmapRef bitmap, Rect bitmapBounds, float avgLum) {
+        Bitmap bmp = bitmap.getBitmap();
+        final int w = bmp.getWidth() / 3;
+        final int h = bmp.getHeight();
+        int whiteCount = 0;
+        int x = 0;
+        int lineSize = 5;
+        for (x = bitmapBounds.right - lineSize; x > bitmapBounds.right - w; x -= lineSize) {
+            boolean white = isRectWhite(bmp, x, bitmapBounds.top + 20, x + lineSize, bitmapBounds.bottom - 20, avgLum);
+            if (white) {
+                whiteCount++;
+            } else {
+                if (whiteCount >= 1) {
+                    return (float) (x + lineSize - bitmapBounds.left) / bitmapBounds.width();
+                }
+                whiteCount = 0;
+            }
+        }
+        return whiteCount > 0 ? (float) (x + lineSize - bitmapBounds.left) / bitmapBounds.width() : 1;
+    }
+
+    private float getBottomBound(BitmapRef bitmap, Rect bitmapBounds, float avgLum) {
+        Bitmap bmp = bitmap.getBitmap();
+        final int h = bmp.getHeight() / 3;
+        int whiteCount = 0;
+        int y = 0;
+        int lineSize = 5;
+        for (y = bitmapBounds.bottom - lineSize; y > bitmapBounds.bottom - h; y -= lineSize) {
+            boolean white = isRectWhite(bmp, bitmapBounds.left + 20, y, bitmapBounds.right - 20, y + lineSize, avgLum);
+            if (white) {
+                whiteCount++;
+            } else {
+                if (whiteCount >= 1) {
+                    return (float) (y + lineSize - bitmapBounds.top) / bitmapBounds.height();
+                }
+                whiteCount = 0;
+            }
+        }
+        return whiteCount > 0 ? (float) (y + lineSize - bitmapBounds.top) / bitmapBounds.height() : 1;
+    }
+
+    private boolean isRectWhite(Bitmap bmp, int l, int t, int r, int b, float avgLum) {
+        for (int x = l; x < r; x++) {
+            for (int y = t; y < b; y++) {
+                int c = bmp.getPixel(x, y);
+
+                float lum = getLum(c);
+                if ((lum < avgLum) && ((avgLum - lum) * 10 > avgLum)) {
+                    return false;
+                }
+
+            }
+        }
+        return true;
+    }
+
+    private float calculateAvgLum(BitmapRef bitmap, Rect bitmapBounds) {
+        Bitmap bmp = bitmap.getBitmap();
+        float lum = 0f;
+        int size = 20;
+        int count = 0;
+        for (int x = bitmapBounds.left + bitmapBounds.width() / 2 - size; x < bitmapBounds.left + bitmapBounds.width()
+                / 2 + size; x++) {
+            for (int y = bitmapBounds.top + bitmapBounds.height() / 2 - size; y < bitmapBounds.top
+                    + bitmapBounds.height() / 2 + size; y++) {
+                int c = bmp.getPixel(x, y);
+
+                lum += getLum(c);
+                count++;
+            }
+        }
+
+        return lum / (count);
+    }
+
+    private float getLum(int c) {
+        int r = (c & 0xFF0000) >> 16;
+        int g = (c & 0xFF00) >> 8;
+        int b = c & 0xFF;
+        /*
+         * return (0.3f * r + 0.59f * g + 0.11f * b);
+         */
+        int min = Math.min(r, Math.min(g, b));
+        int max = Math.max(r, Math.max(g, b));
+        return (min + max) / 2;
     }
 
     private boolean setDecodingNow(final boolean decodingNow) {
@@ -248,6 +392,13 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         drawBrightnessFilter(canvas, tr);
 
         drawChildren(canvas, viewState, pageBounds, paint);
+        if (croppedBounds != null) {
+            Paint p = new Paint();
+            p.setColor(Color.BLUE);
+            p.setStyle(Style.STROKE);
+            final RectF trCr = getTargetCroppedRect(viewState.viewRect, pageBounds);
+            canvas.drawRect(trCr, p);
+        }
     }
 
     void drawBrightnessFilter(final Canvas canvas, final RectF tr) {
@@ -277,6 +428,20 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
         final RectF targetRectF = new RectF();
         matrix.mapRect(targetRectF, pageSliceBounds);
+        return new RectF(targetRectF);
+    }
+
+    public RectF getTargetCroppedRect(final RectF viewRect, final RectF pageBounds) {
+        matrix.reset();
+
+        final RectF bounds = new RectF(pageBounds);
+        bounds.offset(-viewRect.left, -viewRect.top);
+
+        matrix.postScale(bounds.width() * page.getTargetRectScale(), bounds.height());
+        matrix.postTranslate(bounds.left - bounds.width() * page.getTargetTranslate(), bounds.top);
+
+        final RectF targetRectF = new RectF();
+        matrix.mapRect(targetRectF, croppedBounds);
         return new RectF(targetRectF);
     }
 

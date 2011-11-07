@@ -89,7 +89,7 @@ public class Page {
         return false;
     }
 
-    public boolean setAspectRatio(final int width, final int height) {
+    public boolean setAspectRatio(final float width, final float  height) {
         return setAspectRatio((width / pageType.getWidthScale()) / height);
     }
 

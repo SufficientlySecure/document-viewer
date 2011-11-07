@@ -14,7 +14,7 @@ public interface DecodeService {
 
     void open(String fileName, String password);
 
-    void decodePage(ViewState viewState, PageTreeNode node);
+    void decodePage(ViewState viewState, PageTreeNode node, RectF nodeBounds);
 
     void stopDecoding(PageTreeNode node, String reason);
 

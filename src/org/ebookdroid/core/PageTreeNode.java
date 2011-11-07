@@ -14,7 +14,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
@@ -180,6 +179,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     @Override
     public void decodeComplete(final CodecPage codecPage, final BitmapRef bitmap, final Rect bitmapBounds) {
+/*
         if (id == 0 && !cropped) {
             float avgLum = calculateAvgLum(bitmap, bitmapBounds);
             float left = getLeftBound(bitmap, bitmapBounds, avgLum);
@@ -191,9 +191,18 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                     * pageSliceBounds.height() + pageSliceBounds.top, right * pageSliceBounds.width()
                     + pageSliceBounds.left, bottom * pageSliceBounds.height() + pageSliceBounds.top);
             cropped = true;
-            
-        }
 
+            page.base.getActivity().runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    setDecodingNow(false);
+                    page.base.getDecodeService().decodePage(new ViewState(PageTreeNode.this), PageTreeNode.this, croppedBounds);
+                }
+            });
+            return;
+        }
+*/
         page.base.getActivity().runOnUiThread(new Runnable() {
 
             @Override
@@ -205,7 +214,8 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 final DocumentModel dm = page.base.getDocumentModel();
 
                 if (dc != null && dm != null) {
-                    final boolean changed = page.setAspectRatio(codecPage);
+                    final boolean changed = ((id == 0) && cropped ) ? page.setAspectRatio((int) page.pageType.getWidthScale()
+                            * croppedBounds.width(), croppedBounds.height()) : page.setAspectRatio(codecPage);
 
                     ViewState viewState = new ViewState(dc);
                     if (changed) {
@@ -378,7 +388,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     void draw(final Canvas canvas, final ViewState viewState, final RectF pageBounds, final PagePaint paint) {
-        final RectF tr = getTargetRect(viewState.viewRect, pageBounds);
+        final RectF tr = getTargetRect(viewState.viewRect, pageBounds);;
         if (!viewState.isNodeVisible(this, pageBounds)) {
             return;
         }
@@ -392,13 +402,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         drawBrightnessFilter(canvas, tr);
 
         drawChildren(canvas, viewState, pageBounds, paint);
-        if (croppedBounds != null) {
-            Paint p = new Paint();
-            p.setColor(Color.BLUE);
-            p.setStyle(Style.STROKE);
-            final RectF trCr = getTargetCroppedRect(viewState.viewRect, pageBounds);
-            canvas.drawRect(trCr, p);
-        }
     }
 
     void drawBrightnessFilter(final Canvas canvas, final RectF tr) {

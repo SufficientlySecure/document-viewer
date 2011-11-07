@@ -111,8 +111,8 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     @Override
-    public void decodePage(final ViewState viewState, final PageTreeNode node) {
-        final DecodeTask decodeTask = new DecodeTask(viewState, node);
+    public void decodePage(final ViewState viewState, final PageTreeNode node, RectF nodeBounds) {
+        final DecodeTask decodeTask = new DecodeTask(viewState, node, nodeBounds);
         updateViewState(viewState);
 
         if (isRecycled.get()) {
@@ -498,11 +498,11 @@ public class DecodeServiceBase implements DecodeService {
         final int pageNumber;
         final RectF pageSliceBounds;
 
-        DecodeTask(final ViewState viewState, final PageTreeNode node) {
+        DecodeTask(final ViewState viewState, final PageTreeNode node,RectF nodeBounds) {
             this.pageNumber = node.getDocumentPageIndex();
             this.viewState = viewState;
             this.node = node;
-            this.pageSliceBounds = node.getPageSliceBounds();
+            this.pageSliceBounds = nodeBounds;
         }
 
         @Override

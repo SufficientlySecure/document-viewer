@@ -39,7 +39,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     float bitmapZoom = 1;
     boolean hasChildren = false;
     private boolean cropped;
-    private RectF croppedBounds = null;
+    RectF croppedBounds = null;
 
     PageTreeNode(final Page page, final PageTreeNode parent, final long id, final RectF localPageSliceBounds,
             final float childrenZoomThreshold) {
@@ -47,6 +47,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         this.shortId = page.index.viewIndex + ":" + id;
         this.parent = parent;
         this.pageSliceBounds = evaluatePageSliceBounds(localPageSliceBounds, parent);
+        this.croppedBounds = evaluateCroppedPageSliceBounds(localPageSliceBounds, parent);
         this.page = page;
         this.childrenZoomThreshold = childrenZoomThreshold;
     }
@@ -179,7 +180,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     @Override
     public void decodeComplete(final CodecPage codecPage, final BitmapRef bitmap, final Rect bitmapBounds) {
-/*
+
         if (id == 0 && !cropped) {
             float avgLum = calculateAvgLum(bitmap, bitmapBounds);
             float left = getLeftBound(bitmap, bitmapBounds, avgLum);
@@ -202,7 +203,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             });
             return;
         }
-*/
+
         page.base.getActivity().runOnUiThread(new Runnable() {
 
             @Override
@@ -214,8 +215,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 final DocumentModel dm = page.base.getDocumentModel();
 
                 if (dc != null && dm != null) {
-                    final boolean changed = ((id == 0) && cropped ) ? page.setAspectRatio((int) page.pageType.getWidthScale()
-                            * croppedBounds.width(), croppedBounds.height()) : page.setAspectRatio(codecPage);
+                    final boolean changed = page.setAspectRatio(bitmapBounds.width(), bitmapBounds.height());
 
                     ViewState viewState = new ViewState(dc);
                     if (changed) {
@@ -279,7 +279,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     private float getRightBound(BitmapRef bitmap, Rect bitmapBounds, float avgLum) {
         Bitmap bmp = bitmap.getBitmap();
         final int w = bmp.getWidth() / 3;
-        final int h = bmp.getHeight();
         int whiteCount = 0;
         int x = 0;
         int lineSize = 5;
@@ -526,6 +525,21 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         final Matrix matrix = new Matrix();
         matrix.postScale(parent.pageSliceBounds.width(), parent.pageSliceBounds.height());
         matrix.postTranslate(parent.pageSliceBounds.left, parent.pageSliceBounds.top);
+        final RectF sliceBounds = new RectF();
+        matrix.mapRect(sliceBounds, localPageSliceBounds);
+        return sliceBounds;
+    }
+    
+    private static RectF evaluateCroppedPageSliceBounds(final RectF localPageSliceBounds, final PageTreeNode parent) {
+        if (parent == null) {
+            return null;
+        }
+        if (parent.croppedBounds == null) {
+            return null;
+        }
+        final Matrix matrix = new Matrix();
+        matrix.postScale(parent.croppedBounds.width(), parent.croppedBounds.height());
+        matrix.postTranslate(parent.croppedBounds.left, parent.croppedBounds.top);
         final RectF sliceBounds = new RectF();
         matrix.mapRect(sliceBounds, localPageSliceBounds);
         return sliceBounds;

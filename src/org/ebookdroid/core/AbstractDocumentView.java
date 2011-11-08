@@ -183,11 +183,11 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     protected final void decodePageTreeNodes(final ViewState viewState, final List<PageTreeNode> nodesToDecode) {
         final PageTreeNode best = Collections.min(nodesToDecode, new PageTreeNodeComparator(viewState));
-        base.getDecodeService().decodePage(viewState, best, best.pageSliceBounds);
+        base.getDecodeService().decodePage(viewState, best, best.croppedBounds != null ? best.croppedBounds : best.pageSliceBounds);
 
         for (final PageTreeNode node : nodesToDecode) {
             if (node != best) {
-                base.getDecodeService().decodePage(viewState, node, node.pageSliceBounds);
+                base.getDecodeService().decodePage(viewState, node, node.croppedBounds != null ? node.croppedBounds : node.pageSliceBounds);
             }
         }
     }

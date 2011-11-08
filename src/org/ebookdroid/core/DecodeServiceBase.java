@@ -184,7 +184,7 @@ public class DecodeServiceBase implements DecodeService {
         final int pageWidth = vuPage.getWidth();
         final int pageHeight = vuPage.getHeight();
         final RectF nodeBounds = task.pageSliceBounds;
-        final float zoom = task.viewState.zoom;
+        final float zoom = task.viewState.zoom * Math.max(task.node.pageSliceBounds.width() / task.pageSliceBounds.width(), task.node.pageSliceBounds.height() / task.pageSliceBounds.height());
 
         if (task.viewState.decodeMode == DecodeMode.NATIVE_RESOLUTION) {
             return getNativeSize(pageWidth, pageHeight, nodeBounds, task.node.page.getTargetRectScale());
@@ -204,7 +204,7 @@ public class DecodeServiceBase implements DecodeService {
     @Override
     public Rect getScaledSize(final float viewWidth, final float pageWidth, final float pageHeight,
             final RectF nodeBounds, final float zoom, final float pageTypeWidthScale) {
-        final float scale = 1.0f * viewWidth / pageWidth * zoom;
+        final float scale = 1.0f * (viewWidth / pageWidth) * zoom;
         final int scaledWidth = Math.round((scale * pageWidth * pageTypeWidthScale) * nodeBounds.width());
         final int scaledHeight = Math.round((scale * pageHeight * pageTypeWidthScale) * nodeBounds.height());
         return new Rect(0, 0, scaledWidth, scaledHeight);

@@ -39,6 +39,7 @@ public class SettingsManager {
     public static BookSettings init(final String fileName) {
         lock.writeLock().lock();
         try {
+            getAppSettings().clearPseudoBookSettings();
             current = getBookSettingsImpl(fileName, true);
             getAppSettings().updatePseudoBookSettings(current);
 

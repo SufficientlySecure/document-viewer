@@ -2,7 +2,6 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.R;
 import org.ebookdroid.core.bitmaps.BitmapRef;
-import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.utils.MathUtils;
 
@@ -32,7 +31,7 @@ public class Page {
         this.pageType = pt != null ? pt : PageType.FULL_PAGE;
         this.bounds = new RectF(0, 0, cpi.width, cpi.height);
 
-        setAspectRatio(cpi.width, cpi.height);
+        setAspectRatio(cpi);
 
         nodes = new PageTree(this);
     }
@@ -82,15 +81,15 @@ public class Page {
         return false;
     }
 
-    public boolean setAspectRatio(final CodecPage page) {
+    public boolean setAspectRatio(final CodecPageInfo page) {
         if (page != null) {
-            return this.setAspectRatio(page.getWidth(), page.getHeight());
+            return this.setAspectRatio(page.width / pageType.getWidthScale(), page.height);
         }
         return false;
     }
 
     public boolean setAspectRatio(final float width, final float  height) {
-        return setAspectRatio((width / pageType.getWidthScale()) / height);
+        return setAspectRatio(width / height);
     }
 
     public void setBounds(final RectF pageBounds) {

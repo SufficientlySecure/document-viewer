@@ -84,7 +84,9 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         if (childrenRequired) {
             if (LengthUtils.isEmpty(children)) {
                 hasChildren = true;
-                stopDecodingThisNode("children created");
+                if (id != 0 || viewState.decodeMode == DecodeMode.LOW_MEMORY) {
+                    stopDecodingThisNode("children created");
+                }
                 children = page.nodes.createChildren(this, calculateChildThreshold());
             }
 
@@ -132,7 +134,9 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
         if (childrenRequired) {
             hasChildren = true;
-            stopDecodingThisNode("children created");
+            if (id != 0 || viewState.decodeMode == DecodeMode.LOW_MEMORY) {
+                stopDecodingThisNode("children created");
+            }
             children = page.nodes.createChildren(this, calculateChildThreshold());
             for (final PageTreeNode child : children) {
                 child.onPositionChanged(viewState, pageBounds, nodesToDecode, bitmapsToRecycle);
@@ -198,7 +202,8 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 @Override
                 public void run() {
                     setDecodingNow(false);
-                    page.base.getDecodeService().decodePage(new ViewState(PageTreeNode.this), PageTreeNode.this, croppedBounds);
+                    page.base.getDecodeService().decodePage(new ViewState(PageTreeNode.this), PageTreeNode.this,
+                            croppedBounds);
                 }
             });
             return;
@@ -387,7 +392,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     void draw(final Canvas canvas, final ViewState viewState, final RectF pageBounds, final PagePaint paint) {
-        final RectF tr = getTargetRect(viewState.viewRect, pageBounds);;
+        final RectF tr = getTargetRect(viewState.viewRect, pageBounds);
         if (!viewState.isNodeVisible(this, pageBounds)) {
             return;
         }
@@ -529,7 +534,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         matrix.mapRect(sliceBounds, localPageSliceBounds);
         return sliceBounds;
     }
-    
+
     private static RectF evaluateCroppedPageSliceBounds(final RectF localPageSliceBounds, final PageTreeNode parent) {
         if (parent == null) {
             return null;

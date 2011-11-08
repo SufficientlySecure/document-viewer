@@ -16,8 +16,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public abstract class AbstractPageAnimator extends SinglePageView implements PageAnimator {
 
-    /** Px / Draw call */
-    protected int mCurlSpeed;
     /** Fixed update time used to create a smooth curl animation */
     protected int mUpdateRate;
     /** Handler used to auto flip time based */
@@ -63,7 +61,6 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
         mAnimationHandler = new FlipAnimationHandler(this);
 
         // Set the default props
-        mCurlSpeed = 30;
         mUpdateRate = 5;
     }
 
@@ -121,7 +118,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
         bBlockTouchInput = true;
 
         // Handle speed
-        float curlSpeed = mCurlSpeed;
+        float curlSpeed = width / 10;
         if (!bFlipRight) {
             curlSpeed *= -1;
         }

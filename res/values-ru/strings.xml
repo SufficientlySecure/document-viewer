@@ -149,4 +149,7 @@
 	<string name="list_clear_recent_mode_delete_book_settings">Удалить все настройки книг</string>
 	<string name="list_clear_recent_mode_delete_cached_data">Удалить все кэшированные файлы</string>
 
+	<string name="pref_croppages_title">"Обрезать страницы"</string>
+	<string name="pref_croppages_summary">"Обрезать поля страниц (экспериментально)"</string>
+	    	    
 </resources>

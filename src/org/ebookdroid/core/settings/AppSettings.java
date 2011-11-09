@@ -69,6 +69,8 @@ public class AppSettings {
 
     private Integer djvuRenderingMode;
 
+    private Boolean cropPages;
+
     AppSettings(final Context context) {
         this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
@@ -296,6 +298,13 @@ public class AppSettings {
         return djvuRenderingMode;
     }
 
+    boolean getCropPages() {
+        if (cropPages == null) {
+            cropPages = prefs.getBoolean("croppages", false);
+        }
+        return cropPages;
+    }
+
     void clearPseudoBookSettings() {
         final Editor editor = prefs.edit();
         editor.remove("book");
@@ -303,6 +312,7 @@ public class AppSettings {
         editor.remove("book_singlepage");
         editor.remove("book_align");
         editor.remove("book_animationType");
+        editor.remove("book_croppages");
         editor.commit();
     }
 
@@ -313,6 +323,7 @@ public class AppSettings {
         editor.putBoolean("book_singlepage", bs.singlePage);
         editor.putString("book_align", bs.pageAlign.getResValue());
         editor.putString("book_animationType", bs.animationType.getResValue());
+        editor.putBoolean("book_croppages", bs.cropPages);
         editor.commit();
     }
 
@@ -329,6 +340,7 @@ public class AppSettings {
         if (bs.animationType == null) {
             bs.animationType = PageAnimationType.NONE;
         }
+        bs.cropPages = prefs.getBoolean("book_croppages", getCropPages());
 
     }
 

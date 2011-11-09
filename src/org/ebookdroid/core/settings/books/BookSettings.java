@@ -29,6 +29,8 @@ public class BookSettings implements CurrentPageListener {
 
     public final List<Bookmark> bookmarks = new ArrayList<Bookmark>();
 
+    public boolean cropPages;
+    
     public BookSettings(BookSettings current) {
         this.fileName = current.fileName;
         this.currentPage = current.currentPage;
@@ -39,7 +41,7 @@ public class BookSettings implements CurrentPageListener {
         this.pageAlign = current.pageAlign;
         this.animationType = current.animationType;
         this.bookmarks.addAll(current.bookmarks);
-
+        this.cropPages = current.cropPages;
     }
 
     public BookSettings(final String fileName) {
@@ -73,6 +75,7 @@ public class BookSettings implements CurrentPageListener {
         private static final short D_SinglePage = 0x0001 << 3;
         private static final short D_PageAlign = 0x0001 << 4;
         private static final short D_AnimationType = 0x0001 << 5;
+        private static final short D_CropPages = 0x0001 << 6;
 
         private short mask;
         private final boolean firstTime;
@@ -97,6 +100,9 @@ public class BookSettings implements CurrentPageListener {
                 }
                 if (firstTime || olds.animationType != news.animationType) {
                     mask |= D_AnimationType;
+                }
+                if (firstTime || olds.cropPages != news.cropPages) {
+                    mask |= D_CropPages;
                 }
             }
         }
@@ -127,6 +133,10 @@ public class BookSettings implements CurrentPageListener {
 
         public boolean isAnimationTypeChanged() {
             return 0 != (mask & D_AnimationType);
+        }
+
+        public boolean isCropPagesChanged() {
+            return 0 != (mask & D_CropPages);
         }
     }
 }

@@ -185,30 +185,31 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     @Override
     public void decodeComplete(final CodecPage codecPage, final BitmapRef bitmap, final Rect bitmapBounds) {
 
-        if (id == 0 && !cropped) {
-            float avgLum = calculateAvgLum(bitmap, bitmapBounds);
-            float left = getLeftBound(bitmap, bitmapBounds, avgLum);
-            float right = getRightBound(bitmap, bitmapBounds, avgLum);
-            float top = getTopBound(bitmap, bitmapBounds, avgLum);
-            float bottom = getBottomBound(bitmap, bitmapBounds, avgLum);
-
-            croppedBounds = new RectF(left * pageSliceBounds.width() + pageSliceBounds.left, top
-                    * pageSliceBounds.height() + pageSliceBounds.top, right * pageSliceBounds.width()
-                    + pageSliceBounds.left, bottom * pageSliceBounds.height() + pageSliceBounds.top);
-            cropped = true;
-
-            page.base.getActivity().runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    setDecodingNow(false);
-                    page.base.getDecodeService().decodePage(new ViewState(PageTreeNode.this), PageTreeNode.this,
-                            croppedBounds);
-                }
-            });
-            return;
+        if (SettingsManager.getBookSettings().cropPages) {
+            if (id == 0 && !cropped) {
+                float avgLum = calculateAvgLum(bitmap, bitmapBounds);
+                float left = getLeftBound(bitmap, bitmapBounds, avgLum);
+                float right = getRightBound(bitmap, bitmapBounds, avgLum);
+                float top = getTopBound(bitmap, bitmapBounds, avgLum);
+                float bottom = getBottomBound(bitmap, bitmapBounds, avgLum);
+    
+                croppedBounds = new RectF(left * pageSliceBounds.width() + pageSliceBounds.left, top
+                        * pageSliceBounds.height() + pageSliceBounds.top, right * pageSliceBounds.width()
+                        + pageSliceBounds.left, bottom * pageSliceBounds.height() + pageSliceBounds.top);
+                cropped = true;
+    
+                page.base.getActivity().runOnUiThread(new Runnable() {
+    
+                    @Override
+                    public void run() {
+                        setDecodingNow(false);
+                        page.base.getDecodeService().decodePage(new ViewState(PageTreeNode.this), PageTreeNode.this,
+                                croppedBounds);
+                    }
+                });
+                return;
+            }
         }
-
         page.base.getActivity().runOnUiThread(new Runnable() {
 
             @Override

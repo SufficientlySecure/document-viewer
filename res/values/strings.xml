@@ -147,4 +147,7 @@
 	<string name="list_clear_recent_mode_delete_book_settings">Delete all book settings</string>
 	<string name="list_clear_recent_mode_delete_cached_data">Delete all cached data from disk</string>
 
+	<string name="pref_croppages_title">"Crop pages"</string>
+	<string name="pref_croppages_summary">"Crop margins of pages (experimantal)"</string>
+	    
 </resources>

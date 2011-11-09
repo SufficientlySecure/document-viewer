@@ -574,7 +574,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
             final BookSettings.Diff diff, final AppSettings.Diff appDiff) {
 
         boolean redrawn = false;
-        if (diff.isSinglePageChanged() || diff.isSplitPagesChanged()) {
+        if (diff.isSinglePageChanged() || diff.isSplitPagesChanged() || diff.isCropPagesChanged()) {
             redrawn = true;
             final IDocumentViewController newDc = switchDocumentController();
             if (!diff.isFirstTime()) {

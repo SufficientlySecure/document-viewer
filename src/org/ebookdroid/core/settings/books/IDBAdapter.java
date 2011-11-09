@@ -14,6 +14,8 @@ interface IDBAdapter {
 
     void onCreate(final SQLiteDatabase db);
 
+    void onDestroy(final SQLiteDatabase db);
+
     Map<String, BookSettings> getBookSettings(final boolean all);
 
     BookSettings getBookSettings(final String fileName);

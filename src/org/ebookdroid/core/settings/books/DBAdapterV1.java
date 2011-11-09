@@ -46,7 +46,7 @@ class DBAdapterV1 implements IDBAdapter {
 
     public static final String DB_1_BOOK_CLEAR_RECENT = "UPDATE book_settings set last_updated = 0";
 
-    public static final String DB_1_BOOK_DROP_ALL = "DROP TABLE IF EXISTS book_settings ";
+    public static final String DB_1_BOOK_DROP_ALL = "DROP TABLE IF EXISTS book_settings";
 
     protected final DBSettingsManager manager;
 
@@ -60,13 +60,22 @@ class DBAdapterV1 implements IDBAdapter {
     }
 
     @Override
+    public void onDestroy(final SQLiteDatabase db) {
+        db.execSQL(DB_1_BOOK_DROP_ALL);
+    }
+
+    @Override
     public Map<String, BookSettings> getBookSettings(final boolean all) {
+        return getBookSettings(DB_1_BOOK_GET_ALL, all);
+    }
+
+    protected final Map<String, BookSettings> getBookSettings(final String query, final boolean all) {
         final Map<String, BookSettings> map = new LinkedHashMap<String, BookSettings>();
 
         try {
             final SQLiteDatabase db = manager.getReadableDatabase();
             try {
-                final Cursor c = db.rawQuery(DB_1_BOOK_GET_ALL, null);
+                final Cursor c = db.rawQuery(query, null);
                 if (c != null) {
                     try {
                         for (boolean next = c.moveToFirst(); next; next = c.moveToNext()) {
@@ -82,7 +91,7 @@ class DBAdapterV1 implements IDBAdapter {
                     }
                 }
             } finally {
-                close(db);
+                manager.closeDatabase(db);
             }
         } catch (final Throwable th) {
             LCTX.e("Retrieving book settings failed: ", th);
@@ -93,10 +102,14 @@ class DBAdapterV1 implements IDBAdapter {
 
     @Override
     public BookSettings getBookSettings(final String fileName) {
+        return getBookSettings(DB_1_BOOK_GET_ONE, fileName);
+    }
+
+    protected final BookSettings getBookSettings(final String query, final String fileName) {
         try {
             final SQLiteDatabase db = manager.getReadableDatabase();
             try {
-                final Cursor c = db.rawQuery(DB_1_BOOK_GET_ONE, new String[] { fileName });
+                final Cursor c = db.rawQuery(query, new String[] { fileName });
                 if (c != null) {
                     try {
                         if (c.moveToFirst()) {
@@ -109,7 +122,7 @@ class DBAdapterV1 implements IDBAdapter {
                     }
                 }
             } finally {
-                close(db);
+                manager.closeDatabase(db);
             }
         } catch (final Throwable th) {
             LCTX.e("Retrieving book settings failed: ", th);
@@ -162,7 +175,6 @@ class DBAdapterV1 implements IDBAdapter {
         return false;
     }
 
-    
     @Override
     public boolean deleteAllBookmarks() {
         return false;
@@ -222,7 +234,7 @@ class DBAdapterV1 implements IDBAdapter {
         return false;
     }
 
-    void storeBookSettings(final BookSettings bs, final SQLiteDatabase db) {
+    protected void storeBookSettings(final BookSettings bs, final SQLiteDatabase db) {
         bs.lastUpdated = System.currentTimeMillis();
 
         final Object[] args = new Object[] {
@@ -250,7 +262,7 @@ class DBAdapterV1 implements IDBAdapter {
         updateBookmarks(bs, db);
     }
 
-    BookSettings createBookSettings(final Cursor c) {
+    protected BookSettings createBookSettings(final Cursor c) {
         int index = 0;
 
         final BookSettings bs = new BookSettings(c.getString(index++));
@@ -277,19 +289,12 @@ class DBAdapterV1 implements IDBAdapter {
             db.endTransaction();
         } catch (final Exception ex) {
         }
-        close(db);
+        manager.closeDatabase(db);
     }
 
     final void close(final Cursor c) {
         try {
             c.close();
-        } catch (final Exception ex) {
-        }
-    }
-
-    void close(final SQLiteDatabase db) {
-        try {
-            db.close();
         } catch (final Exception ex) {
         }
     }

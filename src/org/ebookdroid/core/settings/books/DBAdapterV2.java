@@ -46,6 +46,12 @@ class DBAdapterV2 extends DBAdapterV1 {
     }
 
     @Override
+    public void onDestroy(final SQLiteDatabase db) {
+        db.execSQL(DB_2_BOOK_DROP_ALL);
+        db.execSQL(DB_2_BOOKMARK_DROP_ALL);
+    }
+
+    @Override
     public boolean deleteAll() {
         try {
             final SQLiteDatabase db = manager.getWritableDatabase();
@@ -91,7 +97,6 @@ class DBAdapterV2 extends DBAdapterV1 {
         return false;
     }
 
-    
     @Override
     public boolean deleteBookmarks(final String book, final List<Bookmark> bookmarks) {
         try {

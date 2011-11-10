@@ -185,6 +185,10 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     @Override
     public void decodeComplete(final CodecPage codecPage, final BitmapRef bitmap, final Rect bitmapBounds) {
 
+        if (bitmap == null || bitmapBounds == null) {
+            return;
+        }
+        
         if (SettingsManager.getBookSettings().cropPages) {
             if (id == 0 && !cropped) {
                 float avgLum = calculateAvgLum(bitmap, bitmapBounds);
@@ -198,6 +202,8 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                         + pageSliceBounds.left, bottom * pageSliceBounds.height() + pageSliceBounds.top);
                 cropped = true;
     
+                BitmapManager.release(bitmap);
+                
                 page.base.getActivity().runOnUiThread(new Runnable() {
     
                     @Override
@@ -339,6 +345,9 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     private float calculateAvgLum(BitmapRef bitmap, Rect bitmapBounds) {
         Bitmap bmp = bitmap.getBitmap();
+        if (bmp == null) {
+            return 1000;
+        }
         float lum = 0f;
         int size = 20;
         int count = 0;

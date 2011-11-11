@@ -13,15 +13,15 @@
 
     <CheckBoxPreference
         android:defaultValue="false"
-        android:key="book_singlepage"
-        android:summary="@string/pref_singlepage_summary"
-        android:title="@string/pref_singlepage_title" />
-
-    <CheckBoxPreference
-        android:defaultValue="false"
         android:key="book_croppages"
         android:summary="@string/pref_croppages_summary"
         android:title="@string/pref_croppages_title" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="book_singlepage"
+        android:summary="@string/pref_singlepage_summary"
+        android:title="@string/pref_singlepage_title" />
 
     <PreferenceCategory
         android:summary="@string/pref_singlepage_category_summary"

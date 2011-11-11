@@ -141,6 +141,12 @@
 
         <CheckBoxPreference
             android:defaultValue="false"
+            android:key="croppages"
+            android:summary="@string/pref_croppages_summary"
+            android:title="@string/pref_croppages_title" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
             android:key="singlepage"
             android:summary="@string/pref_singlepage_summary"
             android:title="@string/pref_singlepage_title" />
@@ -199,6 +205,12 @@
             android:key="book_splitpages"
             android:summary="@string/pref_splitpages_summary"
             android:title="@string/pref_splitpages_title" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="book_croppages"
+            android:summary="@string/pref_croppages_summary"
+            android:title="@string/pref_croppages_title" />
 
         <CheckBoxPreference
             android:defaultValue="false"

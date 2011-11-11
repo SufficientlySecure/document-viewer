@@ -59,6 +59,9 @@ public class SettingsActivity extends BaseSettingsActivity {
             }
         }
 
+        addListener("animationType", new AnimationTypeListener("align"));
+        addListener("book_animationType", new AnimationTypeListener("book_align"));
+
         enableMaxImageSizePref(SettingsManager.getAppSettings().getDecodeMode());
     }
 

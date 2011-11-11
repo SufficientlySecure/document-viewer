@@ -45,6 +45,8 @@ public class BookSettingsActivity extends BaseSettingsActivity {
         }
 
         decoratePreferences("book_align", "book_animationType");
+
+        addListener("book_animationType", new AnimationTypeListener("book_align"));
     }
 
     @Override

@@ -126,7 +126,7 @@ public class GoToPageDialog extends Dialog {
     public void updateControls(final ActionEx action) {
         final View view = action.getParameter(IActionController.VIEW_PROPERTY);
         final Bookmark bookmark = (Bookmark) view.getTag();
-        final Page actualPage = bookmark.getPage().getActualPage(base.getDocumentModel(), adapter.bookSettings);
+        final Page actualPage = bookmark.page.getActualPage(base.getDocumentModel(), adapter.bookSettings);
         if (actualPage != null) {
             updateControls(actualPage.index.viewIndex, true);
         }
@@ -136,7 +136,7 @@ public class GoToPageDialog extends Dialog {
     public void showDeleteBookmarkDlg(final ActionEx action) {
         final View view = action.getParameter(IActionController.VIEW_PROPERTY);
         final Bookmark bookmark = (Bookmark) view.getTag();
-        if (bookmark.isService()) {
+        if (bookmark.service) {
             return;
         }
 
@@ -178,7 +178,7 @@ public class GoToPageDialog extends Dialog {
         final Integer viewIndex = action.getParameter("viewIndex");
         final Editable value = action.getParameter("input");
         final Page page = base.getDocumentModel().getPageObject(viewIndex);
-        adapter.add(new Bookmark(page.index, value.toString()));
+        adapter.add(new Bookmark(value.toString(), page.index, 0, 0));
         adapter.notifyDataSetChanged();
     }
 
@@ -238,9 +238,9 @@ public class GoToPageDialog extends Dialog {
 
         public BookmarkAdapter(final Page lastPage, final BookSettings bookSettings) {
             this.bookSettings = bookSettings;
-            this.start = new Bookmark(PageIndex.FIRST, getContext().getString(R.string.bookmark_start), true);
-            this.end = new Bookmark(lastPage != null ? lastPage.index : PageIndex.FIRST, getContext().getString(
-                    R.string.bookmark_end), true);
+            this.start = new Bookmark(true, getContext().getString(R.string.bookmark_start), PageIndex.FIRST, 0, 0);
+            this.end = new Bookmark(true, getContext().getString(R.string.bookmark_end),
+                    lastPage != null ? lastPage.index : PageIndex.FIRST, 0, 0);
         }
 
         public void add(final Bookmark... bookmarks) {
@@ -252,7 +252,7 @@ public class GoToPageDialog extends Dialog {
         }
 
         public void remove(final Bookmark b) {
-            if (!b.isService()) {
+            if (!b.service) {
                 bookSettings.bookmarks.remove(b);
                 SettingsManager.edit(bookSettings).commit();
                 notifyDataSetChanged();
@@ -309,10 +309,10 @@ public class GoToPageDialog extends Dialog {
 
             final TextView text = (TextView) itemView.findViewById(R.id.bookmarkName);
             final ProgressBar bar = (ProgressBar) itemView.findViewById(R.id.bookmarkPage);
-            text.setText(b.getName());
+            text.setText(b.name);
 
             bar.setMax(base.getDocumentModel().getPageCount() - 1);
-            bar.setProgress(b.getPage().viewIndex);
+            bar.setProgress(b.page.viewIndex);
 
             return itemView;
         }

@@ -30,7 +30,11 @@ public class BookSettings implements CurrentPageListener {
     public final List<Bookmark> bookmarks = new ArrayList<Bookmark>();
 
     public boolean cropPages;
-    
+
+    public float offsetX;
+
+    public float offsetY;
+
     public BookSettings(BookSettings current) {
         this.fileName = current.fileName;
         this.currentPage = current.currentPage;
@@ -42,6 +46,8 @@ public class BookSettings implements CurrentPageListener {
         this.animationType = current.animationType;
         this.bookmarks.addAll(current.bookmarks);
         this.cropPages = current.cropPages;
+        this.offsetX = current.offsetX;
+        this.offsetY = current.offsetY;
     }
 
     public BookSettings(final String fileName) {

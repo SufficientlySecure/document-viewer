@@ -11,11 +11,7 @@ class DBAdapterV2 extends DBAdapterV1 {
 
     public static final int VERSION = 2;
 
-    public static final String DB_2_BOOK_CREATE = DB_1_BOOK_CREATE;
-
-    public static final String DB_2_BOOK_DROP_ALL = DB_1_BOOK_DROP_ALL;
-
-    public static final String DB_2_BOOKMARK_CREATE = "create table bookmarks ("
+    public static final String DB_BOOKMARK_CREATE = "create table bookmarks ("
     // Book file path
             + "book varchar(1024) not null, "
             // Current document page
@@ -27,13 +23,15 @@ class DBAdapterV2 extends DBAdapterV1 {
             // ...
             + ");";
 
-    public static final String DB_2_BOOKMARK_DROP_ALL = "DROP TABLE bookmarks";
+    public static final String DB_BOOKMARK_DROP = "DROP TABLE bookmarks";
 
-    public static final String DB_2_BOOKMARK_STORE = "INSERT OR REPLACE INTO bookmarks (book, doc_page, view_page, name) VALUES (?, ?, ?, ?)";
+    public static final String DB_BOOKMARK_STORE = "INSERT OR REPLACE INTO bookmarks (book, doc_page, view_page, name) VALUES (?, ?, ?, ?)";
 
-    public static final String DB_2_BOOKMARK_GET_ALL = "SELECT doc_page, view_page, name FROM bookmarks WHERE book = ? ORDER BY view_page ASC";
+    public static final String DB_BOOKMARK_GET_ALL = "SELECT doc_page, view_page, name FROM bookmarks WHERE book = ? ORDER BY view_page ASC";
 
-    public static final String DB_2_BOOKMARK_DEL_ALL = "DELETE FROM bookmarks WHERE book=?";
+    public static final String DB_BOOKMARK_DEL_ALL = "DELETE FROM bookmarks WHERE book=?";
+
+    public static final String DB_BOOKMARKS_DEL = "DELETE FROM bookmarks";
 
     public DBAdapterV2(final DBSettingsManager manager) {
         super(manager);
@@ -41,14 +39,14 @@ class DBAdapterV2 extends DBAdapterV1 {
 
     @Override
     public void onCreate(final SQLiteDatabase db) {
-        db.execSQL(DB_2_BOOK_CREATE);
-        db.execSQL(DB_2_BOOKMARK_CREATE);
+        db.execSQL(DB_BOOK_CREATE);
+        db.execSQL(DB_BOOKMARK_CREATE);
     }
 
     @Override
     public void onDestroy(final SQLiteDatabase db) {
-        db.execSQL(DB_2_BOOK_DROP_ALL);
-        db.execSQL(DB_2_BOOKMARK_DROP_ALL);
+        db.execSQL(DB_BOOK_DROP);
+        db.execSQL(DB_BOOKMARK_DROP);
     }
 
     @Override
@@ -58,8 +56,8 @@ class DBAdapterV2 extends DBAdapterV1 {
             try {
                 db.beginTransaction();
 
-                db.execSQL(DB_2_BOOK_DROP_ALL, new Object[] {});
-                db.execSQL(DB_2_BOOKMARK_DROP_ALL, new Object[] {});
+                db.execSQL(DB_BOOK_DROP, new Object[] {});
+                db.execSQL(DB_BOOKMARK_DROP, new Object[] {});
 
                 onCreate(db);
 
@@ -82,8 +80,7 @@ class DBAdapterV2 extends DBAdapterV1 {
             try {
                 db.beginTransaction();
 
-                db.execSQL(DB_2_BOOKMARK_DROP_ALL, new Object[] {});
-                db.execSQL(DB_2_BOOKMARK_CREATE);
+                db.execSQL(DB_BOOKMARKS_DEL, new Object[] {});
 
                 db.setTransactionSuccessful();
 
@@ -105,7 +102,7 @@ class DBAdapterV2 extends DBAdapterV1 {
                 db.beginTransaction();
 
                 final Object[] delArgs = { book };
-                db.execSQL(DB_2_BOOKMARK_DEL_ALL, delArgs);
+                db.execSQL(DB_BOOKMARK_DEL_ALL, delArgs);
 
                 db.setTransactionSuccessful();
 
@@ -120,9 +117,13 @@ class DBAdapterV2 extends DBAdapterV1 {
     }
 
     @Override
-    void loadBookmarks(final BookSettings book, final SQLiteDatabase db) {
+    protected void loadBookmarks(final BookSettings book, final SQLiteDatabase db) {
+        loadBookmarks(book, db, DB_BOOKMARK_GET_ALL);
+    }
+
+    protected final void loadBookmarks(final BookSettings book, final SQLiteDatabase db, final String query) {
         book.bookmarks.clear();
-        final Cursor c = db.rawQuery(DB_2_BOOKMARK_GET_ALL, new String[] { book.fileName });
+        final Cursor c = db.rawQuery(query, new String[] { book.fileName });
         if (c != null) {
             try {
                 for (boolean next = c.moveToFirst(); next; next = c.moveToNext()) {
@@ -139,9 +140,9 @@ class DBAdapterV2 extends DBAdapterV1 {
     }
 
     @Override
-    void updateBookmarks(final BookSettings book, final SQLiteDatabase db) {
+    protected void updateBookmarks(final BookSettings book, final SQLiteDatabase db) {
         final Object[] delArgs = { book.fileName };
-        db.execSQL(DB_2_BOOKMARK_DEL_ALL, delArgs);
+        db.execSQL(DB_BOOKMARK_DEL_ALL, delArgs);
 
         for (final Bookmark bs : book.bookmarks) {
             final Object[] args = new Object[] {
@@ -153,7 +154,7 @@ class DBAdapterV2 extends DBAdapterV1 {
                     bs.page.viewIndex,
                     // Bookmark name
                     bs.name, };
-            db.execSQL(DB_2_BOOKMARK_STORE, args);
+            db.execSQL(DB_BOOKMARK_STORE, args);
         }
 
         if (LCTX.isDebugEnabled()) {
@@ -161,9 +162,11 @@ class DBAdapterV2 extends DBAdapterV1 {
         }
     }
 
-    Bookmark createBookmark(final Cursor c) {
+    protected Bookmark createBookmark(final Cursor c) {
         int index = 0;
-        return new Bookmark(new PageIndex(c.getInt(index++), c.getInt(index++)), c.getString(index++));
+        final int docIndex = c.getInt(index++);
+        final int viewIndex = c.getInt(index++);
+        final String name = c.getString(index++);
+        return new Bookmark(name, new PageIndex(docIndex, viewIndex), 0, 0);
     }
-
 }

@@ -225,6 +225,20 @@ public class SettingsManager {
         }
     }
 
+    public static void positionChanged(final float offsetX, final float offsetY) {
+        lock.readLock().lock();
+        try {
+            if (current != null) {
+                current.offsetX = offsetX;
+                current.offsetY = offsetY;
+
+                db.storeBookSettings(current);
+            }
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
     public static void onSettingsChanged() {
         lock.writeLock().lock();
         try {

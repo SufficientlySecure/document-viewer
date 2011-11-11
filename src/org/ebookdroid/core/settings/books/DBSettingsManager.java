@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter {
 
-    public static final int DB_VERSION = 3;
+    public static final int DB_VERSION = 4;
 
     private final IDBAdapter adapter;
 
@@ -38,8 +38,10 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter {
             case DBAdapterV2.VERSION:
                 return new DBAdapterV2(this);
             case DBAdapterV3.VERSION:
-            default:
                 return new DBAdapterV3(this);
+            case DBAdapterV4.VERSION:
+            default:
+                return new DBAdapterV4(this);
         }
     }
 

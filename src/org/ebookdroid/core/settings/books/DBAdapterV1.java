@@ -16,7 +16,7 @@ class DBAdapterV1 implements IDBAdapter {
 
     public static final int VERSION = 1;
 
-    public static final String DB_1_BOOK_CREATE = "create table book_settings ("
+    public static final String DB_BOOK_CREATE = "create table book_settings ("
     // Book file path
             + "book varchar(1024) primary key, "
             // Last update time
@@ -38,15 +38,15 @@ class DBAdapterV1 implements IDBAdapter {
             // ...
             ");";
 
-    public static final String DB_1_BOOK_GET_ALL = "SELECT book, last_updated, doc_page, view_page, zoom, single_page, page_align, page_animation, split_pages FROM book_settings where last_updated > 0 ORDER BY last_updated DESC";
+    public static final String DB_BOOK_GET_ALL = "SELECT book, last_updated, doc_page, view_page, zoom, single_page, page_align, page_animation, split_pages FROM book_settings where last_updated > 0 ORDER BY last_updated DESC";
 
-    public static final String DB_1_BOOK_GET_ONE = "SELECT book, last_updated, doc_page, view_page, zoom, single_page, page_align, page_animation, split_pages FROM book_settings WHERE book=?";
+    public static final String DB_BOOK_GET_ONE = "SELECT book, last_updated, doc_page, view_page, zoom, single_page, page_align, page_animation, split_pages FROM book_settings WHERE book=?";
 
-    public static final String DB_1_BOOK_STORE = "INSERT OR REPLACE INTO book_settings (book, last_updated, doc_page, view_page, zoom, single_page, page_align, page_animation, split_pages) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public static final String DB_BOOK_STORE = "INSERT OR REPLACE INTO book_settings (book, last_updated, doc_page, view_page, zoom, single_page, page_align, page_animation, split_pages) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    public static final String DB_1_BOOK_CLEAR_RECENT = "UPDATE book_settings set last_updated = 0";
+    public static final String DB_BOOK_CLEAR_RECENT = "UPDATE book_settings set last_updated = 0";
 
-    public static final String DB_1_BOOK_DROP_ALL = "DROP TABLE IF EXISTS book_settings";
+    public static final String DB_BOOK_DROP = "DROP TABLE IF EXISTS book_settings";
 
     protected final DBSettingsManager manager;
 
@@ -56,17 +56,17 @@ class DBAdapterV1 implements IDBAdapter {
 
     @Override
     public void onCreate(final SQLiteDatabase db) {
-        db.execSQL(DB_1_BOOK_CREATE);
+        db.execSQL(DB_BOOK_CREATE);
     }
 
     @Override
     public void onDestroy(final SQLiteDatabase db) {
-        db.execSQL(DB_1_BOOK_DROP_ALL);
+        db.execSQL(DB_BOOK_DROP);
     }
 
     @Override
     public Map<String, BookSettings> getBookSettings(final boolean all) {
-        return getBookSettings(DB_1_BOOK_GET_ALL, all);
+        return getBookSettings(DB_BOOK_GET_ALL, all);
     }
 
     protected final Map<String, BookSettings> getBookSettings(final String query, final boolean all) {
@@ -102,7 +102,7 @@ class DBAdapterV1 implements IDBAdapter {
 
     @Override
     public BookSettings getBookSettings(final String fileName) {
-        return getBookSettings(DB_1_BOOK_GET_ONE, fileName);
+        return getBookSettings(DB_BOOK_GET_ONE, fileName);
     }
 
     protected final BookSettings getBookSettings(final String query, final String fileName) {
@@ -197,7 +197,7 @@ class DBAdapterV1 implements IDBAdapter {
             try {
                 db.beginTransaction();
 
-                db.execSQL(DB_1_BOOK_CLEAR_RECENT, new Object[] {});
+                db.execSQL(DB_BOOK_CLEAR_RECENT, new Object[] {});
 
                 db.setTransactionSuccessful();
 
@@ -218,7 +218,7 @@ class DBAdapterV1 implements IDBAdapter {
             try {
                 db.beginTransaction();
 
-                db.execSQL(DB_1_BOOK_DROP_ALL, new Object[] {});
+                db.execSQL(DB_BOOK_DROP, new Object[] {});
 
                 onCreate(db);
 
@@ -257,7 +257,7 @@ class DBAdapterV1 implements IDBAdapter {
                 // Split pages on/off
                 bs.splitPages ? 1 : 0 };
 
-        db.execSQL(DB_1_BOOK_STORE, args);
+        db.execSQL(DB_BOOK_STORE, args);
 
         updateBookmarks(bs, db);
     }

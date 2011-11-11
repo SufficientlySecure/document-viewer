@@ -4,18 +4,22 @@ import org.ebookdroid.core.PageIndex;
 
 public class Bookmark {
 
-    public PageIndex page;
-    public String name;
     public boolean service;
+    public String name;
+    public PageIndex page;
+    public float offsetX;
+    public float offsetY;
 
-    public Bookmark(final PageIndex page, final String name) {
-        this(page, name, false);
+    public Bookmark(final String name, final PageIndex page, int offsetX, int offsetY) {
+        this(false, name, page, offsetX, offsetY);
     }
 
-    public Bookmark(final PageIndex page, final String name, final boolean service) {
-        this.page = page;
-        this.name = name;
+    public Bookmark(final boolean service, final String name, final PageIndex page, float offsetX, float offsetY) {
         this.service = service;
+        this.name = name;
+        this.page = page;
+        this.offsetX = offsetX;
+        this.offsetY = offsetY;
     }
 
     public int getActualIndex(boolean splittingEnabled) {
@@ -23,18 +27,6 @@ public class Bookmark {
             return page.docIndex;
         }
         return splittingEnabled ? page.viewIndex : page.docIndex;
-    }
-
-    public PageIndex getPage() {
-        return page;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public boolean isService() {
-        return service;
     }
 
     @Override

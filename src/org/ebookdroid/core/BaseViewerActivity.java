@@ -430,8 +430,9 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
     @ActionMethod(ids = R.id.actions_addBookmark)
     public void addBookmark(final ActionEx action) {
         final Editable value = action.getParameter("input");
+        final String name = value.toString();
         final BookSettings bs = SettingsManager.getBookSettings();
-        bs.bookmarks.add(new Bookmark(getDocumentModel().getCurrentIndex(), value.toString()));
+        bs.bookmarks.add(new Bookmark(name, getDocumentModel().getCurrentIndex(), 0, 0));
         SettingsManager.edit(bs).commit();
     }
 

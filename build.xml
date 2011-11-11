@@ -1,4 +1,4 @@
-<project name="EBookDroid" basedir="." default="--ebookdroid-release">
+<project name="EBookDroid" basedir="." default="EBookDroid-dev">
 
 	<property file="build.${user.name}.properties" />
 	<property file="build.properties" />
@@ -7,6 +7,14 @@
 	<tstamp>
 		<format property="debug.version" pattern="yyyyMMdd.HHmmss" />
 	</tstamp>
+
+	<path id="svnant.classpath">
+		<fileset dir="${svnant.dir}/lib">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svnant.classpath" />
 
 	<path id="android.antlibs">
 		<pathelement path="${sdk.dir}/tools/lib/anttasks.jar" />
@@ -55,7 +63,7 @@
 
 	<mkdir dir="apk" />
 
-	<target name="--make-release" >
+	<target name="--make-release">
 
 		<delete dir="obj" />
 		<mkdir dir="obj" />
@@ -73,7 +81,7 @@
 
 	</target>
 
-	<target name="--ebookdroid-release">
+	<target name="EBookDroid-release">
 		<antcall target="--make-release" inheritall="true">
 			<param name="mk" value="${arm.mk}" />
 			<param name="apk" value="${arm.apk}" />
@@ -93,6 +101,21 @@
 		<antcall target="--make-release">
 			<param name="mk" value="${cortex.a9.neon.mk}" />
 			<param name="apk" value="${cortex.a9.neon.apk}" />
+		</antcall>
+	</target>
+
+	<target name="EBookDroid-dev">
+		<svn javahl="false">
+			<info target="." />
+		</svn>
+		<echo>Revision: ${svn.info.rev}</echo>
+
+		<property name="target.apk" location="apk/${package.name}-${manifest.version}-r${svn.info.rev}.apk" />
+		<echo>Target: ${target.apk}</echo>
+		
+		<antcall target="--make-release">
+			<param name="mk" value="${arm.mk}" />
+			<param name="apk" value="${target.apk}" />
 		</antcall>
 	</target>
 

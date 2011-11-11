@@ -24,6 +24,7 @@ import org.ebookdroid.core.settings.books.BookSettings;
 import org.ebookdroid.core.settings.books.Bookmark;
 import org.ebookdroid.core.touch.TouchManager;
 import org.ebookdroid.core.touch.TouchManagerView;
+import org.ebookdroid.core.utils.AndroidVersion;
 import org.ebookdroid.core.utils.PathFromUri;
 import org.ebookdroid.core.views.PageViewZoomControls;
 import org.ebookdroid.core.views.ViewEffects;
@@ -539,7 +540,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
             setRequestedOrientation(newSettings.getRotation().getOrientation());
         }
 
-        if (diff.isFullScreenChanged()) {
+        if (diff.isFullScreenChanged() && !AndroidVersion.is3x) {
             final Window window = getWindow();
             if (newSettings.getFullScreen()) {
                 window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);

@@ -3,6 +3,7 @@ package org.ebookdroid.core.settings;
 import org.ebookdroid.R;
 import org.ebookdroid.core.DecodeMode;
 import org.ebookdroid.core.log.LogContext;
+import org.ebookdroid.core.utils.AndroidVersion;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -62,6 +63,8 @@ public class SettingsActivity extends BaseSettingsActivity {
         addListener("animationType", new AnimationTypeListener("align"));
         addListener("book_animationType", new AnimationTypeListener("book_align"));
 
+        findPreference("fullscreen").setEnabled(!AndroidVersion.is3x);
+        
         enableMaxImageSizePref(SettingsManager.getAppSettings().getDecodeMode());
     }
 

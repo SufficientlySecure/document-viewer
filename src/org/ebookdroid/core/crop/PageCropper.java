@@ -8,7 +8,7 @@ import android.graphics.RectF;
 
 public class PageCropper {
 
-    private final static int LINE_SIZE = 5;
+    private final static int LINE_SIZE = 10;
 
     private PageCropper() {
     }

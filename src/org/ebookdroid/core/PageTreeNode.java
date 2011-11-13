@@ -4,6 +4,7 @@ import org.ebookdroid.core.IDocumentViewController.InvalidateSizeReason;
 import org.ebookdroid.core.bitmaps.BitmapManager;
 import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.codec.CodecPage;
+import org.ebookdroid.core.crop.PageCropper;
 import org.ebookdroid.core.models.DecodingProgressModel;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.settings.SettingsManager;
@@ -191,17 +192,10 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         
         if (SettingsManager.getBookSettings().cropPages) {
             if (id == 0 && !cropped) {
-                float avgLum = calculateAvgLum(bitmap, bitmapBounds);
-                float left = getLeftBound(bitmap, bitmapBounds, avgLum);
-                float right = getRightBound(bitmap, bitmapBounds, avgLum);
-                float top = getTopBound(bitmap, bitmapBounds, avgLum);
-                float bottom = getBottomBound(bitmap, bitmapBounds, avgLum);
-    
-                croppedBounds = new RectF(left * pageSliceBounds.width() + pageSliceBounds.left, top
-                        * pageSliceBounds.height() + pageSliceBounds.top, right * pageSliceBounds.width()
-                        + pageSliceBounds.left, bottom * pageSliceBounds.height() + pageSliceBounds.top);
+                croppedBounds = PageCropper.getCropBounds(bitmap, bitmapBounds, pageSliceBounds);
                 cropped = true;
     
+                System.out.println("Cropped bounds:" + croppedBounds);
                 BitmapManager.release(bitmap);
                 
                 page.base.getActivity().runOnUiThread(new Runnable() {
@@ -248,134 +242,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         });
     }
 
-    private float getLeftBound(BitmapRef bitmap, Rect bitmapBounds, float avgLum) {
-        Bitmap bmp = bitmap.getBitmap();
-        final int w = bmp.getWidth() / 3;
-        int whiteCount = 0;
-        int x = 0;
-        int lineSize = 5;
-        for (x = bitmapBounds.left; x < bitmapBounds.left + w; x += lineSize) {
-            boolean white = isRectWhite(bmp, x, bitmapBounds.top + 20, x + lineSize, bitmapBounds.bottom - 20, avgLum);
-            if (white) {
-                whiteCount++;
-            } else {
-                if (whiteCount >= 1) {
-                    return (float) (x - bitmapBounds.left) / bitmapBounds.width();
-                }
-                whiteCount = 0;
-            }
-        }
-        return whiteCount > 0 ? (float) (x - bitmapBounds.left) / bitmapBounds.width() : 0;
-    }
-
-    private float getTopBound(BitmapRef bitmap, Rect bitmapBounds, float avgLum) {
-        Bitmap bmp = bitmap.getBitmap();
-        final int h = bmp.getHeight() / 3;
-        int whiteCount = 0;
-        int y = 0;
-        int lineSize = 5;
-        for (y = bitmapBounds.top; y < bitmapBounds.top + h; y += lineSize) {
-            boolean white = isRectWhite(bmp, bitmapBounds.left + 20, y, bitmapBounds.right - 20, y + lineSize, avgLum);
-            if (white) {
-                whiteCount++;
-            } else {
-                if (whiteCount >= 1) {
-                    return (float) (y - bitmapBounds.top) / bitmapBounds.height();
-                }
-                whiteCount = 0;
-            }
-        }
-        return whiteCount > 0 ? (float) (y - bitmapBounds.top) / bitmapBounds.height() : 0;
-    }
-
-    private float getRightBound(BitmapRef bitmap, Rect bitmapBounds, float avgLum) {
-        Bitmap bmp = bitmap.getBitmap();
-        final int w = bmp.getWidth() / 3;
-        int whiteCount = 0;
-        int x = 0;
-        int lineSize = 5;
-        for (x = bitmapBounds.right - lineSize; x > bitmapBounds.right - w; x -= lineSize) {
-            boolean white = isRectWhite(bmp, x, bitmapBounds.top + 20, x + lineSize, bitmapBounds.bottom - 20, avgLum);
-            if (white) {
-                whiteCount++;
-            } else {
-                if (whiteCount >= 1) {
-                    return (float) (x + lineSize - bitmapBounds.left) / bitmapBounds.width();
-                }
-                whiteCount = 0;
-            }
-        }
-        return whiteCount > 0 ? (float) (x + lineSize - bitmapBounds.left) / bitmapBounds.width() : 1;
-    }
-
-    private float getBottomBound(BitmapRef bitmap, Rect bitmapBounds, float avgLum) {
-        Bitmap bmp = bitmap.getBitmap();
-        final int h = bmp.getHeight() / 3;
-        int whiteCount = 0;
-        int y = 0;
-        int lineSize = 5;
-        for (y = bitmapBounds.bottom - lineSize; y > bitmapBounds.bottom - h; y -= lineSize) {
-            boolean white = isRectWhite(bmp, bitmapBounds.left + 20, y, bitmapBounds.right - 20, y + lineSize, avgLum);
-            if (white) {
-                whiteCount++;
-            } else {
-                if (whiteCount >= 1) {
-                    return (float) (y + lineSize - bitmapBounds.top) / bitmapBounds.height();
-                }
-                whiteCount = 0;
-            }
-        }
-        return whiteCount > 0 ? (float) (y + lineSize - bitmapBounds.top) / bitmapBounds.height() : 1;
-    }
-
-    private boolean isRectWhite(Bitmap bmp, int l, int t, int r, int b, float avgLum) {
-        for (int x = l; x < r; x++) {
-            for (int y = t; y < b; y++) {
-                int c = bmp.getPixel(x, y);
-
-                float lum = getLum(c);
-                if ((lum < avgLum) && ((avgLum - lum) * 10 > avgLum)) {
-                    return false;
-                }
-
-            }
-        }
-        return true;
-    }
-
-    private float calculateAvgLum(BitmapRef bitmap, Rect bitmapBounds) {
-        Bitmap bmp = bitmap.getBitmap();
-        if (bmp == null) {
-            return 1000;
-        }
-        float lum = 0f;
-        int size = 20;
-        int count = 0;
-        for (int x = bitmapBounds.left + bitmapBounds.width() / 2 - size; x < bitmapBounds.left + bitmapBounds.width()
-                / 2 + size; x++) {
-            for (int y = bitmapBounds.top + bitmapBounds.height() / 2 - size; y < bitmapBounds.top
-                    + bitmapBounds.height() / 2 + size; y++) {
-                int c = bmp.getPixel(x, y);
-
-                lum += getLum(c);
-                count++;
-            }
-        }
-
-        return lum / (count);
-    }
-
-    private float getLum(int c) {
-        int r = (c & 0xFF0000) >> 16;
-        int g = (c & 0xFF00) >> 8;
-        int b = c & 0xFF;
-        /*
-         * return (0.3f * r + 0.59f * g + 0.11f * b);
-         */
-        int min = Math.min(r, Math.min(g, b));
-        int max = Math.max(r, Math.max(g, b));
-        return (min + max) / 2;
-    }
 
     private boolean setDecodingNow(final boolean decodingNow) {
         if (this.decodingNow.compareAndSet(!decodingNow, decodingNow)) {

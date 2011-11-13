@@ -140,8 +140,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
         if (effectiveAlign == PageAlign.WIDTH) {
             final float pageHeight = width / page.getAspectRatio();
-            final float heightDelta = (height - pageHeight) / 2;
-            page.setBounds(new RectF(0, heightDelta, width, pageHeight + heightDelta));
+            page.setBounds(new RectF(0, 0, width, pageHeight));
         } else {
             final float pageWidth = height * page.getAspectRatio();
             final float widthDelta = (width - pageWidth) / 2;

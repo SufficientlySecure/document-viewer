@@ -137,7 +137,7 @@ public class ActionControllerMethod {
     private static Map<Integer, Method> getActionMethods(final Class<?> clazz) {
         final Map<Integer, Method> result = new HashMap<Integer, Method>();
 
-        if (AndroidVersion.is1x) {
+        if (AndroidVersion.VERSION < 8) {
             if (clazz.isAnnotationPresent(ActionTarget.class)) {
                 ActionTarget a = clazz.getAnnotation(ActionTarget.class);
                 for(ActionMethodDef def : a.actions()) {

@@ -24,7 +24,7 @@ typedef struct renderdocument_s renderdocument_t;
 struct renderdocument_s
 {
     pdf_xref *xref;
-    pdf_outline *outline;
+    fz_outline *outline;
     fz_glyph_cache *drawcache;
 };
 
@@ -58,7 +58,7 @@ static void pdf_free_document(renderdocument_t* doc)
     if (doc)
     {
         if (doc->outline)
-            pdf_free_outline(doc->outline);
+            fz_free_outline(doc->outline);
         doc->outline = NULL;
 
         if (doc->drawcache)
@@ -606,7 +606,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfOutline_free(JNIEnv *env, jclass clazz, jl
     if (doc)
     {
         if (doc->outline)
-            pdf_free_outline(doc->outline);
+            fz_free_outline(doc->outline);
         doc->outline = NULL;
     }
 }
@@ -614,7 +614,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfOutline_free(JNIEnv *env, jclass clazz, jl
 JNIEXPORT jstring JNICALL
 Java_org_ebookdroid_pdfdroid_codec_PdfOutline_getTitle(JNIEnv *env, jclass clazz, jlong outlinehandle)
 {
-    pdf_outline *outline = (pdf_outline*) (long) outlinehandle;
+    fz_outline *outline = (fz_outline*) (long) outlinehandle;
 //	DEBUG("PdfOutline_getTitle(%p)",outline);
     if (outline)
         return (*env)->NewStringUTF(env, outline->title);
@@ -624,40 +624,22 @@ Java_org_ebookdroid_pdfdroid_codec_PdfOutline_getTitle(JNIEnv *env, jclass clazz
 JNIEXPORT jstring JNICALL
 Java_org_ebookdroid_pdfdroid_codec_PdfOutline_getLink(JNIEnv *env, jclass clazz, jlong outlinehandle, jlong dochandle)
 {
-    pdf_outline *outline = (pdf_outline*) (long) outlinehandle;
+    fz_outline *outline = (fz_outline*) (long) outlinehandle;
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
 
 //	DEBUG("PdfOutline_getLink(%p)",outline);
     if (!outline)
         return NULL;
 
-    pdf_link* link = outline->link;
-    if (!link)
-        return NULL;
-
     char linkbuf[128];
-    int number;
-
-    if (link->kind == PDF_LINK_URI)
-    {
-        int len = (fz_to_str_len(link->dest) < 127) ? fz_to_str_len(link->dest) : 127;
-        snprintf(linkbuf, len, "%s", fz_to_str_buf(link->dest));
-        linkbuf[len] = 0;
-    }
-    else if (link->kind == PDF_LINK_GOTO)
-    {
-        number = pdf_find_page_number(doc->xref, fz_array_get(link->dest, 0));
-        if (number < 0)
-            return NULL;
-        snprintf(linkbuf, 127, "#%d", number + 1);
-    }
+    snprintf(linkbuf, 127, "#%d", outline->page + 1);
     return (*env)->NewStringUTF(env, linkbuf);
 }
 
 JNIEXPORT jlong JNICALL
 Java_org_ebookdroid_pdfdroid_codec_PdfOutline_getNext(JNIEnv *env, jclass clazz, jlong outlinehandle)
 {
-    pdf_outline *outline = (pdf_outline*) (long) outlinehandle;
+    fz_outline *outline = (fz_outline*) (long) outlinehandle;
 //	DEBUG("PdfOutline_getNext(%p)",outline);
     if (!outline)
         return 0;
@@ -667,9 +649,9 @@ Java_org_ebookdroid_pdfdroid_codec_PdfOutline_getNext(JNIEnv *env, jclass clazz,
 JNIEXPORT jlong JNICALL
 Java_org_ebookdroid_pdfdroid_codec_PdfOutline_getChild(JNIEnv *env, jclass clazz, jlong outlinehandle)
 {
-    pdf_outline *outline = (pdf_outline*) (long) outlinehandle;
+    fz_outline *outline = (fz_outline*) (long) outlinehandle;
 //	DEBUG("PdfOutline_getChild(%p)",outline);
     if (!outline)
-        return 0;
-    return (jlong) (long) outline->child;
+        return 0;                                                   
+    return (jlong) (long) outline->down;
 }

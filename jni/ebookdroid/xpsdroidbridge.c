@@ -23,8 +23,7 @@ struct renderdocument_s
 {
     xps_context* ctx;
     fz_glyph_cache* drawcache;
-    xps_outline* outline;
-    xps_named_dest* dests;
+    fz_outline* outline;
 };
 
 typedef struct renderpage_s renderpage_t;
@@ -57,12 +56,8 @@ static void xps_free_document(renderdocument_t* doc)
     if (doc)
     {
         if (doc->outline)
-            xps_free_outline(doc->outline);
+            fz_free_outline(doc->outline);
         doc->outline = NULL;
-
-        if (doc->dests)
-            xps_free_named_dest(doc->dests);
-        doc->dests = NULL;
 
         if (doc->drawcache)
             fz_free_glyph_cache(doc->drawcache);
@@ -99,7 +94,6 @@ Java_org_ebookdroid_xpsdroid_codec_XpsDocument_open(JNIEnv *env, jclass clazz, j
     doc->ctx = NULL;
     doc->drawcache = NULL;
     doc->outline = NULL;
-    doc->dests = NULL;
 
     /* initialize renderer */
     doc->drawcache = fz_new_glyph_cache();
@@ -337,10 +331,7 @@ Java_org_ebookdroid_xpsdroid_codec_XpsOutline_open(JNIEnv *env, jclass clazz, jl
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
 
     if (!doc->outline)
-        doc->outline = xps_parse_outline(doc->ctx);
-
-    if (!doc->dests)
-        doc->dests = xps_parse_named_dests(doc->ctx);
+        doc->outline = xps_load_outline(doc->ctx);
 
     DEBUG("XpsOutline.open(): return handle = %p", doc->outline);
     return (jlong) (long) doc->outline;
@@ -354,19 +345,15 @@ Java_org_ebookdroid_xpsdroid_codec_XpsOutline_free(JNIEnv *env, jclass clazz, jl
     if (doc)
     {
         if (doc->outline)
-            xps_free_outline(doc->outline);
+            fz_free_outline(doc->outline);
         doc->outline = NULL;
-
-        if (doc->dests)
-            xps_free_named_dest(doc->dests);
-        doc->dests = NULL;
     }
 }
 
 JNIEXPORT jstring JNICALL
 Java_org_ebookdroid_xpsdroid_codec_XpsOutline_getTitle(JNIEnv *env, jclass clazz, jlong outlinehandle)
 {
-    xps_outline *outline = (xps_outline*) (long) outlinehandle;
+    fz_outline *outline = (fz_outline*) (long) outlinehandle;
 //	DEBUG("XpsOutline_getTitle(%p)",outline);
     if (outline)
         return (*env)->NewStringUTF(env, outline->title);
@@ -376,40 +363,22 @@ Java_org_ebookdroid_xpsdroid_codec_XpsOutline_getTitle(JNIEnv *env, jclass clazz
 JNIEXPORT jstring JNICALL
 Java_org_ebookdroid_xpsdroid_codec_XpsOutline_getLink(JNIEnv *env, jclass clazz, jlong outlinehandle, jlong dochandle)
 {
-    xps_outline *outline = (xps_outline*) (long) outlinehandle;
+    fz_outline *outline = (fz_outline*) (long) outlinehandle;
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
 
 //	DEBUG("XpsOutline_getLink(%p)",outline);
     if (!outline)
         return NULL;
 
-    char* target = outline->target;
-    if (!target)
-        return NULL;
-
     char linkbuf[128];
-    int number;
-
-    xps_named_dest* found = NULL;
-    xps_named_dest* dest;
-    for (dest = doc->dests; dest; dest = dest->next)
-        if (!strcmp(dest->target, target))
-        {
-            found = dest;
-            break;
-        }
-
-    if (!found)
-        return NULL;
-
-    snprintf(linkbuf, 127, "#%d", found->page);
+    snprintf(linkbuf, 127, "#%d", outline->page + 1);
     return (*env)->NewStringUTF(env, linkbuf);
 }
 
 JNIEXPORT jlong JNICALL
 Java_org_ebookdroid_xpsdroid_codec_XpsOutline_getNext(JNIEnv *env, jclass clazz, jlong outlinehandle)
 {
-    xps_outline *outline = (xps_outline*) (long) outlinehandle;
+    fz_outline *outline = (fz_outline*) (long) outlinehandle;
 //	DEBUG("XpsOutline_getNext(%p)",outline);
     if (!outline)
         return 0;
@@ -419,10 +388,10 @@ Java_org_ebookdroid_xpsdroid_codec_XpsOutline_getNext(JNIEnv *env, jclass clazz,
 JNIEXPORT jlong JNICALL
 Java_org_ebookdroid_xpsdroid_codec_XpsOutline_getChild(JNIEnv *env, jclass clazz, jlong outlinehandle)
 {
-    xps_outline *outline = (xps_outline*) (long) outlinehandle;
+    fz_outline *outline = (fz_outline*) (long) outlinehandle;
 //	DEBUG("XpsOutline_getChild(%p)",outline);
     if (!outline)
         return 0;
-    return (jlong) (long) outline->child;
+    return (jlong) (long) outline->down;
 }
 

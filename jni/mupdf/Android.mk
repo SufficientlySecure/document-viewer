@@ -216,6 +216,7 @@ MY_MUPDF_SRC_FILES := \
 	mupdf/fitz/crypt_arc4.c \
 	mupdf/fitz/crypt_md5.c \
 	mupdf/fitz/crypt_sha2.c \
+	mupdf/fitz/doc_outline.c \
 	mupdf/fitz/obj_print.c \
 	mupdf/fitz/stm_buffer.c \
 	mupdf/fitz/stm_open.c \

@@ -89,8 +89,9 @@ public class ActionEx implements Runnable, View.OnClickListener, View.OnLongClic
      *            managed component type
      * @return component managed by action controller created this action
      */
+    @SuppressWarnings("unchecked")
     public <ManagedComponent> ManagedComponent getManagedComponent() {
-        return getParameter(IActionController.MANAGED_COMPONENT_PROPERTY);
+        return (ManagedComponent)getValue(IActionController.MANAGED_COMPONENT_PROPERTY);
     }
 
     /**

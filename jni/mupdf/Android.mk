@@ -149,7 +149,7 @@ MY_MUPDF_C_INCLUDES := \
 # of Androids own droid.ttf ... Maybe resort to pointing
 # to it in the filesystem? But this would violate proper
 # API use. Bleh.
-MY_MUPDF_CFLAGS := -DNOCJK
+MY_MUPDF_CFLAGS := -DNOCJK -DARCH_ARM -DARCH_ARM_CAN_LOAD_UNALIGNED
 
 MY_MUPDF_SRC_FILES := \
 	mupdf/pdf/pdf_annot.c \
@@ -204,7 +204,7 @@ MY_MUPDF_SRC_FILES := \
 	mupdf/draw/draw_mesh.c \
 	mupdf/draw/draw_paint.c \
 	mupdf/draw/draw_path.c \
-	mupdf/draw/draw_scale.c \
+	mupdf/draw/draw_simple_scale.c \
 	mupdf/draw/draw_unpack.c \
 	mupdf-overlay/fitz/base_error.c \
 	mupdf/fitz/base_hash.c \

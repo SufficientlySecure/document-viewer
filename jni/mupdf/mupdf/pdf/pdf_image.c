@@ -329,6 +329,18 @@ pdf_load_jpx_image(fz_pixmap **imgp, pdf_xref *xref, fz_obj *dict)
 		}
 	}
 
+	obj = fz_dict_getsa(dict, "Decode", "D");
+	if (obj)
+	{
+		float decode[FZ_MAX_COLORS * 2];
+		int i;
+
+		for (i = 0; i < img->n * 2; i++)
+			decode[i] = fz_to_real(fz_array_get(obj, i));
+
+		fz_decode_tile(img, decode);
+	}
+
 	*imgp = img;
 	return fz_okay;
 }
@@ -347,9 +359,8 @@ pdf_load_image(fz_pixmap **pixp, pdf_xref *xref, fz_obj *dict)
 	error = pdf_load_image_imp(pixp, xref, NULL, dict, NULL, 0);
 	if (error)
 		return fz_rethrow(error, "cannot load image (%d 0 R)", fz_to_num(dict));
-
 //	EBookDroid: Commented out for saving A LOTS of memory. Caching is not needed for embedded solutions
-	//pdf_store_item(xref->store, fz_keep_pixmap, fz_drop_pixmap, dict, *pixp);
+//	pdf_store_item(xref->store, fz_keep_pixmap, fz_drop_pixmap, dict, *pixp);
 
 	return fz_okay;
 }

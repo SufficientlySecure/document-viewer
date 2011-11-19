@@ -62,8 +62,9 @@ public class PdfPage implements CodecPage {
         // Check rotation
         switch (this.rotation) {
             case 90:
-                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(-mediaBox.left, -mediaBox.bottom));
-                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_rotate(rotation));
+                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(-mediaBox.left, -mediaBox.top));
+                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_rotate(-rotation));
+                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(0, mediaBox.width()));
                 matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_scale(width / mediaBox.height(), -height / mediaBox.width()));
                 break;
             case 180:
@@ -85,7 +86,7 @@ public class PdfPage implements CodecPage {
         }
 
         matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(0, height));
-        
+
         matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(-pageSliceBounds.left * width, -pageSliceBounds.top * height));
         matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_scale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height()));
 

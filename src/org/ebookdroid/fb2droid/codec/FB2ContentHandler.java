@@ -33,7 +33,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
 
     private boolean spaceNeeded = true;
 
-    private static final Pattern notesPattern = Pattern.compile("n([0-9]+)|n_([0-9]+)");
+    private static final Pattern notesPattern = Pattern.compile("n([0-9]+)|n_([0-9]+)|note_([0-9]+)|.*?([0-9]+)");
     private final StringBuilder tmpBinaryContents = new StringBuilder(64 * 1024);
     private final StringBuilder title = new StringBuilder();
 

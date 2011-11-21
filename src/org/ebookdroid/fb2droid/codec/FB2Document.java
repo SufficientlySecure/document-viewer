@@ -215,6 +215,9 @@ public class FB2Document implements CodecDocument {
     }
 
     public FB2Image getImage(final String name) {
+        if (name == null) {
+            return null;
+        }
         FB2Image img = images.get(name);
         if (img == null && name.startsWith("#")) {
             img = images.get(name.substring(1));

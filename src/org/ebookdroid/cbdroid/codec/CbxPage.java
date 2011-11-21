@@ -2,6 +2,7 @@ package org.ebookdroid.cbdroid.codec;
 
 import org.ebookdroid.core.bitmaps.BitmapManager;
 import org.ebookdroid.core.bitmaps.BitmapRef;
+import org.ebookdroid.core.bitmaps.RawBitmap;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.utils.archives.ArchiveEntry;
@@ -150,25 +151,25 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
                 (int) (pageSliceBounds.top * storedBitmap.getHeight()),
                 (int) (pageSliceBounds.right * storedBitmap.getWidth()),
                 (int) (pageSliceBounds.bottom * storedBitmap.getHeight()));
-        
+
         float scaleFactor = (float)width/(float)srcRect.width();
         CbxDocument.LCTX.d("Scale factor:"+scaleFactor);
         if (scaleFactor > 4.5) {
-            CbxDocument.LCTX.d("Calling Native HQ4x");   
+            CbxDocument.LCTX.d("Calling Native HQ4x");
             RawBitmap src = new RawBitmap(storedBitmap, srcRect);
-            Bitmap scaled = scaleHq4x(src);
+            Bitmap scaled = src.scaleHq4x();
             c.drawBitmap(scaled, null, new Rect(0,0,width, height), paint);
             scaled.recycle();
         } else if (scaleFactor > 3.5) {
-            CbxDocument.LCTX.d("Calling Native HQ3x");   
+            CbxDocument.LCTX.d("Calling Native HQ3x");
             RawBitmap src = new RawBitmap(storedBitmap, srcRect);
-            Bitmap scaled = scaleHq3x(src);
+            Bitmap scaled = src.scaleHq3x();
             c.drawBitmap(scaled, null, new Rect(0,0,width, height), paint);
             scaled.recycle();
         } else if (scaleFactor > 2.5) {
-            CbxDocument.LCTX.d("Calling Native HQ2x");   
+            CbxDocument.LCTX.d("Calling Native HQ2x");
             RawBitmap src = new RawBitmap(storedBitmap, srcRect);
-            Bitmap scaled = scaleHq2x(src);
+            Bitmap scaled = src.scaleHq2x();
             c.drawBitmap(scaled, null, new Rect(0,0,width, height), paint);
             scaled.recycle();
         } else {
@@ -183,41 +184,5 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
         }
         return pageInfo;
     }
-    
-    private static Bitmap scaleHq4x(RawBitmap src) {
-        RawBitmap dest = new RawBitmap(src.getWidth() * 4,
-                src.getHeight() * 4,
-                src.hasAlpha());
-        src.fillAlpha(0x00);
-        
-        nativeHq4x(src.getPixels(), dest.getPixels(), src.getWidth(), src.getHeight());
-        dest.fillAlpha(0xFF);
-        return dest.toBitmap();
-    }
 
-    private static Bitmap scaleHq3x(RawBitmap src) {
-        RawBitmap dest = new RawBitmap(src.getWidth() * 3,
-                src.getHeight() * 3,
-                src.hasAlpha());
-        src.fillAlpha(0x00);
-        
-        nativeHq3x(src.getPixels(), dest.getPixels(), src.getWidth(), src.getHeight());
-        dest.fillAlpha(0xFF);
-        return dest.toBitmap();
-    }
-    
-    private static Bitmap scaleHq2x(RawBitmap src) {
-        RawBitmap dest = new RawBitmap(src.getWidth() * 2,
-                src.getHeight() * 2,
-                src.hasAlpha());
-        src.fillAlpha(0x00);
-        
-        nativeHq2x(src.getPixels(), dest.getPixels(), src.getWidth(), src.getHeight());
-        dest.fillAlpha(0xFF);
-        return dest.toBitmap();
-    }
-    
-    private static native void nativeHq2x(int[] src, int[] dst, int width, int height);
-    private static native void nativeHq3x(int[] src, int[] dst, int width, int height);
-    private static native void nativeHq4x(int[] src, int[] dst, int width, int height);
 }

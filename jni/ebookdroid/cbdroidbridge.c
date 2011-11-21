@@ -4,7 +4,8 @@
 #include "hqxcommon.h"
 #include "hqx.h"
 
-void Java_org_ebookdroid_cbdroid_codec_CbxPage_nativeHq4x(JNIEnv* env, jclass classObject, jintArray srcArray,
+JNIEXPORT void JNICALL
+Java_org_ebookdroid_core_bitmaps_RawBitmap_nativeHq4x(JNIEnv* env, jclass classObject, jintArray srcArray,
                                                           jintArray dstArray, jint width, jint height)
 {
 
@@ -20,7 +21,8 @@ void Java_org_ebookdroid_cbdroid_codec_CbxPage_nativeHq4x(JNIEnv* env, jclass cl
     (*env)->ReleaseIntArrayElements(env, dstArray, dst, 0);
 }
 
-void Java_org_ebookdroid_cbdroid_codec_CbxPage_nativeHq3x(JNIEnv* env, jclass classObject, jintArray srcArray,
+JNIEXPORT void JNICALL
+ Java_org_ebookdroid_core_bitmaps_RawBitmap_nativeHq3x(JNIEnv* env, jclass classObject, jintArray srcArray,
                                                           jintArray dstArray, jint width, jint height)
 {
 
@@ -36,7 +38,8 @@ void Java_org_ebookdroid_cbdroid_codec_CbxPage_nativeHq3x(JNIEnv* env, jclass cl
     (*env)->ReleaseIntArrayElements(env, dstArray, dst, 0);
 }
 
-void Java_org_ebookdroid_cbdroid_codec_CbxPage_nativeHq2x(JNIEnv* env, jclass classObject, jintArray srcArray,
+JNIEXPORT void JNICALL
+ Java_org_ebookdroid_core_bitmaps_RawBitmap_nativeHq2x(JNIEnv* env, jclass classObject, jintArray srcArray,
                                                           jintArray dstArray, jint width, jint height)
 {
 

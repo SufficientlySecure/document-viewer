@@ -209,18 +209,18 @@ public class FB2Document implements CodecDocument {
 
     public void addImage(final String tmpBinaryName, final String encoded) {
         if (tmpBinaryName != null && encoded != null) {
-            final FB2Image img = new FB2Image(encoded);
-            images.put(tmpBinaryName, img);
+            images.put("I"+tmpBinaryName, new FB2Image(encoded, true));
+            images.put("O"+tmpBinaryName, new FB2Image(encoded, false));
         }
     }
 
-    public FB2Image getImage(final String name) {
+    public FB2Image getImage(final String name, final boolean inline) {
         if (name == null) {
             return null;
         }
-        FB2Image img = images.get(name);
+        FB2Image img = images.get((inline ? "I" : "O") + name);
         if (img == null && name.startsWith("#")) {
-            img = images.get(name.substring(1));
+            img = images.get((inline ? "I" : "O") + name.substring(1));
         }
         return img;
     }
@@ -245,7 +245,7 @@ public class FB2Document implements CodecDocument {
 
     @Override
     public Bitmap getEmbeddedThumbnail() {
-        final FB2Image image = getImage(cover);
+        final FB2Image image = getImage(cover, false);
         if (image != null) {
             final byte[] data = image.getData();
             return BitmapFactory.decodeByteArray(data, 0, data.length);
@@ -284,7 +284,7 @@ public class FB2Document implements CodecDocument {
     }
 
     public void publishImage(final String ref, final boolean inline) {
-        final FB2Image image = getImage(ref);
+        final FB2Image image = getImage(ref, inline);
         if (image != null) {
             if (!inline) {
                 final FB2Line line = new FB2Line();

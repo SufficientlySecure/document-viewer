@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Base64;
@@ -16,33 +17,36 @@ public class FB2Image extends AbstractFB2LineElement {
 
     private final String encoded;
     private byte[] data;
+    private final Paint paint;
 
-    public FB2Image(final String encoded) {
-        super(calculateImageRect(encoded));
+    public FB2Image(final String encoded, boolean inline) {
+        super(calculateImageRect(encoded, inline));
         this.encoded = encoded;
+        paint = new Paint();
+        paint.setFilterBitmap(true);
     }
 
-    private static RectF calculateImageRect(final String encoded) {
+    private static RectF calculateImageRect(final String encoded, boolean inline) {
         final Options opts = getImageSize(encoded);
         final int origWidth = opts.outWidth;
         final int origHeight = opts.outHeight;
 
         float w = 0, h = 0;
 
-        if (origWidth <= FB2Page.PAGE_WIDTH && origHeight <= FB2Page.PAGE_HEIGHT) {
+        if (origWidth <= FB2Page.PAGE_WIDTH - 2 * FB2Page.MARGIN_X && origHeight <= FB2Page.PAGE_HEIGHT - 2 * FB2Page.MARGIN_Y && inline) {
             w = origWidth;
             h = origHeight;
         } else {
-            if (origWidth > FB2Page.PAGE_WIDTH) {
-                w = FB2Page.PAGE_WIDTH;
+            if (origWidth > FB2Page.PAGE_WIDTH - 2 * FB2Page.MARGIN_X || !inline) {
+                w = FB2Page.PAGE_WIDTH - 2 * FB2Page.MARGIN_X;
                 h = origHeight * w / origWidth;
             } else {
                 w = origWidth;
                 h = origHeight;
             }
-            if (h > FB2Page.PAGE_HEIGHT) {
-                w = w * FB2Page.PAGE_HEIGHT / h;
-                h = FB2Page.PAGE_HEIGHT;
+            if (h > FB2Page.PAGE_HEIGHT - 2 * FB2Page.MARGIN_X) {
+                w = w * (FB2Page.PAGE_HEIGHT - 2 * FB2Page.MARGIN_Y) / h;
+                h = FB2Page.PAGE_HEIGHT - 2 * FB2Page.MARGIN_X;
             }
         }
         return new RectF(0f, 0f, w, h);
@@ -56,7 +60,7 @@ public class FB2Image extends AbstractFB2LineElement {
     public void render(final Canvas c, final int y, final int x) {
         final byte[] data = getData();
         final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-        c.drawBitmap(bmp, null, new Rect(x, y - height, (int) (x + width), y), null);
+        c.drawBitmap(bmp, null, new Rect(x, y - height, (int) (x + width), y), paint);
         bmp.recycle();
     }
 

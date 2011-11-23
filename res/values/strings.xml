@@ -79,6 +79,8 @@
 	<string name="pref_pagesinmemory_summary">"Number of pages to store in memory"</string>
 	<string name="pref_splitpages_title">"Split pages"</string>
 	<string name="pref_splitpages_summary">"Split landscape pages into two portrait"</string>
+	<string name="pref_useanimation_title">"Use animation"</string>
+	<string name="pref_useanimation_summary">"Use animation for page flipping"</string>
 	<string name="pref_nightmode_title">"Night mode"</string>
 	<string name="pref_nightmode_summary">"Use white symbols on black background"</string>
 	<string name="error_close">"Close"</string>

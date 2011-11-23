@@ -1,21 +1,22 @@
 package org.ebookdroid.core;
 
+import org.ebookdroid.core.DrawThread.DrawTask;
 import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.utils.Flag;
 import org.ebookdroid.utils.MathUtils;
 
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.view.View;
 import android.widget.Scroller;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-public final class BaseDocumentView extends SurfaceView implements SurfaceHolder.Callback {
+public final class BaseDocumentView extends View {
 
     protected static final LogContext LCTX = LogContext.ROOT.lctx("View");
 
@@ -37,7 +38,8 @@ public final class BaseDocumentView extends SurfaceView implements SurfaceHolder
         setKeepScreenOn(SettingsManager.getAppSettings().isKeepScreenOn());
         setFocusable(true);
         setFocusableInTouchMode(true);
-        getHolder().addCallback(this);
+        // getHolder().addCallback(this);
+        drawThread = new DrawThread(null);
     }
 
     public final BaseDocumentView getView() {
@@ -164,11 +166,6 @@ public final class BaseDocumentView extends SurfaceView implements SurfaceHolder
         }
     }
 
-    @Override
-    public final void surfaceChanged(final SurfaceHolder holder, final int format, final int width, final int height) {
-        redrawView();
-    }
-
     public final void redrawView() {
         redrawView(new ViewState(base.getDocumentController()));
     }
@@ -179,18 +176,16 @@ public final class BaseDocumentView extends SurfaceView implements SurfaceHolder
                 drawThread.draw(viewState);
             }
             base.getDecodeService().updateViewState(viewState);
+            postInvalidate();
         }
     }
 
     @Override
-    public final void surfaceCreated(final SurfaceHolder holder) {
-        drawThread = new DrawThread(getHolder());
-        drawThread.start();
-        holder.setFormat(base.getDecodeService().getPixelFormat());
-    }
-
-    @Override
-    public final void surfaceDestroyed(final SurfaceHolder holder) {
-        drawThread.finish();
+    protected void onDraw(Canvas canvas) {
+        DrawTask task = drawThread.takeTask(1, TimeUnit.MILLISECONDS);
+        if (task == null) {
+            task = new DrawTask(new ViewState(base.getDocumentController()));
+        }
+        drawThread.performDrawing(canvas, task);
     }
 }

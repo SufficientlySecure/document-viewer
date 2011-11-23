@@ -5,6 +5,7 @@ import org.ebookdroid.core.log.LogContext;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
+import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -31,18 +32,18 @@ public class DrawThread extends Thread {
 
     @Override
     public void run() {
-        Canvas canvas;
         Thread.currentThread().setPriority(Thread.NORM_PRIORITY + 1);
+        while (draw()) {
+        }
+    }
 
-        while (true) {
-            final DrawTask task = takeTask();
-            if (task == null) {
-                continue;
-            }
+    public boolean draw() {
+        final DrawTask task = takeTask(1, TimeUnit.SECONDS);
+        if (task != null) {
             if (task.viewState == null) {
-                break;
+                return false;
             }
-            canvas = null;
+            Canvas canvas = null;
             try {
                 canvas = surfaceHolder.lockCanvas(null);
                 performDrawing(canvas, task);
@@ -54,20 +55,27 @@ public class DrawThread extends Thread {
                 }
             }
         }
+        return true;
     }
 
-    private DrawTask takeTask() {
+    public DrawTask takeTask(long timeout, TimeUnit unit) {
         DrawTask task = null;
         try {
-            task = queue.poll(1, TimeUnit.SECONDS);
+            task = queue.poll(timeout, unit);
+            if (task != null) {
+                final ArrayList<DrawTask> list = new ArrayList<DrawTask>();
+                if (queue.drainTo(list) > 0) {
+                    task = list.get(list.size() - 1);
+                }
+            }
         } catch (final InterruptedException e) {
             Thread.interrupted();
         }
         return task;
     }
 
-    private void performDrawing(final Canvas canvas, final DrawTask task) {
-        final PagePaint paint = task.viewState.nightMode ? PagePaint.NIGHT: PagePaint.DAY;
+    public void performDrawing(final Canvas canvas, final DrawTask task) {
+        final PagePaint paint = task.viewState.nightMode ? PagePaint.NIGHT : PagePaint.DAY;
         canvas.drawRect(canvas.getClipBounds(), paint.backgroundFillPaint);
         task.viewState.ctrl.drawView(canvas, task.viewState);
     }
@@ -78,7 +86,7 @@ public class DrawThread extends Thread {
         }
     }
 
-    private static class DrawTask {
+    public static class DrawTask {
 
         final ViewState viewState;
 

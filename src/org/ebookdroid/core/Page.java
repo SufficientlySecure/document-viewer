@@ -49,9 +49,7 @@ public class Page {
         if (drawInvisible || viewState.isPageVisible(this)) {
             final PagePaint paint = viewState.nightMode ? PagePaint.NIGHT : PagePaint.DAY;
 
-            final RectF bounds = new RectF(viewState.getBounds(this));
-            final RectF nodesBounds = new RectF(bounds);
-            bounds.offset(-viewState.viewRect.left, -viewState.viewRect.top);
+            final RectF bounds = viewState.getBounds(this);
 
             canvas.drawRect(bounds, paint.fillPaint);
 
@@ -60,7 +58,7 @@ public class Page {
             canvas.drawText(base.getContext().getString(R.string.text_page) + " " + (index.viewIndex + 1),
                     bounds.centerX(), bounds.centerY(), textPaint);
 
-            nodes.root.draw(canvas, viewState, nodesBounds, paint);
+            nodes.root.draw(canvas, viewState, bounds, paint);
 
             canvas.drawLine(bounds.left, bounds.top, bounds.right, bounds.top, paint.strokePaint);
             canvas.drawLine(bounds.left, bounds.bottom, bounds.right, bounds.bottom, paint.strokePaint);

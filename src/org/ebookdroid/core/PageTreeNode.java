@@ -303,11 +303,8 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     public RectF getTargetRect(final RectF viewRect, final RectF pageBounds) {
         matrix.reset();
 
-        final RectF bounds = new RectF(pageBounds);
-        bounds.offset(-viewRect.left, -viewRect.top);
-
-        matrix.postScale(bounds.width() * page.getTargetRectScale(), bounds.height());
-        matrix.postTranslate(bounds.left - bounds.width() * page.getTargetTranslate(), bounds.top);
+        matrix.postScale(pageBounds.width() * page.getTargetRectScale(), pageBounds.height());
+        matrix.postTranslate(pageBounds.left - pageBounds.width() * page.getTargetTranslate(), pageBounds.top);
 
         final RectF targetRectF = new RectF();
         matrix.mapRect(targetRectF, pageSliceBounds);
@@ -317,11 +314,8 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     public RectF getTargetCroppedRect(final RectF viewRect, final RectF pageBounds) {
         matrix.reset();
 
-        final RectF bounds = new RectF(pageBounds);
-        bounds.offset(-viewRect.left, -viewRect.top);
-
-        matrix.postScale(bounds.width() * page.getTargetRectScale(), bounds.height());
-        matrix.postTranslate(bounds.left - bounds.width() * page.getTargetTranslate(), bounds.top);
+        matrix.postScale(pageBounds.width() * page.getTargetRectScale(), pageBounds.height());
+        matrix.postTranslate(pageBounds.left - pageBounds.width() * page.getTargetTranslate(), pageBounds.top);
 
         final RectF targetRectF = new RectF();
         matrix.mapRect(targetRectF, croppedBounds);

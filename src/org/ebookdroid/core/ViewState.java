@@ -148,7 +148,7 @@ public class ViewState {
         Boolean res = nodeVisibility.get(node.shortId);
         if (res == null) {
             final RectF tr = node.getTargetRect(this.viewRect, pageBounds);
-            res = RectF.intersects(tr, this.realRect);
+            res = RectF.intersects(tr, this.viewRect);
             nodeVisibility.put(node.shortId, res);
         }
         return res.booleanValue();

@@ -226,7 +226,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                     ViewState viewState = new ViewState(dc);
                     if (changed) {
                         dc.invalidatePageSizes(InvalidateSizeReason.PAGE_LOADED, page);
-                        viewState = dc.updatePageVisibility(page.index.viewIndex, 0, viewState.zoom);
+                        viewState = dc.updatePageVisibility(dm.getCurrentViewPageIndex(), 0, viewState.zoom);
                     }
                     final RectF bounds = viewState.getBounds(page);
                     if (parent != null) {

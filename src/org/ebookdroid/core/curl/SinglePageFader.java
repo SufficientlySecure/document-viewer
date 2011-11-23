@@ -46,9 +46,7 @@ public class SinglePageFader extends AbstractPageSlider {
     protected void drawBackground(final Canvas canvas, final ViewState viewState) {
         final Page page = view.getBase().getDocumentModel().getPageObject(backIndex);
         if (page != null) {
-            final BitmapRef back = getBitmap(canvas, viewState);
-            final Canvas tmp = new Canvas(back.getBitmap());
-            page.draw(tmp, viewState, true);
+            updateBackBitmap(canvas, viewState, page);
 
             final Paint paint = new Paint();
             paint.setFilterBitmap(true);
@@ -57,8 +55,7 @@ public class SinglePageFader extends AbstractPageSlider {
             paint.setAlpha(255 * (int) mA.x / (int) viewState.viewRect.width());
             final Rect src = new Rect(0, 0, (int) viewState.viewRect.width(), (int) viewState.viewRect.height());
             final RectF dst = new RectF(0, 0, viewState.viewRect.width(), viewState.viewRect.height());
-            canvas.drawBitmap(back.getBitmap(), src, dst, paint);
-            BitmapManager.release(back);
+            canvas.drawBitmap(backBitmap.getBitmap(), src, dst, paint);
         }
 
     }

@@ -165,5 +165,10 @@ public class SinglePageDocumentView extends AbstractDocumentView {
         newCurler.init();
         curler.switchCurler(newCurler);
     }
+
+    @Override
+    public void pageUpdated(int viewIndex) {
+        curler.pageUpdated(viewIndex);
+    }
 }
 

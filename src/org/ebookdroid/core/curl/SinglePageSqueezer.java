@@ -31,9 +31,7 @@ public class SinglePageSqueezer extends AbstractPageSlider {
             page = view.getBase().getDocumentModel().getCurrentPageObject();
         }
         if (page != null) {
-            final BitmapRef fore = getBitmap(canvas, viewState);
-            final Canvas tmp = new Canvas(fore.getBitmap());
-            page.draw(tmp, viewState, true);
+            updateForeBitmap(canvas, viewState, page);
 
             final Rect src = new Rect(0, 0, (int) viewState.viewRect.width(), (int) viewState.viewRect.height());
             final RectF dst = new RectF(0, 0, viewState.viewRect.width() - mA.x, viewState.viewRect.height());
@@ -41,8 +39,7 @@ public class SinglePageSqueezer extends AbstractPageSlider {
             paint.setFilterBitmap(true);
             paint.setAntiAlias(true);
             paint.setDither(true);
-            canvas.drawBitmap(fore.getBitmap(), src, dst, paint);
-            BitmapManager.release(fore);
+            canvas.drawBitmap(foreBitmap.getBitmap(), src, dst, paint);
         }
     }
 
@@ -57,9 +54,7 @@ public class SinglePageSqueezer extends AbstractPageSlider {
     protected void drawBackground(final Canvas canvas, final ViewState viewState) {
         final Page page = view.getBase().getDocumentModel().getPageObject(backIndex);
         if (page != null) {
-            final BitmapRef back = getBitmap(canvas, viewState);
-            final Canvas tmp = new Canvas(back.getBitmap());
-            page.draw(tmp, viewState, true);
+            updateBackBitmap(canvas, viewState, page);
 
             final Rect src = new Rect(0, 0, (int) viewState.viewRect.width(), (int) viewState.viewRect.height());
             final RectF dst = new RectF(viewState.viewRect.width() - mA.x, 0, viewState.viewRect.width(),
@@ -68,8 +63,7 @@ public class SinglePageSqueezer extends AbstractPageSlider {
             paint.setFilterBitmap(true);
             paint.setAntiAlias(true);
             paint.setDither(true);
-            canvas.drawBitmap(back.getBitmap(), src, dst, paint);
-            BitmapManager.release(back);
+            canvas.drawBitmap(backBitmap.getBitmap(), src, dst, paint);
         }
 
     }

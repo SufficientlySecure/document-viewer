@@ -61,4 +61,6 @@ public interface IDocumentViewController extends ZoomListener {
     boolean dispatchKeyEvent(final KeyEvent event);
 
     ViewState updatePageVisibility(final int newPage, final int direction, final float zoom);
+
+    void pageUpdated(int viewIndex);
 }

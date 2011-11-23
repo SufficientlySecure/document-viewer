@@ -214,4 +214,8 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         // This mode do not use animation
 
     }
+
+    @Override
+    public void pageUpdated(int viewIndex) {
+    }
 }

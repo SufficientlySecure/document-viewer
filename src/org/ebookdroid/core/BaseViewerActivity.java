@@ -801,5 +801,9 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         @Override
         public final void init() {
         }
+
+        @Override
+        public void pageUpdated(int viewIndex) {
+        }
     }
 }

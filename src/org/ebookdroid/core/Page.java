@@ -51,13 +51,14 @@ public class Page {
 
             final RectF bounds = viewState.getBounds(this);
 
-            canvas.drawRect(bounds, paint.fillPaint);
-
-            final TextPaint textPaint = paint.textPaint;
-            textPaint.setTextSize(24 * base.getZoomModel().getZoom());
-            canvas.drawText(base.getContext().getString(R.string.text_page) + " " + (index.viewIndex + 1),
-                    bounds.centerX(), bounds.centerY(), textPaint);
-
+            if (!nodes.root.hasBitmap(viewState, paint)) {
+                canvas.drawRect(bounds, paint.fillPaint);
+    
+                final TextPaint textPaint = paint.textPaint;
+                textPaint.setTextSize(24 * base.getZoomModel().getZoom());
+                canvas.drawText(base.getContext().getString(R.string.text_page) + " " + (index.viewIndex + 1),
+                        bounds.centerX(), bounds.centerY(), textPaint);
+            }
             nodes.root.draw(canvas, viewState, bounds, paint);
 
             canvas.drawLine(bounds.left, bounds.top, bounds.right, bounds.top, paint.strokePaint);

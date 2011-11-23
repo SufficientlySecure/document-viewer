@@ -4,6 +4,7 @@ import org.ebookdroid.R;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.SinglePageDocumentView;
 import org.ebookdroid.core.ViewState;
+import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.models.DocumentModel;
 
 import android.graphics.Bitmap;
@@ -30,7 +31,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
     protected boolean bBlockTouchInput = false;
     /** Enable input after the next draw event */
     protected boolean bEnableInputAfterDraw = false;
-    protected Vector2D mA;
+    protected Vector2D mA = new Vector2D(0, 0);
     /** The initial offset for x and y axis movements */
     protected int mInitialEdgeOffset;
     /** The finger position */
@@ -40,6 +41,12 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
     /** TRUE if the user moves the pages */
     protected boolean bUserMoves;
 
+    protected BitmapRef foreBitmap;
+    protected int foreBitmapIndex = -1;
+
+    protected BitmapRef backBitmap;
+    protected int backBitmapIndex = -1;
+    
     protected Bitmap arrowsBitmap;
 
     protected final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
@@ -118,7 +125,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
         bBlockTouchInput = true;
 
         // Handle speed
-        float curlSpeed = width / 10;
+        float curlSpeed = width / 5;
         if (!bFlipRight) {
             curlSpeed *= -1;
         }
@@ -335,4 +342,16 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
     protected int getInitialXForBackFlip(final int width) {
         return width;
     }
+
+    @Override
+    public void pageUpdated(int viewIndex) {
+        if (foreBitmapIndex == viewIndex) {
+            foreBitmapIndex = -1;
+        }
+        if (backBitmapIndex == viewIndex) {
+            backBitmapIndex = -1;
+        }
+    }
+    
+    
 }

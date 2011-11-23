@@ -180,20 +180,20 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
         edgePath.quadTo(((int) mA.x + 3 * x1) / 4, ((int) mA.y + 3 * cornerY) / 4, ((int) mA.x + x1) / 2, ((int) mA.y + cornerY) / 2);
 
         canvas.drawPath(edgePath, edgePaint);
-        canvas.save();
-        canvas.clipPath(edgePath);
-        final Matrix m = new Matrix();
-        m.postScale(1, -1);
-        m.postTranslate((int) mA.x - cornerX, (int) mA.y + cornerY);
-        final float angle;
-        if (cornerY == 0) {
-            angle = -180 / 3.1416f * (float) Math.atan2((int) mA.x - cornerX, (int) mA.y - y1);
-        } else {
-            angle = 180 - 180 / 3.1416f * (float) Math.atan2((int) mA.x - cornerX, (int) mA.y - y1);
-        }
-        m.postRotate(angle, (int) mA.x, (int) mA.y);
-        canvas.drawBitmap(fgBitmap, m, backPaint);
-        canvas.restore();
+//        canvas.save();
+//        canvas.clipPath(edgePath);
+//        final Matrix m = new Matrix();
+//        m.postScale(1, -1);
+//        m.postTranslate((int) mA.x - cornerX, (int) mA.y + cornerY);
+//        final float angle;
+//        if (cornerY == 0) {
+//            angle = -180 / 3.1416f * (float) Math.atan2((int) mA.x - cornerX, (int) mA.y - y1);
+//        } else {
+//            angle = 180 - 180 / 3.1416f * (float) Math.atan2((int) mA.x - cornerX, (int) mA.y - y1);
+//        }
+//        m.postRotate(angle, (int) mA.x, (int) mA.y);
+//        canvas.drawBitmap(fgBitmap, m, backPaint);
+//        canvas.restore();
     }
 
     @Override

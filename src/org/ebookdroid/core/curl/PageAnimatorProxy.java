@@ -63,4 +63,8 @@ public class PageAnimatorProxy implements PageAnimator {
     public boolean isPageVisible(Page page, ViewState viewState) {
         return orig.get().isPageVisible(page, viewState);
     }
+
+    public void pageUpdated(int viewIndex) {
+        orig.get().pageUpdated(viewIndex);
+    }
 }

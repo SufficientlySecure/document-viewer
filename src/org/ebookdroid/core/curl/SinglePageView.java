@@ -98,4 +98,8 @@ public class SinglePageView implements PageAnimator {
     public boolean isViewDrawn() {
         return bViewDrawn;
     }
+
+    @Override
+    public void pageUpdated(int viewIndex) {
+    }
 }

@@ -5,7 +5,7 @@
     <uses-permission android:name="com.android.email.permission.ACCESS_PROVIDER"/>
     <uses-permission android:name="com.android.email.permission.READ_ATTACHMENT"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <application android:icon="@drawable/icon" android:label="@string/app_name" android:name="EBookDroidApp" android:hardwareAccelerated="true">
+    <application android:icon="@drawable/icon" android:label="@string/app_name" android:name="EBookDroidApp" android:hardwareAccelerated="true" android:largeHeap="true">
         <activity android:name=".pdfdroid.PdfViewerActivity" android:configChanges="orientation|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>

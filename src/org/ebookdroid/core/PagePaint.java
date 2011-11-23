@@ -26,10 +26,10 @@ public enum PagePaint {
 
     private PagePaint(final int textColor, final int fillColor, final int bgFillPaint) {
         bitmapPaint = new Paint();
-        bitmapPaint.setFilterBitmap(true);
+        bitmapPaint.setFilterBitmap(false);
 
         nightBitmapPaint = new Paint();
-        nightBitmapPaint.setFilterBitmap(true);
+        nightBitmapPaint.setFilterBitmap(false);
         nightBitmapPaint.setXfermode(new PixelXorXfermode(-1));
 
         textPaint.setColor(textColor);

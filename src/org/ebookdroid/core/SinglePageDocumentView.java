@@ -9,10 +9,12 @@ import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.touch.DefaultGestureDetector;
 import org.ebookdroid.core.touch.IGestureDetector;
 import org.ebookdroid.core.touch.IMultiTouchZoom;
+import org.ebookdroid.core.utils.AndroidVersion;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.view.View;
 
 import java.util.List;
 
@@ -155,7 +157,11 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     @Override
     public final void updateAnimationType() {
-        PageAnimator newCurler = PageAnimationType.create(SettingsManager.getBookSettings().animationType, this);
+        PageAnimationType animationType = SettingsManager.getBookSettings().animationType;
+        PageAnimator newCurler = PageAnimationType.create(animationType, this);
+        if (!AndroidVersion.lessThan3x && !animationType.isHardwareAccelSupported()) {
+            getView().setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
         newCurler.init();
         curler.switchCurler(newCurler);
     }

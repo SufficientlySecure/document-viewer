@@ -3,6 +3,7 @@ package org.ebookdroid.core;
 import org.ebookdroid.core.IDocumentViewController.InvalidateSizeReason;
 import org.ebookdroid.core.bitmaps.BitmapManager;
 import org.ebookdroid.core.bitmaps.BitmapRef;
+import org.ebookdroid.core.bitmaps.RawBitmap;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.crop.PageCropper;
 import org.ebookdroid.core.models.DecodingProgressModel;
@@ -189,17 +190,17 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         if (bitmap == null || bitmapBounds == null) {
             return;
         }
-        
+
         if (SettingsManager.getBookSettings().cropPages) {
             if (id == 0 && !cropped) {
                 croppedBounds = PageCropper.getCropBounds(bitmap, bitmapBounds, pageSliceBounds);
                 cropped = true;
-    
+
                 System.out.println("Cropped bounds:" + croppedBounds);
                 BitmapManager.release(bitmap);
-                
+
                 page.base.getActivity().runOnUiThread(new Runnable() {
-    
+
                     @Override
                     public void run() {
                         setDecodingNow(false);
@@ -241,7 +242,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             }
         });
     }
-
 
     private boolean setDecodingNow(final boolean decodingNow) {
         if (this.decodingNow.compareAndSet(!decodingNow, decodingNow)) {
@@ -328,7 +328,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     /**
      * Gets the parent node.
-     * 
+     *
      * @return the parent node
      */
     public PageTreeNode getParent() {

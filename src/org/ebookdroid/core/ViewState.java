@@ -150,6 +150,7 @@ public class ViewState {
             final RectF tr = node.getTargetRect(this.viewRect, pageBounds);
             res = RectF.intersects(tr, this.viewRect);
             nodeVisibility.put(node.shortId, res);
+
         }
         return res.booleanValue();
     }

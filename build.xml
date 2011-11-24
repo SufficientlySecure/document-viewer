@@ -4,20 +4,6 @@
 	<property file="build.properties" />
 	<property file="project.properties" />
 
-
-        <exec executable="./svn-revision.sh" output="svnversion.output">
-        </exec>
-        <loadresource property="Revision">
-            <file file="svnversion.output"/>
-        </loadresource>
-        <echo>Revision: ${Revision}</echo>
-
-        <replaceregexp file="AndroidManifest.xml"
-            match='android:versionName="([^".]+\.[^".]+)(\.[^"]*)?"'
-            replace='android:versionName="\1.${Revision}"'
-        />
-        <delete file="svnversion.output"/>
-
 	<tstamp>
 		<format property="debug.version" pattern="yyyyMMdd.HHmmss" />
 	</tstamp>

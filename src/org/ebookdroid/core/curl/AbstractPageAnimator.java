@@ -46,7 +46,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
 
     protected BitmapRef backBitmap;
     protected int backBitmapIndex = -1;
-    
+
     protected Bitmap arrowsBitmap;
 
     protected final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
@@ -273,7 +273,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    if (mFinger.distanceSquared(mOldMovement) > 625) {
+                    if ((mFinger.distanceSquared(mOldMovement) > 625)) {
                         if (!bUserMoves) {
                             // If we moved over the half of the display flip to next
                             if (mOldMovement.x > (width >> 1)) {
@@ -298,7 +298,9 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
                         }
                         bUserMoves = true;
                     } else {
-                        break;
+                        if (!bUserMoves) {
+                            break;
+                        }
                     }
 
                     // Get movement
@@ -352,6 +354,6 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
             backBitmapIndex = -1;
         }
     }
-    
-    
+
+
 }

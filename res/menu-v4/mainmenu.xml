@@ -43,6 +43,9 @@
 		android:icon="@drawable/settings"
 		android:showAsAction="ifRoom" />
 	<item
+		android:id="@+id/mainmenu_thumbnail"
+		android:title="@string/menu_thumbnail" />
+	<item
 		android:id="@+id/mainmenu_close"
 		android:alphabeticShortcut="e"
 		android:title="@string/menu_close"

@@ -42,6 +42,9 @@
 		android:title="@string/menu_outline"
 		android:icon="@drawable/outline" />
 	<item
+		android:id="@+id/mainmenu_thumbnail"
+		android:title="@string/menu_thumbnail" />
+	<item
 		android:id="@+id/mainmenu_close"
 		android:alphabeticShortcut="e"
 		android:title="@string/menu_close"

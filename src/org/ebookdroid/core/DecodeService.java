@@ -36,7 +36,7 @@ public interface DecodeService {
         void decodeComplete(CodecPage codecPage, BitmapRef bitmap, Rect bitmapBounds);
     }
 
-    void createThumbnail(File thumbnailFile, int width, int height);
+    void createThumbnail(File thumbnailFile, int width, int height, int pageNo);
 
     boolean isPageSizeCacheable();
 

@@ -84,7 +84,7 @@ public class DocumentModel extends CurrentPageModel {
 
     /**
      * Gets the current page object.
-     * 
+     *
      * @return the current page object
      */
     public Page getCurrentPageObject() {
@@ -93,7 +93,7 @@ public class DocumentModel extends CurrentPageModel {
 
     /**
      * Gets the next page object.
-     * 
+     *
      * @return the next page object
      */
     public Page getNextPageObject() {
@@ -102,7 +102,7 @@ public class DocumentModel extends CurrentPageModel {
 
     /**
      * Gets the prev page object.
-     * 
+     *
      * @return the prev page object
      */
     public Page getPrevPageObject() {
@@ -111,7 +111,7 @@ public class DocumentModel extends CurrentPageModel {
 
     /**
      * Gets the last page object.
-     * 
+     *
      * @return the last page object
      */
     public Page getLastPageObject() {
@@ -163,18 +163,22 @@ public class DocumentModel extends CurrentPageModel {
             }
             pages = list.toArray(new Page[list.size()]);
             if (infos.length > 0) {
-                createBookThumbnail(base, bs, infos[0]);
+                createBookThumbnail(base, bs, infos[0], 0);
             }
         } finally {
             LCTX.d("Loading page info: " + (System.currentTimeMillis() - start) + " ms");
         }
     }
 
-    private void createBookThumbnail(final IViewerActivity base, final BookSettings bs, CodecPageInfo info) {
+    private void createBookThumbnail(final IViewerActivity base, final BookSettings bs, CodecPageInfo info, int pageNo) {
         final File thumbnailFile = CacheManager.getThumbnailFile(bs.fileName);
         if (thumbnailFile.exists()) {
             return;
         }
+        createBookThumbnail(thumbnailFile, info, pageNo);
+    }
+
+    public void createBookThumbnail(final File thumbnailFile, CodecPageInfo info, int pageNo) {
         int width = 200, height = 200;
         if (info.height > info.width) {
             width = 200 * info.width / info.height;
@@ -182,8 +186,9 @@ public class DocumentModel extends CurrentPageModel {
             height = 200 * info.height / info.width;
         }
 
-        decodeService.createThumbnail(thumbnailFile, width, height);
+        decodeService.createThumbnail(thumbnailFile, width, height, pageNo);
     }
+
 
     private CodecPageInfo[] retrievePagesInfo(final IViewerActivity base, final BookSettings bs) {
         final File pagesFile = CacheManager.getPageFile(bs.fileName);

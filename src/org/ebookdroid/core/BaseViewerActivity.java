@@ -9,6 +9,8 @@ import org.ebookdroid.core.actions.ActionTarget;
 import org.ebookdroid.core.actions.IActionController;
 import org.ebookdroid.core.actions.params.Constant;
 import org.ebookdroid.core.actions.params.EditableValue;
+import org.ebookdroid.core.cache.CacheManager;
+import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.events.CurrentPageListener;
 import org.ebookdroid.core.events.DecodingProgressListener;
 import org.ebookdroid.core.log.LogContext;
@@ -77,6 +79,7 @@ actions = {
         @ActionMethodDef(id = R.id.mainmenu_outline, method = "showOutline"),
         @ActionMethodDef(id = R.id.mainmenu_nightmode, method = "toggleNightMode"),
         @ActionMethodDef(id = R.id.mainmenu_zoom, method = "toggleControls"),
+        @ActionMethodDef(id = R.id.mainmenu_thumbnail, method = "setCurrentPageAsThumbnail"),
         @ActionMethodDef(id = R.id.actions_toggleTouchManagerView, method = "toggleControls")
 // finish
 })
@@ -410,6 +413,15 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
     public void toggleNightMode(final ActionEx action) {
         SettingsManager.getAppSettings().switchNightMode();
         view.redrawView();
+    }
+
+    @ActionMethod(ids = R.id.mainmenu_thumbnail)
+    public void setCurrentPageAsThumbnail(final ActionEx action) {
+        int page = getDocumentModel().getCurrentDocPageIndex();
+        CodecPageInfo info = getDecodeService().getPageInfo(page);
+        File thumbnailFile = CacheManager.getThumbnailFile(SettingsManager.getBookSettings().fileName);
+        getDocumentModel().createBookThumbnail(thumbnailFile, info, page);
+
     }
 
     @ActionMethod(ids = R.id.mainmenu_bookmark)

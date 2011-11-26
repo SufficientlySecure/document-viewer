@@ -132,6 +132,7 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
     protected void onResume() {
         super.onResume();
 
+        thumbnails.clear();
         if (SettingsManager.getAppSettings().getUseBookcase()) {
             bookshelfAdapter.startScan(SettingsManager.getAppSettings().getAllowedFileTypes());
             recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), SettingsManager.getAppSettings()

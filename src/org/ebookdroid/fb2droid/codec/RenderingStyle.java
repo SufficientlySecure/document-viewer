@@ -10,9 +10,9 @@ import android.util.SparseArray;
 class RenderingStyle {
 
     public static final Typeface NORMAL_TF = Typeface.createFromAsset(EBookDroidApp.getAppContext().getAssets(),
-            "fonts/OldStandard-Regular.ttf");
+            "fonts/academy.ttf");
     public static final Typeface ITALIC_TF = Typeface.createFromAsset(EBookDroidApp.getAppContext().getAssets(),
-            "fonts/OldStandard-Italic.ttf");
+            "fonts/academyi.ttf");
 
     private static final SparseArray<CustomTextPaint> paints = new SparseArray<CustomTextPaint>();
     private static final SparseArray<RenderingStyle> styles = new SparseArray<RenderingStyle>();

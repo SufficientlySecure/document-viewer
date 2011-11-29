@@ -387,19 +387,19 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
     }
 
     public int getScrollX() {
-        return base.getView().getScrollX();
+        return view.getScrollX();
     }
 
     public int getWidth() {
-        return base.getView().getWidth();
+        return view.getWidth();
     }
 
     public int getScrollY() {
-        return base.getView().getScrollY();
+        return view.getScrollY();
     }
 
     public int getHeight() {
-        return base.getView().getHeight();
+        return view.getHeight();
     }
 
     @Override

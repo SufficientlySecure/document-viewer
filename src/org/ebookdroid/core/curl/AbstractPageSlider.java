@@ -100,6 +100,8 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
             final Canvas tmp = new Canvas(foreBitmap.getBitmap());
             page.draw(tmp, viewState, true);
             foreBitmapIndex = page.index.viewIndex;
+        } else if (foreBitmap == null) {
+            foreBitmap = getBitmap(canvas, viewState);
         }
     }
 
@@ -110,6 +112,8 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
             final Canvas tmp = new Canvas(backBitmap.getBitmap());
             page.draw(tmp, viewState, true);
             backBitmapIndex = page.index.viewIndex;
+        } else if (foreBitmap == null) {
+            backBitmap = getBitmap(canvas, viewState);
         }
     }
 

@@ -202,7 +202,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
      * @see org.ebookdroid.core.curl.PageAnimator#onDraw(android.graphics.Canvas)
      */
     @Override
-    public synchronized void draw(final Canvas canvas, final ViewState viewState) {
+    public final synchronized void draw(final Canvas canvas, final ViewState viewState) {
         if (!enabled()) {
             super.draw(canvas, viewState);
             return;
@@ -219,10 +219,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
         // Draw our elements
         lock.readLock().lock();
         try {
-            drawForeground(canvas, viewState);
-            if (foreIndex != backIndex) {
-                drawBackground(canvas, viewState);
-            }
+            drawInternal(canvas, viewState);
             drawExtraObjects(canvas, viewState);
         } finally {
             lock.readLock().unlock();
@@ -235,13 +232,17 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
         }
     }
 
+    protected void drawInternal(Canvas canvas, ViewState viewState) {
+        drawForeground(canvas, viewState);
+        if (foreIndex != backIndex) {
+            drawBackground(canvas, viewState);
+        }
+    }
+
     protected abstract void onFirstDrawEvent(Canvas canvas, final ViewState viewState);
 
     @Override
     public boolean enabled() {
-//        final PageAlign align = view.getAlign();
-//        final float zoom = view.getBase().getZoomModel().getZoom();
-//        return align == PageAlign.AUTO && zoom == 1.0f;
         return view.getScrollLimits().width() <= 0;
     }
 
@@ -354,6 +355,5 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
             backBitmapIndex = -1;
         }
     }
-
 
 }

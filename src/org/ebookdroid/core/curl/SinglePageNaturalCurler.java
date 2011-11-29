@@ -26,7 +26,6 @@ import org.ebookdroid.core.ViewState;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.FloatMath;
@@ -72,37 +71,6 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
         mA.x = width - mMovement.x + 0.1f;
         mA.y = height - mMovement.y + 0.1f;
 
-    }
-
-    @Override
-    public synchronized void draw(final Canvas canvas, final ViewState viewState) {
-        if (!enabled()) {
-            super.draw(canvas, viewState);
-            return;
-        }
-
-        // We need to initialize all size data when we first draw the view
-        if (!isViewDrawn()) {
-            setViewDrawn(true);
-            onFirstDrawEvent(canvas, viewState);
-        }
-
-        canvas.drawColor(Color.BLACK);
-
-        // Draw our elements
-        lock.readLock().lock();
-        try {
-            drawInternal(canvas, viewState);
-            drawExtraObjects(canvas, viewState);
-        } finally {
-            lock.readLock().unlock();
-        }
-
-        // Check if we can re-enable input
-        if (bEnableInputAfterDraw) {
-            bBlockTouchInput = false;
-            bEnableInputAfterDraw = false;
-        }
     }
 
     protected void drawInternal(Canvas canvas, ViewState viewState) {

@@ -75,8 +75,11 @@ public class SinglePageView implements PageAnimator {
                 paint.setFilterBitmap(true);
                 paint.setAntiAlias(true);
                 paint.setDither(true);
-                canvas.drawBitmap(dragBitmap, view.getWidth() - dragBitmap.getWidth(),
-                        view.getHeight() - dragBitmap.getHeight(), paint);
+
+                float x = viewState.view.getScrollX() + viewState.view.getWidth() - dragBitmap.getWidth() - 1;
+                float y = viewState.view.getScrollY() + viewState.view.getHeight() - dragBitmap.getHeight() - 1;
+
+                canvas.drawBitmap(dragBitmap, x, y, paint);
             }
         }
     }

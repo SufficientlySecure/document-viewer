@@ -1,0 +1,28 @@
+    <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+        android:summary="@string/pref_memory_category_summary"
+        android:title="@string/pref_memory_category" >
+
+        <EditTextPreference
+            android:defaultValue="0"
+            android:key="pagesinmemory"
+            android:maxLength="3"
+            android:numeric="integer"
+            android:summary="@string/pref_pagesinmemory_summary"
+            android:title="@string/pref_pagesinmemory_title" />
+
+        <ListPreference
+            android:defaultValue="Normal"
+            android:entries="@array/list_decodemode"
+            android:entryValues="@array/list_decodemode_values"
+            android:key="decodemode"
+            android:summary="@string/pref_decodemode_summary"
+            android:title="@string/pref_decodemode_title" />
+
+        <EditTextPreference
+            android:defaultValue="256"
+            android:key="maximagesize"
+            android:maxLength="5"
+            android:numeric="integer"
+            android:summary="@string/pref_maximagesize_summary"
+            android:title="@string/pref_maximagesize_title" />
+    </PreferenceScreen>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:summary="@string/pref_ui_category_summary"
+    android:title="@string/pref_ui_category" >
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="loadrecent"
+        android:summary="@string/pref_loadrecent_summary"
+        android:title="@string/pref_loadrecent_title" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="nightmode"
+        android:summary="@string/pref_nightmode_summary"
+        android:title="@string/pref_nightmode_title" />
+
+    <EditTextPreference
+        android:defaultValue="100"
+        android:key="brightness"
+        android:maxLength="3"
+        android:numeric="integer"
+        android:summary="@string/pref_brightness_summary"
+        android:title="@string/pref_brightness_title" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="brightnessnightmodeonly"
+        android:summary="@string/pref_brightnessnightmodeonly_summary"
+        android:title="@string/pref_brightnessnightmodeonly_title" />
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="keepscreenon"
+        android:summary="@string/pref_keepscreenon_summary"
+        android:title="@string/pref_keepscreenon_title" />
+
+    <ListPreference
+        android:defaultValue="Default"
+        android:entries="@array/list_rotation"
+        android:entryValues="@array/list_rotation_values"
+        android:key="rotation"
+        android:summary="@string/pref_rotation_summary"
+        android:title="@string/pref_rotation_title" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="fullscreen"
+        android:summary="@string/pref_fullscreen_summary"
+        android:title="@string/pref_fullscreen_title" />
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="title"
+        android:summary="@string/pref_title_summary"
+        android:title="@string/pref_title_title" />
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:dependency="title"
+        android:key="pageintitle"
+        android:summary="@string/pref_pageintitle_summary"
+        android:title="@string/pref_pageintitle_title" />
+
+</PreferenceScreen>

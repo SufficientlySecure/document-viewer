@@ -1,0 +1,46 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:summary="@string/pref_render_category_summary"
+    android:title="@string/pref_render_category" >
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="splitpages"
+        android:summary="@string/pref_splitpages_summary"
+        android:title="@string/pref_splitpages_title" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="croppages"
+        android:summary="@string/pref_croppages_summary"
+        android:title="@string/pref_croppages_title" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="singlepage"
+        android:summary="@string/pref_singlepage_summary"
+        android:title="@string/pref_singlepage_title" />
+
+    <PreferenceCategory
+        android:summary="@string/pref_singlepage_category_summary"
+        android:title="@string/pref_singlepage_category" >
+
+        <ListPreference
+            android:defaultValue="By Width"
+            android:dependency="singlepage"
+            android:entries="@array/list_align"
+            android:entryValues="@array/list_align_values"
+            android:key="align"
+            android:summary="@string/pref_align_summary"
+            android:title="@string/pref_align_title" />
+
+        <ListPreference
+            android:defaultValue="None"
+            android:dependency="singlepage"
+            android:entries="@array/list_animation"
+            android:entryValues="@array/list_animation_values"
+            android:key="animationType"
+            android:summary="@string/pref_animationtype_summary"
+            android:title="@string/pref_animationtype_title" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

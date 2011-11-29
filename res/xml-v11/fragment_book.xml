@@ -1,0 +1,47 @@
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+	android:key="book_prefs"
+	android:summary="@string/pref_book_category_summary"
+	android:title="@string/pref_book_category">
+
+	<CheckBoxPreference
+		android:defaultValue="false"
+		android:key="book_splitpages"
+		android:summary="@string/pref_splitpages_summary"
+		android:title="@string/pref_splitpages_title" />
+
+	<CheckBoxPreference
+		android:defaultValue="false"
+		android:key="book_croppages"
+		android:summary="@string/pref_croppages_summary"
+		android:title="@string/pref_croppages_title" />
+
+	<CheckBoxPreference
+		android:defaultValue="false"
+		android:key="book_singlepage"
+		android:summary="@string/pref_singlepage_summary"
+		android:title="@string/pref_singlepage_title" />
+
+	<PreferenceCategory
+		android:summary="@string/pref_singlepage_category_summary"
+		android:title="@string/pref_singlepage_category">
+
+		<ListPreference
+			android:defaultValue="By Width"
+			android:dependency="book_singlepage"
+			android:entries="@array/list_align"
+			android:entryValues="@array/list_align_values"
+			android:key="book_align"
+			android:summary="@string/pref_align_summary"
+			android:title="@string/pref_align_title" />
+
+		<ListPreference
+			android:defaultValue=""
+			android:dependency="book_singlepage"
+			android:entries="@array/list_animation"
+			android:entryValues="@array/list_animation_values"
+			android:key="book_animationType"
+			android:summary="@string/pref_animationtype_summary"
+			android:title="@string/pref_animationtype_title" />
+	</PreferenceCategory>
+</PreferenceScreen>

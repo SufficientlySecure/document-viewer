@@ -12,6 +12,8 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 
+import java.util.List;
+
 public class SettingsActivity extends BaseSettingsActivity {
 
     private static final LogContext LCTX = LogContext.ROOT.lctx("Settings");
@@ -20,8 +22,13 @@ public class SettingsActivity extends BaseSettingsActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (!AndroidVersion.lessThan3x) {
+            return;
+        }
+
         try {
             addPreferencesFromResource(R.xml.preferences);
+
         } catch (final ClassCastException e) {
             LCTX.e("Shared preferences are corrupt! Resetting to default values.");
 
@@ -51,7 +58,7 @@ public class SettingsActivity extends BaseSettingsActivity {
         decoratePreferences("align", "animationType");
         decoratePreferences("book_align", "book_animationType");
         decoratePreferences("djvu_rendering_mode");
-        
+
         if (SettingsManager.getBookSettings() == null) {
             final Preference bookPrefs = findPreference("book_prefs");
             if (bookPrefs != null) {
@@ -64,7 +71,7 @@ public class SettingsActivity extends BaseSettingsActivity {
         addListener("book_animationType", new AnimationTypeListener("book_align"));
 
         findPreference("fullscreen").setEnabled(!AndroidVersion.is3x);
-        
+
         enableMaxImageSizePref(SettingsManager.getAppSettings().getDecodeMode());
     }
 
@@ -77,6 +84,14 @@ public class SettingsActivity extends BaseSettingsActivity {
     protected void enableMaxImageSizePref(final DecodeMode decodeMode) {
         final Preference pref = findPreference("maximagesize");
         pref.setEnabled(DecodeMode.LOW_MEMORY == decodeMode);
+    }
+
+
+
+
+    @Override
+    public void onBuildHeaders(List<Header> target) {
+        loadHeadersFromResource(R.xml.preferences_headers, target);
     }
 
 }

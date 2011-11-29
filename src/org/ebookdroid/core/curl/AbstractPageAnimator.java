@@ -4,6 +4,7 @@ import org.ebookdroid.R;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.SinglePageDocumentView;
 import org.ebookdroid.core.ViewState;
+import org.ebookdroid.core.bitmaps.BitmapManager;
 import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.models.DocumentModel;
 
@@ -204,6 +205,12 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
     @Override
     public final synchronized void draw(final Canvas canvas, final ViewState viewState) {
         if (!enabled()) {
+            BitmapManager.release(foreBitmap);
+            BitmapManager.release(backBitmap);
+
+            foreBitmap = null;
+            backBitmap = null;
+
             super.draw(canvas, viewState);
             return;
         }

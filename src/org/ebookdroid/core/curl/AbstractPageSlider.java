@@ -13,7 +13,6 @@ import android.graphics.Paint;
 
 public abstract class AbstractPageSlider extends AbstractPageAnimator {
 
-
     public AbstractPageSlider(final PageAnimationType type, final SinglePageDocumentView singlePageDocumentView) {
         super(type, singlePageDocumentView);
     }
@@ -92,30 +91,25 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
     protected Vector2D fixMovement(final Vector2D movement, final boolean bMaintainMoveDir) {
         return movement;
     }
-    
+
     protected void updateForeBitmap(final Canvas canvas, final ViewState viewState, Page page) {
-        if (foreBitmapIndex != foreIndex) {
+        if (foreBitmapIndex != foreIndex || foreBitmap == null) {
             BitmapManager.release(foreBitmap);
             foreBitmap = getBitmap(canvas, viewState);
             final Canvas tmp = new Canvas(foreBitmap.getBitmap());
             page.draw(tmp, viewState, true);
             foreBitmapIndex = page.index.viewIndex;
-        } else if (foreBitmap == null) {
-            foreBitmap = getBitmap(canvas, viewState);
         }
     }
 
     protected void updateBackBitmap(final Canvas canvas, final ViewState viewState, Page page) {
-        if (backBitmapIndex != backIndex) {
+        if (backBitmapIndex != backIndex || backBitmap == null) {
             BitmapManager.release(backBitmap);
             backBitmap = getBitmap(canvas, viewState);
             final Canvas tmp = new Canvas(backBitmap.getBitmap());
             page.draw(tmp, viewState, true);
             backBitmapIndex = page.index.viewIndex;
-        } else if (foreBitmap == null) {
-            backBitmap = getBitmap(canvas, viewState);
         }
     }
-
 
 }

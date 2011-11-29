@@ -2,8 +2,8 @@ package org.ebookdroid.core.views;
 
 import org.ebookdroid.core.IBrowserActivity;
 import org.ebookdroid.core.presentation.RecentAdapter;
-import org.ebookdroid.core.settings.BookSettingsActivity;
 import org.ebookdroid.core.settings.books.BookSettings;
+import org.ebookdroid.core.settings.ui.BookSettingsActivity;
 
 import android.content.Intent;
 import android.net.Uri;

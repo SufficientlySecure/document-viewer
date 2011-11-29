@@ -1,7 +1,8 @@
-package org.ebookdroid.core.settings;
+package org.ebookdroid.core.settings.ui;
 
 import org.ebookdroid.R;
 import org.ebookdroid.core.log.LogContext;
+import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.settings.SettingsManager.BookSettingsEditor;
 import org.ebookdroid.core.settings.books.BookSettings;
 import org.ebookdroid.core.utils.PathFromUri;
@@ -44,9 +45,7 @@ public class BookSettingsActivity extends BaseSettingsActivity {
             addPreferencesFromResource(R.xml.books_prefs);
         }
 
-        decoratePreferences("book_align", "book_animationType");
-
-        addListener("book_animationType", new AnimationTypeListener("book_align"));
+        decorator.decorateBooksSettings();
     }
 
     @Override

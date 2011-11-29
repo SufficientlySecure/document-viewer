@@ -1,14 +1,16 @@
-package org.ebookdroid.core.settings;
+package org.ebookdroid.core.settings.ui;
 
+import org.ebookdroid.core.DecodeMode;
 import org.ebookdroid.core.PageAlign;
 import org.ebookdroid.core.curl.PageAnimationType;
+import org.ebookdroid.core.settings.SettingsManager;
+import org.ebookdroid.core.utils.AndroidVersion;
 import org.ebookdroid.utils.LengthUtils;
 
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
-import android.preference.PreferenceActivity;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,15 +18,84 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class BaseSettingsActivity extends PreferenceActivity {
+/**
+ * @author whippet
+ * 
+ */
+public class PreferencesDecorator implements IPreferenceContainer {
 
     private final Map<String, CharSequence> summaries = new HashMap<String, CharSequence>();
 
     private final Map<String, CompositeListener> listeners = new HashMap<String, CompositeListener>();
 
+    private final IPreferenceContainer parent;
+
+    public PreferencesDecorator(final IPreferenceContainer parent) {
+        this.parent = parent;
+    }
+
+    @Override
+    public Preference findPreference(final CharSequence key) {
+        return parent.findPreference(key);
+    }
+
+    public void decorateSettings() {
+        decorateBooksSettings();
+        decorateBrowserSettings();
+        decorateMemorySettings();
+        decorateRenderSettings();
+        decorateScrollSettings();
+        decorateUISettings();
+    }
+
+    public void decorateBooksSettings() {
+        decoratePreferences("book_align", "book_animationType");
+        addAnimationTypeListener("book_animationType", "book_align");
+    }
+
+    public void decorateBrowserSettings() {
+        decoratePreferences("brautoscandir");
+    }
+
+    public void decorateMemorySettings() {
+        decoratePreferences("pagesinmemory", "decodemode", "maximagesize");
+
+        addListener("decodemode", new OnPreferenceChangeListener() {
+
+            @Override
+            public boolean onPreferenceChange(final Preference preference, final Object newValue) {
+                enableMaxImageSizePref(DecodeMode.getByResValue(newValue.toString()));
+                return true;
+            }
+        });
+
+        enableMaxImageSizePref(SettingsManager.getAppSettings().getDecodeMode());
+    }
+
+    protected void enableMaxImageSizePref(final DecodeMode decodeMode) {
+        final Preference pref = findPreference("maximagesize");
+        pref.setEnabled(DecodeMode.LOW_MEMORY == decodeMode);
+    }
+
+    public void decorateRenderSettings() {
+        decoratePreferences("align", "animationType");
+        addAnimationTypeListener("animationType", "align");
+
+        decoratePreferences("djvu_rendering_mode");
+    }
+
+    public void decorateScrollSettings() {
+        decoratePreferences("tapsize", "scrollheight");
+    }
+
+    public void decorateUISettings() {
+        decoratePreferences("rotation", "brightness");
+        findPreference("fullscreen").setEnabled(!AndroidVersion.is3x);
+    }
+
     protected void decoratePreferences(final String... keys) {
         for (final String key : keys) {
-            decoratePreference(findPreference(key));
+            decoratePreference(parent.findPreference(key));
         }
     }
 
@@ -83,7 +154,7 @@ public class BaseSettingsActivity extends PreferenceActivity {
     }
 
     protected void addListener(final String key, final OnPreferenceChangeListener l) {
-        final Preference pref = findPreference(key);
+        final Preference pref = parent.findPreference(key);
         if (pref != null) {
             addListener(pref, l);
         }
@@ -97,10 +168,14 @@ public class BaseSettingsActivity extends PreferenceActivity {
             pref.setOnPreferenceChangeListener(cl);
             listeners.put(key, cl);
         }
-        cl.listeners.add(l);
+        cl.add(l);
     }
 
-    static class CompositeListener implements OnPreferenceChangeListener {
+    protected void addAnimationTypeListener(final String source, final String target) {
+        addListener(source, new AnimationTypeListener(target));
+    }
+
+    protected static class CompositeListener implements OnPreferenceChangeListener {
 
         final List<OnPreferenceChangeListener> listeners = new LinkedList<Preference.OnPreferenceChangeListener>();
 
@@ -113,9 +188,13 @@ public class BaseSettingsActivity extends PreferenceActivity {
             }
             return true;
         }
+
+        public boolean add(OnPreferenceChangeListener object) {
+            return listeners.add(object);
+        }
     }
 
-    protected final class AnimationTypeListener implements OnPreferenceChangeListener {
+    protected class AnimationTypeListener implements OnPreferenceChangeListener {
 
         private final String relatedKey;
 
@@ -133,7 +212,6 @@ public class BaseSettingsActivity extends PreferenceActivity {
             }
             return true;
         }
-
     }
 
 }

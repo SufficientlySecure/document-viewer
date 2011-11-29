@@ -69,8 +69,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".core.settings.SettingsActivity" android:configChanges="keyboardHidden|orientation" />
-        <activity android:name=".core.settings.BookSettingsActivity" android:configChanges="keyboardHidden|orientation" android:launchMode="singleTask"/>
+        <activity android:name=".core.settings.ui.SettingsActivity" android:configChanges="keyboardHidden|orientation" />
+        <activity android:name=".core.settings.ui.BookSettingsActivity" android:configChanges="keyboardHidden|orientation" android:launchMode="singleTask"/>
         <activity android:name=".core.BrowserActivity" android:theme="@android:style/Theme.NoTitleBar" android:configChanges="keyboardHidden|orientation" android:launchMode="singleTask"/>
 
     </application>

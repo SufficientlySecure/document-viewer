@@ -2,15 +2,14 @@ package org.ebookdroid.core.settings.ui.fragments;
 
 import org.ebookdroid.R;
 
-import android.os.Bundle;
-import android.preference.PreferenceFragment;
+public class UIFragment extends BasePreferenceFragment {
 
-public class UIFragment extends PreferenceFragment {
+    public UIFragment() {
+        super(R.xml.fragment_ui);
+    }
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.fragment_ui);
+    public void decorate() {
+        decorator.decorateUISettings();
     }
 }

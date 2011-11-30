@@ -35,7 +35,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import java.io.File;
 
-public class BookshelfView extends GridView implements OnItemClickListener {
+public class BookshelfView extends GridView {
 
     private Bitmap mShelfBackground;
     private int mShelfWidth;
@@ -57,7 +57,6 @@ public class BookshelfView extends GridView implements OnItemClickListener {
         setNumColumns(AUTO_FIT);
         setStretchMode(STRETCH_SPACING);
         setAdapter(adapter);
-        setOnItemClickListener(this);
         setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         Resources r = getResources();
         float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, r.getDisplayMetrics());
@@ -124,8 +123,7 @@ public class BookshelfView extends GridView implements OnItemClickListener {
         super.dispatchDraw(canvas);
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemClick(int position) {
         final BooksAdapter.Node node = (BooksAdapter.Node) adapter.getItem(position);
         File file = new File(node.getPath());
         if (!file.isDirectory()) {

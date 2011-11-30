@@ -71,8 +71,24 @@ public class AppSettings {
 
     private Boolean cropPages;
 
+    private String touchProfiles;
+
     AppSettings(final Context context) {
         this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    }
+
+    public String getTouchProfiles() {
+        if (touchProfiles == null) {
+            touchProfiles = prefs.getString("touchprofiles", "");
+        }
+        return touchProfiles;
+    }
+
+    public void updateTouchProfiles(String profiles) {
+        touchProfiles = profiles;
+        final Editor edit = prefs.edit();
+        edit.putString("touchprofiles", touchProfiles);
+        edit.commit();
     }
 
     public boolean isLoadRecentBook() {

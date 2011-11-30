@@ -4,15 +4,23 @@ import org.ebookdroid.R;
 import org.ebookdroid.core.actions.ActionEx;
 import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.settings.AppSettings;
+import org.ebookdroid.core.settings.SettingsManager;
+import org.ebookdroid.utils.LengthUtils;
 
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class TouchManager {
 
@@ -25,25 +33,54 @@ public class TouchManager {
     private static final LinkedList<TouchProfile> stack = new LinkedList<TouchProfile>();
 
     public static void applyOldStyleSettings(final AppSettings newSettings) {
-        // profiles.clear();
+        profiles.clear();
         stack.clear();
 
-        TouchProfile def = addProfile(DEFAULT_PROFILE);
-        {
-            final Region r = def.addRegion(0, 0, 100, 100);
-            r.setAction(Touch.DoubleTap, newSettings.getZoomByDoubleTap(), R.id.mainmenu_zoom);
-            r.setAction(Touch.LongTap, true, R.id.actions_openOptionsMenu);
-        }
-        {
-            final Region r = def.addRegion(0, 0, 100, newSettings.getTapSize());
-            r.setAction(Touch.SingleTap, newSettings.getTapScroll(), R.id.actions_verticalConfigScrollUp);
-        }
-        {
-            final Region r = def.addRegion(0, 100 - newSettings.getTapSize(), 100, 100);
-            r.setAction(Touch.SingleTap, newSettings.getTapScroll(), R.id.actions_verticalConfigScrollDown);
+        boolean fromJSON = false;
+        String str = newSettings.getTouchProfiles();
+        if (LengthUtils.isNotEmpty(str)) {
+            try {
+                List<TouchProfile> list = fromJSON(str);
+                for (TouchProfile p : list) {
+                    profiles.put(p.name, p);
+                }
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+            }
+            fromJSON = profiles.containsKey(DEFAULT_PROFILE) && profiles.containsKey(TouchManagerView.TMV_PROFILE);
         }
 
-        stack.addFirst(def);
+        if (!fromJSON) {
+            final TouchProfile tp = addProfile(TouchManagerView.TMV_PROFILE);
+            {
+                final Region r = tp.addRegion(0, 0, 100, 100);
+                r.setAction(Touch.DoubleTap, true, R.id.actions_toggleTouchManagerView);
+            }
+
+            TouchProfile def = addProfile(DEFAULT_PROFILE);
+            {
+                final Region r = def.addRegion(0, 0, 100, 100);
+                r.setAction(Touch.DoubleTap, newSettings.getZoomByDoubleTap(), R.id.mainmenu_zoom);
+                r.setAction(Touch.LongTap, true, R.id.actions_openOptionsMenu);
+            }
+            {
+                final Region r = def.addRegion(0, 0, 100, newSettings.getTapSize());
+                r.setAction(Touch.SingleTap, newSettings.getTapScroll(), R.id.actions_verticalConfigScrollUp);
+            }
+            {
+                final Region r = def.addRegion(0, 100 - newSettings.getTapSize(), 100, 100);
+                r.setAction(Touch.SingleTap, newSettings.getTapScroll(), R.id.actions_verticalConfigScrollDown);
+            }
+
+            try {
+                JSONObject json = toJSON();
+                SettingsManager.getAppSettings().updateTouchProfiles(json.toString());
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        stack.addFirst(profiles.get(DEFAULT_PROFILE));
     }
 
     public static Integer getAction(final Touch type, final float x, final float y, final float width,
@@ -71,6 +108,30 @@ public class TouchManager {
             stack.removeFirst();
         }
         return stack.peek();
+    }
+
+    public static JSONObject toJSON() throws JSONException {
+        JSONObject object = new JSONObject();
+        JSONArray array = new JSONArray();
+        for (TouchProfile p : profiles.values()) {
+            array.put(p.toJSON());
+        }
+        object.put("profiles", array);
+        return object;
+    }
+
+    private static List<TouchProfile> fromJSON(String str) throws JSONException {
+        List<TouchProfile> list = new ArrayList<TouchProfile>();
+
+        JSONObject root = new JSONObject(str);
+
+        JSONArray profiles = root.getJSONArray("profiles");
+        for (int pIndex = 0; pIndex < profiles.length(); pIndex++) {
+            JSONObject p = (JSONObject) profiles.getJSONObject(pIndex);
+            TouchProfile profile = TouchProfile.fromJSON(p);
+            list.add(profile);
+        }
+        return list;
     }
 
     public static class TouchProfile {
@@ -120,6 +181,43 @@ public class TouchManager {
         public void removeRegion(final Region r) {
             regions.remove(r);
         }
+
+        @Override
+        public String toString() {
+            StringBuilder buf = new StringBuilder(this.getClass().getSimpleName());
+            buf.append("[");
+            buf.append("name").append("=").append(name);
+            buf.append(", ");
+            buf.append("regions").append("=").append(regions);
+            buf.append("]");
+
+            return buf.toString();
+        }
+
+        public JSONObject toJSON() throws JSONException {
+            JSONObject object = new JSONObject();
+            object.put("name", this.name);
+
+            JSONArray array = new JSONArray();
+            for (Region r : regions) {
+                array.put(r.toJSON());
+            }
+            object.put("regions", array);
+
+            return object;
+        }
+
+        public static TouchProfile fromJSON(JSONObject json) throws JSONException {
+            TouchProfile profile = new TouchProfile(json.getString("name"));
+
+            JSONArray regions = json.getJSONArray("regions");
+            for (int rIndex = 0; rIndex < regions.length(); rIndex++) {
+                JSONObject r = regions.getJSONObject(rIndex);
+                Region region = Region.fromJSON(r);
+                profile.addRegion(region);
+            }
+            return profile;
+        }
     }
 
     public static enum Touch {
@@ -161,6 +259,39 @@ public class TouchManager {
 
             return buf.toString();
         }
+
+        public JSONObject toJSON() throws JSONException {
+            JSONObject object = new JSONObject();
+
+            JSONObject r = new JSONObject();
+            r.put("left", rect.left);
+            r.put("top", rect.top);
+            r.put("right", rect.right);
+            r.put("bottom", rect.bottom);
+            object.put("rect", r);
+
+            JSONArray a = new JSONArray();
+            for (ActionRef action : actions) {
+                if (action != null) {
+                    a.put(action.toJSON());
+                }
+            }
+            object.put("actions", a);
+            return object;
+        }
+
+        public static Region fromJSON(JSONObject json) throws JSONException {
+            JSONObject r = (JSONObject) json.getJSONObject("rect");
+            Rect rect = new Rect(r.getInt("left"), r.getInt("top"), r.getInt("right"), r.getInt("bottom"));
+            
+            Region region = new Region(rect);
+            JSONArray actions = json.getJSONArray("actions");
+            for (int aIndex = 0; aIndex < actions.length(); aIndex++) {
+                JSONObject a = actions.getJSONObject(aIndex);
+                region.setAction(Touch.valueOf(a.getString("type")), a.getBoolean("enabled"), a.getInt("id"));
+            }
+            return region;
+        }
     }
 
     public static class ActionRef {
@@ -173,6 +304,14 @@ public class TouchManager {
             this.type = type;
             this.enabled = enabled;
             this.id = id;
+        }
+
+        public JSONObject toJSON() throws JSONException {
+            JSONObject object = new JSONObject();
+            object.put("type", type.name());
+            object.put("id", id);
+            object.put("enabled", enabled);
+            return object;
         }
 
         @Override

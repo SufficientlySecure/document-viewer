@@ -1,12 +1,10 @@
 package org.ebookdroid.core.touch;
 
-import org.ebookdroid.R;
 import org.ebookdroid.core.IViewerActivity;
 import org.ebookdroid.core.actions.ActionController;
 import org.ebookdroid.core.actions.ActionEx;
 import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.touch.TouchManager.Region;
-import org.ebookdroid.core.touch.TouchManager.Touch;
 import org.ebookdroid.core.touch.TouchManager.TouchProfile;
 import org.ebookdroid.utils.MathUtils;
 
@@ -26,7 +24,7 @@ public class TouchManagerView extends View {
 
     private static final LogContext LCTX = LogContext.ROOT.lctx("TouchManagerView");
 
-    private static final String TMV_PROFILE = "TouchManagerView.Default";
+    public static final String TMV_PROFILE = "TouchManagerView.Default";
 
     private static final float GRID_X = 10;
     private static final float GRID_Y = 10;
@@ -60,12 +58,6 @@ public class TouchManagerView extends View {
 
         gridPaint = new Paint();
         gridPaint.setColor(Color.GREEN);
-
-        final TouchProfile tp = TouchManager.addProfile(TMV_PROFILE);
-        {
-            final Region r = tp.addRegion(0, 0, 100, 100);
-            r.setAction(Touch.DoubleTap, true, R.id.actions_toggleTouchManagerView);
-        }
     }
 
     @Override

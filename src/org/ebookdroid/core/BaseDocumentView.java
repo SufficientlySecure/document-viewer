@@ -30,6 +30,10 @@ public final class BaseDocumentView extends View {
 
     protected boolean layoutLocked;
 
+    protected final AtomicReference<Rect> layout = new AtomicReference<Rect>();
+
+    protected final Flag layoutFlag = new Flag();
+
     public BaseDocumentView(final IViewerActivity baseActivity) {
         super(baseActivity.getContext());
         this.base = baseActivity;
@@ -74,7 +78,7 @@ public final class BaseDocumentView extends View {
         redrawView();
     }
 
-    public void startFling(float vX, float vY, final Rect limits) {
+    public void startFling(final float vX, final float vY, final Rect limits) {
         scroller.fling(getScrollX(), getScrollY(), -(int) vX, -(int) vY, limits.left, limits.right, limits.top,
                 limits.bottom);
     }
@@ -127,16 +131,16 @@ public final class BaseDocumentView extends View {
         layoutLocked = lock;
     }
 
-    private final AtomicReference<Rect> layout = new AtomicReference<Rect>();
-
-    private final Flag layoutFlag = new Flag();
+    public boolean isLayoutLocked() {
+        return layoutLocked;
+    }
 
     @Override
     protected final void onLayout(final boolean layoutChanged, final int left, final int top, final int right,
             final int bottom) {
         super.onLayout(layoutChanged, left, top, right, bottom);
 
-        Rect oldLayout = layout.getAndSet(new Rect(left, top, right, bottom));
+        final Rect oldLayout = layout.getAndSet(new Rect(left, top, right, bottom));
         base.getDocumentController().onLayoutChanged(layoutChanged, layoutLocked, oldLayout, layout.get());
 
         if (oldLayout == null) {
@@ -181,7 +185,7 @@ public final class BaseDocumentView extends View {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(final Canvas canvas) {
         DrawTask task = drawThread.takeTask(1, TimeUnit.MILLISECONDS);
         if (task == null) {
             task = new DrawTask(new ViewState(base.getDocumentController()));

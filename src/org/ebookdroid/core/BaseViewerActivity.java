@@ -80,7 +80,8 @@ actions = {
         @ActionMethodDef(id = R.id.mainmenu_nightmode, method = "toggleNightMode"),
         @ActionMethodDef(id = R.id.mainmenu_zoom, method = "toggleControls"),
         @ActionMethodDef(id = R.id.mainmenu_thumbnail, method = "setCurrentPageAsThumbnail"),
-        @ActionMethodDef(id = R.id.actions_toggleTouchManagerView, method = "toggleControls")
+        @ActionMethodDef(id = R.id.actions_toggleTouchManagerView, method = "toggleControls"),
+        @ActionMethodDef(id = R.id.actions_openOptionsMenu, method = "openOptionsMenu")
 // finish
 })
 public abstract class BaseViewerActivity extends AbstractActionActivity implements IViewerActivity,
@@ -308,7 +309,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     /**
      * Called on creation options menu
-     *
+     * 
      * @param menu
      *            the main menu
      * @return true, if successful
@@ -344,6 +345,13 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
                 getView().changeLayoutLock(false);
             }
         });
+    }
+
+    @ActionMethod(ids = R.id.actions_openOptionsMenu)
+    public void openOptionsMenu(final ActionEx action) {
+        if (!getView().isLayoutLocked()) {
+            this.openOptionsMenu();
+        }
     }
 
     @ActionMethod(ids = R.id.actions_gotoOutlineItem)
@@ -460,7 +468,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     /**
      * Gets the zoom model.
-     *
+     * 
      * @return the zoom model
      */
     @Override
@@ -478,7 +486,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     /**
      * Gets the decoding progress model.
-     *
+     * 
      * @return the decoding progress model
      */
     @Override

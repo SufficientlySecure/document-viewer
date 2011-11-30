@@ -32,7 +32,7 @@ public class TouchManager {
         {
             final Region r = def.addRegion(0, 0, 100, 100);
             r.setAction(Touch.DoubleTap, newSettings.getZoomByDoubleTap(), R.id.mainmenu_zoom);
-//            r.setAction(Touch.LongTap, true, R.id.actions_toggleTouchManagerView);
+            r.setAction(Touch.LongTap, true, R.id.actions_openOptionsMenu);
         }
         {
             final Region r = def.addRegion(0, 0, 100, newSettings.getTapSize());

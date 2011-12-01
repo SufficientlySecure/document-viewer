@@ -3,35 +3,29 @@ package org.ebookdroid.core.views;
 import org.ebookdroid.R;
 import org.ebookdroid.core.IBrowserActivity;
 import org.ebookdroid.core.presentation.BooksAdapter;
+import org.ebookdroid.core.presentation.BooksAdapter.BookShelfAdapter;
+import org.ebookdroid.core.views.Bookshelves.OnShelfSwitchListener;
 
 import android.database.DataSetObserver;
-import android.util.DisplayMetrics;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class BookcaseView extends LinearLayout {
 
     private final TextView shelfCaption;
-    private final BookshelfView shelf;
     private final BooksAdapter adapter;
 
-    private final int REL_SWIPE_MIN_DISTANCE;
-    private final int REL_SWIPE_MAX_OFF_PATH;
-    private final int REL_SWIPE_THRESHOLD_VELOCITY;
+    private Bookshelves shelves;
+    private IBrowserActivity base;
 
     public BookcaseView(IBrowserActivity base, BooksAdapter adapter) {
         super(base.getContext());
-        DisplayMetrics dm = getResources().getDisplayMetrics();
-        REL_SWIPE_MIN_DISTANCE = (int)(120.0f * dm.densityDpi / 160.0f + 0.5);
-        REL_SWIPE_MAX_OFF_PATH = (int)(250.0f * dm.densityDpi / 160.0f + 0.5);
-        REL_SWIPE_THRESHOLD_VELOCITY = (int)(200.0f * dm.densityDpi / 160.0f + 0.5);
 
         this.adapter = adapter;
+        this.base = base;
 
         setOrientation(VERTICAL);
 
@@ -40,50 +34,59 @@ public class BookcaseView extends LinearLayout {
         addView(ll);
 
         shelfCaption = (TextView) ll.findViewById(R.id.ShelfCaption);
-
-        shelf = new BookshelfView(base, adapter);
-        addView(shelf);
+        shelves = new Bookshelves(getContext());
+        shelves.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
+                ViewGroup.LayoutParams.FILL_PARENT));
+        addView(shelves);
 
         adapter.registerDataSetObserver(new DataSetObserver() {
 
             @Override
             public void onChanged() {
                 super.onChanged();
-                shelfCaption.setText(BookcaseView.this.adapter.getListName());
+                BookcaseView.this.recreateViews();
+                shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentShelf()));
             }
         });
 
+        shelves.setOnShelfSwitchListener(new OnShelfSwitchListener() {
 
-        final GestureDetector gestureDetector = new GestureDetector(new SwipeGestureDetector());
-        View.OnTouchListener gestureListener = new View.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-                return gestureDetector.onTouchEvent(event);
-            }};
-        shelf.setOnTouchListener(gestureListener);
+            @Override
+            public void onScreenSwitched(int screen) {
+                shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentShelf()));
+            }
+        });
+        recreateViews();
     }
 
-    class SwipeGestureDetector extends SimpleOnGestureListener{
-
-        @Override
-        public boolean onSingleTapUp(MotionEvent e) {
-            int pos = shelf.pointToPosition((int)e.getX(), (int)e.getY());
-            shelf.onItemClick(pos);
-            return false;
+    protected void recreateViews() {
+        shelves.removeAllViews();
+        int v = adapter.getListCount();
+        for (int i = 0; i < v; i++) {
+            shelves.addView(new BookshelfView(base, new BookShelfAdapter(adapter, i), shelves));
         }
+    }
 
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            if (Math.abs(e1.getY() - e2.getY()) > REL_SWIPE_MAX_OFF_PATH)
-                return false;
-            if(e1.getX() - e2.getX() > REL_SWIPE_MIN_DISTANCE &&
-                Math.abs(velocityX) > REL_SWIPE_THRESHOLD_VELOCITY) {
-                adapter.prevList();
-            }  else if (e2.getX() - e1.getX() > REL_SWIPE_MIN_DISTANCE &&
-                Math.abs(velocityX) > REL_SWIPE_THRESHOLD_VELOCITY) {
-                adapter.nextList();
-            }
-            return false;
+    public void setCurrentList(Integer item) {
+        shelves.setCurrentShelf(item);
+        shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentShelf()));
+    }
+
+    public void prevList() {
+        int shelf = shelves.getCurrentShelf() - 1;
+        if (shelf < 0) {
+            shelf = adapter.getListCount() - 1;
         }
+        shelves.setCurrentShelf(shelf);
+        shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentShelf()));
+    }
 
+    public void nextList() {
+        int shelf = shelves.getCurrentShelf() + 1;
+        if (shelf > adapter.getListCount() - 1) {
+            shelf = 0;
+        }
+        shelves.setCurrentShelf(shelf);
+        shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentShelf()));
     }
 }

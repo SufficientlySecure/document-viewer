@@ -88,6 +88,8 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
 
     private Bitmap topThmbBitmap;
 
+    private BookcaseView bookcaseView;
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -268,17 +270,23 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
     @ActionMethod(ids = R.id.actions_selectShelf)
     public void selectShelf(ActionEx action) {
         Integer item = action.getParameter(IActionController.DIALOG_ITEM_PROPERTY);
-        bookshelfAdapter.setCurrentList(item);
+        if (bookcaseView != null) {
+            bookcaseView.setCurrentList(item);
+        }
     }
 
     @ActionMethod(ids = R.id.ShelfLeftButton)
     public void selectPrevShelf(ActionEx action) {
-        bookshelfAdapter.prevList();
+        if (bookcaseView != null) {
+            bookcaseView.prevList();
+        }
     }
 
     @ActionMethod(ids = R.id.ShelfRightButton)
     public void selectNextShelf(ActionEx action) {
-        bookshelfAdapter.nextList();
+        if (bookcaseView != null) {
+            bookcaseView.nextList();
+        }
     }
 
     @ActionMethod(ids = R.id.recent_showlibrary)
@@ -363,7 +371,8 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
             if (SettingsManager.getAppSettings().getUseBookcase()) {
                 libraryButton.setImageResource(R.drawable.actionbar_shelf);
 
-                viewflipper.addView(new BookcaseView(this, bookshelfAdapter), 0);
+                bookcaseView = new BookcaseView(this, bookshelfAdapter);
+                viewflipper.addView(bookcaseView, 0);
 
                 recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), SettingsManager.getAppSettings()
                         .getAllowedFileTypes());

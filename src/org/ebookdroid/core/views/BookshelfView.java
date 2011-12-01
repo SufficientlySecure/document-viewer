@@ -19,6 +19,7 @@ package org.ebookdroid.core.views;
 import org.ebookdroid.R;
 import org.ebookdroid.core.IBrowserActivity;
 import org.ebookdroid.core.presentation.BooksAdapter;
+import org.ebookdroid.core.presentation.BooksAdapter.BookShelfAdapter;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -28,6 +29,7 @@ import android.graphics.Canvas;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -35,7 +37,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import java.io.File;
 
-public class BookshelfView extends GridView {
+public class BookshelfView extends GridView implements OnItemClickListener {
 
     private Bitmap mShelfBackground;
     private int mShelfWidth;
@@ -46,12 +48,14 @@ public class BookshelfView extends GridView {
     private int mWebRightWidth;
 
     private IBrowserActivity base;
-    private BooksAdapter adapter;
+    private BookShelfAdapter adapter;
+    private Bookshelves shelves;
 
-    public BookshelfView(IBrowserActivity base, BooksAdapter adapter) {
+    public BookshelfView(IBrowserActivity base, BookShelfAdapter adapter, Bookshelves shelves) {
         super(base.getContext());
         this.base = base;
         this.adapter = adapter;
+        this.shelves = shelves;
         setCacheColorHint(0);
         setSelector(android.R.color.transparent);
         setNumColumns(AUTO_FIT);
@@ -63,6 +67,7 @@ public class BookshelfView extends GridView {
         setColumnWidth((int) px);
 
         init(base.getContext());
+        setOnItemClickListener(this);
 
     }
 
@@ -123,12 +128,22 @@ public class BookshelfView extends GridView {
         super.dispatchDraw(canvas);
     }
 
-    public void onItemClick(int position) {
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         final BooksAdapter.Node node = (BooksAdapter.Node) adapter.getItem(position);
         File file = new File(node.getPath());
         if (!file.isDirectory()) {
             base.showDocument(Uri.fromFile(file));
         }
+    }
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (shelves.onTouchEvent(ev)) {
+            return true;
+        }
+        return super.onTouchEvent(ev);
     }
 
 }

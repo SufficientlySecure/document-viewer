@@ -20,13 +20,14 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Queue;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class BooksAdapter extends BaseAdapter {
+public class BooksAdapter {
 
     final IBrowserActivity base;
     final AtomicBoolean inScan = new AtomicBoolean();
@@ -35,8 +36,6 @@ public class BooksAdapter extends BaseAdapter {
     final TreeMap<Integer, String> names = new TreeMap<Integer, String>();
 
     private final static AtomicInteger SEQ = new AtomicInteger(1);
-
-    private int currentList = 0;
 
     private final DataSetObserver observer = new DataSetObserver() {
 
@@ -79,32 +78,7 @@ public class BooksAdapter extends BaseAdapter {
         return SEQ.get();
     }
 
-    public synchronized void nextList() {
-        if (currentList < SEQ.get() - 1) {
-            currentList++;
-        } else {
-            currentList = 0;
-        }
-        notifyDataSetChanged();
-    }
-
-    public synchronized void prevList() {
-        if (currentList > 0) {
-            currentList--;
-        } else {
-            currentList = SEQ.get() - 1;
-        }
-        notifyDataSetChanged();
-    }
-
-    public synchronized void setCurrentList(final int index) {
-        if (index >= 0 && index < SEQ.get()) {
-            currentList = index;
-        }
-        notifyDataSetChanged();
-    }
-
-    public String getListName() {
+    public String getListName(final int currentList) {
         createRecent();
         return LengthUtils.safeString(names.get(currentList));
     }
@@ -117,25 +91,23 @@ public class BooksAdapter extends BaseAdapter {
         return names.values().toArray(new String[names.values().size()]);
     }
 
-    @Override
-    public int getCount() {
+
+
+    public int getCount(final int currentList) {
         createRecent();
         return getList(currentList).size();
     }
 
-    @Override
-    public Object getItem(final int position) {
+    public Object getItem(final int currentList, final int position) {
         createRecent();
         return getList(currentList).get(position);
     }
 
-    @Override
     public long getItemId(final int position) {
         return position;
     }
 
-    @Override
-    public View getView(final int position, final View view, final ViewGroup parent) {
+    public View getView(final int currentList, final int position, final View view, final ViewGroup parent) {
 
         final ViewHolder holder = BaseViewHolder.getOrCreateViewHolder(ViewHolder.class, R.layout.thumbnail, view,
                 parent);
@@ -159,6 +131,7 @@ public class BooksAdapter extends BaseAdapter {
         }
         notifyDataSetInvalidated();
     }
+
 
     private ArrayList<Node> createRecent() {
         final ArrayList<Node> recentList = data.get(0);
@@ -314,6 +287,55 @@ public class BooksAdapter extends BaseAdapter {
                     scanDir(listOfDirs[i]);
                 }
             }
+        }
+    }
+
+    public static class BookShelfAdapter extends BaseAdapter {
+
+        private BooksAdapter adapter;
+        private int index;
+
+        public BookShelfAdapter(BooksAdapter adapter, int index) {
+            this.adapter = adapter;
+            this.index = index;
+        }
+
+        @Override
+        public int getCount() {
+            return adapter.getCount(index);
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return adapter.getItem(index, position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            return adapter.getView(index, position, convertView, parent);
+        }
+
+    }
+    List<DataSetObserver> _dsoList = new ArrayList<DataSetObserver>();
+
+    public void registerDataSetObserver(DataSetObserver dataSetObserver) {
+        _dsoList.add(dataSetObserver);
+    }
+
+    private void notifyDataSetInvalidated() {
+        for (DataSetObserver dso: _dsoList) {
+            dso.onInvalidated();
+        }
+    }
+
+    private void notifyDataSetChanged() {
+        for (DataSetObserver dso: _dsoList) {
+            dso.onChanged();
         }
     }
 }

@@ -1,9 +1,13 @@
 package org.ebookdroid.core.bitmaps;
 
+import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.core.log.LogContext;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+import android.util.SparseArray;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,6 +25,8 @@ public class BitmapManager {
 
     private static LinkedList<BitmapRef> bitmaps = new LinkedList<BitmapRef>();
 
+    private static SparseArray<Bitmap> resources = new SparseArray<Bitmap>();
+
     private static long created;
     private static long reused;
 
@@ -31,6 +37,15 @@ public class BitmapManager {
 
     public static synchronized void increateGeneration() {
         generation++;
+    }
+
+    public static synchronized Bitmap getResource(int resourceId) {
+        Bitmap bitmap = resources.get(resourceId);
+        if (bitmap == null) {
+            final Resources resources = EBookDroidApp.getAppContext().getResources();
+            bitmap = BitmapFactory.decodeResource(resources, resourceId);
+        }
+        return bitmap;
     }
 
     public static synchronized BitmapRef getBitmap(final int width, final int height, final Bitmap.Config config) {

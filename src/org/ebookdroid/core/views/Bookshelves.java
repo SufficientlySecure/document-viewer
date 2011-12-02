@@ -89,7 +89,7 @@ public class Bookshelves extends ViewGroup {
         velocityTracker.addMovement(ev);
 
         final int action = ev.getAction();
-        final float x = ev.getX();
+        final float x = ev.getRawX();
 
         switch (action) {
         case MotionEvent.ACTION_DOWN:
@@ -108,7 +108,8 @@ public class Bookshelves extends ViewGroup {
 
             boolean xMoved = xDiff > touchSlop;
 
-            if (xMoved) {
+            if (xMoved)
+            {
                 state = STATE_SCROLLING;
             }
 
@@ -128,7 +129,7 @@ public class Bookshelves extends ViewGroup {
                     }
                 }
             }
-            return xMoved;
+            return state == STATE_SCROLLING;
 
         case MotionEvent.ACTION_UP:
             if (state == STATE_SCROLLING) {
@@ -157,8 +158,7 @@ public class Bookshelves extends ViewGroup {
             state = STATE_REST;
 
             break;
-        case MotionEvent.ACTION_CANCEL:
-            state = STATE_REST;
+
         }
 
         return false;
@@ -214,6 +214,20 @@ public class Bookshelves extends ViewGroup {
 
     public void setOnShelfSwitchListener(OnShelfSwitchListener onShelfSwitchListener) {
         shelfSwitchListener = onShelfSwitchListener;
+    }
+
+    public void addView(BookshelfView bookshelfView) {
+        for (int i = 0; i < getChildCount(); i++) {
+            View childAt = getChildAt(i);
+            if (childAt instanceof BookshelfView) {
+                BookshelfView bs = (BookshelfView) childAt;
+                if (bs.path.equals(bookshelfView.path)) {
+                    return;
+                }
+            }
+        }
+        super.addView(bookshelfView);
+        System.out.println("BS: added view:"+bookshelfView.path);
     }
 
 }

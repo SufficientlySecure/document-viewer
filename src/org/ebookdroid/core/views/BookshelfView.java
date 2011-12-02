@@ -50,12 +50,14 @@ public class BookshelfView extends GridView implements OnItemClickListener {
     private IBrowserActivity base;
     private BookShelfAdapter adapter;
     private Bookshelves shelves;
+    String path;
 
-    public BookshelfView(IBrowserActivity base, BookShelfAdapter adapter, Bookshelves shelves) {
+    public BookshelfView(IBrowserActivity base, BookShelfAdapter adapter, Bookshelves shelves, String path) {
         super(base.getContext());
         this.base = base;
         this.adapter = adapter;
         this.shelves = shelves;
+        this.path = path;
         setCacheColorHint(0);
         setSelector(android.R.color.transparent);
         setNumColumns(AUTO_FIT);
@@ -140,6 +142,12 @@ public class BookshelfView extends GridView implements OnItemClickListener {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        try {
+            Thread.sleep(16);
+        } catch (InterruptedException e) {
+            Thread.interrupted();
+        }
+
         if (shelves.onTouchEvent(ev)) {
             return true;
         }

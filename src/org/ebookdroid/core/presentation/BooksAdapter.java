@@ -62,7 +62,7 @@ public class BooksAdapter {
 
                 arrayList.add(new Node(0, file.getName(), file.getAbsolutePath()));
             }
-            BooksAdapter.this.notifyDataSetChanged();
+            BooksAdapter.this.notifyDataSetInvalidated();
         }
     };
 
@@ -80,7 +80,16 @@ public class BooksAdapter {
 
     public String getListName(final int currentList) {
         createRecent();
-        return LengthUtils.safeString(names.get(currentList));
+        String safeString = LengthUtils.safeString(names.get(currentList));
+        int i = safeString.indexOf(":");
+        return (i == -1) ? safeString : safeString.substring(0, i);
+    }
+
+    public String getListPath(final int currentList) {
+        createRecent();
+        String safeString = LengthUtils.safeString(names.get(currentList));
+        int i = safeString.indexOf(":");
+        return (i == -1) ? "" : safeString.substring(i + 1);
     }
 
     public String[] getListNames() {
@@ -88,10 +97,26 @@ public class BooksAdapter {
         if (names.isEmpty()) {
             return null;
         }
-        return names.values().toArray(new String[names.values().size()]);
+
+        String result[] = new String[names.values().size()];
+        for (int i=0; i < names.values().size(); i++) {
+            result[i] = getListName(i);
+        }
+        return result;
     }
 
+    public String[] getListPaths() {
+        createRecent();
+        if (names.isEmpty()) {
+            return null;
+        }
 
+        String result[] = new String[names.values().size()];
+        for (int i=0; i < names.values().size(); i++) {
+            result[i] = getListPath(i);
+        }
+        return result;
+    }
 
     public int getCount(final int currentList) {
         createRecent();
@@ -129,9 +154,8 @@ public class BooksAdapter {
             recentList.clear();
             recentList.addAll(al);
         }
-        notifyDataSetInvalidated();
+        notifyDataSetChanged();
     }
-
 
     private ArrayList<Node> createRecent() {
         final ArrayList<Node> recentList = data.get(0);
@@ -168,6 +192,7 @@ public class BooksAdapter {
         if (list == null) {
             list = new ArrayList<Node>();
             data.put(number, list);
+            notifyDataSetChanged();
         }
         return list;
     }
@@ -270,7 +295,7 @@ public class BooksAdapter {
             if (list != null && list.length > 0) {
                 Arrays.sort(list, StringUtils.getNaturalFileComparator());
                 final int listNum = SEQ.getAndIncrement();
-                names.put(listNum, dir.getName());
+                names.put(listNum, dir.getName() + ":" + dir.getAbsolutePath());
                 for (final File f : list) {
                     currNodes.add(new Node(listNum, f.getName(), f.getAbsolutePath()));
                     if (inUI.compareAndSet(false, true)) {
@@ -321,6 +346,7 @@ public class BooksAdapter {
         }
 
     }
+
     List<DataSetObserver> _dsoList = new ArrayList<DataSetObserver>();
 
     public void registerDataSetObserver(DataSetObserver dataSetObserver) {
@@ -328,13 +354,13 @@ public class BooksAdapter {
     }
 
     private void notifyDataSetInvalidated() {
-        for (DataSetObserver dso: _dsoList) {
+        for (DataSetObserver dso : _dsoList) {
             dso.onInvalidated();
         }
     }
 
     private void notifyDataSetChanged() {
-        for (DataSetObserver dso: _dsoList) {
+        for (DataSetObserver dso : _dsoList) {
             dso.onChanged();
         }
     }

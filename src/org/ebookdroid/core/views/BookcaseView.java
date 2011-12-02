@@ -8,10 +8,15 @@ import org.ebookdroid.core.views.Bookshelves.OnShelfSwitchListener;
 
 import android.database.DataSetObserver;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.util.List;
+
+import static java.util.Arrays.asList;
 
 public class BookcaseView extends LinearLayout {
 
@@ -59,11 +64,24 @@ public class BookcaseView extends LinearLayout {
         recreateViews();
     }
 
-    protected void recreateViews() {
-        shelves.removeAllViews();
+    protected synchronized void recreateViews() {
         int v = adapter.getListCount();
-        for (int i = 0; i < v; i++) {
-            shelves.addView(new BookshelfView(base, new BookShelfAdapter(adapter, i), shelves));
+        System.out.println("BS: recreate views:"+v + ", "+shelves.getChildCount());
+        List<String> paths = asList(adapter.getListPaths());
+
+        for (int i = shelves.getChildCount() - 1; i >=0 ;i--) {
+            View childAt = shelves.getChildAt(i);
+            if (childAt instanceof BookshelfView) {
+                BookshelfView bs = (BookshelfView) childAt;
+                if(!paths.contains(bs.path)) {
+                    shelves.removeViewAt(i);
+                    System.out.println("BS: removed view:"+bs.path);
+                }
+            }
+        }
+
+        for(int i = 0; i < v; i++) {
+            shelves.addView(new BookshelfView(base, new BookShelfAdapter(adapter, i), shelves, adapter.getListPath(i)));
         }
     }
 
@@ -75,7 +93,7 @@ public class BookcaseView extends LinearLayout {
     public void prevList() {
         int shelf = shelves.getCurrentShelf() - 1;
         if (shelf < 0) {
-            shelf = adapter.getListCount() - 1;
+            shelf = 0;
         }
         shelves.setCurrentShelf(shelf);
         shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentShelf()));
@@ -84,7 +102,7 @@ public class BookcaseView extends LinearLayout {
     public void nextList() {
         int shelf = shelves.getCurrentShelf() + 1;
         if (shelf > adapter.getListCount() - 1) {
-            shelf = 0;
+            shelf = adapter.getListCount() - 1;
         }
         shelves.setCurrentShelf(shelf);
         shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentShelf()));

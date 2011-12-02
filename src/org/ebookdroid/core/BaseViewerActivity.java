@@ -155,7 +155,10 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
     }
 
     private void initActivity() {
-        SettingsManager.applyAppSettingsChanges(null, SettingsManager.getAppSettings());
+        AppSettings oldSettings = null;
+        AppSettings newSettings = SettingsManager.getAppSettings();
+        AppSettings.Diff diff = new AppSettings.Diff(oldSettings, newSettings);
+        this.onAppSettingsChanged(oldSettings, newSettings, diff);
     }
 
     private void initView() {

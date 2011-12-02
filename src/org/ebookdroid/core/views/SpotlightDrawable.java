@@ -17,20 +17,20 @@
 package org.ebookdroid.core.views;
 
 import org.ebookdroid.R;
+import org.ebookdroid.core.bitmaps.BitmapManager;
 
-import android.graphics.drawable.Drawable;
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
-import android.graphics.BitmapFactory;
-import android.graphics.Bitmap;
 import android.graphics.Paint;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.PorterDuff;
 import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.content.Context;
-import android.view.ViewGroup;
+import android.graphics.drawable.Drawable;
 import android.view.View;
+import android.view.ViewGroup;
 
 public class SpotlightDrawable extends Drawable {
     private final Bitmap mBitmap;
@@ -47,7 +47,7 @@ public class SpotlightDrawable extends Drawable {
 
     public SpotlightDrawable(Context context, ViewGroup view, int resource) {
         mView = view;
-        mBitmap = BitmapFactory.decodeResource(context.getResources(), resource);
+        mBitmap = BitmapManager.getResource(resource);
 
         mPaint = new Paint();
         mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SCREEN));

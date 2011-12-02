@@ -1,11 +1,11 @@
 package org.ebookdroid.core.views;
 
 import org.ebookdroid.R;
+import org.ebookdroid.core.bitmaps.BitmapManager;
 import org.ebookdroid.core.models.ZoomModel;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -35,10 +35,10 @@ public class ZoomRoll extends View {
     public ZoomRoll(final Context context, final ZoomModel zoomModel) {
         super(context);
         this.zoomModel = zoomModel;
-        left = BitmapFactory.decodeResource(context.getResources(), R.drawable.left);
-        right = BitmapFactory.decodeResource(context.getResources(), R.drawable.right);
-        center = BitmapFactory.decodeResource(context.getResources(), R.drawable.center);
-        serifs = BitmapFactory.decodeResource(context.getResources(), R.drawable.serifs);
+        left = BitmapManager.getResource(R.drawable.left);
+        right = BitmapManager.getResource(R.drawable.right);
+        center = BitmapManager.getResource(R.drawable.center);
+        serifs = BitmapManager.getResource(R.drawable.serifs);
 
         scroller = new Scroller(context);
         gestureDetector = new GestureDetector(getContext(), new GestureListener());

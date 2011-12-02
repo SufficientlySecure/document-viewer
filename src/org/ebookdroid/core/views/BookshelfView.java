@@ -18,13 +18,13 @@ package org.ebookdroid.core.views;
 
 import org.ebookdroid.R;
 import org.ebookdroid.core.IBrowserActivity;
+import org.ebookdroid.core.bitmaps.BitmapManager;
 import org.ebookdroid.core.presentation.BooksAdapter;
 import org.ebookdroid.core.presentation.BooksAdapter.BookShelfAdapter;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
@@ -32,8 +32,8 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.GridView;
 
 import java.io.File;
 
@@ -52,12 +52,12 @@ public class BookshelfView extends GridView implements OnItemClickListener {
     private Bookshelves shelves;
     String path;
 
-    public BookshelfView(IBrowserActivity base, BookShelfAdapter adapter, Bookshelves shelves, String path) {
+    public BookshelfView(IBrowserActivity base, Bookshelves shelves, BookShelfAdapter adapter) {
         super(base.getContext());
         this.base = base;
         this.adapter = adapter;
         this.shelves = shelves;
-        this.path = path;
+        this.path = adapter.getPath();
         setCacheColorHint(0);
         setSelector(android.R.color.transparent);
         setNumColumns(AUTO_FIT);
@@ -74,17 +74,16 @@ public class BookshelfView extends GridView implements OnItemClickListener {
     }
 
     private void init(Context context) {
-        final Resources resources = getResources();
-        final Bitmap shelfBackground = BitmapFactory.decodeResource(resources, R.drawable.shelf_panel1);
+        final Bitmap shelfBackground = BitmapManager.getResource(R.drawable.shelf_panel1);
         if (shelfBackground != null) {
             mShelfWidth = shelfBackground.getWidth();
             mShelfHeight = shelfBackground.getHeight();
             mShelfBackground = shelfBackground;
         }
 
-        mWebLeft = BitmapFactory.decodeResource(resources, R.drawable.web_left);
+        mWebLeft = BitmapManager.getResource(R.drawable.web_left);
 
-        final Bitmap webRight = BitmapFactory.decodeResource(resources, R.drawable.web_right);
+        final Bitmap webRight = BitmapManager.getResource(R.drawable.web_right);
         mWebRightWidth = webRight.getWidth();
         mWebRight = webRight;
 

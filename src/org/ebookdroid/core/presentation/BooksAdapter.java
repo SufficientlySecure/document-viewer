@@ -10,6 +10,7 @@ import org.ebookdroid.utils.LengthUtils;
 import org.ebookdroid.utils.StringUtils;
 
 import android.database.DataSetObserver;
+import android.os.AsyncTask;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -32,8 +33,7 @@ public class BooksAdapter {
     final IBrowserActivity base;
     final AtomicBoolean inScan = new AtomicBoolean();
 
-    final TreeMap<Integer, ArrayList<Node>> data = new TreeMap<Integer, ArrayList<Node>>();
-    final TreeMap<Integer, String> names = new TreeMap<Integer, String>();
+    final TreeMap<Integer, NodeList> data = new TreeMap<Integer, NodeList>();
 
     private final static AtomicInteger SEQ = new AtomicInteger(1);
 
@@ -50,17 +50,13 @@ public class BooksAdapter {
         };
 
         private void updateRecentBooks() {
-            ArrayList<Node> arrayList = data.get(0);
-            if (arrayList == null) {
-                arrayList = createRecent();
-            }
-            arrayList.clear();
+            NodeList arrayList = createRecent();
+            arrayList.nodes.clear();
             final int count = recent.getCount();
             for (int i = 0; i < count; i++) {
                 final BookSettings item = recent.getItem(i);
                 final File file = new File(item.fileName);
-
-                arrayList.add(new Node(0, file.getName(), file.getAbsolutePath()));
+                arrayList.nodes.add(new Node(0, file.getName(), file.getAbsolutePath()));
             }
             BooksAdapter.this.notifyDataSetInvalidated();
         }
@@ -74,58 +70,68 @@ public class BooksAdapter {
         this.recent.registerDataSetObserver(observer);
     }
 
-    public int getListCount() {
-        return SEQ.get();
+    public synchronized NodeList getList(int id) {
+        return data.get(id);
+    }
+
+    public synchronized int getListCount() {
+        return data.size();
     }
 
     public String getListName(final int currentList) {
         createRecent();
-        String safeString = LengthUtils.safeString(names.get(currentList));
-        int i = safeString.indexOf(":");
-        return (i == -1) ? safeString : safeString.substring(0, i);
+        NodeList list = getList(currentList);
+        return list != null ? LengthUtils.safeString(list.name) : "";
     }
 
     public String getListPath(final int currentList) {
         createRecent();
-        String safeString = LengthUtils.safeString(names.get(currentList));
-        int i = safeString.indexOf(":");
-        return (i == -1) ? "" : safeString.substring(i + 1);
+        NodeList list = getList(currentList);
+        return list != null ? LengthUtils.safeString(list.path) : "";
     }
 
-    public String[] getListNames() {
+    public synchronized List<String> getListNames() {
         createRecent();
-        if (names.isEmpty()) {
+
+        if (data.isEmpty()) {
             return null;
         }
 
-        String result[] = new String[names.values().size()];
-        for (int i=0; i < names.values().size(); i++) {
-            result[i] = getListName(i);
+        List<String> result = new ArrayList<String>(data.size());
+        for (NodeList list : data.values()) {
+            result.add(list.name);
         }
         return result;
     }
 
-    public String[] getListPaths() {
+    public synchronized List<String> getListPaths() {
         createRecent();
-        if (names.isEmpty()) {
+
+        if (data.isEmpty()) {
             return null;
         }
 
-        String result[] = new String[names.values().size()];
-        for (int i=0; i < names.values().size(); i++) {
-            result[i] = getListPath(i);
+        List<String> result = new ArrayList<String>(data.size());
+        for (NodeList list : data.values()) {
+            result.add(list.path);
         }
         return result;
     }
 
-    public int getCount(final int currentList) {
+    public synchronized int getCount(final int currentList) {
         createRecent();
-        return getList(currentList).size();
+        if (0 <= currentList && currentList < data.size()) {
+            return getList(currentList).nodes.size();
+        }
+        throw new RuntimeException("Wrong list id: " + currentList + ", " + data.keySet());
     }
 
     public Object getItem(final int currentList, final int position) {
         createRecent();
-        return getList(currentList).get(position);
+        if (0 <= currentList && currentList < data.size()) {
+            return getList(currentList).nodes.get(position);
+        }
+        throw new RuntimeException("Wrong list id: " + currentList + ", " + data.keySet());
     }
 
     public long getItemId(final int position) {
@@ -137,42 +143,43 @@ public class BooksAdapter {
         final ViewHolder holder = BaseViewHolder.getOrCreateViewHolder(ViewHolder.class, R.layout.thumbnail, view,
                 parent);
 
-        holder.textView.setText(StringUtils.cleanupTitle(getList(currentList).get(position).getName()));
+        NodeList list = getList(currentList);
+        Node node = list.nodes.get(position);
 
-        base.loadThumbnail(getList(currentList).get(position).getPath(), holder.imageView, R.drawable.book);
+        holder.textView.setText(StringUtils.cleanupTitle(node.getName()));
+        base.loadThumbnail(node.getPath(), holder.imageView, R.drawable.book);
 
         return holder.getView();
     }
 
-    public void clearData() {
-        final ArrayList<Node> al = data.get(0);
+    public synchronized void clearData() {
+        System.out.println("BS: clearData: old=" + getListPaths());
+
+        final NodeList oldRecent = data.get(0);
         data.clear();
-        names.clear();
         SEQ.set(1);
-        final ArrayList<Node> recentList = createRecent();
-        if (al != null) {
-            recentList.clear();
-            recentList.addAll(al);
+
+        if (oldRecent != null) {
+            data.put(0, oldRecent);
+        } else {
+            createRecent();
         }
+
         notifyDataSetChanged();
     }
 
-    private ArrayList<Node> createRecent() {
-        final ArrayList<Node> recentList = data.get(0);
+    private synchronized NodeList createRecent() {
+        NodeList recentList = data.get(0);
         if (recentList == null) {
-            names.put(0, base.getContext().getString(R.string.recent_title));
-            final ArrayList<Node> arrayList = new ArrayList<Node>();
-            data.put(0, arrayList);
-            return arrayList;
+            recentList = new NodeList(0, base.getContext().getString(R.string.recent_title), "");
+            data.put(0, recentList);
         }
         return recentList;
     }
 
     public void startScan(final FileExtensionFilter filter) {
         if (inScan.compareAndSet(false, true)) {
-            base.showProgress(true);
-            clearData();
-            new Thread(new ScanTask(filter)).start();
+            new ScanTask(filter).execute("");
         }
     }
 
@@ -182,19 +189,15 @@ public class BooksAdapter {
 
     synchronized void addNode(final Node node) {
         if (node != null) {
-            final ArrayList<Node> list = getList(node.listNum);
-            list.add(node);
+            NodeList list = getList(node.listNum);
+            if (list == null) {
+                File f = new File(node.path);
+                File p = f.getParentFile();
+                list = new NodeList(node.listNum, p.getName(), p.getAbsolutePath());
+                data.put(node.listNum, list);
+            }
+            list.nodes.add(node);
         }
-    }
-
-    private ArrayList<Node> getList(final int number) {
-        ArrayList<Node> list = data.get(number);
-        if (list == null) {
-            list = new ArrayList<Node>();
-            data.put(number, list);
-            notifyDataSetChanged();
-        }
-        return list;
     }
 
     static class ViewHolder extends BaseViewHolder {
@@ -207,6 +210,21 @@ public class BooksAdapter {
             super.init(convertView);
             this.imageView = (ImageView) convertView.findViewById(R.id.thumbnailImage);
             this.textView = (TextView) convertView.findViewById(R.id.thumbnailText);
+        }
+    }
+
+    public static class NodeList {
+
+        final int id;
+        final String name;
+        final String path;
+
+        final List<Node> nodes = new ArrayList<Node>();
+
+        public NodeList(int id, String name, String path) {
+            this.id = id;
+            this.name = name;
+            this.path = path;
         }
     }
 
@@ -236,33 +254,24 @@ public class BooksAdapter {
         }
     }
 
-    class ScanTask implements Runnable {
+    class ScanTask extends AsyncTask<String, String, Void> {
 
         final FileExtensionFilter filter;
 
         final Queue<Node> currNodes = new ConcurrentLinkedQueue<Node>();
-
-        final AtomicBoolean inUI = new AtomicBoolean();
 
         public ScanTask(final FileExtensionFilter filter) {
             this.filter = filter;
         }
 
         @Override
-        public void run() {
-            // Checks if we started to update adapter data
-            if (!currNodes.isEmpty() && inUI.get()) {
-                // Add files from queue to adapter
-                for (Node p = currNodes.poll(); p != null && inScan.get(); p = currNodes.poll()) {
-                    addNode(p);
-                }
-                notifyDataSetChanged();
-                // Clear flag
-                inUI.set(false);
-                // Finish UI part
-                return;
-            }
+        protected void onPreExecute() {
+            base.showProgress(true);
+            clearData();
+        }
 
+        @Override
+        protected Void doInBackground(String... params) {
             for (final String path : SettingsManager.getAppSettings().getAutoScanDirs()) {
                 // Scan each valid folder
                 final File dir = new File(path);
@@ -270,20 +279,24 @@ public class BooksAdapter {
                     scanDir(dir);
                 }
             }
+            return null;
+        }
 
-            // Check if queued files are available and no UI task started
-            if (!currNodes.isEmpty() && inScan.get() && inUI.compareAndSet(false, true)) {
-                // Start final UI task
-                base.getActivity().runOnUiThread(this);
-            }
-            base.getActivity().runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    base.showProgress(false);
+        @Override
+        protected void onProgressUpdate(String... values) {
+            if (!currNodes.isEmpty()) {
+                // Add files from queue to adapter
+                for (Node p = currNodes.poll(); p != null && inScan.get(); p = currNodes.poll()) {
+                    addNode(p);
                 }
-            });
+                notifyDataSetChanged();
+            }
+        }
 
+        @Override
+        protected void onPostExecute(Void v) {
+            base.showProgress(false);
+            notifyDataSetChanged();
         }
 
         private void scanDir(final File dir) {
@@ -295,30 +308,29 @@ public class BooksAdapter {
             if (list != null && list.length > 0) {
                 Arrays.sort(list, StringUtils.getNaturalFileComparator());
                 final int listNum = SEQ.getAndIncrement();
-                names.put(listNum, dir.getName() + ":" + dir.getAbsolutePath());
                 for (final File f : list) {
                     currNodes.add(new Node(listNum, f.getName(), f.getAbsolutePath()));
-                    if (inUI.compareAndSet(false, true)) {
-                        // Start UI task if required
-                        base.getActivity().runOnUiThread(this);
-                    }
+                    publishProgress("");
                 }
             }
             // Retrieves files from current directory
             final File[] listOfDirs = dir.listFiles(DirectoryFilter.ALL);
-            if (listOfDirs != null && inScan.get()) {
+            if (LengthUtils.isNotEmpty(listOfDirs)) {
+                Arrays.sort(listOfDirs, StringUtils.getNaturalFileComparator());
+                // if (inScan.get()) {
                 for (int i = 0; i < listOfDirs.length; i++) {
                     // Recursively processing found file
                     scanDir(listOfDirs[i]);
                 }
+                // }
             }
         }
     }
 
     public static class BookShelfAdapter extends BaseAdapter {
 
-        private BooksAdapter adapter;
         private int index;
+        private BooksAdapter adapter;
 
         public BookShelfAdapter(BooksAdapter adapter, int index) {
             this.adapter = adapter;
@@ -345,6 +357,9 @@ public class BooksAdapter {
             return adapter.getView(index, position, convertView, parent);
         }
 
+        public String getPath() {
+            return adapter.getListPath(index);
+        }
     }
 
     List<DataSetObserver> _dsoList = new ArrayList<DataSetObserver>();

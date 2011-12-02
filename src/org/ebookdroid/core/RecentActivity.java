@@ -22,6 +22,7 @@ import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.core.views.BookcaseView;
 import org.ebookdroid.core.views.LibraryView;
 import org.ebookdroid.core.views.RecentBooksView;
+import org.ebookdroid.utils.LengthUtils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -44,6 +45,7 @@ import android.widget.ViewFlipper;
 import java.io.File;
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @ActionTarget(
@@ -257,12 +259,13 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
 
     @ActionMethod(ids = R.id.ShelfCaption)
     public void showSelectShelfDlg(ActionEx action) {
-        final String[] names = bookshelfAdapter.getListNames();
+        final List<String> names = bookshelfAdapter.getListNames();
 
-        if ((names != null) && (names.length > 0)) {
+        if (LengthUtils.isNotEmpty(names)) {
             final ActionDialogBuilder builder = new ActionDialogBuilder(actions);
             builder.setTitle(R.string.bookcase_shelves);
-            builder.setItems(names, actions.getOrCreateAction(R.id.actions_selectShelf));
+            builder.setItems(names.toArray(new String[names.size()]),
+                    actions.getOrCreateAction(R.id.actions_selectShelf));
             builder.show();
         }
     }

@@ -1,5 +1,8 @@
 package org.ebookdroid.core.views;
 
+import org.ebookdroid.core.IBrowserActivity;
+import org.ebookdroid.core.presentation.BooksAdapter;
+import org.ebookdroid.core.presentation.BooksAdapter.BookShelfAdapter;
 
 import android.content.Context;
 import android.view.MotionEvent;
@@ -8,6 +11,13 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.Scroller;
+
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class Bookshelves extends ViewGroup {
 
     public static interface OnShelfSwitchListener {
@@ -36,7 +46,9 @@ public class Bookshelves extends ViewGroup {
 
     private OnShelfSwitchListener shelfSwitchListener;
 
-    public Bookshelves(Context context) {
+    private final Map<String, BookshelfView> views = new LinkedHashMap<String, BookshelfView>();
+
+    public Bookshelves(final Context context) {
         super(context);
         init();
     }
@@ -50,7 +62,7 @@ public class Bookshelves extends ViewGroup {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         final int width = MeasureSpec.getSize(widthMeasureSpec);
@@ -67,7 +79,7 @@ public class Bookshelves extends ViewGroup {
     }
 
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(final boolean changed, final int l, final int t, final int r, final int b) {
         int childLeft = 0;
 
         final int count = getChildCount();
@@ -82,7 +94,7 @@ public class Bookshelves extends ViewGroup {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
+    public boolean onTouchEvent(final MotionEvent ev) {
         if (velocityTracker == null) {
             velocityTracker = VelocityTracker.obtain();
         }
@@ -92,72 +104,71 @@ public class Bookshelves extends ViewGroup {
         final float x = ev.getRawX();
 
         switch (action) {
-        case MotionEvent.ACTION_DOWN:
-            if (!scroller.isFinished()) {
-                scroller.abortAnimation();
-            }
+            case MotionEvent.ACTION_DOWN:
+                if (!scroller.isFinished()) {
+                    scroller.abortAnimation();
+                }
 
-            lastMotionX = x;
-
-            state = scroller.isFinished() ? STATE_REST : STATE_SCROLLING;
-
-            break;
-
-        case MotionEvent.ACTION_MOVE:
-            final int xDiff = (int) Math.abs(x - lastMotionX);
-
-            boolean xMoved = xDiff > touchSlop;
-
-            if (xMoved)
-            {
-                state = STATE_SCROLLING;
-            }
-
-            if (state == STATE_SCROLLING) {
-                final int deltaX = (int) (lastMotionX - x);
                 lastMotionX = x;
 
-                final int scrollX = getScrollX();
-                if (deltaX < 0) {
-                    if (scrollX > 0) {
-                        scrollBy(Math.max(-scrollX, deltaX), 0);
+                state = scroller.isFinished() ? STATE_REST : STATE_SCROLLING;
+
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                final int xDiff = (int) Math.abs(x - lastMotionX);
+
+                final boolean xMoved = xDiff > touchSlop;
+
+                if (xMoved) {
+                    state = STATE_SCROLLING;
+                }
+
+                if (state == STATE_SCROLLING) {
+                    final int deltaX = (int) (lastMotionX - x);
+                    lastMotionX = x;
+
+                    final int scrollX = getScrollX();
+                    if (deltaX < 0) {
+                        if (scrollX > 0) {
+                            scrollBy(Math.max(-scrollX, deltaX), 0);
+                        }
+                    } else if (deltaX > 0) {
+                        final int availableToScroll = getChildAt(getChildCount() - 1).getRight() - scrollX - getWidth();
+                        if (availableToScroll > 0) {
+                            scrollBy(Math.min(availableToScroll, deltaX), 0);
+                        }
                     }
-                } else if (deltaX > 0) {
-                    final int availableToScroll = getChildAt(getChildCount() - 1).getRight() - scrollX - getWidth();
-                    if (availableToScroll > 0) {
-                        scrollBy(Math.min(availableToScroll, deltaX), 0);
+                }
+                return state == STATE_SCROLLING;
+
+            case MotionEvent.ACTION_UP:
+                if (state == STATE_SCROLLING) {
+                    final VelocityTracker vt = velocityTracker;
+                    vt.computeCurrentVelocity(1000, maximumVelocity);
+                    final int velocityX = (int) vt.getXVelocity();
+
+                    if (velocityX > SNAP_VELOCITY && currentShelf > 0) {
+                        // Fling hard enough to move left
+                        snapToShelf(currentShelf - 1);
+                    } else if (velocityX < -SNAP_VELOCITY && currentShelf < getChildCount() - 1) {
+                        // Fling hard enough to move right
+                        snapToShelf(currentShelf + 1);
+                    } else {
+                        snapToDestination();
                     }
-                }
-            }
-            return state == STATE_SCROLLING;
 
-        case MotionEvent.ACTION_UP:
-            if (state == STATE_SCROLLING) {
-                final VelocityTracker vt = velocityTracker;
-                vt.computeCurrentVelocity(1000, maximumVelocity);
-                int velocityX = (int) vt.getXVelocity();
-
-                if (velocityX > SNAP_VELOCITY && currentShelf > 0) {
-                    // Fling hard enough to move left
-                    snapToShelf(currentShelf - 1);
-                } else if (velocityX < -SNAP_VELOCITY && currentShelf < getChildCount() - 1) {
-                    // Fling hard enough to move right
-                    snapToShelf(currentShelf + 1);
-                } else {
-                    snapToDestination();
+                    if (velocityTracker != null) {
+                        velocityTracker.recycle();
+                        velocityTracker = null;
+                    }
+                    state = STATE_REST;
+                    return true;
                 }
 
-                if (velocityTracker != null) {
-                    velocityTracker.recycle();
-                    velocityTracker = null;
-                }
                 state = STATE_REST;
-                return true;
-            }
 
-            state = STATE_REST;
-
-            break;
+                break;
 
         }
 
@@ -172,8 +183,9 @@ public class Bookshelves extends ViewGroup {
     }
 
     private void snapToShelf(int toShelf) {
-        if (!scroller.isFinished())
+        if (!scroller.isFinished()) {
             return;
+        }
 
         toShelf = Math.max(0, Math.min(toShelf, getChildCount() - 1));
 
@@ -193,8 +205,9 @@ public class Bookshelves extends ViewGroup {
         } else if (nextShelf != INVALID_SHELF) {
             currentShelf = Math.max(0, Math.min(nextShelf, getChildCount() - 1));
 
-            if (shelfSwitchListener != null)
+            if (shelfSwitchListener != null) {
                 shelfSwitchListener.onScreenSwitched(currentShelf);
+            }
 
             nextShelf = INVALID_SHELF;
         }
@@ -204,7 +217,7 @@ public class Bookshelves extends ViewGroup {
         return currentShelf;
     }
 
-    public void setCurrentShelf(int shelf) {
+    public void setCurrentShelf(final int shelf) {
         currentShelf = Math.max(0, Math.min(shelf, getChildCount() - 1));
         if (!scroller.isFinished()) {
             scroller.abortAnimation();
@@ -212,22 +225,38 @@ public class Bookshelves extends ViewGroup {
         snapToShelf(currentShelf);
     }
 
-    public void setOnShelfSwitchListener(OnShelfSwitchListener onShelfSwitchListener) {
+    public void setOnShelfSwitchListener(final OnShelfSwitchListener onShelfSwitchListener) {
         shelfSwitchListener = onShelfSwitchListener;
     }
 
-    public void addView(BookshelfView bookshelfView) {
-        for (int i = 0; i < getChildCount(); i++) {
-            View childAt = getChildAt(i);
-            if (childAt instanceof BookshelfView) {
-                BookshelfView bs = (BookshelfView) childAt;
-                if (bs.path.equals(bookshelfView.path)) {
-                    return;
-                }
+    public void updateShelves(final IBrowserActivity base, final BooksAdapter adapter) {
+        final List<String> paths = adapter.getListPaths();
+        final int v = paths.size();
+
+        System.out.println("BS: recreate views: new=" + paths + ", old=" + views.keySet());
+
+        final Set<String> keys = new HashSet<String>(views.keySet());
+        keys.removeAll(paths);
+
+        for (final String removed : keys) {
+            final BookshelfView view = views.remove(removed);
+            if (view != null) {
+                System.out.println("BS: removed view:" + view.path);
+                super.removeView(view);
             }
         }
-        super.addView(bookshelfView);
-        System.out.println("BS: added view:"+bookshelfView.path);
+
+        for (int i = 0; i < v; i++) {
+            BookshelfView view = views.get(adapter.getListPath(i));
+            if (view == null) {
+                view = new BookshelfView(base, this, new BookShelfAdapter(adapter, i));
+                views.put(view.path, view);
+                System.out.println("BS: added view:" + view.path);
+                super.addView(view);
+            } else {
+                ((BookShelfAdapter)view.getAdapter()).notifyDataSetChanged();
+            }
+        }
     }
 
 }

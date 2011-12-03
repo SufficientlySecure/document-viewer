@@ -165,13 +165,16 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         if (viewState.decodeMode == DecodeMode.NATIVE_RESOLUTION) {
             return false;
         }
-
-        if (viewState.decodeMode == DecodeMode.NORMAL) {
-            return viewState.zoom > childrenZoomThreshold;
-        }
-
+        
         final Rect rect = page.base.getDecodeService().getScaledSize(viewState.realRect.width(), page.bounds.width(),
                 page.bounds.height(), pageSliceBounds, viewState.zoom, page.getTargetRectScale());
+
+        System.out.println("Rect for node:"+ rect);
+        if (viewState.decodeMode == DecodeMode.NORMAL) {
+            // We need to check for 2048 for HW accel. limitations.
+            return (viewState.zoom > childrenZoomThreshold) || (rect.width() > 2048 * page.getTargetRectScale()) || (rect.height() > 2048 * page.getTargetRectScale());
+        }
+
 
         final long size = BitmapManager.getBitmapBufferSize(getBitmap(), rect);
         return size >= SettingsManager.getAppSettings().getMaxImageSize();

@@ -5,6 +5,7 @@ import org.ebookdroid.core.presentation.BooksAdapter;
 import org.ebookdroid.core.presentation.BooksAdapter.BookShelfAdapter;
 
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -24,6 +25,8 @@ public class Bookshelves extends ViewGroup {
 
         void onScreenSwitched(int screen);
     }
+
+    private static final int MAXIMUM_FLING_VELOCITY = 4000;
 
     private static final int SNAP_VELOCITY = 1000;
     private static final int INVALID_SHELF = -1;
@@ -50,15 +53,14 @@ public class Bookshelves extends ViewGroup {
 
     public Bookshelves(final Context context) {
         super(context);
-        init();
-    }
-
-    private void init() {
-        scroller = new Scroller(getContext());
+        scroller = new Scroller(context);
 
         final ViewConfiguration configuration = ViewConfiguration.get(getContext());
         touchSlop = configuration.getScaledTouchSlop();
-        maximumVelocity = configuration.getScaledMaximumFlingVelocity();
+
+        final DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        final float density = metrics.density;
+        maximumVelocity = (int) (density *  MAXIMUM_FLING_VELOCITY + 0.5f);
     }
 
     @Override
@@ -145,8 +147,9 @@ public class Bookshelves extends ViewGroup {
             case MotionEvent.ACTION_UP:
                 if (state == STATE_SCROLLING) {
                     final VelocityTracker vt = velocityTracker;
-                    vt.computeCurrentVelocity(1000, maximumVelocity);
-                    final int velocityX = (int) vt.getXVelocity();
+                    vt.computeCurrentVelocity(1000);
+                    int velocityX = (int)vt.getXVelocity();
+                    velocityX = Math.max(-maximumVelocity, Math.min(maximumVelocity, velocityX));
 
                     if (velocityX > SNAP_VELOCITY && currentShelf > 0) {
                         // Fling hard enough to move left

@@ -3,9 +3,8 @@ package org.ebookdroid.core.views;
 import org.ebookdroid.core.IBrowserActivity;
 import org.ebookdroid.core.presentation.RecentAdapter;
 import org.ebookdroid.core.settings.books.BookSettings;
-import org.ebookdroid.core.settings.ui.BookSettingsActivity;
+import org.ebookdroid.core.settings.ui.SettingsUI;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,12 +42,7 @@ public class RecentBooksView extends android.widget.ListView implements AdapterV
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View arg1, int i, long l) {
         final BookSettings bs = adapter.getItem(i);
-        final Intent intent = new Intent(base.getActivity(), BookSettingsActivity.class);
-
-        intent.setData(Uri.fromFile(new File(bs.fileName)));
-
-        base.getActivity().startActivity(intent);
-
+        SettingsUI.showBookSettings(base.getActivity(), bs.fileName);
         return true;
     }
 }

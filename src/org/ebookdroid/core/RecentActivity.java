@@ -17,7 +17,8 @@ import org.ebookdroid.core.settings.AppSettings.Diff;
 import org.ebookdroid.core.settings.ISettingsChangeListener;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.settings.books.BookSettings;
-import org.ebookdroid.core.settings.ui.SettingsActivity;
+import org.ebookdroid.core.settings.ui.SettingsUI;
+import org.ebookdroid.core.utils.AndroidVersion;
 import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.core.views.BookcaseView;
 import org.ebookdroid.core.views.LibraryView;
@@ -113,6 +114,14 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
         SettingsManager.addListener(this);
         SettingsManager.applyAppSettingsChanges(null, SettingsManager.getAppSettings());
 
+        if (AndroidVersion.VERSION == 3) {
+            setActionForView(R.id.recent_showlibrary);
+            setActionForView(R.id.recent_showbrowser);
+            setActionForView(R.id.ShelfLeftButton);
+            setActionForView(R.id.ShelfCaption);
+            setActionForView(R.id.ShelfRightButton);
+        }
+
         final boolean shouldLoad = SettingsManager.getAppSettings().isLoadRecentBook();
         final BookSettings recent = SettingsManager.getRecentBook();
         final File file = recent != null ? new File(recent.fileName) : null;
@@ -202,8 +211,7 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
     public void showSettings(ActionEx action) {
         libraryAdapter.stopScan();
         bookshelfAdapter.stopScan();
-        final Intent i = new Intent(RecentActivity.this, SettingsActivity.class);
-        startActivity(i);
+        SettingsUI.showAppSettings(this);
     }
 
     @Override

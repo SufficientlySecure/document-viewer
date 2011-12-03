@@ -48,7 +48,10 @@
 	<property name="cortex.a8.neon.apk" value="apk/${package.name}-arm7-cortex-a8-neon-${manifest.version}.apk" />
 	<property name="cortex.a9.neon.apk" value="apk/${package.name}-arm7-cortex-a9-neon-${manifest.version}.apk" />
 
-	<path id="project.libraries" path="thirdparty/junrar" />
+	<path id="project.libraries" >
+        <pathelement path="thirdparty/junrar" />
+        <pathelement path="thirdparty/android" />
+	</path>
 
 	<path id="project.libraries.jars" />
 	<path id="project.libraries.libs" />
@@ -64,6 +67,9 @@
 	<mkdir dir="apk" />
 
 	<target name="--make-release">
+
+	    <delete dir="${out.absolute.dir}" />
+        <mkdir dir="${out.absolute.dir}" />
 
 		<delete dir="obj" />
 		<mkdir dir="obj" />
@@ -112,7 +118,7 @@
 
 		<property name="target.apk" location="apk/${package.name}-${manifest.version}-r${svn.info.rev}.apk" />
 		<echo>Target: ${target.apk}</echo>
-		
+
 		<antcall target="--make-release">
 			<param name="mk" value="${arm.mk}" />
 			<param name="apk" value="${target.apk}" />

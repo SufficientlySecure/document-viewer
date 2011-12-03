@@ -1,6 +1,7 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.R;
+import org.ebookdroid.core.hwa.IHardwareAcceleration;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.settings.SettingsManager;
 
@@ -19,6 +20,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         if (dragBitmap == null) {
             dragBitmap = BitmapFactory.decodeResource(base.getContext().getResources(), R.drawable.drag);
         }
+        IHardwareAcceleration.Factory.getInstance().setMode(getView(), true);
     }
 
     @Override
@@ -78,7 +80,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         }
 
         LCTX.d("onScrollChanged(" + newPage + ", " + direction + ")");
-        
+
         final Runnable r = new Runnable() {
 
             @Override

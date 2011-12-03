@@ -22,8 +22,7 @@ import org.ebookdroid.core.settings.ISettingsChangeListener;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.settings.books.BookSettings;
 import org.ebookdroid.core.settings.books.Bookmark;
-import org.ebookdroid.core.settings.ui.BookSettingsActivity;
-import org.ebookdroid.core.settings.ui.SettingsActivity;
+import org.ebookdroid.core.settings.ui.SettingsUI;
 import org.ebookdroid.core.touch.TouchManager;
 import org.ebookdroid.core.touch.TouchManagerView;
 import org.ebookdroid.core.utils.AndroidVersion;
@@ -230,16 +229,20 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     @Override
     public IDocumentViewController switchDocumentController() {
-        final BookSettings bs = SettingsManager.getBookSettings();
+        try {
+            final BookSettings bs = SettingsManager.getBookSettings();
 
-        final IDocumentViewController newDc = bs.singlePage ? new SinglePageDocumentView(this)
-                : new ContiniousDocumentView(this);
-        final IDocumentViewController oldDc = ctrl.getAndSet(newDc);
+            final IDocumentViewController newDc = bs.singlePage ? new SinglePageDocumentView(this)
+                    : new ContiniousDocumentView(this);
+            final IDocumentViewController oldDc = ctrl.getAndSet(newDc);
 
-        getZoomModel().removeListener(oldDc);
-        getZoomModel().addListener(newDc);
+            getZoomModel().removeListener(oldDc);
+            getZoomModel().addListener(newDc);
 
-        return newDc;
+            return newDc;
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -312,7 +315,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     /**
      * Called on creation options menu
-     * 
+     *
      * @param menu
      *            the main menu
      * @return true, if successful
@@ -409,15 +412,12 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     @ActionMethod(ids = R.id.mainmenu_booksettings)
     public void showBookSettings(final ActionEx action) {
-        final Intent bsa = new Intent(BaseViewerActivity.this, BookSettingsActivity.class);
-        bsa.setData(Uri.fromFile(new File(SettingsManager.getBookSettings().fileName)));
-        startActivity(bsa);
+        SettingsUI.showBookSettings(this, SettingsManager.getBookSettings().fileName);
     }
 
     @ActionMethod(ids = R.id.mainmenu_settings)
     public void showAppSettings(final ActionEx action) {
-        final Intent i = new Intent(BaseViewerActivity.this, SettingsActivity.class);
-        startActivity(i);
+        SettingsUI.showAppSettings(this);
     }
 
     @ActionMethod(ids = R.id.mainmenu_nightmode)
@@ -471,7 +471,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     /**
      * Gets the zoom model.
-     * 
+     *
      * @return the zoom model
      */
     @Override
@@ -489,7 +489,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     /**
      * Gets the decoding progress model.
-     * 
+     *
      * @return the decoding progress model
      */
     @Override

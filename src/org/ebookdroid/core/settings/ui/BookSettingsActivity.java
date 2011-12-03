@@ -1,7 +1,6 @@
 package org.ebookdroid.core.settings.ui;
 
 import org.ebookdroid.R;
-import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.settings.SettingsManager.BookSettingsEditor;
 import org.ebookdroid.core.settings.books.BookSettings;
@@ -13,8 +12,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 
 public class BookSettingsActivity extends BaseSettingsActivity {
-
-    private static final LogContext LCTX = LogContext.ROOT.lctx("Settings");
 
     private BookSettingsEditor edit;
 

@@ -4,17 +4,16 @@ import org.ebookdroid.core.curl.PageAnimationType;
 import org.ebookdroid.core.curl.PageAnimator;
 import org.ebookdroid.core.curl.PageAnimatorProxy;
 import org.ebookdroid.core.curl.SinglePageView;
+import org.ebookdroid.core.hwa.IHardwareAcceleration;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.touch.DefaultGestureDetector;
 import org.ebookdroid.core.touch.IGestureDetector;
 import org.ebookdroid.core.touch.IMultiTouchZoom;
-import org.ebookdroid.core.utils.AndroidVersion;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.view.View;
 
 import java.util.List;
 
@@ -159,9 +158,9 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     public final void updateAnimationType() {
         PageAnimationType animationType = SettingsManager.getBookSettings().animationType;
         PageAnimator newCurler = PageAnimationType.create(animationType, this);
-        if (!AndroidVersion.lessThan3x && !animationType.isHardwareAccelSupported()) {
-            getView().setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        }
+
+        IHardwareAcceleration.Factory.getInstance().setMode(getView(), animationType.isHardwareAccelSupported());
+
         newCurler.init();
         curler.switchCurler(newCurler);
     }

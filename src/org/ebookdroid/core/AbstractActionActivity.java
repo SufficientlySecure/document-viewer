@@ -31,4 +31,12 @@ public abstract class AbstractActionActivity extends Activity {
         final ActionEx action = actions.getOrCreateAction(actionId);
         action.onClick(view);
     }
+
+    public final void setActionForView(int id) {
+        View view = findViewById(id);
+        ActionEx action = actions.getOrCreateAction(id);
+        if (view != null && action != null) {
+            view.setOnClickListener(action);
+        }
+    }
 }

@@ -7,8 +7,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Base64;
-import android.util.Base64InputStream;
+import _android.util.Base64;
+import _android.util.Base64InputStream;
 
 import java.io.IOException;
 import java.io.InputStream;

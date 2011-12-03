@@ -7,7 +7,8 @@ import org.ebookdroid.core.actions.ActionMethodDef;
 import org.ebookdroid.core.actions.ActionTarget;
 import org.ebookdroid.core.presentation.BrowserAdapter;
 import org.ebookdroid.core.settings.SettingsManager;
-import org.ebookdroid.core.settings.ui.SettingsActivity;
+import org.ebookdroid.core.settings.ui.SettingsUI;
+import org.ebookdroid.core.utils.AndroidVersion;
 import org.ebookdroid.core.utils.CompositeFilter;
 import org.ebookdroid.core.utils.DirectoryFilter;
 import org.ebookdroid.core.views.FileBrowserView;
@@ -61,6 +62,12 @@ public class BrowserActivity extends AbstractActionActivity implements IBrowserA
         header = (TextView) findViewById(R.id.browsertext);
         viewflipper = (ViewFlipper) findViewById(R.id.browserflip);
         viewflipper.addView(new FileBrowserView(this, adapter));
+
+        if (AndroidVersion.VERSION == 3) {
+            setActionForView(R.id.browserhome);
+            setActionForView(R.id.browserupfolder);
+            setActionForView(R.id.browserrecent);
+        }
     }
 
     @Override
@@ -105,8 +112,7 @@ public class BrowserActivity extends AbstractActionActivity implements IBrowserA
 
     @ActionMethod(ids = R.id.browsermenu_settings)
     public void showSettings(final ActionEx action) {
-        final Intent i = new Intent(BrowserActivity.this, SettingsActivity.class);
-        startActivity(i);
+        SettingsUI.showAppSettings(this);
     }
 
     @ActionMethod(ids = R.id.browserrecent)

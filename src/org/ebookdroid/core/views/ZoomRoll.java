@@ -123,6 +123,7 @@ public class ZoomRoll extends View {
         public boolean onDoubleTap(final MotionEvent e) {
             setCurrentValue(0.0f);
             zoomModel.commit();
+            ZoomRoll.this.postInvalidate();
             return true;
         }
 
@@ -138,7 +139,9 @@ public class ZoomRoll extends View {
 
         @Override
         public boolean onFling(final MotionEvent e1, final MotionEvent e2, final float vX, final float vY) {
+            inTouch = false;
             scroller.fling((int) getCurrentValue(), 0, -(int)vX, 0, 0, MAX_VALUE, 0, 0);
+            ZoomRoll.this.postInvalidate();
             return true;
         }
 
@@ -146,6 +149,7 @@ public class ZoomRoll extends View {
         public boolean onScroll(final MotionEvent e1, final MotionEvent e2, final float distanceX, final float distanceY) {
             setCurrentValue(getCurrentValue() + distanceX);
             scroller.computeScrollOffset();
+            ZoomRoll.this.postInvalidate();
             return true;
         }
 
@@ -156,6 +160,7 @@ public class ZoomRoll extends View {
             zoomModel.commit();
             return true;
         }
+        
     }
 
 }

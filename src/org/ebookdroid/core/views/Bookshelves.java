@@ -193,7 +193,7 @@ public class Bookshelves extends ViewGroup {
 
         final int newX = toShelf * getWidth();
         final int delta = newX - getScrollX();
-        scroller.startScroll(getScrollX(), 0, delta, 0, Math.abs(delta) * 2);
+        scroller.startScroll(getScrollX(), 0, delta, 0, Math.min(Math.abs(delta) * 2, Math.abs(3 * getWidth()) * 2));
         invalidate();
     }
 

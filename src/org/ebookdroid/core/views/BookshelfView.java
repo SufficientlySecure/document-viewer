@@ -40,6 +40,8 @@ import java.io.File;
 public class BookshelfView extends GridView implements OnItemClickListener {
 
     private Bitmap mShelfBackground;
+    private Bitmap mShelfBackgroundLeft;
+    private Bitmap mShelfBackgroundRight;
     private int mShelfWidth;
     private int mShelfHeight;
 
@@ -81,6 +83,9 @@ public class BookshelfView extends GridView implements OnItemClickListener {
             mShelfBackground = shelfBackground;
         }
 
+        mShelfBackgroundLeft = BitmapManager.getResource(R.drawable.shelf_panel1_left);
+        mShelfBackgroundRight = BitmapManager.getResource(R.drawable.shelf_panel1_right);
+
         mWebLeft = BitmapManager.getResource(R.drawable.web_left);
 
         final Bitmap webRight = BitmapManager.getResource(R.drawable.web_right);
@@ -114,17 +119,19 @@ public class BookshelfView extends GridView implements OnItemClickListener {
         final int shelfHeight = mShelfHeight;
         final int width = getWidth();
         final int height = getHeight();
-        final Bitmap background = mShelfBackground;
-
-        for (int x = 0; x < width; x += shelfWidth) {
-            for (int y = top; y < height; y += shelfHeight) {
-                canvas.drawBitmap(background, x, y, null);
+        
+        for (int y = top; y < height; y += shelfHeight) {
+            for (int x = 0; x < width; x += shelfWidth) {
+                canvas.drawBitmap(mShelfBackground, x, y, null);
             }
+            canvas.drawBitmap(mShelfBackgroundLeft, 0, y, null);
+            canvas.drawBitmap(mShelfBackgroundRight, width - 15, y, null);
         }
 
+        
         top = (count > 0) ? getChildAt(count - 1).getTop() + shelfHeight : 0;
-        canvas.drawBitmap(mWebLeft, 0.0f, top + 1, null);
-        canvas.drawBitmap(mWebRight, width - mWebRightWidth, top + shelfHeight + 1, null);
+        canvas.drawBitmap(mWebLeft, 15, top + 1, null);
+        canvas.drawBitmap(mWebRight, width - mWebRightWidth - 15, top + shelfHeight + 1, null);
 
         super.dispatchDraw(canvas);
     }

@@ -17,11 +17,11 @@ class RenderingStyle {
     private static final SparseArray<CustomTextPaint> paints = new SparseArray<CustomTextPaint>();
     private static final SparseArray<RenderingStyle> styles = new SparseArray<RenderingStyle>();
 
-    public static final int MAIN_TITLE_SIZE = 48;
-    public static final int SECTION_TITLE_SIZE = 36;
-    public static final int SUBTITLE_SIZE = 30;
     public static final int TEXT_SIZE = 24;
-    public static final int FOOTNOTE_SIZE = 20;
+    public static final int MAIN_TITLE_SIZE = 2 * TEXT_SIZE;
+    public static final int SECTION_TITLE_SIZE = (3 * TEXT_SIZE) / 2;
+    public static final int SUBTITLE_SIZE = (5 * TEXT_SIZE) / 4;
+    public static final int FOOTNOTE_SIZE = (5 * TEXT_SIZE) / 6;
 
     final int textSize;
     final JustificationMode jm;

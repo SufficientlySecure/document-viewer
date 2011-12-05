@@ -379,7 +379,7 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
         if (diff.isUseBookcaseChanged()) {
             viewflipper.removeAllViews();
 
-            if (SettingsManager.getAppSettings().getUseBookcase()) {
+            if (SettingsManager.getAppSettings().getUseBookcase() && AndroidVersion.VERSION > 3) {
                 libraryButton.setImageResource(R.drawable.actionbar_shelf);
 
                 bookcaseView = new BookcaseView(this, bookshelfAdapter);

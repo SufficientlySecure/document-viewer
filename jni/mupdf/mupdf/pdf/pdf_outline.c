@@ -24,9 +24,12 @@ pdf_load_outline_imp(pdf_xref *xref, fz_obj *dict)
 	if (fz_dict_gets(dict, "Dest") || fz_dict_gets(dict, "A"))
 	{
 		link = pdf_load_link(xref, dict);
-		if (link->kind == PDF_LINK_GOTO)
+		if (link)
+		{
+		    if (link->kind == PDF_LINK_GOTO)
 			node->page = pdf_find_page_number(xref, fz_array_get(link->dest, 0));
-		pdf_free_link(link);
+		    pdf_free_link(link);
+		}
 	}
 
 	obj = fz_dict_gets(dict, "First");

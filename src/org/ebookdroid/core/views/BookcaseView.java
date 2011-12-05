@@ -3,9 +3,9 @@ package org.ebookdroid.core.views;
 import org.ebookdroid.R;
 import org.ebookdroid.core.IBrowserActivity;
 import org.ebookdroid.core.presentation.BooksAdapter;
-import org.ebookdroid.core.views.Bookshelves.OnShelfSwitchListener;
 
 import android.database.DataSetObserver;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -17,14 +17,12 @@ public class BookcaseView extends LinearLayout {
     private final TextView shelfCaption;
     private final BooksAdapter adapter;
 
-    private Bookshelves shelves;
-    private IBrowserActivity base;
+    private ViewPager shelves;
 
     public BookcaseView(IBrowserActivity base, BooksAdapter adapter) {
         super(base.getContext());
 
         this.adapter = adapter;
-        this.base = base;
 
         setOrientation(VERTICAL);
 
@@ -33,7 +31,10 @@ public class BookcaseView extends LinearLayout {
         addView(ll);
 
         shelfCaption = (TextView) ll.findViewById(R.id.ShelfCaption);
-        shelves = new Bookshelves(getContext());
+        shelves = new ViewPager(getContext()) {
+        };
+
+        shelves.setAdapter(adapter);
         shelves.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
                 ViewGroup.LayoutParams.FILL_PARENT));
         addView(shelves);
@@ -43,45 +44,38 @@ public class BookcaseView extends LinearLayout {
             @Override
             public void onChanged() {
                 super.onChanged();
-                BookcaseView.this.recreateViews();
-                shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentShelf()));
+                shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentItem()));
             }
         });
 
-        shelves.setOnShelfSwitchListener(new OnShelfSwitchListener() {
+        shelves.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 
-            @Override
-            public void onScreenSwitched(int screen) {
-                shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentShelf()));
+            public void onPageSelected(int arg0) {
+                shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentItem()));
             }
         });
-        recreateViews();
-    }
-
-    protected synchronized void recreateViews() {
-        shelves.updateShelves(base, adapter);
     }
 
     public void setCurrentList(Integer item) {
-        shelves.setCurrentShelf(item);
-        shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentShelf()));
+        shelves.setCurrentItem(item);
+        shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentItem()));
     }
 
     public void prevList() {
-        int shelf = shelves.getCurrentShelf() - 1;
+        int shelf = shelves.getCurrentItem() - 1;
         if (shelf < 0) {
             shelf = 0;
         }
-        shelves.setCurrentShelf(shelf);
-        shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentShelf()));
+        shelves.setCurrentItem(shelf);
+        shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentItem()));
     }
 
     public void nextList() {
-        int shelf = shelves.getCurrentShelf() + 1;
+        int shelf = shelves.getCurrentItem() + 1;
         if (shelf > adapter.getListCount() - 1) {
             shelf = adapter.getListCount() - 1;
         }
-        shelves.setCurrentShelf(shelf);
-        shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentShelf()));
+        shelves.setCurrentItem(shelf);
+        shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentItem()));
     }
 }

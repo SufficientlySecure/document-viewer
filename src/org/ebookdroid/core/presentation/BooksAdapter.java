@@ -6,14 +6,16 @@ import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.settings.books.BookSettings;
 import org.ebookdroid.core.utils.DirectoryFilter;
 import org.ebookdroid.core.utils.FileExtensionFilter;
+import org.ebookdroid.core.views.BookshelfView;
 import org.ebookdroid.utils.LengthUtils;
 import org.ebookdroid.utils.StringUtils;
 
 import android.database.DataSetObserver;
 import android.os.AsyncTask;
+import android.os.Parcelable;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,12 +30,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class BooksAdapter {
+public class BooksAdapter extends PagerAdapter {
 
     final IBrowserActivity base;
     final AtomicBoolean inScan = new AtomicBoolean();
 
-    final TreeMap<Integer, NodeList> data = new TreeMap<Integer, NodeList>();
+    final TreeMap<Integer, BookShelfAdapter> data = new TreeMap<Integer, BookShelfAdapter>();
 
     private final static AtomicInteger SEQ = new AtomicInteger(1);
 
@@ -50,14 +52,15 @@ public class BooksAdapter {
         };
 
         private void updateRecentBooks() {
-            NodeList arrayList = createRecent();
-            arrayList.nodes.clear();
+            BookShelfAdapter ra = createRecent();
+            ra.nodes.clear();
             final int count = recent.getCount();
             for (int i = 0; i < count; i++) {
                 final BookSettings item = recent.getItem(i);
                 final File file = new File(item.fileName);
-                arrayList.nodes.add(new Node(0, file.getName(), file.getAbsolutePath()));
+                ra.nodes.add(new BookNode(0, file.getName(), file.getAbsolutePath()));
             }
+            ra.notifyDataSetChanged();
             BooksAdapter.this.notifyDataSetInvalidated();
         }
     };
@@ -70,7 +73,50 @@ public class BooksAdapter {
         this.recent.registerDataSetObserver(observer);
     }
 
-    public synchronized NodeList getList(int id) {
+    @Override
+    public void destroyItem(View collection, int position, Object view) {
+        ((ViewPager) collection).removeView((View) view);
+        ((View) view).destroyDrawingCache();
+    }
+
+    @Override
+    public void finishUpdate(View arg0) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public int getCount() {
+        return getListCount();
+    }
+
+    @Override
+    public Object instantiateItem(View arg0, int arg1) {
+        BookshelfView view = new BookshelfView(base, arg0, data.get(arg1));
+        ((ViewPager) arg0).addView(view, 0);
+        return view;
+    }
+
+    @Override
+    public boolean isViewFromObject(View arg0, Object arg1) {
+        return arg0.equals(arg1);
+    }
+
+    @Override
+    public void restoreState(Parcelable arg0, ClassLoader arg1) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public Parcelable saveState() {
+        return null;
+    }
+
+    @Override
+    public void startUpdate(View arg0) {
+        // TODO Auto-generated method stub
+    }
+
+    public synchronized BookShelfAdapter getList(int id) {
         return data.get(id);
     }
 
@@ -80,13 +126,13 @@ public class BooksAdapter {
 
     public String getListName(final int currentList) {
         createRecent();
-        NodeList list = getList(currentList);
+        BookShelfAdapter list = getList(currentList);
         return list != null ? LengthUtils.safeString(list.name) : "";
     }
 
     public String getListPath(final int currentList) {
         createRecent();
-        NodeList list = getList(currentList);
+        BookShelfAdapter list = getList(currentList);
         return list != null ? LengthUtils.safeString(list.path) : "";
     }
 
@@ -98,8 +144,8 @@ public class BooksAdapter {
         }
 
         List<String> result = new ArrayList<String>(data.size());
-        for (NodeList list : data.values()) {
-            result.add(list.name);
+        for (BookShelfAdapter a : data.values()) {
+            result.add(a.name);
         }
         return result;
     }
@@ -112,8 +158,8 @@ public class BooksAdapter {
         }
 
         List<String> result = new ArrayList<String>(data.size());
-        for (NodeList list : data.values()) {
-            result.add(list.path);
+        for (BookShelfAdapter a : data.values()) {
+            result.add(a.path);
         }
         return result;
     }
@@ -138,24 +184,10 @@ public class BooksAdapter {
         return position;
     }
 
-    public View getView(final int currentList, final int position, final View view, final ViewGroup parent) {
-
-        final ViewHolder holder = BaseViewHolder.getOrCreateViewHolder(ViewHolder.class, R.layout.thumbnail, view,
-                parent);
-
-        NodeList list = getList(currentList);
-        Node node = list.nodes.get(position);
-
-        holder.textView.setText(StringUtils.cleanupTitle(node.getName()));
-        base.loadThumbnail(node.getPath(), holder.imageView, R.drawable.book);
-
-        return holder.getView();
-    }
-
     public synchronized void clearData() {
         System.out.println("BS: clearData: old=" + getListPaths());
 
-        final NodeList oldRecent = data.get(0);
+        final BookShelfAdapter oldRecent = data.get(0);
         data.clear();
         SEQ.set(1);
 
@@ -168,13 +200,13 @@ public class BooksAdapter {
         notifyDataSetChanged();
     }
 
-    private synchronized NodeList createRecent() {
-        NodeList recentList = data.get(0);
-        if (recentList == null) {
-            recentList = new NodeList(0, base.getContext().getString(R.string.recent_title), "");
-            data.put(0, recentList);
+    private synchronized BookShelfAdapter createRecent() {
+        BookShelfAdapter a = data.get(0);
+        if (a == null) {
+            a = new BookShelfAdapter(base, 0, base.getContext().getString(R.string.recent_title), "");
+            data.put(0, a);
         }
-        return recentList;
+        return a;
     }
 
     public void startScan(final FileExtensionFilter filter) {
@@ -187,16 +219,16 @@ public class BooksAdapter {
         inScan.set(false);
     }
 
-    synchronized void addNode(final Node node) {
+    synchronized void addNode(final BookNode node) {
         if (node != null) {
-            NodeList list = getList(node.listNum);
-            if (list == null) {
+            BookShelfAdapter a = getList(node.listNum);
+            if (a == null) {
                 File f = new File(node.path);
                 File p = f.getParentFile();
-                list = new NodeList(node.listNum, p.getName(), p.getAbsolutePath());
-                data.put(node.listNum, list);
+                a = new BookShelfAdapter(base, node.listNum, p.getName(), p.getAbsolutePath());
+                data.put(node.listNum, a);
             }
-            list.nodes.add(node);
+            a.nodes.add(node);
         }
     }
 
@@ -213,52 +245,11 @@ public class BooksAdapter {
         }
     }
 
-    public static class NodeList {
-
-        final int id;
-        final String name;
-        final String path;
-
-        final List<Node> nodes = new ArrayList<Node>();
-
-        public NodeList(int id, String name, String path) {
-            this.id = id;
-            this.name = name;
-            this.path = path;
-        }
-    }
-
-    public static class Node {
-
-        final int listNum;
-        final String name;
-        final String path;
-
-        Node(final int listNum, final String name, final String path) {
-            this.listNum = listNum;
-            this.name = name;
-            this.path = path;
-        }
-
-        String getName() {
-            return this.name;
-        }
-
-        public String getPath() {
-            return this.path;
-        }
-
-        @Override
-        public String toString() {
-            return this.name;
-        }
-    }
-
     class ScanTask extends AsyncTask<String, String, Void> {
 
         final FileExtensionFilter filter;
 
-        final Queue<Node> currNodes = new ConcurrentLinkedQueue<Node>();
+        final Queue<BookNode> currNodes = new ConcurrentLinkedQueue<BookNode>();
 
         public ScanTask(final FileExtensionFilter filter) {
             this.filter = filter;
@@ -286,7 +277,7 @@ public class BooksAdapter {
         protected void onProgressUpdate(String... values) {
             if (!currNodes.isEmpty()) {
                 // Add files from queue to adapter
-                for (Node p = currNodes.poll(); p != null && inScan.get(); p = currNodes.poll()) {
+                for (BookNode p = currNodes.poll(); p != null && inScan.get(); p = currNodes.poll()) {
                     addNode(p);
                 }
                 notifyDataSetChanged();
@@ -309,7 +300,7 @@ public class BooksAdapter {
                 Arrays.sort(list, StringUtils.getNaturalFileComparator());
                 final int listNum = SEQ.getAndIncrement();
                 for (final File f : list) {
-                    currNodes.add(new Node(listNum, f.getName(), f.getAbsolutePath()));
+                    currNodes.add(new BookNode(listNum, f.getName(), f.getAbsolutePath()));
                     publishProgress("");
                 }
             }
@@ -327,41 +318,6 @@ public class BooksAdapter {
         }
     }
 
-    public static class BookShelfAdapter extends BaseAdapter {
-
-        private int index;
-        private BooksAdapter adapter;
-
-        public BookShelfAdapter(BooksAdapter adapter, int index) {
-            this.adapter = adapter;
-            this.index = index;
-        }
-
-        @Override
-        public int getCount() {
-            return adapter.getCount(index);
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return adapter.getItem(index, position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            return adapter.getView(index, position, convertView, parent);
-        }
-
-        public String getPath() {
-            return adapter.getListPath(index);
-        }
-    }
-
     List<DataSetObserver> _dsoList = new ArrayList<DataSetObserver>();
 
     public void registerDataSetObserver(DataSetObserver dataSetObserver) {
@@ -369,14 +325,18 @@ public class BooksAdapter {
     }
 
     private void notifyDataSetInvalidated() {
+
         for (DataSetObserver dso : _dsoList) {
             dso.onInvalidated();
         }
     }
 
-    private void notifyDataSetChanged() {
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+
         for (DataSetObserver dso : _dsoList) {
             dso.onChanged();
         }
     }
+
 }

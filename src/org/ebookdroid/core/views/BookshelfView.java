@@ -19,8 +19,8 @@ package org.ebookdroid.core.views;
 import org.ebookdroid.R;
 import org.ebookdroid.core.IBrowserActivity;
 import org.ebookdroid.core.bitmaps.BitmapManager;
-import org.ebookdroid.core.presentation.BooksAdapter;
-import org.ebookdroid.core.presentation.BooksAdapter.BookShelfAdapter;
+import org.ebookdroid.core.presentation.BookNode;
+import org.ebookdroid.core.presentation.BookShelfAdapter;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -29,7 +29,6 @@ import android.graphics.Canvas;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.util.TypedValue;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -51,14 +50,12 @@ public class BookshelfView extends GridView implements OnItemClickListener {
 
     private IBrowserActivity base;
     private BookShelfAdapter adapter;
-    private Bookshelves shelves;
     String path;
 
-    public BookshelfView(IBrowserActivity base, Bookshelves shelves, BookShelfAdapter adapter) {
+    public BookshelfView(IBrowserActivity base, View shelves, BookShelfAdapter adapter) {
         super(base.getContext());
         this.base = base;
         this.adapter = adapter;
-        this.shelves = shelves;
         this.path = adapter.getPath();
         setCacheColorHint(0);
         setSelector(android.R.color.transparent);
@@ -119,7 +116,7 @@ public class BookshelfView extends GridView implements OnItemClickListener {
         final int shelfHeight = mShelfHeight;
         final int width = getWidth();
         final int height = getHeight();
-        
+
         for (int y = top; y < height; y += shelfHeight) {
             for (int x = 0; x < width; x += shelfWidth) {
                 canvas.drawBitmap(mShelfBackground, x, y, null);
@@ -128,7 +125,6 @@ public class BookshelfView extends GridView implements OnItemClickListener {
             canvas.drawBitmap(mShelfBackgroundRight, width - 15, y, null);
         }
 
-        
         top = (count > 0) ? getChildAt(count - 1).getTop() + shelfHeight : 0;
         canvas.drawBitmap(mWebLeft, 15, top + 1, null);
         canvas.drawBitmap(mWebRight, width - mWebRightWidth - 15, top + shelfHeight + 1, null);
@@ -138,26 +134,10 @@ public class BookshelfView extends GridView implements OnItemClickListener {
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        final BooksAdapter.Node node = (BooksAdapter.Node) adapter.getItem(position);
+        final BookNode node = (BookNode) adapter.getItem(position);
         File file = new File(node.getPath());
         if (!file.isDirectory()) {
             base.showDocument(Uri.fromFile(file));
         }
     }
-
-
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        try {
-            Thread.sleep(16);
-        } catch (InterruptedException e) {
-            Thread.interrupted();
-        }
-
-        if (shelves.onTouchEvent(ev)) {
-            return true;
-        }
-        return super.onTouchEvent(ev);
-    }
-
 }

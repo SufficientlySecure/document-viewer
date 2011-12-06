@@ -12,6 +12,7 @@ import org.ebookdroid.utils.StringUtils;
 
 import android.database.DataSetObserver;
 import android.os.AsyncTask;
+import android.os.FileObserver;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -23,6 +24,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Queue;
 import java.util.TreeMap;
@@ -64,6 +66,8 @@ public class BooksAdapter extends PagerAdapter {
             BooksAdapter.this.notifyDataSetInvalidated();
         }
     };
+
+    private final HashMap<String, FileObserver> _fileObservers = new HashMap<String, FileObserver>();
 
     private final RecentAdapter recent;
 
@@ -209,9 +213,15 @@ public class BooksAdapter extends PagerAdapter {
         return a;
     }
 
-    public void startScan(final FileExtensionFilter filter) {
+    public void startScan() {
         if (inScan.compareAndSet(false, true)) {
-            new ScanTask(filter).execute("");
+            synchronized (_fileObservers) {
+                for (FileObserver fo : _fileObservers.values()) {
+                    fo.stopWatching();
+                }
+                _fileObservers.clear();
+            }
+            new ScanTask(SettingsManager.getAppSettings().getAllowedFileTypes()).execute("");
         }
     }
 
@@ -288,6 +298,12 @@ public class BooksAdapter extends PagerAdapter {
         protected void onPostExecute(Void v) {
             base.showProgress(false);
             notifyDataSetChanged();
+            synchronized (_fileObservers) {
+                for (FileObserver fo : _fileObservers.values()) {
+                    fo.startWatching();
+                }
+            }
+            inScan.set(false);
         }
 
         private void scanDir(final File dir) {
@@ -295,8 +311,27 @@ public class BooksAdapter extends PagerAdapter {
             if (!inScan.get() || !dir.isDirectory() || dir.getAbsolutePath().startsWith("/sys")) {
                 return;
             }
+
             final File[] list = dir.listFiles((FilenameFilter) filter);
             if (list != null && list.length > 0) {
+                synchronized (_fileObservers) {
+                    if (_fileObservers.get(dir.getAbsolutePath()) == null) {
+                        _fileObservers.put(dir.getAbsolutePath(), new FileObserver(dir.getAbsolutePath(),
+                                FileObserver.CREATE | FileObserver.DELETE) {
+
+                            @Override
+                            public void onEvent(int event, String path) {
+                                base.getActivity().runOnUiThread(new Runnable() {
+
+                                    @Override
+                                    public void run() {
+                                        BooksAdapter.this.startScan();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
                 Arrays.sort(list, StringUtils.getNaturalFileComparator());
                 final int listNum = SEQ.getAndIncrement();
                 for (final File f : list) {

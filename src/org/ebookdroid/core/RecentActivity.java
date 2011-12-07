@@ -147,7 +147,7 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
 
         thumbnails.clear();
         if (SettingsManager.getAppSettings().getUseBookcase()) {
-            bookshelfAdapter.startScan(SettingsManager.getAppSettings().getAllowedFileTypes());
+            bookshelfAdapter.startScan();
             recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), SettingsManager.getAppSettings()
                     .getAllowedFileTypes());
         } else {

@@ -4,11 +4,11 @@ import android.graphics.Canvas;
 
 public class FB2TextElement extends AbstractFB2LineElement {
 
-    private final char[] chars;
-    private final int start;
-    private final int length;
+    public final char[] chars;
+    public final int start;
+    public final int length;
 
-    private final RenderingStyle renderingState;
+    public final RenderingStyle renderingState;
 
     public FB2TextElement(final char[] ch, final int st, final int len, final RenderingStyle renderingState) {
         super(renderingState.getTextPaint().measureText(ch, st, len), renderingState.textSize, false);
@@ -18,19 +18,10 @@ public class FB2TextElement extends AbstractFB2LineElement {
         this.renderingState = renderingState;
     }
 
-    public FB2TextElement(final char[] ch, final int st, final int len, final RenderingStyle style, final int width) {
-        super(width, style.textSize, false);
-        this.chars = ch;
-        this.start = st;
-        this.length = len;
-        this.renderingState = style;
-        this.width = width;
-    }
-
     @Override
     public void render(final Canvas c, final int y, final int x) {
-        c.drawText(chars, start, length, x, renderingState.isSuperScript() ? y - renderingState.textSize
-                : renderingState.isSubScript() ? y + renderingState.textSize / 2 : y, renderingState.getTextPaint());
+        c.drawText(chars, start, length, x, renderingState.superScript ? y - renderingState.textSize
+                : renderingState.subScript ? y + renderingState.textSize / 2 : y, renderingState.getTextPaint());
     }
 
     @Override

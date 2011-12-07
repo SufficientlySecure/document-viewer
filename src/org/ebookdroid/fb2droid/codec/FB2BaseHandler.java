@@ -45,15 +45,13 @@ public class FB2BaseHandler extends DefaultHandler {
 
     protected final RenderingStyle setSupStyle() {
         renderingStates.addFirst(crs);
-        crs = new RenderingStyle(crs, (crs.textSize / 2));
-        crs.setSuperScript(true);
+        crs = new RenderingStyle(crs, (crs.textSize / 2), true, false);
         return crs;
     }
 
     protected final RenderingStyle setSubStyle() {
         renderingStates.addFirst(crs);
-        crs = new RenderingStyle(crs, (crs.textSize / 2));
-        crs.setSubScript(true);
+        crs = new RenderingStyle(crs, (crs.textSize / 2), false, true);
         return crs;
     }
 

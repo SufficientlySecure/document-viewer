@@ -2,9 +2,7 @@ package org.ebookdroid.fb2droid.codec;
 
 import org.ebookdroid.EBookDroidApp;
 
-import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.text.TextPaint;
 import android.util.SparseArray;
 
 class RenderingStyle {
@@ -14,22 +12,22 @@ class RenderingStyle {
     public static final Typeface ITALIC_TF = Typeface.createFromAsset(EBookDroidApp.getAppContext().getAssets(),
             "fonts/academyi.ttf");
 
-    private static final SparseArray<CustomTextPaint> paints = new SparseArray<CustomTextPaint>();
-    private static final SparseArray<RenderingStyle> styles = new SparseArray<RenderingStyle>();
-
     public static final int TEXT_SIZE = 24;
     public static final int MAIN_TITLE_SIZE = 2 * TEXT_SIZE;
     public static final int SECTION_TITLE_SIZE = (3 * TEXT_SIZE) / 2;
     public static final int SUBTITLE_SIZE = (5 * TEXT_SIZE) / 4;
     public static final int FOOTNOTE_SIZE = (5 * TEXT_SIZE) / 6;
 
+    private static final SparseArray<CustomTextPaint> paints = new SparseArray<CustomTextPaint>();
+    private static final SparseArray<RenderingStyle> styles = new SparseArray<RenderingStyle>();
+
     final int textSize;
     final JustificationMode jm;
     final boolean bold;
     final Typeface face;
     final CustomTextPaint paint;
-    private boolean superScript;
-    private boolean subScript;
+    final boolean superScript;
+    final boolean subScript;
 
     public RenderingStyle(final int textSize) {
         this.textSize = textSize;
@@ -37,6 +35,8 @@ class RenderingStyle {
         this.bold = false;
         this.face = RenderingStyle.NORMAL_TF;
         this.paint = getTextPaint(face, textSize, bold);
+        this.superScript = false;
+        this.subScript = false;
     }
 
     public RenderingStyle(final RenderingStyle old) {
@@ -45,6 +45,8 @@ class RenderingStyle {
         this.bold = old.bold;
         this.face = old.face;
         this.paint = getTextPaint(face, textSize, bold);
+        this.superScript = false;
+        this.subScript = false;
     }
 
     public RenderingStyle(final RenderingStyle old, final int textSize) {
@@ -53,6 +55,19 @@ class RenderingStyle {
         this.bold = old.bold;
         this.face = old.face;
         this.paint = getTextPaint(face, textSize, bold);
+        this.superScript = false;
+        this.subScript = false;
+    }
+
+    public RenderingStyle(final RenderingStyle old, final int textSize, final boolean superScript,
+            final boolean subScript) {
+        this.textSize = textSize;
+        this.jm = old.jm;
+        this.bold = old.bold;
+        this.face = old.face;
+        this.paint = getTextPaint(face, textSize, bold);
+        this.superScript = superScript;
+        this.subScript = subScript;
     }
 
     public RenderingStyle(final RenderingStyle old, final int textSize, final JustificationMode jm) {
@@ -61,6 +76,8 @@ class RenderingStyle {
         this.bold = old.bold;
         this.face = old.face;
         this.paint = getTextPaint(face, textSize, bold);
+        this.superScript = false;
+        this.subScript = false;
     }
 
     public RenderingStyle(final RenderingStyle old, final int textSize, final JustificationMode jm, final boolean bold,
@@ -70,6 +87,8 @@ class RenderingStyle {
         this.bold = bold;
         this.face = face;
         this.paint = getTextPaint(face, textSize, bold);
+        this.superScript = false;
+        this.subScript = false;
     }
 
     public RenderingStyle(final RenderingStyle old, final JustificationMode jm) {
@@ -78,6 +97,8 @@ class RenderingStyle {
         this.bold = old.bold;
         this.face = old.face;
         this.paint = getTextPaint(face, textSize, bold);
+        this.superScript = false;
+        this.subScript = false;
     }
 
     public RenderingStyle(final RenderingStyle old, final JustificationMode jm, final Typeface face) {
@@ -86,6 +107,8 @@ class RenderingStyle {
         this.bold = old.bold;
         this.face = face;
         this.paint = getTextPaint(face, textSize, bold);
+        this.superScript = false;
+        this.subScript = false;
     }
 
     public RenderingStyle(final RenderingStyle old, final boolean bold) {
@@ -94,6 +117,8 @@ class RenderingStyle {
         this.bold = bold;
         this.face = old.face;
         this.paint = getTextPaint(face, textSize, bold);
+        this.superScript = false;
+        this.subScript = false;
     }
 
     public RenderingStyle(final RenderingStyle old, final Typeface face) {
@@ -102,6 +127,8 @@ class RenderingStyle {
         this.bold = old.bold;
         this.face = face;
         this.paint = getTextPaint(face, textSize, bold);
+        this.superScript = false;
+        this.subScript = false;
     }
 
     public RenderingStyle(final int textSize, final boolean bold, final boolean italic) {
@@ -110,6 +137,8 @@ class RenderingStyle {
         this.bold = bold;
         this.face = italic ? ITALIC_TF : NORMAL_TF;
         this.paint = getTextPaint(face, textSize, bold);
+        this.superScript = false;
+        this.subScript = false;
     }
 
     public CustomTextPaint getTextPaint() {
@@ -144,21 +173,5 @@ class RenderingStyle {
             styles.append(key, style);
         }
         return style;
-    }
-
-    public void setSuperScript(final boolean b) {
-        this.superScript = b;
-    }
-
-    public boolean isSuperScript() {
-        return superScript;
-    }
-
-    public void setSubScript(final boolean b) {
-        this.subScript = b;
-    }
-
-    public boolean isSubScript() {
-        return subScript;
     }
 }

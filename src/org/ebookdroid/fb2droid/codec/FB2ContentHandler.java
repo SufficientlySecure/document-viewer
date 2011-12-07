@@ -309,7 +309,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
                     final int st = starts[i];
                     final int len = lengths[i];
                     markup.add(new FB2TextElement(dst, st - start, len, crs));
-                    if (crs.isSuperScript() || crs.isSubScript()) {
+                    if (crs.superScript || crs.subScript) {
                         markup.add(FB2MarkupNoSpace._instance);
                     }
                 }

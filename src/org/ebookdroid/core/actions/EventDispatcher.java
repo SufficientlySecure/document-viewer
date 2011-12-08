@@ -8,6 +8,10 @@ import android.app.Activity;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class EventDispatcher {
 
@@ -17,11 +21,19 @@ public class EventDispatcher {
 
     private final InvokationType m_type;
 
-    private final Object m_target;
+    /**
+     * Supported interfaces.
+     */
+    private final Class<?>[] m_interfaces;
 
-    private Object m_proxy;
+    /**
+     * Real listeners.
+     */
+    private final Map<Class<?>, List<Object>> m_listeners = new HashMap<Class<?>, List<Object>>();
 
-    private InvocationHandler m_handler;
+    private final Object m_proxy;
+
+    private final InvocationHandler m_handler;
 
     /**
      * Constructor
@@ -33,11 +45,7 @@ public class EventDispatcher {
      * @param listeners
      *            a list of listener interfaces
      */
-    public EventDispatcher(final Activity base, final InvokationType type, final Object target,
-            final Class<?>... listeners) {
-        if (target == null) {
-            throw new IllegalArgumentException("Target cannot be null");
-        }
+    public EventDispatcher(final Activity base, final InvokationType type, final Class<?>... listeners) {
 
         if (LengthUtils.isEmpty(listeners)) {
             throw new IllegalArgumentException("Listeners list cannot be empty");
@@ -50,16 +58,56 @@ public class EventDispatcher {
             if (!listener.isInterface()) {
                 throw new IllegalArgumentException("Listener class should be an interface");
             }
-            if (!listener.isInstance(target)) {
-                throw new IllegalArgumentException("Target should be an instance of the listener class");
-            }
         }
 
         m_base = base;
         m_type = type;
-        m_target = target;
         m_handler = new Handler();
-        m_proxy = Proxy.newProxyInstance(target.getClass().getClassLoader(), listeners, m_handler);
+        m_interfaces = listeners;
+        m_proxy = Proxy.newProxyInstance(this.getClass().getClassLoader(), listeners, m_handler);
+    }
+
+    /**
+     * Adds the target listener.
+     * 
+     * @param listener
+     *            the listener to add
+     */
+    public void addListener(final Object listener) {
+        if (listener != null) {
+            for (final Class<?> listenerClass : m_interfaces) {
+                if (listenerClass.isInstance(listener)) {
+                    List<Object> list = m_listeners.get(listenerClass);
+                    if (list == null) {
+                        list = new LinkedList<Object>();
+                        m_listeners.put(listenerClass, list);
+                    }
+
+                    if (!list.contains(listener)) {
+                        list.add(listener);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Removes the target listener.
+     * 
+     * @param listener
+     *            the listener to remove
+     */
+    public void removeListener(final Object listener) {
+        if (listener != null) {
+            for (final Class<?> listenerClass : m_interfaces) {
+                if (listenerClass.isInstance(listener)) {
+                    final List<Object> list = m_listeners.get(listenerClass);
+                    if (list != null) {
+                        list.remove(listener);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -99,21 +147,25 @@ public class EventDispatcher {
          *             invocation on the proxy instance.
          * @see InvocationHandler#invoke(Object, Method, Object[])
          */
+        @Override
         public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-            final Task task = new Task(method, args);
-            switch (m_type) {
-                case AsyncUI:
-                    m_base.runOnUiThread(task);
-                    break;
-                case SeparatedThread:
-                    new Thread(task).start();
-                    break;
-                case Direct:
-                default:
-                    task.run();
-                    break;
+            final Class<?> listenerClass = method.getDeclaringClass();
+            final List<Object> targets = m_listeners.get(listenerClass);
+            if (LengthUtils.isNotEmpty(targets)) {
+                final Task task = new Task(targets, method, args);
+                switch (m_type) {
+                    case AsyncUI:
+                        m_base.runOnUiThread(task);
+                        break;
+                    case SeparatedThread:
+                        new Thread(task).start();
+                        break;
+                    case Direct:
+                    default:
+                        task.run();
+                        break;
+                }
             }
-
             return null;
         }
 
@@ -123,6 +175,8 @@ public class EventDispatcher {
      * This class implements thread task for listener invocation.
      */
     private class Task implements Runnable {
+
+        private final List<Object> m_targets;
 
         private final Method m_method;
 
@@ -136,8 +190,8 @@ public class EventDispatcher {
          * @param args
          *            method parameters
          */
-        public Task(final Method method, final Object[] args) {
-            super();
+        public Task(final List<Object> targets, final Method method, final Object[] args) {
+            m_targets = targets;
             m_method = method;
             m_args = args;
         }
@@ -146,8 +200,9 @@ public class EventDispatcher {
          * 
          * @see java.lang.Runnable#run()
          */
+        @Override
         public synchronized void run() {
-            directInvoke(m_method, m_args);
+            directInvoke();
         }
 
         /**
@@ -158,11 +213,13 @@ public class EventDispatcher {
          * @param args
          *            method parameters
          */
-        protected void directInvoke(final Method method, final Object[] args) {
-            try {
-                method.invoke(m_target, args);
-            } catch (final Throwable ex) {
-                LCTX.e("Invokation error: " + method.getName(), ex);
+        protected void directInvoke() {
+            for (final Object target : m_targets) {
+                try {
+                    m_method.invoke(target, m_args);
+                } catch (final Throwable ex) {
+                    LCTX.e("Invokation error: " + m_method.getName(), ex);
+                }
             }
         }
     }

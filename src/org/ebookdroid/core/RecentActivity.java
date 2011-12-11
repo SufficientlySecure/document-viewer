@@ -93,6 +93,8 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
 
     private BookcaseView bookcaseView;
 
+    private boolean firstResume = true;
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,7 +149,9 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
 
         thumbnails.clear();
         if (SettingsManager.getAppSettings().getUseBookcase()) {
-            bookshelfAdapter.startScan();
+            if (firstResume) {
+                bookshelfAdapter.startScan();
+            }
             recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), SettingsManager.getAppSettings()
                     .getAllowedFileTypes());
         } else {
@@ -161,6 +165,8 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
 
             }
         }
+
+        firstResume = false;
     }
 
     @Override

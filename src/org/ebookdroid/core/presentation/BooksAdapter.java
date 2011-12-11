@@ -323,7 +323,12 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
             for (int i = 0; i < count; i++) {
                 final BookSettings item = recent.getItem(i);
                 final File file = new File(item.fileName);
-                ra.nodes.add(new BookNode(0, file.getName(), file.getAbsolutePath()));
+                String path = file.getAbsolutePath();
+                ra.nodes.add(new BookNode(0, file.getName(), path));
+                BookShelfAdapter a = folders.get(new File(path).getParent());
+                if (a != null) {
+                    a.notifyDataSetInvalidated();
+                }
             }
             ra.notifyDataSetChanged();
             BooksAdapter.this.notifyDataSetInvalidated();

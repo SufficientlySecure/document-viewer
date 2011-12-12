@@ -13,6 +13,7 @@ import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.settings.books.BookSettings;
 import org.ebookdroid.utils.LengthUtils;
 
+import android.graphics.RectF;
 import android.view.View;
 
 import java.io.DataInputStream;
@@ -162,33 +163,34 @@ public class DocumentModel extends CurrentPageModel {
                 }
             }
             pages = list.toArray(new Page[list.size()]);
-            if (infos.length > 0) {
-                createBookThumbnail(base, bs, infos[0], 0);
+            if (pages.length > 0) {
+                createBookThumbnail(bs, pages[0], false);
             }
         } finally {
             LCTX.d("Loading page info: " + (System.currentTimeMillis() - start) + " ms");
         }
     }
 
-    private void createBookThumbnail(final IViewerActivity base, final BookSettings bs, CodecPageInfo info, int pageNo) {
+    public void createBookThumbnail(final BookSettings bs, Page page, boolean override) {
         final File thumbnailFile = CacheManager.getThumbnailFile(bs.fileName);
-        if (thumbnailFile.exists()) {
+        if (!override && thumbnailFile.exists()) {
             return;
         }
-        createBookThumbnail(thumbnailFile, info, pageNo);
-    }
 
-    public void createBookThumbnail(final File thumbnailFile, CodecPageInfo info, int pageNo) {
         int width = 200, height = 200;
-        if (info.height > info.width) {
-            width = 200 * info.width / info.height;
+        RectF bounds = page.getBounds(1.0f);
+        float pageWidth = bounds.width();
+        float pageHeight = bounds.height();
+
+        if (pageHeight > pageWidth) {
+            width = (int) (200 * pageWidth / pageHeight);
         } else {
-            height = 200 * info.height / info.width;
+            height = (int) (200 * pageHeight / pageWidth);
         }
 
-        decodeService.createThumbnail(thumbnailFile, width, height, pageNo);
+        decodeService
+                .createThumbnail(thumbnailFile, width, height, page.index.docIndex, page.type.getInitialRect());
     }
-
 
     private CodecPageInfo[] retrievePagesInfo(final IViewerActivity base, final BookSettings bs) {
         final File pagesFile = CacheManager.getPageFile(bs.fileName);

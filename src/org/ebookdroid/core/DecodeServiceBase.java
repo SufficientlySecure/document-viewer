@@ -546,7 +546,7 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     @Override
-    public void createThumbnail(final File thumbnailFile, int width, int height, int pageNo) {
+    public void createThumbnail(final File thumbnailFile, int width, int height, int pageNo, final RectF region) {
         Bitmap thumbnail = document.getEmbeddedThumbnail();
         BitmapRef bmp = null;
         if (thumbnail != null) {
@@ -561,7 +561,7 @@ public class DecodeServiceBase implements DecodeService {
             thumbnail = Bitmap.createScaledBitmap(thumbnail, width, height, true);
         } else {
             final CodecPage page = getPage(pageNo);
-            bmp = page.renderBitmap(width, height, new RectF(0, 0, 1, 1));
+            bmp = page.renderBitmap(width, height, region);
             thumbnail = bmp.getBitmap();
         }
 

@@ -14,13 +14,13 @@ import java.util.List;
 public class Page {
 
     public final PageIndex index;
+    public final PageType type;
 
     final IViewerActivity base;
     final PageTree nodes;
 
     RectF bounds;
     float aspectRatio;
-    final PageType pageType;
     boolean recycled;
     private float storedZoom;
     private RectF zoomedBounds;
@@ -28,8 +28,8 @@ public class Page {
     public Page(final IViewerActivity base, final PageIndex index, final PageType pt, final CodecPageInfo cpi) {
         this.base = base;
         this.index = index;
-        this.pageType = pt != null ? pt : PageType.FULL_PAGE;
-        this.bounds = new RectF(0, 0, cpi.width, cpi.height);
+        this.type = pt != null ? pt : PageType.FULL_PAGE;
+        this.bounds = new RectF(0, 0, cpi.width / type.getWidthScale(), cpi.height);
 
         setAspectRatio(cpi);
 
@@ -82,7 +82,7 @@ public class Page {
 
     public boolean setAspectRatio(final CodecPageInfo page) {
         if (page != null) {
-            return this.setAspectRatio(page.width / pageType.getWidthScale(), page.height);
+            return this.setAspectRatio(page.width / type.getWidthScale(), page.height);
         }
         return false;
     }
@@ -130,17 +130,17 @@ public class Page {
         buf.append(", ");
         buf.append("aspectRatio").append("=").append(aspectRatio);
         buf.append(", ");
-        buf.append("type").append("=").append(pageType.name());
+        buf.append("type").append("=").append(type.name());
         buf.append("]");
         return buf.toString();
     }
 
     public float getTargetRectScale() {
-        return pageType.getWidthScale();
+        return type.getWidthScale();
     }
 
     public float getTargetTranslate() {
-        return pageType.getLeftPos();
+        return type.getLeftPos();
     }
 
 }

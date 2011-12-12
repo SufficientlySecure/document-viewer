@@ -9,8 +9,6 @@ import org.ebookdroid.core.actions.ActionTarget;
 import org.ebookdroid.core.actions.IActionController;
 import org.ebookdroid.core.actions.params.Constant;
 import org.ebookdroid.core.actions.params.EditableValue;
-import org.ebookdroid.core.cache.CacheManager;
-import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.events.CurrentPageListener;
 import org.ebookdroid.core.events.DecodingProgressListener;
 import org.ebookdroid.core.log.LogContext;
@@ -59,7 +57,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -428,11 +425,10 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     @ActionMethod(ids = R.id.mainmenu_thumbnail)
     public void setCurrentPageAsThumbnail(final ActionEx action) {
-        int page = getDocumentModel().getCurrentDocPageIndex();
-        CodecPageInfo info = getDecodeService().getPageInfo(page);
-        File thumbnailFile = CacheManager.getThumbnailFile(SettingsManager.getBookSettings().fileName);
-        getDocumentModel().createBookThumbnail(thumbnailFile, info, page);
-
+        Page page = getDocumentModel().getCurrentPageObject();
+        if (page != null) {
+            getDocumentModel().createBookThumbnail(SettingsManager.getBookSettings(), page, true);
+        }
     }
 
     @ActionMethod(ids = R.id.mainmenu_bookmark)

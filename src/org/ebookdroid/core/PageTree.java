@@ -46,7 +46,7 @@ public class PageTree {
     }
 
     private PageTreeNode createRoot() {
-        final PageTreeNode root = new PageTreeNode(owner, null, 0, owner.pageType.getInitialRect(), 2);
+        final PageTreeNode root = new PageTreeNode(owner, null, 0, owner.type.getInitialRect(), 2);
         nodes.put(root.id, root);
         return root;
     }

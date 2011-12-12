@@ -149,7 +149,7 @@ MY_MUPDF_C_INCLUDES := \
 # of Androids own droid.ttf ... Maybe resort to pointing
 # to it in the filesystem? But this would violate proper
 # API use. Bleh.
-MY_MUPDF_CFLAGS := -DNOCJK -DARCH_ARM -DARCH_ARM_CAN_LOAD_UNALIGNED
+MY_MUPDF_CFLAGS := -DNOCJK
 
 MY_MUPDF_SRC_FILES := \
 	mupdf/pdf/pdf_annot.c \
@@ -252,8 +252,11 @@ MY_MUPDF_SRC_FILES := \
 MY_MUPDF_LDLIBS := -lz
 
 #Build for ARM architecture. Instead of Thumb
-MY_MUPDF_CFLAGS += -DARCH_ARM
-LOCAL_ARM_MODE := arm
+ifneq ($(TARGET_ARCH_ABI),x86)
+    MY_MUPDF_CFLAGS +=  -DARCH_ARM -DARCH_ARM_CAN_LOAD_UNALIGNED
+    LOCAL_ARM_MODE := arm
+endif # TARGET_ARCH_ABI != x86
+
 
 LOCAL_CFLAGS := \
 	$(MY_FREETYPE_CFLAGS) \

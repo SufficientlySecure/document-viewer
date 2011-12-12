@@ -4,7 +4,9 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := jpeg
 
-LOCAL_ARM_MODE := arm
+ifneq ($(TARGET_ARCH_ABI),x86)
+    LOCAL_ARM_MODE := arm
+endif # TARGET_ARCH_ABI != x86
 
 LOCAL_SRC_FILES := \
 	jcapimin.c \

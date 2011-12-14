@@ -3,7 +3,6 @@ package org.ebookdroid.core;
 import org.ebookdroid.core.IDocumentViewController.InvalidateSizeReason;
 import org.ebookdroid.core.bitmaps.BitmapManager;
 import org.ebookdroid.core.bitmaps.BitmapRef;
-import org.ebookdroid.core.bitmaps.RawBitmap;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.crop.PageCropper;
 import org.ebookdroid.core.models.DecodingProgressModel;

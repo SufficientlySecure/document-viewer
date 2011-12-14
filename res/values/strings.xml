@@ -111,7 +111,7 @@
 	<string name="pref_memory_category">"Memory usage settings"</string>
 	<string name="pref_memory_category_summary">"Settings affected to memory usage"</string>
 	<string name="pref_brightness_title">"Brightness"</string>
-	<string name="pref_brightness_summary">"Set the overall image brightness (0-100)"</string>
+	<string name="pref_brightness_summary">"Set the overall image brightness (0&#8211;100)"</string>
 	<string name="pref_brightnessnightmodeonly_title">"Brightness in night mode"</string>
 	<string name="pref_brightnessnightmodeonly_summary">"Apply brightness setting only in night mode"</string>
 	<string name="pref_keepscreenon_title">"Keep screen On"</string>

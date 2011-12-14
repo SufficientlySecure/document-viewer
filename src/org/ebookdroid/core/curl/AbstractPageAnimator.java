@@ -254,7 +254,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
     }
 
     @Override
-    public boolean onTouchEvent(final MotionEvent event) {
+    public final boolean onTouchEvent(final MotionEvent event) {
         if (!bBlockTouchInput) {
 
             // Get our finger position
@@ -340,7 +340,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
                         lock.writeLock().unlock();
                     }
                     view.redrawView(viewState);
-                    break;
+                    return !bUserMoves;
             }
 
         }

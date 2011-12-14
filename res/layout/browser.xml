@@ -10,6 +10,7 @@
         <ImageView
             android:id="@+id/browserhome"
             style="@style/action_bar_icon"
+            android:contentDescription="Home"
             android:onClick="onButtonClick"
             android:src="@drawable/home" />
 
@@ -23,6 +24,7 @@
         <ImageView
             android:id="@+id/browserupfolder"
             style="@style/action_bar_action"
+            android:contentDescription="Up"
             android:onClick="onButtonClick"
             android:src="@drawable/arrowup_enabled" />
 
@@ -31,6 +33,7 @@
         <ImageView
             android:id="@+id/browserrecent"
             style="@style/action_bar_action"
+            android:contentDescription="Recent"
             android:onClick="onButtonClick"
             android:src="@drawable/actionbar_recent" />
     </LinearLayout>

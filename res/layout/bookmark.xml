@@ -31,8 +31,7 @@
 			android:singleLine="true"
 			android:id="@+id/bookmarkName"
 			android:gravity="center_vertical"
-			android:ellipsize="marquee"
-			android:text="Text" />
+			android:ellipsize="marquee" />
 
 	</FrameLayout>
 </LinearLayout>

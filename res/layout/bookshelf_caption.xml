@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@android:color/transparent"
+        android:contentDescription="Left"
         android:onClick="onButtonClick"
         android:src="@drawable/arrowleft" />
 
@@ -29,7 +30,6 @@
         android:shadowDx="2"
         android:shadowDy="-2"
         android:shadowRadius="1.5"
-        android:text="TextView"
         android:textColor="#DDD"
         android:textSize="40dp" />
 
@@ -39,6 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@android:color/transparent"
+        android:contentDescription="Right"
         android:onClick="onButtonClick"
         android:src="@drawable/arrowright" />
 

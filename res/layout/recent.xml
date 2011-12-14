@@ -9,6 +9,7 @@
 
         <ImageView
             style="@style/action_bar_icon"
+            android:contentDescription="Icon"
             android:src="@drawable/icon" />
 
         <View style="@style/action_bar_separator" />
@@ -23,6 +24,7 @@
         <ImageView
             android:id="@+id/recent_showlibrary"
             style="@style/action_bar_action"
+            android:contentDescription="Library"
             android:onClick="onButtonClick"
             android:src="@drawable/actionbar_library" />
 
@@ -31,6 +33,7 @@
         <ImageView
             android:id="@+id/recent_showbrowser"
             style="@style/action_bar_action"
+            android:contentDescription="Browser"
             android:onClick="onButtonClick"
             android:src="@drawable/actionbar_open" />
     </LinearLayout>

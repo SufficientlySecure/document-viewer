@@ -59,7 +59,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         hasChildren = page.nodes.recycleChildren(this, bitmapsToRecycle);
     }
 
-    public boolean onZoomChanged(final float oldZoom, final ViewState viewState, boolean committed,
+    public boolean onZoomChanged(final float oldZoom, final ViewState viewState, final boolean committed,
             final RectF pageBounds, final List<PageTreeNode> nodesToDecode, final List<BitmapRef> bitmapsToRecycle) {
         if (!viewState.isNodeKeptInMemory(this, pageBounds)) {
             recycle(bitmapsToRecycle);
@@ -164,20 +164,20 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         if (viewState.decodeMode == DecodeMode.NATIVE_RESOLUTION) {
             return false;
         }
-        final Rect rect = page.base.getDecodeService().getScaledSize(viewState.realRect.width(), viewState.realRect.height(), page.bounds.width(),
-                page.bounds.height(), pageSliceBounds, viewState.zoom, page.getTargetRectScale(), SettingsManager.getBookSettings().pageAlign);
+        final Rect rect = page.base.getDecodeService().getScaledSize(viewState, page.bounds.width(),
+                page.bounds.height(), pageSliceBounds, page.getTargetRectScale());
 
         if (viewState.decodeMode == DecodeMode.NORMAL) {
             // We need to check for 2048 for HW accel. limitations.
-            return (viewState.zoom > childrenZoomThreshold) || (rect.width() > 2048 * page.getTargetRectScale()) || (rect.height() > 2048 * page.getTargetRectScale());
+            return (viewState.zoom > childrenZoomThreshold) || (rect.width() > 2048 * page.getTargetRectScale())
+                    || (rect.height() > 2048 * page.getTargetRectScale());
         }
-
 
         final long size = BitmapManager.getBitmapBufferSize(getBitmap(), rect);
         return size >= SettingsManager.getAppSettings().getMaxImageSize();
     }
 
-    protected void decodePageTreeNode(final List<PageTreeNode> nodesToDecode, ViewState viewState) {
+    protected void decodePageTreeNode(final List<PageTreeNode> nodesToDecode, final ViewState viewState) {
         if (setDecodingNow(true)) {
             bitmapZoom = viewState.zoom;
             nodesToDecode.add(this);
@@ -203,10 +203,10 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                     @Override
                     public void run() {
                         setDecodingNow(false);
-                        DecodeService decodeService = page.base.getDecodeService();
+                        final DecodeService decodeService = page.base.getDecodeService();
                         if (decodeService != null) {
-                            decodeService.decodePage(new ViewState(PageTreeNode.this), PageTreeNode.this,
-                                    croppedBounds, SettingsManager.getBookSettings().pageAlign);
+                            decodeService
+                                    .decodePage(new ViewState(PageTreeNode.this), PageTreeNode.this, croppedBounds);
                         }
                     }
                 });
@@ -288,7 +288,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         drawChildren(canvas, viewState, pageBounds, paint);
     }
 
-    private boolean allChildrenHasBitmap(ViewState viewState, PagePaint paint) {
+    private boolean allChildrenHasBitmap(final ViewState viewState, final PagePaint paint) {
         for (final PageTreeNode child : page.nodes.getChildren(this)) {
             if (!child.hasBitmap(viewState, paint)) {
                 return false;
@@ -297,11 +297,11 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         return page.nodes.getChildren(this).length > 0;
     }
 
-    private Bitmap getBitmap(ViewState viewState, PagePaint paint) {
+    private Bitmap getBitmap(final ViewState viewState, final PagePaint paint) {
         return viewState.nightMode ? holder.getNightBitmap(paint.nightBitmapPaint) : holder.getBitmap();
     }
 
-    boolean hasBitmap(ViewState viewState, PagePaint paint) {
+    boolean hasBitmap(final ViewState viewState, final PagePaint paint) {
         return getBitmap(viewState, paint) != null;
     }
 
@@ -349,7 +349,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     /**
      * Gets the parent node.
-     *
+     * 
      * @return the parent node
      */
     public PageTreeNode getParent() {

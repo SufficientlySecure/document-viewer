@@ -1,7 +1,9 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.core.models.DocumentModel;
+import org.ebookdroid.core.settings.AppSettings;
 import org.ebookdroid.core.settings.SettingsManager;
+import org.ebookdroid.core.settings.books.BookSettings;
 
 import android.graphics.RectF;
 import android.util.SparseArray;
@@ -26,6 +28,7 @@ public class ViewState {
 
     public final float zoom;
 
+    public final PageAlign pageAlign;
     public final DecodeMode decodeMode;
     public final boolean nightMode;
 
@@ -52,7 +55,7 @@ public class ViewState {
         this.viewRect = new RectF(view.getViewRect());
         this.zoom = zoom;
 
-        DocumentModel dm = dc.getBase().getDocumentModel();
+        final DocumentModel dm = dc.getBase().getDocumentModel();
         if (dm != null) {
             for (final Page page : dm.getPages(firstVisible, lastVisible + 1)) {
                 pages.append(page.index.viewIndex, page.getBounds(zoom));
@@ -67,8 +70,12 @@ public class ViewState {
             this.lastCached = 0;
         }
 
-        this.decodeMode = SettingsManager.getAppSettings().getDecodeMode();
-        this.nightMode = SettingsManager.getAppSettings().getNightMode();
+        final BookSettings bs = SettingsManager.getBookSettings();
+        final AppSettings as = SettingsManager.getAppSettings();
+
+        this.pageAlign = bs != null ? bs.pageAlign : PageAlign.AUTO;
+        this.decodeMode = as.getDecodeMode();
+        this.nightMode = as.getNightMode();
     }
 
     public ViewState(final ViewState oldState, final IDocumentViewController dc) {
@@ -94,6 +101,7 @@ public class ViewState {
         this.firstCached = Math.max(0, this.currentIndex - inMemory);
         this.lastCached = Math.min(this.currentIndex + inMemory, dc.getBase().getDocumentModel().getPageCount());
 
+        this.pageAlign = oldState.pageAlign;
         this.decodeMode = oldState.decodeMode;
         this.nightMode = oldState.nightMode;
     }
@@ -113,6 +121,7 @@ public class ViewState {
         this.firstCached = state.firstCached;
         this.lastCached = state.lastCached;
 
+        this.pageAlign = state.pageAlign;
         this.decodeMode = state.decodeMode;
         this.nightMode = state.nightMode;
     }
@@ -157,7 +166,7 @@ public class ViewState {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder();
+        final StringBuilder buf = new StringBuilder();
 
         buf.append("visible: ").append("[").append(firstVisible).append(", ").append(currentIndex).append(", ")
                 .append(lastVisible).append("]");

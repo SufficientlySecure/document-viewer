@@ -14,7 +14,7 @@ public interface DecodeService {
 
     void open(String fileName, String password);
 
-    void decodePage(ViewState viewState, PageTreeNode node, RectF nodeBounds, PageAlign pageAlign);
+    void decodePage(ViewState viewState, PageTreeNode node, RectF nodeBounds);
 
     void stopDecoding(PageTreeNode node, String reason);
 
@@ -28,7 +28,7 @@ public interface DecodeService {
 
     Rect getNativeSize(final float pageWidth, final float pageHeight, final RectF nodeBounds, float pageTypeWidthScale);
 
-    Rect getScaledSize(float viewWidth, float viewHeight, float pageWidth, float pageHeight, RectF nodeBounds, float zoom, float pageTypeWidthScale, PageAlign pageAlign);
+    Rect getScaledSize(final ViewState viewState, float pageWidth, float pageHeight, RectF nodeBounds, float pageTypeWidthScale);
 
     void updateViewState(ViewState viewState);
 

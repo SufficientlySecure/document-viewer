@@ -111,8 +111,8 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     @Override
-    public void decodePage(final ViewState viewState, final PageTreeNode node, RectF nodeBounds) {
-        final DecodeTask decodeTask = new DecodeTask(viewState, node, nodeBounds);
+    public void decodePage(final ViewState viewState, final PageTreeNode node, RectF nodeBounds, PageAlign pageAlign) {
+        final DecodeTask decodeTask = new DecodeTask(viewState, node, nodeBounds, pageAlign);
         updateViewState(viewState);
 
         if (isRecycled.get()) {
@@ -181,15 +181,19 @@ public class DecodeServiceBase implements DecodeService {
 
     Rect getScaledSize(final DecodeTask task, final CodecPage vuPage) {
         final int viewWidth = (int) task.viewState.realRect.width();
+        final int viewHeight = (int) task.viewState.realRect.height();
         final int pageWidth = vuPage.getWidth();
         final int pageHeight = vuPage.getHeight();
         final RectF nodeBounds = task.pageSliceBounds;
-        final float zoom = task.viewState.zoom * Math.max(task.node.pageSliceBounds.width() / task.pageSliceBounds.width(), task.node.pageSliceBounds.height() / task.pageSliceBounds.height());
+        final float zoom = task.viewState.zoom;
+
+        final PageAlign pageAlign = task.pageAlign;
 
         if (task.viewState.decodeMode == DecodeMode.NATIVE_RESOLUTION) {
             return getNativeSize(pageWidth, pageHeight, nodeBounds, task.node.page.getTargetRectScale());
         }
-        return getScaledSize(viewWidth, pageWidth, pageHeight, nodeBounds, zoom, task.node.page.getTargetRectScale());
+        return getScaledSize(viewWidth, viewHeight, pageWidth, pageHeight, nodeBounds, zoom,
+                task.node.page.getTargetRectScale(), pageAlign);
     }
 
     @Override
@@ -202,11 +206,34 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     @Override
-    public Rect getScaledSize(final float viewWidth, final float pageWidth, final float pageHeight,
-            final RectF nodeBounds, final float zoom, final float pageTypeWidthScale) {
-        final float scale = 1.0f * (viewWidth / pageWidth) * zoom;
-        final int scaledWidth = Math.round((scale * pageWidth * pageTypeWidthScale) * nodeBounds.width());
-        final int scaledHeight = Math.round((scale * pageHeight * pageTypeWidthScale) * nodeBounds.height());
+    public Rect getScaledSize(final float viewWidth, final float viewHeight, final float pageWidth,
+            final float pageHeight, final RectF nodeBounds, final float zoom, final float pageTypeWidthScale,
+            final PageAlign pageAlign) {
+        final int scaledWidth;
+        final int scaledHeight;
+        // &&
+
+        PageAlign effectiveAlign = pageAlign;
+        if (pageAlign == PageAlign.AUTO) {
+            if ((pageWidth * nodeBounds.width()) / (pageHeight * nodeBounds.height()) < viewWidth / viewHeight) {
+                effectiveAlign = PageAlign.HEIGHT;
+            } else {
+                effectiveAlign = PageAlign.WIDTH;
+            }
+        }
+
+
+        if (effectiveAlign == PageAlign.WIDTH) {
+            final float scale = 1.0f * (viewWidth / pageWidth) * zoom;
+            scaledWidth = Math.round((scale * pageWidth * pageTypeWidthScale));
+            scaledHeight = Math.round((scale * pageHeight * pageTypeWidthScale) * nodeBounds.height()
+                    / nodeBounds.width());
+        } else {
+            final float scale = 1.0f * (viewHeight / pageHeight) * zoom;
+            scaledWidth = Math.round((scale * pageWidth * pageTypeWidthScale) * nodeBounds.width()
+                    / nodeBounds.height());
+            scaledHeight = Math.round((scale * pageHeight * pageTypeWidthScale));
+        }
         return new Rect(0, 0, scaledWidth, scaledHeight);
     }
 
@@ -490,6 +517,7 @@ public class DecodeServiceBase implements DecodeService {
 
     class DecodeTask implements Runnable {
 
+        final PageAlign pageAlign;
         final long id = TASK_ID_SEQ.incrementAndGet();
         final AtomicBoolean cancelled = new AtomicBoolean();
 
@@ -498,11 +526,12 @@ public class DecodeServiceBase implements DecodeService {
         final int pageNumber;
         final RectF pageSliceBounds;
 
-        DecodeTask(final ViewState viewState, final PageTreeNode node,RectF nodeBounds) {
+        DecodeTask(final ViewState viewState, final PageTreeNode node, RectF nodeBounds, PageAlign pageAlign) {
             this.pageNumber = node.getDocumentPageIndex();
             this.viewState = viewState;
             this.node = node;
             this.pageSliceBounds = nodeBounds;
+            this.pageAlign = pageAlign;
         }
 
         @Override

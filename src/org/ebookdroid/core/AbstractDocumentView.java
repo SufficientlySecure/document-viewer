@@ -148,7 +148,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IDocumentViewController#onScrollChanged(int, int)
      */
     @Override
@@ -183,11 +183,11 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     protected final void decodePageTreeNodes(final ViewState viewState, final List<PageTreeNode> nodesToDecode) {
         final PageTreeNode best = Collections.min(nodesToDecode, new PageTreeNodeComparator(viewState));
-        base.getDecodeService().decodePage(viewState, best, best.croppedBounds != null ? best.croppedBounds : best.pageSliceBounds);
+        base.getDecodeService().decodePage(viewState, best, best.croppedBounds != null ? best.croppedBounds : best.pageSliceBounds, SettingsManager.getBookSettings().pageAlign);
 
         for (final PageTreeNode node : nodesToDecode) {
             if (node != best) {
-                base.getDecodeService().decodePage(viewState, node, node.croppedBounds != null ? node.croppedBounds : node.pageSliceBounds);
+                base.getDecodeService().decodePage(viewState, node, node.croppedBounds != null ? node.croppedBounds : node.pageSliceBounds, SettingsManager.getBookSettings().pageAlign);
             }
         }
     }
@@ -268,7 +268,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.events.ZoomListener#commitZoom()
      */
     @Override
@@ -364,7 +364,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.events.ZoomListener#zoomChanged(float, float)
      */
     @Override
@@ -479,7 +479,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * Sets the page align flag.
-     * 
+     *
      * @param align
      *            the new flag indicating align
      */
@@ -501,7 +501,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * Checks if view is initialized.
-     * 
+     *
      * @return true, if is initialized
      */
     protected final boolean isShown() {

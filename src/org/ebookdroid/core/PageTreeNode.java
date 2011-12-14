@@ -164,11 +164,9 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         if (viewState.decodeMode == DecodeMode.NATIVE_RESOLUTION) {
             return false;
         }
-        
-        final Rect rect = page.base.getDecodeService().getScaledSize(viewState.realRect.width(), page.bounds.width(),
-                page.bounds.height(), pageSliceBounds, viewState.zoom, page.getTargetRectScale());
+        final Rect rect = page.base.getDecodeService().getScaledSize(viewState.realRect.width(), viewState.realRect.height(), page.bounds.width(),
+                page.bounds.height(), pageSliceBounds, viewState.zoom, page.getTargetRectScale(), SettingsManager.getBookSettings().pageAlign);
 
-        System.out.println("Rect for node:"+ rect);
         if (viewState.decodeMode == DecodeMode.NORMAL) {
             // We need to check for 2048 for HW accel. limitations.
             return (viewState.zoom > childrenZoomThreshold) || (rect.width() > 2048 * page.getTargetRectScale()) || (rect.height() > 2048 * page.getTargetRectScale());
@@ -198,7 +196,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 croppedBounds = PageCropper.getCropBounds(bitmap, bitmapBounds, pageSliceBounds);
                 cropped = true;
 
-                System.out.println("Cropped bounds:" + croppedBounds);
                 BitmapManager.release(bitmap);
 
                 page.base.getActivity().runOnUiThread(new Runnable() {
@@ -206,8 +203,11 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                     @Override
                     public void run() {
                         setDecodingNow(false);
-                        page.base.getDecodeService().decodePage(new ViewState(PageTreeNode.this), PageTreeNode.this,
-                                croppedBounds);
+                        DecodeService decodeService = page.base.getDecodeService();
+                        if (decodeService != null) {
+                            decodeService.decodePage(new ViewState(PageTreeNode.this), PageTreeNode.this,
+                                    croppedBounds, SettingsManager.getBookSettings().pageAlign);
+                        }
                     }
                 });
                 return;
@@ -282,7 +282,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             if (bitmap != null) {
                 canvas.drawBitmap(bitmap, holder.getBitmapBounds(), tr, paint.bitmapPaint);
             }
-    
+
             drawBrightnessFilter(canvas, tr);
         }
         drawChildren(canvas, viewState, pageBounds, paint);
@@ -300,11 +300,11 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     private Bitmap getBitmap(ViewState viewState, PagePaint paint) {
         return viewState.nightMode ? holder.getNightBitmap(paint.nightBitmapPaint) : holder.getBitmap();
     }
-    
+
     boolean hasBitmap(ViewState viewState, PagePaint paint) {
         return getBitmap(viewState, paint) != null;
     }
-    
+
     void drawBrightnessFilter(final Canvas canvas, final RectF tr) {
         final int brightness = SettingsManager.getAppSettings().getBrightness();
         if (brightness < 100) {

@@ -76,6 +76,7 @@ actions = {
         @ActionMethodDef(id = R.id.mainmenu_nightmode, method = "toggleNightMode"),
         @ActionMethodDef(id = R.id.mainmenu_zoom, method = "toggleControls"),
         @ActionMethodDef(id = R.id.mainmenu_thumbnail, method = "setCurrentPageAsThumbnail"),
+        @ActionMethodDef(id = R.id.mainmenu_about, method = "showAbout"),
         @ActionMethodDef(id = R.id.actions_toggleTouchManagerView, method = "toggleControls"),
         @ActionMethodDef(id = R.id.actions_openOptionsMenu, method = "openOptionsMenu")
 // finish
@@ -412,6 +413,13 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         }
 
     }
+    
+    @ActionMethod(ids = R.id.mainmenu_about)
+    public void showAbout(final ActionEx action) {
+        Intent i = new Intent(this, AboutActivity.class);
+        startActivity(i);
+    }
+
 
     @ActionMethod(ids = R.id.mainmenu_goto_page)
     public void showDialog(final ActionEx action) {

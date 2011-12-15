@@ -73,6 +73,7 @@
         <activity android:name=".core.settings.ui.FragmentedSettingsActivity" android:configChanges="keyboardHidden|orientation"/>
         <activity android:name=".core.settings.ui.BookSettingsActivity" android:configChanges="keyboardHidden|orientation" android:launchMode="singleTask"/>
         <activity android:name=".core.BrowserActivity" android:theme="@android:style/Theme.NoTitleBar" android:configChanges="keyboardHidden|orientation" android:launchMode="singleTask"/>
-
+        <activity android:name=".core.AboutActivity" android:icon="@drawable/icon" android:theme="@android:style/Theme.Dialog"/>
+        
     </application>
 </manifest>

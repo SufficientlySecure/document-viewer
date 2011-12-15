@@ -154,46 +154,4 @@
 	<string name="pref_croppages_title">"Crop pages"</string>
 	<string name="pref_croppages_summary">"Crop margins of pages (experimantal)"</string>
 
-    <string name="about_text">\
-EBookDroid is an open source document viewer for Android based on the VuDroid code base.\n\
-Supported the file in following formats:\n\
-\n\
-PDF\n\
-DjVu\n\
-XPS (OpenXPS)\n\
-comics books (cbz,cbr)\n\
-\n\
-http://code.google.com/p/ebookdroid/\
-\n\
-This program is free software: you can redistribute it and/or modify \
-it under the terms of the GNU General Public License as published by \
-the Free Software Foundation, either version 3 of the License, or \
-(at your option) any later version.\n\
-\n\
-This program is distributed in the hope that it will be useful, \
-but WITHOUT ANY WARRANTY; without even the implied warranty of \
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the \
-GNU General Public License for more details.\n\
-\n\
-You should have received a copy of the GNU General Public License \
-along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.\
-\n\
-Third‑party software used by this program\
-\n\
-MuPDF\
-\n\
-a lightweight PDF and XPS viewer\
-\n\
-MuPDF is Copyright 2006-2011 Artifex Software, Inc.\
-\n\
-DjVuLibre\
-\n\
-is an open source implementation of DjVu, including viewers, browser plugins, decoders, simple encoders, and utilities.\
-\n\
-JUnRar\
-\n\
-is a rar handling api implemented in pure java\
-\n\
-</string>
-
 </resources>

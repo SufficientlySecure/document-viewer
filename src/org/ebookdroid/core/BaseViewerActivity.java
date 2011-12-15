@@ -110,6 +110,8 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     private TouchManagerView touchView;
 
+    private boolean menuClosedCalled;
+
     /**
      * Instantiates a new base viewer activity.
      */
@@ -334,7 +336,17 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
     }
 
     @Override
+    public void onPanelClosed(int featureId, Menu menu) {
+        menuClosedCalled = false;
+        super.onPanelClosed(featureId, menu);
+        if (!menuClosedCalled) {
+            onOptionsMenuClosed(menu);
+        }
+    }
+
+    @Override
     public void onOptionsMenuClosed(final Menu menu) {
+        menuClosedCalled = true;
         final Window w = getWindow();
         if (SettingsManager.getAppSettings().getFullScreen()) {
             w.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);

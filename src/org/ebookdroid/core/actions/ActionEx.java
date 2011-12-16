@@ -36,6 +36,8 @@ public class ActionEx implements Runnable, View.OnClickListener, View.OnLongClic
 
     private final Map<String, IActionParameter> m_actionParameters = new LinkedHashMap<String, IActionParameter>();
 
+    private boolean enabled = true;
+
     /**
      * Constructor
      * 
@@ -75,6 +77,14 @@ public class ActionEx implements Runnable, View.OnClickListener, View.OnLongClic
         putValue(SHORT_DESCRIPTION, description);
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(final boolean enabled) {
+        this.enabled = enabled;
+    }
+
     /**
      * @return ActionControllerMethod
      */
@@ -91,7 +101,7 @@ public class ActionEx implements Runnable, View.OnClickListener, View.OnLongClic
      */
     @SuppressWarnings("unchecked")
     public <ManagedComponent> ManagedComponent getManagedComponent() {
-        return (ManagedComponent)getValue(IActionController.MANAGED_COMPONENT_PROPERTY);
+        return (ManagedComponent) getValue(IActionController.MANAGED_COMPONENT_PROPERTY);
     }
 
     /**
@@ -160,11 +170,15 @@ public class ActionEx implements Runnable, View.OnClickListener, View.OnLongClic
     @Override
     public void run() {
         try {
+            if (!enabled) {
+                LCTX.d("Action  " + name + ": disabled");
+                return;
+            }
             final ActionControllerMethod method = getMethod();
             setParameters();
             LCTX.d("Execute action: " + name + ": " + m_values);
             method.invoke(this);
-        } catch (InvocationTargetException ex) {
+        } catch (final InvocationTargetException ex) {
             LCTX.e("Action " + name + " failed on execution: ", ex.getCause());
         } catch (final Throwable th) {
             LCTX.e("Action " + name + " failed on execution: ", th);
@@ -228,22 +242,38 @@ public class ActionEx implements Runnable, View.OnClickListener, View.OnLongClic
 
     private static Map<Integer, String> s_names;
 
+    private static Map<String, Integer> s_ids;
+
     public static String getActionName(final int id) {
         if (s_names == null) {
-            s_names = new HashMap<Integer, String>();
-            for (final Field f : R.id.class.getFields()) {
-                final int modifiers = f.getModifiers();
-                if (Modifier.isPublic(modifiers) && Modifier.isStatic(modifiers) && Modifier.isFinal(modifiers)) {
-                    if (f.getType() == int.class) {
-                        try {
-                            final int value = f.getInt(null);
-                            s_names.put(value, f.getName());
-                        } catch (final Throwable th) {
-                        }
+            fillMapping();
+        }
+        return LengthUtils.safeString(s_names.get(id), "0x" + Integer.toHexString(id));
+    }
+
+    public static Integer getActionId(final String name) {
+        if (s_ids == null) {
+            fillMapping();
+        }
+        return s_ids.get(name);
+    }
+
+    private static void fillMapping() {
+        s_names = new HashMap<Integer, String>();
+        s_ids = new HashMap<String, Integer>();
+
+        for (final Field f : R.id.class.getFields()) {
+            final int modifiers = f.getModifiers();
+            if (Modifier.isPublic(modifiers) && Modifier.isStatic(modifiers) && Modifier.isFinal(modifiers)) {
+                if (f.getType() == int.class) {
+                    try {
+                        final int value = f.getInt(null);
+                        s_names.put(value, f.getName());
+                        s_ids.put(f.getName(), value);
+                    } catch (final Throwable th) {
                     }
                 }
             }
         }
-        return LengthUtils.safeString(s_names.get(id), "0x" + Integer.toHexString(id));
     }
 }

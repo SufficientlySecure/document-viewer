@@ -44,7 +44,7 @@ public class TouchManager {
                 for (TouchProfile p : list) {
                     profiles.put(p.name, p);
                 }
-            } catch (JSONException ex) {
+            } catch (Throwable ex) {
                 ex.printStackTrace();
             }
             fromJSON = profiles.containsKey(DEFAULT_PROFILE) && profiles.containsKey(TouchManagerView.TMV_PROFILE);
@@ -54,22 +54,22 @@ public class TouchManager {
             final TouchProfile tp = addProfile(TouchManagerView.TMV_PROFILE);
             {
                 final Region r = tp.addRegion(0, 0, 100, 100);
-                r.setAction(Touch.DoubleTap, true, R.id.actions_toggleTouchManagerView);
+                r.setAction(Touch.DoubleTap, R.id.actions_toggleTouchManagerView, true);
             }
 
             TouchProfile def = addProfile(DEFAULT_PROFILE);
             {
                 final Region r = def.addRegion(0, 0, 100, 100);
-                r.setAction(Touch.DoubleTap, newSettings.getZoomByDoubleTap(), R.id.mainmenu_zoom);
-                r.setAction(Touch.LongTap, true, R.id.actions_openOptionsMenu);
+                r.setAction(Touch.DoubleTap, R.id.mainmenu_zoom, newSettings.getZoomByDoubleTap());
+                r.setAction(Touch.LongTap, R.id.actions_openOptionsMenu, true);
             }
             {
                 final Region r = def.addRegion(0, 0, 100, newSettings.getTapSize());
-                r.setAction(Touch.SingleTap, newSettings.getTapScroll(), R.id.actions_verticalConfigScrollUp);
+                r.setAction(Touch.SingleTap, R.id.actions_verticalConfigScrollUp, newSettings.getTapScroll());
             }
             {
                 final Region r = def.addRegion(0, 100 - newSettings.getTapSize(), 100, 100);
-                r.setAction(Touch.SingleTap, newSettings.getTapScroll(), R.id.actions_verticalConfigScrollDown);
+                r.setAction(Touch.SingleTap, R.id.actions_verticalConfigScrollDown, newSettings.getTapScroll());
             }
 
             try {
@@ -78,9 +78,24 @@ public class TouchManager {
             } catch (JSONException ex) {
                 ex.printStackTrace();
             }
+        } else {
+            setActionEnabled(DEFAULT_PROFILE, R.id.mainmenu_zoom, newSettings.getZoomByDoubleTap());
+            setActionEnabled(DEFAULT_PROFILE, R.id.actions_verticalConfigScrollUp, newSettings.getTapScroll());
+            setActionEnabled(DEFAULT_PROFILE, R.id.actions_verticalConfigScrollDown, newSettings.getTapScroll());
         }
 
         stack.addFirst(profiles.get(DEFAULT_PROFILE));
+    }
+
+    public static void setActionEnabled(final String profile, final int id, final boolean enabled) {
+        TouchProfile tp = profiles.get(profile);
+        for (Region r : tp.regions) {
+            for (ActionRef a : r.actions) {
+                if (a != null && a.id == id) {
+                    a.enabled = enabled;
+                }
+            }
+        }
     }
 
     public static Integer getAction(final Touch type, final float x, final float y, final float width,
@@ -237,8 +252,8 @@ public class TouchManager {
             return actions[type.ordinal()];
         }
 
-        public ActionRef setAction(final Touch type, final boolean enabled, final int id) {
-            final ActionRef a = new ActionRef(type, enabled, id);
+        public ActionRef setAction(final Touch type, final int id, final boolean enabled) {
+            final ActionRef a = new ActionRef(type, id, enabled);
             actions[type.ordinal()] = a;
             return a;
         }
@@ -283,12 +298,24 @@ public class TouchManager {
         public static Region fromJSON(JSONObject json) throws JSONException {
             JSONObject r = (JSONObject) json.getJSONObject("rect");
             Rect rect = new Rect(r.getInt("left"), r.getInt("top"), r.getInt("right"), r.getInt("bottom"));
-            
+
             Region region = new Region(rect);
             JSONArray actions = json.getJSONArray("actions");
             for (int aIndex = 0; aIndex < actions.length(); aIndex++) {
-                JSONObject a = actions.getJSONObject(aIndex);
-                region.setAction(Touch.valueOf(a.getString("type")), a.getBoolean("enabled"), a.getInt("id"));
+                try {
+                    JSONObject a = actions.getJSONObject(aIndex);
+                    Touch type = Touch.valueOf(a.getString("type"));
+                    String name = a.getString("name");
+                    Integer id = ActionEx.getActionId(name);
+                    if (id != null) {
+                        region.setAction(type, id, a.getBoolean("enabled"));
+                    } else {
+                        LCTX.e("Unknown action name: " + name);
+                    }
+                } catch (JSONException ex) {
+                    throw new JSONException("Old perssitent format found. Touch action are returned to default ones: "
+                            + ex.getMessage());
+                }
             }
             return region;
         }
@@ -300,23 +327,23 @@ public class TouchManager {
         public final int id;
         public boolean enabled;
 
-        public ActionRef(final Touch type, final boolean enabled, final int id) {
+        public ActionRef(final Touch type, final int id, final boolean enabled) {
             this.type = type;
-            this.enabled = enabled;
             this.id = id;
+            this.enabled = enabled;
         }
 
         public JSONObject toJSON() throws JSONException {
             JSONObject object = new JSONObject();
             object.put("type", type.name());
-            object.put("id", id);
+            object.put("name", ActionEx.getActionName(id));
             object.put("enabled", enabled);
             return object;
         }
 
         @Override
         public String toString() {
-            return type + ", " + ActionEx.getActionName(id) + ",  " + enabled;
+            return "(" + type + ", " + ActionEx.getActionName(id) + ", " + enabled + ")";
         }
     }
 }

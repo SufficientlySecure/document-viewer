@@ -41,4 +41,5 @@
 	    <delete file="../../libs/junrar.jar" />
 	</target>
 
+    <target name="nodeps" />
 </project>

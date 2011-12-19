@@ -36,4 +36,6 @@
         <delete file="../../libs/_android.jar" />
     </target>
 
+    <target name="nodeps" />
+
 </project>

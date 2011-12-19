@@ -35,6 +35,7 @@
 	<property name="out.debug.file" location="${out.absolute.dir}/${ant.project.name}-${debug.version}.apk" />
 	<property name="out.release.file" location="${out.absolute.dir}/${ant.project.name}-release.apk" />
 
+
 	<property name="arm.mk" location="jni/Application.mk" />
 	<property name="cortex.a8.mk" location="jni/Application.arm7.a8.mk" />
 	<property name="cortex.a9.mk" location="jni/Application.arm7.a9.mk" />

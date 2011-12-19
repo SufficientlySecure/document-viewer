@@ -49,4 +49,11 @@ public class BitmapRef {
         bitmap = null;
         ref = new SoftReference<Bitmap>(null);
     }
+
+    @Override
+    public String toString() {
+        return "BitmapRef [id=" + id + ", size=" + size + "]";
+    }
+
+
 }

@@ -187,7 +187,15 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     @Override
     public void decodeComplete(final CodecPage codecPage, final BitmapRef bitmap, final Rect bitmapBounds) {
 
+        System.out.println("decodeComplete:" + this.page.index + ", "+bitmap+", bounds: " + bitmapBounds);
         if (bitmap == null || bitmapBounds == null) {
+            page.base.getActivity().runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    setDecodingNow(false);
+                }
+            });
             return;
         }
 
@@ -349,7 +357,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     /**
      * Gets the parent node.
-     * 
+     *
      * @return the parent node
      */
     public PageTreeNode getParent() {

@@ -41,7 +41,7 @@ public abstract class AbstractCodecDocument implements CodecDocument {
 
     @Override
     public final void recycle() {
-        if (isRecycled()) {
+        if (!isRecycled()) {
             context.recycle();
             freeDocument();
         }
@@ -49,7 +49,7 @@ public abstract class AbstractCodecDocument implements CodecDocument {
 
     @Override
     public final boolean isRecycled() {
-        return context.isRecycled();
+        return context == null || context.isRecycled();
     }
 
     protected void freeDocument() {

@@ -6,6 +6,10 @@ import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.settings.SettingsManager;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 public class DjvuPage implements CodecPage {
@@ -36,7 +40,8 @@ public class DjvuPage implements CodecPage {
     private static native boolean isNativeGraphicsAvailable();
 
     private static native boolean renderPageBitmap(long pageHandle, int targetWidth, int targetHeight,
-            float pageSliceX, float pageSliceY, float pageSliceWidth, float pageSliceHeight, Bitmap bitmap, int renderMode);
+            float pageSliceX, float pageSliceY, float pageSliceWidth, float pageSliceHeight, Bitmap bitmap,
+            int renderMode);
 
     private static native void free(long pageHandle);
 
@@ -54,13 +59,15 @@ public class DjvuPage implements CodecPage {
     public BitmapRef renderBitmap(final int width, final int height, final RectF pageSliceBounds) {
         if (useNativeGraphics) {
             BitmapRef bmp = BitmapManager.getBitmap(width, height, Bitmap.Config.RGB_565);
-            if (renderPageBitmap(pageHandle, width, height, pageSliceBounds.left, pageSliceBounds.top,
-                    pageSliceBounds.width(), pageSliceBounds.height(), bmp.getBitmap(), SettingsManager.getAppSettings().getDjvuRenderingMode())) {
-                return bmp;
-            } else {
-                BitmapManager.release(bmp);
-                return null;
+            if (!renderPageBitmap(pageHandle, width, height, pageSliceBounds.left, pageSliceBounds.top,
+                    pageSliceBounds.width(), pageSliceBounds.height(), bmp.getBitmap(), SettingsManager
+                            .getAppSettings().getDjvuRenderingMode())) {
+                Canvas c = new Canvas(bmp.getBitmap());
+                Paint paint = new Paint();
+                paint.setColor(Color.GRAY);
+                c.drawRect(new Rect(0, 0, width, height), paint);
             }
+            return bmp;
         }
 
         final int[] buffer = new int[width * height];

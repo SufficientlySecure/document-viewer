@@ -117,4 +117,21 @@
 		<item>@string/list_clear_recent_mode_delete_cached_data</item>
 	</string-array>
 
+    <string-array
+        name="list_viewmode"
+        translatable="false">
+        <item>@string/list_viewmode_vertical_scroll</item>
+        <item>@string/list_viewmode_horizontal_scroll</item>
+        <item>@string/list_viewmode_single_page</item>
+    </string-array>
+
+    <string-array
+        name="list_viewmode_values"
+        translatable="false">
+        <item>Vertical scroll</item>
+        <item>Horizontal scroll</item>
+        <item>Single page</item>
+    </string-array>
+
+
 </resources>

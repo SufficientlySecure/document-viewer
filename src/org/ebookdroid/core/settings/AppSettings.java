@@ -2,6 +2,7 @@ package org.ebookdroid.core.settings;
 
 import org.ebookdroid.core.Activities;
 import org.ebookdroid.core.DecodeMode;
+import org.ebookdroid.core.DocumentViewMode;
 import org.ebookdroid.core.PageAlign;
 import org.ebookdroid.core.RotationType;
 import org.ebookdroid.core.curl.PageAnimationType;
@@ -27,7 +28,7 @@ public class AppSettings {
 
     private Integer tapSize;
 
-    private Boolean singlePage;
+    private DocumentViewMode viewMode;
 
     private Integer pagesInMemory;
 
@@ -282,11 +283,15 @@ public class AppSettings {
         return splitPages;
     }
 
-    boolean getSinglePage() {
-        if (singlePage == null) {
-            singlePage = prefs.getBoolean("singlepage", false);
+    DocumentViewMode getViewMode() {
+        if (viewMode == null) {
+            viewMode = DocumentViewMode.getByResValue(prefs.getString("viewmode", null));
+            if (viewMode == null) {
+                boolean singlePage = prefs.getBoolean("singlepage", false);
+                viewMode = singlePage ? DocumentViewMode.SINGLE_PAGE : DocumentViewMode.VERTICALL_SCROLL;
+            }
         }
-        return singlePage;
+        return viewMode;
     }
 
     PageAlign getPageAlign() {
@@ -336,7 +341,7 @@ public class AppSettings {
         final Editor editor = prefs.edit();
         editor.putString("book", bs.fileName);
         editor.putBoolean("book_splitpages", bs.splitPages);
-        editor.putBoolean("book_singlepage", bs.singlePage);
+        editor.putString("book_viewmode", bs.viewMode.getResValue());
         editor.putString("book_align", bs.pageAlign.getResValue());
         editor.putString("book_animationType", bs.animationType.getResValue());
         editor.putBoolean("book_croppages", bs.cropPages);
@@ -345,7 +350,11 @@ public class AppSettings {
 
     void fillBookSettings(final BookSettings bs) {
         bs.splitPages = prefs.getBoolean("book_splitpages", getSplitPages());
-        bs.singlePage = prefs.getBoolean("book_singlepage", getSinglePage());
+
+        bs.viewMode = DocumentViewMode.getByResValue(prefs.getString("book_viewmode", getViewMode().getResValue()));
+        if (bs.viewMode == null) {
+            bs.viewMode = DocumentViewMode.VERTICALL_SCROLL;
+        }
 
         bs.pageAlign = PageAlign.getByResValue(prefs.getString("book_align", getPageAlign().getResValue()));
         if (bs.pageAlign == null) {

@@ -10,9 +10,13 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.util.Map;
 
-class DBAdapterV3 extends DBAdapterV2 {
+class DBAdapterV5 extends DBAdapterV4 {
 
-    public static final int VERSION = 3;
+    public static final int VERSION = 5;
+
+    public static final long F_SPLIT_PAGES = 0x01;
+
+    public static final long F_CROP_PAGES = 0x02;
 
     public static final String DB_BOOK_CREATE = "create table book_settings ("
     // Book file path
@@ -25,28 +29,30 @@ class DBAdapterV3 extends DBAdapterV2 {
             + "view_page integer not null, "
             // Page zoom
             + "zoom integer not null, "
-            // Single page mode on/off
-            + "single_page integer not null, "
+            // View mode
+            + "view_mode integer not null, "
             // Page align
             + "page_align integer not null, "
             // Page animation type
             + "page_animation integer not null, "
-            // Split pages on/off
-            + "split_pages integer not null, "
-            // Crop pages on/off
-            + "crop_pages integer not null"
+            // Book flags
+            + "flags long not null, "
+            // Offset x
+            + "offset_x integer not null, "
+            // Offset y
+            + "offset_y integer not null"
             // ...
             + ");"
     //
     ;
 
-    public static final String DB_BOOK_GET_ALL = "SELECT book, last_updated, doc_page, view_page, zoom, single_page, page_align, page_animation, split_pages, crop_pages FROM book_settings where last_updated > 0 ORDER BY last_updated DESC";
+    public static final String DB_BOOK_GET_ALL = "SELECT book, last_updated, doc_page, view_page, zoom, view_mode, page_align, page_animation, flags, offset_x, offset_y FROM book_settings where last_updated > 0 ORDER BY last_updated DESC";
 
-    public static final String DB_BOOK_GET_ONE = "SELECT book, last_updated, doc_page, view_page, zoom, single_page, page_align, page_animation, split_pages, crop_pages FROM book_settings WHERE book=?";
+    public static final String DB_BOOK_GET_ONE = "SELECT book, last_updated, doc_page, view_page, zoom, view_mode, page_align, page_animation, flags, offset_x, offset_y FROM book_settings WHERE book=?";
 
-    public static final String DB_BOOK_STORE = "INSERT OR REPLACE INTO book_settings (book, last_updated, doc_page, view_page, zoom, single_page, page_align, page_animation, split_pages, crop_pages) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public static final String DB_BOOK_STORE = "INSERT OR REPLACE INTO book_settings (book, last_updated, doc_page, view_page, zoom, view_mode, page_align, page_animation, flags, offset_x, offset_y) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    public DBAdapterV3(final DBSettingsManager manager) {
+    public DBAdapterV5(final DBSettingsManager manager) {
         super(manager);
     }
 
@@ -82,15 +88,19 @@ class DBAdapterV3 extends DBAdapterV2 {
                 // Current page zoom
                 bs.zoom,
                 // Single page on/off
-                bs.viewMode == DocumentViewMode.SINGLE_PAGE ? 1 : 0,
+                bs.viewMode.ordinal(),
                 // Page align
                 bs.pageAlign.ordinal(),
                 // Page animation type
                 bs.animationType.ordinal(),
-                // Split pages on/off
-                bs.splitPages ? 1 : 0,
-                // Crop pages on/off
-                bs.cropPages ? 1 : 0 };
+                // Flags
+                (bs.splitPages ? F_SPLIT_PAGES : 0) | (bs.cropPages ? F_CROP_PAGES : 0),
+                // Offset x
+                (int) bs.offsetX,
+                // Offset y
+                (int) bs.offsetY
+        // ...
+        };
 
         db.execSQL(DB_BOOK_STORE, args);
 
@@ -105,11 +115,16 @@ class DBAdapterV3 extends DBAdapterV2 {
         bs.lastUpdated = c.getLong(index++);
         bs.currentPage = new PageIndex(c.getInt(index++), c.getInt(index++));
         bs.zoom = c.getInt(index++);
-        bs.viewMode = c.getInt(index++) != 0 ? DocumentViewMode.SINGLE_PAGE : DocumentViewMode.VERTICALL_SCROLL;
+        bs.viewMode = DocumentViewMode.getByOrdinal(c.getInt(index++));
         bs.pageAlign = PageAlign.values()[c.getInt(index++)];
         bs.animationType = PageAnimationType.values()[c.getInt(index++)];
-        bs.splitPages = c.getInt(index++) != 0;
-        bs.cropPages = c.getInt(index++) != 0;
+
+        long flags = c.getLong(index++);
+        bs.splitPages = (flags & F_SPLIT_PAGES) != 0;
+        bs.cropPages = (flags & F_CROP_PAGES) != 0;
+
+        bs.offsetX = c.getInt(index++);
+        bs.offsetY = c.getInt(index++);
 
         return bs;
     }

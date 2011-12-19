@@ -75,8 +75,8 @@
 	<string name="list_align_auto">Automatic</string>
 	<string name="pref_align_title">"Page align mode"</string>
 	<string name="pref_align_summary">"How to align pages"</string>
-	<string name="pref_singlepage_title">"Single page mode"</string>
-	<string name="pref_singlepage_summary">"Single page layout mode"</string>
+	<string name="pref_viewmode_title">"Page view mode"</string>
+	<string name="pref_viewmode_summary">"Page view mode"</string>
 	<string name="pref_pagesinmemory_title">"Pages in memory"</string>
 	<string name="pref_pagesinmemory_summary">"Number of pages to store in memory"</string>
 	<string name="pref_splitpages_title">"Split pages"</string>
@@ -150,6 +150,10 @@
 	<string name="list_clear_recent_mode_delete_bookmarks">Delete all bookmarks</string>
 	<string name="list_clear_recent_mode_delete_book_settings">Delete all book settings</string>
 	<string name="list_clear_recent_mode_delete_cached_data">Delete all cached data from disk</string>
+
+    <string name="list_viewmode_vertical_scroll">Vertical scroll</string>
+    <string name="list_viewmode_horizontal_scroll">Horizontal scroll</string>
+    <string name="list_viewmode_single_page">Single page</string>
 
 	<string name="pref_croppages_title">"Crop pages"</string>
 	<string name="pref_croppages_summary">"Crop margins of pages (experimantal)"</string>

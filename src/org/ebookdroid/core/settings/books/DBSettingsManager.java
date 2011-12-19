@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter {
 
-    public static final int DB_VERSION = 4;
+    public static final int DB_VERSION = 5;
 
     private final IDBAdapter adapter;
 
@@ -40,8 +40,10 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter {
             case DBAdapterV3.VERSION:
                 return new DBAdapterV3(this);
             case DBAdapterV4.VERSION:
-            default:
                 return new DBAdapterV4(this);
+            case DBAdapterV5.VERSION:
+            default:
+                return new DBAdapterV5(this);
         }
     }
 
@@ -83,7 +85,7 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see android.database.sqlite.SQLiteOpenHelper#getWritableDatabase()
      */
     @Override
@@ -93,7 +95,7 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see android.database.sqlite.SQLiteOpenHelper#getReadableDatabase()
      */
     @Override

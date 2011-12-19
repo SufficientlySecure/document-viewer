@@ -145,11 +145,13 @@
             android:summary="@string/pref_croppages_summary"
             android:title="@string/pref_croppages_title" />
 
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="singlepage"
-            android:summary="@string/pref_singlepage_summary"
-            android:title="@string/pref_singlepage_title" />
+        <ListPreference
+            android:defaultValue="Vertical scroll"
+            android:entries="@array/list_viewmode"
+            android:entryValues="@array/list_viewmode_values"
+            android:key="viewmode"
+            android:summary="@string/pref_viewmode_summary"
+            android:title="@string/pref_viewmode_title" />
 
         <PreferenceCategory
             android:summary="@string/pref_singlepage_category_summary"
@@ -157,7 +159,6 @@
 
             <ListPreference
                 android:defaultValue="By Width"
-                android:dependency="singlepage"
                 android:entries="@array/list_align"
                 android:entryValues="@array/list_align_values"
                 android:key="align"
@@ -166,7 +167,6 @@
 
             <ListPreference
                 android:defaultValue="None"
-                android:dependency="singlepage"
                 android:entries="@array/list_animation"
                 android:entryValues="@array/list_animation_values"
                 android:key="animationType"
@@ -212,11 +212,13 @@
             android:summary="@string/pref_croppages_summary"
             android:title="@string/pref_croppages_title" />
 
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="book_singlepage"
-            android:summary="@string/pref_singlepage_summary"
-            android:title="@string/pref_singlepage_title" />
+        <ListPreference
+            android:defaultValue="Vertical scroll"
+            android:entries="@array/list_viewmode"
+            android:entryValues="@array/list_viewmode_values"
+            android:key="book_viewmode"
+            android:summary="@string/pref_viewmode_summary"
+            android:title="@string/pref_viewmode_title" />
 
         <PreferenceCategory
             android:summary="@string/pref_singlepage_category_summary"
@@ -224,7 +226,6 @@
 
             <ListPreference
                 android:defaultValue="By Width"
-                android:dependency="book_singlepage"
                 android:entries="@array/list_align"
                 android:entryValues="@array/list_align_values"
                 android:key="book_align"
@@ -233,7 +234,6 @@
 
             <ListPreference
                 android:defaultValue=""
-                android:dependency="book_singlepage"
                 android:entries="@array/list_animation"
                 android:entryValues="@array/list_animation_values"
                 android:key="book_animationType"

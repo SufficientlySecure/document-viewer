@@ -11,11 +11,11 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-public class ContiniousDocumentView extends AbstractDocumentView {
+public class HScrollDocumentView extends AbstractDocumentView {
 
     protected static Bitmap dragBitmap;
 
-    public ContiniousDocumentView(final IViewerActivity base) {
+    public HScrollDocumentView(final IViewerActivity base) {
         super(base);
         if (dragBitmap == null) {
             dragBitmap = BitmapFactory.decodeResource(base.getContext().getResources(), R.drawable.drag);
@@ -33,7 +33,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
                 final RectF viewRect = view.getViewRect();
                 final RectF bounds = page.getBounds(getBase().getZoomModel().getZoom());
                 dm.setCurrentPageIndex(page.index);
-                view.scrollTo(getScrollX(), Math.round(bounds.top - (viewRect.height() - bounds.height()) / 2));
+                view.scrollTo(Math.round(bounds.left - (viewRect.width() - bounds.width()) / 2), getScrollY());
             } else {
                 if (LCTX.isDebugEnabled()) {
                     LCTX.d("No page found for index: " + toPage);
@@ -54,14 +54,14 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         int result = 0;
         long bestDistance = Long.MAX_VALUE;
 
-        final int viewY = Math.round(viewState.viewRect.centerY());
+        final int viewX = Math.round(viewState.viewRect.centerX());
 
         if (viewState.firstVisible != -1) {
             for (final Page page : getBase().getDocumentModel().getPages(viewState.firstVisible,
                     viewState.lastVisible + 1)) {
                 final RectF bounds = viewState.getBounds(page);
-                final int pageY = Math.round(bounds.centerY());
-                final long dist = Math.abs(pageY - viewY);
+                final int pageX = Math.round(bounds.centerX());
+                final long dist = Math.abs(pageX - viewX);
                 if (dist < bestDistance) {
                     bestDistance = dist;
                     result = page.index.viewIndex;
@@ -78,8 +78,6 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         if (inZoom.get()) {
             return;
         }
-
-        LCTX.d("onScrollChanged(" + newPage + ", " + direction + ")");
 
         final Runnable r = new Runnable() {
 
@@ -105,16 +103,16 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     @Override
     public final void verticalConfigScroll(final int direction) {
         final int scrollheight = SettingsManager.getAppSettings().getScrollHeight();
-        final int dy = (int) (direction * getHeight() * (scrollheight / 100.0));
+        final int dx = (int) (direction * getWidth() * (scrollheight / 100.0));
 
-        view.startPageScroll(0, dy);
+        view.startPageScroll(dx, 0);
     }
 
     @Override
     public final void verticalDpadScroll(final int direction) {
-        final int dy = direction * getHeight() / 2;
+        final int dx = direction * getWidth() / 2;
 
-        view.startPageScroll(0, dy);
+        view.startPageScroll(dx, 0);
     }
 
     @Override
@@ -124,8 +122,8 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         final Page lpo = getBase().getDocumentModel().getLastPageObject();
         final float zoom = getBase().getZoomModel().getZoom();
 
-        final int bottom = lpo != null ? (int) lpo.getBounds(zoom).bottom - height : 0;
-        final int right = (int) (width * zoom) - width;
+        final int right = lpo != null ? (int) lpo.getBounds(zoom).right - width : 0;
+        final int bottom = (int) (height * zoom) - height;
 
         return new Rect(0, 0, right, bottom);
     }
@@ -179,20 +177,23 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         }
 
         final int width = getWidth();
+        final int height = getHeight();
 
         if (changedPage == null) {
-            float heightAccum = 0;
+            float widthAccum = 0;
             for (final Page page : getBase().getDocumentModel().getPages()) {
-                final float pageHeight = width / page.getAspectRatio();
-                page.setBounds(new RectF(0, heightAccum, width, heightAccum + pageHeight));
-                heightAccum += pageHeight;
+                final float pageWidth = height * page.getAspectRatio();
+                final float pageHeight = pageWidth / page.getAspectRatio();
+                page.setBounds(new RectF(widthAccum, 0, widthAccum + pageWidth, pageHeight));
+                widthAccum += pageWidth;
             }
         } else {
-            float heightAccum = changedPage.getBounds(1.0f).top;
+            float widthAccum = changedPage.getBounds(1.0f).left;
             for (final Page page : getBase().getDocumentModel().getPages(changedPage.index.viewIndex)) {
-                final float pageHeight = width / page.getAspectRatio();
-                page.setBounds(new RectF(0, heightAccum, width, heightAccum + pageHeight));
-                heightAccum += pageHeight;
+                final float pageWidth = height * page.getAspectRatio();
+                final float pageHeight = pageWidth / page.getAspectRatio();
+                page.setBounds(new RectF(widthAccum, 0, widthAccum + pageWidth, pageHeight));
+                widthAccum += pageWidth;
             }
         }
     }

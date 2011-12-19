@@ -33,7 +33,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
      * @param baseActivity
      *            the base activity
      */
-    public SinglePageDocumentView(final BaseViewerActivity baseActivity) {
+    public SinglePageDocumentView(final IViewerActivity baseActivity) {
         super(baseActivity);
         updateAnimationType();
     }

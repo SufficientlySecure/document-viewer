@@ -73,8 +73,8 @@ public final class BaseDocumentView extends View {
                 (int) ((getScrollY() + getHeight() / 2) * ratio - getHeight() / 2));
     }
 
-    public void startPageScroll(final int dy) {
-        scroller.startScroll(getScrollX(), getScrollY(), 0, dy);
+    public void startPageScroll(final int dx, final int dy) {
+        scroller.startScroll(getScrollX(), getScrollY(), dx, dy);
         redrawView();
     }
 

@@ -1,6 +1,7 @@
 package org.ebookdroid.core.settings.ui;
 
 import org.ebookdroid.core.DecodeMode;
+import org.ebookdroid.core.DocumentViewMode;
 import org.ebookdroid.core.PageAlign;
 import org.ebookdroid.core.curl.PageAnimationType;
 import org.ebookdroid.core.settings.SettingsManager;
@@ -20,7 +21,7 @@ import java.util.Map;
 
 /**
  * @author whippet
- * 
+ *
  */
 public class PreferencesDecorator implements IPreferenceContainer {
 
@@ -49,7 +50,8 @@ public class PreferencesDecorator implements IPreferenceContainer {
     }
 
     public void decorateBooksSettings() {
-        decoratePreferences("book_align", "book_animationType");
+        decoratePreferences("book_viewmode", "book_align", "book_animationType");
+        addViewModeListener("book_viewmode", "book_align", "book_animationType");
         addAnimationTypeListener("book_animationType", "book_align");
     }
 
@@ -78,7 +80,8 @@ public class PreferencesDecorator implements IPreferenceContainer {
     }
 
     public void decorateRenderSettings() {
-        decoratePreferences("align", "animationType");
+        decoratePreferences("viewmode", "align", "animationType");
+        addViewModeListener("viewmode", "align", "animationType");
         addAnimationTypeListener("animationType", "align");
 
         decoratePreferences("djvu_rendering_mode");
@@ -175,6 +178,10 @@ public class PreferencesDecorator implements IPreferenceContainer {
         addListener(source, new AnimationTypeListener(target));
     }
 
+    protected void addViewModeListener(final String source, final String... targets) {
+        addListener(source, new ViewModeListener(targets));
+    }
+
     protected static class CompositeListener implements OnPreferenceChangeListener {
 
         final List<OnPreferenceChangeListener> listeners = new LinkedList<Preference.OnPreferenceChangeListener>();
@@ -189,7 +196,7 @@ public class PreferencesDecorator implements IPreferenceContainer {
             return true;
         }
 
-        public boolean add(OnPreferenceChangeListener object) {
+        public boolean add(final OnPreferenceChangeListener object) {
             return listeners.add(object);
         }
     }
@@ -214,4 +221,24 @@ public class PreferencesDecorator implements IPreferenceContainer {
         }
     }
 
+    protected class ViewModeListener implements OnPreferenceChangeListener {
+
+        private final String[] relatedKeys;
+
+        public ViewModeListener(final String[] relatedKeys) {
+            this.relatedKeys = relatedKeys;
+        }
+
+        @Override
+        public boolean onPreferenceChange(final Preference preference, final Object newValue) {
+            final DocumentViewMode type = DocumentViewMode.getByResValue(newValue.toString());
+            for (final String relatedKey : relatedKeys) {
+                final Preference pref = findPreference(relatedKey);
+                if (pref != null) {
+                    pref.setEnabled(type == DocumentViewMode.SINGLE_PAGE);
+                }
+            }
+            return true;
+        }
+    }
 }

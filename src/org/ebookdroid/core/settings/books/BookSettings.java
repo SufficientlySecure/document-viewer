@@ -1,5 +1,6 @@
 package org.ebookdroid.core.settings.books;
 
+import org.ebookdroid.core.DocumentViewMode;
 import org.ebookdroid.core.PageAlign;
 import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.core.curl.PageAnimationType;
@@ -21,7 +22,7 @@ public class BookSettings implements CurrentPageListener {
 
     public boolean splitPages;
 
-    public boolean singlePage;
+    public DocumentViewMode viewMode;
 
     public PageAlign pageAlign = PageAlign.AUTO;
 
@@ -41,7 +42,7 @@ public class BookSettings implements CurrentPageListener {
         this.lastUpdated = current.lastUpdated;
         this.zoom = current.zoom;
         this.splitPages = current.splitPages;
-        this.singlePage = current.singlePage;
+        this.viewMode = current.viewMode;
         this.pageAlign = current.pageAlign;
         this.animationType = current.animationType;
         this.bookmarks.addAll(current.bookmarks);
@@ -78,7 +79,7 @@ public class BookSettings implements CurrentPageListener {
         private static final short D_CurrentPage = 0x0001 << 0;
         private static final short D_Zoom = 0x0001 << 1;
         private static final short D_SplitPages = 0x0001 << 2;
-        private static final short D_SinglePage = 0x0001 << 3;
+        private static final short D_ViewMode = 0x0001 << 3;
         private static final short D_PageAlign = 0x0001 << 4;
         private static final short D_AnimationType = 0x0001 << 5;
         private static final short D_CropPages = 0x0001 << 6;
@@ -98,8 +99,8 @@ public class BookSettings implements CurrentPageListener {
                 if (firstTime || olds.splitPages != news.splitPages) {
                     mask |= D_SplitPages;
                 }
-                if (firstTime || olds.singlePage != news.singlePage) {
-                    mask |= D_SinglePage;
+                if (firstTime || olds.viewMode != news.viewMode) {
+                    mask |= D_ViewMode;
                 }
                 if (firstTime || olds.pageAlign != news.pageAlign) {
                     mask |= D_PageAlign;
@@ -129,8 +130,8 @@ public class BookSettings implements CurrentPageListener {
             return 0 != (mask & D_SplitPages);
         }
 
-        public boolean isSinglePageChanged() {
-            return 0 != (mask & D_SinglePage);
+        public boolean isViewModeChanged() {
+            return 0 != (mask & D_ViewMode);
         }
 
         public boolean isPageAlignChanged() {

@@ -74,8 +74,8 @@
 	<string name="list_align_auto">Автоматически</string>
 	<string name="pref_align_title">"Режим выравнивания страниц"</string>
 	<string name="pref_align_summary">"По какой стороне выравнивать страницы"</string>
-	<string name="pref_singlepage_title">"Одностраничный режим"</string>
-	<string name="pref_singlepage_summary">"Отображение документа постранично"</string>
+	<string name="pref_viewmode_title">"Режим просмотра"</string>
+	<string name="pref_viewmode_summary">"Режим показа страниц документа"</string>
 	<string name="pref_pagesinmemory_title">"Страниц в памяти"</string>
 	<string name="pref_pagesinmemory_summary">"Число страниц, хранящихся в памяти"</string>
 	<string name="pref_splitpages_title">"Делить развороты"</string>
@@ -149,6 +149,10 @@
 	<string name="list_clear_recent_mode_delete_bookmarks">Удалить все закладки</string>
 	<string name="list_clear_recent_mode_delete_book_settings">Удалить все настройки книг</string>
 	<string name="list_clear_recent_mode_delete_cached_data">Удалить все кэшированные файлы</string>
+
+    <string name="list_viewmode_vertical_scroll">Вертикальный свиток</string>
+    <string name="list_viewmode_horizontal_scroll">Горизонтальный свиток</string>
+    <string name="list_viewmode_single_page">Одностраничный режим</string>
 
 	<string name="pref_croppages_title">"Обрезать страницы"</string>
 	<string name="pref_croppages_summary">"Обрезать поля страниц (экспериментально)"</string>

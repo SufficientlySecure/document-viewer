@@ -232,8 +232,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         try {
             final BookSettings bs = SettingsManager.getBookSettings();
 
-            final IDocumentViewController newDc = bs.singlePage ? new SinglePageDocumentView(this)
-                    : new ContiniousDocumentView(this);
+            final IDocumentViewController newDc = bs.viewMode.create(this);
             final IDocumentViewController oldDc = ctrl.getAndSet(newDc);
 
             getZoomModel().removeListener(oldDc);
@@ -413,7 +412,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         }
 
     }
-    
+
     @ActionMethod(ids = R.id.mainmenu_about)
     public void showAbout(final ActionEx action) {
         Intent i = new Intent(this, AboutActivity.class);
@@ -615,7 +614,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
             final BookSettings.Diff diff, final AppSettings.Diff appDiff) {
 
         boolean redrawn = false;
-        if (diff.isSinglePageChanged() || diff.isSplitPagesChanged() || diff.isCropPagesChanged()) {
+        if (diff.isViewModeChanged() || diff.isSplitPagesChanged() || diff.isCropPagesChanged()) {
             redrawn = true;
             final IDocumentViewController newDc = switchDocumentController();
             if (!diff.isFirstTime()) {

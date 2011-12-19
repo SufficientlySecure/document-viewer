@@ -1,5 +1,6 @@
 package org.ebookdroid.core.settings.books;
 
+import org.ebookdroid.core.DocumentViewMode;
 import org.ebookdroid.core.PageAlign;
 import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.core.curl.PageAnimationType;
@@ -249,7 +250,7 @@ class DBAdapterV1 implements IDBAdapter {
                 // Current page zoom
                 bs.zoom,
                 // Single page on/off
-                bs.singlePage ? 1 : 0,
+                bs.viewMode == DocumentViewMode.SINGLE_PAGE ? 1 : 0,
                 // Page align
                 bs.pageAlign.ordinal(),
                 // Page animation type
@@ -269,7 +270,7 @@ class DBAdapterV1 implements IDBAdapter {
         bs.lastUpdated = c.getLong(index++);
         bs.currentPage = new PageIndex(c.getInt(index++), c.getInt(index++));
         bs.zoom = c.getInt(index++);
-        bs.singlePage = c.getInt(index++) != 0;
+        bs.viewMode = c.getInt(index++) != 0 ? DocumentViewMode.SINGLE_PAGE : DocumentViewMode.VERTICALL_SCROLL;
         bs.pageAlign = PageAlign.values()[c.getInt(index++)];
         bs.animationType = PageAnimationType.values()[c.getInt(index++)];
         bs.splitPages = c.getInt(index++) != 0;

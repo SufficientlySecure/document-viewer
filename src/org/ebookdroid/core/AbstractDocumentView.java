@@ -91,7 +91,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
         return detectors;
     }
 
-    protected List<IGestureDetector> initGestureDetectors(List<IGestureDetector> list) {
+    protected List<IGestureDetector> initGestureDetectors(final List<IGestureDetector> list) {
         list.add(IMultiTouchZoom.Factory.createImpl(base.getZoomModel()));
         list.add(new DefaultGestureDetector(view.getContext(), new GestureListener()));
         return list;
@@ -129,7 +129,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
             invalidatePageSizes(InvalidateSizeReason.INIT, null);
 
             final Page page = pageToGo.getActualPage(base.getDocumentModel(), SettingsManager.getBookSettings());
-            int toPage = page != null ? page.index.viewIndex : 0;
+            final int toPage = page != null ? page.index.viewIndex : 0;
 
             updatePageVisibility(toPage, 0, base.getZoomModel().getZoom());
             goToPageImpl(toPage);
@@ -145,7 +145,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.core.IDocumentViewController#onScrollChanged(int, int)
      */
     @Override
@@ -158,6 +158,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
         view.redrawView();
     }
 
+    @Override
     public final ViewState updatePageVisibility(final int newPage, final int direction, final float zoom) {
         final ViewState viewState = calculatePageVisibility(newPage, direction, zoom);
 
@@ -180,11 +181,15 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     protected final void decodePageTreeNodes(final ViewState viewState, final List<PageTreeNode> nodesToDecode) {
         final PageTreeNode best = Collections.min(nodesToDecode, new PageTreeNodeComparator(viewState));
-        base.getDecodeService().decodePage(viewState, best, best.croppedBounds != null ? best.croppedBounds : best.pageSliceBounds);
+        final DecodeService ds = base.getDecodeService();
+        if (ds != null) {
+            ds.decodePage(viewState, best, best.croppedBounds != null ? best.croppedBounds : best.pageSliceBounds);
 
-        for (final PageTreeNode node : nodesToDecode) {
-            if (node != best) {
-                base.getDecodeService().decodePage(viewState, node, node.croppedBounds != null ? node.croppedBounds : node.pageSliceBounds);
+            for (final PageTreeNode node : nodesToDecode) {
+                if (node != best) {
+                    ds.decodePage(viewState, node, node.croppedBounds != null ? node.croppedBounds
+                            : node.pageSliceBounds);
+                }
             }
         }
     }
@@ -265,7 +270,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.core.events.ZoomListener#commitZoom()
      */
     @Override
@@ -282,7 +287,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
         initialZoom = newZoom;
     }
 
-    protected ViewState onZoomChanged(final float newZoom, boolean committed) {
+    protected ViewState onZoomChanged(final float newZoom, final boolean committed) {
         if (initialZoom != newZoom) {
             BitmapManager.increateGeneration();
         }
@@ -361,7 +366,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.core.events.ZoomListener#zoomChanged(float, float)
      */
     @Override
@@ -435,7 +440,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
             Thread.interrupted();
         }
 
-        for (IGestureDetector d : getGestureDetectors()) {
+        for (final IGestureDetector d : getGestureDetectors()) {
             if (d.enabled() && d.onTouchEvent(ev)) {
                 return true;
             }
@@ -445,8 +450,8 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
     }
 
     @Override
-    public boolean onLayoutChanged(final boolean layoutChanged, final boolean layoutLocked, Rect oldLaout,
-            Rect newLayout) {
+    public boolean onLayoutChanged(final boolean layoutChanged, final boolean layoutLocked, final Rect oldLaout,
+            final Rect newLayout) {
         LCTX.d("onLayoutChanged(" + layoutChanged + ", " + layoutLocked + "," + oldLaout + ", " + newLayout + ")");
         if (layoutChanged && !layoutLocked) {
             if (isShown) {
@@ -476,7 +481,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * Sets the page align flag.
-     *
+     * 
      * @param align
      *            the new flag indicating align
      */
@@ -489,7 +494,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * Checks if view is initialized.
-     *
+     * 
      * @return true, if is initialized
      */
     protected final boolean isShown() {
@@ -522,20 +527,20 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
     }
 
     @ActionMethod(ids = { R.id.actions_verticalConfigScrollUp, R.id.actions_verticalConfigScrollDown })
-    public void verticalConfigScroll(ActionEx action) {
-        Integer direction = action.getParameter("direction");
+    public void verticalConfigScroll(final ActionEx action) {
+        final Integer direction = action.getParameter("direction");
         verticalConfigScroll(direction);
     }
 
     @ActionMethod(ids = { R.id.actions_verticalDpadScrollUp, R.id.actions_verticalDpadScrollDown })
-    public void verticalDpadScroll(ActionEx action) {
-        Integer direction = action.getParameter("direction");
+    public void verticalDpadScroll(final ActionEx action) {
+        final Integer direction = action.getParameter("direction");
         verticalDpadScroll(direction);
     }
 
-    protected boolean processTap(TouchManager.Touch type, MotionEvent e) {
-        Integer actionId = TouchManager.getAction(type, e.getX(), e.getY(), getWidth(), getHeight());
-        ActionEx action = actionId != null ? getOrCreateAction(actionId) : null;
+    protected boolean processTap(final TouchManager.Touch type, final MotionEvent e) {
+        final Integer actionId = TouchManager.getAction(type, e.getX(), e.getY(), getWidth(), getHeight());
+        final ActionEx action = actionId != null ? getOrCreateAction(actionId) : null;
         if (action != null) {
             LCTX.d("Touch action: " + action.name + ", " + action.getMethod().toString());
             action.run();
@@ -598,7 +603,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
         }
 
         @Override
-        public void onLongPress(MotionEvent e) {
+        public void onLongPress(final MotionEvent e) {
             // TODO Auto-generated method stub
             processTap(TouchManager.Touch.LongTap, e);
         }

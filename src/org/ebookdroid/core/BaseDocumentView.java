@@ -179,7 +179,10 @@ public final class BaseDocumentView extends View {
             if (drawThread != null) {
                 drawThread.draw(viewState);
             }
-            base.getDecodeService().updateViewState(viewState);
+            final DecodeService ds = base.getDecodeService();
+            if (ds != null) {
+                ds.updateViewState(viewState);
+            }
             postInvalidate();
         }
     }

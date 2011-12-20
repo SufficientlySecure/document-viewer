@@ -165,10 +165,14 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             return false;
         }
 
-        final Rect rect = page.base.getDecodeService().getScaledSize(viewState,
-                page.bounds.width() * page.getTargetRectScale(), page.bounds.height(),
-                croppedBounds != null ? croppedBounds : pageSliceBounds, page.getTargetRectScale(),
-                getSliceGeneration());
+        final DecodeService ds = page.base.getDecodeService();
+        if (ds == null) {
+            return false;
+        }
+
+        final Rect rect = ds.getScaledSize(viewState, page.bounds.width() * page.getTargetRectScale(),
+                page.bounds.height(), croppedBounds != null ? croppedBounds : pageSliceBounds,
+                page.getTargetRectScale(), getSliceGeneration());
 
         System.out.println("isRequired(" + getSliceGeneration() + "): " + rect);
 

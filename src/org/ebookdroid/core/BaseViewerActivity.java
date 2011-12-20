@@ -154,9 +154,9 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
     }
 
     private void initActivity() {
-        AppSettings oldSettings = null;
-        AppSettings newSettings = SettingsManager.getAppSettings();
-        AppSettings.Diff diff = new AppSettings.Diff(oldSettings, newSettings);
+        final AppSettings oldSettings = null;
+        final AppSettings newSettings = SettingsManager.getAppSettings();
+        final AppSettings.Diff diff = new AppSettings.Diff(oldSettings, newSettings);
         this.onAppSettingsChanged(oldSettings, newSettings, diff);
     }
 
@@ -239,7 +239,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
             getZoomModel().addListener(newDc);
 
             return newDc;
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             throw new RuntimeException(e);
         }
     }
@@ -314,7 +314,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     /**
      * Called on creation options menu
-     *
+     * 
      * @param menu
      *            the main menu
      * @return true, if successful
@@ -336,7 +336,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
     }
 
     @Override
-    public void onPanelClosed(int featureId, Menu menu) {
+    public void onPanelClosed(final int featureId, final Menu menu) {
         menuClosedCalled = false;
         super.onPanelClosed(featureId, menu);
         if (!menuClosedCalled) {
@@ -415,10 +415,9 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     @ActionMethod(ids = R.id.mainmenu_about)
     public void showAbout(final ActionEx action) {
-        Intent i = new Intent(this, AboutActivity.class);
+        final Intent i = new Intent(this, AboutActivity.class);
         startActivity(i);
     }
-
 
     @ActionMethod(ids = R.id.mainmenu_goto_page)
     public void showDialog(final ActionEx action) {
@@ -444,7 +443,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     @ActionMethod(ids = R.id.mainmenu_thumbnail)
     public void setCurrentPageAsThumbnail(final ActionEx action) {
-        Page page = getDocumentModel().getCurrentPageObject();
+        final Page page = getDocumentModel().getCurrentPageObject();
         if (page != null) {
             getDocumentModel().createBookThumbnail(SettingsManager.getBookSettings(), page, true);
         }
@@ -486,7 +485,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     /**
      * Gets the zoom model.
-     *
+     * 
      * @return the zoom model
      */
     @Override
@@ -499,12 +498,12 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     @Override
     public DecodeService getDecodeService() {
-        return documentModel.getDecodeService();
+        return documentModel != null ? documentModel.getDecodeService() : null;
     }
 
     /**
      * Gets the decoding progress model.
-     *
+     * 
      * @return the decoding progress model
      */
     @Override
@@ -841,7 +840,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         }
 
         @Override
-        public void pageUpdated(int viewIndex) {
+        public void pageUpdated(final int viewIndex) {
         }
     }
 }

@@ -283,7 +283,7 @@ public class AppSettings {
         return splitPages;
     }
 
-    DocumentViewMode getViewMode() {
+    public DocumentViewMode getViewMode() {
         if (viewMode == null) {
             viewMode = DocumentViewMode.getByResValue(prefs.getString("viewmode", null));
             if (viewMode == null) {

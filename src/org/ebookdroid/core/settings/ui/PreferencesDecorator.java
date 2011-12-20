@@ -5,6 +5,7 @@ import org.ebookdroid.core.DocumentViewMode;
 import org.ebookdroid.core.PageAlign;
 import org.ebookdroid.core.curl.PageAnimationType;
 import org.ebookdroid.core.settings.SettingsManager;
+import org.ebookdroid.core.settings.books.BookSettings;
 import org.ebookdroid.core.utils.AndroidVersion;
 import org.ebookdroid.utils.LengthUtils;
 
@@ -53,6 +54,11 @@ public class PreferencesDecorator implements IPreferenceContainer {
         decoratePreferences("book_viewmode", "book_align", "book_animationType");
         addViewModeListener("book_viewmode", "book_align", "book_animationType");
         addAnimationTypeListener("book_animationType", "book_align");
+
+        BookSettings bs = SettingsManager.getBookSettings();
+        if (bs != null) {
+            enableSinglePageModeSetting(bs.viewMode, "book_align", "book_animationType");
+        }
     }
 
     public void decorateBrowserSettings() {
@@ -84,6 +90,8 @@ public class PreferencesDecorator implements IPreferenceContainer {
         addViewModeListener("viewmode", "align", "animationType");
         addAnimationTypeListener("animationType", "align");
 
+        enableSinglePageModeSetting(SettingsManager.getAppSettings().getViewMode(), "align", "animationType");
+
         decoratePreferences("djvu_rendering_mode");
     }
 
@@ -94,6 +102,23 @@ public class PreferencesDecorator implements IPreferenceContainer {
     public void decorateUISettings() {
         decoratePreferences("rotation", "brightness");
         findPreference("fullscreen").setEnabled(!AndroidVersion.is3x);
+    }
+
+    public void setPageAlign(final PageAnimationType type, final String alignPrefKey) {
+        if (type != null && type != PageAnimationType.NONE) {
+            final ListPreference alignPref = (ListPreference) findPreference(alignPrefKey);
+            alignPref.setValue(PageAlign.AUTO.getResValue());
+            setListPreferenceSummary(alignPref, alignPref.getValue());
+        }
+    }
+
+    public void enableSinglePageModeSetting(final DocumentViewMode type, final String... relatedKeys) {
+        for (final String relatedKey : relatedKeys) {
+            final Preference pref = findPreference(relatedKey);
+            if (pref != null) {
+                pref.setEnabled(type == DocumentViewMode.SINGLE_PAGE);
+            }
+        }
     }
 
     protected void decoratePreferences(final String... keys) {
@@ -212,11 +237,7 @@ public class PreferencesDecorator implements IPreferenceContainer {
         @Override
         public boolean onPreferenceChange(final Preference preference, final Object newValue) {
             final PageAnimationType type = PageAnimationType.get(newValue.toString());
-            if (type != null && type != PageAnimationType.NONE) {
-                final ListPreference alignPref = (ListPreference) findPreference(relatedKey);
-                alignPref.setValue(PageAlign.AUTO.getResValue());
-                setListPreferenceSummary(alignPref, alignPref.getValue());
-            }
+            setPageAlign(type, relatedKey);
             return true;
         }
     }
@@ -232,12 +253,7 @@ public class PreferencesDecorator implements IPreferenceContainer {
         @Override
         public boolean onPreferenceChange(final Preference preference, final Object newValue) {
             final DocumentViewMode type = DocumentViewMode.getByResValue(newValue.toString());
-            for (final String relatedKey : relatedKeys) {
-                final Preference pref = findPreference(relatedKey);
-                if (pref != null) {
-                    pref.setEnabled(type == DocumentViewMode.SINGLE_PAGE);
-                }
-            }
+            enableSinglePageModeSetting(type, relatedKeys);
             return true;
         }
     }

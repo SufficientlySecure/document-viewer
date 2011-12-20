@@ -5,7 +5,6 @@ import org.ebookdroid.core.bitmaps.BitmapManager;
 import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.crop.PageCropper;
-import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.models.DecodingProgressModel;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.settings.SettingsManager;
@@ -25,7 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PageTreeNode implements DecodeService.DecodeCallback {
 
-    private static final LogContext LCTX = LogContext.ROOT.lctx("Page");
+    // private static final LogContext LCTX = LogContext.ROOT.lctx("Imaging");
 
     final Page page;
     final PageTreeNode parent;
@@ -163,29 +162,24 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     protected boolean isChildrenRequired(final ViewState viewState) {
         if (viewState.decodeMode == DecodeMode.NATIVE_RESOLUTION) {
-            if (LCTX.isDebugEnabled()) {
-                LCTX.d(this.getFullId() + ".isChildrenRequired(): native resolution");
-            }
             return false;
         }
         final Rect rect = page.base.getDecodeService().getScaledSize(viewState, page.bounds.width(),
-                page.bounds.height(), pageSliceBounds, page.type.getWidthScale());
+                page.bounds.height(), pageSliceBounds, page.getTargetRectScale(), getSliceGeneration());
 
+        System.out.println("isRequired("+getSliceGeneration()+"): " + rect);
         if (viewState.decodeMode == DecodeMode.NORMAL) {
-            if (LCTX.isDebugEnabled()) {
-                LCTX.d(this.getFullId() + ".isChildrenRequired(): normal resolution: zoom=" + viewState.zoom
-                        + ", childrenZoomThreshold=" + childrenZoomThreshold + ", rect=" + rect);
-            }
             // We need to check for 2048 for HW accel. limitations.
-            return (viewState.zoom > childrenZoomThreshold) || (rect.width() > 2048) || (rect.height() > 2048);
+            return (viewState.zoom > childrenZoomThreshold) || (rect.width() > 2048 * page.getTargetRectScale())
+                    || (rect.height() > 2048 * page.getTargetRectScale());
         }
 
         final long size = BitmapManager.getBitmapBufferSize(getBitmap(), rect);
-        int maxSize = SettingsManager.getAppSettings().getMaxImageSize();
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d(this.getFullId() + ".isChildrenRequired(): low memory: size=" + size + ", max=" + maxSize);
-        }
-        return size >= maxSize;
+        return size >= SettingsManager.getAppSettings().getMaxImageSize();
+    }
+
+    public int getSliceGeneration() {
+        return (int) (parent != null ? parent.childrenZoomThreshold : 1);
     }
 
     protected void decodePageTreeNode(final List<PageTreeNode> nodesToDecode, final ViewState viewState) {
@@ -197,10 +191,8 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     @Override
     public void decodeComplete(final CodecPage codecPage, final BitmapRef bitmap, final Rect bitmapBounds) {
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d(this.getFullId() + ".decodeComplete(" + this.page.index + ", " + bitmap + ", bounds: "
-                    + bitmapBounds + ")");
-        }
+
+        System.out.println("decodeComplete:" + this.page.index + ", "+bitmap+", bounds: " + bitmapBounds);
         if (bitmap == null || bitmapBounds == null) {
             page.base.getActivity().runOnUiThread(new Runnable() {
 

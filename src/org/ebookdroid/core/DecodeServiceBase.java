@@ -112,7 +112,7 @@ public class DecodeServiceBase implements DecodeService {
 
     @Override
     public void decodePage(final ViewState viewState, final PageTreeNode node, RectF nodeBounds) {
-        final DecodeTask decodeTask = new DecodeTask(viewState, node, nodeBounds);
+        final DecodeTask decodeTask = new DecodeTask(viewState, node, nodeBounds, node.getSliceGeneration());
         updateViewState(viewState);
 
         if (isRecycled.get()) {
@@ -182,13 +182,13 @@ public class DecodeServiceBase implements DecodeService {
     Rect getScaledSize(final DecodeTask task, final CodecPage vuPage) {
         final int pageWidth = vuPage.getWidth();
         final int pageHeight = vuPage.getHeight();
-        final RectF nodeBounds = task.node.pageSliceBounds;
+        final RectF nodeBounds = task.pageSliceBounds;
 
         if (task.viewState.decodeMode == DecodeMode.NATIVE_RESOLUTION) {
             return getNativeSize(pageWidth, pageHeight, nodeBounds, task.node.page.getTargetRectScale());
         }
 
-        return getScaledSize(task.viewState, pageWidth, pageHeight, nodeBounds, task.node.page.getTargetRectScale());
+        return getScaledSize(task.viewState, pageWidth, pageHeight, nodeBounds, task.node.page.getTargetRectScale(), task.sliceGeneration);
     }
 
     @Override
@@ -202,35 +202,33 @@ public class DecodeServiceBase implements DecodeService {
 
     @Override
     public Rect getScaledSize(final ViewState viewState, float pageWidth, float pageHeight, RectF nodeBounds,
-            float pageTypeWidthScale) {
-
-        float viewWidth  = viewState.realRect.width();
+            float pageTypeWidthScale, int sliceGeneration) {
+        float viewWidth = viewState.realRect.width();
         float viewHeight = viewState.realRect.height();
-
-        float viewAspectRatio = viewWidth / viewHeight; 
-
-        float nodeWidth  = nodeBounds.width()  * pageWidth;
-        float nodeHeight = nodeBounds.height() * pageHeight;
-
-        float nodeAspectRatio = nodeWidth / nodeHeight;
 
         final int scaledWidth;
         final int scaledHeight;
+        // &&
 
         PageAlign effectiveAlign = viewState.pageAlign;
-        
         if (effectiveAlign == PageAlign.AUTO) {
-            effectiveAlign = nodeAspectRatio < viewAspectRatio ? PageAlign.HEIGHT : PageAlign.WIDTH;
+            if ((pageWidth * nodeBounds.width()) / (pageHeight * nodeBounds.height()) < viewWidth / viewHeight) {
+                effectiveAlign = PageAlign.HEIGHT;
+            } else {
+                effectiveAlign = PageAlign.WIDTH;
+            }
         }
 
         if (effectiveAlign == PageAlign.WIDTH) {
-            final float scale = 1.0f * (viewWidth / pageWidth) * viewState.zoom;
-            scaledWidth  = Math.round(scale * nodeWidth);
-            scaledHeight = Math.round(scaledWidth / nodeAspectRatio);
+            final float scale = 1.0f * (viewWidth / pageWidth) * viewState.zoom / sliceGeneration;
+            scaledWidth = Math.round((scale * pageWidth * pageTypeWidthScale));
+            scaledHeight = Math.round((scale * pageHeight * pageTypeWidthScale) * nodeBounds.height()
+                    / nodeBounds.width());
         } else {
-            final float scale = 1.0f * (viewHeight / pageHeight) * viewState.zoom;
-            scaledHeight = Math.round(scale * nodeHeight);
-            scaledWidth  = Math.round(scaledHeight * nodeAspectRatio);
+            final float scale = 1.0f * (viewHeight / pageHeight) * viewState.zoom / sliceGeneration;
+            scaledWidth = Math.round((scale * pageWidth * pageTypeWidthScale) * nodeBounds.width()
+                    / nodeBounds.height());
+            scaledHeight = Math.round((scale * pageHeight * pageTypeWidthScale));
         }
         return new Rect(0, 0, scaledWidth, scaledHeight);
     }
@@ -522,12 +520,14 @@ public class DecodeServiceBase implements DecodeService {
         final ViewState viewState;
         final int pageNumber;
         final RectF pageSliceBounds;
+        final int sliceGeneration;
 
-        DecodeTask(final ViewState viewState, final PageTreeNode node, RectF nodeBounds) {
+        DecodeTask(final ViewState viewState, final PageTreeNode node, RectF nodeBounds, int sliceGeneration) {
             this.pageNumber = node.getDocumentPageIndex();
             this.viewState = viewState;
             this.node = node;
             this.pageSliceBounds = nodeBounds;
+            this.sliceGeneration = sliceGeneration;
         }
 
         @Override

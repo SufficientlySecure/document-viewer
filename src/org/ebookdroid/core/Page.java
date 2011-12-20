@@ -143,4 +143,8 @@ public class Page {
         return type.getLeftPos();
     }
 
+    public RectF getCroppedRegion() {
+        return nodes.root.croppedBounds;
+    }
+
 }

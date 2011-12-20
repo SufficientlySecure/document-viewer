@@ -129,14 +129,12 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     }
 
     private void invalidatePageSize(final Page page, final int width, final int height) {
-        PageAlign effectiveAlign = getAlign();
-        if (getAlign() == PageAlign.AUTO) {
+        PageAlign effectiveAlign = SettingsManager.getBookSettings().pageAlign;
+        if (effectiveAlign == null) {
+            effectiveAlign = PageAlign.WIDTH;
+        } else if (effectiveAlign == PageAlign.AUTO) {
             final float pageHeight = width / page.getAspectRatio();
-            if (pageHeight > height) {
-                effectiveAlign = PageAlign.HEIGHT;
-            } else {
-                effectiveAlign = PageAlign.WIDTH;
-            }
+            effectiveAlign = pageHeight > height ? PageAlign.HEIGHT : PageAlign.WIDTH;
         }
 
         if (effectiveAlign == PageAlign.WIDTH) {

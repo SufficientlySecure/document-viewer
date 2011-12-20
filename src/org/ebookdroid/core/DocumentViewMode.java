@@ -1,26 +1,30 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.core.log.LogContext;
+import org.ebookdroid.core.settings.books.BookSettings;
 
 import java.lang.reflect.Constructor;
 
 public enum DocumentViewMode {
 
-    VERTICALL_SCROLL("Vertical scroll", ContiniousDocumentView.class),
+    VERTICALL_SCROLL("Vertical scroll", PageAlign.WIDTH, ContiniousDocumentView.class),
 
-    HORIZONTAL_SCROLL("Horizontal scroll", HScrollDocumentView.class),
+    HORIZONTAL_SCROLL("Horizontal scroll", PageAlign.HEIGHT, HScrollDocumentView.class),
 
-    SINGLE_PAGE("Single page", SinglePageDocumentView.class);
+    SINGLE_PAGE("Single page", null, SinglePageDocumentView.class);
 
     private final LogContext LCTX = LogContext.ROOT.lctx("View");
 
     /** The resource value. */
     private final String resValue;
 
+    private final PageAlign pageAlign;
+
     private Constructor<? extends IDocumentViewController> c;
 
-    private DocumentViewMode(final String res, final Class<? extends IDocumentViewController> clazz) {
+    private DocumentViewMode(final String res, PageAlign pageAlign, final Class<? extends IDocumentViewController> clazz) {
         this.resValue = res;
+        this.pageAlign = pageAlign;
         try {
             this.c = clazz.getConstructor(IViewerActivity.class);
         } catch (final Exception e) {
@@ -42,6 +46,10 @@ public enum DocumentViewMode {
 
     public String getResValue() {
         return resValue;
+    }
+
+    public PageAlign getPageAlign(final BookSettings bs) {
+        return pageAlign != null ? pageAlign : (bs != null ? bs.pageAlign : PageAlign.AUTO);
     }
 
     /**

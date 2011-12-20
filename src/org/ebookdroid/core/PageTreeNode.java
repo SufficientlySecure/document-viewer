@@ -164,14 +164,17 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         if (viewState.decodeMode == DecodeMode.NATIVE_RESOLUTION) {
             return false;
         }
-        final Rect rect = page.base.getDecodeService().getScaledSize(viewState, page.bounds.width(),
-                page.bounds.height(), pageSliceBounds, page.getTargetRectScale(), getSliceGeneration());
 
-        System.out.println("isRequired("+getSliceGeneration()+"): " + rect);
+        final Rect rect = page.base.getDecodeService().getScaledSize(viewState,
+                page.bounds.width() * page.getTargetRectScale(), page.bounds.height(),
+                croppedBounds != null ? croppedBounds : pageSliceBounds, page.getTargetRectScale(),
+                getSliceGeneration());
+
+        System.out.println("isRequired(" + getSliceGeneration() + "): " + rect);
+
         if (viewState.decodeMode == DecodeMode.NORMAL) {
             // We need to check for 2048 for HW accel. limitations.
-            return (viewState.zoom > childrenZoomThreshold) || (rect.width() > 2048 * page.getTargetRectScale())
-                    || (rect.height() > 2048 * page.getTargetRectScale());
+            return (viewState.zoom > childrenZoomThreshold) || (rect.width() > 2048) || (rect.height() > 2048);
         }
 
         final long size = BitmapManager.getBitmapBufferSize(getBitmap(), rect);
@@ -192,7 +195,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     @Override
     public void decodeComplete(final CodecPage codecPage, final BitmapRef bitmap, final Rect bitmapBounds) {
 
-        System.out.println("decodeComplete:" + this.page.index + ", "+bitmap+", bounds: " + bitmapBounds);
+        System.out.println("decodeComplete:" + this.page.index + ", " + bitmap + ", bounds: " + bitmapBounds);
         if (bitmap == null || bitmapBounds == null) {
             page.base.getActivity().runOnUiThread(new Runnable() {
 
@@ -362,7 +365,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     /**
      * Gets the parent node.
-     *
+     * 
      * @return the parent node
      */
     public PageTreeNode getParent() {

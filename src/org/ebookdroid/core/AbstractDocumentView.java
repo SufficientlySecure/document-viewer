@@ -55,8 +55,6 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     protected final AtomicBoolean inZoom = new AtomicBoolean();
 
-    protected PageAlign align;
-
     protected final PageIndex pageToGo;
 
     protected int firstVisiblePage;
@@ -75,7 +73,6 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
         this.base = baseActivity;
         this.view = base.getView();
 
-        this.align = SettingsManager.getBookSettings().pageAlign;
         this.firstVisiblePage = -1;
         this.lastVisiblePage = -1;
 
@@ -485,18 +482,9 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
      */
     @Override
     public final void setAlign(final PageAlign align) {
-        if (align == null) {
-            this.align = PageAlign.WIDTH;
-        } else {
-            this.align = align;
-        }
         invalidatePageSizes(InvalidateSizeReason.PAGE_ALIGN, null);
         invalidateScroll();
         commitZoom();
-    }
-
-    public final PageAlign getAlign() {
-        return this.align;
     }
 
     /**

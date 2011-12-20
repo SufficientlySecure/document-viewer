@@ -224,12 +224,12 @@ public class DecodeServiceBase implements DecodeService {
 
         if (effectiveAlign == PageAlign.WIDTH) {
             final float scale = 1.0f * (viewWidth / pageWidth) * viewState.zoom / sliceGeneration;
-            scaledWidth = Math.round((scale * pageWidth * pageTypeWidthScale));
-            scaledHeight = Math.round((scale * nodeHeight * pageTypeWidthScale) / nodeBounds.width());
+            scaledWidth = Math.round((scale * pageWidth));
+            scaledHeight = Math.round((scale * nodeHeight) / nodeBounds.width());
         } else {
             final float scale = 1.0f * (viewHeight / pageHeight) * viewState.zoom / sliceGeneration;
-            scaledHeight = Math.round((scale * pageHeight * pageTypeWidthScale));
-            scaledWidth = Math.round((scale * nodeWidth * pageTypeWidthScale) / nodeBounds.height());
+            scaledHeight = Math.round((scale * pageHeight));
+            scaledWidth = Math.round((scale * nodeWidth) / nodeBounds.height());
         }
 
         return new Rect(0, 0, scaledWidth, scaledHeight);

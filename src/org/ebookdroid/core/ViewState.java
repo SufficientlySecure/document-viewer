@@ -73,7 +73,7 @@ public class ViewState {
         final BookSettings bs = SettingsManager.getBookSettings();
         final AppSettings as = SettingsManager.getAppSettings();
 
-        this.pageAlign = bs != null ? bs.pageAlign : PageAlign.AUTO;
+        this.pageAlign = bs.viewMode.getPageAlign(bs);
         this.decodeMode = as.getDecodeMode();
         this.nightMode = as.getNightMode();
     }

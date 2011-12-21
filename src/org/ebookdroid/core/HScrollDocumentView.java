@@ -83,7 +83,7 @@ public class HScrollDocumentView extends AbstractDocumentView {
 
             @Override
             public void run() {
-                LCTX.d("onScrollChanged(" + newPage + ", " + direction + ").run()");
+                // LCTX.d("onScrollChanged(" + newPage + ", " + direction + ").run()");
 
                 final ViewState viewState = updatePageVisibility(newPage, direction, getBase().getZoomModel().getZoom());
 
@@ -176,7 +176,6 @@ public class HScrollDocumentView extends AbstractDocumentView {
             return;
         }
 
-        final int width = getWidth();
         final int height = getHeight();
 
         if (changedPage == null) {

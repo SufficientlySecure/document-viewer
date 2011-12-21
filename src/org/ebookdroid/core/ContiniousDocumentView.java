@@ -79,7 +79,7 @@ public class ContiniousDocumentView extends AbstractDocumentView {
             return;
         }
 
-        LCTX.d("onScrollChanged(" + newPage + ", " + direction + ")");
+        // LCTX.d("onScrollChanged(" + newPage + ", " + direction + ")");
 
         final Runnable r = new Runnable() {
 

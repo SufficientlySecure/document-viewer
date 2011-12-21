@@ -154,6 +154,7 @@ public class DecodeServiceBase implements DecodeService {
             }
 
             final Rect r = getScaledSize(task, vuPage);
+            LCTX.d("Task " + task.id + ": Rendering rect: " + r);
             final BitmapRef bitmap = vuPage.renderBitmap(r.width(), r.height(), task.pageSliceBounds);
 
             if (executor.isTaskDead(task)) {

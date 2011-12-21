@@ -154,8 +154,9 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
         if (inZoom.get()) {
             return;
         }
-        LCTX.d("onScrollChanged(" + newPage + ", " + direction + ")");
-        view.redrawView();
+        // LCTX.d("onScrollChanged(" + newPage + ", " + direction + ")");
+        final ViewState viewState = updatePageVisibility(newPage, direction, getBase().getZoomModel().getZoom());
+        view.redrawView(viewState);
     }
 
     @Override

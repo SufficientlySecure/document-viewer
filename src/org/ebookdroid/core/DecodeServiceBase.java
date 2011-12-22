@@ -47,6 +47,8 @@ public class DecodeServiceBase implements DecodeService {
 
     final AtomicReference<ViewState> viewState = new AtomicReference<ViewState>();
 
+    final AtomicLong memoryLimit = new AtomicLong(Long.MAX_VALUE);
+
     CodecDocument document;
 
     final Map<Integer, SoftReference<CodecPage>> pages = new LinkedHashMap<Integer, SoftReference<CodecPage>>() {
@@ -80,7 +82,7 @@ public class DecodeServiceBase implements DecodeService {
 
     @Override
     public int getPixelFormat() {
-        Config cfg = this.codecContext.getBitmapConfig();
+        Config cfg = getBitmapConfig();
         switch (cfg) {
             case ALPHA_8:
                 return PixelFormat.A_8;
@@ -93,6 +95,16 @@ public class DecodeServiceBase implements DecodeService {
             default:
                 return PixelFormat.RGB_565;
         }
+    }
+
+    @Override
+    public Config getBitmapConfig() {
+        return this.codecContext.getBitmapConfig();
+    }
+
+    @Override
+    public long getMemoryLimit() {
+        return memoryLimit.get();
     }
 
     @Override
@@ -143,6 +155,7 @@ public class DecodeServiceBase implements DecodeService {
         }
 
         CodecPage vuPage = null;
+        Rect r = null;
         try {
             vuPage = getPage(task.pageNumber);
 
@@ -153,7 +166,7 @@ public class DecodeServiceBase implements DecodeService {
                 return;
             }
 
-            final Rect r = getScaledSize(task, vuPage);
+            r = getScaledSize(task, vuPage);
             LCTX.d("Task " + task.id + ": Rendering rect: " + r);
             final BitmapRef bitmap = vuPage.renderBitmap(r.width(), r.height(), task.pageSliceBounds);
 
@@ -168,6 +181,11 @@ public class DecodeServiceBase implements DecodeService {
             finishDecoding(task, vuPage, bitmap, r);
         } catch (final OutOfMemoryError ex) {
             LCTX.e("Task " + task.id + ": No memory to decode " + task.node);
+            if (r != null) {
+                memoryLimit
+                        .set(BitmapManager.getBitmapBufferSize(r.width(), r.height(), codecContext.getBitmapConfig()));
+            }
+
             for (int i = 0; i <= SettingsManager.getAppSettings().getPagesInMemory(); i++) {
                 pages.put(Integer.MAX_VALUE - i, null);
             }

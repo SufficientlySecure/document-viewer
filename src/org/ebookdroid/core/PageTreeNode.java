@@ -162,28 +162,33 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     protected boolean isChildrenRequired(final ViewState viewState) {
-        if (viewState.decodeMode == DecodeMode.NATIVE_RESOLUTION) {
-            return false;
-        }
-
         final DecodeService ds = page.base.getDecodeService();
         if (ds == null) {
             return false;
+        }
+
+        final long memoryLimit = ds.getMemoryLimit();
+
+        if (viewState.decodeMode == DecodeMode.NATIVE_RESOLUTION) {
+            final Rect rect = ds.getNativeSize(page.bounds.width() * page.getTargetRectScale(), page.bounds.height(),
+                    croppedBounds != null ? croppedBounds : pageSliceBounds, page.getTargetRectScale());
+            final long size = BitmapManager.getBitmapBufferSize(rect.width(), rect.height(), ds.getBitmapConfig());
+            return (rect.width() > 2048) || (rect.height() > 2048) || size >= memoryLimit;
         }
 
         final Rect rect = ds.getScaledSize(viewState, page.bounds.width() * page.getTargetRectScale(),
                 page.bounds.height(), croppedBounds != null ? croppedBounds : pageSliceBounds,
                 page.getTargetRectScale(), getSliceGeneration());
 
-        // System.out.println("isRequired(" + getSliceGeneration() + "): " + rect);
+        final long size = BitmapManager.getBitmapBufferSize(rect.width(), rect.height(), ds.getBitmapConfig());
 
         if (viewState.decodeMode == DecodeMode.NORMAL) {
             // We need to check for 2048 for HW accel. limitations.
-            return (viewState.zoom > childrenZoomThreshold) || (rect.width() > 2048) || (rect.height() > 2048);
+            return (viewState.zoom > childrenZoomThreshold) || (rect.width() > 2048) || (rect.height() > 2048)
+                    || size >= memoryLimit;
         }
 
-        final long size = rect.width() * rect.height() * 4;
-        return size >= SettingsManager.getAppSettings().getMaxImageSize();
+        return (rect.width() > 2048) || (rect.height() > 2048) || size >= Math.min(memoryLimit, SettingsManager.getAppSettings().getMaxImageSize());
     }
 
     public int getSliceGeneration() {
@@ -464,26 +469,36 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
         Rect bounds;
 
-        public void drawBitmap(final ViewState viewState, final Canvas canvas, final PagePaint paint, final RectF tr) {
+        public synchronized void drawBitmap(final ViewState viewState, final Canvas canvas, final PagePaint paint,
+                final RectF tr) {
             final Bitmap[] bitmap = getBitmap(viewState, paint);
             if (bitmap != null) {
-
+                final Paint emp = new Paint();
+                emp.setColor(Color.GRAY);
                 for (int row = 0; row < hcount; row++) {
                     for (int col = 0; col < wcount; col++) {
                         final int left = col * 128;
                         final int top = row * 128;
-                        final int right = left + 128;
-                        final int bottom = top + 128;
-                        final RectF rect = new RectF(left, top, right, bottom);
+//                        final int right = left + 128;
+//                        final int bottom = top + 128;
+                        final int right = Math.min(left + 128, bounds.width());
+                        final int bottom = Math.min(top + 128, bounds.height());
+                        
+                        final RectF source = new RectF(left, top, right, bottom);
 
                         final Matrix m = new Matrix();
                         m.postScale(tr.width() / bounds.width(), tr.height() / bounds.height());
                         m.postTranslate(tr.left, tr.top);
-
-                        m.mapRect(rect);
+                        
+                        RectF target = new RectF();
+                        m.mapRect(target, source);
 
                         final int index = row * wcount + col;
-                        canvas.drawBitmap(bitmap[index], null, rect, paint.bitmapPaint);
+                        if (bitmap[index] != null && !bitmap[index].isRecycled()) {
+                            canvas.drawBitmap(bitmap[index], new Rect(0, 0, (int)source.width(), (int)source.height()), target, paint.bitmapPaint);
+                        } else {
+                            canvas.drawRect(source, emp);
+                        }
                     }
                 }
             }
@@ -592,6 +607,9 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                     final RawBitmap rb = new RawBitmap(bmp, new Rect(left, top, right, bottom));
 
                     final BitmapRef b = BitmapManager.getBitmap(128, 128, bmp.getConfig());
+                    if (row == hcount - 1 || col == wcount - 1) {
+                        b.getBitmap().eraseColor(Color.BLACK);
+                    }
                     rb.toBitmap(b.getBitmap());
 
                     final int index = row * wcount + col;
@@ -610,7 +628,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             for (int i = 0; i < array.length; i++) {
                 res[i] = array[i].getBitmap();
                 if (res[i] == null || res[i].isRecycled()) {
-                    List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>(array.length);
+                    final List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>(array.length);
                     recycle(array, bitmapsToRecycle);
                     BitmapManager.release(bitmapsToRecycle);
                     return null;
@@ -626,7 +644,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 } else {
                     BitmapManager.release(array[i]);
                 }
-                array[i]=null;
+                array[i] = null;
             }
         }
     }

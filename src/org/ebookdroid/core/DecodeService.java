@@ -4,6 +4,7 @@ import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
 
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
@@ -41,5 +42,9 @@ public interface DecodeService {
     boolean isPageSizeCacheable();
 
     int getPixelFormat();
+
+    Bitmap.Config getBitmapConfig();
+
+    long getMemoryLimit();
 
 }

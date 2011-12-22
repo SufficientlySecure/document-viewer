@@ -461,6 +461,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
         BitmapRef[] bitmap;
         BitmapRef[] night;
+
         Rect bounds;
 
         public void drawBitmap(final ViewState viewState, final Canvas canvas, final PagePaint paint, final RectF tr) {
@@ -475,8 +476,8 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                         final int bottom = top + 128;
                         final RectF rect = new RectF(left, top, right, bottom);
 
-                        Matrix m = new Matrix();
-                        m.postScale(tr.width() / (float) bounds.width(), tr.height() / (float) bounds.height());
+                        final Matrix m = new Matrix();
+                        m.postScale(tr.width() / bounds.width(), tr.height() / bounds.height());
                         m.postTranslate(tr.left, tr.top);
 
                         m.mapRect(rect);
@@ -496,25 +497,12 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             return viewState.nightMode ? getNightBitmap(paint.nightBitmapPaint) : getBitmap();
         }
 
-        public Bitmap[] getBitmap() {
-            return extract(bitmap);
-        }
-
-        private synchronized Bitmap[] extract(final BitmapRef[] array) {
-            if (array == null) {
-                return null;
+        public synchronized Bitmap[] getBitmap() {
+            final Bitmap[] bitmaps = extract(bitmap);
+            if (bitmaps == null) {
+                bitmap = null;
             }
-            final Bitmap[] res = new Bitmap[array.length];
-            for (int i = 0; i < array.length; i++) {
-                res[i] = array[i].getBitmap();
-                if (res[i] == null || res[i].isRecycled()) {
-                    for (int j = 0; j < array.length; j++) {
-                        BitmapManager.release(array[j]);
-                    }
-                    return null;
-                }
-            }
-            return res;
+            return bitmaps;
         }
 
         public synchronized Rect getBitmapBounds() {
@@ -528,7 +516,9 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 if (res != null) {
                     return res;
                 }
+                night = null;
             }
+
             final Bitmap[] days = extract(bitmap);
             if (days == null) {
                 return null;
@@ -544,45 +534,34 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 c.drawBitmap(days[i], 0, 0, paint);
             }
 
-            for (final BitmapRef ref : bitmap) {
-                ref.clearDirectRef();
-            }
+            // for (final BitmapRef ref : bitmap) {
+            // ref.clearDirectRef();
+            // }
 
             return res;
         }
 
         public synchronized void clearDirectRef(final List<BitmapRef> bitmapsToRecycle) {
-            if (bitmap != null) {
-                for (final BitmapRef b : bitmap) {
-                    b.clearDirectRef();
-                }
-            }
-            if (night != null) {
-                for (final BitmapRef b : night) {
-                    b.clearDirectRef();
-                }
-            }
+            // if (bitmap != null) {
+            // for (final BitmapRef b : bitmap) {
+            // b.clearDirectRef();
+            // }
+            // }
+            // if (night != null) {
+            // for (final BitmapRef b : night) {
+            // b.clearDirectRef();
+            // }
+            // }
+            recycle(bitmapsToRecycle);
         }
 
         public synchronized void recycle(final List<BitmapRef> bitmapsToRecycle) {
             if (bitmap != null) {
-                for (final BitmapRef b : bitmap) {
-                    if (bitmapsToRecycle != null) {
-                        bitmapsToRecycle.add(b);
-                    } else {
-                        BitmapManager.release(b);
-                    }
-                }
+                recycle(bitmap, bitmapsToRecycle);
                 bitmap = null;
             }
             if (night != null) {
-                for (final BitmapRef b : night) {
-                    if (bitmapsToRecycle != null) {
-                        bitmapsToRecycle.add(b);
-                    } else {
-                        BitmapManager.release(b);
-                    }
-                }
+                recycle(night, bitmapsToRecycle);
                 night = null;
             }
         }
@@ -621,6 +600,34 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             }
 
             BitmapManager.release(ref);
+        }
+
+        private static Bitmap[] extract(final BitmapRef[] array) {
+            if (array == null) {
+                return null;
+            }
+            final Bitmap[] res = new Bitmap[array.length];
+            for (int i = 0; i < array.length; i++) {
+                res[i] = array[i].getBitmap();
+                if (res[i] == null || res[i].isRecycled()) {
+                    List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>(array.length);
+                    recycle(array, bitmapsToRecycle);
+                    BitmapManager.release(bitmapsToRecycle);
+                    return null;
+                }
+            }
+            return res;
+        }
+
+        private static void recycle(final BitmapRef[] array, final List<BitmapRef> bitmapsToRecycle) {
+            for (int i = 0; i < array.length; i++) {
+                if (bitmapsToRecycle != null) {
+                    bitmapsToRecycle.add(array[i]);
+                } else {
+                    BitmapManager.release(array[i]);
+                }
+                array[i]=null;
+            }
         }
     }
 

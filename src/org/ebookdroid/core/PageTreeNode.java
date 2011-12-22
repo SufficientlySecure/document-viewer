@@ -296,12 +296,8 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             return;
         }
 
-        final Bitmap bitmap = getBitmap(viewState, paint);
-
         if (!allChildrenHasBitmap(viewState, paint)) {
-            if (bitmap != null) {
-                canvas.drawBitmap(bitmap, holder.getBitmapBounds(), tr, paint.bitmapPaint);
-            }
+            holder.drawBitmap(viewState, canvas, paint, tr);
 
             drawBrightnessFilter(canvas, tr);
         }
@@ -317,12 +313,8 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         return page.nodes.getChildren(this).length > 0;
     }
 
-    private Bitmap getBitmap(final ViewState viewState, final PagePaint paint) {
-        return viewState.nightMode ? holder.getNightBitmap(paint.nightBitmapPaint) : holder.getBitmap();
-    }
-
     boolean hasBitmap(final ViewState viewState, final PagePaint paint) {
-        return getBitmap(viewState, paint) != null;
+        return holder.hasBitmap(viewState, paint);
     }
 
     void drawBrightnessFilter(final Canvas canvas, final RectF tr) {
@@ -461,11 +453,26 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         return sliceBounds;
     }
 
-    class BitmapHolder {
+    static class BitmapHolder {
 
         BitmapRef bitmap;
         BitmapRef night;
         Rect bounds;
+
+        public void drawBitmap(final ViewState viewState, final Canvas canvas, final PagePaint paint, final RectF tr) {
+            final Bitmap bitmap = getBitmap(viewState, paint);
+            if (bitmap != null) {
+                canvas.drawBitmap(bitmap, getBitmapBounds(), tr, paint.bitmapPaint);
+            }
+        }
+
+        public boolean hasBitmap(final ViewState viewState, final PagePaint paint) {
+            return getBitmap(viewState, paint) != null;
+        }
+
+        public Bitmap getBitmap(final ViewState viewState, final PagePaint paint) {
+            return viewState.nightMode ? getNightBitmap(paint.nightBitmapPaint) : getBitmap();
+        }
 
         public synchronized Bitmap getBitmap() {
             final Bitmap bmp = bitmap != null ? bitmap.getBitmap() : null;

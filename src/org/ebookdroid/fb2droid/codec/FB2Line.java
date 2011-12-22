@@ -38,7 +38,14 @@ public class FB2Line {
     public int getTotalHeight() {
         int h = height;
         if (footnotes != null) {
-            h += footnotes.get(0).getHeight();
+            FB2Line line0 = footnotes.get(0);
+            FB2Line line1 = footnotes.get(1);
+            if (line0 != null) {
+                h += line0.getHeight();
+            }
+            if (line1 != null) {
+                h += line1.getHeight();
+            }
         }
         return h;
     }

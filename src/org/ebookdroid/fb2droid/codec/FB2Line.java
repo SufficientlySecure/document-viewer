@@ -119,7 +119,7 @@ public class FB2Line {
 
     public void applyJustification(JustificationMode jm) {
         justification = jm;
-
+        committed = true;
     }
 
     public int getHeight() {

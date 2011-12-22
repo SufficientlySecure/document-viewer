@@ -46,7 +46,7 @@ public class CustomTextPaint extends TextPaint {
                     sum += punct[ch & 0x00FF];
                     break;
                 default:
-                    System.out.println("CTP: unknown symbol: " + text[i] + " " + Integer.toHexString(ch));
+                    // System.out.println("CTP: unknown symbol: " + text[i] + " " + Integer.toHexString(ch));
                     return super.measureText(text, index, count);
             }
         }

@@ -6,6 +6,7 @@ import org.ebookdroid.core.log.LogContext;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.SparseArray;
 
@@ -78,6 +79,7 @@ public class BitmapManager {
                             + ", memoryUsed=" + actual.size() + "/" + (memoryUsed / 1024) + "KB" + ", memoryInPool="
                             + bitmaps.size() + "/" + (memoryPooled / 1024) + "KB");
                 }
+                bmp.eraseColor(Color.CYAN);
                 return ref;
             }
         }

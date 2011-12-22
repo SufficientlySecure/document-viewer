@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class BitmapManager {
 
-    private static final LogContext LCTX = LogContext.ROOT.lctx("Imaging");
+    private static final LogContext LCTX = LogContext.ROOT.lctx("Imaging", false);
 
     private final static long BITMAP_MEMORY_LIMIT = Runtime.getRuntime().maxMemory() / 2;
 

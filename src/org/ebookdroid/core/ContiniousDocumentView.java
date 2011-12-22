@@ -185,14 +185,14 @@ public class ContiniousDocumentView extends AbstractDocumentView {
             for (final Page page : getBase().getDocumentModel().getPages()) {
                 final float pageHeight = width / page.getAspectRatio();
                 page.setBounds(new RectF(0, heightAccum, width, heightAccum + pageHeight));
-                heightAccum += pageHeight;
+                heightAccum += pageHeight + 1;
             }
         } else {
             float heightAccum = changedPage.getBounds(1.0f).top;
             for (final Page page : getBase().getDocumentModel().getPages(changedPage.index.viewIndex)) {
                 final float pageHeight = width / page.getAspectRatio();
                 page.setBounds(new RectF(0, heightAccum, width, heightAccum + pageHeight));
-                heightAccum += pageHeight;
+                heightAccum += pageHeight + 1;
             }
         }
     }

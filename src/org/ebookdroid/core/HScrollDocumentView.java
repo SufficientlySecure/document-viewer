@@ -184,7 +184,7 @@ public class HScrollDocumentView extends AbstractDocumentView {
                 final float pageWidth = height * page.getAspectRatio();
                 final float pageHeight = pageWidth / page.getAspectRatio();
                 page.setBounds(new RectF(widthAccum, 0, widthAccum + pageWidth, pageHeight));
-                widthAccum += pageWidth;
+                widthAccum += pageWidth + 1;
             }
         } else {
             float widthAccum = changedPage.getBounds(1.0f).left;
@@ -192,7 +192,7 @@ public class HScrollDocumentView extends AbstractDocumentView {
                 final float pageWidth = height * page.getAspectRatio();
                 final float pageHeight = pageWidth / page.getAspectRatio();
                 page.setBounds(new RectF(widthAccum, 0, widthAccum + pageWidth, pageHeight));
-                widthAccum += pageWidth;
+                widthAccum += pageWidth + 1;
             }
         }
     }

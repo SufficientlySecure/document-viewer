@@ -109,7 +109,7 @@ public class PageTree {
                 if (!viewState.isNodeVisible(child, pageBounds)) {
                     return false;
                 }
-                if (child.getBitmap() == null && !child.decodingNow.get()
+                if (!child.hasBitmap() && !child.decodingNow.get()
                         && isHiddenByChildren(child, viewState, pageBounds)) {
                     return false;
                 }

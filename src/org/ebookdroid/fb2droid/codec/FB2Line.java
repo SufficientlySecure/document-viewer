@@ -14,6 +14,8 @@ public class FB2Line {
     private List<FB2Line> footnotes;
     private boolean committed;
     private int sizeableCount;
+    private boolean justified;
+    private JustificationMode justification = JustificationMode.Justify;
 
     public FB2Line() {
     }
@@ -42,6 +44,7 @@ public class FB2Line {
     }
 
     public void render(final Canvas c, final int y) {
+        applyJustification();
         float x = FB2Page.MARGIN_X;
         for (final AbstractFB2LineElement e : elements) {
             e.render(c, y, (int) x);
@@ -61,33 +64,35 @@ public class FB2Line {
         return fb2Line;
     }
 
-    public void applyJustification(final JustificationMode jm) {
-        switch (jm) {
-            case Center:
-                final float x = (FB2Page.PAGE_WIDTH - (width + 2 * FB2Page.MARGIN_X)) / 2;
-                elements.add(0, new FB2LineWhiteSpace(x, height, false));
-                // elements.add(new FB2LineWhiteSpace(x, height, false));
-                break;
-            case Left:
-                // final int x2 = (FB2Page.PAGE_WIDTH - (width + 2 * FB2Page.MARGIN_X));
-                // elements.add(new FB2LineWhiteSpace(x2, height, true));
-                break;
-            case Justify:
-                if (sizeableCount > 0) {
-                    final float wsx = (FB2Page.PAGE_WIDTH - (width + 2 * FB2Page.MARGIN_X)) / sizeableCount;
-                    for (final AbstractFB2LineElement e : elements) {
-                        if (e.sizeable) {
-                            e.adjustWidth(wsx);
+    private void applyJustification() {
+        if (!justified) {
+            switch (justification) {
+                case Center:
+                    final float x = (FB2Page.PAGE_WIDTH - (width + 2 * FB2Page.MARGIN_X)) / 2;
+                    elements.add(0, new FB2LineWhiteSpace(x, height, false));
+                    // elements.add(new FB2LineWhiteSpace(x, height, false));
+                    break;
+                case Left:
+                    // final int x2 = (FB2Page.PAGE_WIDTH - (width + 2 * FB2Page.MARGIN_X));
+                    // elements.add(new FB2LineWhiteSpace(x2, height, true));
+                    break;
+                case Justify:
+                    if (sizeableCount > 0) {
+                        final float wsx = (FB2Page.PAGE_WIDTH - (width + 2 * FB2Page.MARGIN_X)) / sizeableCount;
+                        for (final AbstractFB2LineElement e : elements) {
+                            if (e.sizeable) {
+                                e.adjustWidth(wsx);
+                            }
                         }
                     }
-                }
-                break;
-            case Right:
-                final float x1 = (FB2Page.PAGE_WIDTH - (width + 2 * FB2Page.MARGIN_X));
-                elements.add(0, new FB2LineWhiteSpace(x1, height, false));
-                break;
+                    break;
+                case Right:
+                    final float x1 = (FB2Page.PAGE_WIDTH - (width + 2 * FB2Page.MARGIN_X));
+                    elements.add(0, new FB2LineWhiteSpace(x1, height, false));
+                    break;
+            }
+            justified = true;
         }
-        committed = true;
     }
 
     public boolean hasNonWhiteSpaces() {
@@ -110,6 +115,11 @@ public class FB2Line {
             lastLine.applyJustification(JustificationMode.Left);
         }
         footnotes.addAll(noteLines);
+    }
+
+    public void applyJustification(JustificationMode jm) {
+        justification = jm;
+
     }
 
     public int getHeight() {

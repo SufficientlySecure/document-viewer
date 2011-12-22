@@ -1,5 +1,7 @@
 package org.ebookdroid.fb2droid.codec;
 
+import org.ebookdroid.utils.LengthUtils;
+
 import android.graphics.Canvas;
 
 import java.util.ArrayList;
@@ -37,15 +39,9 @@ public class FB2Line {
 
     public int getTotalHeight() {
         int h = height;
-        if (footnotes != null) {
-            FB2Line line0 = footnotes.get(0);
-            FB2Line line1 = footnotes.get(1);
-            if (line0 != null) {
-                h += line0.getHeight();
-            }
-            if (line1 != null) {
-                h += line1.getHeight();
-            }
+        for (int i = 0, n = Math.min(2, LengthUtils.length(footnotes)); i < n; i++) {
+            FB2Line line = footnotes.get(i);
+            h += line.getHeight();
         }
         return h;
     }

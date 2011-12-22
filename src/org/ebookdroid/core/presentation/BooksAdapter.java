@@ -163,7 +163,7 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
     }
 
     public synchronized void clearData() {
-        System.out.println("BS: clearData: old=" + getListPaths());
+        // System.out.println("BS: clearData: old=" + getListPaths());
 
         final BookShelfAdapter oldRecent = data.get(0);
         data.clear();

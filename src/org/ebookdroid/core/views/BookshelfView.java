@@ -51,11 +51,11 @@ public class BookshelfView extends GridView implements OnItemClickListener {
     private Bitmap mPineLeft;
     private Bitmap mPineRight;
 
-    private IBrowserActivity base;
-    private BookShelfAdapter adapter;
+    private final IBrowserActivity base;
+    private final BookShelfAdapter adapter;
     String path;
 
-    public BookshelfView(IBrowserActivity base, View shelves, BookShelfAdapter adapter) {
+    public BookshelfView(final IBrowserActivity base, final View shelves, final BookShelfAdapter adapter) {
         super(base.getContext());
         this.base = base;
         this.adapter = adapter;
@@ -65,9 +65,10 @@ public class BookshelfView extends GridView implements OnItemClickListener {
         setNumColumns(AUTO_FIT);
         setStretchMode(STRETCH_SPACING);
         setAdapter(adapter);
-        setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
-        Resources r = getResources();
-        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, r.getDisplayMetrics());
+        setLayoutParams(new LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,
+                android.view.ViewGroup.LayoutParams.FILL_PARENT));
+        final Resources r = getResources();
+        final float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, r.getDisplayMetrics());
         setColumnWidth((int) px);
 
         init(base.getContext());
@@ -75,7 +76,7 @@ public class BookshelfView extends GridView implements OnItemClickListener {
 
     }
 
-    private void init(Context context) {
+    private void init(final Context context) {
         final Bitmap shelfBackground = BitmapManager.getResource(R.drawable.shelf_panel1);
         if (shelfBackground != null) {
             mShelfWidth = shelfBackground.getWidth();
@@ -92,13 +93,13 @@ public class BookshelfView extends GridView implements OnItemClickListener {
         mPineLeft = BitmapManager.getResource(R.drawable.pine_left);
         mPineRight = BitmapManager.getResource(R.drawable.pine_right);
 
-        StateListDrawable drawable = new StateListDrawable();
+        final StateListDrawable drawable = new StateListDrawable();
 
-        SpotlightDrawable start = new SpotlightDrawable(context, this);
+        final SpotlightDrawable start = new SpotlightDrawable(context, this);
         start.disableOffset();
-        SpotlightDrawable end = new SpotlightDrawable(context, this, R.drawable.spotlight_blue);
+        final SpotlightDrawable end = new SpotlightDrawable(context, this, R.drawable.spotlight_blue);
         end.disableOffset();
-        TransitionDrawable transition = new TransitionDrawable(start, end);
+        final TransitionDrawable transition = new TransitionDrawable(start, end);
         drawable.addState(new int[] { android.R.attr.state_pressed }, transition);
 
         final SpotlightDrawable normal = new SpotlightDrawable(context, this);
@@ -112,7 +113,7 @@ public class BookshelfView extends GridView implements OnItemClickListener {
     }
 
     @Override
-    protected void dispatchDraw(Canvas canvas) {
+    protected void dispatchDraw(final Canvas canvas) {
         final int count = getChildCount();
         int top = count > 0 ? getChildAt(0).getTop() : 0;
         final int shelfWidth = mShelfWidth;
@@ -134,18 +135,17 @@ public class BookshelfView extends GridView implements OnItemClickListener {
         super.dispatchDraw(canvas);
     }
 
-    public void drawDecorations(Canvas canvas, int top, final int shelfHeight, final int width) {
-        Calendar now = new GregorianCalendar();
+    public void drawDecorations(final Canvas canvas, final int top, final int shelfHeight, final int width) {
+        final Calendar now = new GregorianCalendar();
         Bitmap left;
         Bitmap right;
         int lOffset;
         int rOffset;
 
-        int date = now.get(GregorianCalendar.DATE);
-        int month = now.get(GregorianCalendar.MONTH);
+        final int date = now.get(Calendar.DATE);
+        final int month = now.get(Calendar.MONTH);
 
-        if ((date >= 20 && month == GregorianCalendar.DECEMBER)
-                || (date <= 10 && month == GregorianCalendar.JANUARY)) {
+        if ((date >= 23 && month == Calendar.DECEMBER) || (date <= 13 && month == Calendar.JANUARY)) {
             // New year
             left = mPineLeft;
             right = mPineRight;
@@ -163,9 +163,9 @@ public class BookshelfView extends GridView implements OnItemClickListener {
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
         final BookNode node = (BookNode) adapter.getItem(position);
-        File file = new File(node.getPath());
+        final File file = new File(node.getPath());
         if (!file.isDirectory()) {
             base.showDocument(Uri.fromFile(file));
         }

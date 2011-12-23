@@ -161,14 +161,26 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     @Override
     public final ViewState updatePageVisibility(final int newPage, final int direction, final float zoom) {
+        final ViewState initial = new ViewState(this, zoom);
         final ViewState viewState = calculatePageVisibility(newPage, direction, zoom);
 
         final List<PageTreeNode> nodesToDecode = new ArrayList<PageTreeNode>();
         final List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
 
-        for (final Page page : getBase().getDocumentModel().getPages()) {
-            page.onPositionChanged(viewState, nodesToDecode, bitmapsToRecycle);
+        int first = MathUtils.min(initial.firstCached, initial.firstVisible, viewState.firstCached,
+                viewState.firstVisible);
+        int last = MathUtils.max(initial.lastCached, initial.lastVisible, viewState.lastCached, viewState.lastVisible);
+
+        if (first != -1 && last != -1) {
+            for (final Page page : getBase().getDocumentModel().getPages(first, last + 1)) {
+                page.onPositionChanged(viewState, nodesToDecode, bitmapsToRecycle);
+            }
+        } else {
+            for (final Page page : getBase().getDocumentModel().getPages()) {
+                page.onPositionChanged(viewState, nodesToDecode, bitmapsToRecycle);
+            }
         }
+
         BitmapManager.release(bitmapsToRecycle);
 
         if (!nodesToDecode.isEmpty()) {

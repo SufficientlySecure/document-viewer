@@ -180,10 +180,12 @@ public class DecodeServiceBase implements DecodeService {
 
             finishDecoding(task, vuPage, bitmap, r);
         } catch (final OutOfMemoryError ex) {
-            LCTX.e("Task " + task.id + ": No memory to decode " + task.node);
             if (r != null) {
-                memoryLimit
-                        .set(BitmapManager.getBitmapBufferSize(r.width(), r.height(), codecContext.getBitmapConfig()));
+                int limit = BitmapManager.getBitmapBufferSize(r.width(), r.height(), codecContext.getBitmapConfig());
+                memoryLimit.set(Math.min(memoryLimit.get(), limit));
+                LCTX.e("Task " + task.id + ": No memory to decode " + task.node+": new memory limit: " + memoryLimit.get());
+            } else {
+                LCTX.e("Task " + task.id + ": No memory to decode " + task.node);
             }
 
             for (int i = 0; i <= SettingsManager.getAppSettings().getPagesInMemory(); i++) {

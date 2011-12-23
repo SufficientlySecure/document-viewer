@@ -36,6 +36,8 @@ public class ViewState {
 
     public final Map<String, Boolean> nodeVisibility = new HashMap<String, Boolean>();
 
+    public final boolean outOfMemoryOccured;
+    
     public ViewState(final PageTreeNode node) {
         this(node.page.base.getDocumentController());
     }
@@ -64,10 +66,12 @@ public class ViewState {
             final int inMemory = (int) Math.ceil(SettingsManager.getAppSettings().getPagesInMemory() / 2.0);
             this.firstCached = Math.max(0, this.currentIndex - inMemory);
             this.lastCached = Math.min(this.currentIndex + inMemory, dm.getPageCount());
+            this.outOfMemoryOccured = dm.getDecodeService().getMemoryLimit() < Long.MAX_VALUE;
         } else {
             this.currentIndex = 0;
             this.firstCached = 0;
             this.lastCached = 0;
+            this.outOfMemoryOccured = false;
         }
 
         final BookSettings bs = SettingsManager.getBookSettings();
@@ -104,26 +108,28 @@ public class ViewState {
         this.pageAlign = oldState.pageAlign;
         this.decodeMode = oldState.decodeMode;
         this.nightMode = oldState.nightMode;
+        this.outOfMemoryOccured = oldState.outOfMemoryOccured;
     }
 
-    public ViewState(final ViewState state) {
-        this.ctrl = state.ctrl;
-        this.view = state.view;
+    public ViewState(final ViewState oldState) {
+        this.ctrl = oldState.ctrl;
+        this.view = oldState.view;
 
-        this.firstVisible = state.firstVisible;
-        this.lastVisible = state.lastVisible;
+        this.firstVisible = oldState.firstVisible;
+        this.lastVisible = oldState.lastVisible;
 
-        this.realRect = state.realRect;
-        this.viewRect = state.viewRect;
-        this.zoom = state.zoom;
+        this.realRect = oldState.realRect;
+        this.viewRect = oldState.viewRect;
+        this.zoom = oldState.zoom;
 
-        this.currentIndex = state.currentIndex;
-        this.firstCached = state.firstCached;
-        this.lastCached = state.lastCached;
+        this.currentIndex = oldState.currentIndex;
+        this.firstCached = oldState.firstCached;
+        this.lastCached = oldState.lastCached;
 
-        this.pageAlign = state.pageAlign;
-        this.decodeMode = state.decodeMode;
-        this.nightMode = state.nightMode;
+        this.pageAlign = oldState.pageAlign;
+        this.decodeMode = oldState.decodeMode;
+        this.nightMode = oldState.nightMode;
+        this.outOfMemoryOccured = oldState.outOfMemoryOccured;
     }
 
     public RectF getBounds(final Page page) {
@@ -136,7 +142,7 @@ public class ViewState {
     }
 
     public final boolean isPageKeptInMemory(final Page page) {
-        return firstCached <= page.index.viewIndex && page.index.viewIndex <= lastCached;
+        return !outOfMemoryOccured && firstCached <= page.index.viewIndex && page.index.viewIndex <= lastCached;
     }
 
     public final boolean isPageVisible(final Page page) {
@@ -148,7 +154,7 @@ public class ViewState {
             return this.isPageKeptInMemory(node.page) || this.isPageVisible(node.page);
         }
         if (this.zoom < 4) {
-            return this.isPageKeptInMemory(node.page) && this.isPageVisible(node.page);
+            return this.isPageKeptInMemory(node.page) || isPageVisible(node.page) && this.isNodeVisible(node, pageBounds);
         }
         return this.isPageVisible(node.page) && this.isNodeVisible(node, pageBounds);
     }

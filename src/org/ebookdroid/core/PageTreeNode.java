@@ -3,9 +3,10 @@ package org.ebookdroid.core;
 import org.ebookdroid.core.IDocumentViewController.InvalidateSizeReason;
 import org.ebookdroid.core.bitmaps.BitmapManager;
 import org.ebookdroid.core.bitmaps.BitmapRef;
-import org.ebookdroid.core.bitmaps.RawBitmap;
+import org.ebookdroid.core.bitmaps.Bitmaps;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.crop.PageCropper;
+import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.models.DecodingProgressModel;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.settings.SettingsManager;
@@ -25,7 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PageTreeNode implements DecodeService.DecodeCallback {
 
-    // private static final LogContext LCTX = LogContext.ROOT.lctx("Imaging");
+    private static final LogContext LCTX = LogContext.ROOT.lctx("Page");
 
     final Page page;
     final PageTreeNode parent;
@@ -162,33 +163,42 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     protected boolean isChildrenRequired(final ViewState viewState) {
+        if (viewState.decodeMode == DecodeMode.NORMAL && viewState.zoom > childrenZoomThreshold) {
+            return true;
+        }
+
         final DecodeService ds = page.base.getDecodeService();
         if (ds == null) {
             return false;
         }
 
-        final long memoryLimit = ds.getMemoryLimit();
-
-        if (viewState.decodeMode == DecodeMode.NATIVE_RESOLUTION) {
-            final Rect rect = ds.getNativeSize(page.bounds.width() * page.getTargetRectScale(), page.bounds.height(),
-                    croppedBounds != null ? croppedBounds : pageSliceBounds, page.getTargetRectScale());
-            final long size = BitmapManager.getBitmapBufferSize(rect.width(), rect.height(), ds.getBitmapConfig());
-            return (rect.width() > 2048) || (rect.height() > 2048) || size >= memoryLimit;
+        long memoryLimit = ds.getMemoryLimit();
+        if (viewState.decodeMode == DecodeMode.LOW_MEMORY) {
+            memoryLimit = Math.min(memoryLimit, SettingsManager.getAppSettings().getMaxImageSize());
         }
 
-        final Rect rect = ds.getScaledSize(viewState, page.bounds.width() * page.getTargetRectScale(),
-                page.bounds.height(), croppedBounds != null ? croppedBounds : pageSliceBounds,
-                page.getTargetRectScale(), getSliceGeneration());
+        final Rect rect = getActualRect(viewState, ds);
 
         final long size = BitmapManager.getBitmapBufferSize(rect.width(), rect.height(), ds.getBitmapConfig());
 
-        if (viewState.decodeMode == DecodeMode.NORMAL) {
-            // We need to check for 2048 for HW accel. limitations.
-            return (viewState.zoom > childrenZoomThreshold) || (rect.width() > 2048) || (rect.height() > 2048)
-                    || size >= memoryLimit;
+        LCTX.d(getFullId() + ".isChildrenRequired(): rect=" + rect + ", size=" + size + ", limit=" + memoryLimit);
+
+        final boolean textureSizeExceedeed = (rect.width() > 2048) || (rect.height() > 2048);
+        final boolean memoryLimitExceeded = size + 4096 >= memoryLimit;
+
+        return textureSizeExceedeed || memoryLimitExceeded;
+    }
+
+    private Rect getActualRect(final ViewState viewState, final DecodeService ds) {
+        final RectF actual = croppedBounds != null ? croppedBounds : pageSliceBounds;
+        final float widthScale = page.getTargetRectScale();
+        final float pageWidth = page.bounds.width() * widthScale;
+
+        if (viewState.decodeMode == DecodeMode.NATIVE_RESOLUTION) {
+            return ds.getNativeSize(pageWidth, page.bounds.height(), actual, widthScale);
         }
 
-        return (rect.width() > 2048) || (rect.height() > 2048) || size >= Math.min(memoryLimit, SettingsManager.getAppSettings().getMaxImageSize());
+        return ds.getScaledSize(viewState, pageWidth, page.bounds.height(), actual, widthScale, getSliceGeneration());
     }
 
     public int getSliceGeneration() {
@@ -205,7 +215,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     @Override
     public void decodeComplete(final CodecPage codecPage, final BitmapRef bitmap, final Rect bitmapBounds) {
 
-        // System.out.println("decodeComplete:" + this.page.index + ", " + bitmap + ", bounds: " + bitmapBounds);
         if (bitmap == null || bitmapBounds == null) {
             page.base.getActivity().runOnUiThread(new Runnable() {
 
@@ -239,11 +248,15 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 return;
             }
         }
+
+        final Bitmaps bitmaps = new Bitmaps(bitmap, bitmapBounds);
+        BitmapManager.release(bitmap);
+
         page.base.getActivity().runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
-                holder.setBitmap(bitmap, bitmapBounds);
+                holder.setBitmap(bitmaps);
                 setDecodingNow(false);
 
                 page.base.getDocumentController().pageUpdated(page.index.viewIndex);
@@ -461,45 +474,19 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     static class BitmapHolder {
 
-        int wcount;
-        int hcount;
-
-        BitmapRef[] bitmap;
-        BitmapRef[] night;
-
-        Rect bounds;
+        Bitmaps day;
+        Bitmaps night;
 
         public synchronized void drawBitmap(final ViewState viewState, final Canvas canvas, final PagePaint paint,
                 final RectF tr) {
-            final Bitmap[] bitmap = getBitmap(viewState, paint);
-            if (bitmap != null) {
-                final Paint emp = new Paint();
-                emp.setColor(Color.GRAY);
-                for (int row = 0; row < hcount; row++) {
-                    for (int col = 0; col < wcount; col++) {
-                        final int left = col * 128;
-                        final int top = row * 128;
-//                        final int right = left + 128;
-//                        final int bottom = top + 128;
-                        final int right = Math.min(left + 128, bounds.width());
-                        final int bottom = Math.min(top + 128, bounds.height());
-                        
-                        final RectF source = new RectF(left, top, right, bottom);
 
-                        final Matrix m = new Matrix();
-                        m.postScale(tr.width() / bounds.width(), tr.height() / bounds.height());
-                        m.postTranslate(tr.left, tr.top);
-                        
-                        RectF target = new RectF();
-                        m.mapRect(target, source);
-
-                        final int index = row * wcount + col;
-                        if (bitmap[index] != null && !bitmap[index].isRecycled()) {
-                            canvas.drawBitmap(bitmap[index], new Rect(0, 0, (int)source.width(), (int)source.height()), target, paint.bitmapPaint);
-                        } else {
-                            canvas.drawRect(source, emp);
-                        }
-                    }
+            if (viewState.nightMode) {
+                if (null != getNightBitmap(paint.nightBitmapPaint)) {
+                    night.draw(viewState, canvas, paint, tr);
+                }
+            } else {
+                if (day != null) {
+                    day.draw(viewState, canvas, paint, tr);
                 }
             }
         }
@@ -513,139 +500,50 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         }
 
         public synchronized Bitmap[] getBitmap() {
-            final Bitmap[] bitmaps = extract(bitmap);
-            if (bitmaps == null) {
-                bitmap = null;
-            }
-            return bitmaps;
-        }
-
-        public synchronized Rect getBitmapBounds() {
-            return bounds;
+            return day != null ? day.getBitmaps() : null;
         }
 
         public synchronized Bitmap[] getNightBitmap(final Paint paint) {
             Bitmap[] res = null;
+            if (night == null) {
+                final Bitmap[] days = day != null ? day.getBitmaps() : null;
+                if (days == null) {
+                    return null;
+                }
+                night = new Bitmaps(day, days, paint);
+            }
             if (night != null) {
-                res = extract(night);
+                res = night.getBitmaps();
                 if (res != null) {
                     return res;
                 }
                 night = null;
             }
-
-            final Bitmap[] days = extract(bitmap);
-            if (days == null) {
-                return null;
-            }
-
-            night = new BitmapRef[days.length];
-            res = new Bitmap[days.length];
-            for (int i = 0; i < days.length; i++) {
-                night[i] = BitmapManager.getBitmap(days[i].getWidth(), days[i].getHeight(), Bitmap.Config.RGB_565);
-                res[i] = night[i].getBitmap();
-                final Canvas c = new Canvas(res[i]);
-                c.drawRect(0, 0, days[i].getWidth(), days[i].getHeight(), PagePaint.NIGHT.fillPaint);
-                c.drawBitmap(days[i], 0, 0, paint);
-            }
-
-            // for (final BitmapRef ref : bitmap) {
-            // ref.clearDirectRef();
-            // }
-
             return res;
         }
 
         public synchronized void clearDirectRef(final List<BitmapRef> bitmapsToRecycle) {
-            // if (bitmap != null) {
-            // for (final BitmapRef b : bitmap) {
-            // b.clearDirectRef();
-            // }
-            // }
-            // if (night != null) {
-            // for (final BitmapRef b : night) {
-            // b.clearDirectRef();
-            // }
-            // }
-            recycle(bitmapsToRecycle);
         }
 
         public synchronized void recycle(final List<BitmapRef> bitmapsToRecycle) {
-            if (bitmap != null) {
-                recycle(bitmap, bitmapsToRecycle);
-                bitmap = null;
+            if (day != null) {
+                day.recycle();
+                day = null;
             }
             if (night != null) {
-                recycle(night, bitmapsToRecycle);
+                night.recycle();
                 night = null;
             }
         }
 
-        public synchronized void setBitmap(final BitmapRef ref, final Rect bitmapBounds) {
-            if (ref == null) {
+        public synchronized void setBitmap(final Bitmaps bitmaps) {
+            if (bitmaps == null) {
                 return;
             }
 
-            final List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>(2);
-            recycle(bitmapsToRecycle);
-            BitmapManager.release(bitmapsToRecycle);
+            recycle(null);
 
-            this.bounds = bitmapBounds;
-
-            wcount = (int) Math.ceil(bounds.width() / 128.0f);
-            hcount = (int) Math.ceil(bounds.height() / 128.0f);
-
-            final Bitmap bmp = ref.getBitmap();
-
-            bitmap = new BitmapRef[wcount * hcount];
-            for (int row = 0; row < hcount; row++) {
-                for (int col = 0; col < wcount; col++) {
-                    final int left = col * 128;
-                    final int top = row * 128;
-                    final int right = Math.min(left + 128, bounds.width());
-                    final int bottom = Math.min(top + 128, bounds.height());
-                    final RawBitmap rb = new RawBitmap(bmp, new Rect(left, top, right, bottom));
-
-                    final BitmapRef b = BitmapManager.getBitmap(128, 128, bmp.getConfig());
-                    if (row == hcount - 1 || col == wcount - 1) {
-                        b.getBitmap().eraseColor(Color.BLACK);
-                    }
-                    rb.toBitmap(b.getBitmap());
-
-                    final int index = row * wcount + col;
-                    bitmap[index] = b;
-                }
-            }
-
-            BitmapManager.release(ref);
-        }
-
-        private static Bitmap[] extract(final BitmapRef[] array) {
-            if (array == null) {
-                return null;
-            }
-            final Bitmap[] res = new Bitmap[array.length];
-            for (int i = 0; i < array.length; i++) {
-                res[i] = array[i].getBitmap();
-                if (res[i] == null || res[i].isRecycled()) {
-                    final List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>(array.length);
-                    recycle(array, bitmapsToRecycle);
-                    BitmapManager.release(bitmapsToRecycle);
-                    return null;
-                }
-            }
-            return res;
-        }
-
-        private static void recycle(final BitmapRef[] array, final List<BitmapRef> bitmapsToRecycle) {
-            for (int i = 0; i < array.length; i++) {
-                if (bitmapsToRecycle != null) {
-                    bitmapsToRecycle.add(array[i]);
-                } else {
-                    BitmapManager.release(array[i]);
-                }
-                array[i] = null;
-            }
+            this.day = bitmaps;
         }
     }
 

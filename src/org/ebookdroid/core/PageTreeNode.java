@@ -230,22 +230,10 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             if (id == 0 && !cropped) {
                 croppedBounds = PageCropper.getCropBounds(bitmap, bitmapBounds, pageSliceBounds);
                 cropped = true;
-
-                BitmapManager.release(bitmap);
-
-                page.base.getActivity().runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        setDecodingNow(false);
-                        final DecodeService decodeService = page.base.getDecodeService();
-                        if (decodeService != null) {
-                            decodeService
-                                    .decodePage(new ViewState(PageTreeNode.this), PageTreeNode.this, croppedBounds);
-                        }
-                    }
-                });
-                return;
+                final DecodeService decodeService = page.base.getDecodeService();
+                if (decodeService != null) {
+                    decodeService.decodePage(new ViewState(PageTreeNode.this), PageTreeNode.this, croppedBounds);
+                }
             }
         }
 

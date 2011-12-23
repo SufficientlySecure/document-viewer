@@ -35,6 +35,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 
 import java.io.File;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class BookshelfView extends GridView implements OnItemClickListener {
 
@@ -46,7 +48,8 @@ public class BookshelfView extends GridView implements OnItemClickListener {
 
     private Bitmap mWebLeft;
     private Bitmap mWebRight;
-    private int mWebRightWidth;
+    private Bitmap mPineLeft;
+    private Bitmap mPineRight;
 
     private IBrowserActivity base;
     private BookShelfAdapter adapter;
@@ -84,10 +87,10 @@ public class BookshelfView extends GridView implements OnItemClickListener {
         mShelfBackgroundRight = BitmapManager.getResource(R.drawable.shelf_panel1_right);
 
         mWebLeft = BitmapManager.getResource(R.drawable.web_left);
+        mWebRight = BitmapManager.getResource(R.drawable.web_right);
 
-        final Bitmap webRight = BitmapManager.getResource(R.drawable.web_right);
-        mWebRightWidth = webRight.getWidth();
-        mWebRight = webRight;
+        mPineLeft = BitmapManager.getResource(R.drawable.pine_left);
+        mPineRight = BitmapManager.getResource(R.drawable.pine_right);
 
         StateListDrawable drawable = new StateListDrawable();
 
@@ -126,10 +129,37 @@ public class BookshelfView extends GridView implements OnItemClickListener {
         }
 
         top = (count > 0) ? getChildAt(count - 1).getTop() + shelfHeight : 0;
-        canvas.drawBitmap(mWebLeft, 15, top + 1, null);
-        canvas.drawBitmap(mWebRight, width - mWebRightWidth - 15, top + shelfHeight + 1, null);
+        drawDecorations(canvas, top, shelfHeight, width);
 
         super.dispatchDraw(canvas);
+    }
+
+    public void drawDecorations(Canvas canvas, int top, final int shelfHeight, final int width) {
+        Calendar now = new GregorianCalendar();
+        Bitmap left;
+        Bitmap right;
+        int lOffset;
+        int rOffset;
+
+        int date = now.get(GregorianCalendar.DATE);
+        int month = now.get(GregorianCalendar.MONTH);
+
+        if ((date >= 20 && month == GregorianCalendar.DECEMBER)
+                || (date <= 10 && month == GregorianCalendar.JANUARY)) {
+            // New year
+            left = mPineLeft;
+            right = mPineRight;
+            lOffset = 0;
+            rOffset = mPineRight.getWidth();
+        } else {
+            left = mWebLeft;
+            right = mWebRight;
+            lOffset = 15;
+            rOffset = mWebRight.getWidth() + 15;
+        }
+
+        canvas.drawBitmap(left, lOffset, top + 1, null);
+        canvas.drawBitmap(right, width - rOffset, top + shelfHeight + 1, null);
     }
 
     @Override

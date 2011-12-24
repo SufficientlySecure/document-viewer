@@ -382,6 +382,7 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
 
     @Override
     public void onAppSettingsChanged(final AppSettings oldSettings, final AppSettings newSettings, final Diff diff) {
+        final FileExtensionFilter filter = newSettings.getAllowedFileTypes();
         if (diff.isUseBookcaseChanged()) {
             viewflipper.removeAllViews();
 
@@ -391,13 +392,30 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
                 bookcaseView = new BookcaseView(this, bookshelfAdapter);
                 viewflipper.addView(bookcaseView, 0);
 
-                recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), SettingsManager.getAppSettings()
-                        .getAllowedFileTypes());
+                recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), filter);
             } else {
                 libraryButton.setImageResource(R.drawable.actionbar_library);
 
                 viewflipper.addView(new RecentBooksView(this, recentAdapter), VIEW_RECENT);
                 viewflipper.addView(new LibraryView(this, libraryAdapter), VIEW_LIBRARY);
+            }
+            return;
+        }
+
+        if (diff.isAutoScanDirsChanged()) {
+            if (newSettings.getUseBookcase()) {
+                bookshelfAdapter.startScan();
+            } else {
+                libraryAdapter.startScan(filter);
+            }
+            return;
+        }
+        if (diff.isAllowedFileTypesChanged()) {
+            recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), filter);
+            if (newSettings.getUseBookcase()) {
+                bookshelfAdapter.startScan();
+            } else {
+                libraryAdapter.startScan(filter);
             }
         }
     }

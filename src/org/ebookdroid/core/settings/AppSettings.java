@@ -398,6 +398,8 @@ public class AppSettings {
         private static final int D_MaxImageSize = 0x0001 << 14;
         private static final int D_UseBookcase = 0x0001 << 15;
         private static final int D_DjvuRenderingMode = 0x0001 << 16;
+        private static final int D_AutoScanDirs = 0x0001 << 17;
+        private static final int D_AllowedFileTypes = 0x0001 << 18;
 
         private int mask;
         private final boolean firstTime;
@@ -455,6 +457,12 @@ public class AppSettings {
                 }
                 if (firstTime || olds.getDjvuRenderingMode() != news.getDjvuRenderingMode()) {
                     mask |= D_DjvuRenderingMode;
+                }
+                if (firstTime || olds.getAutoScanDirs().equals(news.getAutoScanDirs())) {
+                    mask |= D_AutoScanDirs;
+                }
+                if (firstTime || olds.getAllowedFileTypes().equals(news.getAllowedFileTypes())) {
+                    mask |= D_AllowedFileTypes;
                 }
             }
         }
@@ -529,6 +537,14 @@ public class AppSettings {
 
         public boolean isDjvuRenderingModeChanged() {
             return 0 != (mask & D_DjvuRenderingMode);
+        }
+
+        public boolean isAutoScanDirsChanged() {
+            return 0 != (mask & D_AutoScanDirs);
+        }
+
+        public boolean isAllowedFileTypesChanged() {
+            return 0 != (mask & D_AllowedFileTypes);
         }
     }
 

@@ -11,6 +11,10 @@ import java.util.Set;
 
 public class StringUtils {
 
+    public static final NaturalStringComparator NSC = new NaturalStringComparator();
+
+    public static final NaturalFileComparator NFC = new NaturalFileComparator();
+
     private StringUtils() {
     }
 
@@ -85,13 +89,9 @@ public class StringUtils {
         return result.toString();
     }
 
+    @Deprecated
     public static Comparator<? super String> getNaturalComparator() {
-        return new Comparator<String>() {
-
-            public int compare(String o1, String o2) {
-                return compareNatural(o1, o2);
-            }
-        };
+        return NSC;
     }
 
     public static final int compareNatural(String firstString, String secondString) {
@@ -199,19 +199,9 @@ public class StringUtils {
         }
     }
 
+    @Deprecated
     public static Comparator<? super File> getNaturalFileComparator() {
-        return new Comparator<File>() {
-
-            public int compare(File o1, File o2) {
-                if (o1 == null) {
-                    return -1;
-                }
-                if (o2 == null) {
-                    return 1;
-                }
-                return compareNatural(o1.getAbsolutePath(), o2.getAbsolutePath());
-            }
-        };
+        return NFC;
     }
 
     public static int split(char[] str, int begin, int len, int[] outStart, int[] outLength) {
@@ -228,7 +218,7 @@ public class StringUtils {
             if (str[i] == 0x20 || str[i] == 0x0D || str[i] == 0x0A || str[i] == 0x09) {
                 if (match) {
                     outStart[index] = start;
-                    outLength[index] = i-start;
+                    outLength[index] = i - start;
                     index++;
                     match = false;
                 }
@@ -240,10 +230,30 @@ public class StringUtils {
         }
         if (match) {
             outStart[index] = start;
-            outLength[index] = i-start;
+            outLength[index] = i - start;
             index++;
         }
         return index;
+    }
+
+    public static final class NaturalStringComparator implements Comparator<String> {
+
+        public int compare(String o1, String o2) {
+            return compareNatural(o1, o2);
+        }
+    }
+
+    public static final class NaturalFileComparator implements Comparator<File> {
+
+        public int compare(File o1, File o2) {
+            if (o1 == null) {
+                return -1;
+            }
+            if (o2 == null) {
+                return 1;
+            }
+            return compareNatural(o1.getAbsolutePath(), o2.getAbsolutePath());
+        }
     }
 
 }

@@ -62,4 +62,21 @@ public class FileExtensionFilter implements FileFilter, FilenameFilter {
     public boolean accept(final String name, final String ext) {
         return name.toLowerCase().endsWith("." + ext);
     }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof FileExtensionFilter) {
+            final FileExtensionFilter that = (FileExtensionFilter) obj;
+            return this.extensions.equals(that.extensions);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.extensions.hashCode();
+    }
 }

@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
@@ -189,6 +190,7 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
     }
 
     public void startScan() {
+        clearData();
         scanner.startScan(SettingsManager.getAppSettings().getAutoScanDirs());
     }
 
@@ -230,6 +232,7 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
                 notifyDataSetChanged();
             }
             a.nodes.add(new BookNode(a.id, f.getName(), f.getAbsolutePath()));
+            Collections.sort(a.nodes);
             a.notifyDataSetChanged();
         }
     }

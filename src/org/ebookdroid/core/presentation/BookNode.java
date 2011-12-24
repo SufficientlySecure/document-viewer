@@ -1,6 +1,8 @@
 package org.ebookdroid.core.presentation;
 
-public class BookNode {
+import org.ebookdroid.utils.StringUtils;
+
+public class BookNode implements Comparable<BookNode>{
 
     final int listNum;
     final String name;
@@ -23,5 +25,14 @@ public class BookNode {
     @Override
     public String toString() {
         return this.name;
+    }
+
+    @Override
+    public int compareTo(BookNode that) {
+        if (this == that) {
+            return 0;
+        }
+
+        return StringUtils.compareNatural(this.path, that.path);
     }
 }

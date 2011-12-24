@@ -147,7 +147,7 @@ public class FileSystemScanner {
             final File[] files = dir.listFiles((FilenameFilter) filter);
             // Sort file list
             if (LengthUtils.isNotEmpty(files)) {
-                Arrays.sort(files, StringUtils.getNaturalFileComparator());
+                Arrays.sort(files, StringUtils.NFC);
             }
             // Call the file scan callback
             l.onFileScan(dir, files);
@@ -159,7 +159,7 @@ public class FileSystemScanner {
 
             if (LengthUtils.isNotEmpty(childDirs)) {
                 // Sort child dir list
-                Arrays.sort(childDirs, StringUtils.getNaturalFileComparator());
+                Arrays.sort(childDirs, StringUtils.NFC);
                 for (int i = 0; i < childDirs.length; i++) {
                     // Recursively processing found file
                     scanDir(childDirs[i]);
@@ -179,7 +179,11 @@ public class FileSystemScanner {
 
         @Override
         public void onEvent(final int event, final String path) {
-            final File f = new File(path);
+            if (folder == null || path == null) {
+                return;
+            }
+
+            final File f = new File(folder, path);
             final boolean isDirectory = f.isDirectory();
             final Listener l = listeners.getListener();
 

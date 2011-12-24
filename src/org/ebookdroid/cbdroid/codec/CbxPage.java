@@ -139,7 +139,7 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
             return null;
         }
 
-        final BitmapRef bmp = BitmapManager.getBitmap(width, height, Bitmap.Config.RGB_565);
+        final BitmapRef bmp = BitmapManager.getBitmap("CBX page", width, height, Bitmap.Config.RGB_565);
 
         final Canvas c = new Canvas(bmp.getBitmap());
         final Paint paint = new Paint();

@@ -58,7 +58,7 @@ public class DjvuPage implements CodecPage {
     @Override
     public BitmapRef renderBitmap(final int width, final int height, final RectF pageSliceBounds) {
         if (useNativeGraphics) {
-            BitmapRef bmp = BitmapManager.getBitmap(width, height, Bitmap.Config.RGB_565);
+            BitmapRef bmp = BitmapManager.getBitmap("Djvu page", width, height, Bitmap.Config.RGB_565);
             if (!renderPageBitmap(pageHandle, width, height, pageSliceBounds.left, pageSliceBounds.top,
                     pageSliceBounds.width(), pageSliceBounds.height(), bmp.getBitmap(), SettingsManager
                             .getAppSettings().getDjvuRenderingMode())) {
@@ -73,7 +73,7 @@ public class DjvuPage implements CodecPage {
         final int[] buffer = new int[width * height];
         renderPage(pageHandle, width, height, pageSliceBounds.left, pageSliceBounds.top, pageSliceBounds.width(),
                 pageSliceBounds.height(), buffer, SettingsManager.getAppSettings().getDjvuRenderingMode());
-        BitmapRef b = BitmapManager.getBitmap(width, height, Bitmap.Config.RGB_565);
+        BitmapRef b = BitmapManager.getBitmap("Djvu page", width, height, Bitmap.Config.RGB_565);
         b.getBitmap().setPixels(buffer, 0, width, 0, 0, width, height);
         return b;
     }

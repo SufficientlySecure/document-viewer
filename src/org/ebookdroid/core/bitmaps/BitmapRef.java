@@ -10,15 +10,21 @@ public class BitmapRef {
     private static final AtomicInteger SEQ = new AtomicInteger();
 
     public final int id = SEQ.incrementAndGet();
-    final int size;
+    public final int size;
+    public final int width;
+    public final int height;
+
     long gen;
+    String name;
     Bitmap bitmap;
     SoftReference<Bitmap> ref;
 
     BitmapRef(final Bitmap bitmap, final long generation) {
         this.bitmap = bitmap;
         this.ref = new SoftReference<Bitmap>(bitmap);
-        this.size = BitmapManager.getBitmapBufferSize(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
+        this.width = bitmap.getWidth();
+        this.height = bitmap.getHeight();
+        this.size = BitmapManager.getBitmapBufferSize(width, height, bitmap.getConfig());
         this.gen = generation;
     }
 
@@ -35,7 +41,7 @@ public class BitmapRef {
         bitmap = null;
     }
 
-    void restoreDirectRef(Bitmap bmp, long generation) {
+    void restoreDirectRef(final Bitmap bmp, final long generation) {
         bitmap = bmp;
         ref = new SoftReference<Bitmap>(bmp);
         gen = generation;
@@ -52,8 +58,8 @@ public class BitmapRef {
 
     @Override
     public String toString() {
-        return "BitmapRef [id=" + id + ", size=" + size + "]";
+        return "BitmapRef [id=" + id + ", name=" + name + ", width=" + width + ", height=" + height + ", size=" + size
+                + "]";
     }
-
 
 }

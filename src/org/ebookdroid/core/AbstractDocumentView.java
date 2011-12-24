@@ -145,7 +145,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IDocumentViewController#onScrollChanged(int, int)
      */
     @Override
@@ -161,24 +161,13 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     @Override
     public final ViewState updatePageVisibility(final int newPage, final int direction, final float zoom) {
-        final ViewState initial = new ViewState(this, zoom);
         final ViewState viewState = calculatePageVisibility(newPage, direction, zoom);
 
         final List<PageTreeNode> nodesToDecode = new ArrayList<PageTreeNode>();
         final List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
 
-        int first = MathUtils.min(initial.firstCached, initial.firstVisible, viewState.firstCached,
-                viewState.firstVisible);
-        int last = MathUtils.max(initial.lastCached, initial.lastVisible, viewState.lastCached, viewState.lastVisible);
-
-        if (first != -1 && last != -1) {
-            for (final Page page : getBase().getDocumentModel().getPages(first, last + 1)) {
-                page.onPositionChanged(viewState, nodesToDecode, bitmapsToRecycle);
-            }
-        } else {
-            for (final Page page : getBase().getDocumentModel().getPages()) {
-                page.onPositionChanged(viewState, nodesToDecode, bitmapsToRecycle);
-            }
+        for (final Page page : getBase().getDocumentModel().getPages()) {
+            page.onPositionChanged(viewState, nodesToDecode, bitmapsToRecycle);
         }
 
         BitmapManager.release(bitmapsToRecycle);
@@ -283,7 +272,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.events.ZoomListener#commitZoom()
      */
     @Override
@@ -379,7 +368,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.events.ZoomListener#zoomChanged(float, float)
      */
     @Override
@@ -494,7 +483,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * Sets the page align flag.
-     * 
+     *
      * @param align
      *            the new flag indicating align
      */
@@ -507,7 +496,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * Checks if view is initialized.
-     * 
+     *
      * @return true, if is initialized
      */
     protected final boolean isShown() {

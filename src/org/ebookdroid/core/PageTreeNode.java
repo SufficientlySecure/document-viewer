@@ -10,6 +10,7 @@ import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.models.DecodingProgressModel;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.settings.SettingsManager;
+import org.ebookdroid.core.settings.books.BookSettings;
 import org.ebookdroid.utils.LengthUtils;
 
 import android.graphics.Bitmap;
@@ -26,7 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PageTreeNode implements DecodeService.DecodeCallback {
 
-    private static final LogContext LCTX = LogContext.ROOT.lctx("Page");
+    private static final LogContext LCTX = LogContext.ROOT.lctx("Page", false);
 
     final Page page;
     final PageTreeNode parent;
@@ -176,6 +177,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         if (viewState.decodeMode == DecodeMode.LOW_MEMORY) {
             memoryLimit = Math.min(memoryLimit, SettingsManager.getAppSettings().getMaxImageSize());
         }
+        memoryLimit = Math.max(64 * 1024, memoryLimit);
 
         final Rect rect = getActualRect(viewState, ds);
 
@@ -226,18 +228,20 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             return;
         }
 
-        if (SettingsManager.getBookSettings().cropPages) {
+        BookSettings bs = SettingsManager.getBookSettings();
+        if (bs != null && bs.cropPages) {
             if (id == 0 && !cropped) {
                 croppedBounds = PageCropper.getCropBounds(bitmap, bitmapBounds, pageSliceBounds);
                 cropped = true;
                 final DecodeService decodeService = page.base.getDecodeService();
                 if (decodeService != null) {
+                    LCTX.d(getFullId() + ": cropped image requested: " + croppedBounds);
                     decodeService.decodePage(new ViewState(PageTreeNode.this), PageTreeNode.this, croppedBounds);
                 }
             }
         }
 
-        final Bitmaps bitmaps = new Bitmaps(bitmap, bitmapBounds);
+        final Bitmaps bitmaps = new Bitmaps(getFullId(), bitmap, bitmapBounds);
         BitmapManager.release(bitmap);
 
         page.base.getActivity().runOnUiThread(new Runnable() {
@@ -368,7 +372,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     /**
      * Gets the parent node.
-     * 
+     *
      * @return the parent node
      */
     public PageTreeNode getParent() {
@@ -460,7 +464,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         return sliceBounds;
     }
 
-    static class BitmapHolder {
+    class BitmapHolder {
 
         Bitmaps day;
         Bitmaps night;
@@ -498,7 +502,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 if (days == null) {
                     return null;
                 }
-                night = new Bitmaps(day, days, paint);
+                night = new Bitmaps(getFullId(), day, days, paint);
             }
             if (night != null) {
                 res = night.getBitmaps();

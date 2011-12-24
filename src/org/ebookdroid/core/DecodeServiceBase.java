@@ -82,7 +82,7 @@ public class DecodeServiceBase implements DecodeService {
 
     @Override
     public int getPixelFormat() {
-        Config cfg = getBitmapConfig();
+        final Config cfg = getBitmapConfig();
         switch (cfg) {
             case ALPHA_8:
                 return PixelFormat.A_8;
@@ -123,7 +123,7 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     @Override
-    public void decodePage(final ViewState viewState, final PageTreeNode node, RectF nodeBounds) {
+    public void decodePage(final ViewState viewState, final PageTreeNode node, final RectF nodeBounds) {
         final DecodeTask decodeTask = new DecodeTask(viewState, node, nodeBounds, node.getSliceGeneration());
         updateViewState(viewState);
 
@@ -181,9 +181,11 @@ public class DecodeServiceBase implements DecodeService {
             finishDecoding(task, vuPage, bitmap, r);
         } catch (final OutOfMemoryError ex) {
             if (r != null) {
-                int limit = BitmapManager.getBitmapBufferSize(r.width(), r.height(), codecContext.getBitmapConfig());
+                final int limit = BitmapManager.getBitmapBufferSize(r.width(), r.height(),
+                        codecContext.getBitmapConfig());
                 memoryLimit.set(Math.min(memoryLimit.get(), limit));
-                LCTX.e("Task " + task.id + ": No memory to decode " + task.node+": new memory limit: " + memoryLimit.get());
+                LCTX.e("Task " + task.id + ": No memory to decode " + task.node + ": new memory limit: "
+                        + memoryLimit.get());
             } else {
                 LCTX.e("Task " + task.id + ": No memory to decode " + task.node);
             }
@@ -193,6 +195,9 @@ public class DecodeServiceBase implements DecodeService {
             }
             pages.clear();
             vuPage.recycle();
+
+            BitmapManager.clear();
+
             abortDecoding(task, null, null);
         } catch (final Throwable th) {
             LCTX.e("Task " + task.id + ": Decoding failed for " + task.node + ": " + th.getMessage(), th);
@@ -223,14 +228,14 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     @Override
-    public Rect getScaledSize(final ViewState viewState, float pageWidth, float pageHeight, RectF nodeBounds,
-            float pageTypeWidthScale, int sliceGeneration) {
+    public Rect getScaledSize(final ViewState viewState, final float pageWidth, final float pageHeight,
+            final RectF nodeBounds, final float pageTypeWidthScale, final int sliceGeneration) {
 
-        float viewWidth = viewState.realRect.width();
-        float viewHeight = viewState.realRect.height();
+        final float viewWidth = viewState.realRect.width();
+        final float viewHeight = viewState.realRect.height();
 
-        float nodeWidth = pageWidth * nodeBounds.width();
-        float nodeHeight = pageHeight * nodeBounds.height();
+        final float nodeWidth = pageWidth * nodeBounds.width();
+        final float nodeHeight = pageHeight * nodeBounds.height();
 
         final int scaledWidth;
         final int scaledHeight;
@@ -238,8 +243,8 @@ public class DecodeServiceBase implements DecodeService {
 
         PageAlign effectiveAlign = viewState.pageAlign;
         if (effectiveAlign == PageAlign.AUTO) {
-            float viewAspect = viewWidth / viewHeight;
-            float nodeAspect = nodeWidth / nodeHeight;
+            final float viewAspect = viewWidth / viewHeight;
+            final float nodeAspect = nodeWidth / nodeHeight;
             effectiveAlign = nodeAspect < viewAspect ? PageAlign.HEIGHT : PageAlign.WIDTH;
         }
 
@@ -545,7 +550,7 @@ public class DecodeServiceBase implements DecodeService {
         final RectF pageSliceBounds;
         final int sliceGeneration;
 
-        DecodeTask(final ViewState viewState, final PageTreeNode node, RectF nodeBounds, int sliceGeneration) {
+        DecodeTask(final ViewState viewState, final PageTreeNode node, final RectF nodeBounds, final int sliceGeneration) {
             this.pageNumber = node.getDocumentPageIndex();
             this.viewState = viewState;
             this.node = node;
@@ -594,7 +599,7 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     @Override
-    public void createThumbnail(final File thumbnailFile, int width, int height, int pageNo, final RectF region) {
+    public void createThumbnail(final File thumbnailFile, int width, int height, final int pageNo, final RectF region) {
         Bitmap thumbnail = document.getEmbeddedThumbnail();
         BitmapRef bmp = null;
         if (thumbnail != null) {

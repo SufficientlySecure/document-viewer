@@ -57,7 +57,7 @@ public class FB2Page implements CodecPage {
             matrix.postTranslate(-pageSliceBounds.left * width, -pageSliceBounds.top * height);
             matrix.postScale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height());
 
-            final BitmapRef bmp = BitmapManager.getBitmap(width, height, Bitmap.Config.RGB_565);
+            final BitmapRef bmp = BitmapManager.getBitmap("FB2 page", width, height, Bitmap.Config.RGB_565);
 
             final Canvas c = new Canvas(bmp.getBitmap());
             final Paint paint = new Paint();

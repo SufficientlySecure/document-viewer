@@ -142,7 +142,7 @@ public class PdfPage implements CodecPage {
         final int height = viewbox.height();
 
         if (PdfContext.useNativeGraphics) {
-            final BitmapRef bmp = BitmapManager.getBitmap(width, height, PdfContext.NATIVE_BITMAP_CFG);
+            final BitmapRef bmp = BitmapManager.getBitmap("PDF page", width, height, PdfContext.NATIVE_BITMAP_CFG);
             if (renderPageBitmap(docHandle, pageHandle, mRect, ctm, bmp.getBitmap())) {
                 return bmp;
             } else {
@@ -153,7 +153,7 @@ public class PdfPage implements CodecPage {
 
         final int[] bufferarray = new int[width * height];
         renderPage(docHandle, pageHandle, mRect, ctm, bufferarray);
-        final BitmapRef b = BitmapManager.getBitmap(width, height, PdfContext.BITMAP_CFG);
+        final BitmapRef b = BitmapManager.getBitmap("PDF page", width, height, PdfContext.BITMAP_CFG);
         b.getBitmap().setPixels(bufferarray, 0, width, 0, 0, width, height);
         return b;
     }

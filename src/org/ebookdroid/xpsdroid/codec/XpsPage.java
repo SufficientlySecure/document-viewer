@@ -82,7 +82,7 @@ public class XpsPage implements CodecPage {
         final int height = viewbox.height();
         final int[] bufferarray = new int[width * height];
         renderPage(docHandle, pageHandle, mRect, matrixArray, bufferarray);
-        BitmapRef b = BitmapManager.getBitmap(width, height, Bitmap.Config.RGB_565);
+        BitmapRef b = BitmapManager.getBitmap("XPS page", width, height, Bitmap.Config.RGB_565);
         b.getBitmap().setPixels(bufferarray, 0, width, 0, 0, width, height);
         return b;
     }

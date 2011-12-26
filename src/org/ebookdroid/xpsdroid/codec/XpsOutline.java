@@ -14,7 +14,8 @@ public class XpsOutline {
         docHandle = dochandle;
         final long outline = open(dochandle);
         ttOutline(ls, outline);
-        free(dochandle);
+//WARN: Possible memory leak here.
+        //free(dochandle);
         return ls;
     }
 

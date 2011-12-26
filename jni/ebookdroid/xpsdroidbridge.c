@@ -364,15 +364,14 @@ JNIEXPORT void JNICALL
 Java_org_ebookdroid_xpsdroid_codec_XpsOutline_free(JNIEnv *env, jclass clazz, jlong dochandle)
 {
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
-    DEBUG("XpsOutline_free(%p)", doc);
+//    DEBUG("XpsOutline_free(%p)", doc);
     if (doc)
     {
         if (doc->outline)
             fz_free_outline(doc->outline);
         doc->outline = NULL;
     }
-    DEBUG("XpsOutline_free(%p)", doc);
-
+//    DEBUG("XpsOutline_free(%p)", doc);
 }
 
 JNIEXPORT jstring JNICALL

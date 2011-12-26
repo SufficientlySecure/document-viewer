@@ -115,7 +115,7 @@ public class PdfPage implements CodecPage {
     @Override
     public synchronized void recycle() {
         if (pageHandle != 0) {
-            free(pageHandle);
+            free(docHandle, pageHandle);
             pageHandle = 0;
         }
     }
@@ -163,7 +163,7 @@ public class PdfPage implements CodecPage {
     // TODO: use rotation when draw page
     private static native int getRotate(long handle);
 
-    private static native void free(long handle);
+    private static native void free(long dochandle, long handle);
 
     private static native long open(long dochandle, int pageno);
 

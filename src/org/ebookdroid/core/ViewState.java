@@ -37,7 +37,7 @@ public class ViewState {
     public final Map<String, Boolean> nodeVisibility = new HashMap<String, Boolean>();
 
     public final boolean outOfMemoryOccured;
-    
+
     public ViewState(final PageTreeNode node) {
         this(node.page.base.getDocumentController());
     }
@@ -77,7 +77,7 @@ public class ViewState {
         final BookSettings bs = SettingsManager.getBookSettings();
         final AppSettings as = SettingsManager.getAppSettings();
 
-        this.pageAlign = bs.viewMode.getPageAlign(bs);
+        this.pageAlign = DocumentViewMode.getPageAlign(bs);
         this.decodeMode = as.getDecodeMode();
         this.nightMode = as.getNightMode();
     }

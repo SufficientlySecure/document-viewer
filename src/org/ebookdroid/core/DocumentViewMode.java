@@ -22,7 +22,8 @@ public enum DocumentViewMode {
 
     private Constructor<? extends IDocumentViewController> c;
 
-    private DocumentViewMode(final String res, PageAlign pageAlign, final Class<? extends IDocumentViewController> clazz) {
+    private DocumentViewMode(final String res, final PageAlign pageAlign,
+            final Class<? extends IDocumentViewController> clazz) {
         this.resValue = res;
         this.pageAlign = pageAlign;
         try {
@@ -48,8 +49,12 @@ public enum DocumentViewMode {
         return resValue;
     }
 
-    public PageAlign getPageAlign(final BookSettings bs) {
-        return pageAlign != null ? pageAlign : (bs != null ? bs.pageAlign : PageAlign.AUTO);
+    public static PageAlign getPageAlign(final BookSettings bs) {
+        if (bs == null || bs.viewMode == null) {
+            return PageAlign.AUTO;
+        }
+        final PageAlign defAlign = bs.viewMode.pageAlign;
+        return defAlign != null ? defAlign : bs.pageAlign;
     }
 
     /**

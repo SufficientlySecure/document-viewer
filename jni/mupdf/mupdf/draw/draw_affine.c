@@ -57,7 +57,7 @@ fz_paint_affine_alpha_N_lerp(byte *dp, byte *sp, int sw, int sh, int u, int v, i
 			}
 			dp[n1] = xa + fz_mul255(dp[n1], t);
 			if (hp)
-				hp[0] = xa + fz_mul255(hp[n1], t);
+				hp[0] = xa + fz_mul255(hp[0], t);
 		}
 		dp += n;
 		if (hp)
@@ -123,7 +123,7 @@ fz_paint_affine_alpha_N_near(byte *dp, byte *sp, int sw, int sh, int u, int v, i
 				dp[k] = fz_mul255(sample[k], alpha) + fz_mul255(dp[k], t);
 			dp[n1] = a + fz_mul255(dp[n1], t);
 			if (hp)
-				hp[0] = a + fz_mul255(hp[n1], t);
+				hp[0] = a + fz_mul255(hp[0], t);
 		}
 		dp += n;
 		if (hp)
@@ -346,7 +346,7 @@ fz_paint_affine_color_N_near(byte *dp, byte *sp, int sw, int sh, int u, int v, i
 				dp[k] = FZ_BLEND(color[k], dp[k], masa);
 			dp[n1] = FZ_BLEND(255, dp[n1], masa);
 			if (hp)
-				hp[n1] = FZ_BLEND(255, hp[n1], masa);
+				hp[0] = FZ_BLEND(255, hp[0], masa);
 		}
 		dp += n;
 		if (hp)
@@ -632,9 +632,19 @@ fz_paint_image_imp(fz_pixmap *dst, fz_bbox scissor, fz_pixmap *shape, fz_pixmap 
 	bbox = fz_round_rect(fz_transform_rect(ctm, fz_unit_rect));
 	bbox = fz_intersect_bbox(bbox, scissor);
 	x = bbox.x0;
+	if (shape && shape->x > x)
+		x = shape->x;
 	y = bbox.y0;
-	w = bbox.x1 - bbox.x0;
-	h = bbox.y1 - bbox.y0;
+	if (shape && shape->y > y)
+		y = shape->y;
+	w = bbox.x1;
+	if (shape && shape->x + shape->w < w)
+		w = shape->x + shape->w;
+	w -= x;
+	h = bbox.y1;
+	if (shape && shape->y + shape->h < h)
+		h = shape->y + shape->h;
+	h -= y;
 
 	/* map from screen space (x,y) to image space (u,v) */
 	inv = fz_scale(1.0f / img->w, -1.0f / img->h);
@@ -679,7 +689,7 @@ fz_paint_image_imp(fz_pixmap *dst, fz_bbox scissor, fz_pixmap *shape, fz_pixmap 
 
 	if (dst->n == 4 && img->n == 2)
 	{
-		assert(color == NULL);
+		assert(!color);
 		if (dolerp)
 			paintfn = fz_paint_affine_g2rgb_lerp;
 		else

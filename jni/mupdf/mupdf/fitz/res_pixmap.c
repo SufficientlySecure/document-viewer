@@ -1,15 +1,38 @@
 #include "fitz.h"
 
-static int fz_memory_limit = 256 << 20;
-static int fz_memory_used = 0;
+fz_pixmap *
+fz_keep_pixmap(fz_pixmap *pix)
+{
+	return (fz_pixmap *)fz_keep_storable(&pix->storable);
+}
+
+void
+fz_drop_pixmap(fz_context *ctx, fz_pixmap *pix)
+{
+	fz_drop_storable(ctx, &pix->storable);
+}
+
+void
+fz_free_pixmap_imp(fz_context *ctx, fz_storable *pix_)
+{
+	fz_pixmap *pix = (fz_pixmap *)pix_;
+
+	if (pix->mask)
+		fz_drop_pixmap(ctx, pix->mask);
+	if (pix->colorspace)
+		fz_drop_colorspace(ctx, pix->colorspace);
+	if (pix->free_samples)
+		fz_free(ctx, pix->samples);
+	fz_free(ctx, pix);
+}
 
 fz_pixmap *
-fz_new_pixmap_with_data(fz_colorspace *colorspace, int w, int h, unsigned char *samples)
+fz_new_pixmap_with_data(fz_context *ctx, fz_colorspace *colorspace, int w, int h, unsigned char *samples)
 {
 	fz_pixmap *pix;
 
-	pix = fz_malloc(sizeof(fz_pixmap));
-	pix->refs = 1;
+	pix = fz_malloc_struct(ctx, fz_pixmap);
+	FZ_INIT_STORABLE(pix, 1, fz_free_pixmap_imp);
 	pix->x = 0;
 	pix->y = 0;
 	pix->w = w;
@@ -27,16 +50,22 @@ fz_new_pixmap_with_data(fz_colorspace *colorspace, int w, int h, unsigned char *
 		pix->n = 1 + colorspace->n;
 	}
 
+	pix->samples = samples;
 	if (samples)
 	{
-		pix->samples = samples;
 		pix->free_samples = 0;
 	}
 	else
 	{
-		fz_memory_used += pix->w * pix->h * pix->n;
-//		fz_warn("pixmap allocating %dM. Total allocated %dM", (pix->w * pix->h * pix->n)/(1<<20), fz_memory_used/(1<<20));
-		pix->samples = fz_calloc(pix->h, pix->w * pix->n);
+		fz_try(ctx)
+		{
+			pix->samples = fz_malloc_array(ctx, pix->h, pix->w * pix->n);
+		}
+		fz_catch(ctx)
+		{
+			fz_free(ctx, pix);
+			fz_rethrow(ctx);
+		}
 		pix->free_samples = 1;
 	}
 
@@ -44,68 +73,29 @@ fz_new_pixmap_with_data(fz_colorspace *colorspace, int w, int h, unsigned char *
 }
 
 fz_pixmap *
-fz_new_pixmap_with_limit(fz_colorspace *colorspace, int w, int h)
+fz_new_pixmap(fz_context *ctx, fz_colorspace *colorspace, int w, int h)
 {
-	int n = colorspace ? colorspace->n + 1 : 1;
-	int size = w * h * n;
-	if (fz_memory_used + size > fz_memory_limit)
-	{
-		fz_warn("pixmap memory exceeds soft limit %dM + %dM > %dM",
-			fz_memory_used/(1<<20), size/(1<<20), fz_memory_limit/(1<<20));
-		return NULL;
-	}
-	return fz_new_pixmap_with_data(colorspace, w, h, NULL);
+	return fz_new_pixmap_with_data(ctx, colorspace, w, h, NULL);
 }
 
 fz_pixmap *
-fz_new_pixmap(fz_colorspace *colorspace, int w, int h)
-{
-	return fz_new_pixmap_with_data(colorspace, w, h, NULL);
-}
-
-fz_pixmap *
-fz_new_pixmap_with_rect(fz_colorspace *colorspace, fz_bbox r)
+fz_new_pixmap_with_rect(fz_context *ctx, fz_colorspace *colorspace, fz_bbox r)
 {
 	fz_pixmap *pixmap;
-	pixmap = fz_new_pixmap(colorspace, r.x1 - r.x0, r.y1 - r.y0);
+	pixmap = fz_new_pixmap(ctx, colorspace, r.x1 - r.x0, r.y1 - r.y0);
 	pixmap->x = r.x0;
 	pixmap->y = r.y0;
 	return pixmap;
 }
 
 fz_pixmap *
-fz_new_pixmap_with_rect_and_data(fz_colorspace *colorspace, fz_bbox r, unsigned char *samples)
+fz_new_pixmap_with_rect_and_data(fz_context *ctx, fz_colorspace *colorspace, fz_bbox r, unsigned char *samples)
 {
 	fz_pixmap *pixmap;
-	pixmap = fz_new_pixmap_with_data(colorspace, r.x1 - r.x0, r.y1 - r.y0, samples);
+	pixmap = fz_new_pixmap_with_data(ctx, colorspace, r.x1 - r.x0, r.y1 - r.y0, samples);
 	pixmap->x = r.x0;
 	pixmap->y = r.y0;
 	return pixmap;
-}
-
-fz_pixmap *
-fz_keep_pixmap(fz_pixmap *pix)
-{
-	pix->refs++;
-	return pix;
-}
-
-void
-fz_drop_pixmap(fz_pixmap *pix)
-{
-	if (pix && --pix->refs == 0)
-	{
-		if (pix->mask)
-			fz_drop_pixmap(pix->mask);
-		if (pix->colorspace)
-			fz_drop_colorspace(pix->colorspace);
-		if (pix->free_samples) {
-			fz_free(pix->samples);
-			fz_memory_used -= pix->w * pix->h * pix->n;
-//			fz_warn("pixmap freeing %dM. Total allocated %dM", (pix->w * pix->h * pix->n)/(1<<20), fz_memory_used/(1<<20));
-		}
-		fz_free(pix);
-	}
 }
 
 fz_bbox
@@ -229,8 +219,28 @@ fz_premultiply_pixmap(fz_pixmap *pix)
 	}
 }
 
+void
+fz_unmultiply_pixmap(fz_pixmap *pix)
+{
+	unsigned char *s = pix->samples;
+	int a, inva;
+	int k, x, y;
+
+	for (y = 0; y < pix->h; y++)
+	{
+		for (x = 0; x < pix->w; x++)
+		{
+			a = s[pix->n - 1];
+			inva = a ? 255 * 256 / a : 0;
+			for (k = 0; k < pix->n - 1; k++)
+				s[k] = (s[k] * inva) >> 8;
+			s += pix->n;
+		}
+	}
+}
+
 fz_pixmap *
-fz_alpha_from_gray(fz_pixmap *gray, int luminosity)
+fz_alpha_from_gray(fz_context *ctx, fz_pixmap *gray, int luminosity)
 {
 	fz_pixmap *alpha;
 	unsigned char *sp, *dp;
@@ -238,7 +248,7 @@ fz_alpha_from_gray(fz_pixmap *gray, int luminosity)
 
 	assert(gray->n == 2);
 
-	alpha = fz_new_pixmap_with_rect(NULL, fz_bound_pixmap(gray));
+	alpha = fz_new_pixmap_with_rect(ctx, NULL, fz_bound_pixmap(gray));
 	dp = alpha->samples;
 	sp = gray->samples;
 	if (!luminosity)
@@ -296,19 +306,19 @@ fz_gamma_pixmap(fz_pixmap *pix, float gamma)
  * Write pixmap to PNM file (without alpha channel)
  */
 
-fz_error
-fz_write_pnm(fz_pixmap *pixmap, char *filename)
+void
+fz_write_pnm(fz_context *ctx, fz_pixmap *pixmap, char *filename)
 {
 	FILE *fp;
 	unsigned char *p;
 	int len;
 
 	if (pixmap->n != 1 && pixmap->n != 2 && pixmap->n != 4)
-		return fz_throw("pixmap must be grayscale or rgb to write as pnm");
+		fz_throw(ctx, "pixmap must be grayscale or rgb to write as pnm");
 
 	fp = fopen(filename, "wb");
 	if (!fp)
-		return fz_throw("cannot open file '%s': %s", filename, strerror(errno));
+		fz_throw(ctx, "cannot open file '%s': %s", filename, strerror(errno));
 
 	if (pixmap->n == 1 || pixmap->n == 2)
 		fprintf(fp, "P5\n");
@@ -343,15 +353,14 @@ fz_write_pnm(fz_pixmap *pixmap, char *filename)
 	}
 
 	fclose(fp);
-	return fz_okay;
 }
 
 /*
  * Write pixmap to PAM file (with or without alpha channel)
  */
 
-fz_error
-fz_write_pam(fz_pixmap *pixmap, char *filename, int savealpha)
+void
+fz_write_pam(fz_context *ctx, fz_pixmap *pixmap, char *filename, int savealpha)
 {
 	unsigned char *sp;
 	int y, w, k;
@@ -364,7 +373,7 @@ fz_write_pam(fz_pixmap *pixmap, char *filename, int savealpha)
 
 	fp = fopen(filename, "wb");
 	if (!fp)
-		return fz_throw("cannot open file '%s': %s", filename, strerror(errno));
+		fz_throw(ctx, "cannot open file '%s': %s", filename, strerror(errno));
 
 	fprintf(fp, "P7\n");
 	fprintf(fp, "WIDTH %d\n", pixmap->w);
@@ -395,8 +404,6 @@ fz_write_pam(fz_pixmap *pixmap, char *filename, int savealpha)
 	}
 
 	fclose(fp);
-
-	return fz_okay;
 }
 
 /*
@@ -433,20 +440,25 @@ static void putchunk(char *tag, unsigned char *data, int size, FILE *fp)
 	put32(sum, fp);
 }
 
-fz_error
-fz_write_png(fz_pixmap *pixmap, char *filename, int savealpha)
+void
+fz_write_png(fz_context *ctx, fz_pixmap *pixmap, char *filename, int savealpha)
 {
 	static const unsigned char pngsig[8] = { 137, 80, 78, 71, 13, 10, 26, 10 };
 	FILE *fp;
 	unsigned char head[13];
-	unsigned char *udata, *cdata, *sp, *dp;
+	unsigned char *udata = NULL;
+	unsigned char *cdata = NULL;
+	unsigned char *sp, *dp;
 	uLong usize, csize;
 	int y, x, k, sn, dn;
 	int color;
 	int err;
 
+	fz_var(udata);
+	fz_var(cdata);
+
 	if (pixmap->n != 1 && pixmap->n != 2 && pixmap->n != 4)
-		return fz_throw("pixmap must be grayscale or rgb to write as png");
+		fz_throw(ctx, "pixmap must be grayscale or rgb to write as png");
 
 	sn = pixmap->n;
 	dn = pixmap->n;
@@ -464,8 +476,16 @@ fz_write_png(fz_pixmap *pixmap, char *filename, int savealpha)
 
 	usize = (pixmap->w * dn + 1) * pixmap->h;
 	csize = compressBound(usize);
-	udata = fz_malloc(usize);
-	cdata = fz_malloc(csize);
+	fz_try(ctx)
+	{
+		udata = fz_malloc(ctx, usize);
+		cdata = fz_malloc(ctx, csize);
+	}
+	fz_catch(ctx)
+	{
+		fz_free(ctx, udata);
+		fz_rethrow(ctx);
+	}
 
 	sp = pixmap->samples;
 	dp = udata;
@@ -489,17 +509,17 @@ fz_write_png(fz_pixmap *pixmap, char *filename, int savealpha)
 	err = compress(cdata, &csize, udata, usize);
 	if (err != Z_OK)
 	{
-		fz_free(udata);
-		fz_free(cdata);
-		return fz_throw("cannot compress image data");
+		fz_free(ctx, udata);
+		fz_free(ctx, cdata);
+		fz_throw(ctx, "cannot compress image data");
 	}
 
 	fp = fopen(filename, "wb");
 	if (!fp)
 	{
-		fz_free(udata);
-		fz_free(cdata);
-		return fz_throw("cannot open file '%s': %s", filename, strerror(errno));
+		fz_free(ctx, udata);
+		fz_free(ctx, cdata);
+		fz_throw(ctx, "cannot open file '%s': %s", filename, strerror(errno));
 	}
 
 	big32(head+0, pixmap->w);
@@ -516,7 +536,14 @@ fz_write_png(fz_pixmap *pixmap, char *filename, int savealpha)
 	putchunk("IEND", head, 0, fp);
 	fclose(fp);
 
-	fz_free(udata);
-	fz_free(cdata);
-	return fz_okay;
+	fz_free(ctx, udata);
+	fz_free(ctx, cdata);
+}
+
+unsigned int
+fz_pixmap_size(fz_pixmap * pix)
+{
+	if (pix == NULL)
+		return 0;
+	return sizeof(*pix) + pix->n * pix->w * pix->h;
 }

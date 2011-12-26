@@ -7,8 +7,8 @@ fz_free_outline(fz_outline *outline)
 	{
 		fz_outline *next = outline->next;
 		fz_free_outline(outline->down);
-		fz_free(outline->title);
-		fz_free(outline);
+		fz_free(outline->ctx, outline->title);
+		fz_free(outline->ctx, outline);
 		outline = next;
 	}
 }

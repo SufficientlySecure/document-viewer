@@ -21,7 +21,8 @@
 typedef struct renderdocument_s renderdocument_t;
 struct renderdocument_s
 {
-    xps_context* ctx;
+    fz_context* ctx;
+    xps_document* xpsdoc;
     fz_glyph_cache* drawcache;
     fz_outline* outline;
 };
@@ -60,14 +61,18 @@ static void xps_free_document(renderdocument_t* doc)
         doc->outline = NULL;
 
         if (doc->drawcache)
-            fz_free_glyph_cache(doc->drawcache);
+            fz_free_glyph_cache(doc->ctx, doc->drawcache);
         doc->drawcache = NULL;
 
-        if (doc->ctx)
-            xps_free_context(doc->ctx);
+	if(doc->xpsdoc)
+	    xps_free_context(doc->xpsdoc);
+	doc->xpsdoc = NULL;
+        
+        fz_flush_warnings(doc->ctx);
+        fz_free_context(doc->ctx);             
         doc->ctx = NULL;
 
-        fz_free(doc);
+        free(doc);
         doc = NULL;
     }
 }
@@ -75,7 +80,6 @@ static void xps_free_document(renderdocument_t* doc)
 JNIEXPORT jlong JNICALL
 Java_org_ebookdroid_xpsdroid_codec_XpsDocument_open(JNIEnv *env, jclass clazz, jint fitzmemory, jstring fname)
 {
-    fz_error error;
     fz_obj *obj;
     renderdocument_t *doc;
     jboolean iscopy;
@@ -85,27 +89,37 @@ Java_org_ebookdroid_xpsdroid_codec_XpsDocument_open(JNIEnv *env, jclass clazz, j
 
     filename = (char*) (*env)->GetStringUTFChars(env, fname, &iscopy);
 
-    doc = fz_malloc(sizeof(renderdocument_t));
+    doc = malloc(sizeof(renderdocument_t));
     if (!doc)
     {
         xps_throw_exception(env, "Out of Memory");
         goto cleanup;
     }
-    doc->ctx = NULL;
+    doc->ctx = fz_new_context(&fz_alloc_default, 256<<20);
+    if (!doc->ctx)
+    {
+	free(doc);
+        xps_throw_exception(env, "Out of Memory");
+        goto cleanup;
+    }
+    doc->xpsdoc = NULL;
     doc->drawcache = NULL;
     doc->outline = NULL;
 
     /* initialize renderer */
-    doc->drawcache = fz_new_glyph_cache();
+    doc->drawcache = fz_new_glyph_cache(doc->ctx);
     if (!doc->drawcache)
     {
         xps_free_document(doc);
         xps_throw_exception(env, "Cannot create new renderer");
         goto cleanup;
     }
-
-    error = xps_open_file(&(doc->ctx), filename);
-    if (error || (!doc->ctx))
+    
+    fz_try(doc->ctx)
+    {
+	doc->xpsdoc = xps_open_file(doc->ctx, filename);
+    }
+    fz_catch(doc->ctx)
     {
         xps_free_document(doc);
         xps_throw_exception(env, "XPS file not found or corrupted");
@@ -142,9 +156,16 @@ Java_org_ebookdroid_xpsdroid_codec_XpsDocument_getPageInfo(JNIEnv *env, jclass c
     jclass clazz;
     jfieldID fid;
 
-    fz_error* error = (fz_error*) xps_load_page(&page, doc->ctx, pageNumber - 1);
+    fz_try(doc->ctx)
+    {
+	page = xps_load_page(doc->xpsdoc, pageNumber - 1);
+    }
+    fz_catch(doc->ctx)
+    {
+        return (-1);
+    }
 
-    if (!error && page)
+    if (page)
     {
         clazz = (*env)->GetObjectClass(env, cpi);
         if (0 == clazz)
@@ -167,24 +188,24 @@ Java_org_ebookdroid_xpsdroid_codec_XpsDocument_getPageInfo(JNIEnv *env, jclass c
         fid = (*env)->GetFieldID(env, clazz, "version", "I");
         (*env)->SetIntField(env, cpi, fid, 0);
 
-        xps_free_page(doc->ctx, page);
+        xps_free_page(doc->xpsdoc, page);
         return 0;
     }
     return (-1);
 }
 
-static void xps_run_page(xps_context *ctx, xps_page *page, fz_device *dev, fz_matrix ctm)
+static void xps_run_page(xps_document *doc, xps_page *page, fz_device *dev, fz_matrix ctm)
 {
-    ctx->dev = dev;
-    xps_parse_fixed_page(ctx, ctm, page);
-    ctx->dev = NULL;
+    doc->dev = dev;
+    xps_parse_fixed_page(doc, ctm, page);
+    doc->dev = NULL;
 }
 
 JNIEXPORT jint JNICALL
 Java_org_ebookdroid_xpsdroid_codec_XpsDocument_getPageCount(JNIEnv *env, jclass clazz, jlong handle)
 {
     renderdocument_t *doc = (renderdocument_t*) (long) handle;
-    return (xps_count_pages(doc->ctx));
+    return (xps_count_pages(doc->xpsdoc));
 }
 
 JNIEXPORT jlong JNICALL
@@ -192,29 +213,32 @@ Java_org_ebookdroid_xpsdroid_codec_XpsPage_open(JNIEnv *env, jclass clazz, jlong
 {
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
     renderpage_t *page;
-    fz_error error;
     fz_obj *obj;
     jclass cls;
     jfieldID fid;
 
-    page = fz_malloc(sizeof(renderpage_t));
+    page = malloc(sizeof(renderpage_t));
     if (!page)
     {
         xps_throw_exception(env, "Out of Memory");
         return (jlong) (long) NULL;
     }
 
-    error = xps_load_page(&page->page, doc->ctx, pageno - 1);
-    if (error)
+    fz_try(doc->ctx)
     {
+	page->page = xps_load_page(doc->xpsdoc, pageno - 1);
+    }
+    fz_catch(doc->ctx)
+    {
+	free(page);
         xps_throw_exception(env, "error loading page");
         goto cleanup;
     }
 
 //New draw page
-    page->pageList = fz_new_display_list();
-    fz_device *dev = fz_new_list_device(page->pageList);
-    xps_run_page(doc->ctx, page->page, dev, fz_identity);
+    page->pageList = fz_new_display_list(doc->ctx);
+    fz_device *dev = fz_new_list_device(doc->ctx, page->pageList);
+    xps_run_page(doc->xpsdoc, page->page, dev, fz_identity);
     fz_free_device(dev);
 //
 
@@ -237,12 +261,12 @@ Java_org_ebookdroid_xpsdroid_codec_XpsPage_free(JNIEnv *env, jclass clazz, jlong
     if (page)
     {
         if (page->page)
-            xps_free_page(doc->ctx, page->page);
+            xps_free_page(doc->xpsdoc, page->page);
 
         if (page->pageList)
-            fz_free_display_list(page->pageList);
+            fz_free_display_list(doc->ctx, page->pageList);
 
-        fz_free(page);
+        free(page);
     }
 }
 
@@ -269,7 +293,6 @@ Java_org_ebookdroid_xpsdroid_codec_XpsPage_renderPage(JNIEnv *env, jobject this,
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
     renderpage_t *page = (renderpage_t*) (long) pagehandle;
     DEBUG("XpsView(%p).renderPage(%p, %p)", this, doc, page);
-    fz_error error;
     fz_matrix ctm;
     fz_bbox viewbox;
     fz_pixmap *pixmap;
@@ -307,20 +330,20 @@ Java_org_ebookdroid_xpsdroid_codec_XpsPage_renderPage(JNIEnv *env, jobject this,
     buffer = (*env)->GetPrimitiveArrayCritical(env, bufferarray, 0);
 
 //	pixmap = fz_new_pixmap_with_data(fz_device_bgr, viewbox.x0, viewbox.y0, viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0, (unsigned char*)buffer);
-    pixmap = fz_new_pixmap_with_data(fz_device_bgr, viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0,
+    pixmap = fz_new_pixmap_with_data(doc->ctx, fz_device_bgr, viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0,
         (unsigned char*) buffer);
 
     DEBUG("doing the rendering...");
 
     fz_clear_pixmap_with_color(pixmap, 0xff);
 
-    dev = fz_new_draw_device(doc->drawcache, pixmap);
+    dev = fz_new_draw_device(doc->ctx, doc->drawcache, pixmap);
     fz_execute_display_list(page->pageList, dev, ctm, viewbox);
     fz_free_device(dev);
 
     (*env)->ReleasePrimitiveArrayCritical(env, bufferarray, buffer, 0);
 
-    fz_drop_pixmap(pixmap);
+    fz_drop_pixmap(doc->ctx, pixmap);
     DEBUG("XpsView.renderPage() done");
 }
 
@@ -331,7 +354,7 @@ Java_org_ebookdroid_xpsdroid_codec_XpsOutline_open(JNIEnv *env, jclass clazz, jl
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
 
     if (!doc->outline)
-        doc->outline = xps_load_outline(doc->ctx);
+        doc->outline = xps_load_outline(doc->xpsdoc);
 
     DEBUG("XpsOutline.open(): return handle = %p", doc->outline);
     return (jlong) (long) doc->outline;
@@ -348,13 +371,15 @@ Java_org_ebookdroid_xpsdroid_codec_XpsOutline_free(JNIEnv *env, jclass clazz, jl
             fz_free_outline(doc->outline);
         doc->outline = NULL;
     }
+    DEBUG("XpsOutline_free(%p)", doc);
+
 }
 
 JNIEXPORT jstring JNICALL
 Java_org_ebookdroid_xpsdroid_codec_XpsOutline_getTitle(JNIEnv *env, jclass clazz, jlong outlinehandle)
 {
     fz_outline *outline = (fz_outline*) (long) outlinehandle;
-//	DEBUG("XpsOutline_getTitle(%p)",outline);
+//    DEBUG("XpsOutline_getTitle(%p)",outline);
     if (outline)
         return (*env)->NewStringUTF(env, outline->title);
     return NULL;
@@ -366,12 +391,13 @@ Java_org_ebookdroid_xpsdroid_codec_XpsOutline_getLink(JNIEnv *env, jclass clazz,
     fz_outline *outline = (fz_outline*) (long) outlinehandle;
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
 
-//	DEBUG("XpsOutline_getLink(%p)",outline);
+//    DEBUG("XpsOutline_getLink(%p)",outline);
     if (!outline)
         return NULL;
 
     char linkbuf[128];
     snprintf(linkbuf, 127, "#%d", outline->page + 1);
+//    DEBUG("XpsOutline_getLink link = %s",linkbuf);
     return (*env)->NewStringUTF(env, linkbuf);
 }
 

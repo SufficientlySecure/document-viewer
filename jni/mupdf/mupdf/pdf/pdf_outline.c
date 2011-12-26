@@ -4,14 +4,15 @@
 static fz_outline *
 pdf_load_outline_imp(pdf_xref *xref, fz_obj *dict)
 {
-	pdf_link *link;
+	fz_context *ctx = xref->ctx;
 	fz_outline *node;
 	fz_obj *obj;
 
 	if (fz_is_null(dict))
 		return NULL;
 
-	node = fz_malloc(sizeof(fz_outline));
+	node = fz_malloc_struct(ctx, fz_outline);
+	node->ctx = ctx;
 	node->title = NULL;
 	node->page = 0;
 	node->down = NULL;
@@ -19,19 +20,36 @@ pdf_load_outline_imp(pdf_xref *xref, fz_obj *dict)
 
 	obj = fz_dict_gets(dict, "Title");
 	if (obj)
-		node->title = pdf_to_utf8(obj);
+		node->title = pdf_to_utf8(ctx, obj);
 
+// EbookDroid: fix pagenumber calculation
+
+	obj = fz_dict_gets(dict, "Dest");
+	if(obj)
+	{
+	    fz_link_dest ld = pdf_parse_link_dest(xref, obj);
+	    node->page = ld.gotor.page;    
+	}
+	else
+	{
+	    fz_obj *action = fz_dict_gets(dict, "A");
+	    if (action)
+	    {
+		obj = fz_dict_gets(action, "S");
+		if (fz_is_name(obj) && !strcmp(fz_to_name(obj), "GoTo"))
+		{
+			fz_link_dest ld = pdf_parse_link_dest(xref, fz_dict_gets(action, "D"));
+			node->page = ld.gotor.page;    
+		}
+	    }
+	}
+/*
 	if (fz_dict_gets(dict, "Dest") || fz_dict_gets(dict, "A"))
 	{
-		link = pdf_load_link(xref, dict);
-		if (link)
-		{
-		    if (link->kind == PDF_LINK_GOTO)
-			node->page = pdf_find_page_number(xref, fz_array_get(link->dest, 0));
-		    pdf_free_link(link);
-		}
+		fz_link_dest ld = pdf_parse_link_dest(xref, dict);
+		node->page = ld.gotor.page;
 	}
-
+*/
 	obj = fz_dict_gets(dict, "First");
 	if (obj)
 		node->down = pdf_load_outline_imp(xref, obj);

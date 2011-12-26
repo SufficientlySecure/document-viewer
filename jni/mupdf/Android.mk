@@ -174,7 +174,6 @@ MY_MUPDF_SRC_FILES := \
 	mupdf/pdf/pdf_pattern.c \
 	mupdf/pdf/pdf_repair.c \
 	mupdf/pdf/pdf_shade.c \
-	mupdf/pdf/pdf_store.c \
 	mupdf/pdf/pdf_stream.c \
 	mupdf/pdf/pdf_type3.c \
 	mupdf/pdf/pdf_unicode.c \
@@ -206,8 +205,10 @@ MY_MUPDF_SRC_FILES := \
 	mupdf/draw/draw_path.c \
 	mupdf/draw/draw_simple_scale.c \
 	mupdf/draw/draw_unpack.c \
+	mupdf/fitz/base_context.c \
 	mupdf-overlay/fitz/base_error.c \
 	mupdf/fitz/base_hash.c \
+	mupdf/fitz/base_link.c \
 	mupdf/fitz/base_memory.c \
 	mupdf/fitz/base_object.c \
 	mupdf/fitz/base_string.c \
@@ -217,7 +218,6 @@ MY_MUPDF_SRC_FILES := \
 	mupdf/fitz/crypt_md5.c \
 	mupdf/fitz/crypt_sha2.c \
 	mupdf/fitz/doc_outline.c \
-	mupdf/fitz/obj_print.c \
 	mupdf/fitz/stm_buffer.c \
 	mupdf/fitz/stm_open.c \
 	mupdf/fitz/stm_read.c \
@@ -234,6 +234,7 @@ MY_MUPDF_SRC_FILES := \
 	mupdf/fitz/res_font.c \
 	mupdf/fitz/res_halftone.c \
 	mupdf/fitz/res_shade.c \
+	mupdf/fitz/res_store.c \
 	mupdf/fitz/res_pixmap.c \
 	mupdf/fitz/res_text.c \
 	mupdf/fitz/res_path.c \

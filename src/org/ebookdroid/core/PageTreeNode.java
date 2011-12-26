@@ -496,7 +496,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         }
 
         public synchronized Bitmap[] getNightBitmap(final Paint paint) {
-            Bitmap[] res = null;
             if (night == null) {
                 final Bitmap[] days = day != null ? day.getBitmaps() : null;
                 if (days == null) {
@@ -504,12 +503,16 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 }
                 night = new Bitmaps(getFullId(), day, days, paint);
             }
-            if (night != null) {
-                res = night.getBitmaps();
-                if (res != null) {
-                    return res;
-                }
+            if (night == null) {
+                return null;
+            }
+            final Bitmap[] res = night.getBitmaps();
+            if (res == null) {
                 night = null;
+                return null;
+            }
+            if (day != null) {
+                day.clearDirectRef();
             }
             return res;
         }

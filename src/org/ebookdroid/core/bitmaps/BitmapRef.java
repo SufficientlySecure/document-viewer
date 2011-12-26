@@ -37,8 +37,10 @@ public class BitmapRef {
     }
 
     public void clearDirectRef() {
-        ref = new SoftReference<Bitmap>(bitmap);
-        bitmap = null;
+        if (bitmap != null) {
+            ref = new SoftReference<Bitmap>(bitmap);
+            bitmap = null;
+        }
     }
 
     void restoreDirectRef(final Bitmap bmp, final long generation) {

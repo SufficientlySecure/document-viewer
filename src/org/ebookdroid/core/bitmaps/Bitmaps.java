@@ -40,10 +40,11 @@ public class Bitmaps {
 
                 final String name = nodeId + ":" + row + ", " + col;
                 final BitmapRef b = BitmapManager.getBitmap(name, 128, 128, origBitmap.getConfig());
+                final Bitmap bmp = b.getBitmap();
                 if (row == rows - 1 || col == columns - 1) {
-                    b.getBitmap().eraseColor(Color.BLACK);
+                    bmp.eraseColor(Color.BLACK);
                 }
-                rb.toBitmap(b.getBitmap());
+                rb.toBitmap(bmp);
 
                 final int index = row * columns + col;
                 bitmaps[index] = b;
@@ -59,9 +60,14 @@ public class Bitmaps {
         this.bitmaps = new BitmapRef[days.length];
         for (int i = 0; i < bitmaps.length; i++) {
             final String name = nodeId + ":night:" + i;
-            bitmaps[i] = BitmapManager.getBitmap(name, days[i].getWidth(), days[i].getHeight(), Bitmap.Config.RGB_565);
-            final Canvas c = new Canvas(bitmaps[i].getBitmap());
-            c.drawRect(0, 0, days[i].getWidth(), days[i].getHeight(), paint);
+            final int w = days[i].getWidth();
+            final int h = days[i].getHeight();
+            bitmaps[i] = BitmapManager.getBitmap(name, w, h, Bitmap.Config.RGB_565);
+            final Bitmap bmp = bitmaps[i].getBitmap();
+            bmp.eraseColor(Color.WHITE);
+            final Canvas c = new Canvas(bmp);
+            c.drawRect(0, 0, w, h, paint);
+            c.drawBitmap(days[i], 0, 0, paint);
         }
     }
 
@@ -78,6 +84,14 @@ public class Bitmaps {
             }
         }
         return res;
+    }
+
+    public synchronized void clearDirectRef() {
+        if (bitmaps != null) {
+            for (BitmapRef b : bitmaps) {
+                b.clearDirectRef();
+            }
+        }
     }
 
     public synchronized void recycle() {

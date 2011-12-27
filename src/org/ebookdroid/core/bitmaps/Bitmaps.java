@@ -4,6 +4,7 @@ import org.ebookdroid.core.PagePaint;
 import org.ebookdroid.core.ViewState;
 
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -18,28 +19,33 @@ public class Bitmaps {
 
     private static final int SIZE = 128;
 
+    private static final Config DEF_BITMAP_TYPE = Bitmap.Config.RGB_565;
+
+    private static boolean useDefaultBitmapType = true;
+
     public final Rect bounds;
     public final int columns;
     public final int rows;
+    public final Bitmap.Config config;
 
     private BitmapRef[] bitmaps;
 
     public Bitmaps(final String nodeId, final BitmapRef orig, final Rect bitmapBounds) {
-        this.bounds = bitmapBounds;
-
-        columns = (int) Math.ceil(bounds.width() / (float) SIZE);
-        rows = (int) Math.ceil(bounds.height() / (float) SIZE);
-
         final Bitmap origBitmap = orig.getBitmap();
 
-        bitmaps = new BitmapRef[columns * rows];
+        this.bounds = bitmapBounds;
+        this.columns = (int) Math.ceil(bounds.width() / (float) SIZE);
+        this.rows = (int) Math.ceil(bounds.height() / (float) SIZE);
+        this.config = useDefaultBitmapType ? DEF_BITMAP_TYPE : origBitmap.getConfig();
+        this.bitmaps = new BitmapRef[columns * rows];
+
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < columns; col++) {
                 final Rect rect = getRect(row, col);
                 final RawBitmap rb = new RawBitmap(origBitmap, rect);
 
                 final String name = nodeId + ":" + row + ", " + col;
-                final BitmapRef b = BitmapManager.getBitmap(name, 128, 128, origBitmap.getConfig());
+                final BitmapRef b = BitmapManager.getBitmap(name, SIZE, SIZE, config);
                 final Bitmap bmp = b.getBitmap();
                 if (row == rows - 1 || col == columns - 1) {
                     bmp.eraseColor(Color.BLACK);
@@ -56,13 +62,14 @@ public class Bitmaps {
         this.bounds = orig.bounds;
         this.columns = orig.columns;
         this.rows = orig.rows;
-
+        this.config = useDefaultBitmapType ? DEF_BITMAP_TYPE : orig.config;
         this.bitmaps = new BitmapRef[days.length];
+
         for (int i = 0; i < bitmaps.length; i++) {
             final String name = nodeId + ":night:" + i;
             final int w = days[i].getWidth();
             final int h = days[i].getHeight();
-            bitmaps[i] = BitmapManager.getBitmap(name, w, h, Bitmap.Config.RGB_565);
+            bitmaps[i] = BitmapManager.getBitmap(name, w, h, config);
             final Bitmap bmp = bitmaps[i].getBitmap();
             bmp.eraseColor(Color.WHITE);
             final Canvas c = new Canvas(bmp);
@@ -88,7 +95,7 @@ public class Bitmaps {
 
     public synchronized void clearDirectRef() {
         if (bitmaps != null) {
-            for (BitmapRef b : bitmaps) {
+            for (final BitmapRef b : bitmaps) {
                 b.clearDirectRef();
             }
         }
@@ -110,16 +117,13 @@ public class Bitmaps {
                 for (int col = 0; col < columns; col++) {
                     final RectF source = new RectF(getRect(row, col));
                     final Matrix m = new Matrix();
+                    m.postTranslate(source.left, source.top);
                     m.postScale(tr.width() / bounds.width(), tr.height() / bounds.height());
                     m.postTranslate(tr.left, tr.top);
 
-                    final RectF target = new RectF();
-                    m.mapRect(target, source);
-
                     final int index = row * columns + col;
                     if (bitmap[index] != null && !bitmap[index].isRecycled()) {
-                        canvas.drawBitmap(bitmap[index], new Rect(0, 0, (int) source.width(), (int) source.height()),
-                                target, paint.bitmapPaint);
+                        canvas.drawBitmap(bitmap[index], m, paint.bitmapPaint);
                     } else {
                         canvas.drawRect(source, emp);
                     }

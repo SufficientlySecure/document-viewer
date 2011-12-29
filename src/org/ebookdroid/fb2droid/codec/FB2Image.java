@@ -1,5 +1,8 @@
 package org.ebookdroid.fb2droid.codec;
 
+import _android.util.Base64;
+import _android.util.Base64InputStream;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
@@ -7,8 +10,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import _android.util.Base64;
-import _android.util.Base64InputStream;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,21 +20,22 @@ public class FB2Image extends AbstractFB2LineElement {
     private byte[] data;
     private final Paint paint;
 
-    public FB2Image(final String encoded, boolean inline) {
+    public FB2Image(final String encoded, final boolean inline) {
         super(calculateImageRect(encoded, inline));
         this.encoded = encoded;
         paint = new Paint();
         paint.setFilterBitmap(true);
     }
 
-    private static RectF calculateImageRect(final String encoded, boolean inline) {
+    private static RectF calculateImageRect(final String encoded, final boolean inline) {
         final Options opts = getImageSize(encoded);
         final int origWidth = opts.outWidth;
         final int origHeight = opts.outHeight;
 
         float w = 0, h = 0;
 
-        if (origWidth <= FB2Page.PAGE_WIDTH - 2 * FB2Page.MARGIN_X && origHeight <= FB2Page.PAGE_HEIGHT - 2 * FB2Page.MARGIN_Y && inline) {
+        if (origWidth <= FB2Page.PAGE_WIDTH - 2 * FB2Page.MARGIN_X
+                && origHeight <= FB2Page.PAGE_HEIGHT - 2 * FB2Page.MARGIN_Y && inline) {
             w = origWidth;
             h = origHeight;
         } else {

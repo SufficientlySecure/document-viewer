@@ -91,7 +91,7 @@ public class FB2Document implements CodecDocument {
                 boolean found = false;
                 int len = 0;
                 while (len < 256) {
-                    char c = (char) inStream.read();
+                    final char c = (char) inStream.read();
                     buffer[len++] = c;
                     if (c == '>') {
                         found = true;
@@ -101,11 +101,11 @@ public class FB2Document implements CodecDocument {
                 if (found) {
                     final String xmlheader = new String(buffer, 0, len).trim();
                     if (xmlheader.startsWith("<?xml") && xmlheader.endsWith("?>")) {
-                        int index = xmlheader.indexOf("encoding");
+                        final int index = xmlheader.indexOf("encoding");
                         if (index > 0) {
-                            int startIndex = xmlheader.indexOf('"', index);
+                            final int startIndex = xmlheader.indexOf('"', index);
                             if (startIndex > 0) {
-                                int endIndex = xmlheader.indexOf('"', startIndex + 1);
+                                final int endIndex = xmlheader.indexOf('"', startIndex + 1);
                                 if (endIndex > 0) {
                                     encoding = xmlheader.substring(startIndex + 1, endIndex);
                                     System.out.println("XML encoding:" + encoding);
@@ -132,7 +132,6 @@ public class FB2Document implements CodecDocument {
         }
         return h.markup;
     }
-
 
     void appendLine(final FB2Line line) {
         FB2Page lastPage = FB2Page.getLastPage(pages);
@@ -209,8 +208,8 @@ public class FB2Document implements CodecDocument {
 
     public void addImage(final String tmpBinaryName, final String encoded) {
         if (tmpBinaryName != null && encoded != null) {
-            images.put("I"+tmpBinaryName, new FB2Image(encoded, true));
-            images.put("O"+tmpBinaryName, new FB2Image(encoded, false));
+            images.put("I" + tmpBinaryName, new FB2Image(encoded, true));
+            images.put("O" + tmpBinaryName, new FB2Image(encoded, false));
         }
     }
 
@@ -272,12 +271,10 @@ public class FB2Document implements CodecDocument {
         if (paragraphLines.isEmpty()) {
             return;
         }
-        if (jm == JustificationMode.Justify) {
-            final FB2Line l = FB2Line.getLastLine(paragraphLines);
-            l.append(new FB2LineFixedWhiteSpace(FB2Page.PAGE_WIDTH - l.width - 2 * FB2Page.MARGIN_X, l.getHeight()));
-        }
+        final FB2Line last = FB2Line.getLastLine(paragraphLines);
+        final JustificationMode lastJm = jm == JustificationMode.Justify ? JustificationMode.Left : jm;
         for (final FB2Line l : paragraphLines) {
-            l.applyJustification(jm);
+            l.applyJustification(l != last ? jm : lastJm);
             appendLine(l);
         }
         paragraphLines.clear();

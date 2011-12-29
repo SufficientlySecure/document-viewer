@@ -2,16 +2,16 @@ package org.ebookdroid.fb2droid.codec;
 
 public class FB2MarkupNewParagraph implements FB2MarkupElement {
 
-    private final int textSize;
+    private final FB2LineFixedWhiteSpace offset;
 
-    public FB2MarkupNewParagraph(final int textSize) {
-        this.textSize = textSize;
+    public FB2MarkupNewParagraph(final FB2LineFixedWhiteSpace offset) {
+        this.offset = offset;
     }
 
     @Override
     public void publishToDocument(final FB2Document doc) {
         if (doc.jm != JustificationMode.Center) {
-            doc.publishElement(new FB2LineFixedWhiteSpace(textSize * 3, textSize));
+            doc.publishElement(offset);
         }
     }
 

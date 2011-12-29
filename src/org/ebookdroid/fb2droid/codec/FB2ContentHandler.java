@@ -52,15 +52,15 @@ public class FB2ContentHandler extends FB2BaseHandler {
                 parsingNotesP = true;
             } else {
                 paragraphParsing = true;
-                markup.add(new FB2MarkupNewParagraph(crs.textSize));
+                markup.add(crs.paint.pOffset);
             }
         } else if ("v".equals(qName)) {
             if (parsingNotes && !inTitle) {
                 parsingNotesP = true;
             } else {
                 paragraphParsing = true;
-                markup.add(new FB2MarkupNewParagraph(crs.textSize));
-                markup.add(new FB2LineFixedWhiteSpace(FB2Page.PAGE_WIDTH / 8, crs.textSize));
+                markup.add(crs.paint.pOffset);
+                markup.add(crs.paint.vOffset);
             }
         } else if ("binary".equals(qName)) {
             tmpBinaryName = attributes.getValue("id");
@@ -80,10 +80,10 @@ public class FB2ContentHandler extends FB2BaseHandler {
                 if (noteName != null) {
                     final String n = getNoteId();
                     noteLines = new ArrayList<FB2Line>();
-                    FB2Line lastLine = new FB2Line();
+                    final FB2Line lastLine = new FB2Line();
                     noteLines.add(lastLine);
                     lastLine.append(new FB2TextElement(n.toCharArray(), 0, n.length(), crs)).append(
-                            new FB2LineFixedWhiteSpace((int) crs.getTextPaint().measureText(" "), crs.textSize));
+                            crs.paint.fixedSpace);
                 }
             } else {
                 inSection = true;
@@ -107,13 +107,13 @@ public class FB2ContentHandler extends FB2BaseHandler {
                 paragraphParsing = true;
                 markup.add(setSubtitleStyle().jm);
                 markup.add(emptyLine(crs.textSize));
-                markup.add(new FB2MarkupNewParagraph(crs.textSize));
+                markup.add(crs.paint.pOffset);
             }
         } else if ("text-author".equals(qName)) {
             if (!parsingNotes) {
                 paragraphParsing = true;
                 markup.add(setTextAuthorStyle(inCite).jm);
-                markup.add(new FB2MarkupNewParagraph(crs.textSize));
+                markup.add(crs.paint.pOffset);
             }
         } else if ("a".equals(qName)) {
             if (paragraphParsing) {
@@ -153,7 +153,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
     }
 
     private FB2MarkupElement emptyLine(final int textSize) {
-        return new FB2LineFixedWhiteSpace(FB2Page.PAGE_WIDTH - 2 * FB2Page.MARGIN_X, crs.textSize);
+        return crs.paint.emptyLine;
     }
 
     @Override
@@ -162,10 +162,9 @@ public class FB2ContentHandler extends FB2BaseHandler {
         if ("p".equals(qName) || "v".equals(qName)) {
             if (parsingNotesP) {
                 parsingNotesP = false;
-                final FB2Line line = FB2Line.getLastLine(noteLines);
-                line.append(new FB2LineFixedWhiteSpace(FB2Page.PAGE_WIDTH - line.width - 2 * FB2Page.MARGIN_X, crs.textSize));
+                final FB2Line last = FB2Line.getLastLine(noteLines);
                 for (final FB2Line l : noteLines) {
-                    l.applyJustification(JustificationMode.Justify);
+                    l.applyJustification(l != last ? JustificationMode.Justify : JustificationMode.Left);
                 }
             } else {
                 markup.add(FB2MarkupParagraphEnd.E);
@@ -255,7 +254,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
         if (parsingBinary) {
             tmpBinaryContents.append(ch, start, length);
         } else if (parsingNotesP && noteLines != null) {
-            final FB2LineWhiteSpace space = crs.getTextPaint().space;
+            final FB2LineWhiteSpace space = crs.paint.space;
             final int count = StringUtils.split(ch, start, length, starts, lengths);
 
             if (count > 0) {
@@ -314,7 +313,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
                 }
                 if (Character.isWhitespace(ch[start + length - 1])) {
                     markup.add(FB2MarkupNoSpace._instance);
-                    markup.add(crs.getTextPaint().space);
+                    markup.add(crs.paint.space);
                 }
                 spaceNeeded = false;
             }

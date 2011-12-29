@@ -25,7 +25,7 @@ class RenderingStyle {
     final JustificationMode jm;
     final boolean bold;
     final Typeface face;
-    final CustomTextPaint paint;
+    public final CustomTextPaint paint;
     final boolean superScript;
     final boolean subScript;
 
@@ -139,10 +139,6 @@ class RenderingStyle {
         this.paint = getTextPaint(face, textSize, bold);
         this.superScript = false;
         this.subScript = false;
-    }
-
-    public CustomTextPaint getTextPaint() {
-        return paint;
     }
 
     public static CustomTextPaint getTextPaint(final int textSize) {

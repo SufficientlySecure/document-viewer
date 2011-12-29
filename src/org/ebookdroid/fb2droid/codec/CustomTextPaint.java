@@ -1,17 +1,28 @@
 package org.ebookdroid.fb2droid.codec;
 
+import android.graphics.Typeface;
 import android.text.TextPaint;
 
 public class CustomTextPaint extends TextPaint {
 
-    public float spaceSize;
+    public final FB2LineWhiteSpace space;
 
     private final float[] standard = new float[256];
     private final float[] latin1 = new float[256];
     private final float[] rus = new float[256];
     private final float[] punct = new float[256];
 
-    public void initMeasures() {
+    public CustomTextPaint(final Typeface face, final int textSize, final boolean bold) {
+        super();
+        setTextSize(textSize);
+        setTypeface(face);
+        setFakeBoldText(bold);
+        setAntiAlias(true);
+        initMeasures();
+        space = new FB2LineWhiteSpace(standard[0x20], textSize);
+    }
+
+    private void initMeasures() {
         final char[] chars = { ' ' };
         for (int i = 0; i < 256; i++) {
             chars[0] = (char) i;
@@ -23,7 +34,6 @@ public class CustomTextPaint extends TextPaint {
             chars[0] = (char) (i + 0x2000);
             punct[i] = super.measureText(chars, 0, 1);
         }
-        spaceSize = standard[0x20];
     }
 
     @Override

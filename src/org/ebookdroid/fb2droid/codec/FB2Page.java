@@ -121,7 +121,7 @@ public class FB2Page implements CodecPage {
         }
         final int h = FB2Page.PAGE_HEIGHT - contentHeight - 2 * FB2Page.MARGIN_Y;
         if (h > 0) {
-            lines.add(new FB2Line().append(new FB2LineWhiteSpace(0, h, false)));
+            lines.add(new FB2Line().append(new FB2LineFixedWhiteSpace(0, h)));
             contentHeight += h;
         }
         for (final FB2Line line : noteLines) {

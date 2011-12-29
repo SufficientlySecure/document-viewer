@@ -338,40 +338,43 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
         final SoftReference<Bitmap> ref = thumbnails.get(path);
         Bitmap bmp = ref != null ? ref.get() : null;
         if (bmp == null) {
-            final File thumbnailFile = CacheManager.getThumbnailFile(path);
-            Bitmap tmpbmp = null;
-            boolean store = true;
-            if (thumbnailFile.exists()) {
+            try {
+                final File thumbnailFile = CacheManager.getThumbnailFile(path);
+                Bitmap tmpbmp = null;
+                boolean store = true;
+                if (thumbnailFile.exists()) {
 
-                tmpbmp = BitmapFactory.decodeFile(thumbnailFile.getPath());
-                if (tmpbmp == null) {
-                    thumbnailFile.delete();
+                    tmpbmp = BitmapFactory.decodeFile(thumbnailFile.getPath());
+                    if (tmpbmp == null) {
+                        thumbnailFile.delete();
+                        tmpbmp = Bitmap.createBitmap(160, 200, Bitmap.Config.ARGB_8888);
+                        tmpbmp.eraseColor(Color.WHITE);
+                        store = false;
+                    }
+                } else {
                     tmpbmp = Bitmap.createBitmap(160, 200, Bitmap.Config.ARGB_8888);
                     tmpbmp.eraseColor(Color.WHITE);
                     store = false;
                 }
-            } else {
-                tmpbmp = Bitmap.createBitmap(160, 200, Bitmap.Config.ARGB_8888);
-                tmpbmp.eraseColor(Color.WHITE);
-                store = false;
-            }
-            int left = 15;
-            int top = 10;
-            final int width = tmpbmp.getWidth() + left;
-            final int height = tmpbmp.getHeight() + top;
-            bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                int left = 15;
+                int top = 10;
+                final int width = tmpbmp.getWidth() + left;
+                final int height = tmpbmp.getHeight() + top;
+                bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
-            bmp.eraseColor(Color.TRANSPARENT);
+                bmp.eraseColor(Color.TRANSPARENT);
 
-            final Canvas c = new Canvas(bmp);
+                final Canvas c = new Canvas(bmp);
 
-            c.drawBitmap(cornerThmbBitmap, null, new Rect(0, 0, left, top), null);
-            c.drawBitmap(topThmbBitmap, null, new Rect(left, 0, width, top), null);
-            c.drawBitmap(leftThmbBitmap, null, new Rect(0, top, left, height), null);
-            c.drawBitmap(tmpbmp, null, new Rect(left, top, width, height), null);
+                c.drawBitmap(cornerThmbBitmap, null, new Rect(0, 0, left, top), null);
+                c.drawBitmap(topThmbBitmap, null, new Rect(left, 0, width, top), null);
+                c.drawBitmap(leftThmbBitmap, null, new Rect(0, top, left, height), null);
+                c.drawBitmap(tmpbmp, null, new Rect(left, top, width, height), null);
 
-            if (store) {
-                thumbnails.put(path, new SoftReference<Bitmap>(bmp));
+                if (store) {
+                    thumbnails.put(path, new SoftReference<Bitmap>(bmp));
+                }
+            } catch (OutOfMemoryError ex) {
             }
         }
 

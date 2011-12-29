@@ -11,7 +11,7 @@ public class FB2TextElement extends AbstractFB2LineElement {
     public final RenderingStyle renderingState;
 
     public FB2TextElement(final char[] ch, final int st, final int len, final RenderingStyle renderingState) {
-        super(renderingState.getTextPaint().measureText(ch, st, len), renderingState.textSize, false);
+        super(renderingState.getTextPaint().measureText(ch, st, len), renderingState.textSize);
         this.chars = ch;
         this.start = st;
         this.length = len;
@@ -19,12 +19,9 @@ public class FB2TextElement extends AbstractFB2LineElement {
     }
 
     @Override
-    public void render(final Canvas c, final int y, final int x) {
+    public float render(final Canvas c, final int y, final int x, final float additionalWidth) {
         c.drawText(chars, start, length, x, renderingState.superScript ? y - renderingState.textSize
                 : renderingState.subScript ? y + renderingState.textSize / 2 : y, renderingState.getTextPaint());
-    }
-
-    @Override
-    public void adjustWidth(final float w) {
+        return width;
     }
 }

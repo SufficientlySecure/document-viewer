@@ -255,10 +255,10 @@ public class FB2Document implements CodecDocument {
 
     public void publishElement(final AbstractFB2LineElement le) {
         FB2Line line = FB2Line.getLastLine(paragraphLines);
-        final int space = (int) RenderingStyle.getTextPaint(line.getHeight()).spaceSize;
-        if (line.width + 2 * FB2Page.MARGIN_X + space + le.width < FB2Page.PAGE_WIDTH) {
+        final FB2LineWhiteSpace space = RenderingStyle.getTextPaint(line.getHeight()).space;
+        if (line.width + 2 * FB2Page.MARGIN_X + space.width + le.width < FB2Page.PAGE_WIDTH) {
             if (line.hasNonWhiteSpaces() && insertSpace) {
-                line.append(new FB2LineWhiteSpace(space, line.getHeight(), true));
+                line.append(space);
             }
         } else {
             line = new FB2Line();
@@ -274,7 +274,7 @@ public class FB2Document implements CodecDocument {
         }
         if (jm == JustificationMode.Justify) {
             final FB2Line l = FB2Line.getLastLine(paragraphLines);
-            l.append(new FB2LineWhiteSpace(FB2Page.PAGE_WIDTH - l.width - 2 * FB2Page.MARGIN_X, l.getHeight(), false));
+            l.append(new FB2LineFixedWhiteSpace(FB2Page.PAGE_WIDTH - l.width - 2 * FB2Page.MARGIN_X, l.getHeight()));
         }
         for (final FB2Line l : paragraphLines) {
             l.applyJustification(jm);

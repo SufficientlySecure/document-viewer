@@ -9,7 +9,7 @@ public class FB2HorizontalRule extends AbstractFB2LineElement {
     private static Paint rulePaint;
 
     public FB2HorizontalRule(final int width, final int height) {
-        super(width, height, false);
+        super(width, height);
         if (rulePaint == null) {
             rulePaint = new Paint();
             rulePaint.setColor(Color.BLACK);
@@ -17,11 +17,8 @@ public class FB2HorizontalRule extends AbstractFB2LineElement {
     }
 
     @Override
-    public void render(final Canvas c, final int y, final int x) {
+    public float render(final Canvas c, final int y, final int x, final float additionalWidth) {
         c.drawLine(x, y - height / 2, x + width, y - height / 2, rulePaint);
-    }
-
-    @Override
-    public void adjustWidth(final float w) {
+        return width;
     }
 }

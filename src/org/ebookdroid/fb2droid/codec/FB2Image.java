@@ -53,15 +53,12 @@ public class FB2Image extends AbstractFB2LineElement {
     }
 
     @Override
-    public void adjustWidth(final float w) {
-    }
-
-    @Override
-    public void render(final Canvas c, final int y, final int x) {
+    public float render(final Canvas c, final int y, final int x, final float additionalWidth) {
         final byte[] data = getData();
         final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
         c.drawBitmap(bmp, null, new Rect(x, y - height, (int) (x + width), y), paint);
         bmp.recycle();
+        return width;
     }
 
     public byte[] getData() {

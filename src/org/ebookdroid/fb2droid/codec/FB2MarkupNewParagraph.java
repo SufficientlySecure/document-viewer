@@ -11,7 +11,7 @@ public class FB2MarkupNewParagraph implements FB2MarkupElement {
     @Override
     public void publishToDocument(final FB2Document doc) {
         if (doc.jm != JustificationMode.Center) {
-            doc.publishElement(new FB2LineWhiteSpace(textSize * 3, textSize, false));
+            doc.publishElement(new FB2LineFixedWhiteSpace(textSize * 3, textSize));
         }
     }
 

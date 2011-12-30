@@ -67,4 +67,9 @@ public class PageAnimatorProxy implements PageAnimator {
     public void pageUpdated(int viewIndex) {
         orig.get().pageUpdated(viewIndex);
     }
+
+    @Override
+    public void animate(int direction) {
+        orig.get().animate(direction);
+    }
 }

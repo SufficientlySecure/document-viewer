@@ -23,4 +23,6 @@ public interface PageAnimator extends IGestureDetector {
     boolean isPageVisible(final Page page, final ViewState viewState);
 
     void pageUpdated(int viewIndex);
+
+    void animate(int direction);
 }

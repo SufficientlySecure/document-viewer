@@ -120,6 +120,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
             return;
         }
 
+        System.out.println("FAS start");
         final int width = view.getWidth();
 
         // No input when flipping
@@ -154,6 +155,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
         // Check for endings :D
         if (mA.x <= getLeftBound() || mA.x >= width - 1) {
             bFlipping = false;
+            System.out.println("FAS end");
             if (bFlipRight) {
                 view.goToPageImpl(backIndex);
                 foreIndex = backIndex;
@@ -362,5 +364,25 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
             backBitmapIndex = -1;
         }
     }
+
+    @Override
+    public void animate(int direction) {
+        resetClipEdge();
+        mMovement = new Vector2D(direction < 0 ? 7 * view.getWidth() / 8 : view.getWidth() / 8, mInitialEdgeOffset);
+        bFlipping = true;
+        bFlipRight = direction > 0;
+        ViewState viewState = new ViewState(view);
+        if (bFlipRight) {
+            nextView(viewState);
+        } else {
+            previousView(viewState);
+        }
+
+
+        bUserMoves = false;
+        FlipAnimationStep();
+
+    }
+
 
 }

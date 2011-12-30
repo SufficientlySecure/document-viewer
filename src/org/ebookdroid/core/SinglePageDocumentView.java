@@ -59,12 +59,12 @@ public class SinglePageDocumentView extends AbstractDocumentView {
 
     @Override
     public final void verticalConfigScroll(final int direction) {
-        goToPageImpl(getBase().getDocumentModel().getCurrentViewPageIndex() + direction);
+        curler.animate(direction);
     }
 
     @Override
     public final void verticalDpadScroll(final int direction) {
-        goToPageImpl(getBase().getDocumentModel().getCurrentViewPageIndex() + direction);
+        curler.animate(direction);
     }
 
     @Override

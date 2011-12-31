@@ -1,6 +1,7 @@
 package org.ebookdroid.fb2droid.codec;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 public class FB2Words {
@@ -12,6 +13,8 @@ public class FB2Words {
 
     final Map<FB2Word, FB2TextElement> all = new HashMap<FB2Word, FB2TextElement>(32 * 10241);
 
+    final LinkedList<Buffer> buffers = new LinkedList<Buffer>();
+
     public FB2TextElement get(final char[] ch, final int st, final int len, final RenderingStyle style) {
         words++;
 
@@ -19,8 +22,23 @@ public class FB2Words {
 
         FB2TextElement e = all.get(key);
         if (e == null) {
-            e = new FB2TextElement(ch, st, len, style);
-            all.put(new FB2Word(key), e);
+            char[] arr = null;
+            int index = 0;
+            if (!buffers.isEmpty()) {
+                Buffer b = buffers.getFirst();
+                index = b.append(ch, st, len);
+                if (index != -1) {
+                    arr = b.chars;
+                }
+            }
+            if (arr == null) {
+                Buffer b = new Buffer();
+                index = b.append(ch, st, len);
+                arr = b.chars;
+                buffers.addFirst(b);
+            }
+            e = new FB2TextElement(arr, index, len, style);
+            all.put(new FB2Word(arr, index, len, key.hash), e);
             uniques++;
         }
         return e;
@@ -36,11 +54,11 @@ public class FB2Words {
         public FB2Word() {
         }
 
-        public FB2Word(final FB2Word w) {
-            this.chars = w.chars;
-            this.hash = w.hash;
-            this.length = w.length;
-            this.start = w.start;
+        public FB2Word(final char[] ch, final int st, final int len, final int hash) {
+            this.chars = ch;
+            this.hash = hash;
+            this.length = len;
+            this.start = st;
         }
 
         public void reuse(final char[] ch, final int st, final int len) {
@@ -86,4 +104,21 @@ public class FB2Words {
             return hash;
         }
     }
+
+    static class Buffer {
+
+        final char[] chars = new char[4*1024];
+        int size;
+
+        public int append(char[] ch, int start, int len) {
+            if (len < chars.length - size) {
+                int index = size;
+                System.arraycopy(ch, start, chars, index, len);
+                size += len;
+                return index;
+            }
+            return -1;
+        }
+    }
+
 }

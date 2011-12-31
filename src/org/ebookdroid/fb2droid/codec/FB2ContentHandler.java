@@ -270,9 +270,6 @@ public class FB2ContentHandler extends FB2BaseHandler {
             final int count = StringUtils.split(ch, start, length, starts, lengths);
 
             if (count > 0) {
-                final char[] dst = new char[length];
-                System.arraycopy(ch, start, dst, 0, length);
-
                 for (int i = 0; i < count; i++) {
                     final int st = starts[i];
                     final int len = lengths[i];
@@ -288,7 +285,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
                             continue;
                         }
                     }
-                    final FB2TextElement te = text(dst, st - start, len, crs);
+                    final FB2TextElement te = text(ch, st, len, crs);
                     FB2Line line = FB2Line.getLastLine(noteLines);
                     if (line.width + 2 * FB2Page.MARGIN_X + space.width + te.width < FB2Page.PAGE_WIDTH) {
                         if (line.hasNonWhiteSpaces()) {
@@ -312,13 +309,11 @@ public class FB2ContentHandler extends FB2BaseHandler {
                     markup.add(FB2MarkupNoSpace._instance);
                 }
                 spaceNeeded = true;
-                final char[] dst = new char[length];
-                System.arraycopy(ch, start, dst, 0, length);
 
                 for (int i = 0; i < count; i++) {
                     final int st = starts[i];
                     final int len = lengths[i];
-                    markup.add(text(dst, st - start, len, crs));
+                    markup.add(text(ch, st, len, crs));
                     if (crs.superScript || crs.subScript) {
                         markup.add(FB2MarkupNoSpace._instance);
                     }

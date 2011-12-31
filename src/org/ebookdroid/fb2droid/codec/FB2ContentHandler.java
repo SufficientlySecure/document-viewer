@@ -2,8 +2,9 @@ package org.ebookdroid.fb2droid.codec;
 
 import org.ebookdroid.utils.StringUtils;
 
+import android.util.SparseArray;
+
 import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,7 +38,9 @@ public class FB2ContentHandler extends FB2BaseHandler {
     private final StringBuilder tmpBinaryContents = new StringBuilder(64 * 1024);
     private final StringBuilder title = new StringBuilder();
 
-    final List<FB2MarkupElement> markup = new ArrayList<FB2MarkupElement>();
+    final ArrayList<FB2MarkupElement> markup = new ArrayList<FB2MarkupElement>();
+
+    final SparseArray<FB2Words> words = new SparseArray<FB2Words>();
 
     public FB2ContentHandler(final FB2Document fb2Document) {
         super(fb2Document);
@@ -82,7 +85,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
                     noteLines = new ArrayList<FB2Line>();
                     final FB2Line lastLine = new FB2Line();
                     noteLines.add(lastLine);
-                    lastLine.append(new FB2TextElement(n.toCharArray(), 0, n.length(), crs)).append(
+                    lastLine.append(text(n.toCharArray(), 0, n.length(), crs)).append(
                             crs.paint.fixedSpace);
                 }
             } else {
@@ -154,6 +157,15 @@ public class FB2ContentHandler extends FB2BaseHandler {
 
     private FB2MarkupElement emptyLine(final int textSize) {
         return crs.paint.emptyLine;
+    }
+
+    private FB2TextElement text(final char[] ch, final int st, final int len, final RenderingStyle style) {
+        FB2Words w = words.get(style.paint.key);
+        if (w == null) {
+            w = new FB2Words();
+            words.append(style.paint.key, w);
+        }
+        return w.get(ch, st, len, style);
     }
 
     @Override
@@ -276,7 +288,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
                             continue;
                         }
                     }
-                    final FB2TextElement te = new FB2TextElement(dst, st - start, len, crs);
+                    final FB2TextElement te = text(dst, st - start, len, crs);
                     FB2Line line = FB2Line.getLastLine(noteLines);
                     if (line.width + 2 * FB2Page.MARGIN_X + space.width + te.width < FB2Page.PAGE_WIDTH) {
                         if (line.hasNonWhiteSpaces()) {
@@ -306,7 +318,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
                 for (int i = 0; i < count; i++) {
                     final int st = starts[i];
                     final int len = lengths[i];
-                    markup.add(new FB2TextElement(dst, st - start, len, crs));
+                    markup.add(text(dst, st - start, len, crs));
                     if (crs.superScript || crs.subScript) {
                         markup.add(FB2MarkupNoSpace._instance);
                     }

@@ -149,7 +149,7 @@ class RenderingStyle {
         final int key = (textSize & 0x0FFF) + (face == ITALIC_TF ? 1 << 14 : 0) + (bold ? 1 << 15 : 0);
         CustomTextPaint paint = paints.get(key);
         if (paint == null) {
-            paint = new CustomTextPaint(face, textSize, bold);
+            paint = new CustomTextPaint(key, face, textSize, bold);
             paints.append(key, paint);
         }
         return paint;

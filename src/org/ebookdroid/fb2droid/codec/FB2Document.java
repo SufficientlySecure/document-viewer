@@ -50,6 +50,7 @@ public class FB2Document implements CodecDocument {
         final List<FB2MarkupElement> markup = parseContent(spf, fileName);
         final long t3 = System.currentTimeMillis();
         System.out.println("SAX parser: " + (t3 - t2) + " ms");
+        System.out.println("Words=" + FB2Words.words + ", uniques=" + FB2Words.uniques);
         createDocumentMarkup(markup);
         final long t4 = System.currentTimeMillis();
         System.out.println("Markup: " + (t4 - t3) + " ms");

@@ -334,13 +334,13 @@ Java_org_ebookdroid_pdfdroid_codec_PdfDocument_getPageLinks(JNIEnv *env, jclass 
             char linkbuf[128];
             int number;
 
-            if (link->kind == FZ_LINK_URI)
+            if (link->dest.kind == FZ_LINK_URI)
             {
-                snprintf(linkbuf, 128, "%s",  link->dest.uri.uri);
+                snprintf(linkbuf, 128, "%s",  link->dest.ld.uri.uri);
             }
-            else if (link->kind == FZ_LINK_GOTO)
+            else if (link->dest.kind == FZ_LINK_GOTO)
             {
-                snprintf(linkbuf, 127, "#%d", link->dest.gotor.page);
+                snprintf(linkbuf, 127, "#%d", link->dest.ld.gotor.page);
             }
 
             jstring jstr = (*env)->NewStringUTF(env, linkbuf);
@@ -648,7 +648,14 @@ Java_org_ebookdroid_pdfdroid_codec_PdfOutline_getLink(JNIEnv *env, jclass clazz,
         return NULL;
 
     char linkbuf[128];
-    snprintf(linkbuf, 127, "#%d", outline->page + 1);
+    if (outline->dest.kind == FZ_LINK_URI)
+    {
+        snprintf(linkbuf, 128, "%s",  outline->dest.ld.uri.uri);
+    }
+    else if (outline->dest.kind == FZ_LINK_GOTO)
+    {
+        snprintf(linkbuf, 127, "#%d", outline->dest.ld.gotor.page + 1);
+    }
 //    DEBUG("PdfOutline_getLink link = %s",linkbuf);
 
     return (*env)->NewStringUTF(env, linkbuf);

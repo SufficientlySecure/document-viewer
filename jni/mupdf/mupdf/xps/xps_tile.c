@@ -269,18 +269,18 @@ xps_parse_canvas(xps_document *doc, fz_matrix ctm, fz_rect area, char *base_uri,
 
 	for (node = xml_down(root); node; node = xml_next(node))
 	{
+		/* SumatraPDF: fix memory leak */
+		if (!strcmp(xml_tag(node), "Canvas.Resources") && new_dict)
+			fz_warn(doc->ctx, "ignoring follow-up resource dictionaries");
+		else
 		if (!strcmp(xml_tag(node), "Canvas.Resources") && xml_down(node))
 		{
-			/* SumatraPDF: try to continue without Canvas.Resources */
-			fz_try(doc->ctx)
+			/* SumatraPDF: don't warn about empty resource dictionaries */
+			new_dict = xps_parse_resource_dictionary(doc, base_uri, xml_down(node));
+			if (new_dict)
 			{
-				new_dict = xps_parse_resource_dictionary(doc, base_uri, xml_down(node));
 				new_dict->parent = dict;
 				dict = new_dict;
-			}
-			fz_catch(doc->ctx)
-			{
-				fz_warn(doc->ctx, "cannot load Canvas.Resources");
 			}
 		}
 
@@ -352,19 +352,12 @@ xps_parse_fixed_page(xps_document *doc, fz_matrix ctm, xps_page *page)
 
 	for (node = xml_down(page->root); node; node = xml_next(node))
 	{
+		/* SumatraPDF: fix memory leak */
+		if (!strcmp(xml_tag(node), "FixedPage.Resources") && dict)
+			fz_warn(doc->ctx, "ignoring follow-up resource dictionaries");
+		else
 		if (!strcmp(xml_tag(node), "FixedPage.Resources") && xml_down(node))
-		{
-			/* SumatraPDF: many documents seem to lack FixedPage.Resources */
-			fz_try(doc->ctx)
-			{
-				dict = xps_parse_resource_dictionary(doc, base_uri, xml_down(node));
-			}
-			fz_catch(doc->ctx)
-			{
-				fz_warn(doc->ctx, "cannot load FixedPage.Resources");
-				dict = NULL;
-			}
-		}
+			dict = xps_parse_resource_dictionary(doc, base_uri, xml_down(node));
 		xps_parse_element(doc, ctm, area, base_uri, dict, node);
 	}
 

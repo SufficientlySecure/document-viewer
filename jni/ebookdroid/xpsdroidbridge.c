@@ -395,7 +395,15 @@ Java_org_ebookdroid_xpsdroid_codec_XpsOutline_getLink(JNIEnv *env, jclass clazz,
         return NULL;
 
     char linkbuf[128];
-    snprintf(linkbuf, 127, "#%d", outline->page + 1);
+    if (outline->dest.kind == FZ_LINK_URI)
+    {
+        snprintf(linkbuf, 128, "%s",  outline->dest.ld.uri.uri);
+    }
+    else if (outline->dest.kind == FZ_LINK_GOTO)
+    {
+        snprintf(linkbuf, 127, "#%d", outline->dest.ld.gotor.page + 1);
+    }
+
 //    DEBUG("XpsOutline_getLink link = %s",linkbuf);
     return (*env)->NewStringUTF(env, linkbuf);
 }

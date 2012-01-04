@@ -7,6 +7,7 @@ import org.ebookdroid.core.curl.SinglePageView;
 import org.ebookdroid.core.hwa.IHardwareAcceleration;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.settings.SettingsManager;
+import org.ebookdroid.core.settings.books.BookSettings;
 import org.ebookdroid.core.touch.DefaultGestureDetector;
 import org.ebookdroid.core.touch.IGestureDetector;
 import org.ebookdroid.core.touch.IMultiTouchZoom;
@@ -129,7 +130,11 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     }
 
     private void invalidatePageSize(final Page page, final int width, final int height) {
-        PageAlign effectiveAlign = SettingsManager.getBookSettings().pageAlign;
+        BookSettings bookSettings = SettingsManager.getBookSettings();
+        if (bookSettings == null) {
+            return;
+        }
+        PageAlign effectiveAlign = bookSettings.pageAlign;
         if (effectiveAlign == null) {
             effectiveAlign = PageAlign.WIDTH;
         } else if (effectiveAlign == PageAlign.AUTO) {

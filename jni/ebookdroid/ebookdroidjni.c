@@ -86,3 +86,14 @@ void closeHandler()
     handler = NULL;
 }
 
+
+/**
+ * Get file descriptor from FileDescriptor class.
+ */
+int getDescriptor(JNIEnv *env, jobject fd)
+{
+    __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "getDescriptor");
+    jclass fd_class = (*env)->GetObjectClass(env, fd);
+    jfieldID field_id = (*env)->GetFieldID(env, fd_class, "descriptor", "I");
+    return (*env)->GetIntField(env, fd, field_id);
+}

@@ -556,6 +556,7 @@ ddjvu_cache_clear(ddjvu_context_t *ctx)
   G_TRY
     {
       GMonitorLock lock(&ctx->monitor);
+      DataPool::close_all();
       if (ctx->cache)
       {
         ctx->cache->clear();

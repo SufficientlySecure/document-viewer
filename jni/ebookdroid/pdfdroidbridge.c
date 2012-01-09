@@ -498,7 +498,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPage(JNIEnv *env, jobject this,
     fz_clear_pixmap_with_color(pixmap, 0xff);
 
     dev = fz_new_draw_device(doc->ctx, doc->drawcache, pixmap);
-    pdf_run_page(doc->xref, page->page, dev, ctm);
+    pdf_run_page(doc->xref, page->page, dev, ctm, NULL);
     fz_free_device(dev);
 
     (*env)->ReleasePrimitiveArrayCritical(env, bufferarray, buffer, 0);
@@ -591,7 +591,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPageBitmap(JNIEnv *env, jobject
     fz_clear_pixmap_with_color(pixmap, 0xff);
 
     dev = fz_new_draw_device(doc->ctx, doc->drawcache, pixmap);
-    pdf_run_page(doc->xref, page->page, dev, ctm);
+    pdf_run_page(doc->xref, page->page, dev, ctm, NULL);
     fz_free_device(dev);
 
     fz_drop_pixmap(doc->ctx, pixmap);

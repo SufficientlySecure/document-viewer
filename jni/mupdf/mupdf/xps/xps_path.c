@@ -172,8 +172,7 @@ xps_draw_arc(fz_context *doc, fz_path *path,
 	/* F.6.6.1 -- ensure radii are positive and non-zero */
 	rx = fabsf(rx);
 	ry = fabsf(ry);
-	/* SumatraPDF: don't bother drawing empty arcs (prevents a division by zero) */
-	if (rx < 0.001f || ry < 0.001f || x1 == x2 && y1 == y2)
+	if (rx < 0.001f || ry < 0.001f || (x1 == x2 && y1 == y2))
 	{
 		fz_lineto(doc, path, x2, y2);
 		return;
@@ -1001,7 +1000,7 @@ xps_parse_path(xps_document *doc, fz_matrix ctm, char *base_uri, xps_resource *d
 	{
 		/* SumatraPDF: fill-path and stroke-path may differ */
 		area = fz_bound_path(stroke_path, &stroke, ctm);
-		if (stroke_path != path)
+		if (stroke_path != path && (fill_att || fill_tag))
 			area = fz_union_rect(area, fz_bound_path(path, NULL, ctm));
 	}
 	else

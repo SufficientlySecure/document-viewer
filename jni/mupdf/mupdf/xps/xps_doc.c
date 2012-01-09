@@ -169,7 +169,7 @@ xps_free_fixed_documents(xps_document *doc)
 	{
 		xps_fixdoc *next = fixdoc->next;
 		fz_free(doc->ctx, fixdoc->name);
-		fz_free(doc->ctx, fixdoc->outline); /* SumatraPDF: fix memory leak */
+		fz_free(doc->ctx, fixdoc->outline);
 		fz_free(doc->ctx, fixdoc);
 		fixdoc = next;
 	}
@@ -206,7 +206,7 @@ xps_parse_metadata_imp(xps_document *doc, xml_element *item, xps_fixdoc *fixdoc)
 					doc->start_part = fz_strdup(doc->ctx, tgtbuf);
 				if (!strcmp(type, REL_DOC_STRUCTURE) && fixdoc)
 					fixdoc->outline = fz_strdup(doc->ctx, tgtbuf);
-				/* SumatraPDF: XPSViewer rejects documents without a relationship id */
+				/* SumatraPDF: Microsoft's XPS-Viewer rejects documents without a relationship id */
 				if (!xml_att(item, "Id"))
 					fz_warn(doc->ctx, "Missing Relationship-Id for %s", target);
 			}
@@ -339,17 +339,51 @@ xps_load_fixed_page(xps_document *doc, xps_page *page)
 	part = xps_read_part(doc, page->name);
 	root = xml_parse_document(doc->ctx, part->data, part->size);
 	xps_free_part(doc, part);
+	/* SumatraPDF: fix a potential NULL-pointer dereference */
+	if (!root)
+		fz_throw(doc->ctx, "FixedPage missing root element");
+
+	/* SumatraPDF: basic support for alternate content */
+	if (!strcmp(xml_tag(root), "mc:AlternateContent"))
+	{
+		xml_element *node = xps_find_alternate_content(root);
+		if (!node)
+		{
+			xml_free_element(doc->ctx, root);
+			fz_throw(doc->ctx, "FixedPage missing alternate root element");
+		}
+		xml_detach(node);
+		xml_free_element(doc->ctx, root);
+		root = node;
+	}
 
 	if (strcmp(xml_tag(root), "FixedPage"))
+	{
+		/* SumatraPDF: fix memory leak */
+		fz_try(doc->ctx)
+		{
 		fz_throw(doc->ctx, "expected FixedPage element (found %s)", xml_tag(root));
+		}
+		fz_catch(doc->ctx)
+		{
+			xml_free_element(doc->ctx, root);
+			fz_rethrow(doc->ctx);
+		}
+	}
 
 	width_att = xml_att(root, "Width");
 	if (!width_att)
+	{
+		xml_free_element(doc->ctx, root);
 		fz_throw(doc->ctx, "FixedPage missing required attribute: Width");
+	}
 
 	height_att = xml_att(root, "Height");
 	if (!height_att)
+	{
+		xml_free_element(doc->ctx, root);
 		fz_throw(doc->ctx, "FixedPage missing required attribute: Height");
+	}
 
 	page->width = atoi(width_att);
 	page->height = atoi(height_att);

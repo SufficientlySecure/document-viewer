@@ -1782,6 +1782,7 @@ void
 DataPool::close_all(void)
 {
   OpenFiles::get()->close_all();
+  FCPools::get()->clean();
 }
 
 

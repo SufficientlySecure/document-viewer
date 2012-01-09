@@ -338,7 +338,7 @@ Java_org_ebookdroid_xpsdroid_codec_XpsPage_renderPage(JNIEnv *env, jobject this,
     fz_clear_pixmap_with_color(pixmap, 0xff);
 
     dev = fz_new_draw_device(doc->ctx, doc->drawcache, pixmap);
-    fz_execute_display_list(page->pageList, dev, ctm, viewbox);
+    fz_execute_display_list(page->pageList, dev, ctm, viewbox, NULL);
     fz_free_device(dev);
 
     (*env)->ReleasePrimitiveArrayCritical(env, bufferarray, buffer, 0);

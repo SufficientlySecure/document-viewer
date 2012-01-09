@@ -44,9 +44,19 @@ xps_parse_document_outline(xps_document *doc, xml_element *root)
 
 			entry = fz_malloc_struct(doc->ctx, fz_outline);
 			entry->title = fz_strdup(doc->ctx, description);
-			entry->dest.kind = FZ_LINK_GOTO;
-			entry->dest.ld.gotor.flags = 0;
-			entry->dest.ld.gotor.page = xps_find_link_target(doc, target);
+			/* SumatraPDF: extended outline actions */
+			if (!is_external_target(target))
+			{
+				entry->dest.kind = FZ_LINK_GOTO;
+				entry->dest.ld.gotor.flags = 0;
+				entry->dest.ld.gotor.page = xps_find_link_target(doc, target);
+			}
+			else
+			{
+				entry->dest.kind = FZ_LINK_URI;
+				entry->dest.ld.uri.uri = fz_strdup(doc->ctx, target);
+				entry->dest.ld.uri.is_map = 0;
+			}
 			entry->down = NULL;
 			entry->next = NULL;
 
@@ -106,6 +116,9 @@ xps_load_document_structure(xps_document *doc, xps_fixdoc *fixdoc)
 		fz_rethrow(doc->ctx);
 	}
 	xps_free_part(doc, part);
+	/* SumatraPDF: fix a potential NULL-pointer dereference */
+	if (!root)
+		return NULL;
 
 	fz_try(doc->ctx)
 	{
@@ -130,6 +143,12 @@ xps_load_outline(xps_document *doc)
 	for (fixdoc = doc->first_fixdoc; fixdoc; fixdoc = fixdoc->next) {
 		if (fixdoc->outline) {
 			outline = xps_load_document_structure(doc, fixdoc);
+			/* SumatraPDF: ignore empty outlines */
+			if (!outline)
+			{
+				fz_warn(doc->ctx, "Ignoring empty (broken?) outline for %s", fixdoc->name);
+				continue;
+			}
 			/* SumatraPDF: don't overwrite outline entries */
 			if (head)
 			{
@@ -159,6 +178,7 @@ xps_extract_anchor_info(xps_document *doc, xml_element *node, fz_rect rect)
 		if (!is_external_target(value))
 		{
 			ld.kind = FZ_LINK_GOTO;
+			ld.ld.gotor.flags = 0;
 			ld.ld.gotor.page = xps_find_link_target(doc, value);
 		}
 		else
@@ -238,7 +258,7 @@ xps_find_doc_props_path(xps_document *doc, char path[1024])
 	xml_element *root = xps_open_and_parse(doc, "/_rels/.rels");
 	xml_element *item;
 
-	if (strcmp(xml_tag(root), "Relationships") != 0)
+	if (!root || strcmp(xml_tag(root), "Relationships") != 0)
 		fz_throw(doc->ctx, "couldn't parse part '/_rels/.rels'");
 
 	*path = '\0';

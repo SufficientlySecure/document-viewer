@@ -97,6 +97,9 @@ struct pdf_csi_s
 	fz_matrix top_ctm;
 	pdf_gstate gstate[64];
 	int gtop;
+
+	/* cookie support */
+	fz_cookie *cookie;
 };
 
 static void pdf_run_buffer(pdf_csi *csi, fz_obj *rdb, fz_buffer *contents);
@@ -497,7 +500,7 @@ pdf_show_path(pdf_csi *csi, int doclose, int dofill, int dostroke, int even_odd)
 				if (gstate->stroke.pattern)
 				{
 					fz_clip_stroke_path(csi->dev, path, &bbox, &gstate->stroke_state, gstate->ctm);
-					pdf_show_pattern(csi, gstate->stroke.pattern, bbox, PDF_FILL);
+					pdf_show_pattern(csi, gstate->stroke.pattern, bbox, PDF_STROKE);
 					fz_pop_clip(csi->dev);
 				}
 				break;
@@ -620,7 +623,7 @@ pdf_flush_text(pdf_csi *csi)
 				if (gstate->stroke.pattern)
 				{
 					fz_clip_stroke_text(csi->dev, text, &gstate->stroke_state, gstate->ctm);
-					pdf_show_pattern(csi, gstate->stroke.pattern, bbox, PDF_FILL);
+					pdf_show_pattern(csi, gstate->stroke.pattern, bbox, PDF_STROKE);
 					fz_pop_clip(csi->dev);
 				}
 				break;
@@ -855,7 +858,7 @@ pdf_init_gstate(pdf_gstate *gs, fz_matrix ctm)
 }
 
 static pdf_csi *
-pdf_new_csi(pdf_xref *xref, fz_device *dev, fz_matrix ctm, char *event)
+pdf_new_csi(pdf_xref *xref, fz_device *dev, fz_matrix ctm, char *event, fz_cookie *cookie)
 {
 	pdf_csi *csi;
 	fz_context *ctx = dev->ctx;
@@ -890,6 +893,8 @@ pdf_new_csi(pdf_xref *xref, fz_device *dev, fz_matrix ctm, char *event)
 		csi->top_ctm = ctm;
 		pdf_init_gstate(&csi->gstate[0], ctm);
 		csi->gtop = 0;
+
+		csi->cookie = cookie;
 	}
 	fz_catch(ctx)
 	{
@@ -1486,7 +1491,7 @@ pdf_run_extgstate(pdf_csi *csi, fz_obj *rdb, fz_obj *extgstate)
 
 		else if (!strcmp(s, "TR"))
 		{
-			if (fz_is_name(val) && strcmp(fz_to_name(val), "Identity"))
+			if (!fz_is_name(val) || strcmp(fz_to_name(val), "Identity"))
 				fz_warn(ctx, "ignoring transfer function");
 		}
 	}
@@ -2410,10 +2415,24 @@ pdf_run_stream(pdf_csi *csi, fz_obj *rdb, fz_stream *file, char *buf, int buflen
 	pdf_clear_stack(csi);
 	in_array = 0;
 
+	if (csi->cookie)
+	{
+		csi->cookie->progress_max = -1;
+		csi->cookie->progress = 0;
+	}
+
 	while (1)
 	{
 		if (csi->top == nelem(csi->stack) - 1)
 			fz_throw(ctx, "stack overflow");
+
+		/* Check the cookie */
+		if (csi->cookie)
+		{
+			if (csi->cookie->abort)
+				break;
+			csi->cookie->progress++;
+		}
 
 		tok = pdf_lex(file, buf, buflen, &len);
 		/* RJW: "lexical error in content stream" */
@@ -2523,13 +2542,23 @@ pdf_run_buffer(pdf_csi *csi, fz_obj *rdb, fz_buffer *contents)
 	fz_var(buf);
 	fz_var(file);
 
+	if (contents == NULL)
+		return;
+
 	fz_try(ctx)
 	{
 		buf = fz_malloc(ctx, len); /* we must be re-entrant for type3 fonts */
 		file = fz_open_buffer(ctx, contents);
 		save_in_text = csi->in_text;
 		csi->in_text = 0;
-		pdf_run_stream(csi, rdb, file, buf, len);
+		fz_try(ctx)
+		{
+			pdf_run_stream(csi, rdb, file, buf, len);
+		}
+		fz_catch(ctx)
+		{
+			fz_warn(ctx, "Content stream parsing error - rendering truncated");
+		}
 		csi->in_text = save_in_text;
 	}
 	fz_catch(ctx)
@@ -2543,7 +2572,7 @@ pdf_run_buffer(pdf_csi *csi, fz_obj *rdb, fz_buffer *contents)
 }
 
 void
-pdf_run_page_with_usage(pdf_xref *xref, pdf_page *page, fz_device *dev, fz_matrix ctm, char *event)
+pdf_run_page_with_usage(pdf_xref *xref, pdf_page *page, fz_device *dev, fz_matrix ctm, char *event, fz_cookie *cookie)
 {
 	pdf_csi *csi;
 	pdf_annot *annot;
@@ -2553,7 +2582,7 @@ pdf_run_page_with_usage(pdf_xref *xref, pdf_page *page, fz_device *dev, fz_matri
 	if (page->transparency)
 		fz_begin_group(dev, fz_transform_rect(ctm, page->mediabox), 1, 0, 0, 1);
 
-	csi = pdf_new_csi(xref, dev, ctm, event);
+	csi = pdf_new_csi(xref, dev, ctm, event, cookie);
 	fz_try(ctx)
 	{
 		pdf_run_buffer(csi, page->resources, page->contents);
@@ -2565,8 +2594,24 @@ pdf_run_page_with_usage(pdf_xref *xref, pdf_page *page, fz_device *dev, fz_matri
 	}
 	pdf_free_csi(csi);
 
+	if (cookie && cookie->progress_max != -1)
+	{
+		int count = 1;
+		for (annot = page->annots; annot; annot = annot->next)
+			count++;
+		cookie->progress_max += count;
+	}
+
 	for (annot = page->annots; annot; annot = annot->next)
 	{
+		/* Check the cookie for aborting */
+		if (cookie)
+		{
+			if (cookie->abort)
+				break;
+			cookie->progress++;
+		}
+
 		flags = fz_to_int(fz_dict_gets(annot->obj, "F"));
 
 		/* TODO: NoZoom and NoRotate */
@@ -2574,10 +2619,12 @@ pdf_run_page_with_usage(pdf_xref *xref, pdf_page *page, fz_device *dev, fz_matri
 			continue;
 		if (flags & (1 << 1)) /* Hidden */
 			continue;
-		if (flags & (1 << 5)) /* NoView */
+		if (!strcmp(event, "Print") && !(flags & (1 << 2))) /* Print */
+			continue;
+		if (!strcmp(event, "View") && (flags & (1 << 5))) /* NoView */
 			continue;
 
-		csi = pdf_new_csi(xref, dev, ctm, event);
+		csi = pdf_new_csi(xref, dev, ctm, event, cookie);
 		if (!pdf_is_hidden_ocg(fz_dict_gets(annot->obj, "OC"), csi, page->resources))
 		{
 			fz_try(ctx)
@@ -2598,15 +2645,15 @@ pdf_run_page_with_usage(pdf_xref *xref, pdf_page *page, fz_device *dev, fz_matri
 }
 
 void
-pdf_run_page(pdf_xref *xref, pdf_page *page, fz_device *dev, fz_matrix ctm)
+pdf_run_page(pdf_xref *xref, pdf_page *page, fz_device *dev, fz_matrix ctm, fz_cookie *cookie)
 {
-	pdf_run_page_with_usage(xref, page, dev, ctm, "View");
+	pdf_run_page_with_usage(xref, page, dev, ctm, "View", cookie);
 }
 
 void
 pdf_run_glyph(pdf_xref *xref, fz_obj *resources, fz_buffer *contents, fz_device *dev, fz_matrix ctm)
 {
-	pdf_csi *csi = pdf_new_csi(xref, dev, ctm, "View");
+	pdf_csi *csi = pdf_new_csi(xref, dev, ctm, "View", NULL);
 	fz_context *ctx = xref->ctx;
 
 	fz_try(ctx)

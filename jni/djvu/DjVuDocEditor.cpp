@@ -1730,7 +1730,7 @@ DjVuDocEditor::generate_thumbnails(int thumb_size,
    do
    {
      page_num=generate_thumbnails(thumb_size,page_num);
-     if (cb) if (cb(page_num, cl_data)) return;
+     if (cb && page_num>0) if (cb(page_num-1, cl_data)) return;
    } while(page_num>=0);
 }
 

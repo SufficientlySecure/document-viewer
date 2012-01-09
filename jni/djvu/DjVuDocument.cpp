@@ -176,6 +176,7 @@ DjVuDocument::start_init(
       // Initialize
    cache=xcache;
    doc_type=UNKNOWN_TYPE;
+   DataPool::close_all();
    DjVuPortcaster * pcaster=get_portcaster();
    if (!xport)
      xport=simple_port=new DjVuSimplePort();

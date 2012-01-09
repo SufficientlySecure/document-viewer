@@ -22,6 +22,16 @@
 
 #include "memento.h"
 
+#ifdef __ANDROID__
+#include <android/log.h>
+#define LOG_TAG "libmupdf"
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+#else
+#define LOGI(...) do {} while(0)
+#define LOGE(...) do {} while(0)
+#endif
+
 #define nelem(x) (sizeof(x)/sizeof((x)[0]))
 
 #define ABS(x) ( (x) < 0 ? -(x) : (x) )
@@ -437,6 +447,11 @@ int fz_is_dict(fz_obj *obj);
 int fz_is_indirect(fz_obj *obj);
 
 int fz_objcmp(fz_obj *a, fz_obj *b);
+
+/* dict marking and unmarking functions - to avoid infinite recursions */
+int fz_dict_marked(fz_obj *obj);
+int fz_dict_mark(fz_obj *obj);
+void fz_dict_unmark(fz_obj *obj);
 
 /* safe, silent failure, no error reporting on type mismatches */
 int fz_to_bool(fz_obj *obj);
@@ -1150,6 +1165,19 @@ void fz_debug_text_span_xml(fz_text_span *span);
 fz_device *fz_new_text_device(fz_context *ctx, fz_text_span *text);
 
 /*
+ * Cookie support - simple communication channel between app/library.
+ */
+
+typedef struct fz_cookie_s fz_cookie;
+
+struct fz_cookie_s
+{
+	int abort;
+	int progress;
+	int progress_max; /* -1 for unknown */
+};
+
+/*
  * Display list device -- record and play back device commands.
  */
 
@@ -1158,7 +1186,7 @@ typedef struct fz_display_list_s fz_display_list;
 fz_display_list *fz_new_display_list(fz_context *ctx);
 void fz_free_display_list(fz_context *ctx, fz_display_list *list);
 fz_device *fz_new_list_device(fz_context *ctx, fz_display_list *list);
-void fz_execute_display_list(fz_display_list *list, fz_device *dev, fz_matrix ctm, fz_bbox area);
+void fz_execute_display_list(fz_display_list *list, fz_device *dev, fz_matrix ctm, fz_bbox area, fz_cookie *cookie);
 
 
 /*
@@ -1286,7 +1314,8 @@ struct fz_link_s
 };
 
 fz_link *fz_new_link(fz_context *ctx, fz_rect bbox, fz_link_dest dest);
-void fz_free_link(fz_context *ctx, fz_link *);
+void fz_free_link(fz_context *ctx, fz_link *link);
+void fz_free_link_dest(fz_context *ctx, fz_link_dest *dest);
 
 /*
  * Document interface.

@@ -55,7 +55,9 @@ public class FB2ContentHandler extends FB2BaseHandler {
                 parsingNotesP = true;
             } else {
                 paragraphParsing = true;
-                markup.add(crs.paint.pOffset);
+                if (!inTitle) {
+                    markup.add(crs.paint.pOffset);
+                }
             }
         } else if ("v".equals(qName)) {
             if (parsingNotes && !inTitle) {

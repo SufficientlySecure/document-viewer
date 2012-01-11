@@ -606,8 +606,8 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
         @Override
         public void onLongPress(final MotionEvent e) {
-            // TODO Auto-generated method stub
-            processTap(TouchManager.Touch.LongTap, e);
+            // LongTap operation cause side-effects
+            // processTap(TouchManager.Touch.LongTap, e);
         }
     }
 }

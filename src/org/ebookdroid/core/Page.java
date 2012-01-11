@@ -61,8 +61,6 @@ public class Page {
             }
             nodes.root.draw(canvas, viewState, bounds, paint);
 
-            canvas.drawLine(bounds.left, bounds.top, bounds.right, bounds.top, paint.strokePaint);
-            canvas.drawLine(bounds.left, bounds.bottom, bounds.right, bounds.bottom, paint.strokePaint);
             return true;
         }
         return false;

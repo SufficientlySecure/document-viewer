@@ -4,7 +4,6 @@ import org.ebookdroid.core.PagePaint;
 import org.ebookdroid.core.ViewState;
 
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -19,14 +18,9 @@ public class Bitmaps {
 
     private static final int SIZE = 128;
 
-    private static final Config DEF_BITMAP_TYPE = Bitmap.Config.RGB_565;
-
-    private static boolean useDefaultBitmapType = true;
-
     public final Rect bounds;
     public final int columns;
     public final int rows;
-    public final Bitmap.Config config;
 
     private BitmapRef[] bitmaps;
 
@@ -36,7 +30,6 @@ public class Bitmaps {
         this.bounds = bitmapBounds;
         this.columns = (int) Math.ceil(bounds.width() / (float) SIZE);
         this.rows = (int) Math.ceil(bounds.height() / (float) SIZE);
-        this.config = useDefaultBitmapType ? DEF_BITMAP_TYPE : origBitmap.getConfig();
         this.bitmaps = new BitmapRef[columns * rows];
 
         for (int row = 0; row < rows; row++) {
@@ -45,10 +38,10 @@ public class Bitmaps {
                 final RawBitmap rb = new RawBitmap(origBitmap, rect);
 
                 final String name = nodeId + ":" + row + ", " + col;
-                final BitmapRef b = BitmapManager.getBitmap(name, SIZE, SIZE, config);
+                final BitmapRef b = BitmapManager.getBitmap(name, SIZE, SIZE, Bitmap.Config.ARGB_8888);
                 final Bitmap bmp = b.getBitmap();
                 if (row == rows - 1 || col == columns - 1) {
-                    bmp.eraseColor(Color.BLACK);
+                    bmp.eraseColor(Color.TRANSPARENT);
                 }
                 rb.toBitmap(bmp);
 
@@ -62,16 +55,15 @@ public class Bitmaps {
         this.bounds = orig.bounds;
         this.columns = orig.columns;
         this.rows = orig.rows;
-        this.config = useDefaultBitmapType ? DEF_BITMAP_TYPE : orig.config;
         this.bitmaps = new BitmapRef[days.length];
 
         for (int i = 0; i < bitmaps.length; i++) {
             final String name = nodeId + ":night:" + i;
             final int w = days[i].getWidth();
             final int h = days[i].getHeight();
-            bitmaps[i] = BitmapManager.getBitmap(name, w, h, config);
+            bitmaps[i] = BitmapManager.getBitmap(name, w, h, Bitmap.Config.ARGB_8888);
             final Bitmap bmp = bitmaps[i].getBitmap();
-            bmp.eraseColor(Color.WHITE);
+            bmp.eraseColor(Color.TRANSPARENT);
             final Canvas c = new Canvas(bmp);
             c.drawRect(0, 0, w, h, paint);
             c.drawBitmap(days[i], 0, 0, paint);

@@ -106,8 +106,8 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
         topThmbBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.bt_top);
 
         recentAdapter = new RecentAdapter(this);
-        libraryAdapter = new FileListAdapter(this);
         bookshelfAdapter = new BooksAdapter(this, recentAdapter);
+        libraryAdapter = new FileListAdapter(bookshelfAdapter);
 
         libraryButton = (ImageView) findViewById(R.id.recent_showlibrary);
 
@@ -262,7 +262,7 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
             if (view == VIEW_LIBRARY) {
                 viewflipper.setDisplayedChild(VIEW_LIBRARY);
                 libraryButton.setImageResource(R.drawable.actionbar_recent);
-                libraryAdapter.startScan(filter);
+                libraryAdapter.startScan();
             } else {
                 viewflipper.setDisplayedChild(VIEW_RECENT);
                 libraryButton.setImageResource(R.drawable.actionbar_library);
@@ -409,7 +409,7 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
             if (newSettings.getUseBookcase()) {
                 bookshelfAdapter.startScan();
             } else {
-                libraryAdapter.startScan(filter);
+                libraryAdapter.startScan();
             }
             return;
         }
@@ -418,7 +418,7 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
             if (newSettings.getUseBookcase()) {
                 bookshelfAdapter.startScan();
             } else {
-                libraryAdapter.startScan(filter);
+                libraryAdapter.startScan();
             }
         }
     }

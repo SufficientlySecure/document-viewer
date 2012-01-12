@@ -7,6 +7,8 @@ import org.ebookdroid.core.settings.books.BookSettings;
 import org.ebookdroid.core.views.BookshelfView;
 import org.ebookdroid.utils.LengthUtils;
 
+import _android.util.SparseArrayEx;
+
 import android.database.DataSetObserver;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
@@ -24,13 +26,13 @@ import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class BooksAdapter extends PagerAdapter implements FileSystemScanner.Listener {
+public class BooksAdapter extends PagerAdapter implements FileSystemScanner.Listener, Iterable<BookShelfAdapter> {
 
     final IBrowserActivity base;
 
     final AtomicBoolean inScan = new AtomicBoolean();
 
-    final TreeMap<Integer, BookShelfAdapter> data = new TreeMap<Integer, BookShelfAdapter>();
+    final SparseArrayEx<BookShelfAdapter> data = new SparseArrayEx<BookShelfAdapter>();
 
     final TreeMap<String, BookShelfAdapter> folders = new TreeMap<String, BookShelfAdapter>();
 
@@ -64,13 +66,18 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
     }
 
     @Override
+    public Iterator<BookShelfAdapter> iterator() {
+        return data.iterator();
+    }
+
+    @Override
     public int getCount() {
         return getListCount();
     }
 
     @Override
     public Object instantiateItem(final View arg0, final int arg1) {
-        final BookshelfView view = new BookshelfView(base, arg0, data.get(arg1));
+        final BookshelfView view = new BookshelfView(base, arg0, getList(arg1));
         ((ViewPager) arg0).addView(view, 0);
         return view;
     }
@@ -95,8 +102,8 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
         // TODO Auto-generated method stub
     }
 
-    public synchronized BookShelfAdapter getList(final int id) {
-        return data.get(id);
+    public synchronized BookShelfAdapter getList(final int index) {
+        return data.valueAt(index);
     }
 
     public synchronized int getListCount() {
@@ -118,12 +125,15 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
     public synchronized List<String> getListNames() {
         createRecent();
 
-        if (data.isEmpty()) {
+        final int size = data.size();
+
+        if (size == 0) {
             return null;
         }
 
         final List<String> result = new ArrayList<String>(data.size());
-        for (final BookShelfAdapter a : data.values()) {
+        for (int index = 0; index < size; index++) {
+            final BookShelfAdapter a = data.valueAt(index);
             result.add(a.name);
         }
         return result;
@@ -132,31 +142,26 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
     public synchronized List<String> getListPaths() {
         createRecent();
 
-        if (data.isEmpty()) {
+        final int size = data.size();
+
+        if (size == 0) {
             return null;
         }
 
         final List<String> result = new ArrayList<String>(data.size());
-        for (final BookShelfAdapter a : data.values()) {
+        for (int index = 0; index < size; index++) {
+            final BookShelfAdapter a = data.valueAt(index);
             result.add(a.path);
         }
         return result;
     }
 
-    public synchronized int getCount(final int currentList) {
-        createRecent();
-        if (0 <= currentList && currentList < data.size()) {
-            return getList(currentList).nodes.size();
-        }
-        throw new RuntimeException("Wrong list id: " + currentList + ", " + data.keySet());
-    }
-
-    public Object getItem(final int currentList, final int position) {
+    public BookNode getItem(final int currentList, final int position) {
         createRecent();
         if (0 <= currentList && currentList < data.size()) {
             return getList(currentList).nodes.get(position);
         }
-        throw new RuntimeException("Wrong list id: " + currentList + ", " + data.keySet());
+        throw new RuntimeException("Wrong list id: " + currentList + "/" + data.size());
     }
 
     public long getItemId(final int position) {
@@ -164,15 +169,13 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
     }
 
     public synchronized void clearData() {
-        // System.out.println("BS: clearData: old=" + getListPaths());
-
         final BookShelfAdapter oldRecent = data.get(0);
         data.clear();
         folders.clear();
         SEQ.set(1);
 
         if (oldRecent != null) {
-            data.put(0, oldRecent);
+            data.append(0, oldRecent);
         } else {
             createRecent();
         }
@@ -184,7 +187,7 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
         BookShelfAdapter a = data.get(0);
         if (a == null) {
             a = new BookShelfAdapter(base, 0, base.getContext().getString(R.string.recent_title), "");
-            data.put(0, a);
+            data.append(0, a);
         }
         return a;
     }
@@ -209,14 +212,18 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
         } else {
             if (a == null) {
                 a = new BookShelfAdapter(base, SEQ.getAndIncrement(), parent.getName(), dir);
-                data.put(a.id, a);
+                data.append(a.id, a);
                 folders.put(dir, a);
+                for (final File f : files) {
+                    a.nodes.add(new BookNode(f));
+                }
                 notifyDataSetChanged();
+            } else {
+                for (final File f : files) {
+                    a.nodes.add(new BookNode(f));
+                }
+                a.notifyDataSetChanged();
             }
-            for (final File f : files) {
-                a.nodes.add(new BookNode(a.id, f.getName(), f.getAbsolutePath()));
-            }
-            a.notifyDataSetChanged();
         }
     }
 
@@ -227,13 +234,16 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
             BookShelfAdapter a = folders.get(dir);
             if (a == null) {
                 a = new BookShelfAdapter(base, SEQ.getAndIncrement(), parent.getName(), dir);
-                data.put(a.id, a);
+                data.append(a.id, a);
                 folders.put(dir, a);
+                a.nodes.add(new BookNode(f));
+                Collections.sort(a.nodes);
                 notifyDataSetChanged();
+            } else {
+                a.nodes.add(new BookNode(f));
+                Collections.sort(a.nodes);
+                a.notifyDataSetChanged();
             }
-            a.nodes.add(new BookNode(a.id, f.getName(), f.getAbsolutePath()));
-            Collections.sort(a.nodes);
-            a.notifyDataSetChanged();
         }
     }
 
@@ -326,9 +336,9 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
             for (int i = 0; i < count; i++) {
                 final BookSettings item = recent.getItem(i);
                 final File file = new File(item.fileName);
-                String path = file.getAbsolutePath();
-                ra.nodes.add(new BookNode(0, file.getName(), path));
-                BookShelfAdapter a = folders.get(new File(path).getParent());
+                final BookNode book = new BookNode(file);
+                ra.nodes.add(book);
+                final BookShelfAdapter a = folders.get(new File(book.path).getParent());
                 if (a != null) {
                     a.notifyDataSetInvalidated();
                 }

@@ -165,7 +165,7 @@ public class BookshelfView extends GridView implements OnItemClickListener {
     @Override
     public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
         final BookNode node = (BookNode) adapter.getItem(position);
-        final File file = new File(node.getPath());
+        final File file = new File(node.path);
         if (!file.isDirectory()) {
             base.showDocument(Uri.fromFile(file));
         }

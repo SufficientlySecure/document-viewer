@@ -1,13 +1,10 @@
 package org.ebookdroid.core.presentation;
 
 import org.ebookdroid.R;
-import org.ebookdroid.core.IBrowserActivity;
 import org.ebookdroid.core.settings.SettingsManager;
-import org.ebookdroid.core.utils.DirectoryFilter;
-import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.utils.FileUtils;
-import org.ebookdroid.utils.StringUtils;
 
+import android.database.DataSetObserver;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
@@ -15,27 +12,36 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FileListAdapter extends BaseExpandableListAdapter {
 
-    final IBrowserActivity base;
+    final BooksAdapter adapter;
+    final FolderObserver observer = new FolderObserver();
 
-    final AtomicBoolean inScan = new AtomicBoolean();
+    public FileListAdapter(final BooksAdapter adapter) {
+        this.adapter = adapter;
+        adapter.registerDataSetObserver(new DataSetObserver() {
 
-    final ArrayList<Node> data = new ArrayList<Node>();
+            @Override
+            public void onChanged() {
+                for (BookShelfAdapter a : adapter) {
+                    if (a != null && a.id > 0) {
+                        a.registerDataSetObserver(observer);
+                    }
+                }
+                notifyDataSetChanged();
+            }
 
-    public FileListAdapter(final IBrowserActivity base) {
-        this.base = base;
+            @Override
+            public void onInvalidated() {
+                notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
-    public File getChild(final int groupPosition, final int childPosition) {
-        return new File(data.get(groupPosition).getPath(), data.get(groupPosition).getList()[childPosition]);
+    public BookNode getChild(final int groupPosition, final int childPosition) {
+        return adapter.getItem(groupPosition + 1, childPosition);
     }
 
     @Override
@@ -45,7 +51,7 @@ public class FileListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(final int groupPosition) {
-        return data.get(groupPosition).getCount();
+        return adapter.getList(groupPosition + 1).getCount();
     }
 
     @Override
@@ -55,10 +61,11 @@ public class FileListAdapter extends BaseExpandableListAdapter {
         final ViewHolder holder = BaseViewHolder.getOrCreateViewHolder(ViewHolder.class, R.layout.browseritem,
                 convertView, parent);
 
-        final File file = getChild(groupPosition, childPosition);
+        final BookNode book = getChild(groupPosition, childPosition);
+        final File file = new File(book.path);
         final boolean wasRead = SettingsManager.getBookSettings(file.getAbsolutePath()) != null;
 
-        holder.name.setText(file.getName());
+        holder.name.setText(book.name);
         holder.image.setImageResource(wasRead ? R.drawable.bookwatched : R.drawable.book);
         holder.info.setText(FileUtils.getFileDate(file.lastModified()));
         holder.fileSize.setText(FileUtils.getFileSize(file.length()));
@@ -73,9 +80,9 @@ public class FileListAdapter extends BaseExpandableListAdapter {
         final ViewHolder holder = BaseViewHolder.getOrCreateViewHolder(ViewHolder.class, R.layout.browseritem,
                 convertView, parent);
 
-        final Node curr = getGroup(groupPosition);
+        final BookShelfAdapter curr = getGroup(groupPosition);
 
-        holder.name.setText(curr.getName());
+        holder.name.setText(curr.name);
         holder.image.setImageResource(R.drawable.folderopen);
         holder.info.setText("Books: " + curr.getCount());
         holder.fileSize.setText("");
@@ -84,13 +91,13 @@ public class FileListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public Node getGroup(final int groupPosition) {
-        return data.get(groupPosition);
+    public BookShelfAdapter getGroup(final int groupPosition) {
+        return adapter.getList(groupPosition + 1);
     }
 
     @Override
     public int getGroupCount() {
-        return data.size();
+        return adapter.getListCount() - 1;
     }
 
     @Override
@@ -108,27 +115,17 @@ public class FileListAdapter extends BaseExpandableListAdapter {
         return false;
     }
 
-    public void addNode(final Node node) {
-        if (node != null) {
-            data.add(node);
-        }
-    }
-
     public void clearData() {
-        data.clear();
+        adapter.clearData();
         notifyDataSetInvalidated();
     }
 
-    public void startScan(final FileExtensionFilter filter) {
-        if (inScan.compareAndSet(false, true)) {
-            base.showProgress(true);
-            clearData();
-            new Thread(new ScanTask(filter)).start();
-        }
+    public void startScan() {
+        adapter.startScan();
     }
 
     public void stopScan() {
-        inScan.set(false);
+        adapter.stopScan();
     }
 
     static class ViewHolder extends BaseViewHolder {
@@ -148,112 +145,16 @@ public class FileListAdapter extends BaseExpandableListAdapter {
         }
     }
 
-    static class Node {
+    class FolderObserver extends DataSetObserver {
 
-        private final String name;
-        private final String path;
-        private final String[] list;
-
-        Node(final String name, final String path, final String[] list) {
-            this.name = name;
-            this.path = path;
-            this.list = list;
-        }
-
-        String getName() {
-            return this.name;
-        }
-
-        String getPath() {
-            return this.path;
-        }
-
-        String[] getList() {
-            return this.list;
-        }
-
-        int getCount() {
-            return this.list.length;
+        @Override
+        public void onChanged() {
+            notifyDataSetChanged();
         }
 
         @Override
-        public String toString() {
-            return this.name;
-        }
-    }
-
-    class ScanTask implements Runnable {
-
-        final FileExtensionFilter filter;
-
-        final Queue<Node> currNodes = new ConcurrentLinkedQueue<Node>();
-
-        final AtomicBoolean inUI = new AtomicBoolean();
-
-        public ScanTask(final FileExtensionFilter filter) {
-            this.filter = filter;
-        }
-
-        @Override
-        public void run() {
-            // Checks if we started to update adapter data
-            if (!currNodes.isEmpty() && inUI.get()) {
-                // Add files from queue to adapter
-                for (Node n = currNodes.poll(); n != null && inScan.get(); n = currNodes.poll()) {
-                    addNode(n);
-                }
-                notifyDataSetChanged();
-                // Clear flag
-                inUI.set(false);
-                // Finish UI part
-                return;
-            }
-
-            for (final String path : SettingsManager.getAppSettings().getAutoScanDirs()) {
-                // Scan each valid folder
-                final File dir = new File(path);
-                if (dir.isDirectory()) {
-                    scanDir(dir);
-                }
-            }
-
-            // Check if queued files are available and no UI task started
-            if (!currNodes.isEmpty() && inScan.get() && inUI.compareAndSet(false, true)) {
-                // Start final UI task
-                base.getActivity().runOnUiThread(this);
-            }
-            base.getActivity().runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    base.showProgress(false);
-                }
-            });
-
-        }
-
-        private void scanDir(final File dir) {
-            // Checks if scan should be continued
-            if (!inScan.get() || !dir.isDirectory() || dir.getAbsolutePath().startsWith("/sys")) {
-                return;
-            }
-            final String[] list = dir.list(filter);
-            if (list != null && list.length > 0) {
-                Arrays.sort(list, StringUtils.getNaturalComparator());
-                currNodes.add(new Node(dir.getName(), dir.getAbsolutePath(), list));
-                if (inUI.compareAndSet(false, true)) {
-                    // Start UI task if required
-                    base.getActivity().runOnUiThread(this);
-                }
-            }
-            // Retrieves files from current directory
-            final File[] listOfDirs = dir.listFiles(DirectoryFilter.ALL);
-            if (listOfDirs != null && inScan.get()) {
-                for (int i = 0; i < listOfDirs.length; i++) {
-                    // Recursively processing found file
-                    scanDir(listOfDirs[i]);
-                }
-            }
+        public void onInvalidated() {
+            notifyDataSetChanged();
         }
     }
 

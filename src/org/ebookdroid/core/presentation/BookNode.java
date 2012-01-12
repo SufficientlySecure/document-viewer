@@ -2,24 +2,16 @@ package org.ebookdroid.core.presentation;
 
 import org.ebookdroid.utils.StringUtils;
 
-public class BookNode implements Comparable<BookNode>{
+import java.io.File;
 
-    final int listNum;
-    final String name;
-    final String path;
+public class BookNode implements Comparable<BookNode> {
 
-    BookNode(final int listNum, final String name, final String path) {
-        this.listNum = listNum;
-        this.name = name;
-        this.path = path;
-    }
+    public final String name;
+    public final String path;
 
-    String getName() {
-        return this.name;
-    }
-
-    public String getPath() {
-        return this.path;
+    BookNode(final File f) {
+        this.name = f.getName();
+        this.path = f.getAbsolutePath();
     }
 
     @Override

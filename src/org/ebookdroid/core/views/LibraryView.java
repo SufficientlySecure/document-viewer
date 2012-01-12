@@ -1,6 +1,7 @@
 package org.ebookdroid.core.views;
 
 import org.ebookdroid.core.IBrowserActivity;
+import org.ebookdroid.core.presentation.BookNode;
 import org.ebookdroid.core.presentation.FileListAdapter;
 
 import android.net.Uri;
@@ -28,7 +29,8 @@ public class LibraryView extends ExpandableListView implements ExpandableListVie
     @Override
     public boolean onChildClick(final ExpandableListView parent, final View v, final int groupPosition,
             final int childPosition, final long id) {
-        final File file = adapter.getChild(groupPosition, childPosition);
+        final BookNode book = adapter.getChild(groupPosition, childPosition);
+        final File file = new File(book.path);
         if (!file.isDirectory()) {
             base.showDocument(Uri.fromFile(file));
         }

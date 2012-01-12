@@ -47,16 +47,17 @@ public class FileSystemScanner {
             m_scanTask = new ScanTask(SettingsManager.getAppSettings().getAllowedFileTypes());
             m_scanTask.execute(paths);
         } else {
-            m_scanTask.paths.addAll(Arrays.asList(paths));
+            m_scanTask.addPaths(paths);
         }
     }
 
     public void startScan(final Collection<String> paths) {
+        String[] arr = paths.toArray(new String[paths.size()]);
         if (inScan.compareAndSet(false, true)) {
             m_scanTask = new ScanTask(SettingsManager.getAppSettings().getAllowedFileTypes());
-            m_scanTask.execute(paths.toArray(new String[paths.size()]));
+            m_scanTask.execute(arr);
         } else {
-            m_scanTask.paths.addAll(paths);
+            m_scanTask.addPaths(arr);
         }
     }
 
@@ -97,7 +98,7 @@ public class FileSystemScanner {
 
         final FileExtensionFilter filter;
 
-        final LinkedList<String> paths = new LinkedList<String>();
+        final LinkedList<File> paths = new LinkedList<File>();
 
         public ScanTask(final FileExtensionFilter filter) {
             this.filter = filter;
@@ -110,15 +111,10 @@ public class FileSystemScanner {
 
         @Override
         protected Void doInBackground(final String... paths) {
-            this.paths.addAll(Arrays.asList(paths));
+            addPaths(paths);
 
-            while (!this.paths.isEmpty()) {
-                final String path = this.paths.remove();
-                // Scan each valid folder
-                final File dir = new File(path);
-                if (dir.isDirectory()) {
-                    scanDir(dir);
-                }
+            for(File dir = getDir(); dir != null && inScan.get(); dir = getDir()) {
+                scanDir(dir);
             }
             return null;
         }
@@ -129,7 +125,7 @@ public class FileSystemScanner {
             inScan.set(false);
         }
 
-        private void scanDir(final File dir) {
+        void scanDir(final File dir) {
             // Checks if scan should be continued
             if (!inScan.get() || !dir.isDirectory() || dir.getAbsolutePath().startsWith("/sys")) {
                 return;
@@ -160,11 +156,26 @@ public class FileSystemScanner {
             if (LengthUtils.isNotEmpty(childDirs)) {
                 // Sort child dir list
                 Arrays.sort(childDirs, StringUtils.NFC);
-                for (int i = 0; i < childDirs.length; i++) {
-                    // Recursively processing found file
-                    scanDir(childDirs[i]);
+                // Add children for deep ordered scanning
+                synchronized (this) {
+                    for (int i = childDirs.length - 1; i >= 0; i--) {
+                        this.paths.addFirst(childDirs[i]);
+                    }
                 }
             }
+        }
+
+        synchronized void addPaths(final String... paths) {
+            for (String path : paths) {
+                final File dir = new File(path);
+                if (dir.exists() && dir.isDirectory()) {
+                    this.paths.add(dir);
+                }
+            }
+        }
+
+        synchronized File getDir() {
+            return this.paths.isEmpty() ? null : this.paths.removeFirst();
         }
     }
 

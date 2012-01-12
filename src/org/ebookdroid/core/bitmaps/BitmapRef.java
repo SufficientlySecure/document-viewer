@@ -29,7 +29,7 @@ public class BitmapRef {
     }
 
     public Bitmap getBitmap() {
-        final Bitmap bmp = bitmap != null ? bitmap : ref.get();
+        final Bitmap bmp = bitmap != null ? bitmap : ref != null ? ref.get() : null;
         if (bmp != null) {
             ref = new SoftReference<Bitmap>(bmp);
         }
@@ -44,7 +44,7 @@ public class BitmapRef {
     }
 
     boolean clearEmptyRef() {
-        final Bitmap bmp = bitmap != null ? bitmap : ref.get();
+        final Bitmap bmp = bitmap != null ? bitmap : ref != null ? ref.get() : null;
         if (bmp != null && !bmp.isRecycled()) {
             return false;
         }
@@ -60,12 +60,12 @@ public class BitmapRef {
     }
 
     void recycle() {
-        final Bitmap bmp = bitmap != null ? bitmap : ref.get();
+        final Bitmap bmp = bitmap != null ? bitmap : ref != null ? ref.get() : null;
         if (bmp != null) {
             bmp.recycle();
         }
         bitmap = null;
-        ref = new SoftReference<Bitmap>(null);
+        ref = null;
     }
 
     @Override

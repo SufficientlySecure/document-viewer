@@ -7,6 +7,7 @@ import org.ebookdroid.core.PageAlign;
 import org.ebookdroid.core.RotationType;
 import org.ebookdroid.core.curl.PageAnimationType;
 import org.ebookdroid.core.settings.books.BookSettings;
+import org.ebookdroid.core.utils.AndroidVersion;
 import org.ebookdroid.core.utils.FileExtensionFilter;
 import org.ebookdroid.utils.LengthUtils;
 import org.ebookdroid.utils.StringUtils;
@@ -273,7 +274,7 @@ public class AppSettings {
         if (useBookcase == null) {
             useBookcase = prefs.getBoolean("usebookcase", true);
         }
-        return useBookcase;
+        return !AndroidVersion.is1x && useBookcase;
     }
 
     boolean getSplitPages() {

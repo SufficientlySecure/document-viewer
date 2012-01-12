@@ -137,9 +137,9 @@ public class HScrollDocumentView extends AbstractDocumentView {
                 page.draw(canvas, viewState);
             }
         }
-
-        DragMark.draw(canvas, viewState);
-
+        if (SettingsManager.getAppSettings().getShowAnimIcon()) {
+            DragMark.draw(canvas, viewState);
+        }
         view.continueScroll();
     }
 

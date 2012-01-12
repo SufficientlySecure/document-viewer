@@ -4,6 +4,7 @@ import org.ebookdroid.core.DragMark;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.SinglePageDocumentView;
 import org.ebookdroid.core.ViewState;
+import org.ebookdroid.core.settings.SettingsManager;
 
 import android.graphics.Canvas;
 import android.view.MotionEvent;
@@ -59,8 +60,9 @@ public class SinglePageView implements PageAnimator {
         final Page page = view.getBase().getDocumentModel().getCurrentPageObject();
         if (page != null) {
             page.draw(canvas, viewState);
-
-            DragMark.draw(canvas, viewState);
+            if (SettingsManager.getAppSettings().getShowAnimIcon()) {
+                DragMark.draw(canvas, viewState);
+            }
         }
     }
 

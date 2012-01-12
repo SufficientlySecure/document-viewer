@@ -6,6 +6,7 @@ import org.ebookdroid.core.SinglePageDocumentView;
 import org.ebookdroid.core.ViewState;
 import org.ebookdroid.core.bitmaps.BitmapManager;
 import org.ebookdroid.core.bitmaps.BitmapRef;
+import org.ebookdroid.core.settings.SettingsManager;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -68,7 +69,8 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
     }
 
     protected BitmapRef getBitmap(final Canvas canvas, final ViewState viewState) {
-        final BitmapRef bitmap = BitmapManager.getBitmap("Curler image", canvas.getWidth(), canvas.getHeight(), Bitmap.Config.RGB_565);
+        final BitmapRef bitmap = BitmapManager.getBitmap("Curler image", canvas.getWidth(), canvas.getHeight(),
+                Bitmap.Config.RGB_565);
 
         final PagePaint paint = viewState.nightMode ? PagePaint.NIGHT : PagePaint.DAY;
 
@@ -83,8 +85,11 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
         paint.setFilterBitmap(true);
         paint.setAntiAlias(true);
         paint.setDither(true);
-        canvas.drawBitmap(arrowsBitmap, view.getWidth() - arrowsBitmap.getWidth(),
-                view.getHeight() - arrowsBitmap.getHeight(), paint);
+
+        if (SettingsManager.getAppSettings().getShowAnimIcon()) {
+            canvas.drawBitmap(arrowsBitmap, view.getWidth() - arrowsBitmap.getWidth(),
+                    view.getHeight() - arrowsBitmap.getHeight(), paint);
+        }
     }
 
     @Override

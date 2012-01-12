@@ -22,6 +22,7 @@ package org.ebookdroid.core.curl;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.SinglePageDocumentView;
 import org.ebookdroid.core.ViewState;
+import org.ebookdroid.core.settings.SettingsManager;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -219,8 +220,11 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
         paint.setFilterBitmap(true);
         paint.setAntiAlias(true);
         paint.setDither(true);
-        canvas.drawBitmap(arrowsBitmap, view.getWidth() - arrowsBitmap.getWidth(),
-                view.getHeight() - arrowsBitmap.getHeight(), paint);
+
+        if (SettingsManager.getAppSettings().getShowAnimIcon()) {
+            canvas.drawBitmap(arrowsBitmap, view.getWidth() - arrowsBitmap.getWidth(),
+                    view.getHeight() - arrowsBitmap.getHeight(), paint);
+        }
     }
 
     @Override

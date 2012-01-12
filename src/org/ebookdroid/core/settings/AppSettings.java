@@ -33,6 +33,8 @@ public class AppSettings {
 
     private Integer pagesInMemory;
 
+    private Boolean showAnimIcon;
+
     private Boolean nightMode;
 
     private PageAlign pageAlign;
@@ -147,6 +149,13 @@ public class AppSettings {
             brightness = getIntValue("brightness", 100);
         }
         return brightness;
+    }
+
+    public boolean getShowAnimIcon() {
+        if (showAnimIcon == null) {
+            showAnimIcon = prefs.getBoolean("showanimicon", true);
+        }
+        return showAnimIcon;
     }
 
     public boolean getNightMode() {

@@ -19,7 +19,7 @@ public class CbxDocument<ArchiveEntryType extends ArchiveEntry> extends Abstract
 
     public static final LogContext LCTX = LogContext.ROOT.lctx("Cbx");
 
-    private static final FileExtensionFilter imageFilter = new FileExtensionFilter("jpg", "jpeg", "png");
+    private static final FileExtensionFilter imageFilter = new FileExtensionFilter("jpg", "jpeg", "png", "gif");
 
     private final ArchiveFile<ArchiveEntryType> archive;
 

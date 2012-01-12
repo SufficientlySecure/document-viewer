@@ -98,6 +98,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
                 setTitleStyle(!inSection ? RenderingStyle.MAIN_TITLE_SIZE : RenderingStyle.SECTION_TITLE_SIZE);
                 markup.add(crs.jm);
                 markup.add(emptyLine(crs.textSize));
+                markup.add(FB2MarkupParagraphEnd.E);
                 title.setLength(0);
             }
             inTitle = true;
@@ -106,15 +107,17 @@ public class FB2ContentHandler extends FB2BaseHandler {
             if (!parsingNotes) {
                 setEmphasisStyle();
                 markup.add(emptyLine(crs.textSize));
+                markup.add(FB2MarkupParagraphEnd.E);
             }
         } else if ("subtitle".equals(qName)) {
             if (!parsingNotes) {
                 paragraphParsing = true;
                 markup.add(setSubtitleStyle().jm);
                 markup.add(emptyLine(crs.textSize));
+                markup.add(FB2MarkupParagraphEnd.E);
                 markup.add(crs.paint.pOffset);
             }
-        } else if ("text-author".equals(qName)) {
+        } else if ("text-author".equals(qName) || "date".equals(qName)) {
             if (!parsingNotes) {
                 paragraphParsing = true;
                 markup.add(setTextAuthorStyle(inCite).jm);
@@ -128,10 +131,12 @@ public class FB2ContentHandler extends FB2BaseHandler {
             }
         } else if ("empty-line".equals(qName)) {
             markup.add(emptyLine(crs.textSize));
+            markup.add(FB2MarkupParagraphEnd.E);
         } else if ("poem".equals(qName)) {
             if (!parsingNotes) {
                 markup.add(setPoemStyle().jm);
                 markup.add(emptyLine(crs.textSize));
+                markup.add(FB2MarkupParagraphEnd.E);
             }
         } else if ("strong".equals(qName)) {
             setBoldStyle();
@@ -150,7 +155,17 @@ public class FB2ContentHandler extends FB2BaseHandler {
             if (cover) {
                 document.setCover(ref);
             } else {
-                markup.add(new FB2MarkupImageRef(ref, paragraphParsing));
+                if (!parsingNotes) {
+                    if (!paragraphParsing) {
+                        markup.add(emptyLine(crs.textSize));
+                        markup.add(FB2MarkupParagraphEnd.E);
+                    }
+                    markup.add(new FB2MarkupImageRef(ref, paragraphParsing));
+                    if (!paragraphParsing) {
+                        markup.add(emptyLine(crs.textSize));
+                        markup.add(FB2MarkupParagraphEnd.E);
+                    }
+                }
             }
         } else if ("coverpage".equals(qName)) {
             cover = true;
@@ -192,6 +207,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
         } else if ("body".equals(qName)) {
             if (documentStarted && !documentEnded) {
                 documentEnded = true;
+                markup.add(new FB2MarkupEndDocument());
             }
             parsingNotes = false;
         } else if ("section".equals(qName)) {
@@ -201,30 +217,35 @@ public class FB2ContentHandler extends FB2BaseHandler {
                 noteId = -1;
                 noteFirstWord = true;
             } else {
-                markup.add(new FB2MarkupEndPage());
-                inSection = false;
+                if (inSection) {
+                    markup.add(new FB2MarkupEndPage());
+                    inSection = false;
+                }
             }
         } else if ("title".equals(qName)) {
             inTitle = false;
             if (!parsingNotes) {
                 markup.add(new FB2MarkupTitle(title.toString()));
                 markup.add(emptyLine(crs.textSize));
+                markup.add(FB2MarkupParagraphEnd.E);
                 markup.add(setPrevStyle().jm);
             }
         } else if ("cite".equals(qName)) {
             inCite = false;
             if (!parsingNotes) {
                 markup.add(emptyLine(crs.textSize));
+                markup.add(FB2MarkupParagraphEnd.E);
                 markup.add(setPrevStyle().jm);
             }
         } else if ("subtitle".equals(qName)) {
             if (!parsingNotes) {
                 markup.add(FB2MarkupParagraphEnd.E);
                 markup.add(emptyLine(crs.textSize));
+                markup.add(FB2MarkupParagraphEnd.E);
                 markup.add(setPrevStyle().jm);
                 paragraphParsing = false;
             }
-        } else if ("text-author".equals(qName)) {
+        } else if ("text-author".equals(qName)||"date".equals(qName)) {
             if (!parsingNotes) {
                 markup.add(FB2MarkupParagraphEnd.E);
                 markup.add(setPrevStyle().jm);
@@ -233,10 +254,12 @@ public class FB2ContentHandler extends FB2BaseHandler {
         } else if ("stanza".equals(qName)) {
             if (!parsingNotes) {
                 markup.add(emptyLine(crs.textSize));
+                markup.add(FB2MarkupParagraphEnd.E);
             }
         } else if ("poem".equals(qName)) {
             if (!parsingNotes) {
                 markup.add(emptyLine(crs.textSize));
+                markup.add(FB2MarkupParagraphEnd.E);
                 markup.add(setPrevStyle().jm);
             }
         } else if ("strong".equals(qName)) {

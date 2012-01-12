@@ -116,6 +116,9 @@ public class FB2Line {
     }
 
     public void applyJustification(final JustificationMode jm) {
+        if (committed) {
+            return;
+        }
         justification = jm;
         committed = true;
     }

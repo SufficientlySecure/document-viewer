@@ -58,8 +58,12 @@ public class FB2Image extends AbstractFB2LineElement {
     public float render(final Canvas c, final int y, final int x, final float additionalWidth) {
         final byte[] data = getData();
         final Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-        c.drawBitmap(bmp, null, new Rect(x, y - height, (int) (x + width), y), paint);
-        bmp.recycle();
+        if (bmp != null) {
+            c.drawBitmap(bmp, null, new Rect(x, y - height, (int) (x + width), y), paint);
+            bmp.recycle();
+        } else {
+            c.drawRect(new Rect(x, y - height, (int) (x + width), y), paint);
+        }
         return width;
     }
 

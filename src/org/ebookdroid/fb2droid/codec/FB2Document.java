@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -60,9 +61,11 @@ public class FB2Document implements CodecDocument {
         pages.clear();
         jm = JustificationMode.Justify;
         for (final FB2MarkupElement me : markup) {
+            if (me instanceof FB2MarkupEndDocument) {
+                break;
+            }
             me.publishToDocument(this);
         }
-        commitPage();
         markup.clear();
     }
 
@@ -145,7 +148,13 @@ public class FB2Document implements CodecDocument {
         lastPage.appendLine(line);
         final List<FB2Line> footnotes = line.getFootNotes();
         if (footnotes != null) {
-            for (final FB2Line l : footnotes) {
+            Iterator<FB2Line> iterator = footnotes.iterator();
+            if (lastPage.noteLines.size() > 0 && iterator.hasNext()) {
+                // Skip rule for non first note on page
+                iterator.next();
+            }
+            while (iterator.hasNext()) {
+                FB2Line l = iterator.next();
                 lastPage = FB2Page.getLastPage(pages);
                 if (lastPage.contentHeight + 2 * FB2Page.MARGIN_Y + l.getTotalHeight() > FB2Page.PAGE_HEIGHT) {
                     commitPage();

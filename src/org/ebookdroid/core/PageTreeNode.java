@@ -11,7 +11,6 @@ import org.ebookdroid.core.models.DecodingProgressModel;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.settings.books.BookSettings;
-import org.ebookdroid.utils.LengthUtils;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -41,7 +40,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     final Matrix matrix = new Matrix();
 
     float bitmapZoom = 1;
-    boolean hasChildren = false;
     private boolean cropped;
     RectF croppedBounds = null;
 
@@ -56,27 +54,28 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         this.childrenZoomThreshold = childrenZoomThreshold;
     }
 
-    public void recycle(final List<BitmapRef> bitmapsToRecycle) {
+    public void recycle(final List<BitmapRef> bitmapsToRecycle, boolean recycleChildren) {
         stopDecodingThisNode("node recycling");
         holder.recycle(bitmapsToRecycle);
-        hasChildren = page.nodes.recycleChildren(this, bitmapsToRecycle);
+        if (recycleChildren) {
+            page.nodes.recycleChildren(this, bitmapsToRecycle);
+        }
     }
 
     public boolean onZoomChanged(final float oldZoom, final ViewState viewState, final boolean committed,
             final RectF pageBounds, final List<PageTreeNode> nodesToDecode, final List<BitmapRef> bitmapsToRecycle) {
         if (!viewState.isNodeKeptInMemory(this, pageBounds)) {
-            recycle(bitmapsToRecycle);
+            recycle(bitmapsToRecycle, true);
             return false;
         }
 
         final boolean childrenRequired = isChildrenRequired(viewState);
-
-        PageTreeNode[] children = page.nodes.getChildren(this);
+        final boolean hasChildren = page.nodes.hasChildren(this);
 
         if (viewState.zoom < oldZoom) {
             if (!childrenRequired) {
-                if (LengthUtils.isNotEmpty(children)) {
-                    hasChildren = page.nodes.recycleChildren(this, bitmapsToRecycle);
+                if (hasChildren) {
+                    page.nodes.recycleChildren(this, bitmapsToRecycle);
                 }
                 if (viewState.isNodeVisible(this, pageBounds) && holder.getBitmap() == null) {
                     decodePageTreeNode(nodesToDecode, viewState);
@@ -86,17 +85,14 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         }
 
         if (childrenRequired) {
-            if (LengthUtils.isEmpty(children)) {
-                hasChildren = true;
+            if (!hasChildren) {
                 if (id != 0 || viewState.decodeMode == DecodeMode.LOW_MEMORY) {
-                    stopDecodingThisNode("children created");
+                    stopDecodingThisNode("children should be created");
                 }
-                children = page.nodes.createChildren(this, calculateChildThreshold());
+                page.nodes.createChildren(this, calculateChildThreshold());
             }
 
-            for (final PageTreeNode child : children) {
-                child.onZoomChanged(oldZoom, viewState, committed, pageBounds, nodesToDecode, bitmapsToRecycle);
-            }
+            page.nodes.onZoomChanged(oldZoom, viewState, committed, pageBounds, this, nodesToDecode, bitmapsToRecycle);
 
             return true;
         }
@@ -122,29 +118,24 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             final List<PageTreeNode> nodesToDecode, final List<BitmapRef> bitmapsToRecycle) {
 
         if (!viewState.isNodeKeptInMemory(this, pageBounds)) {
-            recycle(bitmapsToRecycle);
+            recycle(bitmapsToRecycle, true);
             return false;
         }
 
         final boolean childrenRequired = isChildrenRequired(viewState);
-        PageTreeNode[] children = page.nodes.getChildren(this);
+        final boolean hasChildren = page.nodes.hasChildren(this);
 
-        if (LengthUtils.isNotEmpty(children)) {
-            for (final PageTreeNode child : children) {
-                child.onPositionChanged(viewState, pageBounds, nodesToDecode, bitmapsToRecycle);
-            }
+        if (hasChildren) {
+            page.nodes.onPositionChanged(viewState, pageBounds, this, nodesToDecode, bitmapsToRecycle);
             return true;
         }
 
         if (childrenRequired) {
-            hasChildren = true;
             if (id != 0 || viewState.decodeMode == DecodeMode.LOW_MEMORY) {
                 stopDecodingThisNode("children created");
             }
-            children = page.nodes.createChildren(this, calculateChildThreshold());
-            for (final PageTreeNode child : children) {
-                child.onPositionChanged(viewState, pageBounds, nodesToDecode, bitmapsToRecycle);
-            }
+            page.nodes.createChildren(this, calculateChildThreshold());
+            page.nodes.onPositionChanged(viewState, pageBounds, this, nodesToDecode, bitmapsToRecycle);
             return true;
         }
 
@@ -312,16 +303,12 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
             drawBrightnessFilter(canvas, tr);
         }
-        drawChildren(canvas, viewState, pageBounds, paint);
+
+        page.nodes.drawChildren(canvas, viewState, pageBounds, this, paint);
     }
 
     private boolean allChildrenHasBitmap(final ViewState viewState, final PagePaint paint) {
-        for (final PageTreeNode child : page.nodes.getChildren(this)) {
-            if (!child.hasBitmap(viewState, paint)) {
-                return false;
-            }
-        }
-        return page.nodes.getChildren(this).length > 0;
+        return page.nodes.allChildrenHasBitmap(viewState, this, paint);
     }
 
     boolean hasBitmap(final ViewState viewState, final PagePaint paint) {
@@ -335,12 +322,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             p.setColor(Color.BLACK);
             p.setAlpha(255 - brightness * 255 / 100);
             canvas.drawRect(tr, p);
-        }
-    }
-
-    void drawChildren(final Canvas canvas, final ViewState viewState, final RectF pageBounds, final PagePaint paint) {
-        for (final PageTreeNode child : page.nodes.getChildren(this)) {
-            child.draw(canvas, viewState, pageBounds, paint);
         }
     }
 
@@ -522,11 +503,11 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
         public synchronized void recycle(final List<BitmapRef> bitmapsToRecycle) {
             if (day != null) {
-                day.recycle();
+                day.recycle(bitmapsToRecycle);
                 day = null;
             }
             if (night != null) {
-                night.recycle();
+                night.recycle(bitmapsToRecycle);
                 night = null;
             }
         }

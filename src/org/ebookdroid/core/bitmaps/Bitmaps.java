@@ -15,6 +15,7 @@ import android.graphics.Region.Op;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Bitmaps {
 
@@ -40,18 +41,24 @@ public class Bitmaps {
         this.config = useDefaultBitmapType ? DEF_BITMAP_TYPE : origBitmap.getConfig();
         this.bitmaps = new BitmapRef[columns * rows];
 
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < columns; col++) {
-                final Rect rect = getRect(row, col);
-                final RawBitmap rb = new RawBitmap(origBitmap, rect);
-
+        int top = 0;
+        for (int row = 0; row < rows; row++, top += SIZE) {
+            int left = 0;
+            for (int col = 0; col < columns; col++, left += SIZE) {
                 final String name = nodeId + ":" + row + ", " + col;
                 final BitmapRef b = BitmapManager.getBitmap(name, SIZE, SIZE, config);
                 final Bitmap bmp = b.getBitmap();
+
                 if (row == rows - 1 || col == columns - 1) {
-                    bmp.eraseColor(Color.BLACK);
+                    final int right = Math.min(left + SIZE, bounds.width());
+                    final int bottom = Math.min(top + SIZE, bounds.height());
+                    final RawBitmap rb = new RawBitmap(origBitmap, left, top, right - left, bottom - top);
+                    rb.toBitmap(bmp);
+                } else {
+                    final RawBitmap rb = new RawBitmap(origBitmap, left, top, SIZE, SIZE);
+
+                    rb.toBitmap(bmp);
                 }
-                rb.toBitmap(bmp);
 
                 final int index = row * columns + col;
                 bitmaps[index] = b;
@@ -87,7 +94,7 @@ public class Bitmaps {
         for (int i = 0; i < bitmaps.length; i++) {
             res[i] = bitmaps[i].getBitmap();
             if (res[i] == null || res[i].isRecycled()) {
-                recycle();
+                recycle(null);
                 return null;
             }
         }
@@ -102,9 +109,13 @@ public class Bitmaps {
         }
     }
 
-    public synchronized void recycle() {
+    public synchronized void recycle(List<BitmapRef> bitmapsToRecycle) {
         if (bitmaps != null) {
-            BitmapManager.release(new ArrayList<BitmapRef>(Arrays.asList(bitmaps)));
+            if (bitmapsToRecycle != null) {
+                bitmapsToRecycle.addAll(Arrays.asList(bitmaps));
+            } else {
+                BitmapManager.release(new ArrayList<BitmapRef>(Arrays.asList(bitmaps)));
+            }
             bitmaps = null;
         }
     }
@@ -114,12 +125,17 @@ public class Bitmaps {
         if (bitmap != null) {
             Rect orig = canvas.getClipBounds();
             canvas.clipRect(tr, Op.INTERSECT);
-            for (int row = 0; row < rows; row++) {
-                for (int col = 0; col < columns; col++) {
-                    final RectF source = new RectF(getRect(row, col));
+
+            final float scaleX = tr.width() / bounds.width();
+            final float scaleY = tr.height() / bounds.height();
+
+            int top = 0;
+            for (int row = 0; row < rows; row++, top += SIZE) {
+                int left = 0;
+                for (int col = 0; col < columns; col++, left += SIZE) {
                     final Matrix m = new Matrix();
-                    m.postTranslate(source.left, source.top);
-                    m.postScale(tr.width() / bounds.width(), tr.height() / bounds.height());
+                    m.postTranslate(left, top);
+                    m.postScale(scaleX, scaleY);
                     m.postTranslate(tr.left, tr.top);
 
                     final int index = row * columns + col;
@@ -130,14 +146,5 @@ public class Bitmaps {
             }
             canvas.clipRect(orig, Op.REPLACE);
         }
-    }
-
-    public Rect getRect(final int row, final int col) {
-        final int left = col * SIZE;
-        final int top = row * SIZE;
-        final int right = Math.min(left + SIZE, bounds.width());
-        final int bottom = Math.min(top + SIZE, bounds.height());
-        final Rect rect = new Rect(left, top, right, bottom);
-        return rect;
     }
 }

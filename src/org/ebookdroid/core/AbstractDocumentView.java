@@ -459,7 +459,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
             if (isShown) {
                 final ArrayList<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
                 for (final Page page : base.getDocumentModel().getPages()) {
-                    page.nodes.root.recycle(bitmapsToRecycle);
+                    page.nodes.recycle(bitmapsToRecycle);
                 }
                 BitmapManager.release(bitmapsToRecycle);
 

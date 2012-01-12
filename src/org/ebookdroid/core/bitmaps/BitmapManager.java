@@ -155,8 +155,7 @@ public class BitmapManager {
                 memoryUsed -= ref.size;
             }
             ref.clearDirectRef();
-            final Bitmap bitmap = ref.getBitmap();
-            if (bitmap != null && !bitmap.isRecycled()) {
+            if (!ref.clearEmptyRef()) {
                 pool.add(ref);
                 memoryPooled += ref.size;
             }
@@ -168,8 +167,7 @@ public class BitmapManager {
         final Iterator<BitmapRef> it = pool.iterator();
         while (it.hasNext()) {
             final BitmapRef ref = it.next();
-            final Bitmap bmp = ref.ref.get();
-            if (bmp == null || bmp.isRecycled()) {
+            if (ref.clearEmptyRef()) {
                 it.remove();
                 recycled++;
                 memoryPooled -= ref.size;
@@ -194,8 +192,7 @@ public class BitmapManager {
         final Iterator<BitmapRef> it = used.values().iterator();
         while (it.hasNext()) {
             final BitmapRef ref = it.next();
-            final Bitmap bmp = ref.getBitmap();
-            if (bmp == null || bmp.isRecycled()) {
+            if (ref.clearEmptyRef()) {
                 it.remove();
                 recycled++;
                 memoryUsed -= ref.size;

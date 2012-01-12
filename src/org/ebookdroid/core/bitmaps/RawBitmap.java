@@ -38,6 +38,15 @@ public final class RawBitmap {
         bitmap.getPixels(pixels, 0, width, srcRect.left, srcRect.top, width, height);
     }
 
+    public RawBitmap(Bitmap bitmap, int left, int top, int width, int height) {
+        this.width = width;
+        this.height = height;
+        hasAlpha = bitmap.hasAlpha();
+        pixels = new int[width * height];
+
+        bitmap.getPixels(pixels, 0, width, left, top, width, height);
+    }
+    
     public RawBitmap(RawBitmap source) {
         width = source.width;
         height = source.height;

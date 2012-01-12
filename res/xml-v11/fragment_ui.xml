@@ -62,4 +62,10 @@
         android:summary="@string/pref_pageintitle_summary"
         android:title="@string/pref_pageintitle_title" />
 
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="showanimicon"
+        android:summary="@string/pref_showanimicon_summary"
+        android:title="@string/pref_showanimicon_title" />
+
 </PreferenceScreen>

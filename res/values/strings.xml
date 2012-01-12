@@ -158,4 +158,7 @@
 	<string name="pref_croppages_title">"Crop pages"</string>
 	<string name="pref_croppages_summary">"Crop margins of pages (experimantal)"</string>
 
+	<string name="pref_showanimicon_title">"Show animation icon"</string>
+	<string name="pref_showanimicon_summary">"Show animation or dragging icon if animation or dragging enabled"</string>
+
 </resources>

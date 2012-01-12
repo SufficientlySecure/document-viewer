@@ -157,4 +157,6 @@
 	<string name="pref_croppages_title">"Обрезать страницы"</string>
 	<string name="pref_croppages_summary">"Обрезать поля страниц (экспериментально)"</string>
 
+	<string name="pref_showanimicon_title">"Показывать тип анимации"</string>
+	<string name="pref_showanimicon_summary">"Показывать тип анимации если анимация или перетаскивание возможны"</string>
 </resources>

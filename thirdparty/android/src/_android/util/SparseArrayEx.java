@@ -43,7 +43,6 @@ public class SparseArrayEx<T> extends SparseArray<T> implements Iterable<T> {
             }
             SparseArrayEx.this.remove(keyAt(removalIndex));
             removalIndex = -1;
-            remaining--;
         }
     }
 }

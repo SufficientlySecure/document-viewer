@@ -29,7 +29,7 @@ public class XpsOutline {
             }
 
             final long child = getChild(outline);
-            ttOutline(ls, child, level);
+            ttOutline(ls, child, level + 1);
 
             outline = getNext(outline);
         }

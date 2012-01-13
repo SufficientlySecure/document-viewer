@@ -12,7 +12,7 @@ void fz_flush_warnings(fz_context *ctx)
 	if (ctx->warn->count > 1)
 	{
 		fprintf(stderr, "warning: ... repeated %d times ...\n", ctx->warn->count);
-		LOGE("warning: %s\n", ctx->warn->count);
+		LOGE("warning: ... repeated %d times ...\n", ctx->warn->count);
 	}
 	ctx->warn->message[0] = 0;
 	ctx->warn->count = 0;
@@ -46,7 +46,7 @@ void fz_warn(fz_context *ctx, char *fmt, ...)
 static void throw(fz_error_context *ex)
 {
 	if (ex->top >= 0) {
-		longjmp(ex->stack[ex->top--].buffer, 1);
+		longjmp(ex->stack[ex->top].buffer, 1);
 	} else {
 		fprintf(stderr, "uncaught exception: %s\n", ex->message);
 		LOGE("uncaught exception: %s\n", ex->message);
@@ -79,6 +79,7 @@ void fz_throw(fz_context *ctx, char *fmt, ...)
 	vsnprintf(ctx->error->message, sizeof ctx->error->message, fmt, args);
 	va_end(args);
 
+	fz_flush_warnings(ctx);
 	fprintf(stderr, "error: %s\n", ctx->error->message);
 	LOGE("error: %s\n", ctx->error->message);
 

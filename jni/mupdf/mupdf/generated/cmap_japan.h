@@ -161,7 +161,7 @@ static const unsigned short cmap_78_EUC_H_table[85] = {
 };
 
 static pdf_cmap cmap_78_EUC_H = {
-	-1, "78-EUC-H", "", 0, 0, 3,
+	{-1, pdf_free_cmap_imp}, "78-EUC-H", "", 0, 0, 3,
 	{ {1,0,128},{2,36512,36575},{2,41377,65278}, },
 	573, 573, (pdf_range*) cmap_78_EUC_H_ranges,
 	85, 85, (unsigned short*) cmap_78_EUC_H_table,
@@ -182,7 +182,7 @@ static const pdf_range cmap_78_EUC_V_ranges[] = {
 static const unsigned short cmap_78_EUC_V_table[] = { 0 };
 
 static pdf_cmap cmap_78_EUC_V = {
-	-1, "78-EUC-V", "78-EUC-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "78-EUC-V", "78-EUC-H", 0, 1, 0,
 	{ {0,0,0}, },
 	27, 27, (pdf_range*) cmap_78_EUC_V_ranges,
 	0, 0, (unsigned short*) cmap_78_EUC_V_table,
@@ -348,7 +348,7 @@ static const unsigned short cmap_78_H_table[85] = {
 };
 
 static pdf_cmap cmap_78_H = {
-	-1, "78-H", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "78-H", "", 0, 0, 1,
 	{ {2,8481,32382}, },
 	571, 571, (pdf_range*) cmap_78_H_ranges,
 	85, 85, (unsigned short*) cmap_78_H_table,
@@ -530,7 +530,7 @@ static const unsigned short cmap_78ms_RKSJ_H_table[125] = {
 };
 
 static pdf_cmap cmap_78ms_RKSJ_H = {
-	-1, "78ms-RKSJ-H", "", 0, 0, 4,
+	{-1, pdf_free_cmap_imp}, "78ms-RKSJ-H", "", 0, 0, 4,
 	{ {1,0,128},{2,33088,40956},{1,160,223},{2,57408,64764}, },
 	623, 623, (pdf_range*) cmap_78ms_RKSJ_H_ranges,
 	125, 125, (unsigned short*) cmap_78ms_RKSJ_H_table,
@@ -560,7 +560,7 @@ static const unsigned short cmap_78ms_RKSJ_V_table[41] = {
 };
 
 static pdf_cmap cmap_78ms_RKSJ_V = {
-	-1, "78ms-RKSJ-V", "78ms-RKSJ-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "78ms-RKSJ-V", "78ms-RKSJ-H", 0, 1, 0,
 	{ {0,0,0}, },
 	41, 41, (pdf_range*) cmap_78ms_RKSJ_V_ranges,
 	41, 41, (unsigned short*) cmap_78ms_RKSJ_V_table,
@@ -726,7 +726,7 @@ static const unsigned short cmap_78_RKSJ_H_table[83] = {
 };
 
 static pdf_cmap cmap_78_RKSJ_H = {
-	-1, "78-RKSJ-H", "", 0, 0, 4,
+	{-1, pdf_free_cmap_imp}, "78-RKSJ-H", "", 0, 0, 4,
 	{ {1,0,128},{2,33088,40956},{1,160,223},{2,57408,64764}, },
 	575, 575, (pdf_range*) cmap_78_RKSJ_H_ranges,
 	83, 83, (unsigned short*) cmap_78_RKSJ_H_table,
@@ -747,7 +747,7 @@ static const pdf_range cmap_78_RKSJ_V_ranges[] = {
 static const unsigned short cmap_78_RKSJ_V_table[] = { 0 };
 
 static pdf_cmap cmap_78_RKSJ_V = {
-	-1, "78-RKSJ-V", "78-RKSJ-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "78-RKSJ-V", "78-RKSJ-H", 0, 1, 0,
 	{ {0,0,0}, },
 	27, 27, (pdf_range*) cmap_78_RKSJ_V_ranges,
 	0, 0, (unsigned short*) cmap_78_RKSJ_V_table,
@@ -768,7 +768,7 @@ static const pdf_range cmap_78_V_ranges[] = {
 static const unsigned short cmap_78_V_table[] = { 0 };
 
 static pdf_cmap cmap_78_V = {
-	-1, "78-V", "78-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "78-V", "78-H", 0, 1, 0,
 	{ {0,0,0}, },
 	27, 27, (pdf_range*) cmap_78_V_ranges,
 	0, 0, (unsigned short*) cmap_78_V_table,
@@ -829,7 +829,7 @@ static const unsigned short cmap_83pv_RKSJ_H_table[71] = {
 };
 
 static pdf_cmap cmap_83pv_RKSJ_H = {
-	-1, "83pv-RKSJ-H", "", 0, 0, 5,
+	{-1, pdf_free_cmap_imp}, "83pv-RKSJ-H", "", 0, 0, 5,
 	{ {1,0,128},{2,33088,40956},{1,160,223},{2,57408,64764},{1,253,255}, },
 	160, 160, (pdf_range*) cmap_83pv_RKSJ_H_ranges,
 	71, 71, (unsigned short*) cmap_83pv_RKSJ_H_table,
@@ -881,7 +881,7 @@ static const unsigned short cmap_90msp_RKSJ_H_table[44] = {
 };
 
 static pdf_cmap cmap_90msp_RKSJ_H = {
-	-1, "90msp-RKSJ-H", "", 0, 0, 4,
+	{-1, pdf_free_cmap_imp}, "90msp-RKSJ-H", "", 0, 0, 4,
 	{ {1,0,128},{2,33088,40956},{1,160,223},{2,57408,64764}, },
 	130, 130, (pdf_range*) cmap_90msp_RKSJ_H_ranges,
 	44, 44, (unsigned short*) cmap_90msp_RKSJ_H_table,
@@ -911,7 +911,7 @@ static const unsigned short cmap_90msp_RKSJ_V_table[41] = {
 };
 
 static pdf_cmap cmap_90msp_RKSJ_V = {
-	-1, "90msp-RKSJ-V", "90msp-RKSJ-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "90msp-RKSJ-V", "90msp-RKSJ-H", 0, 1, 0,
 	{ {0,0,0}, },
 	41, 41, (pdf_range*) cmap_90msp_RKSJ_V_ranges,
 	41, 41, (unsigned short*) cmap_90msp_RKSJ_V_table,
@@ -963,7 +963,7 @@ static const unsigned short cmap_90ms_RKSJ_H_table[44] = {
 };
 
 static pdf_cmap cmap_90ms_RKSJ_H = {
-	-1, "90ms-RKSJ-H", "", 0, 0, 4,
+	{-1, pdf_free_cmap_imp}, "90ms-RKSJ-H", "", 0, 0, 4,
 	{ {1,0,128},{2,33088,40956},{1,160,223},{2,57408,64764}, },
 	131, 131, (pdf_range*) cmap_90ms_RKSJ_H_ranges,
 	44, 44, (unsigned short*) cmap_90ms_RKSJ_H_table,
@@ -993,7 +993,7 @@ static const unsigned short cmap_90ms_RKSJ_V_table[41] = {
 };
 
 static pdf_cmap cmap_90ms_RKSJ_V = {
-	-1, "90ms-RKSJ-V", "90ms-RKSJ-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "90ms-RKSJ-V", "90ms-RKSJ-H", 0, 1, 0,
 	{ {0,0,0}, },
 	41, 41, (pdf_range*) cmap_90ms_RKSJ_V_ranges,
 	41, 41, (unsigned short*) cmap_90ms_RKSJ_V_table,
@@ -1060,7 +1060,7 @@ static const unsigned short cmap_90pv_RKSJ_H_table[104] = {
 };
 
 static pdf_cmap cmap_90pv_RKSJ_H = {
-	-1, "90pv-RKSJ-H", "", 0, 0, 5,
+	{-1, pdf_free_cmap_imp}, "90pv-RKSJ-H", "", 0, 0, 5,
 	{ {1,0,128},{2,33088,40956},{1,160,223},{2,57408,64764},{1,253,255}, },
 	171, 171, (pdf_range*) cmap_90pv_RKSJ_H_ranges,
 	104, 104, (unsigned short*) cmap_90pv_RKSJ_H_table,
@@ -1087,7 +1087,7 @@ static const unsigned short cmap_90pv_RKSJ_V_table[16] = {
 };
 
 static pdf_cmap cmap_90pv_RKSJ_V = {
-	-1, "90pv-RKSJ-V", "90pv-RKSJ-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "90pv-RKSJ-V", "90pv-RKSJ-H", 0, 1, 0,
 	{ {0,0,0}, },
 	39, 39, (pdf_range*) cmap_90pv_RKSJ_V_ranges,
 	16, 16, (unsigned short*) cmap_90pv_RKSJ_V_table,
@@ -1248,7 +1248,7 @@ static const unsigned short cmap_Add_H_table[127] = {
 };
 
 static pdf_cmap cmap_Add_H = {
-	-1, "Add-H", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Add-H", "", 0, 0, 1,
 	{ {2,8481,32382}, },
 	540, 540, (pdf_range*) cmap_Add_H_ranges,
 	127, 127, (unsigned short*) cmap_Add_H_table,
@@ -1411,7 +1411,7 @@ static const unsigned short cmap_Add_RKSJ_H_table[123] = {
 };
 
 static pdf_cmap cmap_Add_RKSJ_H = {
-	-1, "Add-RKSJ-H", "", 0, 0, 4,
+	{-1, pdf_free_cmap_imp}, "Add-RKSJ-H", "", 0, 0, 4,
 	{ {1,0,128},{2,33088,40956},{1,160,223},{2,57408,64764}, },
 	546, 546, (pdf_range*) cmap_Add_RKSJ_H_ranges,
 	123, 123, (unsigned short*) cmap_Add_RKSJ_H_table,
@@ -1438,7 +1438,7 @@ static const unsigned short cmap_Add_RKSJ_V_table[26] = {
 };
 
 static pdf_cmap cmap_Add_RKSJ_V = {
-	-1, "Add-RKSJ-V", "Add-RKSJ-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "Add-RKSJ-V", "Add-RKSJ-H", 0, 1, 0,
 	{ {0,0,0}, },
 	36, 36, (pdf_range*) cmap_Add_RKSJ_V_ranges,
 	26, 26, (unsigned short*) cmap_Add_RKSJ_V_table,
@@ -1465,7 +1465,7 @@ static const unsigned short cmap_Add_V_table[26] = {
 };
 
 static pdf_cmap cmap_Add_V = {
-	-1, "Add-V", "Add-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "Add-V", "Add-H", 0, 1, 0,
 	{ {0,0,0}, },
 	36, 36, (pdf_range*) cmap_Add_V_ranges,
 	26, 26, (unsigned short*) cmap_Add_V_table,
@@ -1480,7 +1480,7 @@ static const pdf_range cmap_Adobe_Japan1_0_ranges[] = {
 static const unsigned short cmap_Adobe_Japan1_0_table[] = { 0 };
 
 static pdf_cmap cmap_Adobe_Japan1_0 = {
-	-1, "Adobe-Japan1-0", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Adobe-Japan1-0", "", 0, 0, 1,
 	{ {2,0,8447}, },
 	1, 1, (pdf_range*) cmap_Adobe_Japan1_0_ranges,
 	0, 0, (unsigned short*) cmap_Adobe_Japan1_0_table,
@@ -1495,7 +1495,7 @@ static const pdf_range cmap_Adobe_Japan1_1_ranges[] = {
 static const unsigned short cmap_Adobe_Japan1_1_table[] = { 0 };
 
 static pdf_cmap cmap_Adobe_Japan1_1 = {
-	-1, "Adobe-Japan1-1", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Adobe-Japan1-1", "", 0, 0, 1,
 	{ {2,0,8447}, },
 	1, 1, (pdf_range*) cmap_Adobe_Japan1_1_ranges,
 	0, 0, (unsigned short*) cmap_Adobe_Japan1_1_table,
@@ -1510,7 +1510,7 @@ static const pdf_range cmap_Adobe_Japan1_2_ranges[] = {
 static const unsigned short cmap_Adobe_Japan1_2_table[] = { 0 };
 
 static pdf_cmap cmap_Adobe_Japan1_2 = {
-	-1, "Adobe-Japan1-2", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Adobe-Japan1-2", "", 0, 0, 1,
 	{ {2,0,8959}, },
 	1, 1, (pdf_range*) cmap_Adobe_Japan1_2_ranges,
 	0, 0, (unsigned short*) cmap_Adobe_Japan1_2_table,
@@ -1525,7 +1525,7 @@ static const pdf_range cmap_Adobe_Japan1_3_ranges[] = {
 static const unsigned short cmap_Adobe_Japan1_3_table[] = { 0 };
 
 static pdf_cmap cmap_Adobe_Japan1_3 = {
-	-1, "Adobe-Japan1-3", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Adobe-Japan1-3", "", 0, 0, 1,
 	{ {2,0,9471}, },
 	1, 1, (pdf_range*) cmap_Adobe_Japan1_3_ranges,
 	0, 0, (unsigned short*) cmap_Adobe_Japan1_3_table,
@@ -1540,7 +1540,7 @@ static const pdf_range cmap_Adobe_Japan1_4_ranges[] = {
 static const unsigned short cmap_Adobe_Japan1_4_table[] = { 0 };
 
 static pdf_cmap cmap_Adobe_Japan1_4 = {
-	-1, "Adobe-Japan1-4", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Adobe-Japan1-4", "", 0, 0, 1,
 	{ {2,0,15615}, },
 	1, 1, (pdf_range*) cmap_Adobe_Japan1_4_ranges,
 	0, 0, (unsigned short*) cmap_Adobe_Japan1_4_table,
@@ -1555,7 +1555,7 @@ static const pdf_range cmap_Adobe_Japan1_5_ranges[] = {
 static const unsigned short cmap_Adobe_Japan1_5_table[] = { 0 };
 
 static pdf_cmap cmap_Adobe_Japan1_5 = {
-	-1, "Adobe-Japan1-5", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Adobe-Japan1-5", "", 0, 0, 1,
 	{ {2,0,20479}, },
 	2, 2, (pdf_range*) cmap_Adobe_Japan1_5_ranges,
 	0, 0, (unsigned short*) cmap_Adobe_Japan1_5_table,
@@ -1570,7 +1570,7 @@ static const pdf_range cmap_Adobe_Japan1_6_ranges[] = {
 static const unsigned short cmap_Adobe_Japan1_6_table[] = { 0 };
 
 static pdf_cmap cmap_Adobe_Japan1_6 = {
-	-1, "Adobe-Japan1-6", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Adobe-Japan1-6", "", 0, 0, 1,
 	{ {2,0,23295}, },
 	2, 2, (pdf_range*) cmap_Adobe_Japan1_6_ranges,
 	0, 0, (unsigned short*) cmap_Adobe_Japan1_6_table,
@@ -4180,7 +4180,7 @@ static const unsigned short cmap_Adobe_Japan1_UCS2_table[19930] = {
 };
 
 static pdf_cmap cmap_Adobe_Japan1_UCS2 = {
-	-1, "Adobe-Japan1-UCS2", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Adobe-Japan1-UCS2", "", 0, 0, 1,
 	{ {2,0,65535}, },
 	3734, 3734, (pdf_range*) cmap_Adobe_Japan1_UCS2_ranges,
 	19930, 19930, (unsigned short*) cmap_Adobe_Japan1_UCS2_table,
@@ -4195,7 +4195,7 @@ static const pdf_range cmap_Adobe_Japan2_0_ranges[] = {
 static const unsigned short cmap_Adobe_Japan2_0_table[] = { 0 };
 
 static pdf_cmap cmap_Adobe_Japan2_0 = {
-	-1, "Adobe-Japan2-0", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Adobe-Japan2-0", "", 0, 0, 1,
 	{ {2,0,6143}, },
 	1, 1, (pdf_range*) cmap_Adobe_Japan2_0_ranges,
 	0, 0, (unsigned short*) cmap_Adobe_Japan2_0_table,
@@ -4236,7 +4236,7 @@ static const unsigned short cmap_EUC_H_table[32] = {
 };
 
 static pdf_cmap cmap_EUC_H = {
-	-1, "EUC-H", "", 0, 0, 3,
+	{-1, pdf_free_cmap_imp}, "EUC-H", "", 0, 0, 3,
 	{ {1,0,128},{2,36512,36575},{2,41377,65278}, },
 	89, 89, (pdf_range*) cmap_EUC_H_ranges,
 	32, 32, (unsigned short*) cmap_EUC_H_table,
@@ -4257,7 +4257,7 @@ static const pdf_range cmap_EUC_V_ranges[] = {
 static const unsigned short cmap_EUC_V_table[] = { 0 };
 
 static pdf_cmap cmap_EUC_V = {
-	-1, "EUC-V", "EUC-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "EUC-V", "EUC-H", 0, 1, 0,
 	{ {0,0,0}, },
 	27, 27, (pdf_range*) cmap_EUC_V_ranges,
 	0, 0, (unsigned short*) cmap_EUC_V_table,
@@ -4432,7 +4432,7 @@ static const unsigned short cmap_Ext_H_table[84] = {
 };
 
 static pdf_cmap cmap_Ext_H = {
-	-1, "Ext-H", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Ext-H", "", 0, 0, 1,
 	{ {2,8481,32382}, },
 	609, 609, (pdf_range*) cmap_Ext_H_ranges,
 	84, 84, (unsigned short*) cmap_Ext_H_table,
@@ -4608,7 +4608,7 @@ static const unsigned short cmap_Ext_RKSJ_H_table[82] = {
 };
 
 static pdf_cmap cmap_Ext_RKSJ_H = {
-	-1, "Ext-RKSJ-H", "", 0, 0, 4,
+	{-1, pdf_free_cmap_imp}, "Ext-RKSJ-H", "", 0, 0, 4,
 	{ {1,0,128},{2,33088,40956},{1,160,223},{2,57408,64764}, },
 	614, 614, (pdf_range*) cmap_Ext_RKSJ_H_ranges,
 	82, 82, (unsigned short*) cmap_Ext_RKSJ_H_table,
@@ -4632,7 +4632,7 @@ static const unsigned short cmap_Ext_RKSJ_V_table[11] = {
 };
 
 static pdf_cmap cmap_Ext_RKSJ_V = {
-	-1, "Ext-RKSJ-V", "Ext-RKSJ-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "Ext-RKSJ-V", "Ext-RKSJ-H", 0, 1, 0,
 	{ {0,0,0}, },
 	32, 32, (pdf_range*) cmap_Ext_RKSJ_V_ranges,
 	11, 11, (unsigned short*) cmap_Ext_RKSJ_V_table,
@@ -4656,7 +4656,7 @@ static const unsigned short cmap_Ext_V_table[11] = {
 };
 
 static pdf_cmap cmap_Ext_V = {
-	-1, "Ext-V", "Ext-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "Ext-V", "Ext-H", 0, 1, 0,
 	{ {0,0,0}, },
 	32, 32, (pdf_range*) cmap_Ext_V_ranges,
 	11, 11, (unsigned short*) cmap_Ext_V_table,
@@ -4696,7 +4696,7 @@ static const unsigned short cmap_H_table[32] = {
 };
 
 static pdf_cmap cmap_H = {
-	-1, "H", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "H", "", 0, 0, 1,
 	{ {2,8481,32382}, },
 	87, 87, (pdf_range*) cmap_H_ranges,
 	32, 32, (unsigned short*) cmap_H_table,
@@ -4713,7 +4713,7 @@ static const pdf_range cmap_Hankaku_ranges[] = {
 static const unsigned short cmap_Hankaku_table[] = { 0 };
 
 static pdf_cmap cmap_Hankaku = {
-	-1, "Hankaku", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Hankaku", "", 0, 0, 1,
 	{ {1,0,255}, },
 	10, 10, (pdf_range*) cmap_Hankaku_ranges,
 	0, 0, (unsigned short*) cmap_Hankaku_table,
@@ -4729,7 +4729,7 @@ static const pdf_range cmap_Hiragana_ranges[] = {
 static const unsigned short cmap_Hiragana_table[] = { 0 };
 
 static pdf_cmap cmap_Hiragana = {
-	-1, "Hiragana", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Hiragana", "", 0, 0, 1,
 	{ {1,0,255}, },
 	8, 8, (pdf_range*) cmap_Hiragana_ranges,
 	0, 0, (unsigned short*) cmap_Hiragana_table,
@@ -4764,7 +4764,7 @@ static const pdf_range cmap_Hojo_EUC_H_ranges[] = {
 static const unsigned short cmap_Hojo_EUC_H_table[] = { 0 };
 
 static pdf_cmap cmap_Hojo_EUC_H = {
-	-1, "Hojo-EUC-H", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Hojo-EUC-H", "", 0, 0, 1,
 	{ {3,41377,65278}, },
 	84, 84, (pdf_range*) cmap_Hojo_EUC_H_ranges,
 	0, 0, (unsigned short*) cmap_Hojo_EUC_H_table,
@@ -4778,7 +4778,7 @@ static const pdf_range cmap_Hojo_EUC_V_ranges[] = { {0,1,0}
 static const unsigned short cmap_Hojo_EUC_V_table[] = { 0 };
 
 static pdf_cmap cmap_Hojo_EUC_V = {
-	-1, "Hojo-EUC-V", "Hojo-EUC-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "Hojo-EUC-V", "Hojo-EUC-H", 0, 1, 0,
 	{ {0,0,0}, },
 	0, 0, (pdf_range*) cmap_Hojo_EUC_V_ranges,
 	0, 0, (unsigned short*) cmap_Hojo_EUC_V_table,
@@ -4813,7 +4813,7 @@ static const pdf_range cmap_Hojo_H_ranges[] = {
 static const unsigned short cmap_Hojo_H_table[] = { 0 };
 
 static pdf_cmap cmap_Hojo_H = {
-	-1, "Hojo-H", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Hojo-H", "", 0, 0, 1,
 	{ {2,8481,32382}, },
 	84, 84, (pdf_range*) cmap_Hojo_H_ranges,
 	0, 0, (unsigned short*) cmap_Hojo_H_table,
@@ -4827,7 +4827,7 @@ static const pdf_range cmap_Hojo_V_ranges[] = { {0,1,0}
 static const unsigned short cmap_Hojo_V_table[] = { 0 };
 
 static pdf_cmap cmap_Hojo_V = {
-	-1, "Hojo-V", "Hojo-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "Hojo-V", "Hojo-H", 0, 1, 0,
 	{ {0,0,0}, },
 	0, 0, (pdf_range*) cmap_Hojo_V_ranges,
 	0, 0, (unsigned short*) cmap_Hojo_V_table,
@@ -4842,7 +4842,7 @@ static const pdf_range cmap_Katakana_ranges[] = {
 static const unsigned short cmap_Katakana_table[] = { 0 };
 
 static pdf_cmap cmap_Katakana = {
-	-1, "Katakana", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Katakana", "", 0, 0, 1,
 	{ {1,0,255}, },
 	2, 2, (pdf_range*) cmap_Katakana_ranges,
 	0, 0, (unsigned short*) cmap_Katakana_table,
@@ -5030,7 +5030,7 @@ static const unsigned short cmap_NWP_H_table[167] = {
 };
 
 static pdf_cmap cmap_NWP_H = {
-	-1, "NWP-H", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "NWP-H", "", 0, 0, 1,
 	{ {2,8481,32382}, },
 	635, 635, (pdf_range*) cmap_NWP_H_ranges,
 	167, 167, (unsigned short*) cmap_NWP_H_table,
@@ -5057,7 +5057,7 @@ static const unsigned short cmap_NWP_V_table[15] = {
 };
 
 static pdf_cmap cmap_NWP_V = {
-	-1, "NWP-V", "NWP-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "NWP-V", "NWP-H", 0, 1, 0,
 	{ {0,0,0}, },
 	39, 39, (pdf_range*) cmap_NWP_V_ranges,
 	15, 15, (unsigned short*) cmap_NWP_V_table,
@@ -5098,7 +5098,7 @@ static const unsigned short cmap_RKSJ_H_table[32] = {
 };
 
 static pdf_cmap cmap_RKSJ_H = {
-	-1, "RKSJ-H", "", 0, 0, 4,
+	{-1, pdf_free_cmap_imp}, "RKSJ-H", "", 0, 0, 4,
 	{ {1,0,128},{2,33088,40956},{1,160,223},{2,57408,64764}, },
 	91, 91, (pdf_range*) cmap_RKSJ_H_ranges,
 	32, 32, (unsigned short*) cmap_RKSJ_H_table,
@@ -5119,7 +5119,7 @@ static const pdf_range cmap_RKSJ_V_ranges[] = {
 static const unsigned short cmap_RKSJ_V_table[] = { 0 };
 
 static pdf_cmap cmap_RKSJ_V = {
-	-1, "RKSJ-V", "RKSJ-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "RKSJ-V", "RKSJ-H", 0, 1, 0,
 	{ {0,0,0}, },
 	27, 27, (pdf_range*) cmap_RKSJ_V_ranges,
 	0, 0, (unsigned short*) cmap_RKSJ_V_table,
@@ -5134,7 +5134,7 @@ static const pdf_range cmap_Roman_ranges[] = {
 static const unsigned short cmap_Roman_table[] = { 0 };
 
 static pdf_cmap cmap_Roman = {
-	-1, "Roman", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Roman", "", 0, 0, 1,
 	{ {1,0,255}, },
 	1, 1, (pdf_range*) cmap_Roman_ranges,
 	0, 0, (unsigned short*) cmap_Roman_table,
@@ -6170,7 +6170,7 @@ static const unsigned short cmap_UniHojo_UCS2_H_table[283] = {
 };
 
 static pdf_cmap cmap_UniHojo_UCS2_H = {
-	-1, "UniHojo-UCS2-H", "", 0, 0, 2,
+	{-1, pdf_free_cmap_imp}, "UniHojo-UCS2-H", "", 0, 0, 2,
 	{ {2,0,55295},{2,57344,65535}, },
 	3985, 3985, (pdf_range*) cmap_UniHojo_UCS2_H_ranges,
 	283, 283, (unsigned short*) cmap_UniHojo_UCS2_H_table,
@@ -6184,7 +6184,7 @@ static const pdf_range cmap_UniHojo_UCS2_V_ranges[] = { {0,1,0}
 static const unsigned short cmap_UniHojo_UCS2_V_table[] = { 0 };
 
 static pdf_cmap cmap_UniHojo_UCS2_V = {
-	-1, "UniHojo-UCS2-V", "UniHojo-UCS2-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "UniHojo-UCS2-V", "UniHojo-UCS2-H", 0, 1, 0,
 	{ {0,0,0}, },
 	0, 0, (pdf_range*) cmap_UniHojo_UCS2_V_ranges,
 	0, 0, (unsigned short*) cmap_UniHojo_UCS2_V_table,
@@ -7225,7 +7225,7 @@ static const unsigned short cmap_UniHojo_UTF16_H_table[290] = {
 };
 
 static pdf_cmap cmap_UniHojo_UTF16_H = {
-	-1, "UniHojo-UTF16-H", "", 0, 0, 3,
+	{-1, pdf_free_cmap_imp}, "UniHojo-UTF16-H", "", 0, 0, 3,
 	{ {2,0,55295},{4,56320,57343},{2,57344,65535}, },
 	4004, 4004, (pdf_range*) cmap_UniHojo_UTF16_H_ranges,
 	290, 290, (unsigned short*) cmap_UniHojo_UTF16_H_table,
@@ -7239,7 +7239,7 @@ static const pdf_range cmap_UniHojo_UTF16_V_ranges[] = { {0,1,0}
 static const unsigned short cmap_UniHojo_UTF16_V_table[] = { 0 };
 
 static pdf_cmap cmap_UniHojo_UTF16_V = {
-	-1, "UniHojo-UTF16-V", "UniHojo-UTF16-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "UniHojo-UTF16-V", "UniHojo-UTF16-H", 0, 1, 0,
 	{ {0,0,0}, },
 	0, 0, (pdf_range*) cmap_UniHojo_UTF16_V_ranges,
 	0, 0, (unsigned short*) cmap_UniHojo_UTF16_V_table,
@@ -7292,7 +7292,7 @@ static const unsigned short cmap_UniJISPro_UCS2_HW_V_table[122] = {
 };
 
 static pdf_cmap cmap_UniJISPro_UCS2_HW_V = {
-	-1, "UniJISPro-UCS2-HW-V", "UniJIS-UCS2-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "UniJISPro-UCS2-HW-V", "UniJIS-UCS2-H", 0, 1, 0,
 	{ {0,0,0}, },
 	106, 106, (pdf_range*) cmap_UniJISPro_UCS2_HW_V_ranges,
 	122, 122, (unsigned short*) cmap_UniJISPro_UCS2_HW_V_table,
@@ -7344,7 +7344,7 @@ static const unsigned short cmap_UniJISPro_UCS2_V_table[122] = {
 };
 
 static pdf_cmap cmap_UniJISPro_UCS2_V = {
-	-1, "UniJISPro-UCS2-V", "UniJIS-UCS2-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "UniJISPro-UCS2-V", "UniJIS-UCS2-H", 0, 1, 0,
 	{ {0,0,0}, },
 	102, 102, (pdf_range*) cmap_UniJISPro_UCS2_V_ranges,
 	122, 122, (unsigned short*) cmap_UniJISPro_UCS2_V_table,
@@ -9047,7 +9047,7 @@ static const unsigned short cmap_UniJIS_UCS2_H_table[5354] = {
 };
 
 static pdf_cmap cmap_UniJIS_UCS2_H = {
-	-1, "UniJIS-UCS2-H", "", 0, 0, 2,
+	{-1, pdf_free_cmap_imp}, "UniJIS-UCS2-H", "", 0, 0, 2,
 	{ {2,0,55295},{2,57344,65535}, },
 	4964, 4964, (pdf_range*) cmap_UniJIS_UCS2_H_ranges,
 	5354, 5354, (unsigned short*) cmap_UniJIS_UCS2_H_table,
@@ -9062,7 +9062,7 @@ static const pdf_range cmap_UniJIS_UCS2_HW_H_ranges[] = {
 static const unsigned short cmap_UniJIS_UCS2_HW_H_table[] = { 0 };
 
 static pdf_cmap cmap_UniJIS_UCS2_HW_H = {
-	-1, "UniJIS-UCS2-HW-H", "UniJIS-UCS2-H", 0, 0, 0,
+	{-1, pdf_free_cmap_imp}, "UniJIS-UCS2-HW-H", "UniJIS-UCS2-H", 0, 0, 0,
 	{ {0,0,0}, },
 	4, 4, (pdf_range*) cmap_UniJIS_UCS2_HW_H_ranges,
 	0, 0, (unsigned short*) cmap_UniJIS_UCS2_HW_H_table,
@@ -9114,7 +9114,7 @@ static const unsigned short cmap_UniJIS_UCS2_HW_V_table[117] = {
 };
 
 static pdf_cmap cmap_UniJIS_UCS2_HW_V = {
-	-1, "UniJIS-UCS2-HW-V", "UniJIS-UCS2-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "UniJIS-UCS2-HW-V", "UniJIS-UCS2-H", 0, 1, 0,
 	{ {0,0,0}, },
 	105, 105, (pdf_range*) cmap_UniJIS_UCS2_HW_V_ranges,
 	117, 117, (unsigned short*) cmap_UniJIS_UCS2_HW_V_table,
@@ -9165,7 +9165,7 @@ static const unsigned short cmap_UniJIS_UCS2_V_table[117] = {
 };
 
 static pdf_cmap cmap_UniJIS_UCS2_V = {
-	-1, "UniJIS-UCS2-V", "UniJIS-UCS2-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "UniJIS-UCS2-V", "UniJIS-UCS2-H", 0, 1, 0,
 	{ {0,0,0}, },
 	101, 101, (pdf_range*) cmap_UniJIS_UCS2_V_ranges,
 	117, 117, (unsigned short*) cmap_UniJIS_UCS2_V_table,
@@ -11522,7 +11522,7 @@ static const unsigned short cmap_UniJIS_UTF16_H_table[10909] = {
 };
 
 static pdf_cmap cmap_UniJIS_UTF16_H = {
-	-1, "UniJIS-UTF16-H", "", 0, 0, 3,
+	{-1, pdf_free_cmap_imp}, "UniJIS-UTF16-H", "", 0, 0, 3,
 	{ {2,0,55295},{4,56320,57343},{2,57344,65535}, },
 	5727, 5727, (pdf_range*) cmap_UniJIS_UTF16_H_ranges,
 	10909, 10909, (unsigned short*) cmap_UniJIS_UTF16_H_table,
@@ -11575,7 +11575,7 @@ static const unsigned short cmap_UniJIS_UTF16_V_table[138] = {
 };
 
 static pdf_cmap cmap_UniJIS_UTF16_V = {
-	-1, "UniJIS-UTF16-V", "UniJIS-UTF16-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "UniJIS-UTF16-V", "UniJIS-UTF16-H", 0, 1, 0,
 	{ {0,0,0}, },
 	102, 102, (pdf_range*) cmap_UniJIS_UTF16_V_ranges,
 	138, 138, (unsigned short*) cmap_UniJIS_UTF16_V_table,
@@ -11596,7 +11596,7 @@ static const pdf_range cmap_V_ranges[] = {
 static const unsigned short cmap_V_table[] = { 0 };
 
 static pdf_cmap cmap_V = {
-	-1, "V", "H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "V", "H", 0, 1, 0,
 	{ {0,0,0}, },
 	27, 27, (pdf_range*) cmap_V_ranges,
 	0, 0, (unsigned short*) cmap_V_table,
@@ -11618,7 +11618,7 @@ static const unsigned short cmap_WP_Symbol_table[9] = {
 };
 
 static pdf_cmap cmap_WP_Symbol = {
-	-1, "WP-Symbol", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "WP-Symbol", "", 0, 0, 1,
 	{ {1,0,255}, },
 	21, 21, (pdf_range*) cmap_WP_Symbol_ranges,
 	9, 9, (unsigned short*) cmap_WP_Symbol_table,

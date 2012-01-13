@@ -284,8 +284,7 @@ png_read_plte(struct info *info, unsigned char *p, int size)
 	int n = size / 3;
 	int i;
 
-	/* SumatraPDF: don't reject 4-bit images */
-	if (n > 256)
+	if (n > 256 || n > (1 << info->depth))
 		fz_throw(info->ctx, "too many samples in palette");
 
 	for (i = 0; i < n; i++)
@@ -305,8 +304,7 @@ png_read_trns(struct info *info, unsigned char *p, int size)
 
 	if (info->indexed)
 	{
-		/* SumatraPDF: don't reject 4-bit images */
-		if (size > 256)
+		if (size > 256 || size > (1 << info->depth))
 			fz_throw(info->ctx, "too many samples in transparency table");
 		for (i = 0; i < size; i++)
 			info->palette[i * 4 + 3] = p[i];

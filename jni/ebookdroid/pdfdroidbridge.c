@@ -26,7 +26,6 @@ struct renderdocument_s
     fz_context *ctx;
     pdf_xref *xref;
     fz_outline *outline;
-    fz_glyph_cache *drawcache;
 };
 
 typedef struct renderpage_s renderpage_t;
@@ -61,10 +60,6 @@ static void pdf_free_document(renderdocument_t* doc)
         if (doc->outline)
             fz_free_outline(doc->outline);
         doc->outline = NULL;
-
-        if (doc->drawcache)
-            fz_free_glyph_cache(doc->ctx, doc->drawcache);
-        doc->drawcache = NULL;
 
         if (doc->xref)
             pdf_free_xref(doc->xref);
@@ -109,19 +104,8 @@ Java_org_ebookdroid_pdfdroid_codec_PdfDocument_open(JNIEnv *env, jclass clazz, j
     }
     doc->xref = NULL;
     doc->outline = NULL;
-    doc->drawcache = NULL;
     
 //    fz_set_aa_level(fz_catch(ctx), alphabits);
-
-    /* initialize renderer */
-
-    doc->drawcache = fz_new_glyph_cache(doc->ctx);
-    if (!doc->drawcache)
-    {
-        pdf_free_document(doc);
-        throw_exception(env, "Cannot create new renderer");
-        goto cleanup;
-    }
 
     /*
      * Open PDF and load xref table
@@ -159,17 +143,6 @@ Java_org_ebookdroid_pdfdroid_codec_PdfDocument_open(JNIEnv *env, jclass clazz, j
             throw_exception(env, "PDF needs a password!");
             goto cleanup;
         }
-    }
-
-    fz_try(doc->ctx)
-    {
-	pdf_load_page_tree(doc->xref);
-    }
-    fz_catch(doc->ctx)
-    {
-        pdf_free_document(doc);
-        throw_exception(env, "error loading pagetree");
-        goto cleanup;
     }
 
     cleanup:
@@ -250,9 +223,11 @@ Java_org_ebookdroid_pdfdroid_codec_PdfDocument_getPageInfo(JNIEnv *env, jclass c
     {
         return (-1);
     }
-
-    int width = mediabox.x1 - mediabox.x0;
-    int height = mediabox.y1 - mediabox.y0;
+    
+    fz_rect bounds = fz_transform_rect(fz_rotate(rotate), mediabox);
+    
+    int width = bounds.x1 - bounds.x0;
+    int height = bounds.y1 - bounds.y0;
 
     fid = (*env)->GetFieldID(env, clazz, "width", "I");
     (*env)->SetIntField(env, cpi, fid, width);
@@ -419,26 +394,22 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_free(JNIEnv *env, jclass clazz, jlong
 }
 
 JNIEXPORT void JNICALL
-Java_org_ebookdroid_pdfdroid_codec_PdfPage_getMediaBox(JNIEnv *env, jclass clazz, jlong handle, jfloatArray mediabox)
+Java_org_ebookdroid_pdfdroid_codec_PdfPage_getBounds(JNIEnv *env, jclass clazz, jlong dochandle, jlong handle, jfloatArray bounds)
 {
+    renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
     renderpage_t *page = (renderpage_t*) (long) handle;
-    jfloat *bbox = (*env)->GetPrimitiveArrayCritical(env, mediabox, 0);
+    jfloat *bbox = (*env)->GetPrimitiveArrayCritical(env, bounds, 0);
     if (!bbox)
-        return;DEBUG(
-        "Mediabox: %f %f %f %f", page->page->mediabox.x0, page->page->mediabox.y0, page->page->mediabox.x1, page->page->mediabox.y1);
-    bbox[0] = page->page->mediabox.x0;
-    bbox[1] = page->page->mediabox.y0;
-    bbox[2] = page->page->mediabox.x1;
-    bbox[3] = page->page->mediabox.y1;
-    (*env)->ReleasePrimitiveArrayCritical(env, mediabox, bbox, 0);
+        return;
+    fz_rect page_bounds = pdf_bound_page(doc->xref, page->page);
+    DEBUG("Bounds: %f %f %f %f", page_bounds.x0, page_bounds.y0, page_bounds.x1, page_bounds.y1);
+    bbox[0] = page_bounds.x0;
+    bbox[1] = page_bounds.y0;
+    bbox[2] = page_bounds.x1;
+    bbox[3] = page_bounds.y1;
+    (*env)->ReleasePrimitiveArrayCritical(env, bounds, bbox, 0);
 }
 
-JNIEXPORT jint JNICALL
-Java_org_ebookdroid_pdfdroid_codec_PdfPage_getRotate(JNIEnv *env, jclass clazz, jlong handle)
-{
-    renderpage_t *page = (renderpage_t*) (long) handle;
-    return page->page->rotate;
-}
 
 JNIEXPORT void JNICALL
 Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPage(JNIEnv *env, jobject this, jlong dochandle, jlong pagehandle,
@@ -497,7 +468,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPage(JNIEnv *env, jobject this,
 
     fz_clear_pixmap_with_color(pixmap, 0xff);
 
-    dev = fz_new_draw_device(doc->ctx, doc->drawcache, pixmap);
+    dev = fz_new_draw_device(doc->ctx, pixmap);
     pdf_run_page(doc->xref, page->page, dev, ctm, NULL);
     fz_free_device(dev);
 
@@ -590,7 +561,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPageBitmap(JNIEnv *env, jobject
 
     fz_clear_pixmap_with_color(pixmap, 0xff);
 
-    dev = fz_new_draw_device(doc->ctx, doc->drawcache, pixmap);
+    dev = fz_new_draw_device(doc->ctx, pixmap);
     pdf_run_page(doc->xref, page->page, dev, ctm, NULL);
     fz_free_device(dev);
 

@@ -38,6 +38,8 @@ public class XpsDocument extends AbstractCodecDocument {
         if (res == -1) {
             return null;
         } else {
+            info.width = (XpsContext.getWidthInPixels(info.width));
+            info.height = (XpsContext.getHeightInPixels(info.height));
             return info;
         }
     }

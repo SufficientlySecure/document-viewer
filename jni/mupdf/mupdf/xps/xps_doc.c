@@ -106,30 +106,20 @@ xps_add_link_target(xps_document *doc, char *name)
 	xps_target *target = fz_malloc_struct(doc->ctx, xps_target);
 	target->name = fz_strdup(doc->ctx, name);
 	target->page = page->number;
-	target->rect = fz_empty_rect; /* SumatraPDF: extended link support */
 	target->next = doc->target;
 	doc->target = target;
-}
-
-/* SumatraPDF: extended link support */
-xps_target *
-xps_find_link_target_obj(xps_document *doc, char *target_uri)
-{
-	xps_target *target;
-	char *needle = strrchr(target_uri, '#');
-	if (!needle)
-		return NULL;
-	for (target = doc->target; target; target = target->next)
-		if (!strcmp(target->name, needle + 1))
-			return target;
-	return NULL;
 }
 
 int
 xps_find_link_target(xps_document *doc, char *target_uri)
 {
-	xps_target *target = xps_find_link_target_obj(doc, target_uri);
-	return target ? target->page : -1;
+	xps_target *target;
+	char *needle = strrchr(target_uri, '#');
+	needle = needle ? needle + 1 : target_uri;
+	for (target = doc->target; target; target = target->next)
+		if (!strcmp(target->name, needle))
+			return target->page;
+	return 0;
 }
 
 static void
@@ -206,9 +196,6 @@ xps_parse_metadata_imp(xps_document *doc, xml_element *item, xps_fixdoc *fixdoc)
 					doc->start_part = fz_strdup(doc->ctx, tgtbuf);
 				if (!strcmp(type, REL_DOC_STRUCTURE) && fixdoc)
 					fixdoc->outline = fz_strdup(doc->ctx, tgtbuf);
-				/* SumatraPDF: Microsoft's XPS-Viewer rejects documents without a relationship id */
-				if (!xml_att(item, "Id"))
-					fz_warn(doc->ctx, "Missing Relationship-Id for %s", target);
 			}
 		}
 
@@ -339,51 +326,17 @@ xps_load_fixed_page(xps_document *doc, xps_page *page)
 	part = xps_read_part(doc, page->name);
 	root = xml_parse_document(doc->ctx, part->data, part->size);
 	xps_free_part(doc, part);
-	/* SumatraPDF: fix a potential NULL-pointer dereference */
-	if (!root)
-		fz_throw(doc->ctx, "FixedPage missing root element");
-
-	/* SumatraPDF: basic support for alternate content */
-	if (!strcmp(xml_tag(root), "mc:AlternateContent"))
-	{
-		xml_element *node = xps_find_alternate_content(root);
-		if (!node)
-		{
-			xml_free_element(doc->ctx, root);
-			fz_throw(doc->ctx, "FixedPage missing alternate root element");
-		}
-		xml_detach(node);
-		xml_free_element(doc->ctx, root);
-		root = node;
-	}
 
 	if (strcmp(xml_tag(root), "FixedPage"))
-	{
-		/* SumatraPDF: fix memory leak */
-		fz_try(doc->ctx)
-		{
 		fz_throw(doc->ctx, "expected FixedPage element (found %s)", xml_tag(root));
-		}
-		fz_catch(doc->ctx)
-		{
-			xml_free_element(doc->ctx, root);
-			fz_rethrow(doc->ctx);
-		}
-	}
 
 	width_att = xml_att(root, "Width");
 	if (!width_att)
-	{
-		xml_free_element(doc->ctx, root);
 		fz_throw(doc->ctx, "FixedPage missing required attribute: Width");
-	}
 
 	height_att = xml_att(root, "Height");
 	if (!height_att)
-	{
-		xml_free_element(doc->ctx, root);
 		fz_throw(doc->ctx, "FixedPage missing required attribute: Height");
-	}
 
 	page->width = atoi(width_att);
 	page->height = atoi(height_att);
@@ -409,6 +362,16 @@ xps_load_page(xps_document *doc, int number)
 
 	fz_throw(doc->ctx, "cannot find page %d", number + 1);
 	return NULL;
+}
+
+fz_rect
+xps_bound_page(xps_document *doc, xps_page *page)
+{
+	fz_rect bounds;
+	bounds.x0 = bounds.y0 = 0;
+	bounds.x1 = page->width * 72.0f / 96.0f;
+	bounds.y1 = page->height * 72.0f / 96.0f;
+	return bounds;
 }
 
 void

@@ -232,7 +232,7 @@ pdf_repair_xref(pdf_xref *xref, char *buf, int bufsize)
 		list = fz_malloc_array(ctx, listcap, sizeof(struct entry));
 
 		/* look for '%PDF' version marker within first kilobyte of file */
-		n = fz_read(xref->file, (unsigned char *)buf, MAX(bufsize, 1024));
+		n = fz_read(xref->file, (unsigned char *)buf, MIN(bufsize, 1024));
 		if (n < 0)
 			fz_throw(ctx, "cannot read from file");
 
@@ -491,7 +491,7 @@ pdf_repair_obj_stms(pdf_xref *xref)
 		}
 	}
 
-	/* Ensure that streamed objects reside insided a known non-streamed object */
+	/* Ensure that streamed objects reside inside a known non-streamed object */
 	for (i = 0; i < xref->len; i++)
 		if (xref->table[i].type == 'o' && xref->table[xref->table[i].ofs].type != 'n')
 			fz_throw(xref->ctx, "invalid reference to non-object-stream: %d (%d 0 R)", xref->table[i].ofs, i);

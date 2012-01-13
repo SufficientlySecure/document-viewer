@@ -9,7 +9,7 @@ static const pdf_range cmap_Adobe_Korea1_0_ranges[] = {
 static const unsigned short cmap_Adobe_Korea1_0_table[] = { 0 };
 
 static pdf_cmap cmap_Adobe_Korea1_0 = {
-	-1, "Adobe-Korea1-0", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Adobe-Korea1-0", "", 0, 0, 1,
 	{ {2,0,9471}, },
 	1, 1, (pdf_range*) cmap_Adobe_Korea1_0_ranges,
 	0, 0, (unsigned short*) cmap_Adobe_Korea1_0_table,
@@ -24,7 +24,7 @@ static const pdf_range cmap_Adobe_Korea1_1_ranges[] = {
 static const unsigned short cmap_Adobe_Korea1_1_table[] = { 0 };
 
 static pdf_cmap cmap_Adobe_Korea1_1 = {
-	-1, "Adobe-Korea1-1", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Adobe-Korea1-1", "", 0, 0, 1,
 	{ {2,0,18175}, },
 	2, 2, (pdf_range*) cmap_Adobe_Korea1_1_ranges,
 	0, 0, (unsigned short*) cmap_Adobe_Korea1_1_table,
@@ -39,7 +39,7 @@ static const pdf_range cmap_Adobe_Korea1_2_ranges[] = {
 static const unsigned short cmap_Adobe_Korea1_2_table[] = { 0 };
 
 static pdf_cmap cmap_Adobe_Korea1_2 = {
-	-1, "Adobe-Korea1-2", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Adobe-Korea1-2", "", 0, 0, 1,
 	{ {2,0,18431}, },
 	2, 2, (pdf_range*) cmap_Adobe_Korea1_2_ranges,
 	0, 0, (unsigned short*) cmap_Adobe_Korea1_2_table,
@@ -1531,7 +1531,7 @@ static const unsigned short cmap_Adobe_Korea1_UCS2_table[7967] = {
 };
 
 static pdf_cmap cmap_Adobe_Korea1_UCS2 = {
-	-1, "Adobe-Korea1-UCS2", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Adobe-Korea1-UCS2", "", 0, 0, 1,
 	{ {2,0,65535}, },
 	3251, 3251, (pdf_range*) cmap_Adobe_Korea1_UCS2_ranges,
 	7967, 7967, (unsigned short*) cmap_Adobe_Korea1_UCS2_table,
@@ -1655,7 +1655,7 @@ static const unsigned short cmap_KSC_EUC_H_table[113] = {
 };
 
 static pdf_cmap cmap_KSC_EUC_H = {
-	-1, "KSC-EUC-H", "", 0, 0, 2,
+	{-1, pdf_free_cmap_imp}, "KSC-EUC-H", "", 0, 0, 2,
 	{ {1,0,128},{2,41377,65278}, },
 	393, 393, (pdf_range*) cmap_KSC_EUC_H_ranges,
 	113, 113, (unsigned short*) cmap_KSC_EUC_H_table,
@@ -1675,7 +1675,7 @@ static const unsigned short cmap_KSC_EUC_V_table[2] = {
 };
 
 static pdf_cmap cmap_KSC_EUC_V = {
-	-1, "KSC-EUC-V", "KSC-EUC-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "KSC-EUC-V", "KSC-EUC-H", 0, 1, 0,
 	{ {0,0,0}, },
 	15, 15, (pdf_range*) cmap_KSC_EUC_V_ranges,
 	2, 2, (unsigned short*) cmap_KSC_EUC_V_table,
@@ -1798,7 +1798,7 @@ static const unsigned short cmap_KSC_H_table[113] = {
 };
 
 static pdf_cmap cmap_KSC_H = {
-	-1, "KSC-H", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "KSC-H", "", 0, 0, 1,
 	{ {2,8481,32382}, },
 	392, 392, (pdf_range*) cmap_KSC_H_ranges,
 	113, 113, (unsigned short*) cmap_KSC_H_table,
@@ -2756,7 +2756,7 @@ static const unsigned short cmap_KSC_Johab_H_table[996] = {
 };
 
 static pdf_cmap cmap_KSC_Johab_H = {
-	-1, "KSC-Johab-H", "", 0, 0, 4,
+	{-1, pdf_free_cmap_imp}, "KSC-Johab-H", "", 0, 0, 4,
 	{ {1,0,128},{2,33857,54270},{2,55345,57086},{2,57393,63998}, },
 	3437, 3437, (pdf_range*) cmap_KSC_Johab_H_ranges,
 	996, 996, (unsigned short*) cmap_KSC_Johab_H_table,
@@ -2776,7 +2776,7 @@ static const unsigned short cmap_KSC_Johab_V_table[2] = {
 };
 
 static pdf_cmap cmap_KSC_Johab_V = {
-	-1, "KSC-Johab-V", "KSC-Johab-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "KSC-Johab-V", "KSC-Johab-H", 0, 1, 0,
 	{ {0,0,0}, },
 	15, 15, (pdf_range*) cmap_KSC_Johab_V_ranges,
 	2, 2, (unsigned short*) cmap_KSC_Johab_V_table,
@@ -2952,7 +2952,7 @@ static const unsigned short cmap_KSCms_UHC_H_table[113] = {
 };
 
 static pdf_cmap cmap_KSCms_UHC_H = {
-	-1, "KSCms-UHC-H", "", 0, 0, 2,
+	{-1, pdf_free_cmap_imp}, "KSCms-UHC-H", "", 0, 0, 2,
 	{ {1,0,128},{2,33089,65278}, },
 	601, 601, (pdf_range*) cmap_KSCms_UHC_H_ranges,
 	113, 113, (unsigned short*) cmap_KSCms_UHC_H_table,
@@ -3128,7 +3128,7 @@ static const unsigned short cmap_KSCms_UHC_HW_H_table[113] = {
 };
 
 static pdf_cmap cmap_KSCms_UHC_HW_H = {
-	-1, "KSCms-UHC-HW-H", "", 0, 0, 2,
+	{-1, pdf_free_cmap_imp}, "KSCms-UHC-HW-H", "", 0, 0, 2,
 	{ {1,0,128},{2,33089,65278}, },
 	601, 601, (pdf_range*) cmap_KSCms_UHC_HW_H_ranges,
 	113, 113, (unsigned short*) cmap_KSCms_UHC_HW_H_table,
@@ -3148,7 +3148,7 @@ static const unsigned short cmap_KSCms_UHC_HW_V_table[2] = {
 };
 
 static pdf_cmap cmap_KSCms_UHC_HW_V = {
-	-1, "KSCms-UHC-HW-V", "KSCms-UHC-HW-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "KSCms-UHC-HW-V", "KSCms-UHC-HW-H", 0, 1, 0,
 	{ {0,0,0}, },
 	15, 15, (pdf_range*) cmap_KSCms_UHC_HW_V_ranges,
 	2, 2, (unsigned short*) cmap_KSCms_UHC_HW_V_table,
@@ -3168,7 +3168,7 @@ static const unsigned short cmap_KSCms_UHC_V_table[2] = {
 };
 
 static pdf_cmap cmap_KSCms_UHC_V = {
-	-1, "KSCms-UHC-V", "KSCms-UHC-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "KSCms-UHC-V", "KSCms-UHC-H", 0, 1, 0,
 	{ {0,0,0}, },
 	15, 15, (pdf_range*) cmap_KSCms_UHC_V_ranges,
 	2, 2, (unsigned short*) cmap_KSCms_UHC_V_table,
@@ -3302,7 +3302,7 @@ static const unsigned short cmap_KSCpc_EUC_H_table[113] = {
 };
 
 static pdf_cmap cmap_KSCpc_EUC_H = {
-	-1, "KSCpc-EUC-H", "", 0, 0, 3,
+	{-1, pdf_free_cmap_imp}, "KSCpc-EUC-H", "", 0, 0, 3,
 	{ {1,0,132},{2,41281,65022},{1,254,255}, },
 	435, 435, (pdf_range*) cmap_KSCpc_EUC_H_ranges,
 	113, 113, (unsigned short*) cmap_KSCpc_EUC_H_table,
@@ -3322,7 +3322,7 @@ static const unsigned short cmap_KSCpc_EUC_V_table[2] = {
 };
 
 static pdf_cmap cmap_KSCpc_EUC_V = {
-	-1, "KSCpc-EUC-V", "KSCpc-EUC-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "KSCpc-EUC-V", "KSCpc-EUC-H", 0, 1, 0,
 	{ {0,0,0}, },
 	15, 15, (pdf_range*) cmap_KSCpc_EUC_V_ranges,
 	2, 2, (unsigned short*) cmap_KSCpc_EUC_V_table,
@@ -3342,7 +3342,7 @@ static const unsigned short cmap_KSC_V_table[2] = {
 };
 
 static pdf_cmap cmap_KSC_V = {
-	-1, "KSC-V", "KSC-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "KSC-V", "KSC-H", 0, 1, 0,
 	{ {0,0,0}, },
 	15, 15, (pdf_range*) cmap_KSC_V_ranges,
 	2, 2, (unsigned short*) cmap_KSC_V_table,
@@ -5210,7 +5210,7 @@ static const unsigned short cmap_UniKS_UCS2_H_table[3160] = {
 };
 
 static pdf_cmap cmap_UniKS_UCS2_H = {
-	-1, "UniKS-UCS2-H", "", 0, 0, 2,
+	{-1, pdf_free_cmap_imp}, "UniKS-UCS2-H", "", 0, 0, 2,
 	{ {2,0,55295},{2,57344,65535}, },
 	6355, 6355, (pdf_range*) cmap_UniKS_UCS2_H_ranges,
 	3160, 3160, (unsigned short*) cmap_UniKS_UCS2_H_table,
@@ -5229,7 +5229,7 @@ static const pdf_range cmap_UniKS_UCS2_V_ranges[] = {
 static const unsigned short cmap_UniKS_UCS2_V_table[] = { 0 };
 
 static pdf_cmap cmap_UniKS_UCS2_V = {
-	-1, "UniKS-UCS2-V", "UniKS-UCS2-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "UniKS-UCS2-V", "UniKS-UCS2-H", 0, 1, 0,
 	{ {0,0,0}, },
 	18, 18, (pdf_range*) cmap_UniKS_UCS2_V_ranges,
 	0, 0, (unsigned short*) cmap_UniKS_UCS2_V_table,
@@ -7118,7 +7118,7 @@ static const unsigned short cmap_UniKS_UTF16_H_table[3309] = {
 };
 
 static pdf_cmap cmap_UniKS_UTF16_H = {
-	-1, "UniKS-UTF16-H", "", 0, 0, 3,
+	{-1, pdf_free_cmap_imp}, "UniKS-UTF16-H", "", 0, 0, 3,
 	{ {2,0,55295},{4,56320,57343},{2,57344,65535}, },
 	6390, 6390, (pdf_range*) cmap_UniKS_UTF16_H_ranges,
 	3309, 3309, (unsigned short*) cmap_UniKS_UTF16_H_table,
@@ -7137,7 +7137,7 @@ static const pdf_range cmap_UniKS_UTF16_V_ranges[] = {
 static const unsigned short cmap_UniKS_UTF16_V_table[] = { 0 };
 
 static pdf_cmap cmap_UniKS_UTF16_V = {
-	-1, "UniKS-UTF16-V", "UniKS-UTF16-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "UniKS-UTF16-V", "UniKS-UTF16-H", 0, 1, 0,
 	{ {0,0,0}, },
 	18, 18, (pdf_range*) cmap_UniKS_UTF16_V_ranges,
 	0, 0, (unsigned short*) cmap_UniKS_UTF16_V_table,

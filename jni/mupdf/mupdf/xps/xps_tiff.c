@@ -791,8 +791,6 @@ xps_decode_tiff(fz_context *ctx, byte *buf, int len)
 		if (tiff.stripoffsets) fz_free(ctx, tiff.stripoffsets);
 		if (tiff.stripbytecounts) fz_free(ctx, tiff.stripbytecounts);
 		if (tiff.samples) fz_free(ctx, tiff.samples);
-		/* SumatraPDF: fix memory leak */
-		if (tiff.profile) fz_free(ctx, tiff.profile);
 		fz_throw(ctx, "out of memory");
 	}
 
@@ -823,8 +821,6 @@ xps_decode_tiff(fz_context *ctx, byte *buf, int len)
 	if (tiff.stripoffsets) fz_free(ctx, tiff.stripoffsets);
 	if (tiff.stripbytecounts) fz_free(ctx, tiff.stripbytecounts);
 	if (tiff.samples) fz_free(ctx, tiff.samples);
-	/* SumatraPDF: fix memory leak */
-	if (tiff.profile) fz_free(ctx, tiff.profile);
 
 	return image;
 }

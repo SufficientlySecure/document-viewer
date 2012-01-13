@@ -5,6 +5,7 @@ import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.codec.CodecPage;
 
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
@@ -12,42 +13,27 @@ public class PdfPage implements CodecPage {
 
     private long pageHandle;
     private final long docHandle;
-    private final RectF mediaBox;
-    private final int rotation;
+
+    final RectF pageBounds;
+    final int actualWidth;
+    final int actualHeight;
 
     private PdfPage(final long pageHandle, final long docHandle) {
         this.pageHandle = pageHandle;
         this.docHandle = docHandle;
-        this.mediaBox = getMediaBox();
-        this.rotation = (360 + getRotate(pageHandle)) % 360;
+        this.pageBounds = getBounds();
+        this.actualWidth = PdfContext.getWidthInPixels(pageBounds.width());
+        this.actualHeight = PdfContext.getHeightInPixels(pageBounds.height());
     }
 
     @Override
     public int getWidth() {
-        // Check rotation
-        switch (rotation) {
-            case 90:
-            case 270:
-                return PdfContext.getWidthInPixels(mediaBox.height());
-            case 0:
-            case 180:
-            default:
-                return PdfContext.getWidthInPixels(mediaBox.width());
-        }
+        return actualWidth;
     }
 
     @Override
     public int getHeight() {
-        // Check rotation
-        switch (rotation) {
-            case 90:
-            case 270:
-                return PdfContext.getHeightInPixels(mediaBox.width());
-            case 0:
-            case 180:
-            default:
-                return PdfContext.getHeightInPixels(mediaBox.height());
-        }
+        return actualHeight;
     }
 
     @Override
@@ -57,47 +43,22 @@ public class PdfPage implements CodecPage {
     }
 
     private float[] calculateFz(final int width, final int height, final RectF pageSliceBounds) {
-        FzGeometry.fz_matrix matrix = FzGeometry.fz_identity;
+        final Matrix matrix = new Matrix();
+        matrix.postScale(width / (float) pageBounds.width(), height / (float) pageBounds.height());
+        matrix.postTranslate(-pageSliceBounds.left * width, -pageSliceBounds.top * height);
+        matrix.postScale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height());
 
-        // Check rotation
-        switch (this.rotation) {
-            case 90:
-                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(-mediaBox.left, -mediaBox.top));
-                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_rotate(-rotation));
-                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(0, mediaBox.width()));
-                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_scale(width / mediaBox.height(), -height / mediaBox.width()));
-                break;
-            case 180:
-                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(-mediaBox.right, -mediaBox.bottom));
-                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_rotate(rotation));
-                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_scale(width / mediaBox.width(), -height / mediaBox.height()));
-                break;
-            case 270:
-                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(-mediaBox.left, -mediaBox.top));
-                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_rotate(-rotation));
-                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(mediaBox.height(), 0));
-                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_scale(width / mediaBox.height(), -height / mediaBox.width()));
-                break;
-            case 0:
-            default:
-                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(-mediaBox.left, -mediaBox.top));
-                matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_scale(width / mediaBox.width(), -height / mediaBox.height()));
-                break;
-        }
-
-        matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(0, height));
-
-        matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_translate(-pageSliceBounds.left * width, -pageSliceBounds.top * height));
-        matrix = FzGeometry.fz_concat(matrix, FzGeometry.fz_scale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height()));
+        final float[] matrixSource = new float[9];
+        matrix.getValues(matrixSource);
 
         final float[] matrixArray = new float[6];
 
-        matrixArray[0] = matrix.a;
-        matrixArray[1] = matrix.b;
-        matrixArray[2] = matrix.c;
-        matrixArray[3] = matrix.d;
-        matrixArray[4] = matrix.e;
-        matrixArray[5] = matrix.f;
+        matrixArray[0] = matrixSource[0];
+        matrixArray[1] = matrixSource[3];
+        matrixArray[2] = matrixSource[1];
+        matrixArray[3] = matrixSource[4];
+        matrixArray[4] = matrixSource[2];
+        matrixArray[5] = matrixSource[5];
 
         return matrixArray;
     }
@@ -125,9 +86,9 @@ public class PdfPage implements CodecPage {
         return pageHandle == 0;
     }
 
-    private RectF getMediaBox() {
+    private RectF getBounds() {
         final float[] box = new float[4];
-        getMediaBox(pageHandle, box);
+        getBounds(docHandle, pageHandle, box);
         return new RectF(box[0], box[1], box[2], box[3]);
     }
 
@@ -158,10 +119,8 @@ public class PdfPage implements CodecPage {
         return b;
     }
 
-    private static native void getMediaBox(long handle, float[] mediabox);
 
-    // TODO: use rotation when draw page
-    private static native int getRotate(long handle);
+    private static native void getBounds(long dochandle, long handle, float[] bounds);
 
     private static native void free(long dochandle, long handle);
 

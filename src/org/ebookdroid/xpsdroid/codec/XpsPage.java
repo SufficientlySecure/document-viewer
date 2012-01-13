@@ -3,6 +3,7 @@ package org.ebookdroid.xpsdroid.codec;
 import org.ebookdroid.core.bitmaps.BitmapManager;
 import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.codec.CodecPage;
+import org.ebookdroid.pdfdroid.codec.PdfContext;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -13,26 +14,34 @@ public class XpsPage implements CodecPage {
 
     private long pageHandle;
     private final long docHandle;
+    private final RectF pageBounds;
 
     private XpsPage(final long pageHandle, final long docHandle) {
         this.pageHandle = pageHandle;
         this.docHandle = docHandle;
+        this.pageBounds = getBounds();
     }
 
     @Override
     public int getWidth() {
-        return getPageWidth(pageHandle);
+        return XpsContext.getWidthInPixels(pageBounds.width());
     }
 
     @Override
     public int getHeight() {
-        return getPageHeight(pageHandle);
+        return XpsContext.getHeightInPixels(pageBounds.height());
+    }
+    
+    private RectF getBounds() {
+        final float[] box = new float[4];
+        getBounds(docHandle, pageHandle, box);
+        return new RectF(box[0], box[1], box[2], box[3]);
     }
 
     @Override
     public BitmapRef renderBitmap(final int width, final int height, final RectF pageSliceBounds) {
         final Matrix matrix = new Matrix();
-        matrix.postScale(width / (float) getPageWidth(pageHandle), height / (float) getPageHeight(pageHandle));
+        matrix.postScale(width / (float) pageBounds.width(), height / (float) pageBounds.height());
         matrix.postTranslate(-pageSliceBounds.left * width, -pageSliceBounds.top * height);
         matrix.postScale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height());
         return render(new Rect(0, 0, width, height), matrix);
@@ -80,16 +89,25 @@ public class XpsPage implements CodecPage {
 
         final int width = viewbox.width();
         final int height = viewbox.height();
+        
+        if (XpsContext.useNativeGraphics) {
+            final BitmapRef bmp = BitmapManager.getBitmap("PDF page", width, height, PdfContext.NATIVE_BITMAP_CFG);
+            if (renderPageBitmap(docHandle, pageHandle, mRect, matrixArray, bmp.getBitmap())) {
+                return bmp;
+            } else {
+                BitmapManager.release(bmp);
+                return null;
+            }
+        }
+        
         final int[] bufferarray = new int[width * height];
         renderPage(docHandle, pageHandle, mRect, matrixArray, bufferarray);
         BitmapRef b = BitmapManager.getBitmap("XPS page", width, height, Bitmap.Config.RGB_565);
         b.getBitmap().setPixels(bufferarray, 0, width, 0, 0, width, height);
         return b;
     }
-
-    private static native int getPageWidth(long handle);
-
-    private static native int getPageHeight(long handle);
+    
+    private static native void getBounds(long dochandle, long handle, float[] bounds);
 
     private static native void free(long dochandle, long handle);
 
@@ -97,4 +115,7 @@ public class XpsPage implements CodecPage {
 
     private static native void renderPage(long dochandle, long pagehandle, int[] viewboxarray, float[] matrixarray,
             int[] bufferarray);
+    
+    private static native boolean renderPageBitmap(long dochandle, long pagehandle, int[] viewboxarray,
+            float[] matrixarray, Bitmap bitmap);
 }

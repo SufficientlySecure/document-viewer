@@ -9,7 +9,7 @@ static const pdf_range cmap_Adobe_GB1_0_ranges[] = {
 static const unsigned short cmap_Adobe_GB1_0_table[] = { 0 };
 
 static pdf_cmap cmap_Adobe_GB1_0 = {
-	-1, "Adobe-GB1-0", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Adobe-GB1-0", "", 0, 0, 1,
 	{ {2,0,7935}, },
 	1, 1, (pdf_range*) cmap_Adobe_GB1_0_ranges,
 	0, 0, (unsigned short*) cmap_Adobe_GB1_0_table,
@@ -24,7 +24,7 @@ static const pdf_range cmap_Adobe_GB1_1_ranges[] = {
 static const unsigned short cmap_Adobe_GB1_1_table[] = { 0 };
 
 static pdf_cmap cmap_Adobe_GB1_1 = {
-	-1, "Adobe-GB1-1", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Adobe-GB1-1", "", 0, 0, 1,
 	{ {2,0,9983}, },
 	1, 1, (pdf_range*) cmap_Adobe_GB1_1_ranges,
 	0, 0, (unsigned short*) cmap_Adobe_GB1_1_table,
@@ -39,7 +39,7 @@ static const pdf_range cmap_Adobe_GB1_2_ranges[] = {
 static const unsigned short cmap_Adobe_GB1_2_table[] = { 0 };
 
 static pdf_cmap cmap_Adobe_GB1_2 = {
-	-1, "Adobe-GB1-2", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Adobe-GB1-2", "", 0, 0, 1,
 	{ {2,0,22271}, },
 	2, 2, (pdf_range*) cmap_Adobe_GB1_2_ranges,
 	0, 0, (unsigned short*) cmap_Adobe_GB1_2_table,
@@ -54,7 +54,7 @@ static const pdf_range cmap_Adobe_GB1_3_ranges[] = {
 static const unsigned short cmap_Adobe_GB1_3_table[] = { 0 };
 
 static pdf_cmap cmap_Adobe_GB1_3 = {
-	-1, "Adobe-GB1-3", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Adobe-GB1-3", "", 0, 0, 1,
 	{ {2,0,22527}, },
 	2, 2, (pdf_range*) cmap_Adobe_GB1_3_ranges,
 	0, 0, (unsigned short*) cmap_Adobe_GB1_3_table,
@@ -69,7 +69,7 @@ static const pdf_range cmap_Adobe_GB1_4_ranges[] = {
 static const unsigned short cmap_Adobe_GB1_4_table[] = { 0 };
 
 static pdf_cmap cmap_Adobe_GB1_4 = {
-	-1, "Adobe-GB1-4", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Adobe-GB1-4", "", 0, 0, 1,
 	{ {2,0,29183}, },
 	2, 2, (pdf_range*) cmap_Adobe_GB1_4_ranges,
 	0, 0, (unsigned short*) cmap_Adobe_GB1_4_table,
@@ -84,7 +84,7 @@ static const pdf_range cmap_Adobe_GB1_5_ranges[] = {
 static const unsigned short cmap_Adobe_GB1_5_table[] = { 0 };
 
 static pdf_cmap cmap_Adobe_GB1_5 = {
-	-1, "Adobe-GB1-5", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Adobe-GB1-5", "", 0, 0, 1,
 	{ {2,0,30463}, },
 	2, 2, (pdf_range*) cmap_Adobe_GB1_5_ranges,
 	0, 0, (unsigned short*) cmap_Adobe_GB1_5_table,
@@ -2027,7 +2027,7 @@ static const unsigned short cmap_Adobe_GB1_UCS2_table[9967] = {
 };
 
 static pdf_cmap cmap_Adobe_GB1_UCS2 = {
-	-1, "Adobe-GB1-UCS2", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "Adobe-GB1-UCS2", "", 0, 0, 1,
 	{ {2,0,65535}, },
 	4386, 4386, (pdf_range*) cmap_Adobe_GB1_UCS2_ranges,
 	9967, 9967, (unsigned short*) cmap_Adobe_GB1_UCS2_table,
@@ -2064,7 +2064,7 @@ static const pdf_range cmap_GB_EUC_H_ranges[] = {
 static const unsigned short cmap_GB_EUC_H_table[] = { 0 };
 
 static pdf_cmap cmap_GB_EUC_H = {
-	-1, "GB-EUC-H", "", 0, 0, 2,
+	{-1, pdf_free_cmap_imp}, "GB-EUC-H", "", 0, 0, 2,
 	{ {1,0,128},{2,41377,65278}, },
 	90, 90, (pdf_range*) cmap_GB_EUC_H_ranges,
 	0, 0, (unsigned short*) cmap_GB_EUC_H_table,
@@ -2085,7 +2085,7 @@ static const unsigned short cmap_GB_EUC_V_table[4] = {
 };
 
 static pdf_cmap cmap_GB_EUC_V = {
-	-1, "GB-EUC-V", "GB-EUC-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "GB-EUC-V", "GB-EUC-H", 0, 1, 0,
 	{ {0,0,0}, },
 	18, 18, (pdf_range*) cmap_GB_EUC_V_ranges,
 	4, 4, (unsigned short*) cmap_GB_EUC_V_table,
@@ -2121,7 +2121,7 @@ static const pdf_range cmap_GB_H_ranges[] = {
 static const unsigned short cmap_GB_H_table[] = { 0 };
 
 static pdf_cmap cmap_GB_H = {
-	-1, "GB-H", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "GB-H", "", 0, 0, 1,
 	{ {2,8481,32382}, },
 	88, 88, (pdf_range*) cmap_GB_H_ranges,
 	0, 0, (unsigned short*) cmap_GB_H_table,
@@ -3197,7 +3197,7 @@ static const unsigned short cmap_GBK2K_H_table[2047] = {
 };
 
 static pdf_cmap cmap_GBK2K_H = {
-	-1, "GBK2K-H", "", 0, 0, 3,
+	{-1, pdf_free_cmap_imp}, "GBK2K-H", "", 0, 0, 3,
 	{ {1,0,127},{4,33072,65081},{2,33088,65278}, },
 	3558, 3558, (pdf_range*) cmap_GBK2K_H_ranges,
 	2047, 2047, (unsigned short*) cmap_GBK2K_H_table,
@@ -3223,7 +3223,7 @@ static const unsigned short cmap_GBK2K_V_table[4] = {
 };
 
 static pdf_cmap cmap_GBK2K_V = {
-	-1, "GBK2K-V", "GBK2K-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "GBK2K-V", "GBK2K-H", 0, 1, 0,
 	{ {0,0,0}, },
 	39, 39, (pdf_range*) cmap_GBK2K_V_ranges,
 	4, 4, (unsigned short*) cmap_GBK2K_V_table,
@@ -4072,7 +4072,7 @@ static const unsigned short cmap_GBK_EUC_H_table[1851] = {
 };
 
 static pdf_cmap cmap_GBK_EUC_H = {
-	-1, "GBK-EUC-H", "", 0, 0, 2,
+	{-1, pdf_free_cmap_imp}, "GBK-EUC-H", "", 0, 0, 2,
 	{ {1,0,128},{2,33088,65278}, },
 	2713, 2713, (pdf_range*) cmap_GBK_EUC_H_ranges,
 	1851, 1851, (unsigned short*) cmap_GBK_EUC_H_table,
@@ -4093,7 +4093,7 @@ static const unsigned short cmap_GBK_EUC_V_table[4] = {
 };
 
 static pdf_cmap cmap_GBK_EUC_V = {
-	-1, "GBK-EUC-V", "GBK-EUC-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "GBK-EUC-V", "GBK-EUC-H", 0, 1, 0,
 	{ {0,0,0}, },
 	18, 18, (pdf_range*) cmap_GBK_EUC_V_ranges,
 	4, 4, (unsigned short*) cmap_GBK_EUC_V_table,
@@ -4941,7 +4941,7 @@ static const unsigned short cmap_GBKp_EUC_H_table[1851] = {
 };
 
 static pdf_cmap cmap_GBKp_EUC_H = {
-	-1, "GBKp-EUC-H", "", 0, 0, 2,
+	{-1, pdf_free_cmap_imp}, "GBKp-EUC-H", "", 0, 0, 2,
 	{ {1,0,128},{2,33088,65278}, },
 	2712, 2712, (pdf_range*) cmap_GBKp_EUC_H_ranges,
 	1851, 1851, (unsigned short*) cmap_GBKp_EUC_H_table,
@@ -4962,7 +4962,7 @@ static const unsigned short cmap_GBKp_EUC_V_table[4] = {
 };
 
 static pdf_cmap cmap_GBKp_EUC_V = {
-	-1, "GBKp-EUC-V", "GBKp-EUC-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "GBKp-EUC-V", "GBKp-EUC-H", 0, 1, 0,
 	{ {0,0,0}, },
 	18, 18, (pdf_range*) cmap_GBKp_EUC_V_ranges,
 	4, 4, (unsigned short*) cmap_GBKp_EUC_V_table,
@@ -4999,7 +4999,7 @@ static const pdf_range cmap_GBpc_EUC_H_ranges[] = {
 static const unsigned short cmap_GBpc_EUC_H_table[] = { 0 };
 
 static pdf_cmap cmap_GBpc_EUC_H = {
-	-1, "GBpc-EUC-H", "", 0, 0, 3,
+	{-1, pdf_free_cmap_imp}, "GBpc-EUC-H", "", 0, 0, 3,
 	{ {1,0,128},{2,41377,64766},{1,253,255}, },
 	91, 91, (pdf_range*) cmap_GBpc_EUC_H_ranges,
 	0, 0, (unsigned short*) cmap_GBpc_EUC_H_table,
@@ -5020,7 +5020,7 @@ static const unsigned short cmap_GBpc_EUC_V_table[4] = {
 };
 
 static pdf_cmap cmap_GBpc_EUC_V = {
-	-1, "GBpc-EUC-V", "GBpc-EUC-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "GBpc-EUC-V", "GBpc-EUC-H", 0, 1, 0,
 	{ {0,0,0}, },
 	18, 18, (pdf_range*) cmap_GBpc_EUC_V_ranges,
 	4, 4, (unsigned short*) cmap_GBpc_EUC_V_table,
@@ -5554,7 +5554,7 @@ static const unsigned short cmap_GBT_EUC_H_table[672] = {
 };
 
 static pdf_cmap cmap_GBT_EUC_H = {
-	-1, "GBT-EUC-H", "", 0, 0, 2,
+	{-1, pdf_free_cmap_imp}, "GBT-EUC-H", "", 0, 0, 2,
 	{ {1,0,128},{2,41377,65278}, },
 	1849, 1849, (pdf_range*) cmap_GBT_EUC_H_ranges,
 	672, 672, (unsigned short*) cmap_GBT_EUC_H_table,
@@ -5575,7 +5575,7 @@ static const unsigned short cmap_GBT_EUC_V_table[4] = {
 };
 
 static pdf_cmap cmap_GBT_EUC_V = {
-	-1, "GBT-EUC-V", "GBT-EUC-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "GBT-EUC-V", "GBT-EUC-H", 0, 1, 0,
 	{ {0,0,0}, },
 	18, 18, (pdf_range*) cmap_GBT_EUC_V_ranges,
 	4, 4, (unsigned short*) cmap_GBT_EUC_V_table,
@@ -6108,7 +6108,7 @@ static const unsigned short cmap_GBT_H_table[672] = {
 };
 
 static pdf_cmap cmap_GBT_H = {
-	-1, "GBT-H", "", 0, 0, 1,
+	{-1, pdf_free_cmap_imp}, "GBT-H", "", 0, 0, 1,
 	{ {2,8481,32382}, },
 	1847, 1847, (pdf_range*) cmap_GBT_H_ranges,
 	672, 672, (unsigned short*) cmap_GBT_H_table,
@@ -6642,7 +6642,7 @@ static const unsigned short cmap_GBTpc_EUC_H_table[672] = {
 };
 
 static pdf_cmap cmap_GBTpc_EUC_H = {
-	-1, "GBTpc-EUC-H", "", 0, 0, 3,
+	{-1, pdf_free_cmap_imp}, "GBTpc-EUC-H", "", 0, 0, 3,
 	{ {1,0,128},{2,41377,64766},{1,253,255}, },
 	1850, 1850, (pdf_range*) cmap_GBTpc_EUC_H_ranges,
 	672, 672, (unsigned short*) cmap_GBTpc_EUC_H_table,
@@ -6663,7 +6663,7 @@ static const unsigned short cmap_GBTpc_EUC_V_table[4] = {
 };
 
 static pdf_cmap cmap_GBTpc_EUC_V = {
-	-1, "GBTpc-EUC-V", "GBTpc-EUC-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "GBTpc-EUC-V", "GBTpc-EUC-H", 0, 1, 0,
 	{ {0,0,0}, },
 	18, 18, (pdf_range*) cmap_GBTpc_EUC_V_ranges,
 	4, 4, (unsigned short*) cmap_GBTpc_EUC_V_table,
@@ -6684,7 +6684,7 @@ static const unsigned short cmap_GBT_V_table[4] = {
 };
 
 static pdf_cmap cmap_GBT_V = {
-	-1, "GBT-V", "GBT-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "GBT-V", "GBT-H", 0, 1, 0,
 	{ {0,0,0}, },
 	18, 18, (pdf_range*) cmap_GBT_V_ranges,
 	4, 4, (unsigned short*) cmap_GBT_V_table,
@@ -6705,7 +6705,7 @@ static const unsigned short cmap_GB_V_table[4] = {
 };
 
 static pdf_cmap cmap_GB_V = {
-	-1, "GB-V", "GB-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "GB-V", "GB-H", 0, 1, 0,
 	{ {0,0,0}, },
 	18, 18, (pdf_range*) cmap_GB_V_ranges,
 	4, 4, (unsigned short*) cmap_GB_V_table,
@@ -9026,7 +9026,7 @@ static const unsigned short cmap_UniGB_UCS2_H_table[9528] = {
 };
 
 static pdf_cmap cmap_UniGB_UCS2_H = {
-	-1, "UniGB-UCS2-H", "", 0, 0, 2,
+	{-1, pdf_free_cmap_imp}, "UniGB-UCS2-H", "", 0, 0, 2,
 	{ {2,0,55295},{2,57344,65535}, },
 	6047, 6047, (pdf_range*) cmap_UniGB_UCS2_H_ranges,
 	9528, 9528, (unsigned short*) cmap_UniGB_UCS2_H_table,
@@ -9048,7 +9048,7 @@ static const unsigned short cmap_UniGB_UCS2_V_table[4] = {
 };
 
 static pdf_cmap cmap_UniGB_UCS2_V = {
-	-1, "UniGB-UCS2-V", "UniGB-UCS2-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "UniGB-UCS2-V", "UniGB-UCS2-H", 0, 1, 0,
 	{ {0,0,0}, },
 	22, 22, (pdf_range*) cmap_UniGB_UCS2_V_ranges,
 	4, 4, (unsigned short*) cmap_UniGB_UCS2_V_table,
@@ -11379,7 +11379,7 @@ static const unsigned short cmap_UniGB_UTF16_H_table[9548] = {
 };
 
 static pdf_cmap cmap_UniGB_UTF16_H = {
-	-1, "UniGB-UTF16-H", "", 0, 0, 3,
+	{-1, pdf_free_cmap_imp}, "UniGB-UTF16-H", "", 0, 0, 3,
 	{ {2,0,55295},{4,56320,57343},{2,57344,65535}, },
 	6080, 6080, (pdf_range*) cmap_UniGB_UTF16_H_ranges,
 	9548, 9548, (unsigned short*) cmap_UniGB_UTF16_H_table,
@@ -11401,7 +11401,7 @@ static const unsigned short cmap_UniGB_UTF16_V_table[4] = {
 };
 
 static pdf_cmap cmap_UniGB_UTF16_V = {
-	-1, "UniGB-UTF16-V", "UniGB-UTF16-H", 0, 1, 0,
+	{-1, pdf_free_cmap_imp}, "UniGB-UTF16-V", "UniGB-UTF16-H", 0, 1, 0,
 	{ {0,0,0}, },
 	21, 21, (pdf_range*) cmap_UniGB_UTF16_V_ranges,
 	4, 4, (unsigned short*) cmap_UniGB_UTF16_V_table,

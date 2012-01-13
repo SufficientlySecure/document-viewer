@@ -47,8 +47,6 @@ char *xml_tag(xml_element *item);
 char *xml_att(xml_element *item, const char *att);
 void xml_free_element(fz_context *doc, xml_element *item);
 void xml_print_element(xml_element *item, int level);
-/* SumatraPDF: allow to keep only part of an XML tree */
-void xml_detach(xml_element *node);
 
 /*
  * Container parts.
@@ -99,7 +97,6 @@ struct xps_target_s
 	char *name;
 	int page;
 	xps_target *next;
-	fz_rect rect; /* SumatraPDF: extended link support */
 };
 
 void xps_read_page_list(xps_document *doc);
@@ -108,13 +105,12 @@ void xps_free_page_list(xps_document *doc);
 
 int xps_count_pages(xps_document *doc);
 xps_page *xps_load_page(xps_document *doc, int number);
+fz_rect xps_bound_page(xps_document *doc, xps_page *page);
 void xps_free_page(xps_document *doc, xps_page *page);
 
 fz_outline *xps_load_outline(xps_document *doc);
 
 int xps_find_link_target(xps_document *doc, char *target_uri);
-/* SumatraPDF: extended link support */
-xps_target *xps_find_link_target_obj(xps_document *doc, char *target_uri);
 
 /*
  * Images, fonts, and colorspaces.
@@ -178,6 +174,8 @@ void xps_debug_resource_dictionary(xps_resource *dict);
  * Fixed page/graphics parsing.
  */
 
+void xps_run_page(xps_document *doc, xps_page *page, fz_device *dev, fz_matrix ctm, fz_cookie *cookie);
+
 void xps_parse_fixed_page(xps_document *doc, fz_matrix ctm, xps_page *page);
 void xps_parse_canvas(xps_document *doc, fz_matrix ctm, fz_rect area, char *base_uri, xps_resource *dict, xml_element *node);
 void xps_parse_path(xps_document *doc, fz_matrix ctm, char *base_uri, xps_resource *dict, xml_element *node);
@@ -200,12 +198,7 @@ void xps_end_opacity(xps_document *doc, char *base_uri, xps_resource *dict, char
 void xps_parse_brush(xps_document *doc, fz_matrix ctm, fz_rect area, char *base_uri, xps_resource *dict, xml_element *node);
 void xps_parse_element(xps_document *doc, fz_matrix ctm, fz_rect area, char *base_uri, xps_resource *dict, xml_element *node);
 
-/* SumatraPDF: basic support for alternate content */
-xml_element *xps_find_alternate_content(xml_element *node);
-
 void xps_clip(xps_document *doc, fz_matrix ctm, xps_resource *dict, char *clip_att, xml_element *clip_tag);
-/* SumatraPDF: better whitespace parsing */
-char *xps_get_point(char *s, float *x, float *y);
 
 /*
  * The interpreter context.
@@ -254,19 +247,12 @@ struct xps_document_s
 	float alpha;
 
 	/* Current device */
+	fz_cookie *cookie;
 	fz_device *dev;
-
-	/* SumatraPDF: set to non-NULL for link extraction */
-	fz_link *link_root;
 };
 
 xps_document *xps_open_file(fz_context *ctx, char *filename);
 xps_document *xps_open_stream(fz_stream *file);
 void xps_free_context(xps_document *doc);
-
-/* SumatraPDF: extended link support */
-void xps_extract_anchor_info(xps_document *doc, xml_element *node, fz_rect rect);
-/* SumatraPDF: extract document properties (hacky) */
-fz_obj *xps_extract_doc_props(xps_document *doc);
 
 #endif

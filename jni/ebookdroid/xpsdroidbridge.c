@@ -1,6 +1,7 @@
 #include <jni.h>
 
 #include <android/log.h>
+#include <nativebitmap.h>
 
 #include <errno.h>
 
@@ -23,7 +24,6 @@ struct renderdocument_s
 {
     fz_context* ctx;
     xps_document* xpsdoc;
-    fz_glyph_cache* drawcache;
     fz_outline* outline;
 };
 
@@ -59,10 +59,6 @@ static void xps_free_document(renderdocument_t* doc)
         if (doc->outline)
             fz_free_outline(doc->outline);
         doc->outline = NULL;
-
-        if (doc->drawcache)
-            fz_free_glyph_cache(doc->ctx, doc->drawcache);
-        doc->drawcache = NULL;
 
 	if(doc->xpsdoc)
 	    xps_free_context(doc->xpsdoc);
@@ -103,17 +99,8 @@ Java_org_ebookdroid_xpsdroid_codec_XpsDocument_open(JNIEnv *env, jclass clazz, j
         goto cleanup;
     }
     doc->xpsdoc = NULL;
-    doc->drawcache = NULL;
     doc->outline = NULL;
 
-    /* initialize renderer */
-    doc->drawcache = fz_new_glyph_cache(doc->ctx);
-    if (!doc->drawcache)
-    {
-        xps_free_document(doc);
-        xps_throw_exception(env, "Cannot create new renderer");
-        goto cleanup;
-    }
     
     fz_try(doc->ctx)
     {
@@ -194,13 +181,6 @@ Java_org_ebookdroid_xpsdroid_codec_XpsDocument_getPageInfo(JNIEnv *env, jclass c
     return (-1);
 }
 
-static void xps_run_page(xps_document *doc, xps_page *page, fz_device *dev, fz_matrix ctm)
-{
-    doc->dev = dev;
-    xps_parse_fixed_page(doc, ctm, page);
-    doc->dev = NULL;
-}
-
 JNIEXPORT jint JNICALL
 Java_org_ebookdroid_xpsdroid_codec_XpsDocument_getPageCount(JNIEnv *env, jclass clazz, jlong handle)
 {
@@ -238,7 +218,7 @@ Java_org_ebookdroid_xpsdroid_codec_XpsPage_open(JNIEnv *env, jclass clazz, jlong
 //New draw page
     page->pageList = fz_new_display_list(doc->ctx);
     fz_device *dev = fz_new_list_device(doc->ctx, page->pageList);
-    xps_run_page(doc->xpsdoc, page->page, dev, fz_identity);
+    xps_run_page(doc->xpsdoc, page->page, dev, fz_identity, NULL);
     fz_free_device(dev);
 //
 
@@ -270,20 +250,24 @@ Java_org_ebookdroid_xpsdroid_codec_XpsPage_free(JNIEnv *env, jclass clazz, jlong
     }
 }
 
-JNIEXPORT jint JNICALL
-Java_org_ebookdroid_xpsdroid_codec_XpsPage_getPageWidth(JNIEnv *env, jclass clazz, jlong handle)
-{
-    renderpage_t *page = (renderpage_t*) (long) handle;
-    return page->page->width;
 
+JNIEXPORT void JNICALL
+Java_org_ebookdroid_xpsdroid_codec_XpsPage_getBounds(JNIEnv *env, jclass clazz, jlong dochandle, jlong handle, jfloatArray bounds)
+{
+    renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
+    renderpage_t *page = (renderpage_t*) (long) handle;
+    jfloat *bbox = (*env)->GetPrimitiveArrayCritical(env, bounds, 0);
+    if (!bbox)
+        return;
+    fz_rect page_bounds = xps_bound_page(doc->xpsdoc, page->page);
+    DEBUG("Bounds: %f %f %f %f", page_bounds.x0, page_bounds.y0, page_bounds.x1, page_bounds.y1);
+    bbox[0] = page_bounds.x0;
+    bbox[1] = page_bounds.y0;
+    bbox[2] = page_bounds.x1;
+    bbox[3] = page_bounds.y1;
+    (*env)->ReleasePrimitiveArrayCritical(env, bounds, bbox, 0);
 }
 
-JNIEXPORT jint JNICALL
-Java_org_ebookdroid_xpsdroid_codec_XpsPage_getPageHeight(JNIEnv *env, jclass clazz, jlong handle)
-{
-    renderpage_t *page = (renderpage_t*) (long) handle;
-    return page->page->height;
-}
 
 JNIEXPORT void JNICALL
 Java_org_ebookdroid_xpsdroid_codec_XpsPage_renderPage(JNIEnv *env, jobject this, jlong dochandle, jlong pagehandle,
@@ -337,7 +321,7 @@ Java_org_ebookdroid_xpsdroid_codec_XpsPage_renderPage(JNIEnv *env, jobject this,
 
     fz_clear_pixmap_with_color(pixmap, 0xff);
 
-    dev = fz_new_draw_device(doc->ctx, doc->drawcache, pixmap);
+    dev = fz_new_draw_device(doc->ctx, pixmap);
     fz_execute_display_list(page->pageList, dev, ctm, viewbox, NULL);
     fz_free_device(dev);
 
@@ -346,6 +330,101 @@ Java_org_ebookdroid_xpsdroid_codec_XpsPage_renderPage(JNIEnv *env, jobject this,
     fz_drop_pixmap(doc->ctx, pixmap);
     DEBUG("XpsView.renderPage() done");
 }
+
+
+/*JNI BITMAP API*/
+
+JNIEXPORT jboolean JNICALL
+Java_org_ebookdroid_xpsdroid_codec_XpsContext_isNativeGraphicsAvailable(JNIEnv *env, jobject this)
+{
+    return NativePresent();
+}
+
+JNIEXPORT jboolean JNICALL
+Java_org_ebookdroid_xpsdroid_codec_XpsPage_renderPageBitmap(JNIEnv *env, jobject this, jlong dochandle,
+                                                            jlong pagehandle, jintArray viewboxarray,
+                                                            jfloatArray matrixarray, jobject bitmap)
+{
+    renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
+    renderpage_t *page = (renderpage_t*) (long) pagehandle;
+    DEBUG("XpsView(%p).renderPageBitmap(%p, %p)", this, doc, page);
+    fz_matrix ctm;
+    fz_bbox viewbox;
+    fz_pixmap *pixmap;
+    jfloat *matrix;
+    jint *viewboxarr;
+    jint *dimen;
+    jint *buffer;
+    int length, val;
+    fz_device *dev = NULL;
+
+    AndroidBitmapInfo info;
+    void *pixels;
+
+    int ret;
+
+    if ((ret = NativeBitmap_getInfo(env, bitmap, &info)) < 0)
+    {
+        ERROR("AndroidBitmap_getInfo() failed ! error=%d", ret);
+        return 0;
+    }
+
+    DEBUG("Checking format\n");
+    if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888)
+    {
+        ERROR("Bitmap format is not RGBA_8888 !");
+        return 0;
+    }
+
+    DEBUG("locking pixels\n");
+    if ((ret = NativeBitmap_lockPixels(env, bitmap, &pixels)) < 0)
+    {
+        ERROR("AndroidBitmap_lockPixels() failed ! error=%d", ret);
+        return 0;
+    }
+
+    ctm = fz_identity;
+
+    matrix = (*env)->GetPrimitiveArrayCritical(env, matrixarray, 0);
+    ctm.a = matrix[0];
+    ctm.b = matrix[1];
+    ctm.c = matrix[2];
+    ctm.d = matrix[3];
+    ctm.e = matrix[4];
+    ctm.f = matrix[5];
+    (*env)->ReleasePrimitiveArrayCritical(env, matrixarray, matrix, 0);
+    DEBUG("Matrix: %f %f %f %f %f %f", ctm.a, ctm.b, ctm.c, ctm.d, ctm.e, ctm.f);
+
+    viewboxarr = (*env)->GetPrimitiveArrayCritical(env, viewboxarray, 0);
+    viewbox.x0 = viewboxarr[0];
+    viewbox.y0 = viewboxarr[1];
+    viewbox.x1 = viewboxarr[2];
+    viewbox.y1 = viewboxarr[3];
+
+    (*env)->ReleasePrimitiveArrayCritical(env, viewboxarray, viewboxarr, 0);
+    DEBUG("Viewbox: %d %d %d %d", viewbox.x0, viewbox.y0, viewbox.x1, viewbox.y1);
+
+    /* do the rendering */
+
+    pixmap = fz_new_pixmap_with_data(doc->ctx, fz_device_rgb, viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0, pixels);
+
+    DEBUG("doing the rendering...");
+
+    fz_clear_pixmap_with_color(pixmap, 0xff);
+
+    dev = fz_new_draw_device(doc->ctx, pixmap);
+    fz_execute_display_list(page->pageList, dev, ctm, viewbox, NULL);
+    fz_free_device(dev);
+
+    fz_drop_pixmap(doc->ctx, pixmap);
+
+    DEBUG("XPSView.renderPageBitmap() done");
+
+    NativeBitmap_unlockPixels(env, bitmap);
+
+    return 1;
+}
+
 
 //Outline
 JNIEXPORT jlong JNICALL

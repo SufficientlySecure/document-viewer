@@ -1,12 +1,17 @@
 package org.ebookdroid.core.codec;
 
+import org.ebookdroid.core.BaseViewerActivity;
+
 import android.graphics.Bitmap;
 
+import java.lang.reflect.Field;
 import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class AbstractCodecContext implements CodecContext {
 
     private static final AtomicLong SEQ = new AtomicLong();
+
+    private static Integer densityDPI;
 
     private long contextHandle;
 
@@ -76,11 +81,42 @@ public abstract class AbstractCodecContext implements CodecContext {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.codec.CodecContext#getBitmapConfig()
      */
     @Override
     public Bitmap.Config getBitmapConfig() {
         return Bitmap.Config.RGB_565;
+    }
+
+    public static int getWidthInPixels(final float pdfWidth) {
+        return getSizeInPixels(pdfWidth, BaseViewerActivity.DM.xdpi);
+    }
+
+    public static int getHeightInPixels(final float pdfHeight) {
+        return getSizeInPixels(pdfHeight, BaseViewerActivity.DM.ydpi);
+    }
+
+    public static int getSizeInPixels(final float pdfHeight, float dpi) {
+        if (dpi == 0) {
+            // Archos fix
+            dpi = getDensityDPI();
+        }
+        if (dpi < 72) { // Density lover then 72 is to small
+            dpi = 72; // Set default density to 72
+        }
+        return (int) (pdfHeight * dpi / 72);
+    }
+
+    private static int getDensityDPI() {
+        if (densityDPI == null) {
+            try {
+                Field f = BaseViewerActivity.DM.getClass().getDeclaredField("densityDpi");
+                densityDPI = ((Integer) f.get(BaseViewerActivity.DM));
+            } catch (final Throwable ex) {
+                densityDPI = Integer.valueOf(120);
+            }
+        }
+        return densityDPI.intValue();
     }
 }

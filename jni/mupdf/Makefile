@@ -72,6 +72,11 @@ FONT_HDR := $(GEN)/font_base14.h $(GEN)/font_droid.h $(GEN)/font_cjk.h
 $(CMAP_HDR) : $(CMAPDUMP) | $(GEN)
 $(FONT_HDR) : $(FONTDUMP) | $(GEN)
 
+$(OUT)/pdf_cmap_table.o : $(CMAP_HDR)
+$(OUT)/pdf_fontfile.o : $(FONT_HDR)
+$(OUT)/cmapdump.o : mupdf/pdf/pdf_cmap.c mupdf/pdf/pdf_cmap_parse.c
+
+
 
 all: $(CMAP_HDR) $(FONT_HDR)
 

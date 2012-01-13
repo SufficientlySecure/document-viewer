@@ -139,7 +139,6 @@ xps_select_best_font_encoding(xps_document *doc, fz_font *font)
 		{ 3, 3 },		/* Prc */
 		{ 3, 2 },		/* ShiftJis */
 		{ 3, 0 },		/* Symbol */
-		// { 0, * }, -- Unicode (deprecated)
 		{ 1, 0 },
 		{ -1, -1 },
 	};
@@ -401,7 +400,6 @@ xps_parse_glyphs(xps_document *doc, fz_matrix ctm,
 
 	char partname[1024];
 	char *subfont;
-	char *font_style = NULL; /* SumatraPDF: support StyleSimulations */
 
 	float font_size = 10;
 	int subfontid = 0;
@@ -480,27 +478,10 @@ xps_parse_glyphs(xps_document *doc, fz_matrix ctm,
 		subfontid = atoi(subfont + 1);
 		*subfont = 0;
 	}
-	/* SumatraPDF: support StyleSimulations */
-	if (style_att)
-	{
-		font_style = partname + strlen(partname);
-		if (!strcmp(style_att, "BoldSimulation"))
-			fz_strlcat(partname, "#Bold", sizeof(partname));
-		else if (!strcmp(style_att, "ItalicSimulation"))
-			fz_strlcat(partname, "#Italic", sizeof(partname));
-		else if (!strcmp(style_att, "BoldItalicSimulation"))
-			fz_strlcat(partname, "#BoldItalic", sizeof(partname));
-		else
-			font_style = NULL;
-	}
 
 	font = xps_lookup_font(doc, partname);
 	if (!font)
 	{
-		/* SumatraPDF: support StyleSimulations */
-		if (font_style)
-			*font_style = '\0';
-
 		fz_try(doc->ctx)
 		{
 			part = xps_read_part(doc, partname);
@@ -519,7 +500,7 @@ xps_parse_glyphs(xps_document *doc, fz_matrix ctm,
 
 		fz_try(doc->ctx)
 		{
-			font = fz_new_font_from_memory(doc->ctx, part->data, part->size, subfontid);
+			font = fz_new_font_from_memory(doc->ctx, part->data, part->size, subfontid, 1);
 		}
 		fz_catch(doc->ctx)
 		{
@@ -528,17 +509,9 @@ xps_parse_glyphs(xps_document *doc, fz_matrix ctm,
 			return;
 		}
 
-		/* SumatraPDF: support StyleSimulations */
-		if (font_style)
-		{
-			*font_style = '#';
-			font->ft_bold = strstr(font_style, "Bold") != NULL;
-			font->ft_italic = strstr(font_style, "Italic") != NULL;
-		}
-
 		xps_select_best_font_encoding(doc, font);
 
-		xps_insert_font(doc, partname, font);
+		xps_insert_font(doc, part->name, font);
 
 		/* NOTE: we keep part->data in the font */
 		font->ft_data = part->data;
@@ -570,10 +543,7 @@ xps_parse_glyphs(xps_document *doc, fz_matrix ctm,
 			fz_atof(origin_x_att), fz_atof(origin_y_att),
 			is_sideways, bidi_level, indices_att, unicode_att);
 
-	area = fz_bound_text(text, ctm);
-
-	/* SumatraPDF: extended link support */
-	xps_extract_anchor_info(doc, root, area);
+	area = fz_bound_text(doc->ctx, text, ctm);
 
 	xps_begin_opacity(doc, ctm, area, opacity_mask_uri, dict, opacity_att, opacity_mask_tag);
 

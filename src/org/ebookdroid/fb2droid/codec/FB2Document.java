@@ -312,8 +312,8 @@ public class FB2Document implements CodecDocument {
         }
     }
 
-    public void addTitle(final String title) {
-        outline.add(new OutlineLink(title, "#" + pages.size()));
+    public void addTitle(final FB2MarkupTitle title) {
+        outline.add(new OutlineLink(title.title, "#" + pages.size(), title.level));
     }
 
 }

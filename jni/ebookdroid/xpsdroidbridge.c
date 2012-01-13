@@ -469,7 +469,7 @@ Java_org_ebookdroid_xpsdroid_codec_XpsOutline_getLink(JNIEnv *env, jclass clazz,
     fz_outline *outline = (fz_outline*) (long) outlinehandle;
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
 
-//    DEBUG("XpsOutline_getLink(%p)",outline);
+    // DEBUG("XpsOutline_getLink(%p)",outline);
     if (!outline)
         return NULL;
 
@@ -477,13 +477,18 @@ Java_org_ebookdroid_xpsdroid_codec_XpsOutline_getLink(JNIEnv *env, jclass clazz,
     if (outline->dest.kind == FZ_LINK_URI)
     {
         snprintf(linkbuf, 128, "%s",  outline->dest.ld.uri.uri);
+        // DEBUG("XpsOutline_getLink uri = %s",linkbuf);
     }
     else if (outline->dest.kind == FZ_LINK_GOTO)
     {
         snprintf(linkbuf, 127, "#%d", outline->dest.ld.gotor.page + 1);
+        // DEBUG("XpsOutline_getLink goto = %s",linkbuf);
+    }
+    else
+    {
+        return NULL;
     }
 
-//    DEBUG("XpsOutline_getLink link = %s",linkbuf);
     return (*env)->NewStringUTF(env, linkbuf);
 }
 

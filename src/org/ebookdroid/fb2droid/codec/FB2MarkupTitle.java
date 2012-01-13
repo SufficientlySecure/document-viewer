@@ -2,15 +2,17 @@ package org.ebookdroid.fb2droid.codec;
 
 public class FB2MarkupTitle implements FB2MarkupElement {
 
-    private final String title;
+    final String title;
+    final int level;
 
-    public FB2MarkupTitle(final String string) {
+    public FB2MarkupTitle(final String string, int level) {
         this.title = string;
+        this.level = level;
     }
 
     @Override
     public void publishToDocument(final FB2Document doc) {
-        doc.addTitle(title);
+        doc.addTitle(this);
     }
 
 }

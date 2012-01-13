@@ -2,12 +2,14 @@ package org.ebookdroid.core;
 
 public class OutlineLink implements CharSequence {
 
-    private final String title;
-    private final String link;
-
-    public OutlineLink(final String t, final String l) {
-        title = t;
-        link = l;
+    public final String title;
+    public final String link;
+    public final int level;
+    
+    public OutlineLink(final String title, final String link, final int level) {
+        this.title = title;
+        this.level = level;
+        this.link = link;
     }
 
     @Override

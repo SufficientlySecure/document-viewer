@@ -13,23 +13,23 @@ public class XpsOutline {
         final List<OutlineLink> ls = new ArrayList<OutlineLink>();
         docHandle = dochandle;
         final long outline = open(dochandle);
-        ttOutline(ls, outline);
-//WARN: Possible memory leak here.
-        //free(dochandle);
+        ttOutline(ls, outline, 0);
+        // WARN: Possible memory leak here.
+        // free(dochandle);
         return ls;
     }
 
-    private void ttOutline(final List<OutlineLink> ls, long outline) {
+    private void ttOutline(final List<OutlineLink> ls, long outline, int level) {
         while (outline > 0) {
 
             final String title = getTitle(outline);
             final String link = getLink(outline, docHandle);
             if (title != null) {
-                ls.add(new OutlineLink(title, link));
+                ls.add(new OutlineLink(title, link, level));
             }
 
             final long child = getChild(outline);
-            ttOutline(ls, child);
+            ttOutline(ls, child, level);
 
             outline = getNext(outline);
         }

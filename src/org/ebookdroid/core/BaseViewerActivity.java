@@ -15,6 +15,7 @@ import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.models.DecodingProgressModel;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.models.ZoomModel;
+import org.ebookdroid.core.presentation.OutlineAdapter;
 import org.ebookdroid.core.settings.AppSettings;
 import org.ebookdroid.core.settings.ISettingsChangeListener;
 import org.ebookdroid.core.settings.SettingsManager;
@@ -401,19 +402,17 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         final List<OutlineLink> outline = documentModel.getDecodeService().getOutline();
         if ((outline != null) && (outline.size() > 0)) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            final CharSequence[] items = outline.toArray(new CharSequence[outline.size()]);
             builder.setTitle("Outline");
-            builder.setItems(items, actions.getOrCreateAction(R.id.actions_gotoOutlineItem)
-                    .putValue("outline", outline));
+            builder.setAdapter(new OutlineAdapter(this, outline),
+                    actions.getOrCreateAction(R.id.actions_gotoOutlineItem).putValue("outline", outline));
             final AlertDialog alert = builder.create();
             alert.show();
         } else {
             Toast.makeText(getApplicationContext(), "Document without Outline", Toast.LENGTH_SHORT).show();
         }
-
     }
 
-    @ActionMethod(ids = R.id.mainmenu_about)
+   @ActionMethod(ids = R.id.mainmenu_about)
     public void showAbout(final ActionEx action) {
         final Intent i = new Intent(this, AboutActivity.class);
         startActivity(i);

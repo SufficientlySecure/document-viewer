@@ -42,6 +42,8 @@ public class FB2ContentHandler extends FB2BaseHandler {
 
     final SparseArray<FB2Words> words = new SparseArray<FB2Words>();
 
+    int sectionLevel = -1;
+
     public FB2ContentHandler(final FB2Document fb2Document) {
         super(fb2Document);
     }
@@ -92,6 +94,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
                 }
             } else {
                 inSection = true;
+                sectionLevel++;
             }
         } else if ("title".equals(qName)) {
             if (!parsingNotes) {
@@ -219,13 +222,14 @@ public class FB2ContentHandler extends FB2BaseHandler {
             } else {
                 if (inSection) {
                     markup.add(new FB2MarkupEndPage());
+                    sectionLevel--;
                     inSection = false;
                 }
             }
         } else if ("title".equals(qName)) {
             inTitle = false;
             if (!parsingNotes) {
-                markup.add(new FB2MarkupTitle(title.toString()));
+                markup.add(new FB2MarkupTitle(title.toString(), sectionLevel));
                 markup.add(emptyLine(crs.textSize));
                 markup.add(FB2MarkupParagraphEnd.E);
                 markup.add(setPrevStyle().jm);

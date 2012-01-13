@@ -614,7 +614,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfOutline_getLink(JNIEnv *env, jclass clazz,
     fz_outline *outline = (fz_outline*) (long) outlinehandle;
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
 
-//    DEBUG("PdfOutline_getLink(%p)",outline);
+    // DEBUG("PdfOutline_getLink(%p)",outline);
     if (!outline)
         return NULL;
 
@@ -622,12 +622,17 @@ Java_org_ebookdroid_pdfdroid_codec_PdfOutline_getLink(JNIEnv *env, jclass clazz,
     if (outline->dest.kind == FZ_LINK_URI)
     {
         snprintf(linkbuf, 128, "%s",  outline->dest.ld.uri.uri);
+        // DEBUG("PdfOutline_getLink uri = %s",linkbuf);
     }
     else if (outline->dest.kind == FZ_LINK_GOTO)
     {
         snprintf(linkbuf, 127, "#%d", outline->dest.ld.gotor.page + 1);
+        // DEBUG("PdfOutline_getLink goto = %s",linkbuf);
     }
-//    DEBUG("PdfOutline_getLink link = %s",linkbuf);
+    else
+    {
+        return NULL;
+    }
 
     return (*env)->NewStringUTF(env, linkbuf);
 }

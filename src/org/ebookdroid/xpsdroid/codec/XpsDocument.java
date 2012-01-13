@@ -9,10 +9,11 @@ import java.util.List;
 
 public class XpsDocument extends AbstractCodecDocument {
 
-    private static final int FITZMEMORY = 512 * 1024;
+    //TODO: Must be configurable
+    private static final int STOREMEMORY = 64<<20;
 
     XpsDocument(final XpsContext context, final String fname) {
-        super(context, open(FITZMEMORY, fname));
+        super(context, open(STOREMEMORY, fname));
     }
     
     @Override
@@ -51,7 +52,7 @@ public class XpsDocument extends AbstractCodecDocument {
 
     private native static int getPageInfo(long docHandle, int pageNumber, CodecPageInfo cpi);
 
-    private static native long open(int fitzmemory, String fname);
+    private static native long open(int storememory, String fname);
 
     private static native void free(long handle);
 

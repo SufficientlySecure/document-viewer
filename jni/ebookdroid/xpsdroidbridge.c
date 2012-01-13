@@ -11,13 +11,13 @@
 /* Debugging helper */
 
 #define DEBUG(args...) \
-	__android_log_print(ANDROID_LOG_DEBUG, "XPSDroid", args)
+	__android_log_print(ANDROID_LOG_DEBUG, "EBookDroid.XPS", args)
 
 #define ERROR(args...) \
-	__android_log_print(ANDROID_LOG_ERROR, "XPSDroid", args)
+	__android_log_print(ANDROID_LOG_ERROR, "EBookDroid.XPS", args)
 
 #define INFO(args...) \
-	__android_log_print(ANDROID_LOG_INFO, "XPSDroid", args)
+	__android_log_print(ANDROID_LOG_INFO, "EBookDroid.XPS", args)
 
 typedef struct renderdocument_s renderdocument_t;
 struct renderdocument_s
@@ -74,7 +74,7 @@ static void xps_free_document(renderdocument_t* doc)
 }
 
 JNIEXPORT jlong JNICALL
-Java_org_ebookdroid_xpsdroid_codec_XpsDocument_open(JNIEnv *env, jclass clazz, jint fitzmemory, jstring fname)
+Java_org_ebookdroid_xpsdroid_codec_XpsDocument_open(JNIEnv *env, jclass clazz, jint storememory, jstring fname)
 {
     fz_obj *obj;
     renderdocument_t *doc;
@@ -91,7 +91,10 @@ Java_org_ebookdroid_xpsdroid_codec_XpsDocument_open(JNIEnv *env, jclass clazz, j
         xps_throw_exception(env, "Out of Memory");
         goto cleanup;
     }
-    doc->ctx = fz_new_context(&fz_alloc_default, 256<<20);
+    DEBUG("XpsDocument.nativeOpen(): storememory = %d", storememory);
+//    doc->ctx = fz_new_context(&fz_alloc_default, 256<<20);
+    doc->ctx = fz_new_context(&fz_alloc_default, storememory);
+
     if (!doc->ctx)
     {
 	free(doc);

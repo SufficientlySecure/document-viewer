@@ -6,15 +6,17 @@ import org.ebookdroid.core.codec.AbstractCodecDocument;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class PdfDocument extends AbstractCodecDocument {
 
-    private static final int FITZMEMORY = 512 * 1024;
+    //TODO: Must be configurable
+    private static final int STOREMEMORY = 64<<20;
 
     PdfDocument(final PdfContext context, final String fname, final String pwd) {
-        super(context, open(FITZMEMORY, fname, pwd));
+        super(context, open(STOREMEMORY, fname, pwd));
     }
 
     @Override
@@ -62,7 +64,7 @@ public class PdfDocument extends AbstractCodecDocument {
 
     private native static ArrayList<PageLink> getPageLinks(long docHandle, int pageNumber);
 
-    private static native long open(int fitzmemory, String fname, String pwd);
+    private static native long open(int storememory, String fname, String pwd);
 
     private static native void free(long handle);
 

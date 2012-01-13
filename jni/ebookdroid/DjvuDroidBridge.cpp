@@ -14,9 +14,6 @@
 /*JNI BITMAP API */
 
 #include <nativebitmap.h>
-//#ifdef USE_JNI_BITMAP_API
-//#include <android/bitmap.h>
-//#endif
 
 void ThrowError(JNIEnv* env, const char* msg)
 {

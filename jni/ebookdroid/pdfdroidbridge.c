@@ -75,7 +75,7 @@ static void pdf_free_document(renderdocument_t* doc)
 }
 
 JNIEXPORT jlong JNICALL
-Java_org_ebookdroid_pdfdroid_codec_PdfDocument_open(JNIEnv *env, jclass clazz, jint fitzmemory, jstring fname,
+Java_org_ebookdroid_pdfdroid_codec_PdfDocument_open(JNIEnv *env, jclass clazz, jint storememory, jstring fname,
                                                     jstring pwd)
 {
     fz_obj *obj;
@@ -95,7 +95,10 @@ Java_org_ebookdroid_pdfdroid_codec_PdfDocument_open(JNIEnv *env, jclass clazz, j
         throw_exception(env, "Out of Memory");
         goto cleanup;
     }
-    doc->ctx = fz_new_context(&fz_alloc_default, 256<<20);
+    DEBUG("PdfDocument.nativeOpen(): storememory = %d", storememory);
+
+//    doc->ctx = fz_new_context(&fz_alloc_default, 256<<20);
+    doc->ctx = fz_new_context(&fz_alloc_default, storememory);
     if (!doc->ctx)
     {
 	free(doc);

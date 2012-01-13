@@ -565,6 +565,10 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     @ActionMethod(ids = R.id.mainmenu_close)
     public void closeActivity(final ActionEx action) {
+        if (documentModel != null) {
+            documentModel.recycle();
+            documentModel = null;
+        }
         SettingsManager.clearCurrentBookSettings();
         finish();
     }

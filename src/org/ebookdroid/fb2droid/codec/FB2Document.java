@@ -123,7 +123,7 @@ public class FB2Document implements CodecDocument {
                     throw new RuntimeException("FB2 document can not be opened: " + "Header not found");
                 }
 
-                final Reader isr = new BufferedReader(new InputStreamReader(inStream, encoding), 1024 * 1024);
+                final Reader isr = new BufferedReader(new InputStreamReader(inStream, encoding), 32 * 1024);
                 final InputSource is = new InputSource();
                 is.setCharacterStream(isr);
                 final SAXParser parser = spf.newSAXParser();

@@ -12,6 +12,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
@@ -35,6 +36,8 @@ public class AboutActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.about);
+        
+        getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 
         String name = "EBookDroid";
         String version = "";
@@ -52,6 +55,7 @@ public class AboutActivity extends Activity {
 
         ExpandableListView view = (ExpandableListView) findViewById(R.id.about_parts);
         view.setAdapter(new PartsAdapter());
+        view.expandGroup(0);
     }
 
     private static class Part {

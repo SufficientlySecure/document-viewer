@@ -1,66 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<!-- system definitions -->
-	<style name="cgeo" parent="android:Theme.NoTitleBar">
-	</style>
+    <style name="ebookdroid" parent="android:Theme.NoTitleBar"></style>
 
-	<!-- actionbar -->
-	<style name="action_bar">
-		<item name="android:layout_width">fill_parent</item>
-		<item name="android:layout_height">@dimen/actionbar_height</item>
-		<item name="android:orientation">horizontal</item>
-		<item name="android:background">@drawable/actionbar_background</item>
-	</style>
+    <!-- actionbar -->
+    <style name="action_bar">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">@dimen/actionbar_height</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:background">@drawable/actionbar_background</item>
+    </style>
 
-	<style name="action_bar_icon">
-		<item name="android:layout_width">@dimen/actionbar_height</item>
-		<item name="android:layout_height">@dimen/actionbar_height</item>
-		<item name="android:padding">2dip</item>
-		<item name="android:gravity">center</item>
-		<item name="android:scaleType">center</item>
-	</style>
+    <style name="action_bar_icon">
+        <item name="android:layout_width">@dimen/actionbar_height</item>
+        <item name="android:layout_height">@dimen/actionbar_height</item>
+        <item name="android:padding">2dip</item>
+        <item name="android:gravity">center</item>
+        <item name="android:scaleType">center</item>
+    </style>
 
-	<style name="action_bar_action">
-		<item name="android:layout_width">@dimen/actionbar_height</item>
-		<item name="android:layout_height">@dimen/actionbar_height</item>
-		<item name="android:padding">2dip</item>
-		<item name="android:gravity">center</item>
-		<item name="android:scaleType">center</item>
-	</style>
+    <style name="action_bar_action">
+        <item name="android:layout_width">@dimen/actionbar_height</item>
+        <item name="android:layout_height">@dimen/actionbar_height</item>
+        <item name="android:padding">2dip</item>
+        <item name="android:gravity">center</item>
+        <item name="android:scaleType">center</item>
+    </style>
 
-	<style name="action_bar_separator">
-		<item name="android:layout_width">@dimen/actionbar_separator_width</item>
-		<item name="android:layout_height">@dimen/actionbar_separator_height</item>
-		<item name="android:layout_marginLeft">2dip</item>
-		<item name="android:layout_marginRight">2dip</item>
-		<item name="android:layout_marginTop">2dip</item>
-		<item name="android:layout_marginBottom">2dip</item>
-		<item name="android:gravity">center</item>
-		<item name="android:background">@drawable/actionbar_separator</item>
-	</style>
+    <style name="action_bar_separator">
+        <item name="android:layout_width">@dimen/actionbar_separator_width</item>
+        <item name="android:layout_height">@dimen/actionbar_separator_height</item>
+        <item name="android:layout_marginLeft">2dip</item>
+        <item name="android:layout_marginRight">2dip</item>
+        <item name="android:layout_marginTop">2dip</item>
+        <item name="android:layout_marginBottom">2dip</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/actionbar_separator</item>
+    </style>
 
-	<style name="action_bar_title">
-		<item name="android:layout_width">0dip</item>
-		<item name="android:layout_height">fill_parent</item>
-		<item name="android:layout_weight">1</item>
-		<item name="android:padding">2dip</item>
-		<item name="android:gravity">center_vertical|left</item>
-		<item name="android:singleLine">true</item>
-		<item name="android:scrollHorizontally">true</item>
-		<item name="android:ellipsize">marquee</item>
-		<item name="android:lines">1</item>
-		<item name="android:textSize">20dip</item>
-		<item name="android:textColor">@color/actionbar_white</item>
-		<item name="android:text">EBookDroid</item>
-	</style>
-	
-	<style name="action_bar_progress" parent="@android:style/Widget.ProgressBar.Small">
-		<item name="android:layout_width">wrap_content</item>
-		<item name="android:layout_height">wrap_content</item>
-		<item name="android:layout_marginLeft">4dip</item>
-		<item name="android:layout_marginRight">4dip</item>
-		<item name="android:layout_marginTop">11dip</item>
-		<item name="android:indeterminate">true</item>
-	</style>
+    <style name="action_bar_progress" parent="@android:style/Widget.ProgressBar.Small">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">4dip</item>
+        <item name="android:layout_marginRight">4dip</item>
+        <item name="android:layout_marginTop">11dip</item>
+        <item name="android:indeterminate">true</item>
+    </style>
+
+    <style name="action_bar_title">
+        <item name="android:layout_width">0dip</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:padding">2dip</item>
+        <item name="android:gravity">center_vertical|left</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:lines">1</item>
+        <item name="android:textSize">20dip</item>
+        <item name="android:textColor">@color/actionbar_white</item>
+        <item name="android:text">EBookDroid</item>
+    </style>
 
 </resources>

@@ -15,7 +15,7 @@
     android:layout_alignParentTop="true"
     android:layout_alignParentBottom="false"
     android:layout_marginRight="0dip"
-    android:contentDescription="Icon"
+    android:contentDescription="@string/content_description_icon"
     android:src="@drawable/book" />
   <TextView
     android:layout_width="fill_parent"
@@ -28,15 +28,12 @@
 
     android:gravity="center_vertical"
     android:ellipsize="marquee"
-    android:text="Name"
     android:layout_toRightOf="@+id/recentItemIcon" />
   <TextView
     android:layout_height="0dip"
     android:id="@+id/recentItemInfo"
     android:singleLine="true"
     android:ellipsize="marquee"
-    android:text="ItemInfo"
-
     android:layout_toRightOf="@+id/recentItemIcon"
     android:layout_below="@+id/recentItemName"
     android:layout_alignParentBottom="true"
@@ -49,8 +46,6 @@
     android:id="@+id/recentItemfileSize"
     android:singleLine="true"
     android:ellipsize="marquee"
-    android:text="FileSize"
-
     android:layout_toRightOf="@+id/recentItemIcon"
     android:layout_below="@+id/recentItemName"
     android:layout_alignParentBottom="true"

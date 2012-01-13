@@ -24,7 +24,7 @@
         android:id="@+id/thumbnailImage"
         android:layout_width="134dip"
         android:layout_height="134dip"
-        android:contentDescription="Thumb"
+        android:contentDescription="@string/content_description_thumb"
         android:layout_gravity="bottom|center_horizontal"
         android:gravity="center"
         android:paddingLeft="13dip"

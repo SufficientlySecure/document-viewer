@@ -17,7 +17,7 @@
             android:id="@+id/about_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="About EBookDroid"
+            android:text="@string/about_title"
             android:textColor="#ffffff"
             android:textSize="20dip" />
 

@@ -9,7 +9,7 @@
 
         <ImageView
             style="@style/action_bar_icon"
-            android:contentDescription="Icon"
+            android:contentDescription="@string/content_description_icon"
             android:src="@drawable/icon" />
 
         <View style="@style/action_bar_separator" />
@@ -26,14 +26,14 @@
         <ImageView
             android:id="@+id/recent_showlibrary"
             style="@style/action_bar_action"
-            android:contentDescription="Library"
+            android:contentDescription="@string/content_description_library"
             android:onClick="onButtonClick"
             android:src="@drawable/actionbar_library" />
 
         <ImageView
             android:id="@+id/recent_showbrowser"
             style="@style/action_bar_action"
-            android:contentDescription="Browser"
+            android:contentDescription="@string/content_description_browser"
             android:onClick="onButtonClick"
             android:src="@drawable/actionbar_open" />
 
@@ -42,14 +42,14 @@
         <ImageView
             android:id="@+id/recentmenu_cleanrecent"
             style="@style/action_bar_action"
-            android:contentDescription="Clear"
+            android:contentDescription="@string/content_description_clear"
             android:onClick="onButtonClick"
             android:src="@drawable/clear" />
 
         <ImageView
             android:id="@+id/recentmenu_settings"
             style="@style/action_bar_action"
-            android:contentDescription="Settings"
+            android:contentDescription="@string/content_description_settings"
             android:onClick="onButtonClick"
             android:src="@drawable/settings" />
     </LinearLayout>

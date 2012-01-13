@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@android:color/transparent"
-        android:contentDescription="Left"
+        android:contentDescription="@string/content_description_left"
         android:onClick="onButtonClick"
         android:src="@drawable/arrowleft" />
 
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@android:color/transparent"
-        android:contentDescription="Right"
+        android:contentDescription="@string/content_description_right"
         android:onClick="onButtonClick"
         android:src="@drawable/arrowright" />
 

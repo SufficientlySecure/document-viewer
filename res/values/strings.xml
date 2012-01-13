@@ -161,4 +161,8 @@
 	<string name="pref_showanimicon_title">"Show animation icon"</string>
 	<string name="pref_showanimicon_summary">"Show animation or dragging icon if animation or dragging enabled"</string>
 
+	<string name="about_commmon_title">"Application info"</string>
+	<string name="about_license_title">"License"</string>
+	<string name="about_3dparty_title">"3rd party software"</string>
+
 </resources>

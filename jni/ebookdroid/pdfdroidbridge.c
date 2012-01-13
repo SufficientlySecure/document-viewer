@@ -12,13 +12,13 @@
 /* Debugging helper */
 
 #define DEBUG(args...) \
-	__android_log_print(ANDROID_LOG_DEBUG, "PdfDroid", args)
+	__android_log_print(ANDROID_LOG_DEBUG, "EBookDroid.PDF", args)
 
 #define ERROR(args...) \
-	__android_log_print(ANDROID_LOG_ERROR, "PdfDroid", args)
+	__android_log_print(ANDROID_LOG_ERROR, "EBookDroid.PDF", args)
 
 #define INFO(args...) \
-	__android_log_print(ANDROID_LOG_INFO, "PdfDroid", args)
+	__android_log_print(ANDROID_LOG_INFO, "EBookDroid.PDF", args)
 
 typedef struct renderdocument_s renderdocument_t;
 struct renderdocument_s
@@ -150,7 +150,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfDocument_open(JNIEnv *env, jclass clazz, j
     (*env)->ReleaseStringUTFChars(env, fname, filename);
     (*env)->ReleaseStringUTFChars(env, pwd, password);
 
-    DEBUG("PdfDocument.nativeOpen(): return handle = %p", doc);
+    // DEBUG("PdfDocument.nativeOpen(): return handle = %p", doc);
     return (jlong) (long) doc;
 }
 
@@ -210,7 +210,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfDocument_getPageInfo(JNIEnv *env, jclass c
         mediabox = fz_unit_rect;
     }
 
-    DEBUG( "Mediabox: %f %f %f %f", mediabox.x0, mediabox.y0, mediabox.x1, mediabox.y1);
+    // DEBUG( "Mediabox: %f %f %f %f", mediabox.x0, mediabox.y0, mediabox.x1, mediabox.y1);
 
     rotateobj = fz_dict_gets(pageobj, "Rotate");
     if (fz_is_int(rotateobj))
@@ -252,7 +252,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfDocument_getPageLinks(JNIEnv *env, jclass 
 
     renderdocument_t *doc = (renderdocument_t*) (long) handle;
 
-    DEBUG("PdfDocument.getLinks = %p", doc);
+    // DEBUG("PdfDocument.getLinks = %p", doc);
 
     fz_link *link;
 
@@ -374,7 +374,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_open(JNIEnv *env, jclass clazz, jlong
     cleanup:
     /* nothing yet */
 
-    DEBUG("PdfPage.nativeOpenPage(): return handle = %p", page);
+    // DEBUG("PdfPage.nativeOpenPage(): return handle = %p", page);
     return (jlong) (long) page;
 }
 
@@ -383,7 +383,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_free(JNIEnv *env, jclass clazz, jlong
 {
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
     renderpage_t *page = (renderpage_t*) (long) handle;
-    DEBUG("PdfPage_free(%p)", page);
+    // DEBUG("PdfPage_free(%p)", page);
 
     if (page)
     {
@@ -402,7 +402,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_getBounds(JNIEnv *env, jclass clazz, 
     if (!bbox)
         return;
     fz_rect page_bounds = pdf_bound_page(doc->xref, page->page);
-    DEBUG("Bounds: %f %f %f %f", page_bounds.x0, page_bounds.y0, page_bounds.x1, page_bounds.y1);
+    // DEBUG("Bounds: %f %f %f %f", page_bounds.x0, page_bounds.y0, page_bounds.x1, page_bounds.y1);
     bbox[0] = page_bounds.x0;
     bbox[1] = page_bounds.y0;
     bbox[2] = page_bounds.x1;
@@ -418,7 +418,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPage(JNIEnv *env, jobject this,
 {
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
     renderpage_t *page = (renderpage_t*) (long) pagehandle;
-    DEBUG("PdfView(%p).renderPage(%p, %p)", this, doc, page);
+    // DEBUG("PdfView(%p).renderPage(%p, %p)", this, doc, page);
     fz_matrix ctm;
     fz_bbox viewbox;
     fz_pixmap *pixmap;
@@ -447,7 +447,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPage(JNIEnv *env, jobject this,
     ctm.e = matrix[4];
     ctm.f = matrix[5];
     (*env)->ReleasePrimitiveArrayCritical(env, matrixarray, matrix, 0);
-    DEBUG( "Matrix: %f %f %f %f %f %f", ctm.a, ctm.b, ctm.c, ctm.d, ctm.e, ctm.f);
+    // DEBUG( "Matrix: %f %f %f %f %f %f", ctm.a, ctm.b, ctm.c, ctm.d, ctm.e, ctm.f);
 
     viewboxarr = (*env)->GetPrimitiveArrayCritical(env, viewboxarray, 0);
     viewbox.x0 = viewboxarr[0];
@@ -456,7 +456,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPage(JNIEnv *env, jobject this,
     viewbox.y1 = viewboxarr[3];
 
     (*env)->ReleasePrimitiveArrayCritical(env, viewboxarray, viewboxarr, 0);
-    DEBUG( "Viewbox: %d %d %d %d", viewbox.x0, viewbox.y0, viewbox.x1, viewbox.y1);
+    // DEBUG( "Viewbox: %d %d %d %d", viewbox.x0, viewbox.y0, viewbox.x1, viewbox.y1);
     /* do the rendering */
 
     buffer = (*env)->GetPrimitiveArrayCritical(env, bufferarray, 0);
@@ -464,7 +464,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPage(JNIEnv *env, jobject this,
     pixmap = fz_new_pixmap_with_data(doc->ctx, fz_device_bgr, viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0,
         (unsigned char*) buffer);
 
-    DEBUG("doing the rendering...");
+    // DEBUG("doing the rendering...");
 
     fz_clear_pixmap_with_color(pixmap, 0xff);
 
@@ -476,7 +476,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPage(JNIEnv *env, jobject this,
 
     fz_drop_pixmap(doc->ctx, pixmap);
 
-    DEBUG("PdfView.renderPage() done");
+    // DEBUG("PdfView.renderPage() done");
 }
 
 /*JNI BITMAP API*/
@@ -494,7 +494,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPageBitmap(JNIEnv *env, jobject
 {
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
     renderpage_t *page = (renderpage_t*) (long) pagehandle;
-    DEBUG("PdfView(%p).renderPageBitmap(%p, %p)", this, doc, page);
+    // DEBUG("PdfView(%p).renderPageBitmap(%p, %p)", this, doc, page);
     fz_matrix ctm;
     fz_bbox viewbox;
     fz_pixmap *pixmap;
@@ -521,14 +521,14 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPageBitmap(JNIEnv *env, jobject
         return 0;
     }
 
-    DEBUG("Checking format\n");
+    // DEBUG("Checking format\n");
     if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888)
     {
         ERROR("Bitmap format is not RGBA_8888 !");
         return 0;
     }
 
-    DEBUG("locking pixels\n");
+    // DEBUG("locking pixels\n");
     if ((ret = NativeBitmap_lockPixels(env, bitmap, &pixels)) < 0)
     {
         ERROR("AndroidBitmap_lockPixels() failed ! error=%d", ret);
@@ -545,7 +545,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPageBitmap(JNIEnv *env, jobject
     ctm.e = matrix[4];
     ctm.f = matrix[5];
     (*env)->ReleasePrimitiveArrayCritical(env, matrixarray, matrix, 0);
-    DEBUG( "Matrix: %f %f %f %f %f %f", ctm.a, ctm.b, ctm.c, ctm.d, ctm.e, ctm.f);
+    // DEBUG( "Matrix: %f %f %f %f %f %f", ctm.a, ctm.b, ctm.c, ctm.d, ctm.e, ctm.f);
 
     viewboxarr = (*env)->GetPrimitiveArrayCritical(env, viewboxarray, 0);
     viewbox.x0 = viewboxarr[0];
@@ -553,11 +553,11 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPageBitmap(JNIEnv *env, jobject
     viewbox.x1 = viewboxarr[2];
     viewbox.y1 = viewboxarr[3];
     (*env)->ReleasePrimitiveArrayCritical(env, viewboxarray, viewboxarr, 0);
-    DEBUG( "Viewbox: %d %d %d %d", viewbox.x0, viewbox.y0, viewbox.x1, viewbox.y1);
+    // DEBUG( "Viewbox: %d %d %d %d", viewbox.x0, viewbox.y0, viewbox.x1, viewbox.y1);
 
     pixmap = fz_new_pixmap_with_data(doc->ctx, fz_device_rgb, viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0, pixels);
 
-    DEBUG("doing the rendering...");
+    // DEBUG("doing the rendering...");
 
     fz_clear_pixmap_with_color(pixmap, 0xff);
 
@@ -567,7 +567,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPageBitmap(JNIEnv *env, jobject
 
     fz_drop_pixmap(doc->ctx, pixmap);
 
-    DEBUG("PdfView.renderPage() done");
+    // DEBUG("PdfView.renderPage() done");
 
     NativeBitmap_unlockPixels(env, bitmap);
 

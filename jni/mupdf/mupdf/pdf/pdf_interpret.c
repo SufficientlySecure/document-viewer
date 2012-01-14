@@ -95,7 +95,8 @@ struct pdf_csi_s
 
 	/* graphics state */
 	fz_matrix top_ctm;
-	pdf_gstate gstate[64];
+	pdf_gstate *gstate;
+	int gcap;
 	int gtop;
 
 	/* cookie support */
@@ -890,6 +891,9 @@ pdf_new_csi(pdf_xref *xref, fz_device *dev, fz_matrix ctm, char *event, fz_cooki
 		csi->text_mode = 0;
 		csi->accumulate = 1;
 
+		csi->gcap = 64;
+		csi->gstate = fz_malloc_array(ctx, csi->gcap, sizeof(pdf_gstate));
+
 		csi->top_ctm = ctm;
 		pdf_init_gstate(&csi->gstate[0], ctm);
 		csi->gtop = 0;
@@ -898,6 +902,7 @@ pdf_new_csi(pdf_xref *xref, fz_device *dev, fz_matrix ctm, char *event, fz_cooki
 	}
 	fz_catch(ctx)
 	{
+		fz_free_path(ctx, csi->path);
 		fz_free(ctx, csi);
 		fz_rethrow(ctx);
 	}
@@ -950,13 +955,14 @@ static void
 pdf_gsave(pdf_csi *csi)
 {
 	fz_context *ctx = csi->dev->ctx;
-	pdf_gstate *gs = csi->gstate + csi->gtop;
+	pdf_gstate *gs;
 
-	if (csi->gtop == nelem(csi->gstate) - 1)
+	if (csi->gtop == csi->gcap-1)
 	{
-		fz_warn(ctx, "gstate overflow in content stream");
-		return;
+		csi->gstate = fz_resize_array(ctx, csi->gstate, csi->gcap*2, sizeof(pdf_gstate));
+		csi->gcap *= 2;
 	}
+	gs = csi->gstate + csi->gtop;
 
 	memcpy(&csi->gstate[csi->gtop + 1], &csi->gstate[csi->gtop], sizeof(pdf_gstate));
 
@@ -1029,6 +1035,8 @@ pdf_free_csi(pdf_csi *csi)
 	if (csi->text) fz_free_text(ctx, csi->text);
 
 	pdf_clear_stack(csi);
+
+	fz_free(ctx, csi->gstate);
 
 	fz_free(ctx, csi);
 }
@@ -1267,24 +1275,31 @@ static void
 pdf_run_xobject(pdf_csi *csi, fz_obj *resources, pdf_xobject *xobj, fz_matrix transform)
 {
 	fz_context *ctx = csi->dev->ctx;
-	pdf_gstate *gstate;
+	pdf_gstate *gstate = NULL;
 	fz_matrix oldtopctm;
-	int oldtop;
+	int oldtop = 0;
 	int popmask;
-	int caught = 0;
 
-	pdf_gsave(csi);
+	/* Avoid infinite recursion */
+	if (xobj == NULL || fz_dict_mark(xobj->me))
+		return;
 
-	gstate = csi->gstate + csi->gtop;
-	oldtop = csi->gtop;
-	popmask = 0;
-
-	/* apply xobject's transform matrix */
-	transform = fz_concat(xobj->matrix, transform);
-	gstate->ctm = fz_concat(transform, gstate->ctm);
+	fz_var(gstate);
+	fz_var(oldtop);
+	fz_var(popmask);
 
 	fz_try(ctx)
 	{
+		pdf_gsave(csi);
+
+		gstate = csi->gstate + csi->gtop;
+		oldtop = csi->gtop;
+		popmask = 0;
+
+		/* apply xobject's transform matrix */
+		transform = fz_concat(xobj->matrix, transform);
+		gstate->ctm = fz_concat(transform, gstate->ctm);
+
 		/* apply soft mask, create transparency group and reset state */
 		if (xobj->transparency)
 		{
@@ -1335,20 +1350,24 @@ pdf_run_xobject(pdf_csi *csi, fz_obj *resources, pdf_xobject *xobj, fz_matrix tr
 		pdf_run_buffer(csi, resources, xobj->contents);
 		/* RJW: "cannot interpret XObject stream" */
 	}
+	fz_always(ctx)
+	{
+		if (gstate)
+		{
+			csi->top_ctm = oldtopctm;
+
+			while (oldtop < csi->gtop)
+				pdf_grestore(csi);
+
+			pdf_grestore(csi);
+		}
+
+		fz_dict_unmark(xobj->me);
+	}
 	fz_catch(ctx)
 	{
-		caught = 1;
-	}
-
-	csi->top_ctm = oldtopctm;
-
-	while (oldtop < csi->gtop)
-		pdf_grestore(csi);
-
-	pdf_grestore(csi);
-
-	if (caught)
 		fz_rethrow(ctx);
+	}
 
 	/* wrap up transparency stacks */
 	if (xobj->transparency)

@@ -32,10 +32,8 @@ typedef struct renderpage_s renderpage_t;
 struct renderpage_s
 {
     pdf_page *page;
-    int pageno;
+    fz_display_list* pageList;
 };
-
-static int current_page = 0;
 
 #define RUNTIME_EXCEPTION "java/lang/RuntimeException"
 
@@ -350,6 +348,8 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_open(JNIEnv *env, jclass clazz, jlong
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
     renderpage_t *page;
     fz_obj *obj;
+    fz_device *dev;
+
     jclass cls;
     jfieldID fid;
 
@@ -359,6 +359,8 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_open(JNIEnv *env, jclass clazz, jlong
         throw_exception(env, "Out of Memory");
         return (jlong) (long) NULL;
     }
+    page->page = NULL;
+    page->pageList = NULL;
 
     fz_try(doc->ctx)
     {
@@ -368,11 +370,30 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_open(JNIEnv *env, jclass clazz, jlong
     {
 	//fz_throw(ctx, "cannot load page tree: %s", filename);
 	free(page);
+	page = NULL;
         throw_exception(env, "error loading page");
         goto cleanup;
 
     }
-    page->pageno = pageno - 1;
+    
+    fz_try(doc->ctx)
+    {
+	page->pageList = fz_new_display_list(doc->ctx);
+	dev = fz_new_list_device(doc->ctx, page->pageList);
+	pdf_run_page(doc->xref, page->page, dev, fz_identity, NULL);
+    }
+    fz_catch(doc->ctx)
+    {
+	fz_free_device(dev);
+	fz_free_display_list(doc->ctx, page->pageList);
+	pdf_free_page(doc->ctx, page->page);
+//	fz_throw(ctx, "cannot draw page %d",pageno);
+	free(page);
+	page = NULL;
+        throw_exception(env, "error loading page");
+        goto cleanup;
+    }
+    fz_free_device(dev);
 
     cleanup:
     /* nothing yet */
@@ -392,6 +413,8 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_free(JNIEnv *env, jclass clazz, jlong
     {
         if (page->page)
             pdf_free_page(doc->ctx, page->page);
+        if (page->pageList)
+            fz_free_display_list(doc->ctx, page->pageList);
         free(page);
     }
 }
@@ -413,7 +436,6 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_getBounds(JNIEnv *env, jclass clazz, 
     (*env)->ReleasePrimitiveArrayCritical(env, bounds, bbox, 0);
 }
 
-
 JNIEXPORT void JNICALL
 Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPage(JNIEnv *env, jobject this, jlong dochandle, jlong pagehandle,
                                                       jintArray viewboxarray, jfloatArray matrixarray,
@@ -431,12 +453,6 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPage(JNIEnv *env, jobject this,
     jint *buffer;
     int length, val;
     fz_device *dev = NULL;
-
-    if (current_page != page->pageno)
-    {
-//        pdf_age_store(doc->xref->store, 1);
-        current_page = page->pageno;
-    }
 
     /* initialize parameter arrays for MuPDF */
 
@@ -457,7 +473,6 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPage(JNIEnv *env, jobject this,
     viewbox.y0 = viewboxarr[1];
     viewbox.x1 = viewboxarr[2];
     viewbox.y1 = viewboxarr[3];
-
     (*env)->ReleasePrimitiveArrayCritical(env, viewboxarray, viewboxarr, 0);
     // DEBUG( "Viewbox: %d %d %d %d", viewbox.x0, viewbox.y0, viewbox.x1, viewbox.y1);
     /* do the rendering */
@@ -472,7 +487,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPage(JNIEnv *env, jobject this,
     fz_clear_pixmap_with_color(pixmap, 0xff);
 
     dev = fz_new_draw_device(doc->ctx, pixmap);
-    pdf_run_page(doc->xref, page->page, dev, ctm, NULL);
+    fz_execute_display_list(page->pageList, dev, ctm, viewbox, NULL);
     fz_free_device(dev);
 
     (*env)->ReleasePrimitiveArrayCritical(env, bufferarray, buffer, 0);
@@ -511,12 +526,6 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPageBitmap(JNIEnv *env, jobject
     void *pixels;
 
     int ret;
-
-    if (current_page != page->pageno)
-    {
-//        pdf_age_store(doc->xref->store, 1);
-        current_page = page->pageno;
-    }
 
     if ((ret = NativeBitmap_getInfo(env, bitmap, &info)) < 0)
     {
@@ -565,9 +574,9 @@ Java_org_ebookdroid_pdfdroid_codec_PdfPage_renderPageBitmap(JNIEnv *env, jobject
     fz_clear_pixmap_with_color(pixmap, 0xff);
 
     dev = fz_new_draw_device(doc->ctx, pixmap);
-    pdf_run_page(doc->xref, page->page, dev, ctm, NULL);
+    fz_execute_display_list(page->pageList, dev, ctm, viewbox, NULL);
     fz_free_device(dev);
-
+    
     fz_drop_pixmap(doc->ctx, pixmap);
 
     // DEBUG("PdfView.renderPage() done");

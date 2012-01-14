@@ -31,9 +31,7 @@ typedef struct renderpage_s renderpage_t;
 struct renderpage_s
 {
     xps_page* page;
-//New draw page
     fz_display_list* pageList;
-//
 };
 
 #define RUNTIME_EXCEPTION "java/lang/RuntimeException"

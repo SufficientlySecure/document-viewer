@@ -1,7 +1,8 @@
 package org.ebookdroid.fb2droid.codec;
 
-import java.nio.CharBuffer;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class FB2Words {
 
@@ -10,32 +11,36 @@ public class FB2Words {
 
     static final FB2Word key = new FB2Word();
 
-    final LinkedList<CharBuffer> buffers = new LinkedList<CharBuffer>();
+    final Map<FB2Word, FB2TextElement> all = new HashMap<FB2Word, FB2TextElement>(32 * 10241);
+
+    final LinkedList<Buffer> buffers = new LinkedList<Buffer>();
 
     public FB2TextElement get(final char[] ch, final int st, final int len, final RenderingStyle style) {
         words++;
 
-        CharBuffer buf = null;
-        if (!buffers.isEmpty()) {
-            buf = buffers.getFirst();
-            if (len > buf.remaining()) {
-                buffers.removeFirst();
-                buf = null;
+        key.reuse(ch, st, len);
+
+        FB2TextElement e = all.get(key);
+        if (e == null) {
+            char[] arr = null;
+            int index = 0;
+            if (!buffers.isEmpty()) {
+                Buffer b = buffers.getFirst();
+                index = b.append(ch, st, len);
+                if (index != -1) {
+                    arr = b.chars;
+                }
             }
+            if (arr == null) {
+                Buffer b = new Buffer();
+                index = b.append(ch, st, len);
+                arr = b.chars;
+                buffers.addFirst(b);
+            }
+            e = new FB2TextElement(arr, index, len, style);
+            all.put(new FB2Word(arr, index, len, key.hash), e);
+            uniques++;
         }
-        if (buf == null) {
-            buf = CharBuffer.allocate(64 * 1024);
-            buffers.add(buf);
-        }
-        int pos = buf.position();
-        buf.put(ch, st, len);
-        buf.position(pos);
-        CharSequence word = buf.subSequence(0, len);
-        buf.position(pos + len);
-
-        FB2TextElement e = new FB2TextElement(word, style.paint.measureText(ch, st, len), style);
-
-        uniques++;
         return e;
     }
 
@@ -99,4 +104,21 @@ public class FB2Words {
             return hash;
         }
     }
+
+    static class Buffer {
+
+        final char[] chars = new char[4*1024];
+        int size;
+
+        public int append(char[] ch, int start, int len) {
+            if (len < chars.length - size) {
+                int index = size;
+                System.arraycopy(ch, start, chars, index, len);
+                size += len;
+                return index;
+            }
+            return -1;
+        }
+    }
+
 }

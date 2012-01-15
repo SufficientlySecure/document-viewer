@@ -37,14 +37,14 @@ public class TouchManager {
         stack.clear();
 
         boolean fromJSON = false;
-        String str = newSettings.getTouchProfiles();
+        final String str = newSettings.getTouchProfiles();
         if (LengthUtils.isNotEmpty(str)) {
             try {
-                List<TouchProfile> list = fromJSON(str);
-                for (TouchProfile p : list) {
+                final List<TouchProfile> list = fromJSON(str);
+                for (final TouchProfile p : list) {
                     profiles.put(p.name, p);
                 }
-            } catch (Throwable ex) {
+            } catch (final Throwable ex) {
                 ex.printStackTrace();
             }
             fromJSON = profiles.containsKey(DEFAULT_PROFILE) && profiles.containsKey(TouchManagerView.TMV_PROFILE);
@@ -57,7 +57,7 @@ public class TouchManager {
                 r.setAction(Touch.DoubleTap, R.id.actions_toggleTouchManagerView, true);
             }
 
-            TouchProfile def = addProfile(DEFAULT_PROFILE);
+            final TouchProfile def = addProfile(DEFAULT_PROFILE);
             {
                 final Region r = def.addRegion(0, 0, 100, 100);
                 r.setAction(Touch.DoubleTap, R.id.mainmenu_zoom, newSettings.getZoomByDoubleTap());
@@ -73,26 +73,45 @@ public class TouchManager {
             }
 
             try {
-                JSONObject json = toJSON();
+                final JSONObject json = toJSON();
                 SettingsManager.getAppSettings().updateTouchProfiles(json.toString());
-            } catch (JSONException ex) {
+            } catch (final JSONException ex) {
                 ex.printStackTrace();
             }
         } else {
             setActionEnabled(DEFAULT_PROFILE, R.id.mainmenu_zoom, newSettings.getZoomByDoubleTap());
-            setActionEnabled(DEFAULT_PROFILE, R.id.actions_verticalConfigScrollUp, newSettings.getTapScroll());
-            setActionEnabled(DEFAULT_PROFILE, R.id.actions_verticalConfigScrollDown, newSettings.getTapScroll());
+            setActionEnabled(DEFAULT_PROFILE, R.id.actions_verticalConfigScrollUp, newSettings.getTapScroll(), 0, 0,
+                    100, newSettings.getTapSize());
+            setActionEnabled(DEFAULT_PROFILE, R.id.actions_verticalConfigScrollDown, newSettings.getTapScroll(), 0,
+                    100 - newSettings.getTapSize(), 100, 100);
         }
 
         stack.addFirst(profiles.get(DEFAULT_PROFILE));
     }
 
     public static void setActionEnabled(final String profile, final int id, final boolean enabled) {
-        TouchProfile tp = profiles.get(profile);
-        for (Region r : tp.regions) {
-            for (ActionRef a : r.actions) {
+        final TouchProfile tp = profiles.get(profile);
+        for (final Region r : tp.regions) {
+            for (final ActionRef a : r.actions) {
                 if (a != null && a.id == id) {
                     a.enabled = enabled;
+                }
+            }
+        }
+    }
+
+    public static void setActionEnabled(final String profile, final int id, final boolean enabled, final int left,
+            final int top, final int right, final int bottom) {
+        final TouchProfile tp = profiles.get(profile);
+        for (final Region r : tp.regions) {
+            for (final ActionRef a : r.actions) {
+                if (a != null && a.id == id) {
+                    a.enabled = enabled;
+                    r.rect.left = left;
+                    r.rect.top = top;
+                    r.rect.right = right;
+                    r.rect.bottom = bottom;
+                    return;
                 }
             }
         }
@@ -103,15 +122,15 @@ public class TouchManager {
         return stack.peek().getAction(type, x, y, width, height);
     }
 
-    public static TouchProfile addProfile(String name) {
-        TouchProfile tp = new TouchProfile(name);
+    public static TouchProfile addProfile(final String name) {
+        final TouchProfile tp = new TouchProfile(name);
         profiles.put(tp.name, tp);
         return tp;
     }
 
-    public static TouchProfile pushProfile(String name) {
-        TouchProfile prev = stack.isEmpty() ? null : stack.peek();
-        TouchProfile tp = profiles.get(name);
+    public static TouchProfile pushProfile(final String name) {
+        final TouchProfile prev = stack.isEmpty() ? null : stack.peek();
+        final TouchProfile tp = profiles.get(name);
         if (tp != null) {
             stack.addFirst(tp);
         }
@@ -126,24 +145,24 @@ public class TouchManager {
     }
 
     public static JSONObject toJSON() throws JSONException {
-        JSONObject object = new JSONObject();
-        JSONArray array = new JSONArray();
-        for (TouchProfile p : profiles.values()) {
+        final JSONObject object = new JSONObject();
+        final JSONArray array = new JSONArray();
+        for (final TouchProfile p : profiles.values()) {
             array.put(p.toJSON());
         }
         object.put("profiles", array);
         return object;
     }
 
-    private static List<TouchProfile> fromJSON(String str) throws JSONException {
-        List<TouchProfile> list = new ArrayList<TouchProfile>();
+    private static List<TouchProfile> fromJSON(final String str) throws JSONException {
+        final List<TouchProfile> list = new ArrayList<TouchProfile>();
 
-        JSONObject root = new JSONObject(str);
+        final JSONObject root = new JSONObject(str);
 
-        JSONArray profiles = root.getJSONArray("profiles");
+        final JSONArray profiles = root.getJSONArray("profiles");
         for (int pIndex = 0; pIndex < profiles.length(); pIndex++) {
-            JSONObject p = (JSONObject) profiles.getJSONObject(pIndex);
-            TouchProfile profile = TouchProfile.fromJSON(p);
+            final JSONObject p = profiles.getJSONObject(pIndex);
+            final TouchProfile profile = TouchProfile.fromJSON(p);
             list.add(profile);
         }
         return list;
@@ -154,7 +173,7 @@ public class TouchManager {
         public final String name;
         final LinkedList<Region> regions = new LinkedList<Region>();
 
-        public TouchProfile(String name) {
+        public TouchProfile(final String name) {
             super();
             this.name = name;
         }
@@ -199,7 +218,7 @@ public class TouchManager {
 
         @Override
         public String toString() {
-            StringBuilder buf = new StringBuilder(this.getClass().getSimpleName());
+            final StringBuilder buf = new StringBuilder(this.getClass().getSimpleName());
             buf.append("[");
             buf.append("name").append("=").append(name);
             buf.append(", ");
@@ -210,11 +229,11 @@ public class TouchManager {
         }
 
         public JSONObject toJSON() throws JSONException {
-            JSONObject object = new JSONObject();
+            final JSONObject object = new JSONObject();
             object.put("name", this.name);
 
-            JSONArray array = new JSONArray();
-            for (Region r : regions) {
+            final JSONArray array = new JSONArray();
+            for (final Region r : regions) {
                 array.put(r.toJSON());
             }
             object.put("regions", array);
@@ -222,13 +241,13 @@ public class TouchManager {
             return object;
         }
 
-        public static TouchProfile fromJSON(JSONObject json) throws JSONException {
-            TouchProfile profile = new TouchProfile(json.getString("name"));
+        public static TouchProfile fromJSON(final JSONObject json) throws JSONException {
+            final TouchProfile profile = new TouchProfile(json.getString("name"));
 
-            JSONArray regions = json.getJSONArray("regions");
+            final JSONArray regions = json.getJSONArray("regions");
             for (int rIndex = 0; rIndex < regions.length(); rIndex++) {
-                JSONObject r = regions.getJSONObject(rIndex);
-                Region region = Region.fromJSON(r);
+                final JSONObject r = regions.getJSONObject(rIndex);
+                final Region region = Region.fromJSON(r);
                 profile.addRegion(region);
             }
             return profile;
@@ -265,7 +284,7 @@ public class TouchManager {
 
         @Override
         public String toString() {
-            StringBuilder buf = new StringBuilder(this.getClass().getSimpleName());
+            final StringBuilder buf = new StringBuilder(this.getClass().getSimpleName());
             buf.append("[");
             buf.append("rect").append("=").append(rect);
             buf.append(", ");
@@ -276,17 +295,17 @@ public class TouchManager {
         }
 
         public JSONObject toJSON() throws JSONException {
-            JSONObject object = new JSONObject();
+            final JSONObject object = new JSONObject();
 
-            JSONObject r = new JSONObject();
+            final JSONObject r = new JSONObject();
             r.put("left", rect.left);
             r.put("top", rect.top);
             r.put("right", rect.right);
             r.put("bottom", rect.bottom);
             object.put("rect", r);
 
-            JSONArray a = new JSONArray();
-            for (ActionRef action : actions) {
+            final JSONArray a = new JSONArray();
+            for (final ActionRef action : actions) {
                 if (action != null) {
                     a.put(action.toJSON());
                 }
@@ -295,24 +314,24 @@ public class TouchManager {
             return object;
         }
 
-        public static Region fromJSON(JSONObject json) throws JSONException {
-            JSONObject r = (JSONObject) json.getJSONObject("rect");
-            Rect rect = new Rect(r.getInt("left"), r.getInt("top"), r.getInt("right"), r.getInt("bottom"));
+        public static Region fromJSON(final JSONObject json) throws JSONException {
+            final JSONObject r = json.getJSONObject("rect");
+            final Rect rect = new Rect(r.getInt("left"), r.getInt("top"), r.getInt("right"), r.getInt("bottom"));
 
-            Region region = new Region(rect);
-            JSONArray actions = json.getJSONArray("actions");
+            final Region region = new Region(rect);
+            final JSONArray actions = json.getJSONArray("actions");
             for (int aIndex = 0; aIndex < actions.length(); aIndex++) {
                 try {
-                    JSONObject a = actions.getJSONObject(aIndex);
-                    Touch type = Touch.valueOf(a.getString("type"));
-                    String name = a.getString("name");
-                    Integer id = ActionEx.getActionId(name);
+                    final JSONObject a = actions.getJSONObject(aIndex);
+                    final Touch type = Touch.valueOf(a.getString("type"));
+                    final String name = a.getString("name");
+                    final Integer id = ActionEx.getActionId(name);
                     if (id != null) {
                         region.setAction(type, id, a.getBoolean("enabled"));
                     } else {
                         LCTX.e("Unknown action name: " + name);
                     }
-                } catch (JSONException ex) {
+                } catch (final JSONException ex) {
                     throw new JSONException("Old perssitent format found. Touch action are returned to default ones: "
                             + ex.getMessage());
                 }
@@ -334,7 +353,7 @@ public class TouchManager {
         }
 
         public JSONObject toJSON() throws JSONException {
-            JSONObject object = new JSONObject();
+            final JSONObject object = new JSONObject();
             object.put("type", type.name());
             object.put("name", ActionEx.getActionName(id));
             object.put("enabled", enabled);

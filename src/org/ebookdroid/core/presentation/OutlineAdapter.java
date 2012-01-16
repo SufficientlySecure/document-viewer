@@ -19,7 +19,7 @@ public class OutlineAdapter extends ArrayAdapter<OutlineLink> {
     private int margin;
 
     public OutlineAdapter(Context context, List<OutlineLink> objects) {
-        super(context, android.R.layout.list_content, objects);
+        super(context, android.R.layout.simple_list_item_1, objects);
     }
 
     @Override

@@ -31,7 +31,7 @@ public class AboutActivity extends Activity {
             new Part(R.string.about_commmon_title, Format.HTML, "about_common.html"),
             new Part(R.string.about_license_title, Format.HTML, "about_license.html"),
             new Part(R.string.about_3dparty_title, Format.HTML, "about_3rdparty.html"),
-            new Part(R.string.about_3dparty_title, Format.WIKI, "about_changelog.wiki"),
+            new Part(R.string.about_changelog_title, Format.WIKI, "about_changelog.wiki"),
     // End
     };
 

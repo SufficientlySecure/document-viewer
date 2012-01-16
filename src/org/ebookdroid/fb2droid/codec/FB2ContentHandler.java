@@ -268,6 +268,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
             }
         } else if ("strong".equals(qName)) {
             setPrevStyle();
+            spaceNeeded = false;
         } else if ("sup".equals(qName)) {
             setPrevStyle();
             if (markup.get(markup.size() - 1) instanceof FB2MarkupNoSpace) {
@@ -280,6 +281,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
             }
         } else if ("emphasis".equals(qName)) {
             setPrevStyle();
+            spaceNeeded = false;
         } else if ("epigraph".equals(qName)) {
             markup.add(setPrevStyle().jm);
         } else if ("coverpage".equals(qName)) {

@@ -131,6 +131,9 @@ public class HScrollDocumentView extends AbstractDocumentView {
     @Override
     public synchronized final void drawView(final Canvas canvas, final ViewState viewState) {
         final DocumentModel dm = getBase().getDocumentModel();
+        if (dm == null) {
+            return;
+        }
         for (int i = viewState.firstVisible; i <= viewState.lastVisible; i++) {
             final Page page = dm.getPageObject(i);
             if (page != null) {

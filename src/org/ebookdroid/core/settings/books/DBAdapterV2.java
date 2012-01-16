@@ -1,6 +1,7 @@
 package org.ebookdroid.core.settings.books;
 
 import org.ebookdroid.core.PageIndex;
+import org.ebookdroid.utils.LengthUtils;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -123,7 +124,7 @@ class DBAdapterV2 extends DBAdapterV1 {
 
     protected final void loadBookmarks(final BookSettings book, final SQLiteDatabase db, final String query) {
         book.bookmarks.clear();
-        final Cursor c = db.rawQuery(query, new String[] { book.fileName });
+        final Cursor c = db.rawQuery(query, new String[] { LengthUtils.safeString(book.fileName) });
         if (c != null) {
             try {
                 for (boolean next = c.moveToFirst(); next; next = c.moveToNext()) {

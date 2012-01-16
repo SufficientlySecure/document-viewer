@@ -103,6 +103,20 @@ public class SettingsManager {
         }
     }
 
+    public static void removeCurrentBookSettings() {
+        lock.writeLock().lock();
+        try {
+            getAppSettings().clearPseudoBookSettings();
+            if (current != null) {
+                bookSettings.remove(current.fileName);
+                db.delete(current);
+            }
+            current = null;
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+    
     public static void clearAllRecentBookSettings() {
         lock.writeLock().lock();
         try {

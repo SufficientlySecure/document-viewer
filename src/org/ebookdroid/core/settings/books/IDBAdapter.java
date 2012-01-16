@@ -26,6 +26,8 @@ interface IDBAdapter {
 
     boolean clearRecent();
 
+    void delete(BookSettings current);
+
     boolean deleteAll();
 
     boolean updateBookmarks(final BookSettings book);

@@ -9,6 +9,7 @@ import org.ebookdroid.core.actions.ActionTarget;
 import org.ebookdroid.core.actions.IActionController;
 import org.ebookdroid.core.actions.params.Constant;
 import org.ebookdroid.core.actions.params.EditableValue;
+import org.ebookdroid.core.cache.CacheManager;
 import org.ebookdroid.core.events.CurrentPageListener;
 import org.ebookdroid.core.events.DecodingProgressListener;
 import org.ebookdroid.core.log.LogContext;
@@ -28,6 +29,7 @@ import org.ebookdroid.core.utils.AndroidVersion;
 import org.ebookdroid.core.utils.PathFromUri;
 import org.ebookdroid.core.views.PageViewZoomControls;
 import org.ebookdroid.core.views.ViewEffects;
+import org.ebookdroid.utils.LengthUtils;
 import org.ebookdroid.utils.StringUtils;
 
 import android.app.Activity;
@@ -58,6 +60,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -86,6 +89,8 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         DecodingProgressListener, CurrentPageListener, ISettingsChangeListener {
 
     public static final LogContext LCTX = LogContext.ROOT.lctx("Core");
+
+    private static final String E_MAIL_ATTACHMENT = "[E-mail Attachment]";
 
     private static final int DIALOG_GOTO = 0;
 
@@ -178,7 +183,14 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         progressModel.addListener(BaseViewerActivity.this);
 
         final Uri uri = getIntent().getData();
-        final String fileName = PathFromUri.retrieve(getContentResolver(), uri);
+        String fileName = "";
+
+        if (getIntent().getScheme().equals("content")) {
+            // fileName = uri.getLastPathSegment();
+            fileName = E_MAIL_ATTACHMENT;
+        } else {
+            fileName = PathFromUri.retrieve(getContentResolver(), uri);
+        }
         SettingsManager.init(fileName);
         SettingsManager.applyBookSettingsChanges(null, SettingsManager.getBookSettings(), null);
 
@@ -286,10 +298,8 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
     }
 
     private void setWindowTitle() {
-        currentFilename = getIntent().getData().getLastPathSegment();
-
+        currentFilename = LengthUtils.safeString(getIntent().getData().getLastPathSegment(), E_MAIL_ATTACHMENT);
         currentFilename = StringUtils.cleanupTitle(currentFilename);
-
         getWindow().setTitle(currentFilename);
     }
 
@@ -412,7 +422,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         }
     }
 
-   @ActionMethod(ids = R.id.mainmenu_about)
+    @ActionMethod(ids = R.id.mainmenu_about)
     public void showAbout(final ActionEx action) {
         final Intent i = new Intent(this, AboutActivity.class);
         startActivity(i);
@@ -569,7 +579,11 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
             documentModel.recycle();
             documentModel = null;
         }
-        SettingsManager.clearCurrentBookSettings();
+        if (currentFilename.equals(E_MAIL_ATTACHMENT)) {
+            SettingsManager.removeCurrentBookSettings();
+        } else {
+            SettingsManager.clearCurrentBookSettings();
+        }
         finish();
     }
 
@@ -652,8 +666,8 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
     public final class BookLoadTask extends AsyncTask<String, Void, Exception> implements Runnable {
 
         private final DecodeService m_decodeService;
-        private final String m_fileName;
-        private final String m_password;
+        private String m_fileName;
+        private String m_password;
         private ProgressDialog progressDialog;
 
         public BookLoadTask(final DecodeService decodeService, final String fileName, final String password) {
@@ -683,6 +697,10 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         protected Exception doInBackground(final String... params) {
             LCTX.d("doInBackground(): start");
             try {
+                if (getIntent().getScheme().equals("content")) {
+                    File tempFile = CacheManager.createTempFile(getIntent().getData());
+                    m_fileName = tempFile.getAbsolutePath();
+                }
                 getView().waitForInitialization();
                 m_decodeService.open(m_fileName, m_password);
                 getDocumentController().init();

@@ -45,6 +45,8 @@ class DBAdapterV1 implements IDBAdapter {
 
     public static final String DB_BOOK_STORE = "INSERT OR REPLACE INTO book_settings (book, last_updated, doc_page, view_page, zoom, single_page, page_align, page_animation, split_pages) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
+    public static final String DB_BOOK_DEL = "DELETE FROM book_settings WHERE book=?";
+
     public static final String DB_BOOK_CLEAR_RECENT = "UPDATE book_settings set last_updated = 0";
 
     public static final String DB_BOOK_DROP = "DROP TABLE IF EXISTS book_settings";
@@ -210,6 +212,24 @@ class DBAdapterV1 implements IDBAdapter {
             LCTX.e("Update book settings failed: ", th);
         }
         return false;
+    }
+
+    @Override
+    public void delete(final BookSettings current) {
+        try {
+            final SQLiteDatabase db = manager.getWritableDatabase();
+            try {
+                db.beginTransaction();
+
+                db.execSQL(DB_BOOK_DEL, new Object[] { current.fileName });
+
+                db.setTransactionSuccessful();
+            } finally {
+                endTransaction(db);
+            }
+        } catch (final Throwable th) {
+            LCTX.e("Delete book settings failed: ", th);
+        }
     }
 
     @Override

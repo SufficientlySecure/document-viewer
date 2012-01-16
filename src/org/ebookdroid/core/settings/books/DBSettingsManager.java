@@ -137,6 +137,10 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter {
         return adapter.clearRecent();
     }
 
+    public void delete(BookSettings current) {
+        adapter.delete(current);
+    }
+
     @Override
     public boolean deleteAll() {
         return adapter.deleteAll();

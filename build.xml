@@ -90,7 +90,9 @@
 
 	<target name="EBookDroid-release">
 
-		<copyfile src="../wiki/ChangeLog.wiki" dest="assets/about_changelog.wiki" forceoverwrite="true" />
+		<svn javahl="false">
+			<export srcurl="http://ebookdroid.googlecode.com/svn/wiki/ChangeLog.wiki" destpath="assets/about_changelog.wiki"/>
+		</svn>
 
 		<antcall target="--make-release" inheritall="true">
 			<param name="mk" value="${arm.mk}" />
@@ -124,7 +126,9 @@
 		<property name="target.apk" location="apk/${package.name}-${manifest.version}-r${svn.info.rev}.apk" />
 		<echo>Target: ${target.apk}</echo>
 
-		<copyfile src="../wiki/ChangeLog.wiki" dest="assets/about_changelog.wiki" forceoverwrite="true" />
+		<svn javahl="false">
+			<export srcurl="http://ebookdroid.googlecode.com/svn/wiki/ChangeLog.wiki" destpath="assets/about_changelog.wiki"/>
+		</svn>
 
 		<antcall target="--make-release">
 			<param name="mk" value="${arm.mk}" />

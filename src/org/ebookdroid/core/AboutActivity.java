@@ -10,7 +10,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -176,13 +175,7 @@ public class AboutActivity extends Activity {
         /**
          * 
          */
-        HTML {
-
-//            @Override
-//            public CharSequence format(final String text) {
-//                return Html.fromHtml(text);
-//            }
-        },
+        HTML,
 
         /**
          * 

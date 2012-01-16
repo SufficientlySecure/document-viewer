@@ -11,7 +11,8 @@ public class Wiki {
         int listLevel = 0;
         while (st.hasMoreElements()) {
             String s = (String) st.nextElement();
-            if (LengthUtils.isEmpty(s)) {
+            String trimmed = s.trim();
+            if (LengthUtils.isEmpty(trimmed)) {
                 if (listLevel > 0) {
                     do {
                         buf.append("</ul>");
@@ -21,9 +22,9 @@ public class Wiki {
                 buf.append("<br>");
                 buf.append("\n");
                 continue;
-            } else if (s.trim().startsWith("#")) {
+            } else if (trimmed.startsWith("#")) {
                 continue;
-            } else if (s.trim().startsWith("=")) {
+            } else if (trimmed.startsWith("=")) {
                 if (listLevel > 0) {
                     do {
                         buf.append("</ul>");
@@ -38,10 +39,10 @@ public class Wiki {
                     end = s.length();
                 }
                 buf.append("<h").append(count).append(">");
-                buf.append(s.substring(count, end));
+                buf.append(s.substring(count, end).trim());
                 buf.append("</h").append(count).append("/>");
                 buf.append("\n");
-            } else if (s.trim().startsWith("*")) {
+            } else if (trimmed.startsWith("*")) {
                 int count = s.indexOf("*");
                 if (count > listLevel) {
                     do {
@@ -55,7 +56,7 @@ public class Wiki {
                     buf.append("\n");
                 }
                 buf.append("<li>");
-                buf.append(s.trim().substring(1));
+                buf.append(trimmed.substring(1).trim());
                 buf.append("</li>");
                 buf.append("\n");
             } else {
@@ -64,7 +65,7 @@ public class Wiki {
                     listLevel--;
                 }
                 buf.append("<br>");
-                buf.append(s);
+                buf.append(trimmed);
             }
         }
 

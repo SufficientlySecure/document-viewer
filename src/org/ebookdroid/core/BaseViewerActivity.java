@@ -119,6 +119,8 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     private boolean menuClosedCalled;
 
+    private boolean temporaryBook;
+
     /**
      * Instantiates a new base viewer activity.
      */
@@ -155,6 +157,9 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
             documentModel.recycle();
             documentModel = null;
         }
+        if (temporaryBook) {
+            CacheManager.clear(E_MAIL_ATTACHMENT);
+        }
         SettingsManager.removeListener(this);
         super.onDestroy();
     }
@@ -186,8 +191,9 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         String fileName = "";
 
         if (getIntent().getScheme().equals("content")) {
-            // fileName = uri.getLastPathSegment();
+            temporaryBook = true;
             fileName = E_MAIL_ATTACHMENT;
+            CacheManager.clear(fileName);
         } else {
             fileName = PathFromUri.retrieve(getContentResolver(), uri);
         }
@@ -573,7 +579,8 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
             documentModel.recycle();
             documentModel = null;
         }
-        if (currentFilename.equals(E_MAIL_ATTACHMENT)) {
+        if (temporaryBook) {
+            CacheManager.clear(E_MAIL_ATTACHMENT);
             SettingsManager.removeCurrentBookSettings();
         } else {
             SettingsManager.clearCurrentBookSettings();

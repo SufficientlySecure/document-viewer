@@ -1,9 +1,12 @@
 package org.ebookdroid.core;
 
+import org.ebookdroid.R;
 import org.ebookdroid.core.actions.ActionController;
 import org.ebookdroid.core.actions.ActionEx;
+import org.ebookdroid.core.actions.ActionMethod;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -38,5 +41,11 @@ public abstract class AbstractActionActivity extends Activity {
         if (view != null && action != null) {
             view.setOnClickListener(action);
         }
+    }
+    
+    @ActionMethod(ids = R.id.mainmenu_about)
+    public void showAbout(final ActionEx action) {
+        final Intent i = new Intent(this, AboutActivity.class);
+        startActivity(i);
     }
 }

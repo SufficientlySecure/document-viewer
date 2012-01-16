@@ -422,12 +422,6 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         }
     }
 
-    @ActionMethod(ids = R.id.mainmenu_about)
-    public void showAbout(final ActionEx action) {
-        final Intent i = new Intent(this, AboutActivity.class);
-        startActivity(i);
-    }
-
     @ActionMethod(ids = R.id.mainmenu_goto_page)
     public void showDialog(final ActionEx action) {
         final Integer dialogId = action.getParameter("dialogId");

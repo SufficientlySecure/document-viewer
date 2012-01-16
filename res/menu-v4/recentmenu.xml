@@ -7,10 +7,14 @@
          android:icon="@drawable/clear"
          android:showAsAction="ifRoom"
          />
-   <item android:id="@+id/recentmenu_settings"
-         android:alphabeticShortcut="s"
-         android:title="@string/menu_settings"
-         android:icon="@drawable/settings"
-         android:showAsAction="ifRoom"
-         />
+	<item
+		android:id="@+id/mainmenu_settings"
+		android:alphabeticShortcut="s"
+		android:title="@string/menu_settings"
+		android:icon="@drawable/settings"
+		android:showAsAction="ifRoom" />
+	<item
+		android:id="@+id/mainmenu_about"
+		android:title="@string/menu_about" 
+		android:icon="@drawable/about"/>
 </menu>

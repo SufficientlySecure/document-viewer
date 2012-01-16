@@ -46,8 +46,9 @@
 		android:title="@string/menu_thumbnail" />
 	<item
 		android:id="@+id/mainmenu_about"
-		android:title="@string/menu_about" />
-	<item
+		android:title="@string/menu_about"
+		android:icon="@drawable/about"/>
+		<item
 		android:id="@+id/mainmenu_close"
 		android:alphabeticShortcut="e"
 		android:title="@string/menu_close"

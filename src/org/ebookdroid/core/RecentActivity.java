@@ -56,7 +56,8 @@ actions = {
         @ActionMethodDef(id = R.id.recentmenu_cleanrecent, method = "showClearRecentDialog"),
         @ActionMethodDef(id = R.id.recent_showbrowser, method = "goFileBrowser"),
         @ActionMethodDef(id = R.id.recent_showlibrary, method = "goLibrary"),
-        @ActionMethodDef(id = R.id.recentmenu_settings, method = "showSettings"),
+        @ActionMethodDef(id = R.id.mainmenu_settings, method = "showSettings"),
+        @ActionMethodDef(id = R.id.mainmenu_about, method = "showAbout"),
         @ActionMethodDef(id = R.id.actions_clearRecent, method = "doClearRecent"),
         @ActionMethodDef(id = R.id.ShelfCaption, method = "showSelectShelfDlg"),
         @ActionMethodDef(id = R.id.actions_selectShelf, method = "selectShelf"),
@@ -213,7 +214,7 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
 
     }
 
-    @ActionMethod(ids = R.id.recentmenu_settings)
+    @ActionMethod(ids = R.id.mainmenu_settings)
     public void showSettings(ActionEx action) {
         libraryAdapter.stopScan();
         bookshelfAdapter.stopScan();

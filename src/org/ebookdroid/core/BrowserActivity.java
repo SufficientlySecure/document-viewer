@@ -34,7 +34,8 @@ actions = {
         // start
         @ActionMethodDef(id = R.id.browserhome, method = "goHome"),
         @ActionMethodDef(id = R.id.browserupfolder, method = "goUp"),
-        @ActionMethodDef(id = R.id.browsermenu_settings, method = "showSettings"),
+        @ActionMethodDef(id = R.id.mainmenu_settings, method = "showSettings"),
+        @ActionMethodDef(id = R.id.mainmenu_about, method = "showAbout"),
         @ActionMethodDef(id = R.id.browserrecent, method = "goRecent")
 // finish
 })
@@ -110,7 +111,7 @@ public class BrowserActivity extends AbstractActionActivity implements IBrowserA
         }
     }
 
-    @ActionMethod(ids = R.id.browsermenu_settings)
+    @ActionMethod(ids = R.id.mainmenu_settings)
     public void showSettings(final ActionEx action) {
         SettingsUI.showAppSettings(this);
     }

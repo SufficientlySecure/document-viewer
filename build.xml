@@ -49,9 +49,9 @@
 	<property name="cortex.a8.neon.apk" value="apk/${package.name}-arm7-cortex-a8-neon-${manifest.version}.apk" />
 	<property name="cortex.a9.neon.apk" value="apk/${package.name}-arm7-cortex-a9-neon-${manifest.version}.apk" />
 
-	<path id="project.libraries" >
-        <pathelement path="thirdparty/junrar" />
-        <pathelement path="thirdparty/android" />
+	<path id="project.libraries">
+		<pathelement path="thirdparty/junrar" />
+		<pathelement path="thirdparty/android" />
 	</path>
 
 	<path id="project.libraries.jars" />
@@ -69,8 +69,8 @@
 
 	<target name="--make-release">
 
-	    <delete dir="${out.absolute.dir}" />
-        <mkdir dir="${out.absolute.dir}" />
+		<delete dir="${out.absolute.dir}" />
+		<mkdir dir="${out.absolute.dir}" />
 
 		<delete dir="obj" />
 		<mkdir dir="obj" />
@@ -89,6 +89,9 @@
 	</target>
 
 	<target name="EBookDroid-release">
+
+		<copyfile src="../wiki/ChangeLog.wiki" dest="assets/about_changelog.wiki" forceoverwrite="true" />
+
 		<antcall target="--make-release" inheritall="true">
 			<param name="mk" value="${arm.mk}" />
 			<param name="apk" value="${arm.apk}" />
@@ -109,6 +112,7 @@
 			<param name="mk" value="${cortex.a9.neon.mk}" />
 			<param name="apk" value="${cortex.a9.neon.apk}" />
 		</antcall>
+
 	</target>
 
 	<target name="EBookDroid-dev">
@@ -119,6 +123,8 @@
 
 		<property name="target.apk" location="apk/${package.name}-${manifest.version}-r${svn.info.rev}.apk" />
 		<echo>Target: ${target.apk}</echo>
+
+		<copyfile src="../wiki/ChangeLog.wiki" dest="assets/about_changelog.wiki" forceoverwrite="true" />
 
 		<antcall target="--make-release">
 			<param name="mk" value="${arm.mk}" />

@@ -2,11 +2,13 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.R;
 import org.ebookdroid.utils.LengthUtils;
+import org.ebookdroid.utils.Wiki;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
+import android.webkit.WebView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
@@ -25,35 +28,36 @@ public class AboutActivity extends Activity {
 
     private static final Part[] PARTS = {
             // Start
-            new Part(R.string.about_commmon_title, true, "about_common.html"),
-            new Part(R.string.about_license_title, true, "about_license.html"),
-            new Part(R.string.about_3dparty_title, true, "about_3rdparty.html"),
+            new Part(R.string.about_commmon_title, Format.HTML, "about_common.html"),
+            new Part(R.string.about_license_title, Format.HTML, "about_license.html"),
+            new Part(R.string.about_3dparty_title, Format.HTML, "about_3rdparty.html"),
+            new Part(R.string.about_3dparty_title, Format.WIKI, "about_changelog.wiki"),
     // End
     };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.about);
-        
+
         getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 
         String name = "EBookDroid";
         String version = "";
         try {
-            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            final PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             version = packageInfo.versionName;
             name = getResources().getString(packageInfo.applicationInfo.labelRes);
-        } catch (NameNotFoundException e) {
+        } catch (final NameNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
-        TextView title = (TextView) findViewById(R.id.about_title);
+        final TextView title = (TextView) findViewById(R.id.about_title);
         title.setText(name + (LengthUtils.isNotEmpty(version) ? " v" + version : ""));
 
-        ExpandableListView view = (ExpandableListView) findViewById(R.id.about_parts);
+        final ExpandableListView view = (ExpandableListView) findViewById(R.id.about_parts);
         view.setAdapter(new PartsAdapter());
         view.expandGroup(0);
     }
@@ -61,30 +65,30 @@ public class AboutActivity extends Activity {
     private static class Part {
 
         final int labelId;
-        final boolean html;
+        final Format format;
         final String fileName;
         CharSequence content;
 
-        public Part(int labelId, boolean html, String fileName) {
+        public Part(final int labelId, final Format format, final String fileName) {
             this.labelId = labelId;
-            this.html = html;
+            this.format = format;
             this.fileName = fileName;
         }
 
         public CharSequence getContent(final Context context) {
             if (content == null) {
-                byte[] buffer = null;
                 try {
-                    InputStream input = context.getAssets().open(fileName);
-                    int size = input.available();
-                    buffer = new byte[size];
+                    final InputStream input = context.getAssets().open(fileName);
+                    final int size = input.available();
+                    byte[] buffer = new byte[size];
                     input.read(buffer);
                     input.close();
-                } catch (IOException e) {
+                    final String text = new String(buffer, "UTF8");
+                    content = format.format(text);
+                } catch (final IOException e) {
                     e.printStackTrace();
+                    content = "";
                 }
-                String text = new String(buffer);
-                content = html ? Html.fromHtml(text) : text;
             }
             return content;
         }
@@ -98,27 +102,27 @@ public class AboutActivity extends Activity {
         }
 
         @Override
-        public int getChildrenCount(int groupPosition) {
+        public int getChildrenCount(final int groupPosition) {
             return 1;
         }
 
         @Override
-        public Part getGroup(int groupPosition) {
+        public Part getGroup(final int groupPosition) {
             return PARTS[groupPosition];
         }
 
         @Override
-        public Part getChild(int groupPosition, int childPosition) {
+        public Part getChild(final int groupPosition, final int childPosition) {
             return PARTS[groupPosition];
         }
 
         @Override
-        public long getGroupId(int groupPosition) {
+        public long getGroupId(final int groupPosition) {
             return groupPosition;
         }
 
         @Override
-        public long getChildId(int groupPosition, int childPosition) {
+        public long getChildId(final int groupPosition, final int childPosition) {
             return childPosition;
         }
 
@@ -128,7 +132,8 @@ public class AboutActivity extends Activity {
         }
 
         @Override
-        public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+        public View getGroupView(final int groupPosition, final boolean isExpanded, final View convertView,
+                final ViewGroup parent) {
             View container = null;
             TextView view = null;
             if (convertView == null) {
@@ -142,21 +147,56 @@ public class AboutActivity extends Activity {
         }
 
         @Override
-        public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView,
-                ViewGroup parent) {
-            TextView view = null;
-            if (!(convertView instanceof TextView)) {
-                view = new TextView(AboutActivity.this);
+        public View getChildView(final int groupPosition, final int childPosition, final boolean isLastChild,
+                final View convertView, final ViewGroup parent) {
+            WebView view = null;
+            if (!(convertView instanceof WebView)) {
+                view = new WebView(AboutActivity.this);
             } else {
-                view = ((TextView) convertView);
+                view = ((WebView) convertView);
             }
-            view.setText(getChild(groupPosition, childPosition).getContent(AboutActivity.this));
+            CharSequence content = getChild(groupPosition, childPosition).getContent(AboutActivity.this);
+            view.loadData(content.toString(), "text/html", "UTF-8");
+            view.setBackgroundColor(Color.GRAY);
             return view;
         }
 
         @Override
-        public boolean isChildSelectable(int groupPosition, int childPosition) {
+        public boolean isChildSelectable(final int groupPosition, final int childPosition) {
             return false;
+        }
+    }
+
+    private static enum Format {
+        /**
+         * 
+         */
+        TEXT,
+
+        /**
+         * 
+         */
+        HTML {
+
+//            @Override
+//            public CharSequence format(final String text) {
+//                return Html.fromHtml(text);
+//            }
+        },
+
+        /**
+         * 
+         */
+        WIKI {
+
+            @Override
+            public CharSequence format(final String text) {
+                return Wiki.fromWiki(text);
+            }
+        };
+
+        public CharSequence format(final String text) {
+            return text;
         }
     }
 }

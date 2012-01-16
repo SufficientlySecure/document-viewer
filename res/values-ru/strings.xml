@@ -160,11 +160,12 @@
 	<string name="pref_showanimicon_title">"Показывать тип анимации"</string>
 	<string name="pref_showanimicon_summary">"Показывать тип анимации если анимация или перетаскивание возможны"</string>
 	
-	<string name="about_title">"About EBookDroid"</string>
-	<string name="about_commmon_title">"Application info"</string>
-	<string name="about_license_title">"License"</string>
-	<string name="about_3dparty_title">"3rd party software"</string>
-	
+	<string name="about_title">"О программе"</string>
+	<string name="about_commmon_title">"Общая информация"</string>
+	<string name="about_license_title">"Лицензия"</string>
+	<string name="about_3dparty_title">"Стороннее ПО"</string>
+	<string name="about_changelog_title">"Изменения"</string>
+		
 	<string name="content_description_icon">"Icon"</string>
 	<string name="content_description_library">"Library"</string>
 	<string name="content_description_browser">"Browser"</string>

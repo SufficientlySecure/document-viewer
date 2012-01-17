@@ -60,7 +60,7 @@ public class FileExtensionFilter implements FileFilter, FilenameFilter {
     }
 
     public boolean accept(final String name, final String ext) {
-        return name.toLowerCase().endsWith("." + ext);
+        return name != null && name.toLowerCase().endsWith("." + ext);
     }
 
     @Override

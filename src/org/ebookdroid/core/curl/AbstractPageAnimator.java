@@ -83,6 +83,9 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
      */
     protected ViewState nextView(final ViewState viewState) {
         final DocumentModel dm = view.getBase().getDocumentModel();
+        if (dm == null) {
+            return viewState;
+        }
 
         foreIndex = viewState.currentIndex;
         if (foreIndex >= dm.getPageCount()) {
@@ -101,6 +104,9 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
      */
     protected ViewState previousView(final ViewState viewState) {
         final DocumentModel dm = view.getBase().getDocumentModel();
+        if (dm == null) {
+            return viewState;
+        }
 
         backIndex = viewState.currentIndex;
         foreIndex = backIndex - 1;

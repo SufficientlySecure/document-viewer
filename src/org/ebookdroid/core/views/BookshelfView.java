@@ -53,20 +53,21 @@ public class BookshelfView extends GridView implements OnItemClickListener {
 
     private final IBrowserActivity base;
     private final BookShelfAdapter adapter;
-    String path;
+    final String path;
 
     public BookshelfView(final IBrowserActivity base, final View shelves, final BookShelfAdapter adapter) {
         super(base.getContext());
         this.base = base;
         this.adapter = adapter;
-        this.path = adapter.getPath();
+        this.path = adapter != null ? adapter.getPath() : "";
         setCacheColorHint(0);
         setSelector(android.R.color.transparent);
         setNumColumns(AUTO_FIT);
         setStretchMode(STRETCH_SPACING);
-        setAdapter(adapter);
-        setLayoutParams(new LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,
-                android.view.ViewGroup.LayoutParams.FILL_PARENT));
+        if (adapter != null) {
+            setAdapter(adapter);
+        }
+        setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         final Resources r = getResources();
         final float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, r.getDisplayMetrics());
         setColumnWidth((int) px);
@@ -164,10 +165,12 @@ public class BookshelfView extends GridView implements OnItemClickListener {
 
     @Override
     public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
-        final BookNode node = (BookNode) adapter.getItem(position);
-        final File file = new File(node.path);
-        if (!file.isDirectory()) {
-            base.showDocument(Uri.fromFile(file));
+        final BookNode node = adapter != null ? (BookNode) adapter.getItem(position) : null;
+        if (node != null) {
+            final File file = new File(node.path);
+            if (!file.isDirectory()) {
+                base.showDocument(Uri.fromFile(file));
+            }
         }
     }
 }

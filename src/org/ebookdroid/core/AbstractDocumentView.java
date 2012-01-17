@@ -379,15 +379,19 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
         LCTX.d("zoomChanged(" + newZoom + ", " + oldZoom + ")");
 
-        if (inZoom.compareAndSet(false, true)) {
-            initialZoom = oldZoom;
+        try {
+            if (inZoom.compareAndSet(false, true)) {
+                initialZoom = oldZoom;
+            }
+
+            invalidatePageSizes(InvalidateSizeReason.ZOOM, null);
+
+            view.invalidateScroll(newZoom, oldZoom);
+
+            view.redrawView(onZoomChanged(newZoom, false));
+        } catch (Throwable th) {
+            LCTX.e("Unexpected error: ", th);
         }
-
-        invalidatePageSizes(InvalidateSizeReason.ZOOM, null);
-
-        view.invalidateScroll(newZoom, oldZoom);
-
-        view.redrawView(onZoomChanged(newZoom, false));
     }
 
     public int getScrollX() {

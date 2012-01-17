@@ -60,7 +60,7 @@ public class FilePrefixFilter implements FileFilter, FilenameFilter {
     }
 
     public boolean accept(final String prefix, final String name) {
-        return name.toLowerCase().startsWith(prefix);
+        return name != null && name.toLowerCase().startsWith(prefix);
     }
 
     @Override

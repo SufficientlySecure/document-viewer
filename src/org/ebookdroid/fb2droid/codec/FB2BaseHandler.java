@@ -8,9 +8,9 @@ public class FB2BaseHandler extends DefaultHandler {
 
     protected final FB2Document document;
 
-    protected static final int[] starts = new int[10000];
+    protected final int[] starts = new int[10000];
 
-    protected static final int[] lengths = new int[10000];
+    protected final int[] lengths = new int[10000];
 
     protected RenderingStyle crs = new RenderingStyle(RenderingStyle.TEXT_SIZE);
 

@@ -108,6 +108,11 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     @Override
+    public void decreaseMemortLimit() {
+        memoryLimit.decrementAndGet();
+    }
+
+    @Override
     public void open(final String fileName, final String password) {
         document = codecContext.openDocument(fileName, password);
     }

@@ -174,7 +174,9 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
         final long size = BitmapManager.getBitmapBufferSize(rect.width(), rect.height(), ds.getBitmapConfig());
 
-        LCTX.d(getFullId() + ".isChildrenRequired(): rect=" + rect + ", size=" + size + ", limit=" + memoryLimit);
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d(getFullId() + ".isChildrenRequired(): rect=" + rect + ", size=" + size + ", limit=" + memoryLimit);
+        }
 
         final boolean textureSizeExceedeed = (rect.width() > 2048) || (rect.height() > 2048);
         final boolean memoryLimitExceeded = size + 4096 >= memoryLimit;
@@ -227,13 +229,15 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                     cropped = true;
                     final DecodeService decodeService = page.base.getDecodeService();
                     if (decodeService != null) {
-                        LCTX.d(getFullId() + ": cropped image requested: " + croppedBounds);
+                        if (LCTX.isDebugEnabled()) {
+                            LCTX.d(getFullId() + ": cropped image requested: " + croppedBounds);
+                        }
                         decodeService.decodePage(new ViewState(PageTreeNode.this), PageTreeNode.this, croppedBounds);
                     }
                 }
             }
 
-            final Bitmaps bitmaps = new Bitmaps(getFullId(), bitmap, bitmapBounds);
+            final Bitmaps bitmaps = holder.reuse(getFullId(), bitmap, bitmapBounds);
 
             page.base.getActivity().runOnUiThread(new Runnable() {
 
@@ -269,6 +273,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         } catch (OutOfMemoryError ex) {
             LCTX.e("No memory: ", ex);
             BitmapManager.clear();
+            page.base.getDecodeService().decreaseMemortLimit();
         } finally {
             BitmapManager.release(bitmap);
         }
@@ -470,6 +475,19 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             }
         }
 
+        public synchronized Bitmaps reuse(String nodeId, BitmapRef bitmap, Rect bitmapBounds) {
+            if (day != null) {
+                if (day.reuse(nodeId, bitmap, bitmapBounds)) {
+                    if (night != null) {
+                        night.recycle(null);
+                        night = null;
+                    }
+                    return day;
+                }
+            }
+            return new Bitmaps(nodeId, bitmap, bitmapBounds);
+        }
+
         public boolean hasBitmap(final ViewState viewState, final PagePaint paint) {
             return getBitmap(viewState, paint) != null;
         }
@@ -519,7 +537,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         }
 
         public synchronized void setBitmap(final Bitmaps bitmaps) {
-            if (bitmaps == null) {
+            if (bitmaps == null || bitmaps == day) {
                 return;
             }
 

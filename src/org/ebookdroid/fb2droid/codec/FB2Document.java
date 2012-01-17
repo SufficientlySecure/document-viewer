@@ -67,6 +67,7 @@ public class FB2Document implements CodecDocument {
             me.publishToDocument(this);
         }
         markup.clear();
+        notes.clear();
     }
 
     private List<FB2MarkupElement> parseContent(final SAXParserFactory spf, final String fileName) {

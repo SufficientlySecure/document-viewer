@@ -47,4 +47,6 @@ public interface DecodeService {
 
     long getMemoryLimit();
 
+    void decreaseMemortLimit();
+
 }

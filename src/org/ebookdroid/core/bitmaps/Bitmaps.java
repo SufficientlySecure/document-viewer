@@ -25,10 +25,10 @@ public class Bitmaps {
 
     private static boolean useDefaultBitmapType = true;
 
-    public final Rect bounds;
-    public final int columns;
-    public final int rows;
     public final Bitmap.Config config;
+    public Rect bounds;
+    public int columns;
+    public int rows;
 
     private BitmapRef[] bitmaps;
 
@@ -84,6 +84,58 @@ public class Bitmaps {
             c.drawRect(0, 0, w, h, paint);
             c.drawBitmap(days[i], 0, 0, paint);
         }
+    }
+
+    public synchronized boolean reuse(final String nodeId, final BitmapRef orig, final Rect bitmapBounds) {
+        final Bitmap origBitmap = orig.getBitmap();
+        final Config cfg = useDefaultBitmapType ? DEF_BITMAP_TYPE : origBitmap.getConfig();
+        if (cfg != config) {
+            return false;
+        }
+
+        int oldsize = this.columns * this.rows;
+        BitmapRef[] oldBitmaps = this.bitmaps;
+
+        this.bounds = bitmapBounds;
+        this.columns = (int) Math.ceil(bitmapBounds.width() / (float) SIZE);
+        this.rows = (int) Math.ceil(bitmapBounds.height() / (float) SIZE);
+        this.bitmaps = new BitmapRef[columns * rows];
+
+        int newsize = this.columns * this.rows;
+
+        int i = 0;
+        for (; i < newsize; i++) {
+            this.bitmaps[i] = i < oldsize ? this.bitmaps[i] : null;
+            if (this.bitmaps[i] == null || this.bitmaps[i].getBitmap() == null) {
+                this.bitmaps[i] = BitmapManager.getBitmap(nodeId + ":reuse:" + i, SIZE, SIZE, config);
+            }
+            this.bitmaps[i].getBitmap().eraseColor(Color.CYAN);
+        }
+        for (; i < oldsize; i++) {
+            BitmapManager.release(oldBitmaps[i]);
+        }
+
+        int top = 0;
+        for (int row = 0; row < rows; row++, top += SIZE) {
+            int left = 0;
+            for (int col = 0; col < columns; col++, left += SIZE) {
+                final int index = row * columns + col;
+                final BitmapRef b = bitmaps[index];
+                final Bitmap bmp = b.getBitmap();
+
+                if (row == rows - 1 || col == columns - 1) {
+                    final int right = Math.min(left + SIZE, bounds.width());
+                    final int bottom = Math.min(top + SIZE, bounds.height());
+                    final RawBitmap rb = new RawBitmap(origBitmap, left, top, right - left, bottom - top);
+                    rb.toBitmap(bmp);
+                } else {
+                    final RawBitmap rb = new RawBitmap(origBitmap, left, top, SIZE, SIZE);
+                    rb.toBitmap(bmp);
+                }
+            }
+        }
+
+        return true;
     }
 
     public synchronized Bitmap[] getBitmaps() {

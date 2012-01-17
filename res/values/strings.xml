@@ -178,4 +178,11 @@
 	<string name="content_description_home">"Home"</string>
 	<string name="content_description_up">"Up"</string>
 	<string name="content_description_recent">"Recent"</string>
+
+	<string name="outline_title">Outline</string>
+	<string name="outline_missed">Document without Outline</string>
+
+	<string name="error_page_out_of_rande">Page number out of range. Valid range: 1-%i</string>
+
+	<string name="msg_loading">Loading... Please wait</string>
 </resources>

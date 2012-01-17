@@ -177,4 +177,12 @@
 	<string name="content_description_home">"Home"</string>
 	<string name="content_description_up">"Up"</string>
 	<string name="content_description_recent">"Recent"</string>
+	
+	<string name="outline_title">Оглавление</string>
+	<string name="outline_missed">Оглавление отсутствует</string>
+	
+	<string name="error_page_out_of_rande">Неправильный номер страницы. Допустимый диапазон: 1-%i</string>
+	
+	<string name="msg_loading">Идет загрузка... подождите немного</string>
+	
 </resources>

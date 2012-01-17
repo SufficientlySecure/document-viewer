@@ -400,9 +400,10 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
                 pageNumber = 0;
             }
             if (pageNumber < 1 || pageNumber > documentModel.getPageCount()) {
-                Toast.makeText(getApplicationContext(),
-                        "Page number out of range. Valid range: 1-" + documentModel.getDecodeService().getPageCount(),
-                        2000).show();
+                Toast.makeText(
+                        getApplicationContext(),
+                        getResources().getString(R.string.error_page_out_of_rande,
+                                documentModel.getDecodeService().getPageCount()), 2000).show();
                 return;
             }
             getDocumentController().goToPage(pageNumber - 1);
@@ -418,13 +419,13 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         final List<OutlineLink> outline = documentModel.getDecodeService().getOutline();
         if ((outline != null) && (outline.size() > 0)) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Outline");
+            builder.setTitle(R.string.outline_title);
             builder.setAdapter(new OutlineAdapter(this, outline),
                     actions.getOrCreateAction(R.id.actions_gotoOutlineItem).putValue("outline", outline));
             final AlertDialog alert = builder.create();
             alert.show();
         } else {
-            Toast.makeText(getApplicationContext(), "Document without Outline", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.outline_missed, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -686,7 +687,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         protected void onPreExecute() {
             LCTX.d("onPreExecute(): start");
             try {
-                progressDialog = ProgressDialog.show(BaseViewerActivity.this, "", "Loading... Please wait", true);
+                progressDialog = ProgressDialog.show(BaseViewerActivity.this, "", getResources().getString(R.string.msg_loading), true);
             } catch (final Throwable th) {
                 LCTX.e("Unexpected error", th);
             } finally {

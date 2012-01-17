@@ -22,6 +22,9 @@ public class FB2TextElement extends AbstractFB2LineElement {
     public float render(final Canvas c, final int y, final int x, final float additionalWidth) {
         c.drawText(chars, start, length, x, renderingState.superScript ? y - renderingState.textSize
                 : renderingState.subScript ? y + renderingState.textSize / 2 : y, renderingState.paint);
+        if (renderingState.strikeThrough) {
+            c.drawLine(x, y - renderingState.textSize / 4, x + width, y - renderingState.textSize / 4, renderingState.paint);
+        }
         return width;
     }
 }

@@ -149,6 +149,8 @@ public class FB2ContentHandler extends FB2BaseHandler {
         } else if ("sub".equals(qName)) {
             setSubStyle();
             spaceNeeded = false;
+        } else if ("strikethrough".equals(qName)) {
+            setStrikeThrough();
         } else if ("emphasis".equals(qName)) {
             setEmphasisStyle();
         } else if ("epigraph".equals(qName)) {
@@ -269,6 +271,8 @@ public class FB2ContentHandler extends FB2BaseHandler {
         } else if ("strong".equals(qName)) {
             setPrevStyle();
             spaceNeeded = false;
+        } else if ("strikethrough".equals(qName)) {
+            setPrevStyle();
         } else if ("sup".equals(qName)) {
             setPrevStyle();
             if (markup.get(markup.size() - 1) instanceof FB2MarkupNoSpace) {
@@ -336,7 +340,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
             final int count = StringUtils.split(ch, start, length, starts, lengths);
 
             if (count > 0) {
-                if (!spaceNeeded) {
+                if (!spaceNeeded && !Character.isWhitespace(ch[start])) {
                     markup.add(FB2MarkupNoSpace._instance);
                 }
                 spaceNeeded = true;

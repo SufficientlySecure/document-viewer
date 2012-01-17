@@ -28,6 +28,7 @@ class RenderingStyle {
     public final CustomTextPaint paint;
     final boolean superScript;
     final boolean subScript;
+    final boolean strikeThrough;
 
     public RenderingStyle(final int textSize) {
         this.textSize = textSize;
@@ -37,26 +38,7 @@ class RenderingStyle {
         this.paint = getTextPaint(face, textSize, bold);
         this.superScript = false;
         this.subScript = false;
-    }
-
-    public RenderingStyle(final RenderingStyle old) {
-        this.textSize = old.textSize;
-        this.jm = old.jm;
-        this.bold = old.bold;
-        this.face = old.face;
-        this.paint = getTextPaint(face, textSize, bold);
-        this.superScript = false;
-        this.subScript = false;
-    }
-
-    public RenderingStyle(final RenderingStyle old, final int textSize) {
-        this.textSize = textSize;
-        this.jm = old.jm;
-        this.bold = old.bold;
-        this.face = old.face;
-        this.paint = getTextPaint(face, textSize, bold);
-        this.superScript = false;
-        this.subScript = false;
+        this.strikeThrough = false;
     }
 
     public RenderingStyle(final RenderingStyle old, final int textSize, final boolean superScript,
@@ -68,6 +50,19 @@ class RenderingStyle {
         this.paint = getTextPaint(face, textSize, bold);
         this.superScript = superScript;
         this.subScript = subScript;
+        this.strikeThrough = false;
+    }
+
+    public RenderingStyle(final RenderingStyle old, final int textSize, final boolean superScript,
+            final boolean subScript, final boolean strikeThrough) {
+        this.textSize = textSize;
+        this.jm = old.jm;
+        this.bold = old.bold;
+        this.face = old.face;
+        this.paint = getTextPaint(face, textSize, bold);
+        this.superScript = superScript;
+        this.subScript = subScript;
+        this.strikeThrough = strikeThrough;
     }
 
     public RenderingStyle(final RenderingStyle old, final int textSize, final JustificationMode jm) {
@@ -78,6 +73,7 @@ class RenderingStyle {
         this.paint = getTextPaint(face, textSize, bold);
         this.superScript = false;
         this.subScript = false;
+        this.strikeThrough = false;
     }
 
     public RenderingStyle(final RenderingStyle old, final int textSize, final JustificationMode jm, final boolean bold,
@@ -89,16 +85,7 @@ class RenderingStyle {
         this.paint = getTextPaint(face, textSize, bold);
         this.superScript = false;
         this.subScript = false;
-    }
-
-    public RenderingStyle(final RenderingStyle old, final JustificationMode jm) {
-        this.textSize = old.textSize;
-        this.jm = jm;
-        this.bold = old.bold;
-        this.face = old.face;
-        this.paint = getTextPaint(face, textSize, bold);
-        this.superScript = false;
-        this.subScript = false;
+        this.strikeThrough = false;
     }
 
     public RenderingStyle(final RenderingStyle old, final JustificationMode jm, final Typeface face) {
@@ -109,6 +96,7 @@ class RenderingStyle {
         this.paint = getTextPaint(face, textSize, bold);
         this.superScript = false;
         this.subScript = false;
+        this.strikeThrough = false;
     }
 
     public RenderingStyle(final RenderingStyle old, final boolean bold) {
@@ -119,6 +107,7 @@ class RenderingStyle {
         this.paint = getTextPaint(face, textSize, bold);
         this.superScript = false;
         this.subScript = false;
+        this.strikeThrough = false;
     }
 
     public RenderingStyle(final RenderingStyle old, final Typeface face) {
@@ -129,6 +118,7 @@ class RenderingStyle {
         this.paint = getTextPaint(face, textSize, bold);
         this.superScript = false;
         this.subScript = false;
+        this.strikeThrough = false;
     }
 
     public RenderingStyle(final int textSize, final boolean bold, final boolean italic) {
@@ -139,6 +129,7 @@ class RenderingStyle {
         this.paint = getTextPaint(face, textSize, bold);
         this.superScript = false;
         this.subScript = false;
+        this.strikeThrough = false;
     }
 
     public static CustomTextPaint getTextPaint(final int textSize) {

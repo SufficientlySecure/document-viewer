@@ -1,5 +1,8 @@
 package org.ebookdroid.fb2droid.codec;
 
+import org.ebookdroid.fb2droid.codec.RenderingStyle.Script;
+import org.ebookdroid.fb2droid.codec.RenderingStyle.Strike;
+
 import android.graphics.Canvas;
 
 public class FB2TextElement extends AbstractFB2LineElement {
@@ -8,22 +11,22 @@ public class FB2TextElement extends AbstractFB2LineElement {
     public final int start;
     public final int length;
 
-    public final RenderingStyle renderingState;
+    public final RenderingStyle style;
 
-    public FB2TextElement(final char[] ch, final int st, final int len, final RenderingStyle renderingState) {
-        super(renderingState.paint.measureText(ch, st, len), renderingState.textSize);
+    public FB2TextElement(final char[] ch, final int st, final int len, final RenderingStyle style) {
+        super(style.paint.measureText(ch, st, len), style.textSize);
         this.chars = ch;
         this.start = st;
         this.length = len;
-        this.renderingState = renderingState;
+        this.style = style;
     }
 
     @Override
     public float render(final Canvas c, final int y, final int x, final float additionalWidth) {
-        c.drawText(chars, start, length, x, renderingState.superScript ? y - renderingState.textSize
-                : renderingState.subScript ? y + renderingState.textSize / 2 : y, renderingState.paint);
-        if (renderingState.strikeThrough) {
-            c.drawLine(x, y - renderingState.textSize / 4, x + width, y - renderingState.textSize / 4, renderingState.paint);
+        int yy = style.script == Script.SUPER ? y - style.textSize : style.script == Script.SUB ? y + style.textSize / 2 : y;
+        c.drawText(chars, start, length, x, yy, style.paint);
+        if (style.strike == Strike.THROUGH) {
+            c.drawLine(x, yy - style.textSize / 4, x + width, yy - style.textSize / 4, style.paint);
         }
         return width;
     }

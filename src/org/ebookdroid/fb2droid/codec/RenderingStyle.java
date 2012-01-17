@@ -19,16 +19,15 @@ class RenderingStyle {
     public static final int FOOTNOTE_SIZE = (5 * TEXT_SIZE) / 6;
 
     private static final SparseArray<CustomTextPaint> paints = new SparseArray<CustomTextPaint>();
-    private static final SparseArray<RenderingStyle> styles = new SparseArray<RenderingStyle>();
+
+    public final CustomTextPaint paint;
 
     final int textSize;
     final JustificationMode jm;
     final boolean bold;
     final Typeface face;
-    public final CustomTextPaint paint;
-    final boolean superScript;
-    final boolean subScript;
-    final boolean strikeThrough;
+    final Script script;
+    final Strike strike;
 
     public RenderingStyle(final int textSize) {
         this.textSize = textSize;
@@ -36,33 +35,28 @@ class RenderingStyle {
         this.bold = false;
         this.face = RenderingStyle.NORMAL_TF;
         this.paint = getTextPaint(face, textSize, bold);
-        this.superScript = false;
-        this.subScript = false;
-        this.strikeThrough = false;
+        this.script = null;
+        this.strike = null;
     }
 
-    public RenderingStyle(final RenderingStyle old, final int textSize, final boolean superScript,
-            final boolean subScript) {
-        this.textSize = textSize;
+    public RenderingStyle(final RenderingStyle old, final Script script) {
+        this.textSize = script != null ? old.textSize / 2: old.textSize;
         this.jm = old.jm;
         this.bold = old.bold;
         this.face = old.face;
         this.paint = getTextPaint(face, textSize, bold);
-        this.superScript = superScript;
-        this.subScript = subScript;
-        this.strikeThrough = false;
+        this.script = script;
+        this.strike = null;
     }
 
-    public RenderingStyle(final RenderingStyle old, final int textSize, final boolean superScript,
-            final boolean subScript, final boolean strikeThrough) {
-        this.textSize = textSize;
+    public RenderingStyle(final RenderingStyle old, final Strike strike) {
+        this.textSize = old.textSize;
         this.jm = old.jm;
         this.bold = old.bold;
         this.face = old.face;
         this.paint = getTextPaint(face, textSize, bold);
-        this.superScript = superScript;
-        this.subScript = subScript;
-        this.strikeThrough = strikeThrough;
+        this.script = old.script;
+        this.strike = strike;
     }
 
     public RenderingStyle(final RenderingStyle old, final int textSize, final JustificationMode jm) {
@@ -71,9 +65,8 @@ class RenderingStyle {
         this.bold = old.bold;
         this.face = old.face;
         this.paint = getTextPaint(face, textSize, bold);
-        this.superScript = false;
-        this.subScript = false;
-        this.strikeThrough = false;
+        this.script = null;
+        this.strike = null;
     }
 
     public RenderingStyle(final RenderingStyle old, final int textSize, final JustificationMode jm, final boolean bold,
@@ -83,9 +76,8 @@ class RenderingStyle {
         this.bold = bold;
         this.face = face;
         this.paint = getTextPaint(face, textSize, bold);
-        this.superScript = false;
-        this.subScript = false;
-        this.strikeThrough = false;
+        this.script = null;
+        this.strike = null;
     }
 
     public RenderingStyle(final RenderingStyle old, final JustificationMode jm, final Typeface face) {
@@ -94,9 +86,8 @@ class RenderingStyle {
         this.bold = old.bold;
         this.face = face;
         this.paint = getTextPaint(face, textSize, bold);
-        this.superScript = false;
-        this.subScript = false;
-        this.strikeThrough = false;
+        this.script = null;
+        this.strike = null;
     }
 
     public RenderingStyle(final RenderingStyle old, final boolean bold) {
@@ -105,9 +96,8 @@ class RenderingStyle {
         this.bold = bold;
         this.face = old.face;
         this.paint = getTextPaint(face, textSize, bold);
-        this.superScript = false;
-        this.subScript = false;
-        this.strikeThrough = false;
+        this.script = null;
+        this.strike = null;
     }
 
     public RenderingStyle(final RenderingStyle old, final Typeface face) {
@@ -116,9 +106,8 @@ class RenderingStyle {
         this.bold = old.bold;
         this.face = face;
         this.paint = getTextPaint(face, textSize, bold);
-        this.superScript = false;
-        this.subScript = false;
-        this.strikeThrough = false;
+        this.script = null;
+        this.strike = null;
     }
 
     public RenderingStyle(final int textSize, final boolean bold, final boolean italic) {
@@ -127,9 +116,8 @@ class RenderingStyle {
         this.bold = bold;
         this.face = italic ? ITALIC_TF : NORMAL_TF;
         this.paint = getTextPaint(face, textSize, bold);
-        this.superScript = false;
-        this.subScript = false;
-        this.strikeThrough = false;
+        this.script = null;
+        this.strike = null;
     }
 
     public static CustomTextPaint getTextPaint(final int textSize) {
@@ -146,14 +134,11 @@ class RenderingStyle {
         return paint;
     }
 
-    public static RenderingStyle getStyle(final int textSize, final boolean bold, final boolean italic) {
-        final int key = (textSize & 0x0FFF) + (italic ? 1 << 14 : 0) + (bold ? 1 << 15 : 0);
-        RenderingStyle style = styles.get(key);
-        if (style == null) {
-            style = new RenderingStyle(textSize, bold, italic);
+    public static enum Script {
+        SUB, SUPER;
+    }
 
-            styles.append(key, style);
-        }
-        return style;
+    public static enum Strike {
+        THROUGH, UNDER;
     }
 }

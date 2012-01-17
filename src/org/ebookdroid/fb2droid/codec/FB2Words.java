@@ -11,7 +11,7 @@ public class FB2Words {
 
     static final FB2Word key = new FB2Word();
 
-    final Map<FB2Word, FB2TextElement> all = new HashMap<FB2Word, FB2TextElement>(32 * 10241);
+    final Map<FB2Word, FB2TextElement> all = new HashMap<FB2Word, FB2TextElement>(32 * 1024);
 
     final LinkedList<Buffer> buffers = new LinkedList<Buffer>();
 

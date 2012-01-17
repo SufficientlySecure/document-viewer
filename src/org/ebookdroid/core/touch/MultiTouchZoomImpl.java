@@ -27,7 +27,7 @@ public class MultiTouchZoomImpl implements IMultiTouchZoom {
             multiEventCatched = true;
             return true;
         }
-        if (ev.getAction() == MotionEvent.ACTION_MOVE && lastZoomDistance != 0) {
+        if (ev.getAction() == MotionEvent.ACTION_MOVE && lastZoomDistance != 0 && ev.getPointerCount() > 1) {
             final float zoomDistance = getZoomDistance(ev);
             zoomModel.setZoom(zoomModel.getZoom() * zoomDistance / lastZoomDistance);
             lastZoomDistance = zoomDistance;

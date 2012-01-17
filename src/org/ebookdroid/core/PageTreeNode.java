@@ -208,64 +208,70 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     @Override
     public void decodeComplete(final CodecPage codecPage, final BitmapRef bitmap, final Rect bitmapBounds) {
 
-        if (bitmap == null || bitmapBounds == null) {
+        try {
+            if (bitmap == null || bitmapBounds == null) {
+                page.base.getActivity().runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        setDecodingNow(false);
+                    }
+                });
+                return;
+            }
+
+            BookSettings bs = SettingsManager.getBookSettings();
+            if (bs != null && bs.cropPages) {
+                if (id == 0 && !cropped) {
+                    croppedBounds = PageCropper.getCropBounds(bitmap, bitmapBounds, pageSliceBounds);
+                    cropped = true;
+                    final DecodeService decodeService = page.base.getDecodeService();
+                    if (decodeService != null) {
+                        LCTX.d(getFullId() + ": cropped image requested: " + croppedBounds);
+                        decodeService.decodePage(new ViewState(PageTreeNode.this), PageTreeNode.this, croppedBounds);
+                    }
+                }
+            }
+
+            final Bitmaps bitmaps = new Bitmaps(getFullId(), bitmap, bitmapBounds);
+
             page.base.getActivity().runOnUiThread(new Runnable() {
 
                 @Override
                 public void run() {
+                    holder.setBitmap(bitmaps);
                     setDecodingNow(false);
+
+                    page.base.getDocumentController().pageUpdated(page.index.viewIndex);
+                    final IDocumentViewController dc = page.base.getDocumentController();
+                    final DocumentModel dm = page.base.getDocumentModel();
+
+                    if (dc != null && dm != null) {
+                        final boolean changed = page.setAspectRatio(bitmapBounds.width(), bitmapBounds.height());
+
+                        ViewState viewState = new ViewState(dc);
+                        if (changed) {
+                            dc.invalidatePageSizes(InvalidateSizeReason.PAGE_LOADED, page);
+                            viewState = dc.updatePageVisibility(dm.getCurrentViewPageIndex(), 0, viewState.zoom);
+                        }
+                        final RectF bounds = viewState.getBounds(page);
+                        if (parent != null) {
+                            final List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>(2);
+                            parent.onChildLoaded(PageTreeNode.this, viewState, bounds, bitmapsToRecycle);
+                            BitmapManager.release(bitmapsToRecycle);
+                        }
+                        if (viewState.isNodeVisible(PageTreeNode.this, bounds)) {
+                            dc.redrawView(viewState);
+                        }
+                    }
                 }
             });
-            return;
+        } catch (OutOfMemoryError ex) {
+            LCTX.e("No memory: ", ex);
+            BitmapManager.clear();
+        } finally {
+            BitmapManager.release(bitmap);
         }
-
-        BookSettings bs = SettingsManager.getBookSettings();
-        if (bs != null && bs.cropPages) {
-            if (id == 0 && !cropped) {
-                croppedBounds = PageCropper.getCropBounds(bitmap, bitmapBounds, pageSliceBounds);
-                cropped = true;
-                final DecodeService decodeService = page.base.getDecodeService();
-                if (decodeService != null) {
-                    LCTX.d(getFullId() + ": cropped image requested: " + croppedBounds);
-                    decodeService.decodePage(new ViewState(PageTreeNode.this), PageTreeNode.this, croppedBounds);
-                }
-            }
-        }
-
-        final Bitmaps bitmaps = new Bitmaps(getFullId(), bitmap, bitmapBounds);
-        BitmapManager.release(bitmap);
-
-        page.base.getActivity().runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-                holder.setBitmap(bitmaps);
-                setDecodingNow(false);
-
-                page.base.getDocumentController().pageUpdated(page.index.viewIndex);
-                final IDocumentViewController dc = page.base.getDocumentController();
-                final DocumentModel dm = page.base.getDocumentModel();
-
-                if (dc != null && dm != null) {
-                    final boolean changed = page.setAspectRatio(bitmapBounds.width(), bitmapBounds.height());
-
-                    ViewState viewState = new ViewState(dc);
-                    if (changed) {
-                        dc.invalidatePageSizes(InvalidateSizeReason.PAGE_LOADED, page);
-                        viewState = dc.updatePageVisibility(dm.getCurrentViewPageIndex(), 0, viewState.zoom);
-                    }
-                    final RectF bounds = viewState.getBounds(page);
-                    if (parent != null) {
-                        final List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>(2);
-                        parent.onChildLoaded(PageTreeNode.this, viewState, bounds, bitmapsToRecycle);
-                        BitmapManager.release(bitmapsToRecycle);
-                    }
-                    if (viewState.isNodeVisible(PageTreeNode.this, bounds)) {
-                        dc.redrawView(viewState);
-                    }
-                }
-            }
-        });
     }
 
     private boolean setDecodingNow(final boolean decodingNow) {
@@ -353,7 +359,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     /**
      * Gets the parent node.
-     *
+     * 
      * @return the parent node
      */
     public PageTreeNode getParent() {

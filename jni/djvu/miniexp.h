@@ -19,7 +19,6 @@
 #ifndef MINIEXP_H
 #define MINIEXP_H
 
-
 #include "GException.h"
 
 #ifdef __cplusplus
@@ -470,74 +469,113 @@ MINILISPAPI void minilisp_finish(void);
      invocations of the parser. */
 
 
-/* minilisp_puts/getc/ungetc --
-   All minilisp i/o is performed by invoking 
-   these functions pointers. */
-
-extern MINILISPAPI int (*minilisp_puts)(const char *s);
-extern MINILISPAPI int (*minilisp_getc)(void);
-extern MINILISPAPI int (*minilisp_ungetc)(int c);
-
-/* minilisp_set_output --
-   minilisp_set_input --
-   Sets the above function to read/write from/to file f. 
-   Only defined when <stdio.h> has been included. */
-
-#if defined(stdin)
-MINILISPAPI void minilisp_set_output(FILE *f);
-MINILISPAPI void minilisp_set_input(FILE *f);
-#endif
-
-/* miniexp_read --
-   Reads an expression by repeatedly
-   invoking <minilisp_getc> and <minilisp_ungetc>.
-   Returns <miniexp_dummy> when an error occurs. */
-
-MINILISPAPI miniexp_t miniexp_read(void);
-
-/* miniexp_prin --
-   miniexp_print --
-   Prints a minilisp expression by repeatedly invoking <minilisp_puts>.
-   Only <minilisp_print> outputs a final newline character. 
-   These functions are safe to call anytime. */
-
-MINILISPAPI miniexp_t miniexp_prin(miniexp_t p);
-MINILISPAPI miniexp_t miniexp_print(miniexp_t p);
-
-/* miniexp_pprin --
-   miniexp_pprint --
-   Prints a minilisp expression with reasonably pretty line breaks. 
-   Argument <width> is the intended number of columns. 
-   Only <minilisp_pprint> outputs a final newline character. 
-   These functions can cause a garbage collection to occur. */
-
-MINILISPAPI miniexp_t miniexp_pprin(miniexp_t p, int width);
-MINILISPAPI miniexp_t miniexp_pprint(miniexp_t p, int width);
-
 /* miniexp_pname --
    Returns a string containing the textual representation
    of a minilisp expression. Set argument <width> to zero
    to output a single line, or to a positive value to
    perform pretty line breaks for this intended number of columns.
-   These functions can cause a garbage collection to occur.
-   It works by temporarily redefining <minilisp_puts>. */
+   These functions can cause a garbage collection to occur. */
 
 MINILISPAPI miniexp_t miniexp_pname(miniexp_t p, int width);
 
-/* minilisp_print_7bits --
-   When this flag is set, all non ascii characters 
-   in strings are escaped in octal. */
 
+/* miniexp_io_t -- 
+   This structure is used to describe how to perform input/output operations.
+   Input/output operations are performed through function pointers <fputs>,
+   <fgetc>, and <ungetc>, which are similar to their stdio counterparts. When
+   flag <print_7bits> is set, all non-ascii characters in strings are output
+   as octal escapes. Variable <data> defines four pointers that can be used as
+   a closure by the I/O functions. Variable <macrochar> and <macroqueue> are 
+   explained later in the documentation for <miniexp_macrochar>. */
+
+typedef struct miniexp_io_s miniexp_io_t;
+typedef miniexp_t (*miniexp_macrochar_t)(miniexp_io_t*);
+
+struct miniexp_io_s
+{
+  int (*fputs)(miniexp_io_t*, const char*);
+  int (*fgetc)(miniexp_io_t*);
+  int (*ungetc)(miniexp_io_t*, int);
+  int print_7bits;
+  miniexp_macrochar_t *macrochar;
+  minivar_t *macroqueue;
+  void *data[4];
+};
+
+/* miniexp_io_init --
+   Initialize a default <miniexp_io_t> structure
+   that reads from stdin and prints to stdout. */
+
+MINILISPAPI void miniexp_io_init(miniexp_io_t *io);
+
+/* miniexp_io_set_{input,output} --
+   Override the file descriptor used for input or output.
+   You must call <miniexp_io_init> before. */
+
+#if defined(stdin)
+MINILISPAPI void miniexp_io_set_output(miniexp_io_t *io, FILE *f);
+MINILISPAPI void miniexp_io_set_input(miniexp_io_t *io, FILE *f);
+#endif
+
+/* miniexp_read_r --
+   Reads an expression by repeatedly
+   invoking <minilisp_getc> and <minilisp_ungetc>.
+   Returns <miniexp_dummy> when an error occurs. */
+
+MINILISPAPI miniexp_t miniexp_read_r(miniexp_io_t *io);
+
+/* miniexp_prin_r, miniexp_print_r --
+   Prints a minilisp expression by repeatedly invoking <minilisp_puts>.
+   Only <minilisp_print> outputs a final newline character. 
+   These functions are safe to call anytime. */
+
+MINILISPAPI miniexp_t miniexp_prin_r(miniexp_io_t *io, miniexp_t p);
+MINILISPAPI miniexp_t miniexp_print_r(miniexp_io_t *io, miniexp_t p);
+
+/* miniexp_pprin_r, miniexp_pprint_r --
+   Prints a minilisp expression with reasonably pretty line breaks. 
+   Argument <width> is the intended number of columns. 
+   Only <minilisp_pprint> outputs a final newline character. 
+   These functions can cause a garbage collection to occur. */
+
+MINILISPAPI miniexp_t miniexp_pprin_r(miniexp_io_t *io, miniexp_t p, int w);
+MINILISPAPI miniexp_t miniexp_pprint_r(miniexp_io_t *io, miniexp_t p, int w);
+
+/* miniexp_io, miniexp_read, miniexp_{,p}prin{,t} --
+   Variable <miniexp_io> contains the pre-initialized input/output data
+   structure that is used by the non-reentrant input/output functions. */
+
+extern MINILISPAPI miniexp_io_t minilisp_io;
+MINILISPAPI miniexp_t miniexp_read(void);
+MINILISPAPI miniexp_t miniexp_prin(miniexp_t p);
+MINILISPAPI miniexp_t miniexp_print(miniexp_t p);
+MINILISPAPI miniexp_t miniexp_pprin(miniexp_t p, int width);
+MINILISPAPI miniexp_t miniexp_pprint(miniexp_t p, int width);
+
+/* miniexp_macrochar, miniexp_macroqueue --
+   Function <miniexp_io_init> causes the corresponding pointers in the
+   <miniexp_io_t> structure to point to these variables.  A non zero entry in
+   <io.macrochar> defines a special parsing function that runs when
+   <miniexp_read_r> encounters the corresponding character. The parsing
+   function return a list of <miniexp_t> that function <miniexp_read_r>
+   returns one-by-one before processing more input. This list is in fact
+   stored in the variable pointed to by <io.macroqueue>. */
+ 
+extern MINILISPAPI miniexp_macrochar_t miniexp_macrochar[128];
+extern MINILISPAPI minivar_t miniexp_macroqueue;
+
+
+/* Backward compatibility. */
+extern MINILISPAPI int (*minilisp_puts)(const char *);
+extern MINILISPAPI int (*minilisp_getc)(void);
+extern MINILISPAPI int (*minilisp_ungetc)(int);
 extern MINILISPAPI int minilisp_print_7bits;
-
-/* minilisp_macrochar_parser --
-   A non zero entry in this array defines a special parsing
-   function that runs when the corresponding character is
-   encountered. */
-
-extern MINILISPAPI miniexp_t (*minilisp_macrochar_parser[128])(void);
-
-
+#define minilisp_print_7bits (minilisp_io.print_7bits)
+#define minilisp_macrochar_parser ((miniexp_t(**)())miniexp_macrochar)
+#if defined(stdin)
+MINILISPAPI void minilisp_set_output(FILE *f);
+MINILISPAPI void minilisp_set_input(FILE *f);
+#endif
 
 /* -------------------------------------------------- */
 /* STUFF FOR C++ ONLY                                 */

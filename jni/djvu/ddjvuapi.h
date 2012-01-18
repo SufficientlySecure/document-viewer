@@ -111,6 +111,8 @@ extern "C" {
 
    Version   Change
    -----------------------------
+     21    Added:
+              reentrant version of miniexp input/output
      20    Added:
               ddjvu_get_version_string()
               ddjvu_format_set_white()
@@ -138,7 +140,7 @@ extern "C" {
      14    Initial version.
 */
 
-#define DDJVUAPI_VERSION 20
+#define DDJVUAPI_VERSION 21
 
 typedef struct ddjvu_context_s    ddjvu_context_t;
 typedef union  ddjvu_message_s    ddjvu_message_t;

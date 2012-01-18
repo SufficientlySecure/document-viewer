@@ -205,6 +205,10 @@ GBitmap::GBitmap(const GBitmap &ref, const GRect &rect, int border)
 void 
 GBitmap::init(int arows, int acolumns, int aborder)
 {
+  if (arows != (unsigned short) arows ||
+      acolumns != (unsigned short) acolumns ||
+      acolumns + aborder != (unsigned short)(acolumns + aborder))
+    G_THROW("Illegal arguments");
   GMonitorLock lock(monitor());
   destroy();
   grays = 2;

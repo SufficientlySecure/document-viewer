@@ -1,5 +1,6 @@
 package org.ebookdroid.fb2droid.codec;
 
+import org.ebookdroid.fb2droid.codec.RenderingStyle.Script;
 import org.ebookdroid.utils.StringUtils;
 
 import android.util.SparseArray;
@@ -44,6 +45,8 @@ public class FB2ContentHandler extends FB2BaseHandler {
 
     int sectionLevel = -1;
 
+    private boolean skipContent;
+
     public FB2ContentHandler(final FB2Document fb2Document) {
         super(fb2Document);
     }
@@ -77,7 +80,11 @@ public class FB2ContentHandler extends FB2BaseHandler {
             if (!documentStarted && !documentEnded) {
                 documentStarted = true;
             }
-            if (documentEnded && "notes".equals(attributes.getValue("name"))) {
+            if ("notes".equals(attributes.getValue("name"))) {
+                if (documentStarted) {
+                    documentEnded = true;
+                    markup.add(new FB2MarkupEndDocument());
+                }
                 parsingNotes = true;
                 crs = new RenderingStyle(RenderingStyle.FOOTNOTE_SIZE);
             }
@@ -85,7 +92,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
             if (parsingNotes) {
                 noteName = attributes.getValue("id");
                 if (noteName != null) {
-                    final String n = getNoteId();
+                    final String n = getNoteId(noteName, true);
                     noteLines = new ArrayList<FB2Line>();
                     final FB2Line lastLine = new FB2Line();
                     noteLines.add(lastLine);
@@ -129,7 +136,12 @@ public class FB2ContentHandler extends FB2BaseHandler {
         } else if ("a".equals(qName)) {
             if (paragraphParsing) {
                 if ("note".equalsIgnoreCase(attributes.getValue("type"))) {
-                    markup.add(new FB2MarkupNote(attributes.getValue("href")));
+                    String note = attributes.getValue("href");
+                    markup.add(new FB2MarkupNote(note));
+                    String prettyNote = " " + getNoteId(note, false);
+                    markup.add(FB2MarkupNoSpace._instance);
+                    markup.add(new FB2TextElement(prettyNote.toCharArray(), 0, prettyNote.length(), new RenderingStyle(crs, Script.SUPER)));
+                    skipContent = true;
                 }
             }
         } else if ("empty-line".equals(qName)) {
@@ -210,10 +222,6 @@ public class FB2ContentHandler extends FB2BaseHandler {
             tmpBinaryContents.setLength(0);
             parsingBinary = false;
         } else if ("body".equals(qName)) {
-            if (documentStarted && !documentEnded) {
-                documentEnded = true;
-                markup.add(new FB2MarkupEndDocument());
-            }
             parsingNotes = false;
         } else if ("section".equals(qName)) {
             if (parsingNotes) {
@@ -290,12 +298,16 @@ public class FB2ContentHandler extends FB2BaseHandler {
             markup.add(setPrevStyle().jm);
         } else if ("coverpage".equals(qName)) {
             cover = false;
+        } else if ("a".equals(qName)) {
+            if (paragraphParsing) {
+                skipContent = false;
+            }
         }
     }
 
     @Override
     public void characters(final char[] ch, final int start, final int length) throws SAXException {
-        if (!(documentStarted && !documentEnded) && !paragraphParsing && !parsingBinary && !parsingNotes) {
+        if (skipContent || (!(documentStarted && !documentEnded) && !paragraphParsing && !parsingBinary && !parsingNotes)) {
             return;
         }
         if (parsingBinary) {
@@ -362,14 +374,14 @@ public class FB2ContentHandler extends FB2BaseHandler {
         }
     }
 
-    private String getNoteId() {
+    private String getNoteId(String noteName, boolean bracket) {
         final Matcher matcher = notesPattern.matcher(noteName);
         String n = noteName;
         if (matcher.matches()) {
             for (int i = 1; i <= matcher.groupCount(); i++) {
                 if (matcher.group(i) != null) {
                     noteId = Integer.parseInt(matcher.group(i));
-                    n = "" + noteId + ")";
+                    n = "" + noteId + (bracket ? ")" : "");
                     break;
                 }
                 noteId = -1;

@@ -77,7 +77,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 if (hasChildren) {
                     page.nodes.recycleChildren(this, bitmapsToRecycle);
                 }
-                if (viewState.isNodeVisible(this, pageBounds) && holder.getBitmap() == null) {
+                if (viewState.isNodeVisible(this, pageBounds) && (holder.getBitmap() == null || committed)) {
                     decodePageTreeNode(nodesToDecode, viewState);
                 }
             }
@@ -364,7 +364,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     /**
      * Gets the parent node.
-     * 
+     *
      * @return the parent node
      */
     public PageTreeNode getParent() {

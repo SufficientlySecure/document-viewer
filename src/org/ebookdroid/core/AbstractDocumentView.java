@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 actions = {
         // actions
         @ActionMethodDef(id = R.id.actions_verticalConfigScrollUp, method = "verticalConfigScroll"),
-        @ActionMethodDef(id = R.id.actions_verticalConfigScrollDown, method = "verticalConfigScroll"),
+        @ActionMethodDef(id = R.id.actions_verticalConfigScrollDown, method = "verticalConfigScroll")
 // no more
 })
 public abstract class AbstractDocumentView extends AbstractComponentController<BaseDocumentView> implements

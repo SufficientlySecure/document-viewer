@@ -109,13 +109,6 @@ public class HScrollDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    public final void verticalDpadScroll(final int direction) {
-        final int dx = direction * getWidth() / 2;
-
-        view.startPageScroll(dx, 0);
-    }
-
-    @Override
     public final Rect getScrollLimits() {
         final int width = getWidth();
         final int height = getHeight();

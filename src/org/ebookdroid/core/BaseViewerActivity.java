@@ -783,10 +783,6 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         }
 
         @Override
-        public void verticalDpadScroll(final int i) {
-        }
-
-        @Override
         public void verticalConfigScroll(final int i) {
         }
 

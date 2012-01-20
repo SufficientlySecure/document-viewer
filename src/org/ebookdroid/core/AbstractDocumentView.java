@@ -34,8 +34,6 @@ actions = {
         // actions
         @ActionMethodDef(id = R.id.actions_verticalConfigScrollUp, method = "verticalConfigScroll"),
         @ActionMethodDef(id = R.id.actions_verticalConfigScrollDown, method = "verticalConfigScroll"),
-        @ActionMethodDef(id = R.id.actions_verticalDpadScrollUp, method = "verticalDpadScroll"),
-        @ActionMethodDef(id = R.id.actions_verticalDpadScrollDown, method = "verticalDpadScroll")
 // no more
 })
 public abstract class AbstractDocumentView extends AbstractComponentController<BaseDocumentView> implements
@@ -80,8 +78,6 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
         createAction(R.id.actions_verticalConfigScrollUp, new Constant("direction", -1));
         createAction(R.id.actions_verticalConfigScrollDown, new Constant("direction", +1));
-        createAction(R.id.actions_verticalDpadScrollUp, new Constant("direction", -1));
-        createAction(R.id.actions_verticalDpadScrollDown, new Constant("direction", -1));
     }
 
     protected List<IGestureDetector> getGestureDetectors() {
@@ -145,7 +141,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.core.IDocumentViewController#onScrollChanged(int, int)
      */
     @Override
@@ -272,7 +268,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.core.events.ZoomListener#commitZoom()
      */
     @Override
@@ -368,7 +364,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.core.events.ZoomListener#zoomChanged(float, float)
      */
     @Override
@@ -412,28 +408,17 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     @Override
     public boolean dispatchKeyEvent(final KeyEvent event) {
-        switch (event.getKeyCode()) {
-            case KeyEvent.KEYCODE_DPAD_DOWN:
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                    verticalDpadScroll(1);
-                }
-                return true;
-            case KeyEvent.KEYCODE_DPAD_UP:
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                    verticalDpadScroll(-1);
-                }
-                return true;
-
-            case KeyEvent.KEYCODE_VOLUME_UP:
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            switch (event.getKeyCode()) {
+                case KeyEvent.KEYCODE_DPAD_UP:
+                case KeyEvent.KEYCODE_VOLUME_UP:
                     verticalConfigScroll(-1);
-                }
-                return true;
-            case KeyEvent.KEYCODE_VOLUME_DOWN:
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    return true;
+                case KeyEvent.KEYCODE_DPAD_DOWN:
+                case KeyEvent.KEYCODE_VOLUME_DOWN:
                     verticalConfigScroll(1);
-                }
-                return true;
+                    return true;
+            }
         }
         return false;
     }
@@ -487,7 +472,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * Sets the page align flag.
-     *
+     * 
      * @param align
      *            the new flag indicating align
      */
@@ -500,7 +485,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * Checks if view is initialized.
-     *
+     * 
      * @return true, if is initialized
      */
     protected final boolean isShown() {
@@ -536,12 +521,6 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
     public void verticalConfigScroll(final ActionEx action) {
         final Integer direction = action.getParameter("direction");
         verticalConfigScroll(direction);
-    }
-
-    @ActionMethod(ids = { R.id.actions_verticalDpadScrollUp, R.id.actions_verticalDpadScrollDown })
-    public void verticalDpadScroll(final ActionEx action) {
-        final Integer direction = action.getParameter("direction");
-        verticalDpadScroll(direction);
     }
 
     protected boolean processTap(final TouchManager.Touch type, final MotionEvent e) {

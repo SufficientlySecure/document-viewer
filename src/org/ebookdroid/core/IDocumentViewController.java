@@ -24,8 +24,6 @@ public interface IDocumentViewController extends ZoomListener {
 
     int getLastVisiblePage();
 
-    void verticalDpadScroll(int i);
-
     void verticalConfigScroll(int i);
 
     void redrawView();

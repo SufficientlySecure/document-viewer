@@ -64,11 +64,6 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    public final void verticalDpadScroll(final int direction) {
-        curler.animate(direction);
-    }
-
-    @Override
     public final Rect getScrollLimits() {
         final int width = getWidth();
         final int height = getHeight();

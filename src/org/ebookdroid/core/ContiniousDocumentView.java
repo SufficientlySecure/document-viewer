@@ -111,13 +111,6 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     @Override
-    public final void verticalDpadScroll(final int direction) {
-        final int dy = direction * getHeight() / 2;
-
-        view.startPageScroll(0, dy);
-    }
-
-    @Override
     public final Rect getScrollLimits() {
         final int width = getWidth();
         final int height = getHeight();

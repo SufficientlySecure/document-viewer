@@ -91,8 +91,8 @@ Java_org_ebookdroid_xpsdroid_codec_XpsDocument_open(JNIEnv *env, jclass clazz, j
     }
     DEBUG("XpsDocument.nativeOpen(): storememory = %d", storememory);
 //    doc->ctx = fz_new_context(&fz_alloc_default, 256<<20);
-    doc->ctx = fz_new_context(&fz_alloc_default, storememory);
-
+//    doc->ctx = fz_new_context(&fz_alloc_default, storememory);
+    doc->ctx = fz_new_context(NULL, storememory);
     if (!doc->ctx)
     {
 	free(doc);
@@ -412,10 +412,17 @@ Java_org_ebookdroid_xpsdroid_codec_XpsPage_renderPageBitmap(JNIEnv *env, jobject
     DEBUG("doing the rendering...");
 
     fz_clear_pixmap_with_color(pixmap, 0xff);
+    DEBUG("doing the rendering...0");
 
     dev = fz_new_draw_device(doc->ctx, pixmap);
+    DEBUG("doing the rendering...1");
+
     fz_execute_display_list(page->pageList, dev, ctm, viewbox, NULL);
+
+    DEBUG("doing the rendering...2");
+
     fz_free_device(dev);
+    DEBUG("doing the rendering...3");
 
     fz_drop_pixmap(doc->ctx, pixmap);
 

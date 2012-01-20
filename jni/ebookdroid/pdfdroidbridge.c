@@ -96,7 +96,8 @@ Java_org_ebookdroid_pdfdroid_codec_PdfDocument_open(JNIEnv *env, jclass clazz, j
     DEBUG("PdfDocument.nativeOpen(): storememory = %d", storememory);
 
 //    doc->ctx = fz_new_context(&fz_alloc_default, 256<<20);
-    doc->ctx = fz_new_context(&fz_alloc_default, storememory);
+//    doc->ctx = fz_new_context(&fz_alloc_default, storememory);
+    doc->ctx = fz_new_context(NULL, storememory);
     if (!doc->ctx)
     {
 	free(doc);
@@ -113,7 +114,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfDocument_open(JNIEnv *env, jclass clazz, j
      */
     fz_try(doc->ctx)
     {
-	doc->xref = pdf_open_xref(doc->ctx, filename, NULL);
+	doc->xref = pdf_open_xref(doc->ctx, filename);
     }
     fz_catch(doc->ctx)
     {

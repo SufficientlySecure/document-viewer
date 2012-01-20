@@ -206,7 +206,7 @@ MY_MUPDF_SRC_FILES := \
 	mupdf/draw/draw_simple_scale.c \
 	mupdf/draw/draw_unpack.c \
 	mupdf/fitz/base_context.c \
-	mupdf-overlay/fitz/base_error.c \
+	mupdf/fitz/base_error.c \
 	mupdf/fitz/base_hash.c \
 	mupdf/fitz/base_link.c \
 	mupdf/fitz/base_memory.c \

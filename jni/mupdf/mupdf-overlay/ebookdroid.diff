@@ -1,7 +1,6 @@
-Index: fitz/base_error.c
-===================================================================
---- fitz/base_error.c	(revision 801)
-+++ fitz/base_error.c	(working copy)
+diff -Naur -x .svn mupdf.orig/fitz/base_error.c mupdf/fitz/base_error.c
+--- mupdf.orig/fitz/base_error.c	2012-01-19 18:26:15.000000000 +0200
++++ mupdf/fitz/base_error.c	2012-01-20 19:46:29.000000000 +0200
 @@ -1,5 +1,12 @@
  #include "fitz.h"
  
@@ -15,62 +14,83 @@ Index: fitz/base_error.c
  /* Warning context */
  
  void fz_var_imp(void *var)
-@@ -50,7 +57,7 @@
+@@ -11,7 +18,6 @@
+ {
+ 	if (ctx->warn->count > 1)
+ 	{
+-		fprintf(stderr, "warning: ... repeated %d times ...\n", ctx->warn->count);
+ 		LOGE("warning: ... repeated %d times ...\n", ctx->warn->count);
+ 	}
+ 	ctx->warn->message[0] = 0;
+@@ -34,7 +40,6 @@
+ 	else
+ 	{
+ 		fz_flush_warnings(ctx);
+-		fprintf(stderr, "warning: %s\n", buf);
+ 		LOGE("warning: %s\n", buf);
+ 		fz_strlcpy(ctx->warn->message, buf, sizeof ctx->warn->message);
+ 		ctx->warn->count = 1;
+@@ -48,9 +53,8 @@
+ 	if (ex->top >= 0) {
+ 		longjmp(ex->stack[ex->top].buffer, 1);
  	} else {
- 		fprintf(stderr, "uncaught exception: %s\n", ex->message);
+-		fprintf(stderr, "uncaught exception: %s\n", ex->message);
  		LOGE("uncaught exception: %s\n", ex->message);
 -		exit(EXIT_FAILURE);
 +		EXIT(EXIT_FAILURE);
  	}
  }
  
-@@ -60,7 +67,8 @@
+@@ -59,8 +63,8 @@
+ 	assert(ex);
  	if (ex->top + 1 >= nelem(ex->stack))
  	{
- 		fprintf(stderr, "exception stack overflow!\n");
+-		fprintf(stderr, "exception stack overflow!\n");
 -		exit(EXIT_FAILURE);
-+        LOGE("exception stack overflow: %d!\n", ex->top);
++    		LOGE("exception stack overflow: %d!\n", ex->top);
 +		EXIT(EXIT_FAILURE);
  	}
  	ex->top++;
  }
-Index: fitz/fitz.h
-===================================================================
---- fitz/fitz.h	(revision 801)
-+++ fitz/fitz.h	(working copy)
-@@ -24,7 +24,7 @@
+@@ -80,7 +84,6 @@
+ 	va_end(args);
  
- #ifdef __ANDROID__
- #include <android/log.h>
--#define LOG_TAG "libmupdf"
-+#define LOG_TAG "EBookDroid.MuPDF.Fitz"
+ 	fz_flush_warnings(ctx);
+-	fprintf(stderr, "error: %s\n", ctx->error->message);
+ 	LOGE("error: %s\n", ctx->error->message);
+ 
+ 	throw(ctx->error);
+diff -Naur -x .svn mupdf.orig/fitz/base_memory.c mupdf/fitz/base_memory.c
+--- mupdf.orig/fitz/base_memory.c	2012-01-20 19:39:16.000000000 +0200
++++ mupdf/fitz/base_memory.c	2012-01-20 19:42:38.000000000 +0200
+@@ -224,6 +224,8 @@
+ 	NULL,
+ 	fz_malloc_default,
+ 	fz_realloc_default,
+-	fz_free_default
++	fz_free_default,
++	NULL,
++	NULL
+ };
+ 
+diff -Naur -x .svn mupdf.orig/fitz/fitz.h mupdf/fitz/fitz.h
+--- mupdf.orig/fitz/fitz.h	2012-01-20 19:39:16.000000000 +0200
++++ mupdf/fitz/fitz.h	2012-01-20 19:45:49.000000000 +0200
+@@ -28,8 +28,9 @@
  #define LOGI(...) __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
  #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
  #else
-@@ -133,8 +133,8 @@
- 	struct {
- 		int code;
- 		jmp_buf buffer;
--	} stack[256];
--	char message[256];
-+	} stack[8192];
-+	char message[1024];
- };
+-#define LOGI(...) do {} while(0)
+-#define LOGE(...) do {} while(0)
++
++#define LOGI(...) fprintf(stderr,,__VA_ARGS__)
++#define LOGE(...) fprintf(stderr,,__VA_ARGS__)
+ #endif
  
- void fz_var_imp(void *);
-@@ -353,7 +353,7 @@
- 
- struct fz_warn_context_s
- {
--	char message[256];
-+	char message[1024];
- 	int count;
- };
- 
-Index: fitz/res_colorspace.c
-===================================================================
---- fitz/res_colorspace.c	(revision 801)
-+++ fitz/res_colorspace.c	(working copy)
+ #define nelem(x) (sizeof(x)/sizeof((x)[0]))
+diff -Naur -x .svn mupdf.orig/fitz/res_colorspace.c mupdf/fitz/res_colorspace.c
+--- mupdf.orig/fitz/res_colorspace.c	2012-01-19 20:00:30.000000000 +0200
++++ mupdf/fitz/res_colorspace.c	2012-01-20 16:25:27.000000000 +0200
 @@ -1,6 +1,6 @@
  #include "fitz.h"
  
@@ -79,10 +99,9 @@ Index: fitz/res_colorspace.c
  
  void
  fz_free_colorspace_imp(fz_context *ctx, fz_storable *cs_)
-Index: xps/xps_zip.c
-===================================================================
---- xps/xps_zip.c	(revision 801)
-+++ xps/xps_zip.c	(working copy)
+diff -Naur -x .svn mupdf.orig/xps/xps_zip.c mupdf/xps/xps_zip.c
+--- mupdf.orig/xps/xps_zip.c	2012-01-19 18:26:15.000000000 +0200
++++ mupdf/xps/xps_zip.c	2012-01-20 16:25:27.000000000 +0200
 @@ -41,6 +41,19 @@
  	return a | b << 8 | c << 16 | d << 24;
  }

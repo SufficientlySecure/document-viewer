@@ -1,4 +1,4 @@
-diff -Naur -x .svn mupdf.orig/fitz/base_error.c mupdf/fitz/base_error.c
+diff -Naur -x .svn -x generated mupdf.orig/fitz/base_error.c mupdf/fitz/base_error.c
 --- mupdf.orig/fitz/base_error.c	2012-01-19 18:26:15.000000000 +0200
 +++ mupdf/fitz/base_error.c	2012-01-20 19:46:29.000000000 +0200
 @@ -1,5 +1,12 @@
@@ -60,7 +60,7 @@ diff -Naur -x .svn mupdf.orig/fitz/base_error.c mupdf/fitz/base_error.c
  	LOGE("error: %s\n", ctx->error->message);
  
  	throw(ctx->error);
-diff -Naur -x .svn mupdf.orig/fitz/base_memory.c mupdf/fitz/base_memory.c
+diff -Naur -x .svn -x generated mupdf.orig/fitz/base_memory.c mupdf/fitz/base_memory.c
 --- mupdf.orig/fitz/base_memory.c	2012-01-20 19:39:16.000000000 +0200
 +++ mupdf/fitz/base_memory.c	2012-01-20 19:42:38.000000000 +0200
 @@ -224,6 +224,8 @@
@@ -73,7 +73,7 @@ diff -Naur -x .svn mupdf.orig/fitz/base_memory.c mupdf/fitz/base_memory.c
 +	NULL
  };
  
-diff -Naur -x .svn mupdf.orig/fitz/fitz.h mupdf/fitz/fitz.h
+diff -Naur -x .svn -x generated mupdf.orig/fitz/fitz.h mupdf/fitz/fitz.h
 --- mupdf.orig/fitz/fitz.h	2012-01-20 19:39:16.000000000 +0200
 +++ mupdf/fitz/fitz.h	2012-01-20 19:45:49.000000000 +0200
 @@ -28,8 +28,9 @@
@@ -88,7 +88,7 @@ diff -Naur -x .svn mupdf.orig/fitz/fitz.h mupdf/fitz/fitz.h
  #endif
  
  #define nelem(x) (sizeof(x)/sizeof((x)[0]))
-diff -Naur -x .svn mupdf.orig/fitz/res_colorspace.c mupdf/fitz/res_colorspace.c
+diff -Naur -x .svn -x generated mupdf.orig/fitz/res_colorspace.c mupdf/fitz/res_colorspace.c
 --- mupdf.orig/fitz/res_colorspace.c	2012-01-19 20:00:30.000000000 +0200
 +++ mupdf/fitz/res_colorspace.c	2012-01-20 16:25:27.000000000 +0200
 @@ -1,6 +1,6 @@
@@ -99,7 +99,7 @@ diff -Naur -x .svn mupdf.orig/fitz/res_colorspace.c mupdf/fitz/res_colorspace.c
  
  void
  fz_free_colorspace_imp(fz_context *ctx, fz_storable *cs_)
-diff -Naur -x .svn mupdf.orig/xps/xps_zip.c mupdf/xps/xps_zip.c
+diff -Naur -x .svn -x generated mupdf.orig/xps/xps_zip.c mupdf/xps/xps_zip.c
 --- mupdf.orig/xps/xps_zip.c	2012-01-19 18:26:15.000000000 +0200
 +++ mupdf/xps/xps_zip.c	2012-01-20 16:25:27.000000000 +0200
 @@ -41,6 +41,19 @@

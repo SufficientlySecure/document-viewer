@@ -331,7 +331,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     /**
      * Called on creation options menu
-     * 
+     *
      * @param menu
      *            the main menu
      * @return true, if successful
@@ -495,7 +495,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     /**
      * Gets the zoom model.
-     * 
+     *
      * @return the zoom model
      */
     @Override
@@ -513,7 +513,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     /**
      * Gets the decoding progress model.
-     * 
+     *
      * @return the decoding progress model
      */
     @Override
@@ -636,7 +636,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
             redrawn = true;
             final IDocumentViewController newDc = switchDocumentController();
             if (!diff.isFirstTime()) {
-                newDc.init();
+                newDc.init(null);
                 newDc.show();
             }
         }
@@ -665,7 +665,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         currentPageChanged(PageIndex.NULL, dm.getCurrentIndex());
     }
 
-    public final class BookLoadTask extends AsyncTask<String, Void, Exception> implements Runnable {
+    public final class BookLoadTask extends AsyncTask<String, String, Exception> implements Runnable {
 
         private final DecodeService m_decodeService;
         private String m_fileName;
@@ -705,7 +705,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
                 }
                 getView().waitForInitialization();
                 m_decodeService.open(m_fileName, m_password);
-                getDocumentController().init();
+                getDocumentController().init(this);
                 return null;
             } catch (final Exception e) {
                 LCTX.e(e.getMessage(), e);
@@ -747,6 +747,19 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
                 LCTX.d("onPostExecute(): finish");
             }
         }
+
+        public void setProgressDialogMessage(String message) {
+            publishProgress(message);
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            if (values != null && values.length > 0) {
+                progressDialog.setMessage(values[0]);
+            }
+        }
+
+
     }
 
     private class EmptyContoller implements IDocumentViewController {
@@ -855,7 +868,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         }
 
         @Override
-        public final void init() {
+        public final void init(BookLoadTask task) {
         }
 
         @Override

@@ -184,5 +184,6 @@
 	<string name="error_page_out_of_rande">Неправильный номер страницы. Допустимый диапазон: 1-%i</string>
 
 	<string name="msg_loading">Идет загрузка... подождите немного</string>
+	<string name="msg_getting_page_size">"Получение размера страниц %1$d/%2$d"</string>
 
 </resources>

@@ -166,7 +166,7 @@
 	<string name="about_license_title">"License"</string>
 	<string name="about_3dparty_title">"3rd party software"</string>
 	<string name="about_changelog_title">"Change Log"</string>
-		
+
 	<string name="content_description_icon">"Icon"</string>
 	<string name="content_description_library">"Library"</string>
 	<string name="content_description_browser">"Browser"</string>
@@ -185,4 +185,5 @@
 	<string name="error_page_out_of_rande">Page number out of range. Valid range: 1-%i</string>
 
 	<string name="msg_loading">Loading... Please wait</string>
+	<string name="msg_getting_page_size">"Getting page size %1$d/%2$d"</string>
 </resources>

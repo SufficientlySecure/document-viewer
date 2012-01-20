@@ -1,6 +1,7 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.R;
+import org.ebookdroid.core.BaseViewerActivity.BookLoadTask;
 import org.ebookdroid.core.actions.AbstractComponentController;
 import org.ebookdroid.core.actions.ActionEx;
 import org.ebookdroid.core.actions.ActionMethod;
@@ -104,10 +105,10 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
     }
 
     @Override
-    public final void init() {
+    public final void init(BookLoadTask task) {
         if (!isInitialized) {
             try {
-                getBase().getDocumentModel().initPages(base);
+                getBase().getDocumentModel().initPages(base, task);
             } finally {
                 isInitialized = true;
             }
@@ -141,7 +142,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IDocumentViewController#onScrollChanged(int, int)
      */
     @Override
@@ -268,7 +269,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.events.ZoomListener#commitZoom()
      */
     @Override
@@ -364,7 +365,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.events.ZoomListener#zoomChanged(float, float)
      */
     @Override
@@ -472,7 +473,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * Sets the page align flag.
-     * 
+     *
      * @param align
      *            the new flag indicating align
      */
@@ -485,7 +486,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * Checks if view is initialized.
-     * 
+     *
      * @return true, if is initialized
      */
     protected final boolean isShown() {

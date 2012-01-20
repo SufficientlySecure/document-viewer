@@ -1,6 +1,6 @@
 #include "fitz.h"
 
-//#define SLOWCMYK
+#define SLOWCMYK
 
 void
 fz_free_colorspace_imp(fz_context *ctx, fz_storable *cs_)

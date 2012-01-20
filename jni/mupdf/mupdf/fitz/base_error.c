@@ -1,5 +1,12 @@
 #include "fitz.h"
 
+#ifdef __ANDROID__
+#define EXIT(code) do {} while(0)
+#else
+#define EXIT(code) exit(code)
+#endif
+
+
 /* Warning context */
 
 void fz_var_imp(void *var)
@@ -50,7 +57,7 @@ static void throw(fz_error_context *ex)
 	} else {
 		fprintf(stderr, "uncaught exception: %s\n", ex->message);
 		LOGE("uncaught exception: %s\n", ex->message);
-		exit(EXIT_FAILURE);
+		EXIT(EXIT_FAILURE);
 	}
 }
 
@@ -60,7 +67,8 @@ void fz_push_try(fz_error_context *ex)
 	if (ex->top + 1 >= nelem(ex->stack))
 	{
 		fprintf(stderr, "exception stack overflow!\n");
-		exit(EXIT_FAILURE);
+        LOGE("exception stack overflow: %d!\n", ex->top);
+		EXIT(EXIT_FAILURE);
 	}
 	ex->top++;
 }

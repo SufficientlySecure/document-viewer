@@ -24,7 +24,7 @@
 
 #ifdef __ANDROID__
 #include <android/log.h>
-#define LOG_TAG "libmupdf"
+#define LOG_TAG "EBookDroid.MuPDF.Fitz"
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 #else
@@ -133,8 +133,8 @@ struct fz_error_context_s
 	struct {
 		int code;
 		jmp_buf buffer;
-	} stack[256];
-	char message[256];
+	} stack[8192];
+	char message[1024];
 };
 
 void fz_var_imp(void *);
@@ -353,7 +353,7 @@ void fz_rethrow(fz_context *);
 
 struct fz_warn_context_s
 {
-	char message[256];
+	char message[1024];
 	int count;
 };
 

@@ -254,7 +254,7 @@ MY_MUPDF_LDLIBS := -lz
 
 #Build for ARM architecture. Instead of Thumb
 ifneq ($(TARGET_ARCH_ABI),x86)
-#    MY_MUPDF_CFLAGS +=  -DARCH_ARM -DARCH_ARM_CAN_LOAD_UNALIGNED
+    MY_MUPDF_CFLAGS +=  -DARCH_ARM -DARCH_ARM_CAN_LOAD_UNALIGNED
     LOCAL_ARM_MODE := arm
 endif # TARGET_ARCH_ABI != x86
 

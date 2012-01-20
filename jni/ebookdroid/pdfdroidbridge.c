@@ -118,7 +118,7 @@ Java_org_ebookdroid_pdfdroid_codec_PdfDocument_open(JNIEnv *env, jclass clazz, j
     }
     fz_catch(doc->ctx)
     {
-        throw_exception(env, fz_caught(doc->ctx));
+        throw_exception(env, (char*)fz_caught(doc->ctx));
         pdf_free_document(doc);
 //        throw_exception(env, "PDF file not found or corrupted");
         goto cleanup;

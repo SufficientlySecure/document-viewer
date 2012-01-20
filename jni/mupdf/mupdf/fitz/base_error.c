@@ -18,7 +18,6 @@ void fz_flush_warnings(fz_context *ctx)
 {
 	if (ctx->warn->count > 1)
 	{
-		fprintf(stderr, "warning: ... repeated %d times ...\n", ctx->warn->count);
 		LOGE("warning: ... repeated %d times ...\n", ctx->warn->count);
 	}
 	ctx->warn->message[0] = 0;
@@ -41,7 +40,6 @@ void fz_warn(fz_context *ctx, char *fmt, ...)
 	else
 	{
 		fz_flush_warnings(ctx);
-		fprintf(stderr, "warning: %s\n", buf);
 		LOGE("warning: %s\n", buf);
 		fz_strlcpy(ctx->warn->message, buf, sizeof ctx->warn->message);
 		ctx->warn->count = 1;
@@ -55,7 +53,6 @@ static void throw(fz_error_context *ex)
 	if (ex->top >= 0) {
 		longjmp(ex->stack[ex->top].buffer, 1);
 	} else {
-		fprintf(stderr, "uncaught exception: %s\n", ex->message);
 		LOGE("uncaught exception: %s\n", ex->message);
 		EXIT(EXIT_FAILURE);
 	}
@@ -66,8 +63,7 @@ void fz_push_try(fz_error_context *ex)
 	assert(ex);
 	if (ex->top + 1 >= nelem(ex->stack))
 	{
-		fprintf(stderr, "exception stack overflow!\n");
-        LOGE("exception stack overflow: %d!\n", ex->top);
+    		LOGE("exception stack overflow: %d!\n", ex->top);
 		EXIT(EXIT_FAILURE);
 	}
 	ex->top++;
@@ -88,7 +84,6 @@ void fz_throw(fz_context *ctx, char *fmt, ...)
 	va_end(args);
 
 	fz_flush_warnings(ctx);
-	fprintf(stderr, "error: %s\n", ctx->error->message);
 	LOGE("error: %s\n", ctx->error->message);
 
 	throw(ctx->error);

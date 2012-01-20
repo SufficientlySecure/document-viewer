@@ -24,12 +24,13 @@
 
 #ifdef __ANDROID__
 #include <android/log.h>
-#define LOG_TAG "EBookDroid.MuPDF.Fitz"
+#define LOG_TAG "libmupdf"
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 #else
-#define LOGI(...) do {} while(0)
-#define LOGE(...) do {} while(0)
+
+#define LOGI(...) fprintf(stderr,,__VA_ARGS__)
+#define LOGE(...) fprintf(stderr,,__VA_ARGS__)
 #endif
 
 #define nelem(x) (sizeof(x)/sizeof((x)[0]))
@@ -133,8 +134,8 @@ struct fz_error_context_s
 	struct {
 		int code;
 		jmp_buf buffer;
-	} stack[8192];
-	char message[1024];
+	} stack[256];
+	char message[256];
 };
 
 void fz_var_imp(void *);
@@ -353,7 +354,7 @@ void fz_rethrow(fz_context *);
 
 struct fz_warn_context_s
 {
-	char message[1024];
+	char message[256];
 	int count;
 };
 
@@ -953,7 +954,7 @@ void fz_invert_pixmap(fz_pixmap *pix);
 void fz_gamma_pixmap(fz_pixmap *pix, float gamma);
 unsigned int fz_pixmap_size(fz_pixmap *pix);
 
-fz_pixmap *fz_scale_pixmap(fz_context *ctx, fz_pixmap *src, float x, float y, float w, float h, fz_bbox *clip);
+fz_pixmap *fz_scale_pixmap(fz_context *ctx, fz_pixmap *src, float x, float y, float w, float h);
 
 void fz_write_pnm(fz_context *ctx, fz_pixmap *pixmap, char *filename);
 void fz_write_pam(fz_context *ctx, fz_pixmap *pixmap, char *filename, int savealpha);

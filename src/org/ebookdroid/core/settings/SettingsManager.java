@@ -1,14 +1,13 @@
 package org.ebookdroid.core.settings;
 
 import org.ebookdroid.core.PageIndex;
+import org.ebookdroid.core.events.ListenerProxy;
 import org.ebookdroid.core.settings.books.BookSettings;
 import org.ebookdroid.core.settings.books.DBSettingsManager;
 
 import android.content.Context;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -26,7 +25,7 @@ public class SettingsManager {
 
     private static BookSettings current;
 
-    private static List<ISettingsChangeListener> listeners = new ArrayList<ISettingsChangeListener>();
+    private static ListenerProxy listeners = new ListenerProxy(ISettingsChangeListener.class);
 
     public static void init(final Context context) {
         if (ctx == null) {
@@ -116,7 +115,7 @@ public class SettingsManager {
             lock.writeLock().unlock();
         }
     }
-    
+
     public static void clearAllRecentBookSettings() {
         lock.writeLock().lock();
         try {
@@ -290,9 +289,8 @@ public class SettingsManager {
 
     public static AppSettings.Diff applyAppSettingsChanges(final AppSettings oldSettings, final AppSettings newSettings) {
         final AppSettings.Diff diff = new AppSettings.Diff(oldSettings, newSettings);
-        for (final ISettingsChangeListener l : listeners) {
-            l.onAppSettingsChanged(oldSettings, newSettings, diff);
-        }
+        final ISettingsChangeListener l = listeners.getListener();
+        l.onAppSettingsChanged(oldSettings, newSettings, diff);
         return diff;
     }
 
@@ -302,18 +300,16 @@ public class SettingsManager {
             return;
         }
         final BookSettings.Diff diff = new BookSettings.Diff(oldSettings, newSettings);
-        for (final ISettingsChangeListener l : listeners) {
-            l.onBookSettingsChanged(oldSettings, newSettings, diff, appDiff);
-        }
-
+        final ISettingsChangeListener l = listeners.getListener();
+        l.onBookSettingsChanged(oldSettings, newSettings, diff, appDiff);
     }
 
     public static void addListener(final ISettingsChangeListener l) {
-        listeners.add(l);
+        listeners.addListener(l);
     }
 
     public static void removeListener(final ISettingsChangeListener l) {
-        listeners.remove(l);
+        listeners.removeListener(l);
     }
 
     public static class BookSettingsEditor {

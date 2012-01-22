@@ -23,14 +23,12 @@ public class FB2Page implements CodecPage {
 
     public static final int MARGIN_Y = 20;
 
-    private static final Bitmap bitmap = Bitmap.createBitmap(PAGE_WIDTH, PAGE_HEIGHT, Bitmap.Config.RGB_565);
+    static final RectF PAGE_RECT = new RectF(0, 0, PAGE_WIDTH, PAGE_HEIGHT);
 
-    private static final RectF PAGE_RECT = new RectF(0, 0, PAGE_WIDTH, PAGE_HEIGHT);
-
-    private final ArrayList<FB2Line> lines = new ArrayList<FB2Line>(PAGE_HEIGHT / RenderingStyle.TEXT_SIZE);
+    final ArrayList<FB2Line> lines = new ArrayList<FB2Line>(PAGE_HEIGHT / RenderingStyle.TEXT_SIZE);
     final ArrayList<FB2Line> noteLines = new ArrayList<FB2Line>(PAGE_HEIGHT / RenderingStyle.FOOTNOTE_SIZE);
 
-    private boolean committed = false;
+    boolean committed = false;
     int contentHeight = 0;
 
     @Override
@@ -49,35 +47,19 @@ public class FB2Page implements CodecPage {
 
     @Override
     public BitmapRef renderBitmap(final int width, final int height, final RectF pageSliceBounds) {
-        try {
-            renderPage();
+        final Matrix matrix = new Matrix();
+        matrix.postScale((float) width / PAGE_WIDTH, (float) height / PAGE_HEIGHT);
+        matrix.postTranslate(-pageSliceBounds.left * width, -pageSliceBounds.top * height);
+        matrix.postScale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height());
 
-            final Matrix matrix = new Matrix();
-            matrix.postScale((float) width / bitmap.getWidth(), (float) height / bitmap.getHeight());
-            matrix.postTranslate(-pageSliceBounds.left * width, -pageSliceBounds.top * height);
-            matrix.postScale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height());
+        final BitmapRef bmp = BitmapManager.getBitmap("FB2 page", width, height, Bitmap.Config.RGB_565);
 
-            final BitmapRef bmp = BitmapManager.getBitmap("FB2 page", width, height, Bitmap.Config.RGB_565);
+        final Canvas c = new Canvas(bmp.getBitmap());
+        c.setMatrix(matrix);
 
-            final Canvas c = new Canvas(bmp.getBitmap());
-            final Paint paint = new Paint();
-            paint.setFilterBitmap(true);
-            paint.setAntiAlias(true);
-            paint.setDither(true);
-            c.drawBitmap(bitmap, matrix, paint);
-
-            return bmp;
-        } finally {
-        }
-    }
-
-    private void renderPage() {
-        final Canvas c = new Canvas(bitmap);
-
-        final Paint paint = new Paint();
-        paint.setColor(Color.WHITE);
-        c.drawRect(PAGE_RECT, paint);
-        paint.setColor(Color.BLACK);
+        final Paint paint1 = new Paint();
+        paint1.setColor(Color.WHITE);
+        c.drawRect(PAGE_RECT, paint1);
 
         int y = MARGIN_Y;
         for (final FB2Line line : lines) {
@@ -88,6 +70,8 @@ public class FB2Page implements CodecPage {
             y += line.getHeight();
             line.render(c, y);
         }
+
+        return bmp;
     }
 
     public void appendLine(final FB2Line line) {

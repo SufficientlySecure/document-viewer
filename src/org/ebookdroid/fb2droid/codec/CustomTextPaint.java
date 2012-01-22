@@ -24,6 +24,8 @@ public class CustomTextPaint extends TextPaint {
         setTypeface(face);
         setFakeBoldText(bold);
         setAntiAlias(true);
+        setFilterBitmap(true);
+        setDither(true);
 
         initMeasures();
 

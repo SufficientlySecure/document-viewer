@@ -24,6 +24,15 @@ public class ZipArchive implements ArchiveFile<ZipArchiveEntry> {
         }
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            zipfile.close();
+        } catch (Exception e) {
+        }
+        super.finalize();
+    }
+
     /**
      * {@inheritDoc}
      *

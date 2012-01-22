@@ -35,6 +35,14 @@ public class RarArchive implements ArchiveFile<RarArchiveEntry> {
         }
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            rarfile.close();
+        } catch (Exception e) {
+        }
+        super.finalize();
+    }
 
     /**
      * {@inheritDoc}
@@ -45,7 +53,6 @@ public class RarArchive implements ArchiveFile<RarArchiveEntry> {
     public boolean randomAccessAllowed() {
         return true;
     }
-
 
     /**
      * {@inheritDoc}

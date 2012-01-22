@@ -201,7 +201,7 @@ public class DecodeServiceBase implements DecodeService {
             pages.clear();
             vuPage.recycle();
 
-            BitmapManager.clear();
+            BitmapManager.clear("DecodeService OutOfMemoryError: ");
 
             abortDecoding(task, null, null);
         } catch (final Throwable th) {

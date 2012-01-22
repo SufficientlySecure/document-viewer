@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.os.Debug;
 import android.util.SparseArray;
 
 import java.util.HashMap;
@@ -42,7 +43,7 @@ public class BitmapManager {
 
     public static synchronized Bitmap getResource(final int resourceId) {
         Bitmap bitmap = resources.get(resourceId);
-        if (bitmap == null) {
+        if (bitmap == null || bitmap.isRecycled()) {
             final Resources resources = EBookDroidApp.getAppContext().getResources();
             bitmap = BitmapFactory.decodeResource(resources, resourceId);
         }
@@ -104,14 +105,18 @@ public class BitmapManager {
         return ref;
     }
 
-    public static synchronized void clear() {
+    public static synchronized void clear(final String msg) {
         generation += 10;
         removeOldRefs();
         removeEmptyRefs();
         shrinkPool(0);
+        long sum = 0;
         for (final BitmapRef ref : used.values()) {
             LCTX.e("Used: " + ref);
+            sum += ref.size;
         }
+        LCTX.e(msg + "Bitmaps&NativeHeap : " + sum + "/" + Debug.getNativeHeapAllocatedSize() + "/"
+                + Debug.getNativeHeapSize());
     }
 
     public static synchronized void release(final List<BitmapRef> bitmapsToRecycle) {

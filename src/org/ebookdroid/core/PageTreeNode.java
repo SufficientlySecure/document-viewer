@@ -272,8 +272,15 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             });
         } catch (OutOfMemoryError ex) {
             LCTX.e("No memory: ", ex);
-            BitmapManager.clear();
+            BitmapManager.clear("PageTreeNode OutOfMemoryError: ");
             page.base.getDecodeService().decreaseMemortLimit();
+            page.base.getActivity().runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    setDecodingNow(false);
+                }
+            });
         } finally {
             BitmapManager.release(bitmap);
         }

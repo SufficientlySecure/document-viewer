@@ -217,9 +217,11 @@ public class FB2ContentHandler extends FB2BaseHandler {
                 paragraphParsing = false;
             }
         } else if ("binary".equals(qName)) {
-            document.addImage(tmpBinaryName, tmpBinaryContents.toString());
-            tmpBinaryName = null;
-            tmpBinaryContents.setLength(0);
+            if (tmpBinaryContents.length() > 0) {
+                document.addImage(tmpBinaryName, tmpBinaryContents.toString());
+                tmpBinaryName = null;
+                tmpBinaryContents.setLength(0);
+            }
             parsingBinary = false;
         } else if ("body".equals(qName)) {
             parsingNotes = false;
@@ -259,7 +261,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
                 markup.add(setPrevStyle().jm);
                 paragraphParsing = false;
             }
-        } else if ("text-author".equals(qName)||"date".equals(qName)) {
+        } else if ("text-author".equals(qName) || "date".equals(qName)) {
             if (!parsingNotes) {
                 markup.add(FB2MarkupParagraphEnd.E);
                 markup.add(setPrevStyle().jm);

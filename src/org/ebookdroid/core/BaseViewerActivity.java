@@ -662,7 +662,9 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         }
 
         final DocumentModel dm = getDocumentModel();
-        currentPageChanged(PageIndex.NULL, dm.getCurrentIndex());
+        if (dm != null) {
+            currentPageChanged(PageIndex.NULL, dm.getCurrentIndex());
+        }
     }
 
     public final class BookLoadTask extends AsyncTask<String, String, Exception> implements Runnable {

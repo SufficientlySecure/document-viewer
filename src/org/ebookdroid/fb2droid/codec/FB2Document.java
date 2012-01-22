@@ -12,8 +12,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -53,6 +55,7 @@ public class FB2Document implements CodecDocument {
         System.out.println("SAX parser: " + (t3 - t2) + " ms");
         System.out.println("Words=" + FB2Words.words + ", uniques=" + FB2Words.uniques);
         createDocumentMarkup(markup);
+
         final long t4 = System.currentTimeMillis();
         System.out.println("Markup: " + (t4 - t3) + " ms");
     }
@@ -72,22 +75,27 @@ public class FB2Document implements CodecDocument {
 
     private List<FB2MarkupElement> parseContent(final SAXParserFactory spf, final String fileName) {
         final FB2ContentHandler h = new FB2ContentHandler(this);
-        try {
+        final List<Closeable> resources = new ArrayList<Closeable>();
 
+        try {
             InputStream inStream = null;
 
             if (fileName.endsWith("zip")) {
                 final ZipArchive zipArchive = new ZipArchive(new File(fileName));
+
                 final Enumeration<ZipArchiveEntry> entries = zipArchive.entries();
                 while (entries.hasMoreElements()) {
                     final ZipArchiveEntry entry = entries.nextElement();
                     if (!entry.isDirectory() && entry.getName().endsWith("fb2")) {
                         inStream = entry.open();
+                        resources.add(inStream);
                         break;
                     }
                 }
+                resources.add(zipArchive);
             } else {
                 inStream = new FileInputStream(fileName);
+                resources.add(inStream);
             }
             if (inStream != null) {
 
@@ -125,6 +133,7 @@ public class FB2Document implements CodecDocument {
                 }
 
                 final Reader isr = new BufferedReader(new InputStreamReader(inStream, encoding), 32 * 1024);
+                resources.add(isr);
                 final InputSource is = new InputSource();
                 is.setCharacterStream(isr);
                 final SAXParser parser = spf.newSAXParser();
@@ -134,6 +143,16 @@ public class FB2Document implements CodecDocument {
             // do nothing
         } catch (final Exception e) {
             throw new RuntimeException("FB2 document can not be opened: " + e.getMessage(), e);
+        } finally {
+            for (Closeable r : resources) {
+                try {
+                    if (r != null) {
+                        r.close();
+                    }
+                } catch (IOException e) {
+                }
+            }
+            resources.clear();
         }
         return h.markup;
     }

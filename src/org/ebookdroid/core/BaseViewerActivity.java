@@ -667,7 +667,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         }
     }
 
-    public final class BookLoadTask extends AsyncTask<String, String, Exception> implements Runnable {
+    final class BookLoadTask extends AsyncTask<String, String, Exception> implements IBookLoadTask, Runnable {
 
         private final DecodeService m_decodeService;
         private String m_fileName;
@@ -689,7 +689,8 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         protected void onPreExecute() {
             LCTX.d("onPreExecute(): start");
             try {
-                progressDialog = ProgressDialog.show(BaseViewerActivity.this, "", getResources().getString(R.string.msg_loading), true);
+                final String message = getString(R.string.msg_loading);
+                progressDialog = ProgressDialog.show(BaseViewerActivity.this, "", message, true);
             } catch (final Throwable th) {
                 LCTX.e("Unexpected error", th);
             } finally {
@@ -702,7 +703,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
             LCTX.d("doInBackground(): start");
             try {
                 if (getIntent().getScheme().equals("content")) {
-                    File tempFile = CacheManager.createTempFile(getIntent().getData());
+                    final File tempFile = CacheManager.createTempFile(getIntent().getData());
                     m_fileName = tempFile.getAbsolutePath();
                 }
                 getView().waitForInitialization();
@@ -750,17 +751,18 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
             }
         }
 
-        public void setProgressDialogMessage(String message) {
+        @Override
+        public void setProgressDialogMessage(final int resourceID, final Object... args) {
+            final String message = getString(resourceID, args);
             publishProgress(message);
         }
 
         @Override
-        protected void onProgressUpdate(String... values) {
+        protected void onProgressUpdate(final String... values) {
             if (values != null && values.length > 0) {
                 progressDialog.setMessage(values[0]);
             }
         }
-
 
     }
 
@@ -870,7 +872,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         }
 
         @Override
-        public final void init(BookLoadTask task) {
+        public final void init(final IBookLoadTask task) {
         }
 
         @Override

@@ -1,7 +1,7 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.R;
-import org.ebookdroid.core.BaseViewerActivity.BookLoadTask;
+import org.ebookdroid.core.IViewerActivity.IBookLoadTask;
 import org.ebookdroid.core.actions.AbstractComponentController;
 import org.ebookdroid.core.actions.ActionEx;
 import org.ebookdroid.core.actions.ActionMethod;
@@ -105,7 +105,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
     }
 
     @Override
-    public final void init(BookLoadTask task) {
+    public final void init(final IBookLoadTask task) {
         if (!isInitialized) {
             try {
                 getBase().getDocumentModel().initPages(base, task);

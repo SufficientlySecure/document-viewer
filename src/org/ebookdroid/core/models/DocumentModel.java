@@ -1,8 +1,6 @@
 package org.ebookdroid.core.models;
 
-import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
-import org.ebookdroid.core.BaseViewerActivity.BookLoadTask;
 import org.ebookdroid.core.DecodeService;
 import org.ebookdroid.core.IViewerActivity;
 import org.ebookdroid.core.Page;
@@ -129,7 +127,7 @@ public class DocumentModel extends CurrentPageModel {
         }
     }
 
-    public void initPages(final IViewerActivity base, BookLoadTask task) {
+    public void initPages(final IViewerActivity base, final IViewerActivity.IBookLoadTask task) {
         recyclePages();
 
         final BookSettings bs = SettingsManager.getBookSettings();
@@ -191,11 +189,10 @@ public class DocumentModel extends CurrentPageModel {
             height = (int) (200 * pageHeight / pageWidth);
         }
 
-        decodeService
-                .createThumbnail(thumbnailFile, width, height, page.index.docIndex, page.type.getInitialRect());
+        decodeService.createThumbnail(thumbnailFile, width, height, page.index.docIndex, page.type.getInitialRect());
     }
 
-    private CodecPageInfo[] retrievePagesInfo(final IViewerActivity base, final BookSettings bs, BookLoadTask task) {
+    private CodecPageInfo[] retrievePagesInfo(final IViewerActivity base, final BookSettings bs, IViewerActivity.IBookLoadTask task) {
         final File pagesFile = CacheManager.getPageFile(bs.fileName);
 
         if (CACHE_ENABLED) {
@@ -219,7 +216,7 @@ public class DocumentModel extends CurrentPageModel {
         final CodecPageInfo[] infos = new CodecPageInfo[getDecodeService().getPageCount()];
         for (int i = 0; i < infos.length; i++) {
             if (task != null) {
-                task.setProgressDialogMessage(EBookDroidApp.getAppContext().getString(R.string.msg_getting_page_size, (i+1), infos.length));
+                task.setProgressDialogMessage(R.string.msg_getting_page_size, (i + 1), infos.length);
             }
             infos[i] = getDecodeService().getPageInfo(i);
         }

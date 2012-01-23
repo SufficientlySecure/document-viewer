@@ -1,6 +1,6 @@
 package org.ebookdroid.core;
 
-import org.ebookdroid.core.BaseViewerActivity.BookLoadTask;
+import org.ebookdroid.core.IViewerActivity.IBookLoadTask;
 import org.ebookdroid.core.events.ZoomListener;
 
 import android.graphics.Canvas;
@@ -10,7 +10,7 @@ import android.view.MotionEvent;
 
 public interface IDocumentViewController extends ZoomListener {
 
-    void init(BookLoadTask bookLoadTask);
+    void init(IBookLoadTask bookLoadTask);
 
     void show();
 

@@ -23,10 +23,17 @@ public interface IViewerActivity {
     IDocumentViewController getDocumentController();
 
     IActionController<?> getActionController();
-    
+
     ZoomModel getZoomModel();
 
     DecodingProgressModel getDecodingProgressModel();
 
     IDocumentViewController switchDocumentController();
+
+    static interface IBookLoadTask {
+
+        void setProgressDialogMessage(int resourceID, Object... args);
+
+    }
+
 }

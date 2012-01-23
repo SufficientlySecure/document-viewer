@@ -349,6 +349,7 @@ public class DecodeServiceBase implements DecodeService {
         Executor() {
             queue = new ArrayList<Runnable>();
             thread = new Thread(this);
+            thread.setPriority(Thread.MIN_PRIORITY);
             thread.start();
         }
 
@@ -565,7 +566,6 @@ public class DecodeServiceBase implements DecodeService {
 
         @Override
         public void run() {
-            Thread.currentThread().setPriority(Thread.NORM_PRIORITY - 1);
             performDecode(this);
         }
 

@@ -26,7 +26,7 @@ public class FB2TextElement extends AbstractFB2LineElement {
         int yy = style.script == Script.SUPER ? y - style.textSize : style.script == Script.SUB ? y + style.textSize / 2 : y;
         c.drawText(chars, start, length, x, yy, style.paint);
         if (style.strike == Strike.THROUGH) {
-            c.drawLine(x, yy - style.textSize / 4, x + width, yy - style.textSize / 4, style.paint);
+            c.drawRect(x, yy - style.textSize / 4, x + width, yy - style.textSize / 4 + 1, style.paint);
         }
         return width;
     }

@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class BitmapManager {
 
-    private static final LogContext LCTX = LogContext.ROOT.lctx("Imaging", false);
+    private static final LogContext LCTX = LogContext.ROOT.lctx("BitmapManager", false);
 
     private final static long BITMAP_MEMORY_LIMIT = Runtime.getRuntime().maxMemory() / 2;
 
@@ -28,6 +28,8 @@ public class BitmapManager {
     private static LinkedList<BitmapRef> pool = new LinkedList<BitmapRef>();
 
     private static SparseArray<Bitmap> resources = new SparseArray<Bitmap>();
+
+    private static LinkedList<Object> releasing = new LinkedList<Object>();
 
     private static long created;
     private static long reused;
@@ -77,9 +79,10 @@ public class BitmapManager {
                 memoryUsed += ref.size;
 
                 if (LCTX.isDebugEnabled()) {
-                    LCTX.d("Reuse bitmap: [" + name + ", " + width + ", " + height + "], created=" + created
-                            + ", reused=" + reused + ", memoryUsed=" + used.size() + "/" + (memoryUsed / 1024) + "KB"
-                            + ", memoryInPool=" + pool.size() + "/" + (memoryPooled / 1024) + "KB");
+                    LCTX.d("Reuse bitmap: [" + ref.id + ", " + ref.name + " => " + name + ", " + width + ", " + height
+                            + "], created=" + created + ", reused=" + reused + ", memoryUsed=" + used.size() + "/"
+                            + (memoryUsed / 1024) + "KB" + ", memoryInPool=" + pool.size() + "/"
+                            + (memoryPooled / 1024) + "KB");
                 }
                 bmp.eraseColor(Color.CYAN);
                 ref.name = name;
@@ -109,49 +112,62 @@ public class BitmapManager {
         generation += 10;
         removeOldRefs();
         removeEmptyRefs();
+        release();
         shrinkPool(0);
+        print(msg);
+    }
+
+    private static void print(final String msg) {
         long sum = 0;
+        for (final BitmapRef ref : pool) {
+            LCTX.e("Pool: " + ref);
+            sum += ref.size;
+        }
         for (final BitmapRef ref : used.values()) {
             LCTX.e("Used: " + ref);
             sum += ref.size;
         }
-        LCTX.e(msg + "Bitmaps&NativeHeap : " + sum + "/" + Debug.getNativeHeapAllocatedSize() + "/"
-                + Debug.getNativeHeapSize());
+        LCTX.e(msg + "Bitmaps&NativeHeap : " + sum + "(" + (pool.size() + used.size()) + " instances)/"
+                + Debug.getNativeHeapAllocatedSize() + "/" + Debug.getNativeHeapSize());
     }
 
-    public static synchronized void release(final List<BitmapRef> bitmapsToRecycle) {
-        if (bitmapsToRecycle.size() > 0) {
-            removeOldRefs();
-            removeEmptyRefs();
-
-            for (final BitmapRef bitmap : bitmapsToRecycle) {
-                releaseImpl(bitmap);
+    @SuppressWarnings("unchecked")
+    public static synchronized void release() {
+        increateGeneration();
+        removeOldRefs();
+        removeEmptyRefs();
+        int count = 0;
+        while (!releasing.isEmpty()) {
+            Object ref = releasing.removeFirst();
+            if (ref instanceof BitmapRef) {
+                releaseImpl((BitmapRef) ref);
+                count++;
+            } else if (ref instanceof List) {
+                List<BitmapRef> list = (List<BitmapRef>) ref;
+                for (final BitmapRef bitmap : list) {
+                    releaseImpl(bitmap);
+                    count++;
+                }
+                list.clear();
             }
-
+        }
+        if (count > 0) {
             if (LCTX.isDebugEnabled()) {
-                LCTX.d("Return " + bitmapsToRecycle.size() + " bitmap(s) to pool: " + "memoryUsed=" + used.size() + "/"
+                LCTX.d("Return " + count + " bitmap(s) to pool: " + "memoryUsed=" + used.size() + "/"
                         + (memoryUsed / 1024) + "KB" + ", memoryInPool=" + pool.size() + "/" + (memoryPooled / 1024)
                         + "KB");
             }
-
-            bitmapsToRecycle.clear();
-
-            shrinkPool(BITMAP_MEMORY_LIMIT);
         }
+        shrinkPool(BITMAP_MEMORY_LIMIT);
+        // print("On release: ");
+    }
+
+    public static synchronized void release(final List<BitmapRef> bitmapsToRecycle) {
+        releasing.add(bitmapsToRecycle);
     }
 
     public static synchronized void release(final BitmapRef ref) {
-        removeOldRefs();
-        removeEmptyRefs();
-
-        releaseImpl(ref);
-
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("Return 1 bitmap(s) to pool: " + "memoryUsed=" + used.size() + "/" + (memoryUsed / 1024) + "KB"
-                    + ", memoryInPool=" + pool.size() + "/" + (memoryPooled / 1024) + "KB");
-        }
-
-        shrinkPool(BITMAP_MEMORY_LIMIT);
+        releasing.add(ref);
     }
 
     private static void releaseImpl(final BitmapRef ref) {
@@ -159,7 +175,9 @@ public class BitmapManager {
             if (null != used.remove(ref.id)) {
                 memoryUsed -= ref.size;
             }
-            ref.clearDirectRef();
+            if (generation - ref.gen > 1) {
+                ref.clearDirectRef();
+            }
             if (!ref.clearEmptyRef()) {
                 pool.add(ref);
                 memoryPooled += ref.size;
@@ -169,25 +187,26 @@ public class BitmapManager {
 
     private static void removeOldRefs() {
         int recycled = 0;
+        int invalid = 0;
         final Iterator<BitmapRef> it = pool.iterator();
         while (it.hasNext()) {
             final BitmapRef ref = it.next();
             if (ref.clearEmptyRef()) {
                 it.remove();
-                recycled++;
+                invalid++;
                 memoryPooled -= ref.size;
-            } else if (generation - ref.gen > 5) {
+            } else if (generation - ref.gen > 3) {
                 ref.recycle();
                 it.remove();
                 recycled++;
                 memoryPooled -= ref.size;
             }
         }
-        if (recycled > 0) {
+        if (recycled + invalid > 0) {
             if (LCTX.isDebugEnabled()) {
-                LCTX.d("Recycled " + recycled + " pooled bitmap(s): " + "memoryUsed=" + used.size() + "/"
-                        + (memoryUsed / 1024) + "KB" + ", memoryInPool=" + pool.size() + "/" + (memoryPooled / 1024)
-                        + "KB");
+                LCTX.d("Recycled " + invalid + "/" + recycled + " pooled bitmap(s): " + "memoryUsed=" + used.size()
+                        + "/" + (memoryUsed / 1024) + "KB" + ", memoryInPool=" + pool.size() + "/"
+                        + (memoryPooled / 1024) + "KB");
             }
         }
     }

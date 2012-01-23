@@ -28,6 +28,11 @@ public class BitmapRef {
         this.gen = generation;
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        recycle();
+    }
+
     public Bitmap getBitmap() {
         final Bitmap bmp = bitmap != null ? bitmap : ref != null ? ref.get() : null;
         if (bmp != null) {

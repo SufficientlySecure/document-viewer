@@ -566,6 +566,7 @@ public class DecodeServiceBase implements DecodeService {
 
         @Override
         public void run() {
+            BitmapManager.release();
             performDecode(this);
         }
 

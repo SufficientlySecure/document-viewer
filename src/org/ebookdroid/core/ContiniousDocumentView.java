@@ -23,10 +23,15 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         IHardwareAcceleration.Factory.getInstance().setMode(getView(), true);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.AbstractDocumentView#goToPageImpl(int)
+     */
     @Override
     protected final void goToPageImpl(final int toPage) {
         final DocumentModel dm = getBase().getDocumentModel();
-        int pageCount = dm.getPageCount();
+        final int pageCount = dm.getPageCount();
         if (toPage >= 0 && toPage < pageCount) {
             final Page page = dm.getPageObject(toPage);
             if (page != null) {
@@ -46,9 +51,11 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         }
     }
 
-    public final void setCurrentPageByFirstVisible() {
-    }
-
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.IDocumentViewController#calculateCurrentPage(org.ebookdroid.core.ViewState)
+     */
     @Override
     public final int calculateCurrentPage(final ViewState viewState) {
         int result = 0;
@@ -72,36 +79,11 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         return result;
     }
 
-    @Override
-    public final void onScrollChanged(final int newPage, final int direction) {
-        // bounds could be not updated
-        if (inZoom.get()) {
-            return;
-        }
-
-        // LCTX.d("onScrollChanged(" + newPage + ", " + direction + ")");
-
-        final Runnable r = new Runnable() {
-
-            @Override
-            public void run() {
-                // LCTX.d("onScrollChanged(" + newPage + ", " + direction + ").run()");
-
-                final ViewState viewState = updatePageVisibility(newPage, direction, getBase().getZoomModel().getZoom());
-
-                final DocumentModel dm = getBase().getDocumentModel();
-                final Page page = dm.getPageObject(viewState.currentIndex);
-                if (page != null) {
-                    dm.setCurrentPageIndex(page.index);
-                    view.redrawView(viewState);
-                }
-            }
-        };
-
-        // on scrollChanged can be called from scrollTo just after new layout applied so we should wait for relayout
-        base.getActivity().runOnUiThread(r);
-    }
-
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.IDocumentViewController#verticalConfigScroll(int)
+     */
     @Override
     public final void verticalConfigScroll(final int direction) {
         final int scrollheight = SettingsManager.getAppSettings().getScrollHeight();
@@ -110,6 +92,11 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         view.startPageScroll(0, dy);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.IDocumentViewController#getScrollLimits()
+     */
     @Override
     public final Rect getScrollLimits() {
         final int width = getWidth();
@@ -123,6 +110,11 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         return new Rect(0, 0, right, bottom);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.AbstractDocumentView#drawView(android.graphics.Canvas, org.ebookdroid.core.ViewState)
+     */
     @Override
     public synchronized final void drawView(final Canvas canvas, final ViewState viewState) {
         final DocumentModel dm = getBase().getDocumentModel();
@@ -141,11 +133,17 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         view.continueScroll();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.AbstractDocumentView#onLayoutChanged(boolean, boolean, android.graphics.Rect,
+     *      android.graphics.Rect)
+     */
     @Override
-    public final boolean onLayoutChanged(final boolean layoutChanged, boolean layoutLocked, Rect oldLaout,
-            Rect newLayout) {
+    public final boolean onLayoutChanged(final boolean layoutChanged, final boolean layoutLocked, final Rect oldLaout,
+            final Rect newLayout) {
         int page = -1;
-        DocumentModel dm = base.getDocumentModel();
+        final DocumentModel dm = base.getDocumentModel();
         if (dm == null) {
             return false;
         }
@@ -163,7 +161,10 @@ public class ContiniousDocumentView extends AbstractDocumentView {
     }
 
     /**
-     * Invalidate page sizes.
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.IDocumentViewController#invalidatePageSizes(org.ebookdroid.core.IDocumentViewController.InvalidateSizeReason,
+     *      org.ebookdroid.core.Page)
      */
     @Override
     public synchronized final void invalidatePageSizes(final InvalidateSizeReason reason, final Page changedPage) {
@@ -198,18 +199,32 @@ public class ContiniousDocumentView extends AbstractDocumentView {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.AbstractDocumentView#isPageVisibleImpl(org.ebookdroid.core.Page, org.ebookdroid.core.ViewState)
+     */
     @Override
     protected final boolean isPageVisibleImpl(final Page page, final ViewState viewState) {
         return RectF.intersects(viewState.viewRect, viewState.getBounds(page));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.IDocumentViewController#updateAnimationType()
+     */
     @Override
     public final void updateAnimationType() {
         // This mode do not use animation
-
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.IDocumentViewController#pageUpdated(int)
+     */
     @Override
-    public void pageUpdated(int viewIndex) {
+    public void pageUpdated(final int viewIndex) {
     }
 }

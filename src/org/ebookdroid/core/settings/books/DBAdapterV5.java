@@ -18,6 +18,8 @@ class DBAdapterV5 extends DBAdapterV4 {
 
     public static final long F_CROP_PAGES = 0x02;
 
+    public static final float OFFSET_FACTOR = 100000.0f;
+
     public static final String DB_BOOK_CREATE = "create table book_settings ("
     // Book file path
             + "book varchar(1024) primary key, "
@@ -96,9 +98,9 @@ class DBAdapterV5 extends DBAdapterV4 {
                 // Flags
                 (bs.splitPages ? F_SPLIT_PAGES : 0) | (bs.cropPages ? F_CROP_PAGES : 0),
                 // Offset x
-                (int) bs.offsetX,
+                (int) (bs.offsetX * OFFSET_FACTOR),
                 // Offset y
-                (int) bs.offsetY
+                (int) (bs.offsetY * OFFSET_FACTOR)
         // ...
         };
 
@@ -123,8 +125,8 @@ class DBAdapterV5 extends DBAdapterV4 {
         bs.splitPages = (flags & F_SPLIT_PAGES) != 0;
         bs.cropPages = (flags & F_CROP_PAGES) != 0;
 
-        bs.offsetX = c.getInt(index++);
-        bs.offsetY = c.getInt(index++);
+        bs.offsetX = c.getInt(index++) / OFFSET_FACTOR;
+        bs.offsetY = c.getInt(index++) / OFFSET_FACTOR;
 
         return bs;
     }

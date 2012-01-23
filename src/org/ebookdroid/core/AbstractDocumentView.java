@@ -11,15 +11,17 @@ import org.ebookdroid.core.actions.params.Constant;
 import org.ebookdroid.core.bitmaps.BitmapManager;
 import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.log.LogContext;
+import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.settings.SettingsManager;
+import org.ebookdroid.core.settings.books.BookSettings;
 import org.ebookdroid.core.touch.DefaultGestureDetector;
 import org.ebookdroid.core.touch.IGestureDetector;
 import org.ebookdroid.core.touch.IMultiTouchZoom;
 import org.ebookdroid.core.touch.TouchManager;
 import org.ebookdroid.utils.MathUtils;
 
-import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -94,16 +96,31 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
         return list;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.IDocumentViewController#getView()
+     */
     @Override
     public final BaseDocumentView getView() {
         return view;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.IDocumentViewController#getBase()
+     */
     @Override
     public final IViewerActivity getBase() {
         return base;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.IDocumentViewController#init(org.ebookdroid.core.IViewerActivity.IBookLoadTask)
+     */
     @Override
     public final void init(final IBookLoadTask task) {
         if (!isInitialized) {
@@ -115,6 +132,11 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.IDocumentViewController#show()
+     */
     @Override
     public final void show() {
         if (isInitialized && !isShown) {
@@ -125,11 +147,13 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
             invalidatePageSizes(InvalidateSizeReason.INIT, null);
 
-            final Page page = pageToGo.getActualPage(base.getDocumentModel(), SettingsManager.getBookSettings());
+            final BookSettings bs = SettingsManager.getBookSettings();
+            final Page page = pageToGo.getActualPage(base.getDocumentModel(), bs);
             final int toPage = page != null ? page.index.viewIndex : 0;
 
             updatePageVisibility(toPage, 0, base.getZoomModel().getZoom());
-            goToPageImpl(toPage);
+
+            goToPageImpl(toPage, bs.offsetX, bs.offsetY);
 
         } else {
             if (LCTX.isDebugEnabled()) {
@@ -140,24 +164,78 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     protected abstract void goToPageImpl(final int toPage);
 
+    protected void updatePosition(final DocumentModel dm, final Page page, final ViewState viewState) {
+        final int left = view.getScrollX();
+        final int top = view.getScrollY();
+
+        final RectF cpBounds = viewState.getBounds(page);
+        final float offsetX = (left - cpBounds.left) / cpBounds.width();
+        final float offsetY = (top - cpBounds.top) / cpBounds.height();
+        // if (LCTX.isDebugEnabled()) {
+        // LCTX.d("Position into page: " + page.index.viewIndex + ", " + offsetX + ", " + offsetY);
+        // }
+        SettingsManager.positionChanged(offsetX, offsetY);
+    }
+
+    protected void goToPageImpl(final int toPage, final float offsetX, final float offsetY) {
+        final DocumentModel dm = getBase().getDocumentModel();
+        final int pageCount = dm.getPageCount();
+        if (toPage >= 0 && toPage < pageCount) {
+            final Page page = dm.getPageObject(toPage);
+            if (page != null) {
+                dm.setCurrentPageIndex(page.index);
+                final RectF bounds = page.getBounds(getBase().getZoomModel().getZoom());
+                final float left = bounds.left + offsetX * bounds.width();
+                final float top = bounds.top + offsetY * bounds.height();
+                // if (LCTX.isDebugEnabled()) {
+                // LCTX.d("goToPageImpl(): Scroll to: " + page.index.viewIndex + left + ", " + top);
+                // }
+                view.scrollTo((int) left, (int) top);
+            } else {
+                if (LCTX.isDebugEnabled()) {
+                    LCTX.d("goToPageImpl(): No page found for index: " + toPage);
+                }
+            }
+        } else {
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("goToPageImpl(): Bad page index: " + toPage + ", page count: " + pageCount);
+            }
+        }
+    }
+
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IDocumentViewController#onScrollChanged(int, int)
      */
     @Override
     public void onScrollChanged(final int newPage, final int direction) {
-        // bounds could be not updated
         if (inZoom.get()) {
             return;
         }
-        // if (LCTX.isDebugEnabled()) {
-        // LCTX.d("onScrollChanged(" + newPage + ", " + direction + ")");
-        // }
-        final ViewState viewState = updatePageVisibility(newPage, direction, getBase().getZoomModel().getZoom());
-        view.redrawView(viewState);
+
+        final Runnable r = new Runnable() {
+
+            @Override
+            public void run() {
+                final ViewState viewState = updatePageVisibility(newPage, direction, getBase().getZoomModel().getZoom());
+                final DocumentModel dm = getBase().getDocumentModel();
+                final Page page = dm.getPageObject(viewState.currentIndex);
+                if (page != null) {
+                    dm.setCurrentPageIndex(page.index);
+                    updatePosition(dm, page, viewState);
+                    view.redrawView(viewState);
+                }
+            }
+        };
+        base.getActivity().runOnUiThread(r);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.IDocumentViewController#updatePageVisibility(int, int, float)
+     */
     @Override
     public final ViewState updatePageVisibility(final int newPage, final int direction, final float zoom) {
         final ViewState viewState = calculatePageVisibility(newPage, direction, zoom);
@@ -272,7 +350,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.events.ZoomListener#commitZoom()
      */
     @Override
@@ -289,10 +367,10 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
         initialZoom = newZoom;
     }
 
-    protected ViewState onZoomChanged(final float newZoom, final boolean committed) {
+    protected final ViewState onZoomChanged(final float newZoom, final boolean committed) {
         final ViewState oldState = new ViewState(this);
-        final ViewState newState = calculatePageVisibility(base.getDocumentModel().getCurrentViewPageIndex(), 0,
-                newZoom);
+        final DocumentModel dm = base.getDocumentModel();
+        final ViewState newState = calculatePageVisibility(dm.getCurrentViewPageIndex(), 0, newZoom);
 
         final List<PageTreeNode> nodesToDecode = new ArrayList<PageTreeNode>();
         final List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
@@ -314,9 +392,15 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
             }
         }
 
+        updatePosition(dm, dm.getCurrentPageObject(), newState);
         return newState;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.IDocumentViewController#updateMemorySettings()
+     */
     @Override
     public final void updateMemorySettings() {
         final ViewState viewState = new ViewState(this);
@@ -359,6 +443,11 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
         return viewState;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.IDocumentViewController#goToPage(int)
+     */
     @Override
     public final void goToPage(final int toPage) {
         if (isShown) {
@@ -368,7 +457,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.events.ZoomListener#zoomChanged(float, float)
      */
     @Override
@@ -391,7 +480,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
             view.invalidateScroll(newZoom, oldZoom);
 
             view.redrawView(onZoomChanged(newZoom, false));
-        } catch (Throwable th) {
+        } catch (final Throwable th) {
             LCTX.e("Unexpected error: ", th);
         }
     }
@@ -412,6 +501,11 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
         return view.getHeight();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.IDocumentViewController#dispatchKeyEvent(android.view.KeyEvent)
+     */
     @Override
     public boolean dispatchKeyEvent(final KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -429,6 +523,11 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.IDocumentViewController#onTouchEvent(android.view.MotionEvent)
+     */
     @Override
     public final boolean onTouchEvent(final MotionEvent ev) {
         try {
@@ -446,6 +545,12 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.IDocumentViewController#onLayoutChanged(boolean, boolean, android.graphics.Rect,
+     *      android.graphics.Rect)
+     */
     @Override
     public boolean onLayoutChanged(final boolean layoutChanged, final boolean layoutLocked, final Rect oldLaout,
             final Rect newLayout) {
@@ -480,7 +585,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * Sets the page align flag.
-     * 
+     *
      * @param align
      *            the new flag indicating align
      */
@@ -493,7 +598,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * Checks if view is initialized.
-     * 
+     *
      * @return true, if is initialized
      */
     protected final boolean isShown() {
@@ -502,24 +607,41 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     protected abstract boolean isPageVisibleImpl(final Page page, final ViewState viewState);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.IDocumentViewController#getFirstVisiblePage()
+     */
     @Override
     public final int getFirstVisiblePage() {
         return firstVisiblePage;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.IDocumentViewController#getLastVisiblePage()
+     */
     @Override
     public final int getLastVisiblePage() {
         return lastVisiblePage;
     }
 
-    @Override
-    public abstract void drawView(Canvas canvas, ViewState viewState);
-
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.IDocumentViewController#redrawView()
+     */
     @Override
     public final void redrawView() {
         view.redrawView(new ViewState(this));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.IDocumentViewController#redrawView(org.ebookdroid.core.ViewState)
+     */
     @Override
     public final void redrawView(final ViewState viewState) {
         view.redrawView(viewState);
@@ -550,12 +672,22 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     protected class GestureListener extends SimpleOnGestureListener {
 
+        /**
+         * {@inheritDoc}
+         *
+         * @see android.view.GestureDetector.SimpleOnGestureListener#onDoubleTap(android.view.MotionEvent)
+         */
         @Override
         public boolean onDoubleTap(final MotionEvent e) {
             // LCTX.d("onDoubleTap(" + e + ")");
             return processTap(TouchManager.Touch.DoubleTap, e);
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @see android.view.GestureDetector.SimpleOnGestureListener#onDown(android.view.MotionEvent)
+         */
         @Override
         public boolean onDown(final MotionEvent e) {
             view.forceFinishScroll();
@@ -563,6 +695,12 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
             return true;
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @see android.view.GestureDetector.SimpleOnGestureListener#onFling(android.view.MotionEvent,
+         *      android.view.MotionEvent, float, float)
+         */
         @Override
         public boolean onFling(final MotionEvent e1, final MotionEvent e2, final float vX, final float vY) {
             final Rect l = getScrollLimits();
@@ -579,6 +717,12 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
             return true;
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @see android.view.GestureDetector.SimpleOnGestureListener#onScroll(android.view.MotionEvent,
+         *      android.view.MotionEvent, float, float)
+         */
         @Override
         public boolean onScroll(final MotionEvent e1, final MotionEvent e2, final float distanceX, final float distanceY) {
             float x = distanceX, y = distanceY;
@@ -593,12 +737,22 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
             return true;
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @see android.view.GestureDetector.SimpleOnGestureListener#onSingleTapConfirmed(android.view.MotionEvent)
+         */
         @Override
         public boolean onSingleTapConfirmed(final MotionEvent e) {
             // LCTX.d("onSingleTapConfirmed(" + e + ")");
             return processTap(TouchManager.Touch.SingleTap, e);
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * @see android.view.GestureDetector.SimpleOnGestureListener#onLongPress(android.view.MotionEvent)
+         */
         @Override
         public void onLongPress(final MotionEvent e) {
             // LongTap operation cause side-effects

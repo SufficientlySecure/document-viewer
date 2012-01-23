@@ -14,6 +14,11 @@ public class ZoomModel extends ListenerProxy {
         super(ZoomListener.class);
     }
 
+    public void initZoom(final float zoom) {
+        this.zoom = Math.max(zoom, 1.0f);
+        isCommited = true;
+    }
+
     public void setZoom(float zoom) {
         zoom = Math.max(zoom, 1.0f);
         if (this.zoom != zoom) {

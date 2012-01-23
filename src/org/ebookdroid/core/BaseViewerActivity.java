@@ -641,9 +641,8 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
             }
         }
 
-        if (diff.isZoomChanged() && diff.isFirstTime()) {
-            redrawn = true;
-            getZoomModel().setZoom(newSettings.getZoom());
+        if (diff.isFirstTime()) {
+            getZoomModel().initZoom(newSettings.getZoom());
         }
 
         final IDocumentViewController dc = getDocumentController();

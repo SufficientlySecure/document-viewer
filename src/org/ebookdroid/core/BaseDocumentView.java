@@ -2,6 +2,7 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.core.DrawThread.DrawTask;
 import org.ebookdroid.core.log.LogContext;
+import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.utils.Flag;
 import org.ebookdroid.utils.MathUtils;
@@ -95,6 +96,11 @@ public final class BaseDocumentView extends View {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see android.view.View#onScrollChanged(int, int, int, int)
+     */
     @Override
     protected final void onScrollChanged(final int l, final int t, final int oldl, final int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
@@ -102,21 +108,35 @@ public final class BaseDocumentView extends View {
         base.getDocumentController().onScrollChanged(-1, t - oldt);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see android.view.View#onTouchEvent(android.view.MotionEvent)
+     */
     @Override
     public boolean onTouchEvent(final MotionEvent ev) {
         super.onTouchEvent(ev);
         return base.getDocumentController().onTouchEvent(ev);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see android.view.View#scrollTo(int, int)
+     */
     @Override
     public final void scrollTo(final int x, final int y) {
         final Runnable r = new Runnable() {
 
             @Override
             public void run() {
-                final Rect l = base.getDocumentController().getScrollLimits();
-                BaseDocumentView.super.scrollTo(MathUtils.adjust(x, l.left, l.right),
-                        MathUtils.adjust(y, l.top, l.bottom));
+                final IDocumentViewController dc = base.getDocumentController();
+                final DocumentModel dm = base.getDocumentModel();
+                if (dc != null && dm != null) {
+                    final Rect l = dc.getScrollLimits();
+                    BaseDocumentView.super.scrollTo(MathUtils.adjust(x, l.left, l.right),
+                            MathUtils.adjust(y, l.top, l.bottom));
+                }
             }
         };
 
@@ -135,6 +155,11 @@ public final class BaseDocumentView extends View {
         return layoutLocked;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see android.view.View#onLayout(boolean, int, int, int, int)
+     */
     @Override
     protected final void onLayout(final boolean layoutChanged, final int left, final int top, final int right,
             final int bottom) {
@@ -187,6 +212,11 @@ public final class BaseDocumentView extends View {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see android.view.View#onDraw(android.graphics.Canvas)
+     */
     @Override
     protected void onDraw(final Canvas canvas) {
         DrawTask task = drawThread.takeTask(1, TimeUnit.MILLISECONDS);

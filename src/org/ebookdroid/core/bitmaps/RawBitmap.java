@@ -8,25 +8,15 @@ import android.graphics.Rect;
 public final class RawBitmap {
 
     private final int[] pixels;
-    private final int width;
-    private final int height;
+    private int width;
+    private int height;
     private final boolean hasAlpha;
 
     public RawBitmap(int width, int height, boolean hasAlpha) {
         this.width = width;
         this.height = height;
         this.hasAlpha = hasAlpha;
-
-        pixels = new int[width * height];
-    }
-
-    public RawBitmap(Bitmap bitmap) {
-        width = bitmap.getWidth();
-        height = bitmap.getHeight();
-        hasAlpha = bitmap.hasAlpha();
-        pixels = new int[width * height];
-
-        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+        this.pixels = new int[width * height];
     }
 
     public RawBitmap(Bitmap bitmap, Rect srcRect) {
@@ -46,13 +36,11 @@ public final class RawBitmap {
 
         bitmap.getPixels(pixels, 0, width, left, top, width, height);
     }
-    
-    public RawBitmap(RawBitmap source) {
-        width = source.width;
-        height = source.height;
-        hasAlpha = source.hasAlpha;
-        pixels = new int[source.pixels.length];
-        System.arraycopy(source.pixels, 0, pixels, 0, pixels.length);
+
+    public void retrieve(Bitmap bitmap, int left, int top, int width, int height) {
+        this.width = width;
+        this.height = height;
+        bitmap.getPixels(pixels, 0, width, left, top, width, height);
     }
 
     public int[] getPixels() {

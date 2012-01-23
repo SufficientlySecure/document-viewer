@@ -42,23 +42,24 @@ public class Bitmaps {
         this.bitmaps = new BitmapRef[columns * rows];
 
         int top = 0;
+
+        RawBitmap rb = new RawBitmap(SIZE, SIZE, origBitmap.hasAlpha());
+
         for (int row = 0; row < rows; row++, top += SIZE) {
             int left = 0;
             for (int col = 0; col < columns; col++, left += SIZE) {
-                final String name = nodeId + ":" + row + ", " + col;
+                final String name = nodeId + ":[" + row + ", " + col + "]";
                 final BitmapRef b = BitmapManager.getBitmap(name, SIZE, SIZE, config);
                 final Bitmap bmp = b.getBitmap();
 
                 if (row == rows - 1 || col == columns - 1) {
                     final int right = Math.min(left + SIZE, bounds.width());
                     final int bottom = Math.min(top + SIZE, bounds.height());
-                    final RawBitmap rb = new RawBitmap(origBitmap, left, top, right - left, bottom - top);
-                    rb.toBitmap(bmp);
+                    rb.retrieve(origBitmap, left, top, right - left, bottom - top);
                 } else {
-                    final RawBitmap rb = new RawBitmap(origBitmap, left, top, SIZE, SIZE);
-
-                    rb.toBitmap(bmp);
+                    rb.retrieve(origBitmap, left, top, SIZE, SIZE);
                 }
+                rb.toBitmap(bmp);
 
                 final int index = row * columns + col;
                 bitmaps[index] = b;
@@ -116,6 +117,9 @@ public class Bitmaps {
         }
 
         int top = 0;
+
+        RawBitmap rb = new RawBitmap(SIZE, SIZE, origBitmap.hasAlpha());
+
         for (int row = 0; row < rows; row++, top += SIZE) {
             int left = 0;
             for (int col = 0; col < columns; col++, left += SIZE) {
@@ -126,12 +130,11 @@ public class Bitmaps {
                 if (row == rows - 1 || col == columns - 1) {
                     final int right = Math.min(left + SIZE, bounds.width());
                     final int bottom = Math.min(top + SIZE, bounds.height());
-                    final RawBitmap rb = new RawBitmap(origBitmap, left, top, right - left, bottom - top);
-                    rb.toBitmap(bmp);
+                    rb.retrieve(origBitmap, left, top, right - left, bottom - top);
                 } else {
-                    final RawBitmap rb = new RawBitmap(origBitmap, left, top, SIZE, SIZE);
-                    rb.toBitmap(bmp);
+                    rb.retrieve(origBitmap, left, top, SIZE, SIZE);
                 }
+                rb.toBitmap(bmp);
             }
         }
 

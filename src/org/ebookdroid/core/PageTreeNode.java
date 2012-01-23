@@ -483,15 +483,15 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         }
 
         public synchronized Bitmaps reuse(String nodeId, BitmapRef bitmap, Rect bitmapBounds) {
-            if (day != null) {
-                if (day.reuse(nodeId, bitmap, bitmapBounds)) {
-                    if (night != null) {
-                        night.recycle(null);
-                        night = null;
-                    }
-                    return day;
-                }
-            }
+//            if (day != null) {
+//                if (day.reuse(nodeId, bitmap, bitmapBounds)) {
+//                    if (night != null) {
+//                        night.recycle(null);
+//                        night = null;
+//                    }
+//                    return day;
+//                }
+//            }
             return new Bitmaps(nodeId, bitmap, bitmapBounds);
         }
 

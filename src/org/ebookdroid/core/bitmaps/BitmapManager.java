@@ -97,9 +97,9 @@ public class BitmapManager {
         memoryUsed += ref.size;
 
         if (LCTX.isDebugEnabled()) {
-            LCTX.d("Create bitmap: [" + name + ", " + width + ", " + height + "], created=" + created + ", reused="
-                    + reused + ", memoryUsed=" + used.size() + "/" + (memoryUsed / 1024) + "KB" + ", memoryInPool="
-                    + pool.size() + "/" + (memoryPooled / 1024) + "KB");
+            LCTX.d("Create bitmap: [" + ref.id + ", " + name + ", " + width + ", " + height + "], created=" + created
+                    + ", reused=" + reused + ", memoryUsed=" + used.size() + "/" + (memoryUsed / 1024) + "KB"
+                    + ", memoryInPool=" + pool.size() + "/" + (memoryPooled / 1024) + "KB");
         }
 
         shrinkPool(BITMAP_MEMORY_LIMIT);
@@ -175,7 +175,7 @@ public class BitmapManager {
             if (null != used.remove(ref.id)) {
                 memoryUsed -= ref.size;
             }
-            if (generation - ref.gen > 1) {
+            if (generation - ref.gen > 5) {
                 ref.clearDirectRef();
             }
             if (!ref.clearEmptyRef()) {
@@ -195,11 +195,13 @@ public class BitmapManager {
                 it.remove();
                 invalid++;
                 memoryPooled -= ref.size;
-            } else if (generation - ref.gen > 3) {
-                ref.recycle();
-                it.remove();
-                recycled++;
-                memoryPooled -= ref.size;
+            } else if (generation - ref.gen > 5) {
+                ref.clearDirectRef();
+                if (ref.clearEmptyRef()) {
+                    it.remove();
+                    recycled++;
+                    memoryPooled -= ref.size;
+                }
             }
         }
         if (recycled + invalid > 0) {

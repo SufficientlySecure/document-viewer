@@ -290,10 +290,6 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
     }
 
     protected ViewState onZoomChanged(final float newZoom, final boolean committed) {
-        if (initialZoom != newZoom) {
-            BitmapManager.increateGeneration();
-        }
-
         final ViewState oldState = new ViewState(this);
         final ViewState newState = calculatePageVisibility(base.getDocumentModel().getCurrentViewPageIndex(), 0,
                 newZoom);

@@ -142,7 +142,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.core.IDocumentViewController#onScrollChanged(int, int)
      */
     @Override
@@ -151,7 +151,9 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
         if (inZoom.get()) {
             return;
         }
+        // if (LCTX.isDebugEnabled()) {
         // LCTX.d("onScrollChanged(" + newPage + ", " + direction + ")");
+        // }
         final ViewState viewState = updatePageVisibility(newPage, direction, getBase().getZoomModel().getZoom());
         view.redrawView(viewState);
     }
@@ -171,9 +173,10 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
         if (!nodesToDecode.isEmpty()) {
             decodePageTreeNodes(viewState, nodesToDecode);
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("updatePageVisibility: " + viewState + " => " + nodesToDecode.size());
+            }
         }
-
-        LCTX.d("updatePageVisibility: " + viewState + " => " + nodesToDecode.size());
 
         return viewState;
     }
@@ -269,7 +272,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.core.events.ZoomListener#commitZoom()
      */
     @Override
@@ -310,9 +313,10 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
         if (!nodesToDecode.isEmpty()) {
             decodePageTreeNodes(newState, nodesToDecode);
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("onZoomChanged: " + committed + ", " + newState + " => " + nodesToDecode.size());
+            }
         }
-
-        LCTX.d("onZoomChanged: " + committed + ", " + newState + " => " + nodesToDecode.size());
 
         return newState;
     }
@@ -331,9 +335,11 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
         if (!nodesToDecode.isEmpty()) {
             decodePageTreeNodes(viewState, nodesToDecode);
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("updateMemorySettings: " + viewState + " => " + nodesToDecode.size());
+            }
         }
 
-        LCTX.d("updateMemorySettings: " + viewState + " => " + nodesToDecode.size());
     }
 
     public final ViewState invalidatePages(final ViewState oldState, final Page... pages) {
@@ -349,9 +355,10 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
         if (!nodesToDecode.isEmpty()) {
             decodePageTreeNodes(viewState, nodesToDecode);
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("invalidatePages: " + viewState + " => " + nodesToDecode.size());
+            }
         }
-
-        LCTX.d("invalidatePages: " + viewState + " => " + nodesToDecode.size());
 
         return viewState;
     }
@@ -365,7 +372,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.core.events.ZoomListener#zoomChanged(float, float)
      */
     @Override
@@ -374,7 +381,9 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
             return;
         }
 
-        LCTX.d("zoomChanged(" + newZoom + ", " + oldZoom + ")");
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("zoomChanged(" + newZoom + ", " + oldZoom + ")");
+        }
 
         try {
             if (inZoom.compareAndSet(false, true)) {
@@ -444,7 +453,9 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
     @Override
     public boolean onLayoutChanged(final boolean layoutChanged, final boolean layoutLocked, final Rect oldLaout,
             final Rect newLayout) {
-        LCTX.d("onLayoutChanged(" + layoutChanged + ", " + layoutLocked + "," + oldLaout + ", " + newLayout + ")");
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("onLayoutChanged(" + layoutChanged + ", " + layoutLocked + "," + oldLaout + ", " + newLayout + ")");
+        }
         if (layoutChanged && !layoutLocked) {
             if (isShown) {
                 final ArrayList<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
@@ -473,7 +484,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * Sets the page align flag.
-     *
+     * 
      * @param align
      *            the new flag indicating align
      */
@@ -486,7 +497,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     /**
      * Checks if view is initialized.
-     *
+     * 
      * @return true, if is initialized
      */
     protected final boolean isShown() {
@@ -528,11 +539,15 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
         final Integer actionId = TouchManager.getAction(type, e.getX(), e.getY(), getWidth(), getHeight());
         final ActionEx action = actionId != null ? getOrCreateAction(actionId) : null;
         if (action != null) {
-            LCTX.d("Touch action: " + action.name + ", " + action.getMethod().toString());
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("Touch action: " + action.name + ", " + action.getMethod().toString());
+            }
             action.run();
             return true;
         } else {
-            LCTX.d("Touch action not found");
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("Touch action not found");
+            }
         }
         return false;
     }

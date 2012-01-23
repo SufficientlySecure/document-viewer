@@ -127,7 +127,7 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
 
         final boolean shouldLoad = SettingsManager.getAppSettings().isLoadRecentBook();
         final BookSettings recent = SettingsManager.getRecentBook();
-        final File file = recent != null ? new File(recent.fileName) : null;
+        final File file = (recent != null && recent.fileName != null) ? new File(recent.fileName) : null;
         final boolean found = file != null ? file.exists()
                 && SettingsManager.getAppSettings().getAllowedFileTypes().accept(file) : false;
 

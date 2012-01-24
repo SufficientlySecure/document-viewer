@@ -132,7 +132,7 @@ public class Bitmaps {
         }
         final Bitmap[] res = new Bitmap[bitmaps.length];
         for (int i = 0; i < bitmaps.length; i++) {
-            res[i] = bitmaps[i].getBitmap();
+            res[i] = bitmaps[i] != null ? bitmaps[i].getBitmap() : null;
             if (res[i] == null || res[i].isRecycled()) {
                 recycle(null);
                 return null;

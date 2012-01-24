@@ -47,7 +47,7 @@
             android:src="@drawable/clear" />
 
         <ImageView
-            android:id="@+id/recentmenu_settings"
+            android:id="@+id/mainmenu_settings"
             style="@style/action_bar_action"
             android:contentDescription="@string/content_description_settings"
             android:onClick="onButtonClick"

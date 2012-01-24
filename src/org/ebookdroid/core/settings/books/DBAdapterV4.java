@@ -173,9 +173,9 @@ class DBAdapterV4 extends DBAdapterV3 {
             db.execSQL(DB_BOOKMARK_STORE, args);
         }
 
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("Bookmarks stored for " + book.fileName + ": " + book.bookmarks.size());
-        }
+        // if (LCTX.isDebugEnabled()) {
+        // LCTX.d("Bookmarks stored for " + book.fileName + ": " + book.bookmarks.size());
+        // }
     }
 
     protected Bookmark createBookmark(final Cursor c) {

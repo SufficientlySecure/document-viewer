@@ -54,11 +54,23 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         this.childrenZoomThreshold = childrenZoomThreshold;
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        ArrayList<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
+        holder.recycle(bitmapsToRecycle);
+        page.nodes.recycleChildren(this, bitmapsToRecycle);
+        BitmapManager.release(bitmapsToRecycle);
+    }
+
     public void recycle(final List<BitmapRef> bitmapsToRecycle, boolean recycleChildren) {
         stopDecodingThisNode("node recycling");
         holder.recycle(bitmapsToRecycle);
         if (recycleChildren) {
-            page.nodes.recycleChildren(this, bitmapsToRecycle);
+            if (id == 0) {
+                page.nodes.recycle(bitmapsToRecycle);
+            } else {
+                page.nodes.recycleChildren(this, bitmapsToRecycle);
+            }
         }
     }
 
@@ -483,15 +495,15 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         }
 
         public synchronized Bitmaps reuse(String nodeId, BitmapRef bitmap, Rect bitmapBounds) {
-//            if (day != null) {
-//                if (day.reuse(nodeId, bitmap, bitmapBounds)) {
-//                    if (night != null) {
-//                        night.recycle(null);
-//                        night = null;
-//                    }
-//                    return day;
-//                }
-//            }
+            if (day != null) {
+                if (day.reuse(nodeId, bitmap, bitmapBounds)) {
+                    if (night != null) {
+                        night.recycle(null);
+                        night = null;
+                    }
+                    return day;
+                }
+            }
             return new Bitmaps(nodeId, bitmap, bitmapBounds);
         }
 

@@ -120,12 +120,16 @@ public class BitmapManager {
     private static void print(final String msg) {
         long sum = 0;
         for (final BitmapRef ref : pool) {
-            LCTX.e("Pool: " + ref);
-            sum += ref.size;
+            if (!ref.clearEmptyRef()) {
+                LCTX.e("Pool: " + ref);
+                sum += ref.size;
+            }
         }
         for (final BitmapRef ref : used.values()) {
-            LCTX.e("Used: " + ref);
-            sum += ref.size;
+            if (!ref.clearEmptyRef()) {
+                LCTX.e("Used: " + ref);
+                sum += ref.size;
+            }
         }
         LCTX.e(msg + "Bitmaps&NativeHeap : " + sum + "(" + (pool.size() + used.size()) + " instances)/"
                 + Debug.getNativeHeapAllocatedSize() + "/" + Debug.getNativeHeapSize());

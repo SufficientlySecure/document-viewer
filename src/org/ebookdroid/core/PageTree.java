@@ -1,14 +1,18 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.core.bitmaps.BitmapRef;
+import org.ebookdroid.core.log.LogContext;
 
 import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.util.SparseArray;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class PageTree {
+
+    private static final LogContext LCTX = LogContext.ROOT.lctx("Page", true);
 
     private static RectF[] splitMasks = {
             // Left Top
@@ -55,16 +59,41 @@ public class PageTree {
 
     public boolean recycleChildren(final PageTreeNode parent, List<BitmapRef> bitmapsToRecycle) {
         int childId = (int) getFirstChildId(parent.id);
+        PageTreeNode child = nodes.get(childId);
+        if (child == null) {
+            return false;
+        }
+        if (LCTX.isDebugEnabled()) {
+            LCTX.e("Recycle children for: " + parent.getFullId());
+        }
+        LinkedList<PageTreeNode> nodesToRemove = new LinkedList<PageTreeNode>();
+        nodesToRemove.add(child);
+        nodes.remove(childId);
+
+        childId++;
         for (int end = childId + splitMasks.length; childId < end; childId++) {
-            final PageTreeNode child = nodes.get(childId);
+            child = nodes.get(childId);
             if (child != null) {
+                nodesToRemove.add(child);
                 nodes.remove(childId);
-                child.recycle(bitmapsToRecycle, true);
-            } else {
-                break;
             }
         }
-        return false;
+        
+        while(!nodesToRemove.isEmpty()) {
+            child = nodesToRemove.removeFirst();
+            child.recycle(bitmapsToRecycle, false);
+
+            childId = (int) getFirstChildId(child.id);
+            for (int end = childId + splitMasks.length; childId < end; childId++) {
+                child = nodes.get(childId);
+                if (child != null) {
+                    nodesToRemove.add(child);
+                    nodes.remove(childId);
+                }
+            }
+        }
+
+        return true;
     }
 
     public boolean allChildrenHasBitmap(final ViewState viewState, final PageTreeNode parent, final PagePaint paint) {
@@ -85,8 +114,6 @@ public class PageTree {
             PageTreeNode child = nodes.get(childId);
             if (child != null) {
                 child.draw(canvas, viewState, pageBounds, paint);
-            } else {
-                break;
             }
         }
     }
@@ -98,8 +125,6 @@ public class PageTree {
             PageTreeNode child = nodes.get(childId);
             if (child != null) {
                 child.onPositionChanged(viewState, pageBounds, nodesToDecode, bitmapsToRecycle);
-            } else {
-                break;
             }
         }
     }
@@ -112,8 +137,6 @@ public class PageTree {
             PageTreeNode child = nodes.get(childId);
             if (child != null) {
                 child.onZoomChanged(oldZoom, viewState, committed, pageBounds, nodesToDecode, bitmapsToRecycle);
-            } else {
-                break;
             }
         }
     }
@@ -141,7 +164,7 @@ public class PageTree {
     }
 
     private int getFirstChildId(final long parentId) {
-        return (int)(parentId * splitMasks.length + 1);
+        return (int) (parentId * splitMasks.length + 1);
     }
 
 }

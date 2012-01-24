@@ -77,6 +77,10 @@ public final class RawBitmap {
         }
     }
 
+    public void invert() {
+        nativeInvert(pixels, width, height);
+    }
+
     public Bitmap scaleHq4x() {
         return scaleHq4x(this);
     }
@@ -121,5 +125,7 @@ public final class RawBitmap {
     private static native void nativeHq3x(int[] src, int[] dst, int width, int height);
 
     private static native void nativeHq4x(int[] src, int[] dst, int width, int height);
+
+    private static native void nativeInvert(int[] src, int width, int height);
 
 }

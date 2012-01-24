@@ -54,3 +54,20 @@ JNIEXPORT void JNICALL
     (*env)->ReleaseIntArrayElements(env, srcArray, src, 0);
     (*env)->ReleaseIntArrayElements(env, dstArray, dst, 0);
 }
+
+
+JNIEXPORT void JNICALL
+ Java_org_ebookdroid_core_bitmaps_RawBitmap_nativeInvert(JNIEnv* env, jclass classObject, jintArray srcArray,
+                                                          jint width, jint height)
+{
+    jint* src;
+	int i;
+
+    src = (*env)->GetIntArrayElements(env, srcArray, 0);
+
+    for (i = 0; i < width * height; i++) {
+    	src[i] ^= 0x00FFFFFF;
+    }
+
+    (*env)->ReleaseIntArrayElements(env, srcArray, src, 0);
+}

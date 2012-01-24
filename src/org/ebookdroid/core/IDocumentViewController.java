@@ -62,4 +62,6 @@ public interface IDocumentViewController extends ZoomListener {
     ViewState updatePageVisibility(final int newPage, final int direction, final float zoom);
 
     void pageUpdated(int viewIndex);
+
+    void toggleNightMode(boolean nightMode);
 }

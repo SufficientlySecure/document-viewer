@@ -478,33 +478,23 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     class BitmapHolder {
 
         Bitmaps day;
-        Bitmaps night;
 
         public synchronized void drawBitmap(final ViewState viewState, final Canvas canvas, final PagePaint paint,
                 final RectF tr) {
 
-            if (viewState.nightMode) {
-                if (null != getNightBitmap(paint.nightBitmapPaint)) {
-                    night.draw(viewState, canvas, paint, tr);
-                }
-            } else {
                 if (day != null) {
                     day.draw(viewState, canvas, paint, tr);
                 }
-            }
         }
 
         public synchronized Bitmaps reuse(String nodeId, BitmapRef bitmap, Rect bitmapBounds) {
+            boolean invert = SettingsManager.getAppSettings().getNightMode();
             if (day != null) {
-                if (day.reuse(nodeId, bitmap, bitmapBounds)) {
-                    if (night != null) {
-                        night.recycle(null);
-                        night = null;
-                    }
+                if (day.reuse(nodeId, bitmap, bitmapBounds, invert)) {
                     return day;
                 }
             }
-            return new Bitmaps(nodeId, bitmap, bitmapBounds);
+            return new Bitmaps(nodeId, bitmap, bitmapBounds, invert);
         }
 
         public boolean hasBitmap(final ViewState viewState, final PagePaint paint) {
@@ -512,34 +502,13 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         }
 
         public Bitmap[] getBitmap(final ViewState viewState, final PagePaint paint) {
-            return viewState.nightMode ? getNightBitmap(paint.nightBitmapPaint) : getBitmap();
+            return getBitmap();
         }
 
         public synchronized Bitmap[] getBitmap() {
             return day != null ? day.getBitmaps() : null;
         }
 
-        public synchronized Bitmap[] getNightBitmap(final Paint paint) {
-            if (night == null) {
-                final Bitmap[] days = day != null ? day.getBitmaps() : null;
-                if (days == null) {
-                    return null;
-                }
-                night = new Bitmaps(getFullId(), day, days, paint);
-            }
-            if (night == null) {
-                return null;
-            }
-            final Bitmap[] res = night.getBitmaps();
-            if (res == null) {
-                night = null;
-                return null;
-            }
-            if (day != null) {
-                day.clearDirectRef();
-            }
-            return res;
-        }
 
         public synchronized void clearDirectRef(final List<BitmapRef> bitmapsToRecycle) {
         }
@@ -548,10 +517,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             if (day != null) {
                 day.recycle(bitmapsToRecycle);
                 day = null;
-            }
-            if (night != null) {
-                night.recycle(bitmapsToRecycle);
-                night = null;
             }
         }
 

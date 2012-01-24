@@ -8,7 +8,6 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region.Op;
@@ -32,7 +31,7 @@ public class Bitmaps {
 
     private BitmapRef[] bitmaps;
 
-    public Bitmaps(final String nodeId, final BitmapRef orig, final Rect bitmapBounds) {
+    public Bitmaps(final String nodeId, final BitmapRef orig, final Rect bitmapBounds, boolean invert) {
         final Bitmap origBitmap = orig.getBitmap();
 
         this.bounds = bitmapBounds;
@@ -59,6 +58,9 @@ public class Bitmaps {
                 } else {
                     rb.retrieve(origBitmap, left, top, SIZE, SIZE);
                 }
+                if (invert) {
+                    rb.invert();
+                }
                 rb.toBitmap(bmp);
 
                 final int index = row * columns + col;
@@ -67,27 +69,7 @@ public class Bitmaps {
         }
     }
 
-    public Bitmaps(final String nodeId, final Bitmaps orig, final Bitmap[] days, final Paint paint) {
-        this.bounds = orig.bounds;
-        this.columns = orig.columns;
-        this.rows = orig.rows;
-        this.config = useDefaultBitmapType ? DEF_BITMAP_TYPE : orig.config;
-        this.bitmaps = new BitmapRef[days.length];
-
-        for (int i = 0; i < bitmaps.length; i++) {
-            final String name = nodeId + ":night:" + i;
-            final int w = days[i].getWidth();
-            final int h = days[i].getHeight();
-            bitmaps[i] = BitmapManager.getBitmap(name, w, h, config);
-            final Bitmap bmp = bitmaps[i].getBitmap();
-            bmp.eraseColor(Color.WHITE);
-            final Canvas c = new Canvas(bmp);
-            c.drawRect(0, 0, w, h, paint);
-            c.drawBitmap(days[i], 0, 0, paint);
-        }
-    }
-
-    public synchronized boolean reuse(final String nodeId, final BitmapRef orig, final Rect bitmapBounds) {
+    public synchronized boolean reuse(final String nodeId, final BitmapRef orig, final Rect bitmapBounds, boolean invert) {
         final Bitmap origBitmap = orig.getBitmap();
         final Config cfg = useDefaultBitmapType ? DEF_BITMAP_TYPE : origBitmap.getConfig();
         if (cfg != config) {
@@ -133,6 +115,9 @@ public class Bitmaps {
                     rb.retrieve(origBitmap, left, top, right - left, bottom - top);
                 } else {
                     rb.retrieve(origBitmap, left, top, SIZE, SIZE);
+                }
+                if (invert) {
+                    rb.invert();
                 }
                 rb.toBitmap(bmp);
             }

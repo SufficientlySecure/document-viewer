@@ -448,7 +448,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
     @ActionMethod(ids = R.id.mainmenu_nightmode)
     public void toggleNightMode(final ActionEx action) {
         SettingsManager.getAppSettings().switchNightMode();
-        view.redrawView();
+        getDocumentController().toggleNightMode(SettingsManager.getAppSettings().getNightMode());
     }
 
     @ActionMethod(ids = R.id.mainmenu_thumbnail)
@@ -624,6 +624,9 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
             getView().setKeepScreenOn(newSettings.isKeepScreenOn());
         }
 
+        if (diff.isNightModeChanged() && !diff.isFirstTime()) {
+            getDocumentController().toggleNightMode(newSettings.getNightMode());
+        }
         TouchManager.applyOldStyleSettings(newSettings);
     }
 
@@ -876,6 +879,10 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
         @Override
         public void pageUpdated(final int viewIndex) {
+        }
+
+        @Override
+        public void toggleNightMode(boolean nightMode) {
         }
     }
 }

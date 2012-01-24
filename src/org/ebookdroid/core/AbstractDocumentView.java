@@ -576,6 +576,19 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
         return false;
     }
 
+    @Override
+    public void toggleNightMode(boolean nightMode) {
+        final ArrayList<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
+        for (final Page page : base.getDocumentModel().getPages()) {
+            page.nodes.recycle(bitmapsToRecycle);
+        }
+        BitmapManager.release(bitmapsToRecycle);
+
+        final float oldZoom = base.getZoomModel().getZoom();
+        initialZoom = 0;
+        view.redrawView(onZoomChanged(oldZoom, true));
+    }
+
     protected final void invalidateScroll() {
         if (!isShown) {
             return;

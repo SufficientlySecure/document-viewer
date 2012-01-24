@@ -40,6 +40,7 @@ public class PageTree {
             node.recycle(bitmapsToRecycle, false);
         }
         nodes.clear();
+        nodes.append(0, root);
     }
 
     private PageTreeNode createRoot() {
@@ -78,7 +79,7 @@ public class PageTree {
                 nodes.remove(childId);
             }
         }
-        
+
         while(!nodesToRemove.isEmpty()) {
             child = nodesToRemove.removeFirst();
             child.recycle(bitmapsToRecycle, false);

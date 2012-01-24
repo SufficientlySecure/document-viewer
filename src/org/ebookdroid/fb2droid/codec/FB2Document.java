@@ -104,9 +104,12 @@ public class FB2Document implements CodecDocument {
                 boolean found = false;
                 int len = 0;
                 while (len < 256) {
-                    final char c = (char) inStream.read();
-                    buffer[len++] = c;
-                    if (c == '>') {
+                    final int val = inStream.read();
+                    if (len == 0 && (val == 0xEF || val == 0xBB || val == 0xBF)) {
+                        continue;
+                    }
+                    buffer[len++] = (char)val;
+                    if (val == '>') {
                         found = true;
                         break;
                     }

@@ -28,9 +28,8 @@
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 #else
-
-#define LOGI(...) fprintf(stderr,,__VA_ARGS__)
-#define LOGE(...) fprintf(stderr,,__VA_ARGS__)
+#define LOGI(...) fprintf(stderr,__VA_ARGS__)
+#define LOGE(...) fprintf(stderr,__VA_ARGS__)
 #endif
 
 #define nelem(x) (sizeof(x)/sizeof((x)[0]))
@@ -954,7 +953,7 @@ void fz_invert_pixmap(fz_pixmap *pix);
 void fz_gamma_pixmap(fz_pixmap *pix, float gamma);
 unsigned int fz_pixmap_size(fz_pixmap *pix);
 
-fz_pixmap *fz_scale_pixmap(fz_context *ctx, fz_pixmap *src, float x, float y, float w, float h);
+fz_pixmap *fz_scale_pixmap(fz_context *ctx, fz_pixmap *src, float x, float y, float w, float h, fz_bbox *clip);
 
 void fz_write_pnm(fz_context *ctx, fz_pixmap *pixmap, char *filename);
 void fz_write_pam(fz_context *ctx, fz_pixmap *pixmap, char *filename, int savealpha);

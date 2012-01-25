@@ -74,17 +74,16 @@ diff -Naur -x .svn -x generated mupdf.orig/fitz/base_memory.c mupdf/fitz/base_me
  };
  
 diff -Naur -x .svn -x generated mupdf.orig/fitz/fitz.h mupdf/fitz/fitz.h
---- mupdf.orig/fitz/fitz.h	2012-01-20 19:39:16.000000000 +0200
-+++ mupdf/fitz/fitz.h	2012-01-20 19:45:49.000000000 +0200
-@@ -28,8 +28,9 @@
+--- mupdf.orig/fitz/fitz.h	2012-01-25 18:06:34.000000000 +0200
++++ mupdf/fitz/fitz.h	2012-01-25 18:15:04.000000000 +0200
+@@ -28,8 +28,8 @@
  #define LOGI(...) __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
  #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
  #else
 -#define LOGI(...) do {} while(0)
 -#define LOGE(...) do {} while(0)
-+
-+#define LOGI(...) fprintf(stderr,,__VA_ARGS__)
-+#define LOGE(...) fprintf(stderr,,__VA_ARGS__)
++#define LOGI(...) fprintf(stderr,__VA_ARGS__)
++#define LOGE(...) fprintf(stderr,__VA_ARGS__)
  #endif
  
  #define nelem(x) (sizeof(x)/sizeof((x)[0]))
@@ -100,7 +99,7 @@ diff -Naur -x .svn -x generated mupdf.orig/fitz/res_colorspace.c mupdf/fitz/res_
  void
  fz_free_colorspace_imp(fz_context *ctx, fz_storable *cs_)
 diff -Naur -x .svn -x generated mupdf.orig/xps/xps_zip.c mupdf/xps/xps_zip.c
---- mupdf.orig/xps/xps_zip.c	2012-01-19 18:26:15.000000000 +0200
+--- mupdf.orig/xps/xps_zip.c	2012-01-25 18:06:34.000000000 +0200
 +++ mupdf/xps/xps_zip.c	2012-01-20 16:25:27.000000000 +0200
 @@ -41,6 +41,19 @@
  	return a | b << 8 | c << 16 | d << 24;
@@ -303,13 +302,3 @@ diff -Naur -x .svn -x generated mupdf.orig/xps/xps_zip.c mupdf/xps/xps_zip.c
  			n = fread(part->data + offset, 1, size - offset, file);
  			offset += n;
  			fclose(file);
-@@ -541,6 +645,9 @@
- 	xps_font_cache *font, *next;
- 	int i;
- 
-+	if (!doc)
-+		return;
-+
- 	if (doc->file)
- 		fz_close(doc->file);
- 

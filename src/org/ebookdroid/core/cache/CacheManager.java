@@ -1,6 +1,7 @@
 package org.ebookdroid.core.cache;
 
 import org.ebookdroid.core.utils.FilePrefixFilter;
+import org.ebookdroid.utils.LengthUtils;
 import org.ebookdroid.utils.StringUtils;
 
 import android.content.Context;
@@ -67,16 +68,20 @@ public class CacheManager {
     public static void clear() {
         final File cacheDir = s_context.getFilesDir();
         final String[] files = cacheDir.list();
-        for (final String file : files) {
-            new File(cacheDir, file).delete();
+        if (LengthUtils.isNotEmpty(files)) {
+            for (final String file : files) {
+                new File(cacheDir, file).delete();
+            }
         }
     }
 
     public static void clear(final String path) {
         final File cacheDir = s_context.getFilesDir();
         final String[] files = cacheDir.list(new FilePrefixFilter(StringUtils.md5(path) + "."));
-        for (final String file : files) {
-            new File(cacheDir, file).delete();
+        if (LengthUtils.isNotEmpty(files)) {
+            for (final String file : files) {
+                new File(cacheDir, file).delete();
+            }
         }
     }
 

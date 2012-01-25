@@ -31,6 +31,7 @@ public class AboutActivity extends Activity {
             new Part(R.string.about_license_title, Format.HTML, "about_license.html"),
             new Part(R.string.about_3dparty_title, Format.HTML, "about_3rdparty.html"),
             new Part(R.string.about_changelog_title, Format.WIKI, "about_changelog.wiki"),
+            new Part(R.string.about_thanks_title, Format.HTML, "about_thanks.html"),
     // End
     };
 
@@ -155,7 +156,7 @@ public class AboutActivity extends Activity {
                 view = ((WebView) convertView);
             }
             CharSequence content = getChild(groupPosition, childPosition).getContent(AboutActivity.this);
-            view.loadData(content.toString(), "text/html", "UTF-8");
+            view.loadDataWithBaseURL("file:///fake/not_used", content.toString(), "text/html", "UTF-8", "");
             view.setBackgroundColor(Color.GRAY);
             return view;
         }
@@ -168,17 +169,17 @@ public class AboutActivity extends Activity {
 
     private static enum Format {
         /**
-         * 
+         *
          */
         TEXT,
 
         /**
-         * 
+         *
          */
         HTML,
 
         /**
-         * 
+         *
          */
         WIKI {
 

@@ -166,6 +166,7 @@
 	<string name="about_license_title">"License"</string>
 	<string name="about_3dparty_title">"3rd party software"</string>
 	<string name="about_changelog_title">"Change Log"</string>
+	<string name="about_thanks_title">"Acknowledgments"</string>
 
 	<string name="content_description_icon">"Icon"</string>
 	<string name="content_description_library">"Library"</string>

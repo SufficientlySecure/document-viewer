@@ -165,6 +165,7 @@
 	<string name="about_license_title">"Лицензия"</string>
 	<string name="about_3dparty_title">"Стороннее ПО"</string>
 	<string name="about_changelog_title">"Изменения"</string>
+	<string name="about_thanks_title">"Благодарности"</string>
 
 	<string name="content_description_icon">"Icon"</string>
 	<string name="content_description_library">"Library"</string>

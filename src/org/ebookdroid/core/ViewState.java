@@ -102,8 +102,8 @@ public class ViewState {
         this.currentIndex = dc.calculateCurrentPage(this);
 
         final int inMemory = (int) Math.ceil(SettingsManager.getAppSettings().getPagesInMemory() / 2.0);
-        this.firstCached = Math.max(0, this.currentIndex - inMemory);
-        this.lastCached = Math.min(this.currentIndex + inMemory, dc.getBase().getDocumentModel().getPageCount());
+        this.firstCached = Math.max(0, this.firstVisible - inMemory);
+        this.lastCached = Math.min(this.lastVisible + inMemory, dc.getBase().getDocumentModel().getPageCount());
 
         this.pageAlign = oldState.pageAlign;
         this.decodeMode = oldState.decodeMode;

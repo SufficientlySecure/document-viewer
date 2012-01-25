@@ -18,7 +18,6 @@ import org.ebookdroid.core.touch.DefaultGestureDetector;
 import org.ebookdroid.core.touch.IGestureDetector;
 import org.ebookdroid.core.touch.IMultiTouchZoom;
 import org.ebookdroid.core.touch.TouchManager;
-import org.ebookdroid.utils.MathUtils;
 
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -368,19 +367,13 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
     }
 
     protected final ViewState onZoomChanged(final float newZoom, final boolean committed) {
-        final ViewState oldState = new ViewState(this);
         final DocumentModel dm = base.getDocumentModel();
         final ViewState newState = calculatePageVisibility(dm.getCurrentViewPageIndex(), 0, newZoom);
 
         final List<PageTreeNode> nodesToDecode = new ArrayList<PageTreeNode>();
         final List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
 
-        final int minIndex = MathUtils.min(oldState.firstVisible, oldState.firstCached, newState.firstVisible,
-                newState.firstCached);
-        final int maxIndex = MathUtils.max(oldState.lastVisible, oldState.lastCached, newState.lastVisible,
-                newState.lastCached);
-
-        for (final Page page : getBase().getDocumentModel().getPages(minIndex, maxIndex + 1)) {
+        for (final Page page : getBase().getDocumentModel().getPages()) {
             page.onZoomChanged(initialZoom, newState, committed, nodesToDecode, bitmapsToRecycle);
         }
         BitmapManager.release(bitmapsToRecycle);
@@ -559,9 +552,9 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
         }
         if (layoutChanged && !layoutLocked) {
             if (isShown) {
-                final ArrayList<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
+                final List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
                 for (final Page page : base.getDocumentModel().getPages()) {
-                    page.nodes.recycle(bitmapsToRecycle);
+                    page.nodes.recycleAll(bitmapsToRecycle, true);
                 }
                 BitmapManager.release(bitmapsToRecycle);
 
@@ -578,9 +571,9 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     @Override
     public void toggleNightMode(boolean nightMode) {
-        final ArrayList<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
+        final List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
         for (final Page page : base.getDocumentModel().getPages()) {
-            page.nodes.recycle(bitmapsToRecycle);
+            page.nodes.recycleAll(bitmapsToRecycle, true);
         }
         BitmapManager.release(bitmapsToRecycle);
 

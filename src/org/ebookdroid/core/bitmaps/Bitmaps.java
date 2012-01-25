@@ -2,6 +2,7 @@ package org.ebookdroid.core.bitmaps;
 
 import org.ebookdroid.core.PagePaint;
 import org.ebookdroid.core.ViewState;
+import org.ebookdroid.core.log.LogContext;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -12,11 +13,12 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region.Op;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Bitmaps {
+
+    private static final LogContext LCTX = BitmapManager.LCTX;
 
     private static final int SIZE = 128;
 
@@ -31,7 +33,7 @@ public class Bitmaps {
 
     private BitmapRef[] bitmaps;
 
-    public Bitmaps(final String nodeId, final BitmapRef orig, final Rect bitmapBounds, boolean invert) {
+    public Bitmaps(final String nodeId, final BitmapRef orig, final Rect bitmapBounds, final boolean invert) {
         final Bitmap origBitmap = orig.getBitmap();
 
         this.bounds = bitmapBounds;
@@ -42,7 +44,7 @@ public class Bitmaps {
 
         int top = 0;
 
-        RawBitmap rb = new RawBitmap(SIZE, SIZE, origBitmap.hasAlpha());
+        final RawBitmap rb = new RawBitmap(SIZE, SIZE, origBitmap.hasAlpha());
 
         for (int row = 0; row < rows; row++, top += SIZE) {
             int left = 0;
@@ -69,38 +71,43 @@ public class Bitmaps {
         }
     }
 
-    public synchronized boolean reuse(final String nodeId, final BitmapRef orig, final Rect bitmapBounds, boolean invert) {
+    public synchronized boolean reuse(final String nodeId, final BitmapRef orig, final Rect bitmapBounds,
+            final boolean invert) {
         final Bitmap origBitmap = orig.getBitmap();
         final Config cfg = useDefaultBitmapType ? DEF_BITMAP_TYPE : origBitmap.getConfig();
-        if (cfg != config) {
+        if (cfg != this.config) {
             return false;
         }
 
-        int oldsize = this.columns * this.rows;
-        BitmapRef[] oldBitmaps = this.bitmaps;
+        final BitmapRef[] oldBitmaps = this.bitmaps;
 
         this.bounds = bitmapBounds;
         this.columns = (int) Math.ceil(bitmapBounds.width() / (float) SIZE);
         this.rows = (int) Math.ceil(bitmapBounds.height() / (float) SIZE);
         this.bitmaps = new BitmapRef[columns * rows];
 
-        int newsize = this.columns * this.rows;
+        final int newsize = this.columns * this.rows;
 
         int i = 0;
         for (; i < newsize; i++) {
-            this.bitmaps[i] = i < oldsize ? this.bitmaps[i] : null;
+            this.bitmaps[i] = i < oldBitmaps.length ? oldBitmaps[i] : null;
             if (this.bitmaps[i] == null || this.bitmaps[i].getBitmap() == null) {
+                BitmapManager.release(this.bitmaps[i]);
                 this.bitmaps[i] = BitmapManager.getBitmap(nodeId + ":reuse:" + i, SIZE, SIZE, config);
+            } else {
+                if (LCTX.isDebugEnabled()) {
+                    LCTX.d("Reuse  bitmap: " + this.bitmaps[i]);
+                }
             }
             this.bitmaps[i].getBitmap().eraseColor(Color.CYAN);
         }
-        for (; i < oldsize; i++) {
+        for (; i < oldBitmaps.length; i++) {
             BitmapManager.release(oldBitmaps[i]);
         }
 
         int top = 0;
 
-        RawBitmap rb = new RawBitmap(SIZE, SIZE, origBitmap.hasAlpha());
+        final RawBitmap rb = new RawBitmap(SIZE, SIZE, origBitmap.hasAlpha());
 
         for (int row = 0; row < rows; row++, top += SIZE) {
             int left = 0;
@@ -149,12 +156,12 @@ public class Bitmaps {
         }
     }
 
-    public synchronized void recycle(List<BitmapRef> bitmapsToRecycle) {
+    public synchronized void recycle(final List<BitmapRef> bitmapsToRecycle) {
         if (bitmaps != null) {
             if (bitmapsToRecycle != null) {
-                bitmapsToRecycle.addAll(Arrays.asList(bitmaps));
+                Collections.addAll(bitmapsToRecycle, bitmaps);
             } else {
-                BitmapManager.release(new ArrayList<BitmapRef>(Arrays.asList(bitmaps)));
+                BitmapManager.release(bitmaps);
             }
             bitmaps = null;
         }
@@ -163,7 +170,7 @@ public class Bitmaps {
     public synchronized void draw(final ViewState viewState, final Canvas canvas, final PagePaint paint, final RectF tr) {
         final Bitmap[] bitmap = getBitmaps();
         if (bitmap != null) {
-            Rect orig = canvas.getClipBounds();
+            final Rect orig = canvas.getClipBounds();
             canvas.clipRect(tr, Op.INTERSECT);
 
             final float scaleX = tr.width() / bounds.width();

@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PageTreeNode implements DecodeService.DecodeCallback {
 
-    private static final LogContext LCTX = LogContext.ROOT.lctx("Page", false);
+    private static final LogContext LCTX = Page.LCTX;
 
     final Page page;
     final PageTreeNode parent;
@@ -56,28 +56,31 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     @Override
     protected void finalize() throws Throwable {
-        ArrayList<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
+        List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
         holder.recycle(bitmapsToRecycle);
-        page.nodes.recycleChildren(this, bitmapsToRecycle);
         BitmapManager.release(bitmapsToRecycle);
     }
 
-    public void recycle(final List<BitmapRef> bitmapsToRecycle, boolean recycleChildren) {
+    public boolean recycle(final List<BitmapRef> bitmapsToRecycle) {
         stopDecodingThisNode("node recycling");
-        holder.recycle(bitmapsToRecycle);
-        if (recycleChildren) {
-            if (id == 0) {
-                page.nodes.recycle(bitmapsToRecycle);
-            } else {
-                page.nodes.recycleChildren(this, bitmapsToRecycle);
-            }
+        return holder.recycle(bitmapsToRecycle);
+    }
+
+    public boolean recycleWithChildren(final List<BitmapRef> bitmapsToRecycle) {
+        stopDecodingThisNode("node recycling");
+        boolean res = holder.recycle(bitmapsToRecycle);
+        if (id == 0) {
+            res |= page.nodes.recycleAll(bitmapsToRecycle, false);
+        } else {
+            res |= page.nodes.recycleChildren(this, bitmapsToRecycle);
         }
+        return res;
     }
 
     public boolean onZoomChanged(final float oldZoom, final ViewState viewState, final boolean committed,
             final RectF pageBounds, final List<PageTreeNode> nodesToDecode, final List<BitmapRef> bitmapsToRecycle) {
         if (!viewState.isNodeKeptInMemory(this, pageBounds)) {
-            recycle(bitmapsToRecycle, true);
+            recycleWithChildren(bitmapsToRecycle);
             return false;
         }
 
@@ -130,7 +133,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             final List<PageTreeNode> nodesToDecode, final List<BitmapRef> bitmapsToRecycle) {
 
         if (!viewState.isNodeKeptInMemory(this, pageBounds)) {
-            recycle(bitmapsToRecycle, true);
+            recycleWithChildren(bitmapsToRecycle);
             return false;
         }
 
@@ -157,11 +160,22 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         return true;
     }
 
-    protected void onChildLoaded(final PageTreeNode child, final ViewState viewState, final RectF bounds,
-            final List<BitmapRef> bitmapsToRecycle) {
-        if (viewState.decodeMode == DecodeMode.LOW_MEMORY) {
-            if (page.nodes.isHiddenByChildren(this, viewState, bounds)) {
-                holder.clearDirectRef(bitmapsToRecycle);
+    protected void onChildLoaded(final PageTreeNode child, final ViewState viewState, final RectF bounds) {
+        if (viewState.decodeMode == DecodeMode.LOW_MEMORY || viewState.zoom > 1.5) {
+            boolean hiddenByChildren = page.nodes.isHiddenByChildren(this, viewState, bounds);
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("Node " + getFullId() + "is: " + (hiddenByChildren ? "" : "not") + " hidden by children");
+            }
+            if (!viewState.isNodeVisible(this, bounds) || hiddenByChildren) {
+                final List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
+                this.recycle(bitmapsToRecycle);
+                for (PageTreeNode parent = this.parent; parent != null; parent = parent.parent) {
+                    parent.recycle(bitmapsToRecycle);
+                }
+                BitmapManager.release(bitmapsToRecycle);
+                if (LCTX.isDebugEnabled()) {
+                    LCTX.d("Recycle parent nodes for: " + child.getFullId() + " : " + bitmapsToRecycle.size());
+                }
             }
         }
     }
@@ -272,9 +286,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                         }
                         final RectF bounds = viewState.getBounds(page);
                         if (parent != null) {
-                            final List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>(2);
-                            parent.onChildLoaded(PageTreeNode.this, viewState, bounds, bitmapsToRecycle);
-                            BitmapManager.release(bitmapsToRecycle);
+                            parent.onChildLoaded(PageTreeNode.this, viewState, bounds);
                         }
                         if (viewState.isNodeVisible(PageTreeNode.this, bounds)) {
                             dc.redrawView(viewState);
@@ -482,9 +494,9 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         public synchronized void drawBitmap(final ViewState viewState, final Canvas canvas, final PagePaint paint,
                 final RectF tr) {
 
-                if (day != null) {
-                    day.draw(viewState, canvas, paint, tr);
-                }
+            if (day != null) {
+                day.draw(viewState, canvas, paint, tr);
+            }
         }
 
         public synchronized Bitmaps reuse(String nodeId, BitmapRef bitmap, Rect bitmapBounds) {
@@ -509,15 +521,13 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             return day != null ? day.getBitmaps() : null;
         }
 
-
-        public synchronized void clearDirectRef(final List<BitmapRef> bitmapsToRecycle) {
-        }
-
-        public synchronized void recycle(final List<BitmapRef> bitmapsToRecycle) {
+        public synchronized boolean recycle(final List<BitmapRef> bitmapsToRecycle) {
             if (day != null) {
                 day.recycle(bitmapsToRecycle);
                 day = null;
+                return true;
             }
+            return false;
         }
 
         public synchronized void setBitmap(final Bitmaps bitmaps) {

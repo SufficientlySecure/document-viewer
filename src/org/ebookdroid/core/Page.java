@@ -3,6 +3,7 @@ package org.ebookdroid.core;
 import org.ebookdroid.R;
 import org.ebookdroid.core.bitmaps.BitmapRef;
 import org.ebookdroid.core.codec.CodecPageInfo;
+import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.utils.MathUtils;
 
 import android.graphics.Canvas;
@@ -12,6 +13,8 @@ import android.text.TextPaint;
 import java.util.List;
 
 public class Page {
+
+    static final LogContext LCTX = LogContext.ROOT.lctx("Page", true);
 
     public final PageIndex index;
     public final PageType type;
@@ -38,7 +41,7 @@ public class Page {
 
     public void recycle(List<BitmapRef> bitmapsToRecycle) {
         recycled = true;
-        nodes.recycle(bitmapsToRecycle);
+        nodes.recycleAll(bitmapsToRecycle, true);
     }
 
     public boolean draw(final Canvas canvas, final ViewState viewState) {
@@ -53,7 +56,7 @@ public class Page {
 
             if (!nodes.root.hasBitmap(viewState, paint)) {
                 canvas.drawRect(bounds, paint.fillPaint);
-    
+
                 final TextPaint textPaint = paint.textPaint;
                 textPaint.setTextSize(24 * base.getZoomModel().getZoom());
                 canvas.drawText(base.getContext().getString(R.string.text_page) + " " + (index.viewIndex + 1),
@@ -85,7 +88,7 @@ public class Page {
         return false;
     }
 
-    public boolean setAspectRatio(final float width, final float  height) {
+    public boolean setAspectRatio(final float width, final float height) {
         return setAspectRatio(width / height);
     }
 
@@ -95,16 +98,42 @@ public class Page {
         bounds = pageBounds;
     }
 
-    public boolean onZoomChanged(final float oldZoom, final ViewState viewState, boolean committed, final List<PageTreeNode> nodesToDecode, List<BitmapRef> bitmapsToRecycle) {
+    public boolean onZoomChanged(final float oldZoom, final ViewState viewState, boolean committed,
+            final List<PageTreeNode> nodesToDecode, List<BitmapRef> bitmapsToRecycle) {
         if (!recycled) {
-            return nodes.root.onZoomChanged(oldZoom, viewState, committed, viewState.getBounds(this), nodesToDecode, bitmapsToRecycle);
+            if (viewState.isPageKeptInMemory(this)) {
+                return nodes.root.onZoomChanged(oldZoom, viewState, committed, viewState.getBounds(this),
+                        nodesToDecode, bitmapsToRecycle);
+            } else {
+                int oldSize = bitmapsToRecycle.size();
+                if (nodes.recycleAll(bitmapsToRecycle, true)) {
+                    if (LCTX.isDebugEnabled()) {
+                        if (LCTX.isDebugEnabled()) {
+                            LCTX.d("onZoomChanged: recycle page " + index + " " + viewState.firstCached + ":"
+                                    + viewState.lastCached + " = " + (bitmapsToRecycle.size() - oldSize));
+                        }
+                    }
+                }
+            }
         }
         return false;
     }
 
-    public boolean onPositionChanged(final ViewState viewState, final List<PageTreeNode> nodesToDecode, List<BitmapRef> bitmapsToRecycle) {
+    public boolean onPositionChanged(final ViewState viewState, final List<PageTreeNode> nodesToDecode,
+            List<BitmapRef> bitmapsToRecycle) {
         if (!recycled) {
-            return nodes.root.onPositionChanged(viewState, viewState.getBounds(this), nodesToDecode, bitmapsToRecycle);
+            if (viewState.isPageKeptInMemory(this)) {
+                return nodes.root.onPositionChanged(viewState, viewState.getBounds(this), nodesToDecode,
+                        bitmapsToRecycle);
+            } else {
+                int oldSize = bitmapsToRecycle.size();
+                if (nodes.recycleAll(bitmapsToRecycle, true)) {
+                    if (LCTX.isDebugEnabled()) {
+                        LCTX.d("onPositionChanged: recycle page " + index + " " + viewState.firstCached + ":"
+                                + viewState.lastCached + " = " + (bitmapsToRecycle.size() - oldSize));
+                    }
+                }
+            }
         }
         return false;
     }

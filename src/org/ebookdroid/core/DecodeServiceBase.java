@@ -361,6 +361,7 @@ public class DecodeServiceBase implements DecodeService {
                 while (run.get()) {
                     final Runnable r = nextTask();
                     if (r != null) {
+                        BitmapManager.release();
                         r.run();
                     }
                 }
@@ -368,6 +369,8 @@ public class DecodeServiceBase implements DecodeService {
             } catch (final Throwable th) {
                 LCTX.e("Decoding service executor failed: " + th.getMessage(), th);
                 EmergencyHandler.onUnexpectedError(th);
+            } finally {
+                BitmapManager.release();
             }
         }
 
@@ -568,7 +571,6 @@ public class DecodeServiceBase implements DecodeService {
 
         @Override
         public void run() {
-            BitmapManager.release();
             performDecode(this);
         }
 

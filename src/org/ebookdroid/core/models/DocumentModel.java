@@ -76,6 +76,7 @@ public class DocumentModel extends CurrentPageModel {
                 page.recycle(bitmapsToRecycle);
             }
             BitmapManager.release(bitmapsToRecycle);
+            BitmapManager.release();
         }
         pages = EMPTY_PAGES;
     }

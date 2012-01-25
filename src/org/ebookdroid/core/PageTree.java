@@ -12,7 +12,7 @@ import java.util.List;
 
 public class PageTree {
 
-    private static final LogContext LCTX = LogContext.ROOT.lctx("Page", true);
+    private static final LogContext LCTX = Page.LCTX;
 
     private static RectF[] splitMasks = {
             // Left Top
@@ -34,13 +34,26 @@ public class PageTree {
         this.root = createRoot();
     }
 
-    public void recycle(List<BitmapRef> bitmapsToRecycle) {
+    public boolean recycleAll(List<BitmapRef> bitmapsToRecycle, boolean includeRoot) {
+        boolean res = false;
+        int oldCount = bitmapsToRecycle.size();
         for (int index = 0; index < nodes.size(); index++) {
             PageTreeNode node = nodes.valueAt(index);
-            node.recycle(bitmapsToRecycle, false);
+            if (includeRoot || node.id != 0) {
+                res |= node.recycle(bitmapsToRecycle);
+            }
         }
-        nodes.clear();
-        nodes.append(0, root);
+        if (nodes.size() > 1) {
+            nodes.clear();
+            nodes.append(0, root);
+        }
+        int newCount = bitmapsToRecycle.size();
+        if (LCTX.isDebugEnabled()) {
+            if (newCount != oldCount) {
+                LCTX.d("Recycle children for: " + owner.index + " : " + (newCount - oldCount));
+            }
+        }
+        return res;
     }
 
     private PageTreeNode createRoot() {
@@ -59,14 +72,21 @@ public class PageTree {
     }
 
     public boolean recycleChildren(final PageTreeNode parent, List<BitmapRef> bitmapsToRecycle) {
+        if (parent.id == 0) {
+            return recycleAll(bitmapsToRecycle, false);
+        } else {
+            return recycleChildrenImpl(parent, bitmapsToRecycle);
+        }
+    }
+
+    private boolean recycleChildrenImpl(final PageTreeNode parent, List<BitmapRef> bitmapsToRecycle) {
         int childId = (int) getFirstChildId(parent.id);
         PageTreeNode child = nodes.get(childId);
         if (child == null) {
             return false;
         }
-        if (LCTX.isDebugEnabled()) {
-            LCTX.e("Recycle children for: " + parent.getFullId());
-        }
+        int oldCount = bitmapsToRecycle.size();
+
         LinkedList<PageTreeNode> nodesToRemove = new LinkedList<PageTreeNode>();
         nodesToRemove.add(child);
         nodes.remove(childId);
@@ -80,9 +100,9 @@ public class PageTree {
             }
         }
 
-        while(!nodesToRemove.isEmpty()) {
+        while (!nodesToRemove.isEmpty()) {
             child = nodesToRemove.removeFirst();
-            child.recycle(bitmapsToRecycle, false);
+            child.recycle(bitmapsToRecycle);
 
             childId = (int) getFirstChildId(child.id);
             for (int end = childId + splitMasks.length; childId < end; childId++) {
@@ -91,6 +111,13 @@ public class PageTree {
                     nodesToRemove.add(child);
                     nodes.remove(childId);
                 }
+            }
+        }
+
+        int newCount = bitmapsToRecycle.size();
+        if (LCTX.isDebugEnabled()) {
+            if (newCount != oldCount) {
+                LCTX.d("Recycle children for: " + parent.getFullId() + " : " + (newCount - oldCount));
             }
         }
 
@@ -149,10 +176,7 @@ public class PageTree {
             if (child == null) {
                 return false;
             }
-            if (!viewState.isNodeVisible(child, pageBounds)) {
-                return false;
-            }
-            if (!child.hasBitmap() && !child.decodingNow.get() && isHiddenByChildren(child, viewState, pageBounds)) {
+            if (!child.hasBitmap() && !child.decodingNow.get()) {
                 return false;
             }
         }

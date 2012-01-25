@@ -61,14 +61,25 @@ public class FB2Page implements CodecPage {
         paint1.setColor(Color.WHITE);
         c.drawRect(PAGE_RECT, paint1);
 
+        RectF bounds = new RectF(pageSliceBounds.left * PAGE_WIDTH, pageSliceBounds.top * PAGE_HEIGHT,
+                pageSliceBounds.right * PAGE_WIDTH, pageSliceBounds.bottom * PAGE_HEIGHT);
+
         int y = MARGIN_Y;
         for (final FB2Line line : lines) {
-            y += line.getHeight();
-            line.render(c, y);
+            int top = y;
+            int bottom = y + line.getHeight();
+            if (bounds.top < bottom && top < bounds.bottom) {
+                line.render(c, y, bounds.left, bounds.right);
+            }
+            y = bottom;
         }
         for (final FB2Line line : noteLines) {
-            y += line.getHeight();
-            line.render(c, y);
+            int top = y;
+            int bottom = y + line.getHeight();
+            if (bounds.top < bottom && top < bounds.bottom) {
+                line.render(c, y, bounds.left, bounds.right);
+            }
+            y = bottom;
         }
 
         return bmp;

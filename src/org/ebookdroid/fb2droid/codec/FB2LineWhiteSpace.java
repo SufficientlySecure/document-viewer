@@ -9,7 +9,7 @@ public class FB2LineWhiteSpace extends AbstractFB2LineElement {
     }
 
     @Override
-    public float render(final Canvas c, final int y, final int x, final float additionalWidth) {
+    public float render(final Canvas c, final int y, final int x, final float additionalWidth, float left, float right) {
         return width + additionalWidth;
     }
 }

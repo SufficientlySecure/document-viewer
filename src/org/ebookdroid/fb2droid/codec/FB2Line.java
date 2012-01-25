@@ -48,11 +48,11 @@ public class FB2Line {
         return h;
     }
 
-    public void render(final Canvas c, final int y) {
+    public void render(final Canvas c, final int y, float left, float right) {
         applyJustification();
         float x = FB2Page.MARGIN_X;
         for (final AbstractFB2LineElement e : elements) {
-            x += e.render(c, y, (int) x, spaceWidth);
+            x += e.render(c, y, (int) x, spaceWidth, left, right);
         }
     }
 

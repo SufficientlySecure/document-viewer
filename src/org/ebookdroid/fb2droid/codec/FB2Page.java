@@ -69,7 +69,7 @@ public class FB2Page implements CodecPage {
             int top = y;
             int bottom = y + line.getHeight();
             if (bounds.top < bottom && top < bounds.bottom) {
-                line.render(c, y, bounds.left, bounds.right);
+                line.render(c, bottom, bounds.left, bounds.right);
             }
             y = bottom;
         }
@@ -77,7 +77,7 @@ public class FB2Page implements CodecPage {
             int top = y;
             int bottom = y + line.getHeight();
             if (bounds.top < bottom && top < bounds.bottom) {
-                line.render(c, y, bounds.left, bounds.right);
+                line.render(c, bottom, bounds.left, bounds.right);
             }
             y = bottom;
         }

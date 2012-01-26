@@ -1,10 +1,9 @@
 package org.ebookdroid.core.log;
 
+import org.ebookdroid.EBookDroidApp;
+
 import android.content.Context;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.os.Environment;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -21,10 +20,6 @@ public class EmergencyHandler implements UncaughtExceptionHandler {
     private static final EmergencyHandler instance = new EmergencyHandler();
 
     private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyyMMdd.HHmmss");
-
-    private static String APP_VERSION;
-
-    private static String APP_PACKAGE;
 
     private static String FILES_PATH;
 
@@ -50,8 +45,8 @@ public class EmergencyHandler implements UncaughtExceptionHandler {
             final String stacktrace = result.toString();
             printWriter.close();
 
-            final String filename = FILES_PATH + "/" + APP_PACKAGE + "." + APP_VERSION + "." + timestamp
-                    + ".stacktrace";
+            final String filename = FILES_PATH + "/" + EBookDroidApp.APP_PACKAGE + "." + EBookDroidApp.APP_VERSION
+                    + "." + timestamp + ".stacktrace";
 
             writeToFile(stacktrace, filename);
         } catch (final Exception e) {
@@ -74,24 +69,16 @@ public class EmergencyHandler implements UncaughtExceptionHandler {
     public static void init(final Context context) {
         if (system == null) {
             final PackageManager pm = context.getPackageManager();
-            try {
-                final PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
-                APP_VERSION = pi.versionName;
-                APP_PACKAGE = pi.packageName;
-
-                File dir = Environment.getExternalStorageDirectory();
-                if (dir != null) {
-                    File appDir = new File(dir, "." + APP_PACKAGE);
-                    if (appDir.isDirectory() || appDir.mkdir()) {
-                        dir = appDir;
-                    }
-                } else {
-                    dir = context.getFilesDir();
+            File dir = EBookDroidApp.EXT_STORAGE;
+            if (dir != null) {
+                File appDir = new File(dir, "." + EBookDroidApp.APP_PACKAGE);
+                if (appDir.isDirectory() || appDir.mkdir()) {
+                    dir = appDir;
                 }
-                FILES_PATH = dir.getAbsolutePath();
-            } catch (final NameNotFoundException e) {
-                e.printStackTrace();
+            } else {
+                dir = context.getFilesDir();
             }
+            FILES_PATH = dir.getAbsolutePath();
             system = Thread.getDefaultUncaughtExceptionHandler();
             Thread.setDefaultUncaughtExceptionHandler(instance);
         }

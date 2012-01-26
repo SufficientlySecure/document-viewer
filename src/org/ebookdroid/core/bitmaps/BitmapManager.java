@@ -50,7 +50,7 @@ public class BitmapManager {
     public static synchronized Bitmap getResource(final int resourceId) {
         Bitmap bitmap = resources.get(resourceId);
         if (bitmap == null || bitmap.isRecycled()) {
-            final Resources resources = EBookDroidApp.getAppContext().getResources();
+            final Resources resources = EBookDroidApp.context.getResources();
             bitmap = BitmapFactory.decodeResource(resources, resourceId);
         }
         return bitmap;

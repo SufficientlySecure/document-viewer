@@ -7,9 +7,9 @@ import android.util.SparseArray;
 
 class RenderingStyle {
 
-    public static final Typeface NORMAL_TF = Typeface.createFromAsset(EBookDroidApp.getAppContext().getAssets(),
+    public static final Typeface NORMAL_TF = Typeface.createFromAsset(EBookDroidApp.context.getAssets(),
             "fonts/academy.ttf");
-    public static final Typeface ITALIC_TF = Typeface.createFromAsset(EBookDroidApp.getAppContext().getAssets(),
+    public static final Typeface ITALIC_TF = Typeface.createFromAsset(EBookDroidApp.context.getAssets(),
             "fonts/academyi.ttf");
 
     public static final int TEXT_SIZE = 24;

@@ -16,7 +16,7 @@ public class DragMark {
 
     public synchronized static void draw(final Canvas canvas, final ViewState viewState) {
         if (dragBitmap == null) {
-            dragBitmap = BitmapFactory.decodeResource(EBookDroidApp.getAppContext().getResources(), R.drawable.drag);
+            dragBitmap = BitmapFactory.decodeResource(EBookDroidApp.context.getResources(), R.drawable.drag);
         }
 
         Rect l = viewState.ctrl.getScrollLimits();

@@ -21,6 +21,7 @@ import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -92,6 +93,8 @@ public class GoToPageDialog extends Dialog {
     @Override
     protected void onStart() {
         super.onStart();
+
+        getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
         final DocumentModel dm = base.getDocumentModel();
         final Page lastPage = dm != null ? dm.getLastPageObject() : null;

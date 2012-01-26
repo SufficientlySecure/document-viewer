@@ -128,7 +128,7 @@ public class PageTree {
         int childId = (int) getFirstChildId(parent.id);
         for (int end = childId + splitMasks.length; childId < end; childId++) {
             PageTreeNode child = nodes.get(childId);
-            if (child == null || !child.hasBitmap(viewState, paint)) {
+            if (child == null || !child.hasBitmap()) {
                 return false;
             }
         }

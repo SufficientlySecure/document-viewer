@@ -41,7 +41,7 @@ actions = {
 public abstract class AbstractDocumentView extends AbstractComponentController<BaseDocumentView> implements
         IDocumentViewController {
 
-    protected static final LogContext LCTX = LogContext.ROOT.lctx("View", false);
+    protected static final LogContext LCTX = LogContext.ROOT.lctx("View", true);
 
     public static final int DOUBLE_TAP_TIME = 500;
 

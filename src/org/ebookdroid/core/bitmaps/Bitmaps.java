@@ -133,27 +133,19 @@ public class Bitmaps {
         return true;
     }
 
-    public synchronized Bitmap[] getBitmaps() {
+    public synchronized boolean hasBitmaps() {
         if (bitmaps == null) {
-            return null;
+            return false;
         }
-        final Bitmap[] res = new Bitmap[bitmaps.length];
         for (int i = 0; i < bitmaps.length; i++) {
-            res[i] = bitmaps[i] != null ? bitmaps[i].getBitmap() : null;
-            if (res[i] == null || res[i].isRecycled()) {
-                recycle(null);
-                return null;
+            if (bitmaps[i] == null) {
+                return false;
+            }
+            if (bitmaps[i].clearEmptyRef()) {
+                return false;
             }
         }
-        return res;
-    }
-
-    public synchronized void clearDirectRef() {
-        if (bitmaps != null) {
-            for (final BitmapRef b : bitmaps) {
-                b.clearDirectRef();
-            }
-        }
+        return true;
     }
 
     public synchronized void recycle(final List<BitmapRef> bitmapsToRecycle) {
@@ -168,8 +160,7 @@ public class Bitmaps {
     }
 
     public synchronized void draw(final ViewState viewState, final Canvas canvas, final PagePaint paint, final RectF tr) {
-        final Bitmap[] bitmap = getBitmaps();
-        if (bitmap != null) {
+        if (this.bitmaps != null) {
             final Rect orig = canvas.getClipBounds();
             canvas.clipRect(tr, Op.INTERSECT);
 
@@ -186,8 +177,8 @@ public class Bitmaps {
                     m.postTranslate(tr.left, tr.top);
 
                     final int index = row * columns + col;
-                    if (bitmap[index] != null && !bitmap[index].isRecycled()) {
-                        canvas.drawBitmap(bitmap[index], m, paint.bitmapPaint);
+                    if (this.bitmaps[index] != null && this.bitmaps[index].bitmap != null && !this.bitmaps[index].bitmap.isRecycled()) {
+                        canvas.drawBitmap(this.bitmaps[index].bitmap, m, paint.bitmapPaint);
                     }
                 }
             }

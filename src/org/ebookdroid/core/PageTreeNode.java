@@ -12,7 +12,6 @@ import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.settings.books.BookSettings;
 
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -92,7 +91,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 if (hasChildren) {
                     page.nodes.recycleChildren(this, bitmapsToRecycle);
                 }
-                if (viewState.isNodeVisible(this, pageBounds) && (holder.getBitmap() == null || committed)) {
+                if (viewState.isNodeVisible(this, pageBounds) && (!holder.hasBitmaps() || committed)) {
                     decodePageTreeNode(nodesToDecode, viewState);
                 }
             }
@@ -115,7 +114,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         if (isReDecodingRequired(committed, viewState)) {
             stopDecodingThisNode("Zoom changed");
             decodePageTreeNode(nodesToDecode, viewState);
-        } else if (holder.getBitmap() == null) {
+        } else if (!holder.hasBitmaps()) {
             decodePageTreeNode(nodesToDecode, viewState);
         }
         return true;
@@ -154,7 +153,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             return true;
         }
 
-        if (holder.getBitmap() == null) {
+        if (!holder.hasBitmaps()) {
             decodePageTreeNode(nodesToDecode, viewState);
         }
         return true;
@@ -200,9 +199,9 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
         final long size = BitmapManager.getBitmapBufferSize(rect.width(), rect.height(), ds.getBitmapConfig());
 
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d(getFullId() + ".isChildrenRequired(): rect=" + rect + ", size=" + size + ", limit=" + memoryLimit);
-        }
+        // if (LCTX.isDebugEnabled()) {
+        // LCTX.d(getFullId() + ".isChildrenRequired(): rect=" + rect + ", size=" + size + ", limit=" + memoryLimit);
+        // }
 
         final boolean textureSizeExceedeed = (rect.width() > 2048) || (rect.height() > 2048);
         final boolean memoryLimitExceeded = size + 4096 >= memoryLimit;
@@ -353,10 +352,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         return page.nodes.allChildrenHasBitmap(viewState, this, paint);
     }
 
-    boolean hasBitmap(final ViewState viewState, final PagePaint paint) {
-        return holder.hasBitmap(viewState, paint);
-    }
-
     void drawBrightnessFilter(final Canvas canvas, final RectF tr) {
         final int brightness = SettingsManager.getAppSettings().getBrightness();
         if (brightness < 100) {
@@ -411,7 +406,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     public boolean hasBitmap() {
-        return holder.getBitmap() != null;
+        return holder.hasBitmaps();
     }
 
     @Override
@@ -446,7 +441,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         buf.append(", ");
         buf.append("rect").append("=").append(this.pageSliceBounds);
         buf.append(", ");
-        buf.append("hasBitmap").append("=").append(holder.getBitmap() != null);
+        buf.append("hasBitmap").append("=").append(holder.hasBitmaps());
 
         buf.append("]");
         return buf.toString();
@@ -509,16 +504,8 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             return new Bitmaps(nodeId, bitmap, bitmapBounds, invert);
         }
 
-        public boolean hasBitmap(final ViewState viewState, final PagePaint paint) {
-            return getBitmap(viewState, paint) != null;
-        }
-
-        public Bitmap[] getBitmap(final ViewState viewState, final PagePaint paint) {
-            return getBitmap();
-        }
-
-        public synchronized Bitmap[] getBitmap() {
-            return day != null ? day.getBitmaps() : null;
+        public synchronized boolean hasBitmaps() {
+            return day != null ? day.hasBitmaps() : false;
         }
 
         public synchronized boolean recycle(final List<BitmapRef> bitmapsToRecycle) {

@@ -70,12 +70,12 @@ public class BitmapManager {
         final Iterator<BitmapRef> it = pool.iterator();
         while (it.hasNext()) {
             final BitmapRef ref = it.next();
-            final Bitmap bmp = ref.getBitmap();
+            final Bitmap bmp = ref.bitmap;
 
             if (bmp != null && bmp.getConfig() == config && bmp.getWidth() == width && bmp.getHeight() >= height) {
                 it.remove();
 
-                ref.restoreDirectRef(bmp, generation);
+                ref.gen = generation;
                 used.put(ref.id, ref);
 
                 reused++;
@@ -208,9 +208,6 @@ public class BitmapManager {
             } else {
                 LCTX.e("The bitmap " + ref + " not found in used ones");
             }
-            if (generation - ref.gen > 5) {
-                ref.clearDirectRef();
-            }
             if (!ref.clearEmptyRef()) {
                 pool.add(ref);
                 memoryPooled += ref.size;
@@ -229,12 +226,10 @@ public class BitmapManager {
                 invalid++;
                 memoryPooled -= ref.size;
             } else if (generation - ref.gen > 5) {
-                ref.clearDirectRef();
-                if (ref.clearEmptyRef()) {
-                    it.remove();
-                    recycled++;
-                    memoryPooled -= ref.size;
-                }
+                it.remove();
+                ref.recycle();
+                recycled++;
+                memoryPooled -= ref.size;
             }
         }
         if (recycled + invalid > 0) {

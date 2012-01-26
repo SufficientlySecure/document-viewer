@@ -54,7 +54,7 @@ public class Page {
 
             final RectF bounds = viewState.getBounds(this);
 
-            if (!nodes.root.hasBitmap(viewState, paint)) {
+            if (!nodes.root.hasBitmap()) {
                 canvas.drawRect(bounds, paint.fillPaint);
 
                 final TextPaint textPaint = paint.textPaint;
@@ -88,7 +88,7 @@ public class Page {
         return false;
     }
 
-    public boolean setAspectRatio(final float width, final float height) {
+    public boolean setAspectRatio(final float width, final float  height) {
         return setAspectRatio(width / height);
     }
 

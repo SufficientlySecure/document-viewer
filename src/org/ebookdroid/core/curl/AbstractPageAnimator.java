@@ -126,7 +126,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
             return;
         }
 
-        System.out.println("FAS start");
+        // System.out.println("FAS start");
         final int width = view.getWidth();
 
         // No input when flipping
@@ -161,7 +161,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
         // Check for endings :D
         if (mA.x <= getLeftBound() || mA.x >= width - 1) {
             bFlipping = false;
-            System.out.println("FAS end");
+            // System.out.println("FAS end");
             if (bFlipRight) {
                 view.goToPageImpl(backIndex);
                 foreIndex = backIndex;

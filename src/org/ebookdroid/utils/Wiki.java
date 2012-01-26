@@ -70,7 +70,7 @@ public class Wiki {
         }
 
         String content = buf.append("</body></html>").toString();
-        System.out.println(content);
+        // System.out.println(content);
         return content;
     }
 }

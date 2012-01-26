@@ -4,6 +4,7 @@ import org.ebookdroid.core.DragMark;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.SinglePageDocumentView;
 import org.ebookdroid.core.ViewState;
+import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.settings.SettingsManager;
 
 import android.graphics.Canvas;
@@ -11,6 +12,8 @@ import android.view.MotionEvent;
 
 public class SinglePageView implements PageAnimator {
 
+    protected static final LogContext LCTX = LogContext.ROOT.lctx("View", true);
+    
     protected final PageAnimationType type;
 
     protected final SinglePageDocumentView view;

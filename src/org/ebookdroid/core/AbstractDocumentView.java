@@ -513,6 +513,15 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
                     return true;
             }
         }
+        // Avoid sound
+        if (event.getAction() == KeyEvent.ACTION_UP) {
+            switch (event.getKeyCode()) {
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                return true;
+            }
+        }
+
         return false;
     }
 

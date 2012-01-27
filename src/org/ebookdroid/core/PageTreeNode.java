@@ -36,36 +36,52 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     final float childrenZoomThreshold;
     final RectF pageSliceBounds;
-    final Matrix matrix = new Matrix();
 
     float bitmapZoom = 1;
-    private boolean cropped;
+    
+    boolean cropped;
     RectF croppedBounds = null;
+
+    PageTreeNode(final Page page, final float childrenZoomThreshold) {
+        assert page != null;
+
+        this.page = page;
+        this.parent = null;
+        this.id = 0;
+        this.shortId = page.index.viewIndex + ":0";
+        this.pageSliceBounds = page.type.getInitialRect();
+        this.croppedBounds = null;
+        this.childrenZoomThreshold = childrenZoomThreshold;
+    }
 
     PageTreeNode(final Page page, final PageTreeNode parent, final long id, final RectF localPageSliceBounds,
             final float childrenZoomThreshold) {
+        assert id != 0;
+        assert page != null;
+        assert parent != null;
+
+        this.page = page;
+        this.parent = parent;
         this.id = id;
         this.shortId = page.index.viewIndex + ":" + id;
-        this.parent = parent;
         this.pageSliceBounds = evaluatePageSliceBounds(localPageSliceBounds, parent);
         this.croppedBounds = evaluateCroppedPageSliceBounds(localPageSliceBounds, parent);
-        this.page = page;
         this.childrenZoomThreshold = childrenZoomThreshold;
     }
 
     @Override
     protected void finalize() throws Throwable {
-        List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
+        List<Bitmaps> bitmapsToRecycle = new ArrayList<Bitmaps>();
         holder.recycle(bitmapsToRecycle);
         BitmapManager.release(bitmapsToRecycle);
     }
 
-    public boolean recycle(final List<BitmapRef> bitmapsToRecycle) {
+    public boolean recycle(final List<Bitmaps> bitmapsToRecycle) {
         stopDecodingThisNode("node recycling");
         return holder.recycle(bitmapsToRecycle);
     }
 
-    public boolean recycleWithChildren(final List<BitmapRef> bitmapsToRecycle) {
+    public boolean recycleWithChildren(final List<Bitmaps> bitmapsToRecycle) {
         stopDecodingThisNode("node recycling");
         boolean res = holder.recycle(bitmapsToRecycle);
         if (id == 0) {
@@ -77,7 +93,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     public boolean onZoomChanged(final float oldZoom, final ViewState viewState, final boolean committed,
-            final RectF pageBounds, final List<PageTreeNode> nodesToDecode, final List<BitmapRef> bitmapsToRecycle) {
+            final RectF pageBounds, final List<PageTreeNode> nodesToDecode, final List<Bitmaps> bitmapsToRecycle) {
         if (!viewState.isNodeKeptInMemory(this, pageBounds)) {
             recycleWithChildren(bitmapsToRecycle);
             return false;
@@ -129,7 +145,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     public boolean onPositionChanged(final ViewState viewState, final RectF pageBounds,
-            final List<PageTreeNode> nodesToDecode, final List<BitmapRef> bitmapsToRecycle) {
+            final List<PageTreeNode> nodesToDecode, final List<Bitmaps> bitmapsToRecycle) {
 
         if (!viewState.isNodeKeptInMemory(this, pageBounds)) {
             recycleWithChildren(bitmapsToRecycle);
@@ -166,7 +182,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 LCTX.d("Node " + getFullId() + "is: " + (hiddenByChildren ? "" : "not") + " hidden by children");
             }
             if (!viewState.isNodeVisible(this, bounds) || hiddenByChildren) {
-                final List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
+                final List<Bitmaps> bitmapsToRecycle = new ArrayList<Bitmaps>();
                 this.recycle(bitmapsToRecycle);
                 for (PageTreeNode parent = this.parent; parent != null; parent = parent.parent) {
                     parent.recycle(bitmapsToRecycle);
@@ -363,6 +379,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     public RectF getTargetRect(final RectF viewRect, final RectF pageBounds) {
+        final Matrix matrix = new Matrix();
         matrix.reset();
 
         matrix.postScale(pageBounds.width() * page.getTargetRectScale(), pageBounds.height());
@@ -373,24 +390,13 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         return new RectF(targetRectF);
     }
 
-    public RectF getTargetCroppedRect(final RectF viewRect, final RectF pageBounds) {
-        matrix.reset();
-
-        matrix.postScale(pageBounds.width() * page.getTargetRectScale(), pageBounds.height());
-        matrix.postTranslate(pageBounds.left - pageBounds.width() * page.getTargetTranslate(), pageBounds.top);
-
-        final RectF targetRectF = new RectF();
-        matrix.mapRect(targetRectF, croppedBounds);
-        return new RectF(targetRectF);
-    }
-
     public IViewerActivity getBase() {
         return page.base;
     }
 
     /**
      * Gets the parent node.
-     *
+     * 
      * @return the parent node
      */
     public PageTreeNode getParent() {
@@ -456,9 +462,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     private static RectF evaluatePageSliceBounds(final RectF localPageSliceBounds, final PageTreeNode parent) {
-        if (parent == null) {
-            return localPageSliceBounds;
-        }
         final Matrix matrix = new Matrix();
         matrix.postScale(parent.pageSliceBounds.width(), parent.pageSliceBounds.height());
         matrix.postTranslate(parent.pageSliceBounds.left, parent.pageSliceBounds.top);
@@ -468,9 +471,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     private static RectF evaluateCroppedPageSliceBounds(final RectF localPageSliceBounds, final PageTreeNode parent) {
-        if (parent == null) {
-            return null;
-        }
         if (parent.croppedBounds == null) {
             return null;
         }
@@ -508,9 +508,9 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             return day != null ? day.hasBitmaps() : false;
         }
 
-        public synchronized boolean recycle(final List<BitmapRef> bitmapsToRecycle) {
+        public synchronized boolean recycle(final List<Bitmaps> bitmapsToRecycle) {
             if (day != null) {
-                day.recycle(bitmapsToRecycle);
+                bitmapsToRecycle.add(day);
                 day = null;
                 return true;
             }

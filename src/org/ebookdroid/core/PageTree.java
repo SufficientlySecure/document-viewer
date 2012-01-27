@@ -1,6 +1,6 @@
 package org.ebookdroid.core;
 
-import org.ebookdroid.core.bitmaps.BitmapRef;
+import org.ebookdroid.core.bitmaps.Bitmaps;
 import org.ebookdroid.core.log.LogContext;
 
 import android.graphics.Canvas;
@@ -14,7 +14,7 @@ public class PageTree {
 
     private static final LogContext LCTX = Page.LCTX;
 
-    private static RectF[] splitMasks = {
+    static RectF[] splitMasks = {
             // Left Top
             new RectF(0, 0, 0.5f, 0.5f),
             // Right top
@@ -23,6 +23,8 @@ public class PageTree {
             new RectF(0, 0.5f, 0.5f, 1.0f),
             // Right Bottom
             new RectF(0.5f, 0.5f, 1.0f, 1.0f), };
+
+    static final int ZOOM_THRESHOLD = 2;
 
     final Page owner;
     final PageTreeNode root;
@@ -34,7 +36,7 @@ public class PageTree {
         this.root = createRoot();
     }
 
-    public boolean recycleAll(List<BitmapRef> bitmapsToRecycle, boolean includeRoot) {
+    public boolean recycleAll(List<Bitmaps> bitmapsToRecycle, boolean includeRoot) {
         boolean res = false;
         int oldCount = bitmapsToRecycle.size();
         for (int index = 0; index < nodes.size(); index++) {
@@ -57,7 +59,7 @@ public class PageTree {
     }
 
     private PageTreeNode createRoot() {
-        final PageTreeNode root = new PageTreeNode(owner, null, 0, owner.type.getInitialRect(), 2);
+        final PageTreeNode root = new PageTreeNode(owner, ZOOM_THRESHOLD);
         nodes.append(0, root);
         return root;
     }
@@ -71,7 +73,7 @@ public class PageTree {
         return true;
     }
 
-    public boolean recycleChildren(final PageTreeNode parent, List<BitmapRef> bitmapsToRecycle) {
+    public boolean recycleChildren(final PageTreeNode parent, List<Bitmaps> bitmapsToRecycle) {
         if (parent.id == 0) {
             return recycleAll(bitmapsToRecycle, false);
         } else {
@@ -79,7 +81,7 @@ public class PageTree {
         }
     }
 
-    private boolean recycleChildrenImpl(final PageTreeNode parent, List<BitmapRef> bitmapsToRecycle) {
+    private boolean recycleChildrenImpl(final PageTreeNode parent, List<Bitmaps> bitmapsToRecycle) {
         int childId = (int) getFirstChildId(parent.id);
         PageTreeNode child = nodes.get(childId);
         if (child == null) {
@@ -147,7 +149,7 @@ public class PageTree {
     }
 
     public void onPositionChanged(final ViewState viewState, final RectF pageBounds, final PageTreeNode parent,
-            final List<PageTreeNode> nodesToDecode, final List<BitmapRef> bitmapsToRecycle) {
+            final List<PageTreeNode> nodesToDecode, final List<Bitmaps> bitmapsToRecycle) {
         int childId = (int) getFirstChildId(parent.id);
         for (int end = childId + splitMasks.length; childId < end; childId++) {
             PageTreeNode child = nodes.get(childId);
@@ -159,7 +161,7 @@ public class PageTree {
 
     public void onZoomChanged(final float oldZoom, final ViewState viewState, final boolean committed,
             final RectF pageBounds, final PageTreeNode parent, final List<PageTreeNode> nodesToDecode,
-            final List<BitmapRef> bitmapsToRecycle) {
+            final List<Bitmaps> bitmapsToRecycle) {
         int childId = (int) getFirstChildId(parent.id);
         for (int end = childId + splitMasks.length; childId < end; childId++) {
             PageTreeNode child = nodes.get(childId);

@@ -1,7 +1,7 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.R;
-import org.ebookdroid.core.bitmaps.BitmapRef;
+import org.ebookdroid.core.bitmaps.Bitmaps;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.utils.MathUtils;
@@ -25,8 +25,10 @@ public class Page {
     RectF bounds;
     float aspectRatio;
     boolean recycled;
-    private float storedZoom;
-    private RectF zoomedBounds;
+    float storedZoom;
+    RectF zoomedBounds;
+
+    int zoomLevel = 1;
 
     public Page(final IViewerActivity base, final PageIndex index, final PageType pt, final CodecPageInfo cpi) {
         this.base = base;
@@ -39,7 +41,7 @@ public class Page {
         nodes = new PageTree(this);
     }
 
-    public void recycle(List<BitmapRef> bitmapsToRecycle) {
+    public void recycle(List<Bitmaps> bitmapsToRecycle) {
         recycled = true;
         nodes.recycleAll(bitmapsToRecycle, true);
     }
@@ -88,7 +90,7 @@ public class Page {
         return false;
     }
 
-    public boolean setAspectRatio(final float width, final float  height) {
+    public boolean setAspectRatio(final float width, final float height) {
         return setAspectRatio(width / height);
     }
 
@@ -99,7 +101,7 @@ public class Page {
     }
 
     public boolean onZoomChanged(final float oldZoom, final ViewState viewState, boolean committed,
-            final List<PageTreeNode> nodesToDecode, List<BitmapRef> bitmapsToRecycle) {
+            final List<PageTreeNode> nodesToDecode, List<Bitmaps> bitmapsToRecycle) {
         if (!recycled) {
             if (viewState.isPageKeptInMemory(this)) {
                 return nodes.root.onZoomChanged(oldZoom, viewState, committed, viewState.getBounds(this),
@@ -120,7 +122,7 @@ public class Page {
     }
 
     public boolean onPositionChanged(final ViewState viewState, final List<PageTreeNode> nodesToDecode,
-            List<BitmapRef> bitmapsToRecycle) {
+            List<Bitmaps> bitmapsToRecycle) {
         if (!recycled) {
             if (viewState.isPageKeptInMemory(this)) {
                 return nodes.root.onPositionChanged(viewState, viewState.getBounds(this), nodesToDecode,

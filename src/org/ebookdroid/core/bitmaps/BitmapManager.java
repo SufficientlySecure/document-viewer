@@ -13,7 +13,6 @@ import android.os.Debug;
 import android.util.SparseArray;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -156,10 +155,18 @@ public class BitmapManager {
                 releaseImpl((BitmapRef) ref);
                 count++;
             } else if (ref instanceof List) {
-                final List<BitmapRef> list = (List<BitmapRef>) ref;
-                for (final BitmapRef bitmap : list) {
-                    releaseImpl(bitmap);
-                    count++;
+                final List<Bitmaps> list = (List<Bitmaps>) ref;
+                for (final Bitmaps bmp : list) {
+                    BitmapRef[] bitmaps = bmp.bitmaps;
+                    bmp.bitmaps = null;
+                    if (bitmaps != null) {
+                        for (final BitmapRef bitmap : bitmaps) {
+                            if (bitmap != null) {
+                                releaseImpl(bitmap);
+                                count++;
+                            }
+                        }
+                    }
                 }
             } else {
                 LCTX.e("Unknown object in release queue: " + ref);
@@ -174,24 +181,6 @@ public class BitmapManager {
         print("After  release: ", false);
     }
 
-    public static void release(final List<BitmapRef> bitmapsToRecycle) {
-        if (LengthUtils.isNotEmpty(bitmapsToRecycle)) {
-            if (LCTX.isDebugEnabled()) {
-                LCTX.d("Adding  list of " + bitmapsToRecycle.size() + " refs to release queue");
-            }
-            releasing.add(new ArrayList<BitmapRef>(bitmapsToRecycle));
-        }
-    }
-
-    public static void release(final BitmapRef[] bitmapsToRecycle) {
-        if (LengthUtils.isNotEmpty(bitmapsToRecycle)) {
-            if (LCTX.isDebugEnabled()) {
-                LCTX.d("Adding array of " + bitmapsToRecycle.length + " refs to release queue");
-            }
-            releasing.add(Arrays.asList(bitmapsToRecycle));
-        }
-    }
-
     public static void release(final BitmapRef ref) {
         if (ref != null) {
             if (LCTX.isDebugEnabled()) {
@@ -201,18 +190,28 @@ public class BitmapManager {
         }
     }
 
-    private static void releaseImpl(final BitmapRef ref) {
-        if (ref != null) {
-            if (null != used.remove(ref.id)) {
-                memoryUsed -= ref.size;
-            } else {
-                LCTX.e("The bitmap " + ref + " not found in used ones");
+    public static void release(final List<Bitmaps> bitmapsToRecycle) {
+        if (LengthUtils.isNotEmpty(bitmapsToRecycle)) {
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("Adding  list of " + bitmapsToRecycle.size() + " bitmaps to release queue");
             }
-            if (!ref.clearEmptyRef()) {
-                pool.add(ref);
-                memoryPooled += ref.size;
-            }
+            releasing.add(new ArrayList<Bitmaps>(bitmapsToRecycle));
         }
+    }
+
+    static void releaseImpl(final BitmapRef ref) {
+        assert ref != null;
+
+        if (null != used.remove(ref.id)) {
+            memoryUsed -= ref.size;
+        } else {
+            LCTX.e("The bitmap " + ref + " not found in used ones");
+        }
+        if (!ref.clearEmptyRef()) {
+            pool.add(ref);
+            memoryPooled += ref.size;
+        }
+
     }
 
     private static void removeOldRefs() {

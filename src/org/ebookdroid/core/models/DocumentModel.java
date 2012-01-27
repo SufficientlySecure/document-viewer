@@ -8,7 +8,7 @@ import org.ebookdroid.core.Page;
 import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.core.PageType;
 import org.ebookdroid.core.bitmaps.BitmapManager;
-import org.ebookdroid.core.bitmaps.BitmapRef;
+import org.ebookdroid.core.bitmaps.Bitmaps;
 import org.ebookdroid.core.cache.CacheManager;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.settings.SettingsManager;
@@ -71,7 +71,7 @@ public class DocumentModel extends CurrentPageModel {
 
     private void recyclePages() {
         if (LengthUtils.isNotEmpty(pages)) {
-            final List<BitmapRef> bitmapsToRecycle = new ArrayList<BitmapRef>();
+            final List<Bitmaps> bitmapsToRecycle = new ArrayList<Bitmaps>();
             for (final Page page : pages) {
                 page.recycle(bitmapsToRecycle);
             }

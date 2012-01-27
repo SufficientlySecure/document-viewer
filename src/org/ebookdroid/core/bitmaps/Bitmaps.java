@@ -13,9 +13,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region.Op;
 
-import java.util.Collections;
-import java.util.List;
-
 public class Bitmaps {
 
     private static final LogContext LCTX = BitmapManager.LCTX;
@@ -31,7 +28,7 @@ public class Bitmaps {
     public int columns;
     public int rows;
 
-    private BitmapRef[] bitmaps;
+    BitmapRef[] bitmaps;
 
     public Bitmaps(final String nodeId, final BitmapRef orig, final Rect bitmapBounds, final boolean invert) {
         final Bitmap origBitmap = orig.getBitmap();
@@ -148,12 +145,13 @@ public class Bitmaps {
         return true;
     }
 
-    public synchronized void recycle(final List<BitmapRef> bitmapsToRecycle) {
+    @Override
+    protected void finalize() throws Throwable {
         if (bitmaps != null) {
-            if (bitmapsToRecycle != null) {
-                Collections.addAll(bitmapsToRecycle, bitmaps);
-            } else {
-                BitmapManager.release(bitmaps);
+            for (BitmapRef ref : bitmaps) {
+                if (ref != null) {
+                BitmapManager.releaseImpl(ref);
+                }
             }
             bitmaps = null;
         }

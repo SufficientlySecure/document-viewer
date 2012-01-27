@@ -1,6 +1,41 @@
 #include "fitz.h"
 #include "muxps.h"
 
+char *
+xps_get_real_params(char *s, int num, float *x)
+{
+	int k = 0;
+
+	if (s == NULL || *s == 0)
+		return NULL;
+
+	while (*s)
+	{
+		while (*s == 0x0d || *s == '\t' || *s == ' ' || *s == 0x0a)
+			s++;
+		x[k] = (float)strtod(s, &s);
+		while (*s == 0x0d || *s == '\t' || *s == ' ' || *s == 0x0a)
+			s++;
+		if (*s == ',')
+			s++;
+		if (++k == num)
+			break;
+	}
+	return s;
+}
+
+char *
+xps_get_point(char *s_in, float *x, float *y)
+{
+	char *s_out = s_in;
+	float xy[2];
+
+	s_out = xps_get_real_params(s_out, 2, &xy[0]);
+	*x = xy[0];
+	*y = xy[1];
+	return s_out;
+}
+
 static fz_point
 fz_currentpoint(fz_path *path)
 {
@@ -93,21 +128,27 @@ angle_between(const fz_point u, const fz_point v)
 	return sign * acosf(t);
 }
 
-/* Some explaination of the parameters here is warranted. See:
- *     http://www.w3.org/TR/SVG11/implnote.html#ArcImplementationNotes
- * Add an arc segment to path, that describes a section of an elliptical arc
- * from the current point of path to (point_x,point_y), such that:
- *   the arc segment is taken from an elliptical arc of semi major radius
- *     size_x, semi minor radius size_y, where the semi major axis of the
- *     ellipse is rotated by rotation_angle.
- *   if is_large_arc, then the arc segment is selected to be > 180 degrees.
- *   if is_clockwise, then the arc sweeps clockwise.
- */
+/*
+	Some explaination of the parameters here is warranted. See:
+
+	http://www.w3.org/TR/SVG11/implnote.html#ArcImplementationNotes
+
+	Add an arc segment to path, that describes a section of an elliptical
+	arc from the current point of path to (point_x,point_y), such that:
+
+	The arc segment is taken from an elliptical arc of semi major radius
+	size_x, semi minor radius size_y, where the semi major axis of the
+	ellipse is rotated by rotation_angle.
+
+	If is_large_arc, then the arc segment is selected to be > 180 degrees.
+
+	If is_clockwise, then the arc sweeps clockwise.
+*/
 static void
 xps_draw_arc(fz_context *doc, fz_path *path,
-		float size_x, float size_y, float rotation_angle,
-		int is_large_arc, int is_clockwise,
-		float point_x, float point_y)
+	float size_x, float size_y, float rotation_angle,
+	int is_large_arc, int is_clockwise,
+	float point_x, float point_y)
 {
 	fz_matrix rotmat, revmat;
 	fz_matrix mtx;
@@ -475,8 +516,8 @@ xps_parse_arc_segment(fz_context *doc, fz_path *path, xml_element *root, int str
 	if (!is_stroked)
 		*skipped_stroke = 1;
 
-	sscanf(point_att, "%g,%g", &point_x, &point_y);
-	sscanf(size_att, "%g,%g", &size_x, &size_y);
+	xps_get_point(point_att, &point_x, &point_y);
+	xps_get_point(size_att, &size_x, &size_y);
 	rotation_angle = fz_atof(rotation_angle_att);
 	is_large_arc = !strcmp(is_large_arc_att, "true");
 	is_clockwise = !strcmp(sweep_direction_att, "Clockwise");
@@ -518,8 +559,7 @@ xps_parse_poly_quadratic_bezier_segment(fz_context *doc, fz_path *path, xml_elem
 	while (*s != 0)
 	{
 		while (*s == ' ') s++;
-		sscanf(s, "%g,%g", &x[n], &y[n]);
-		while (*s != ' ' && *s != 0) s++;
+		s = xps_get_point(s, &x[n], &y[n]);
 		n ++;
 		if (n == 2)
 		{
@@ -567,8 +607,7 @@ xps_parse_poly_bezier_segment(fz_context *doc, fz_path *path, xml_element *root,
 	while (*s != 0)
 	{
 		while (*s == ' ') s++;
-		sscanf(s, "%g,%g", &x[n], &y[n]);
-		while (*s != ' ' && *s != 0) s++;
+		s = xps_get_point(s, &x[n], &y[n]);
 		n ++;
 		if (n == 3)
 		{
@@ -606,12 +645,11 @@ xps_parse_poly_line_segment(fz_context *doc, fz_path *path, xml_element *root, i
 	while (*s != 0)
 	{
 		while (*s == ' ') s++;
-		sscanf(s, "%g,%g", &x, &y);
+		s = xps_get_point(s, &x, &y);
 		if (stroking && !is_stroked)
 			fz_moveto(doc, path, x, y);
 		else
 			fz_lineto(doc, path, x, y);
-		while (*s != ' ' && *s != 0) s++;
 	}
 }
 
@@ -640,7 +678,7 @@ xps_parse_path_figure(fz_context *doc, fz_path *path, xml_element *root, int str
 	if (is_filled_att)
 		is_filled = !strcmp(is_filled_att, "true");
 	if (start_point_att)
-		sscanf(start_point_att, "%g,%g", &start_x, &start_y);
+		xps_get_point(start_point_att, &start_x, &start_y);
 
 	if (!stroking && !is_filled) /* not filled, when filling */
 		return;
@@ -910,7 +948,8 @@ xps_parse_path(xps_document *doc, fz_matrix ctm, char *base_uri, xps_resource *d
 		{
 			while (*s == ' ')
 				s++;
-			stroke.dash_list[stroke.dash_len++] = fz_atof(s) * stroke.linewidth;
+			if (*s) /* needed in case of a space before the last quote */
+				stroke.dash_list[stroke.dash_len++] = fz_atof(s) * stroke.linewidth;
 			while (*s && *s != ' ')
 				s++;
 		}

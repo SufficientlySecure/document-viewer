@@ -1,7 +1,6 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.core.DrawThread.DrawTask;
-import org.ebookdroid.core.log.LogContext;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.utils.Flag;
@@ -17,9 +16,7 @@ import android.widget.Scroller;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-public final class BaseDocumentView extends View {
-
-    protected static final LogContext LCTX = LogContext.ROOT.lctx("View");
+public final class BaseDocumentView extends View implements IDocumentView {
 
     protected final IViewerActivity base;
 
@@ -47,18 +44,42 @@ public final class BaseDocumentView extends View {
         drawThread = new DrawThread(null);
     }
 
-    public final BaseDocumentView getView() {
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.IDocumentView#getView()
+     */
+    @Override
+    public final View getView() {
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.IDocumentView#getBase()
+     */
+    @Override
     public final IViewerActivity getBase() {
         return base;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.IDocumentView#getScroller()
+     */
+    @Override
     public final Scroller getScroller() {
         return scroller;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.IDocumentView#invalidateScroll()
+     */
+    @Override
     public final void invalidateScroll() {
         stopScroller();
 
@@ -66,6 +87,12 @@ public final class BaseDocumentView extends View {
         scrollTo((int) (getScrollX() * scrollScaleRatio), (int) (getScrollY() * scrollScaleRatio));
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.IDocumentView#invalidateScroll(float, float)
+     */
+    @Override
     public final void invalidateScroll(final float newZoom, final float oldZoom) {
         stopScroller();
 
@@ -74,22 +101,46 @@ public final class BaseDocumentView extends View {
                 (int) ((getScrollY() + getHeight() / 2) * ratio - getHeight() / 2));
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.IDocumentView#startPageScroll(int, int)
+     */
+    @Override
     public void startPageScroll(final int dx, final int dy) {
         scroller.startScroll(getScrollX(), getScrollY(), dx, dy);
         redrawView();
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.IDocumentView#startFling(float, float, android.graphics.Rect)
+     */
+    @Override
     public void startFling(final float vX, final float vY, final Rect limits) {
         scroller.fling(getScrollX(), getScrollY(), -(int) vX, -(int) vY, limits.left, limits.right, limits.top,
                 limits.bottom);
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.IDocumentView#continueScroll()
+     */
+    @Override
     public void continueScroll() {
         if (scroller.computeScrollOffset()) {
             scrollTo(scroller.getCurrX(), scroller.getCurrY());
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.IDocumentView#forceFinishScroll()
+     */
+    @Override
     public void forceFinishScroll() {
         if (!scroller.isFinished()) { // is flinging
             scroller.forceFinished(true); // to stop flinging on touch
@@ -98,7 +149,7 @@ public final class BaseDocumentView extends View {
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see android.view.View#onScrollChanged(int, int, int, int)
      */
     @Override
@@ -110,7 +161,7 @@ public final class BaseDocumentView extends View {
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see android.view.View#onTouchEvent(android.view.MotionEvent)
      */
     @Override
@@ -121,8 +172,8 @@ public final class BaseDocumentView extends View {
 
     /**
      * {@inheritDoc}
-     *
-     * @see android.view.View#scrollTo(int, int)
+     * 
+     * @see org.ebookdroid.core.IDocumentView#scrollTo(int, int)
      */
     @Override
     public final void scrollTo(final int x, final int y) {
@@ -143,21 +194,45 @@ public final class BaseDocumentView extends View {
         base.getActivity().runOnUiThread(r);
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.IDocumentView#getViewRect()
+     */
+    @Override
     public final RectF getViewRect() {
         return new RectF(getScrollX(), getScrollY(), getScrollX() + getWidth(), getScrollY() + getHeight());
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.IDocumentView#changeLayoutLock(boolean)
+     */
+    @Override
     public void changeLayoutLock(final boolean lock) {
-        layoutLocked = lock;
+        post(new Runnable() {
+
+            @Override
+            public void run() {
+                layoutLocked = lock;
+            }
+        });
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.IDocumentView#isLayoutLocked()
+     */
+    @Override
     public boolean isLayoutLocked() {
         return layoutLocked;
     }
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see android.view.View#onLayout(boolean, int, int, int, int)
      */
     @Override
@@ -173,12 +248,24 @@ public final class BaseDocumentView extends View {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.IDocumentView#waitForInitialization()
+     */
+    @Override
     public final void waitForInitialization() {
         while (!layoutFlag.get()) {
             layoutFlag.waitFor(TimeUnit.SECONDS, 1);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.IDocumentView#getScrollScaleRatio()
+     */
+    @Override
     public float getScrollScaleRatio() {
         final Page page = getBase().getDocumentModel().getCurrentPageObject();
         final float zoom = getBase().getZoomModel().getZoom();
@@ -189,16 +276,34 @@ public final class BaseDocumentView extends View {
         return getWidth() * zoom / page.getBounds(zoom).width();
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.IDocumentView#stopScroller()
+     */
+    @Override
     public void stopScroller() {
         if (!scroller.isFinished()) {
             scroller.abortAnimation();
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.IDocumentView#redrawView()
+     */
+    @Override
     public final void redrawView() {
         redrawView(new ViewState(base.getDocumentController()));
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.IDocumentView#redrawView(org.ebookdroid.core.ViewState)
+     */
+    @Override
     public final void redrawView(final ViewState viewState) {
         if (viewState != null) {
             if (drawThread != null) {
@@ -214,7 +319,7 @@ public final class BaseDocumentView extends View {
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see android.view.View#onDraw(android.graphics.Canvas)
      */
     @Override

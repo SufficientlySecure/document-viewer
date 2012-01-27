@@ -2,7 +2,6 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
-import org.ebookdroid.core.ViewState;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,15 +18,16 @@ public class DragMark {
             dragBitmap = BitmapFactory.decodeResource(EBookDroidApp.context.getResources(), R.drawable.drag);
         }
 
-        Rect l = viewState.ctrl.getScrollLimits();
+        final Rect l = viewState.ctrl.getScrollLimits();
         if (l.width() + l.height() > 0) {
             final Paint paint = new Paint();
             paint.setFilterBitmap(true);
             paint.setAntiAlias(true);
             paint.setDither(true);
 
-            float x = viewState.view.getScrollX() + viewState.view.getWidth() - dragBitmap.getWidth() - 1;
-            float y = viewState.view.getScrollY() + viewState.view.getHeight() - dragBitmap.getHeight() - 1;
+            final IDocumentView view = viewState.view;
+            final float x = view.getScrollX() + view.getWidth() - dragBitmap.getWidth() - 1;
+            final float y = view.getScrollY() + view.getHeight() - dragBitmap.getHeight() - 1;
 
             canvas.drawBitmap(dragBitmap, x, y, paint);
         }

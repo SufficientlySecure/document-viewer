@@ -2,6 +2,7 @@ package org.ebookdroid.core.models;
 
 import org.ebookdroid.R;
 import org.ebookdroid.core.DecodeService;
+import org.ebookdroid.core.IDocumentView;
 import org.ebookdroid.core.IViewerActivity;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.PageIndex;
@@ -15,7 +16,6 @@ import org.ebookdroid.core.settings.books.BookSettings;
 import org.ebookdroid.utils.LengthUtils;
 
 import android.graphics.RectF;
-import android.view.View;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -87,7 +87,7 @@ public class DocumentModel extends CurrentPageModel {
 
     /**
      * Gets the current page object.
-     *
+     * 
      * @return the current page object
      */
     public Page getCurrentPageObject() {
@@ -96,7 +96,7 @@ public class DocumentModel extends CurrentPageModel {
 
     /**
      * Gets the next page object.
-     *
+     * 
      * @return the next page object
      */
     public Page getNextPageObject() {
@@ -105,7 +105,7 @@ public class DocumentModel extends CurrentPageModel {
 
     /**
      * Gets the prev page object.
-     *
+     * 
      * @return the prev page object
      */
     public Page getPrevPageObject() {
@@ -114,7 +114,7 @@ public class DocumentModel extends CurrentPageModel {
 
     /**
      * Gets the last page object.
-     *
+     * 
      * @return the last page object
      */
     public Page getLastPageObject() {
@@ -137,7 +137,7 @@ public class DocumentModel extends CurrentPageModel {
             return;
         }
 
-        final View view = base.getView();
+        final IDocumentView view = base.getView();
 
         final CodecPageInfo defCpi = new CodecPageInfo();
         defCpi.width = (view.getWidth());
@@ -193,7 +193,8 @@ public class DocumentModel extends CurrentPageModel {
         decodeService.createThumbnail(thumbnailFile, width, height, page.index.docIndex, page.type.getInitialRect());
     }
 
-    private CodecPageInfo[] retrievePagesInfo(final IViewerActivity base, final BookSettings bs, IViewerActivity.IBookLoadTask task) {
+    private CodecPageInfo[] retrievePagesInfo(final IViewerActivity base, final BookSettings bs,
+            IViewerActivity.IBookLoadTask task) {
         final File pagesFile = CacheManager.getPageFile(bs.fileName);
 
         if (CACHE_ENABLED) {

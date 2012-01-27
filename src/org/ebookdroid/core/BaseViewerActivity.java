@@ -96,7 +96,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     public static final DisplayMetrics DM = new DisplayMetrics();
 
-    private BaseDocumentView view;
+    private IDocumentView view;
 
     private final AtomicReference<IDocumentViewController> ctrl = new AtomicReference<IDocumentViewController>(
             new EmptyContoller());
@@ -173,10 +173,10 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     private void initView() {
 
-        getView().setLayoutParams(
+        view.getView().setLayoutParams(
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
 
-        frameLayout.addView(getView());
+        frameLayout.addView(view.getView());
         frameLayout.addView(getZoomControls());
         frameLayout.addView(getTouchView());
         setContentView(frameLayout);
@@ -211,7 +211,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
     }
 
     private void startDecoding(final DecodeService decodeService, final String fileName, final String password) {
-        getView().post(new BookLoadTask(decodeService, fileName, password));
+        view.getView().post(new BookLoadTask(decodeService, fileName, password));
     }
 
     private void askPassword(final DecodeService decodeService, final String fileName) {
@@ -331,7 +331,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     /**
      * Called on creation options menu
-     *
+     * 
      * @param menu
      *            the main menu
      * @return true, if successful
@@ -370,13 +370,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         } else {
             w.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
-        getView().post(new Runnable() {
-
-            @Override
-            public void run() {
-                getView().changeLayoutLock(false);
-            }
-        });
+        view.changeLayoutLock(false);
     }
 
     @ActionMethod(ids = R.id.actions_openOptionsMenu)
@@ -495,7 +489,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     /**
      * Gets the zoom model.
-     *
+     * 
      * @return the zoom model
      */
     @Override
@@ -513,7 +507,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     /**
      * Gets the decoding progress model.
-     *
+     * 
      * @return the decoding progress model
      */
     @Override
@@ -537,7 +531,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
     }
 
     @Override
-    public BaseDocumentView getView() {
+    public IDocumentView getView() {
         return view;
     }
 
@@ -621,7 +615,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
             }
         }
         if (diff.isKeepScreenOnChanged()) {
-            getView().setKeepScreenOn(newSettings.isKeepScreenOn());
+            view.getView().setKeepScreenOn(newSettings.isKeepScreenOn());
         }
 
         if (diff.isNightModeChanged() && !diff.isFirstTime()) {
@@ -823,7 +817,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
         }
 
         @Override
-        public BaseDocumentView getView() {
+        public IDocumentView getView() {
             return view;
         }
 

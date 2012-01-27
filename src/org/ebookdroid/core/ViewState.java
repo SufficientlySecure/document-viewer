@@ -14,7 +14,7 @@ import java.util.Map;
 public class ViewState {
 
     public final IDocumentViewController ctrl;
-    public final BaseDocumentView view;
+    public final IDocumentView view;
 
     public final int currentIndex;
     public final int firstVisible;

@@ -18,7 +18,7 @@ public interface IViewerActivity {
 
     DocumentModel getDocumentModel();
 
-    BaseDocumentView getView();
+    IDocumentView getView();
 
     IDocumentViewController getDocumentController();
 

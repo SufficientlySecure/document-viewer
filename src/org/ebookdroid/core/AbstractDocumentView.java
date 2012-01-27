@@ -38,7 +38,7 @@ actions = {
         @ActionMethodDef(id = R.id.actions_verticalConfigScrollDown, method = "verticalConfigScroll")
 // no more
 })
-public abstract class AbstractDocumentView extends AbstractComponentController<BaseDocumentView> implements
+public abstract class AbstractDocumentView extends AbstractComponentController<IDocumentView> implements
         IDocumentViewController {
 
     protected static final LogContext LCTX = LogContext.ROOT.lctx("View", true);
@@ -47,7 +47,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     protected final IViewerActivity base;
 
-    protected final BaseDocumentView view;
+    protected final IDocumentView view;
 
     protected boolean isInitialized = false;
 
@@ -91,7 +91,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
 
     protected List<IGestureDetector> initGestureDetectors(final List<IGestureDetector> list) {
         list.add(IMultiTouchZoom.Factory.createImpl(base.getZoomModel()));
-        list.add(new DefaultGestureDetector(view.getContext(), new GestureListener()));
+        list.add(new DefaultGestureDetector(base.getContext(), new GestureListener()));
         return list;
     }
 
@@ -101,7 +101,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<B
      * @see org.ebookdroid.core.IDocumentViewController#getView()
      */
     @Override
-    public final BaseDocumentView getView() {
+    public final IDocumentView getView() {
         return view;
     }
 

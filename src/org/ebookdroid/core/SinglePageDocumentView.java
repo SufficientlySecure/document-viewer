@@ -164,7 +164,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
     protected List<IGestureDetector> initGestureDetectors(final List<IGestureDetector> list) {
         list.add(IMultiTouchZoom.Factory.createImpl(base.getZoomModel()));
         list.add(curler);
-        list.add(new DefaultGestureDetector(view.getContext(), new GestureListener()));
+        list.add(new DefaultGestureDetector(base.getContext(), new GestureListener()));
         return list;
     }
 
@@ -249,7 +249,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
         final PageAnimationType animationType = SettingsManager.getBookSettings().animationType;
         final PageAnimator newCurler = PageAnimationType.create(animationType, this);
 
-        IHardwareAcceleration.Factory.getInstance().setMode(getView(), animationType.isHardwareAccelSupported());
+        IHardwareAcceleration.Factory.getInstance().setMode(getView().getView(), animationType.isHardwareAccelSupported());
 
         newCurler.init();
         curler.switchCurler(newCurler);

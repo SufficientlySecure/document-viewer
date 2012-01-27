@@ -37,7 +37,7 @@ public interface IDocumentViewController extends ZoomListener {
 
     IViewerActivity getBase();
 
-    BaseDocumentView getView();
+    IDocumentView getView();
 
     void updateAnimationType();
 

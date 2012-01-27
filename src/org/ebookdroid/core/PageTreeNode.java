@@ -20,6 +20,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -38,7 +39,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     final RectF pageSliceBounds;
 
     float bitmapZoom = 1;
-    
+
     boolean cropped;
     RectF croppedBounds = null;
 
@@ -71,9 +72,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     @Override
     protected void finalize() throws Throwable {
-        List<Bitmaps> bitmapsToRecycle = new ArrayList<Bitmaps>();
-        holder.recycle(bitmapsToRecycle);
-        BitmapManager.release(bitmapsToRecycle);
+        holder.recycle(null);
     }
 
     public boolean recycle(final List<Bitmaps> bitmapsToRecycle) {
@@ -510,7 +509,11 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
         public synchronized boolean recycle(final List<Bitmaps> bitmapsToRecycle) {
             if (day != null) {
-                bitmapsToRecycle.add(day);
+                if (bitmapsToRecycle != null) {
+                    bitmapsToRecycle.add(day);
+                } else {
+                    BitmapManager.release(Arrays.asList(day));
+                }
                 day = null;
                 return true;
             }
@@ -521,9 +524,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             if (bitmaps == null || bitmaps == day) {
                 return;
             }
-
             recycle(null);
-
             this.day = bitmaps;
         }
     }

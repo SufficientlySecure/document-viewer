@@ -41,6 +41,7 @@
 	<property name="cortex.a9.mk" location="jni/Application.arm7.a9.mk" />
 	<property name="cortex.a8.neon.mk" location="jni/Application.arm7.a8.neon.mk" />
 	<property name="cortex.a9.neon.mk" location="jni/Application.arm7.a9.neon.mk" />
+	<property name="wexler.mk" location="jni/Application.wexler.t7007.mk" />
 
 	<property name="arm.apk" location="apk/${package.name}-${manifest.version}.apk" />
 	<property name="arm.svn.apk" location="apk/${package.name}-${manifest.version}.apk" />
@@ -48,6 +49,7 @@
 	<property name="cortex.a9.apk" value="apk/${package.name}-arm7-cortex-a9-${manifest.version}.apk" />
 	<property name="cortex.a8.neon.apk" value="apk/${package.name}-arm7-cortex-a8-neon-${manifest.version}.apk" />
 	<property name="cortex.a9.neon.apk" value="apk/${package.name}-arm7-cortex-a9-neon-${manifest.version}.apk" />
+	<property name="wexler.apk" value="apk/${package.name}-wexler.t7007-${manifest.version}.apk" />
 
 	<path id="project.libraries">
 		<pathelement path="thirdparty/junrar" />
@@ -114,6 +116,23 @@
 			<param name="mk" value="${cortex.a9.neon.mk}" />
 			<param name="apk" value="${cortex.a9.neon.apk}" />
 		</antcall>
+		<antcall target="--make-release">
+			<param name="mk" value="${wexler.mk}" />
+			<param name="apk" value="${wexler.apk}" />
+		</antcall>
+
+	</target>
+
+	<target name="EBookDroid-Wexler-release">
+
+		<svn javahl="false">
+			<export srcurl="http://ebookdroid.googlecode.com/svn/wiki/ChangeLog.wiki" destpath="assets/about_changelog.wiki"/>
+		</svn>
+
+		<antcall target="--make-release">
+			<param name="mk" value="${wexler.mk}" />
+			<param name="apk" value="${wexler.apk}" />
+		</antcall>
 
 	</target>
 
@@ -136,4 +155,23 @@
 		</antcall>
 	</target>
 
+	<target name="EBookDroid-Wexler-dev">
+		<svn javahl="false">
+			<info target="." />
+		</svn>
+		<echo>Revision: ${svn.info.rev}</echo>
+
+		<property name="target.apk" location="apk/${package.name}-wexler.t7007-${manifest.version}-r${svn.info.rev}.apk" />
+		<echo>Target: ${target.apk}</echo>
+
+		<svn javahl="false">
+			<export srcurl="http://ebookdroid.googlecode.com/svn/wiki/ChangeLog.wiki" destpath="assets/about_changelog.wiki"/>
+		</svn>
+
+		<antcall target="--make-release">
+			<param name="mk" value="${wexler.mk}" />
+			<param name="apk" value="${target.apk}" />
+		</antcall>
+	</target>
+	
 </project>

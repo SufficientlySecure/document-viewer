@@ -96,6 +96,7 @@ public class SettingsManager {
         lock.writeLock().lock();
         try {
             getAppSettings().clearPseudoBookSettings();
+            storeBookSettings();
             replaceCurrentBookSettings(null);
         } finally {
             lock.writeLock().unlock();
@@ -226,12 +227,14 @@ public class SettingsManager {
         }
     }
 
-    public static void zoomChanged(final float zoom) {
+    public static void zoomChanged(final float zoom, boolean committed) {
         lock.readLock().lock();
         try {
             if (current != null) {
                 current.setZoom(zoom);
-                db.storeBookSettings(current);
+                if (committed) {
+                    db.storeBookSettings(current);
+                }
             }
         } finally {
             lock.readLock().unlock();
@@ -244,8 +247,6 @@ public class SettingsManager {
             if (current != null) {
                 current.offsetX = offsetX;
                 current.offsetY = offsetY;
-
-                db.storeBookSettings(current);
             }
         } finally {
             lock.readLock().unlock();
@@ -274,17 +275,30 @@ public class SettingsManager {
                     final BookSettings oldBS = new BookSettings(current);
                     appSettings.fillBookSettings(current);
                     db.storeBookSettings(current);
+                    db.updateBookmarks(current);
 
                     applyBookSettingsChanges(oldBS, current, appDiff);
                 } else {
                     appSettings.fillBookSettings(current);
                     db.storeBookSettings(current);
+                    db.updateBookmarks(current);
                 }
             }
         } finally {
             lock.writeLock().unlock();
         }
+    }
 
+    public static void storeBookSettings() {
+        lock.readLock().lock();
+        try {
+            if (current != null) {
+                db.storeBookSettings(current);
+                db.updateBookmarks(current);
+            }
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 
     public static AppSettings.Diff applyAppSettingsChanges(final AppSettings oldSettings, final AppSettings newSettings) {

@@ -103,7 +103,7 @@ public class Page {
     public boolean onZoomChanged(final float oldZoom, final ViewState viewState, boolean committed,
             final List<PageTreeNode> nodesToDecode, List<Bitmaps> bitmapsToRecycle) {
         if (!recycled) {
-            if (viewState.isPageKeptInMemory(this)) {
+            if (viewState.isPageKeptInMemory(this) || viewState.isPageVisible(this)) {
                 return nodes.root.onZoomChanged(oldZoom, viewState, committed, viewState.getBounds(this),
                         nodesToDecode, bitmapsToRecycle);
             } else {
@@ -124,7 +124,7 @@ public class Page {
     public boolean onPositionChanged(final ViewState viewState, final List<PageTreeNode> nodesToDecode,
             List<Bitmaps> bitmapsToRecycle) {
         if (!recycled) {
-            if (viewState.isPageKeptInMemory(this)) {
+            if (viewState.isPageKeptInMemory(this) || viewState.isPageVisible(this)) {
                 return nodes.root.onPositionChanged(viewState, viewState.getBounds(this), nodesToDecode,
                         bitmapsToRecycle);
             } else {

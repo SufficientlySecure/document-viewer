@@ -154,9 +154,9 @@ public class ViewState {
             return !outOfMemoryOccured && this.isPageKeptInMemory(node.page) || this.isPageVisible(node.page);
         }
         if (this.zoom < 2.5) {
-            return !outOfMemoryOccured && this.isPageKeptInMemory(node.page) || isPageVisible(node.page) && this.isNodeVisible(node, pageBounds);
+            return !outOfMemoryOccured && this.isPageKeptInMemory(node.page) || this.isNodeVisible(node, pageBounds);
         }
-        return this.isPageVisible(node.page) && this.isNodeVisible(node, pageBounds);
+        return this.isNodeVisible(node, pageBounds);
     }
 
     public final boolean isNodeVisible(final PageTreeNode node, final RectF pageBounds) {

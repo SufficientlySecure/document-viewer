@@ -73,6 +73,7 @@ public class ListenerProxy {
                 }
             }
 
+            references.add(ref);
             for (final Class<?> listenerClass : interfaces) {
                 if (listenerClass.isInstance(listener)) {
                     List<WeakReference<Object>> list = realListeners.get(listenerClass);

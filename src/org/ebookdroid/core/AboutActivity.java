@@ -16,8 +16,10 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.webkit.WebView;
+import android.widget.AbsListView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -152,12 +154,13 @@ public class AboutActivity extends Activity {
             WebView view = null;
             if (!(convertView instanceof WebView)) {
                 view = new WebView(AboutActivity.this);
+                view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.WRAP_CONTENT, AbsListView.LayoutParams.WRAP_CONTENT));
             } else {
                 view = ((WebView) convertView);
             }
             CharSequence content = getChild(groupPosition, childPosition).getContent(AboutActivity.this);
-            view.loadDataWithBaseURL("file:///fake/not_used", content.toString(), "text/html", "UTF-8", "");
             view.setBackgroundColor(Color.GRAY);
+            view.loadDataWithBaseURL("file:///fake/not_used", content.toString(), "text/html", "UTF-8", "");
             return view;
         }
 

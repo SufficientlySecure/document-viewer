@@ -74,8 +74,8 @@ diff -Naur -x .svn -x generated mupdf.orig/fitz/base_memory.c mupdf/fitz/base_me
  };
  
 diff -Naur -x .svn -x generated mupdf.orig/fitz/fitz.h mupdf/fitz/fitz.h
---- mupdf.orig/fitz/fitz.h	2012-01-25 18:06:34.000000000 +0200
-+++ mupdf/fitz/fitz.h	2012-01-25 18:15:04.000000000 +0200
+--- mupdf.orig/fitz/fitz.h	2012-02-01 12:52:31.000000000 +0200
++++ mupdf/fitz/fitz.h	2012-02-01 14:20:45.000000000 +0200
 @@ -28,8 +28,8 @@
  #define LOGI(...) __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
  #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
@@ -99,8 +99,8 @@ diff -Naur -x .svn -x generated mupdf.orig/fitz/res_colorspace.c mupdf/fitz/res_
  void
  fz_free_colorspace_imp(fz_context *ctx, fz_storable *cs_)
 diff -Naur -x .svn -x generated mupdf.orig/xps/xps_zip.c mupdf/xps/xps_zip.c
---- mupdf.orig/xps/xps_zip.c	2012-01-25 18:06:34.000000000 +0200
-+++ mupdf/xps/xps_zip.c	2012-01-20 16:25:27.000000000 +0200
+--- mupdf.orig/xps/xps_zip.c	2012-02-01 12:52:32.000000000 +0200
++++ mupdf/xps/xps_zip.c	2012-02-01 15:02:18.000000000 +0200
 @@ -41,6 +41,19 @@
  	return a | b << 8 | c << 16 | d << 24;
  }

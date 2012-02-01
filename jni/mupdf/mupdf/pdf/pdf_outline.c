@@ -2,7 +2,7 @@
 #include "mupdf.h"
 
 static fz_outline *
-pdf_load_outline_imp(pdf_xref *xref, fz_obj *dict)
+pdf_load_outline_imp(pdf_document *xref, fz_obj *dict)
 {
 	fz_context *ctx = xref->ctx;
 	fz_outline *node, **prev, *first;
@@ -20,7 +20,6 @@ pdf_load_outline_imp(pdf_xref *xref, fz_obj *dict)
 			if (fz_dict_mark(dict))
 				break;
 			node = fz_malloc_struct(ctx, fz_outline);
-			node->ctx = ctx;
 			node->title = NULL;
 			node->dest.kind = FZ_LINK_NONE;
 			node->down = NULL;
@@ -58,7 +57,7 @@ pdf_load_outline_imp(pdf_xref *xref, fz_obj *dict)
 }
 
 fz_outline *
-pdf_load_outline(pdf_xref *xref)
+pdf_load_outline(pdf_document *xref)
 {
 	fz_obj *root, *obj, *first;
 

@@ -711,6 +711,20 @@ parse_code(pdf_function *func, fz_stream *stream, int *codeptr)
 			++*codeptr;
 			break;
 
+		case PDF_TOK_TRUE:
+			resize_code(ctx, func, *codeptr);
+			func->u.p.code[*codeptr].type = PS_BOOL;
+			func->u.p.code[*codeptr].u.b = 1;
+			++*codeptr;
+			break;
+
+		case PDF_TOK_FALSE:
+			resize_code(ctx, func, *codeptr);
+			func->u.p.code[*codeptr].type = PS_BOOL;
+			func->u.p.code[*codeptr].u.b = 0;
+			++*codeptr;
+			break;
+
 		case PDF_TOK_REAL:
 			resize_code(ctx, func, *codeptr);
 			func->u.p.code[*codeptr].type = PS_REAL;
@@ -816,7 +830,7 @@ parse_code(pdf_function *func, fz_stream *stream, int *codeptr)
 }
 
 static void
-load_postscript_func(pdf_function *func, pdf_xref *xref, fz_obj *dict, int num, int gen)
+load_postscript_func(pdf_function *func, pdf_document *xref, fz_obj *dict, int num, int gen)
 {
 	fz_stream *stream = NULL;
 	int codeptr;
@@ -884,7 +898,7 @@ eval_postscript_func(fz_context *ctx, pdf_function *func, float *in, float *out)
  */
 
 static void
-load_sample_func(pdf_function *func, pdf_xref *xref, fz_obj *dict, int num, int gen)
+load_sample_func(pdf_function *func, pdf_document *xref, fz_obj *dict, int num, int gen)
 {
 	fz_context *ctx = xref->ctx;
 	fz_stream *stream;
@@ -1169,7 +1183,7 @@ eval_exponential_func(fz_context *ctx, pdf_function *func, float in, float *out)
  */
 
 static void
-load_stitching_func(pdf_function *func, pdf_xref *xref, fz_obj *dict)
+load_stitching_func(pdf_function *func, pdf_document *xref, fz_obj *dict)
 {
 	fz_context *ctx = xref->ctx;
 	pdf_function **funcs;
@@ -1216,8 +1230,8 @@ load_stitching_func(pdf_function *func, pdf_xref *xref, fz_obj *dict)
 	if (!fz_is_array(obj))
 		fz_throw(ctx, "stitching function has no bounds");
 	{
-		if (!fz_is_array(obj) || fz_array_len(obj) != k - 1)
-			fz_throw(ctx, "malformed /Bounds (not array or wrong length)");
+		if (fz_array_len(obj) != k - 1)
+			fz_throw(ctx, "malformed /Bounds (wrong length)");
 
 		for (i = 0; i < k-1; i++)
 		{
@@ -1238,7 +1252,7 @@ load_stitching_func(pdf_function *func, pdf_xref *xref, fz_obj *dict)
 	if (!fz_is_array(obj))
 		fz_throw(ctx, "stitching function is missing encoding");
 	{
-		if (!fz_is_array(obj) || fz_array_len(obj) != k * 2)
+		if (fz_array_len(obj) != k * 2)
 			fz_throw(ctx, "malformed /Encode");
 		for (i = 0; i < k; i++)
 		{
@@ -1340,7 +1354,7 @@ pdf_function_size(pdf_function *func)
 }
 
 pdf_function *
-pdf_load_function(pdf_xref *xref, fz_obj *dict)
+pdf_load_function(pdf_document *xref, fz_obj *dict)
 {
 	fz_context *ctx = xref->ctx;
 	pdf_function *func;

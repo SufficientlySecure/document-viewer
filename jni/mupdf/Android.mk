@@ -184,12 +184,9 @@ MY_MUPDF_SRC_FILES := \
 	mupdf/xps/xps_glyphs.c \
 	mupdf/xps/xps_gradient.c \
 	mupdf/xps/xps_image.c \
-	mupdf/xps/xps_jpeg.c \
 	mupdf/xps/xps_outline.c \
 	mupdf/xps/xps_path.c \
-	mupdf/xps/xps_png.c \
 	mupdf/xps/xps_resource.c \
-	mupdf/xps/xps_tiff.c \
 	mupdf/xps/xps_tile.c \
 	mupdf/xps/xps_util.c \
 	mupdf/xps/xps_xml.c \
@@ -228,7 +225,10 @@ MY_MUPDF_SRC_FILES := \
 	mupdf/fitz/filt_lzwd.c \
 	mupdf/fitz/filt_predict.c \
 	mupdf/fitz/filt_jbig2d.c \
-	mupdf/fitz/filt_jpxd.c \
+	mupdf/fitz/image_png.c \
+	mupdf/fitz/image_jpeg.c \
+	mupdf/fitz/image_jpx.c \
+	mupdf/fitz/image_tiff.c \
 	mupdf/fitz/res_bitmap.c \
 	mupdf/fitz/res_colorspace.c \
 	mupdf/fitz/res_font.c \

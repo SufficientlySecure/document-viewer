@@ -55,11 +55,11 @@ static void xps_free_document(renderdocument_t* doc)
     if (doc)
     {
         if (doc->outline)
-            fz_free_outline(doc->outline);
+            fz_free_outline(doc->ctx, doc->outline);
         doc->outline = NULL;
 
 	if(doc->xpsdoc)
-	    xps_free_context(doc->xpsdoc);
+	    xps_close_document(doc->xpsdoc);
 	doc->xpsdoc = NULL;
         
         fz_flush_warnings(doc->ctx);
@@ -105,7 +105,7 @@ Java_org_ebookdroid_xpsdroid_codec_XpsDocument_open(JNIEnv *env, jclass clazz, j
     
     fz_try(doc->ctx)
     {
-	doc->xpsdoc = xps_open_file(doc->ctx, filename);
+	doc->xpsdoc = xps_open_document(doc->ctx, filename);
     }
     fz_catch(doc->ctx)
     {
@@ -455,7 +455,7 @@ Java_org_ebookdroid_xpsdroid_codec_XpsOutline_free(JNIEnv *env, jclass clazz, jl
     if (doc)
     {
         if (doc->outline)
-            fz_free_outline(doc->outline);
+            fz_free_outline(doc->ctx, doc->outline);
         doc->outline = NULL;
     }
 //    DEBUG("XpsOutline_free(%p)", doc);

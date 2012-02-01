@@ -36,15 +36,15 @@ Jbig2Image* jbig2_image_new(Jbig2Ctx *ctx, int width, int height)
 	image = jbig2_new(ctx, Jbig2Image, 1);
 	if (image == NULL) {
 		jbig2_error(ctx, JBIG2_SEVERITY_FATAL, -1,
-			       "could not allocate image structure");
+            "could not allocate image structure in jbig2_image_new");
 		return NULL;
 	}
 
 	stride = ((width - 1) >> 3) + 1; /* generate a byte-aligned stride */
 	image->data = jbig2_new(ctx, uint8_t, stride*height);
 	if (image->data == NULL) {
-                jbig2_error(ctx, JBIG2_SEVERITY_FATAL, -1,
-                    "could not allocate image data buffer! [%d bytes]\n", stride*height);
+        jbig2_error(ctx, JBIG2_SEVERITY_FATAL, -1,
+            "could not allocate image data buffer! [%d bytes]\n", stride*height);
 		jbig2_free(ctx->allocator, image);
 		return NULL;
 	}
@@ -60,13 +60,16 @@ Jbig2Image* jbig2_image_new(Jbig2Ctx *ctx, int width, int height)
 /* clone an image pointer by bumping its reference count */
 Jbig2Image* jbig2_image_clone(Jbig2Ctx *ctx, Jbig2Image *image)
 {
-	image->refcount++;
+	if (image)
+		image->refcount++;
 	return image;
 }
 
 /* release an image pointer, freeing it it appropriate */
 void jbig2_image_release(Jbig2Ctx *ctx, Jbig2Image *image)
 {
+	if (image == NULL)
+		return;
 	image->refcount--;
 	if (!image->refcount) jbig2_image_free(ctx, image);
 }
@@ -74,7 +77,8 @@ void jbig2_image_release(Jbig2Ctx *ctx, Jbig2Image *image)
 /* free a Jbig2Image structure and its associated memory */
 void jbig2_image_free(Jbig2Ctx *ctx, Jbig2Image *image)
 {
-	jbig2_free(ctx->allocator, image->data);
+	if (image)
+		jbig2_free(ctx->allocator, image->data);
 	jbig2_free(ctx->allocator, image);
 }
 

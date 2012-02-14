@@ -236,6 +236,53 @@ public class StringUtils {
         return index;
     }
 
+
+    private final static String x = "йьъЙЬЪ";
+    private final static String g = "аеёиоуыэюяaeiouyАЕЁИОУЫЭЮЯAEIOUY";
+    private final static String s = "бвгджзклмнпрстфхцчшщbcdfghjklmnpqrstvwxzБВГДЖЗКЛМНПРСТФХЦЧШЩBCDFGHJKLMNPQRSTVWXZ";
+    private final static HyphenRule[] rules = { new HyphenRule("xgg", 1), new HyphenRule("xgs", 1), new HyphenRule("xsg", 1), new HyphenRule("xss", 1), new HyphenRule("gssssg", 3),
+            new HyphenRule("gsssg", 3), new HyphenRule("gsssg", 2), new HyphenRule("sgsg", 2), new HyphenRule("gssg", 2), new HyphenRule("sggg", 2), new HyphenRule("sggs", 2) };
+
+
+    public static final String[] hyphenateWord(String text) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (x.indexOf(c) != -1) {
+                sb.append("x");
+            } else if (g.indexOf(c) != -1) {
+                sb.append("g");
+            } else if (s.indexOf(c) != -1) {
+                sb.append("s");
+            } else {
+                sb.append(c);
+            }
+        }
+        String hyphenatedText = sb.toString();
+        for (HyphenRule rule : rules) {
+            int index = hyphenatedText.indexOf(rule.pattern);
+            while (index != -1) {
+                int actualIndex = index + rule.position;
+                hyphenatedText = hyphenatedText.substring(0, actualIndex) + "-" + hyphenatedText.substring(actualIndex);
+                text = text.substring(0, actualIndex) + "-" + text.substring(actualIndex);
+                index = hyphenatedText.indexOf(rule.pattern);
+            }
+        }
+        return text.split("-");
+    }
+
+    private final static class HyphenRule {
+        public String pattern;
+        public int position;
+
+        public HyphenRule(String pattern, int position) {
+            this.pattern = pattern;
+            this.position = position;
+        }
+    }
+
+
+
     public static final class NaturalStringComparator implements Comparator<String> {
 
         public int compare(String o1, String o2) {

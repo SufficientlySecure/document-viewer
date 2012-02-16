@@ -62,6 +62,8 @@ public enum PageAnimationType {
     public static PageAnimator create(final PageAnimationType type, final SinglePageDocumentView singlePageDocumentView) {
         if (type != null) {
             switch (type) {
+                case NONE:
+                    return new SinglePageNULLCurler(singlePageDocumentView);
                 case CURLER:
                     return new SinglePageSimpleCurler(singlePageDocumentView);
                 case CURLER_DYNAMIC:

@@ -4,6 +4,7 @@ import org.ebookdroid.core.actions.IActionController;
 import org.ebookdroid.core.models.DecodingProgressModel;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.models.ZoomModel;
+import org.ebookdroid.core.touch.IMultiTouchListener;
 
 import android.app.Activity;
 import android.content.Context;
@@ -25,6 +26,8 @@ public interface IViewerActivity {
     IActionController<?> getActionController();
 
     ZoomModel getZoomModel();
+
+    IMultiTouchListener getMultiTouchListener();
 
     DecodingProgressModel getDecodingProgressModel();
 

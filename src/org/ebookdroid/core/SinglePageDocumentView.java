@@ -162,7 +162,7 @@ public class SinglePageDocumentView extends AbstractDocumentView {
      */
     @Override
     protected List<IGestureDetector> initGestureDetectors(final List<IGestureDetector> list) {
-        list.add(IMultiTouchZoom.Factory.createImpl(base.getZoomModel()));
+        list.add(IMultiTouchZoom.Factory.createImpl(base.getMultiTouchListener()));
         list.add(curler);
         list.add(new DefaultGestureDetector(base.getContext(), new GestureListener()));
         return list;

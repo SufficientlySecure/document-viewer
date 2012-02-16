@@ -90,14 +90,14 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
     }
 
     protected List<IGestureDetector> initGestureDetectors(final List<IGestureDetector> list) {
-        list.add(IMultiTouchZoom.Factory.createImpl(base.getZoomModel()));
+        list.add(IMultiTouchZoom.Factory.createImpl(base.getMultiTouchListener()));
         list.add(new DefaultGestureDetector(base.getContext(), new GestureListener()));
         return list;
     }
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IDocumentViewController#getView()
      */
     @Override
@@ -107,7 +107,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IDocumentViewController#getBase()
      */
     @Override
@@ -117,7 +117,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IDocumentViewController#init(org.ebookdroid.core.IViewerActivity.IBookLoadTask)
      */
     @Override
@@ -133,7 +133,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IDocumentViewController#show()
      */
     @Override
@@ -204,7 +204,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IDocumentViewController#onScrollChanged(int, int)
      */
     @Override
@@ -232,7 +232,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IDocumentViewController#updatePageVisibility(int, int, float)
      */
     @Override
@@ -349,7 +349,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.events.ZoomListener#commitZoom()
      */
     @Override
@@ -391,7 +391,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IDocumentViewController#updateMemorySettings()
      */
     @Override
@@ -438,7 +438,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IDocumentViewController#goToPage(int)
      */
     @Override
@@ -450,7 +450,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.events.ZoomListener#zoomChanged(float, float)
      */
     @Override
@@ -496,7 +496,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IDocumentViewController#dispatchKeyEvent(android.view.KeyEvent)
      */
     @Override
@@ -527,7 +527,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IDocumentViewController#onTouchEvent(android.view.MotionEvent)
      */
     @Override
@@ -549,7 +549,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IDocumentViewController#onLayoutChanged(boolean, boolean, android.graphics.Rect,
      *      android.graphics.Rect)
      */
@@ -600,7 +600,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
     /**
      * Sets the page align flag.
-     * 
+     *
      * @param align
      *            the new flag indicating align
      */
@@ -613,7 +613,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
     /**
      * Checks if view is initialized.
-     * 
+     *
      * @return true, if is initialized
      */
     protected final boolean isShown() {
@@ -624,7 +624,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IDocumentViewController#getFirstVisiblePage()
      */
     @Override
@@ -634,7 +634,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IDocumentViewController#getLastVisiblePage()
      */
     @Override
@@ -644,7 +644,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IDocumentViewController#redrawView()
      */
     @Override
@@ -654,7 +654,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IDocumentViewController#redrawView(org.ebookdroid.core.ViewState)
      */
     @Override
@@ -689,7 +689,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
         /**
          * {@inheritDoc}
-         * 
+         *
          * @see android.view.GestureDetector.SimpleOnGestureListener#onDoubleTap(android.view.MotionEvent)
          */
         @Override
@@ -700,7 +700,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
         /**
          * {@inheritDoc}
-         * 
+         *
          * @see android.view.GestureDetector.SimpleOnGestureListener#onDown(android.view.MotionEvent)
          */
         @Override
@@ -712,7 +712,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
         /**
          * {@inheritDoc}
-         * 
+         *
          * @see android.view.GestureDetector.SimpleOnGestureListener#onFling(android.view.MotionEvent,
          *      android.view.MotionEvent, float, float)
          */
@@ -734,7 +734,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
         /**
          * {@inheritDoc}
-         * 
+         *
          * @see android.view.GestureDetector.SimpleOnGestureListener#onScroll(android.view.MotionEvent,
          *      android.view.MotionEvent, float, float)
          */
@@ -754,7 +754,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
         /**
          * {@inheritDoc}
-         * 
+         *
          * @see android.view.GestureDetector.SimpleOnGestureListener#onSingleTapConfirmed(android.view.MotionEvent)
          */
         @Override
@@ -765,7 +765,7 @@ public abstract class AbstractDocumentView extends AbstractComponentController<I
 
         /**
          * {@inheritDoc}
-         * 
+         *
          * @see android.view.GestureDetector.SimpleOnGestureListener#onLongPress(android.view.MotionEvent)
          */
         @Override

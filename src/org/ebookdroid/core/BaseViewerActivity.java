@@ -23,6 +23,7 @@ import org.ebookdroid.core.settings.SettingsManager;
 import org.ebookdroid.core.settings.books.BookSettings;
 import org.ebookdroid.core.settings.books.Bookmark;
 import org.ebookdroid.core.settings.ui.SettingsUI;
+import org.ebookdroid.core.touch.IMultiTouchListener;
 import org.ebookdroid.core.touch.TouchManager;
 import org.ebookdroid.core.touch.TouchManagerView;
 import org.ebookdroid.core.utils.AndroidVersion;
@@ -120,6 +121,8 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
     private boolean menuClosedCalled;
 
     private boolean temporaryBook;
+
+    private IMultiTouchListener mtl;
 
     /**
      * Instantiates a new base viewer activity.
@@ -338,7 +341,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     /**
      * Called on creation options menu
-     * 
+     *
      * @param menu
      *            the main menu
      * @return true, if successful
@@ -496,7 +499,7 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
 
     /**
      * Gets the zoom model.
-     * 
+     *
      * @return the zoom model
      */
     @Override
@@ -508,13 +511,39 @@ public abstract class BaseViewerActivity extends AbstractActionActivity implemen
     }
 
     @Override
+    public IMultiTouchListener getMultiTouchListener() {
+        if (mtl == null) {
+            mtl = new IMultiTouchListener() {
+
+                @Override
+                public void onTwoFingerPinchEnd() {
+                    getZoomModel().commit();
+                }
+
+                @Override
+                public void onTwoFingerPinch(float oldDistance, float newDistance) {
+                    zoomModel.setZoom(zoomModel.getZoom() * newDistance / oldDistance);
+
+                }
+
+                @Override
+                public void onTwoFingerTap() {
+                    Toast.makeText(BaseViewerActivity.this, "TWO FINGER TAP", 0);
+                }
+
+            };
+        }
+        return mtl;
+    }
+
+    @Override
     public DecodeService getDecodeService() {
         return documentModel != null ? documentModel.getDecodeService() : null;
     }
 
     /**
      * Gets the decoding progress model.
-     * 
+     *
      * @return the decoding progress model
      */
     @Override

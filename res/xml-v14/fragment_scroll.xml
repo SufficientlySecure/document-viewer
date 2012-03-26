@@ -1,0 +1,27 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:summary="@string/pref_scroll_category_summary"
+    android:title="@string/pref_scroll_category" >
+
+    <org.emdev.ui.preference.SwitchPreferenceEx
+            android:defaultValue="@string/pref_tapsenabled_defvalue"
+            android:key="@string/pref_tapsenabled_id"
+            android:summary="@string/pref_tapsenabled_summary"
+            android:title="@string/pref_tapsenabled_title" />
+
+    <EditTextPreference
+            android:defaultValue="@string/pref_scrollheight_defvalue"
+            android:key="@string/pref_scrollheight_id"
+            android:maxLength="3"
+            android:numeric="integer"
+            android:summary="@string/pref_scroll_summary"
+            android:title="@string/pref_scroll_title" />
+
+    <EditTextPreference
+            android:defaultValue="@string/pref_touchdelay_defvalue"
+            android:key="@string/pref_touchdelay_id"
+            android:maxLength="3"
+            android:numeric="integer"
+            android:summary="@string/pref_touchdelay_summary"
+            android:title="@string/pref_touchdelay_title" />
+
+</PreferenceScreen>

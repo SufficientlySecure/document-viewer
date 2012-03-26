@@ -1,35 +1,27 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:summary="@string/pref_scroll_category_summary"
+    android:title="@string/pref_scroll_category" >
 
-<PreferenceScreen
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:summary="@string/pref_scroll_category_summary"
-	android:title="@string/pref_scroll_category">
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="tapsenabled"
+        android:summary="@string/pref_tapsenabled_summary"
+        android:title="@string/pref_tapsenabled_title" />
 
-	<CheckBoxPreference
-		android:defaultValue="false"
-		android:key="zoomdoubletap"
-		android:summary="@string/pref_zoomdoubletap_summary"
-		android:title="@string/pref_zoomdoubletap_title" />
+    <EditTextPreference
+        android:defaultValue="50"
+        android:key="scrollheight"
+        android:maxLength="3"
+        android:numeric="integer"
+        android:summary="@string/pref_scroll_summary"
+        android:title="@string/pref_scroll_title" />
 
-	<CheckBoxPreference
-		android:defaultValue="false"
-		android:key="tapscroll"
-		android:summary="@string/pref_tap_summary"
-		android:title="@string/pref_tap_title" />
+    <EditTextPreference
+        android:defaultValue="50"
+        android:key="touchdelay"
+        android:maxLength="3"
+        android:numeric="integer"
+        android:summary="@string/pref_touchdelay_summary"
+        android:title="@string/pref_touchdelay_title" />
 
-	<EditTextPreference
-		android:defaultValue="10"
-		android:dependency="tapscroll"
-		android:key="tapsize"
-		android:maxLength="2"
-		android:numeric="integer"
-		android:summary="@string/pref_tapsize_summary"
-		android:title="@string/pref_tapsize_title" />
-
-	<EditTextPreference
-		android:defaultValue="50"
-		android:key="scrollheight"
-		android:maxLength="3"
-		android:numeric="integer"
-		android:summary="@string/pref_scroll_summary"
-		android:title="@string/pref_scroll_title" />
 </PreferenceScreen>

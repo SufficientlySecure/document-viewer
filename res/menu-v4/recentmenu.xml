@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
-  xmlns:android="http://schemas.android.com/apk/res/android">
-   <item android:id="@+id/recentmenu_cleanrecent"
-         android:alphabeticShortcut="c"
-         android:title="@string/menu_cleanrecent"
-         android:icon="@drawable/clear"
-         android:showAsAction="ifRoom"
-         />
-	<item
-		android:id="@+id/mainmenu_settings"
-		android:alphabeticShortcut="s"
-		android:title="@string/menu_settings"
-		android:icon="@drawable/settings"
-		android:showAsAction="ifRoom" />
-	<item
-		android:id="@+id/mainmenu_about"
-		android:title="@string/menu_about" 
-		android:icon="@drawable/about"/>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/recentmenu_cleanrecent"
+        android:alphabeticShortcut="c"
+        android:icon="@drawable/clear"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_cleanrecent"/>
+    <item
+        android:id="@+id/recentmenu_searchBook"
+        android:alphabeticShortcut="s"
+        android:icon="@drawable/zoomfit"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_searchbook"/>
+    <item
+        android:id="@+id/mainmenu_settings"
+        android:alphabeticShortcut="t"
+        android:icon="@drawable/settings"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_settings"/>
+    <item
+        android:id="@+id/mainmenu_about"
+        android:icon="@drawable/about"
+        android:title="@string/menu_about"/>
+
 </menu>

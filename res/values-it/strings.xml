@@ -169,6 +169,6 @@
     <string name="outline_title">Indice</string>
     <string name="outline_missed"> Manca l’indice</string>
     <string name="error_page_out_of_rande">Il numero della pagina è errato. Margini ammessi: 1-%i</string>
-    <string name="msg_loading">Si sta caricando...è necessario attendere</string>
+    <string name="msg_loading">Si sta caricando&#8230;è necessario attendere</string>
 
 </resources>

@@ -77,7 +77,7 @@
     <string name="pref_pagesinmemory_title">"Сторінок в пам’яті"</string>
     <string name="pref_pagesinmemory_summary">"Число сторінок, що зберігаються в пам’яті"</string>
     <string name="pref_splitpages_title">"Ділити розвороти"</string>
-    <string name="pref_splitpages_summary">" Ділити розвороти на дві сторінки"</string>
+    <string name="pref_splitpages_summary">"Ділити розвороти на дві сторінки"</string>
     <string name="pref_useanimation_title">"Використати анімацію"</string>
     <string name="pref_useanimation_summary">"Використати анімацію для перекреслення сторінок"</string>
     <string name="pref_nightmode_title">"Нічний режим"</string>
@@ -170,6 +170,6 @@
     <string name="outline_title">Зміст</string>
     <string name="outline_missed">Зміст відсутній</string>
     <string name="error_page_out_of_rande">Неправильный номер сторінки. Допустимий діапазон: 1-%i</string>
-    <string name="msg_loading"> Завантаження... почекайте </string>
+    <string name="msg_loading"> Завантаження&#8230; почекайте </string>
 
 </resources>

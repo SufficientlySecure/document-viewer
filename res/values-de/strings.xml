@@ -169,6 +169,6 @@
     <string name="outline_title">Inhaltsverzeichnis</string>
     <string name="outline_missed">Kein Inhaltsverzeichnis</string>
     <string name="error_page_out_of_rande">Falsche Seitennummer. Zulässiger Bereich: 1-%i</string>
-    <string name="msg_loading">Ladung... bitte warten</string>
+    <string name="msg_loading">Ladung&#8230; bitte warten</string>
 
 </resources>

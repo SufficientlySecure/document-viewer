@@ -109,7 +109,7 @@
     <string name="pref_memory_category">"Geheugengebruik"</string>
     <string name="pref_memory_category_summary">"Instellingen van geheugengebruik"</string>
     <string name="pref_brightness_title">"Helderheid"</string>
-    <string name="pref_brightness_summary">"Instellingen voor gewoonlijk beeld helderheid (0-100)"</string>
+    <string name="pref_brightness_summary">"Instellingen voor gewoonlijk beeld helderheid (0&#8211;100)"</string>
     <string name="pref_brightnessnightmodeonly_title">"Helderheid tijdens nacht regime"</string>
     <string name="pref_brightnessnightmodeonly_summary">"Gebruik zo helderheid instelling alleen tijdens nacht regime"</string>
     <string name="pref_keepscreenon_title">"Niet uit te schakelen van scherm"</string>
@@ -170,6 +170,6 @@
     <string name="outline_title"> Inhoud </string>
     <string name="outline_missed"> Geen inhoud </string>
     <string name="error_page_out_of_rande">"Verkeerd paginanummer. Beschikbare pagina's 1 - %i"</string>
-    <string name="msg_loading"> Aan het laden ... Even wachten AUB </string>
+    <string name="msg_loading"> Aan het laden &#8230; Even wachten AUB </string>
 
 </resources>

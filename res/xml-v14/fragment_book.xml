@@ -4,13 +4,13 @@
 	android:summary="@string/pref_book_category_summary"
 	android:title="@string/pref_book_category">
 
-    <CheckBoxPreference
+    <org.emdev.ui.preference.SwitchPreferenceEx
             android:defaultValue="@string/pref_splitpages_defvalue"
             android:key="@string/pref_book_splitpages_id"
             android:summary="@string/pref_splitpages_summary"
             android:title="@string/pref_splitpages_title" />
 
-	<CheckBoxPreference
+    <org.emdev.ui.preference.SwitchPreferenceEx
             android:defaultValue="@string/pref_croppages_defvalue"
             android:key="@string/pref_book_croppages_id"
             android:summary="@string/pref_croppages_summary"
@@ -49,7 +49,7 @@
         android:summary="@string/pref_postprocessing_summary"
         android:title="@string/pref_postprocessing_category" >
 
-        <CheckBoxPreference
+        <org.emdev.ui.preference.SwitchPreferenceEx
             android:defaultValue="@string/pref_nightmode_defvalue"
             android:key="@string/pref_book_nightmode_id"
             android:summary="@string/pref_nightmode_summary"
@@ -71,7 +71,7 @@
             android:summary="@string/pref_exposure_summary"
             android:title="@string/pref_exposure_title" />
 
-        <CheckBoxPreference
+        <org.emdev.ui.preference.SwitchPreferenceEx
             android:defaultValue="@string/pref_autolevels_defvalue"
             android:key="@string/pref_book_autolevels_id"
             android:summary="@string/pref_autolevels_summary"

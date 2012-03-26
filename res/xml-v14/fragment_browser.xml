@@ -3,7 +3,7 @@
         android:summary="@string/pref_browser_category_summary"
         android:title="@string/pref_browser_category" >
 
-        <CheckBoxPreference
+        <org.emdev.ui.preference.SwitchPreferenceEx
             android:defaultValue="@string/pref_usebookcase_defvalue"
             android:key="@string/pref_usebookcase_id"
             android:summary="@string/pref_usebookcase_summary"
@@ -20,55 +20,55 @@
             android:summary="@string/pref_brbrfiletypesscreen_summary"
             android:title="@string/pref_brbrfiletypesscreen_title" >
 
-            <CheckBoxPreference
+        <org.emdev.ui.preference.SwitchPreferenceEx
                 android:defaultValue="true"
                 android:key="brfiletypedjvu"
                 android:summary="@string/pref_brfiletypedjvu_summary"
                 android:title="@string/pref_brfiletypedjvu_title" />
 
-            <CheckBoxPreference
+        <org.emdev.ui.preference.SwitchPreferenceEx
                 android:defaultValue="true"
                 android:key="brfiletypedjv"
                 android:summary="@string/pref_brfiletypedjv_summary"
                 android:title="@string/pref_brfiletypedjv_title" />
 
-            <CheckBoxPreference
+        <org.emdev.ui.preference.SwitchPreferenceEx
                 android:defaultValue="true"
                 android:key="brfiletypepdf"
                 android:summary="@string/pref_brfiletypepdf_summary"
                 android:title="@string/pref_brfiletypepdf_title" />
 
-            <CheckBoxPreference
+        <org.emdev.ui.preference.SwitchPreferenceEx
                 android:defaultValue="true"
                 android:key="brfiletypexps"
                 android:summary="@string/pref_brfiletypexps_summary"
                 android:title="@string/pref_brfiletypexps_title" />
 
-            <CheckBoxPreference
+        <org.emdev.ui.preference.SwitchPreferenceEx
                 android:defaultValue="true"
                 android:key="brfiletypeoxps"
                 android:summary="@string/pref_brfiletypeoxps_summary"
                 android:title="@string/pref_brfiletypeoxps_title" />
 
-            <CheckBoxPreference
+        <org.emdev.ui.preference.SwitchPreferenceEx
                 android:defaultValue="true"
                 android:key="brfiletypecbz"
                 android:summary="@string/pref_brfiletypecbz_summary"
                 android:title="@string/pref_brfiletypecbz_title" />
 
-            <CheckBoxPreference
+        <org.emdev.ui.preference.SwitchPreferenceEx
                 android:defaultValue="true"
                 android:key="brfiletypecbr"
                 android:summary="@string/pref_brfiletypecbr_summary"
                 android:title="@string/pref_brfiletypecbr_title" />
 
-            <CheckBoxPreference
+        <org.emdev.ui.preference.SwitchPreferenceEx
                 android:defaultValue="true"
                 android:key="brfiletypefb2"
                 android:summary="@string/pref_brfiletypefb2_summary"
                 android:title="@string/pref_brfiletypefb2_title" />
 
-            <CheckBoxPreference
+        <org.emdev.ui.preference.SwitchPreferenceEx
                 android:defaultValue="true"
                 android:key="brfiletypefb2.zip"
                 android:summary="@string/pref_brfiletypefb2.zip_summary"

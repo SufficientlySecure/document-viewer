@@ -33,10 +33,16 @@
 		android:id="@+id/mainmenu_thumbnail"
 		android:title="@string/menu_thumbnail" />
 	<item
+		android:id="@+id/actions_toggleTouchManagerView"
+		android:title="@string/menu_tap_configuration" />
+	<item
+		android:id="@+id/actions_keyBindings"
+		android:title="@string/menu_key_bindings" />
+	<item
 		android:id="@+id/mainmenu_about"
 		android:title="@string/menu_about" />
 	<item
-		android:id="@+id/mainmenu_close"
+		android:id="@string/menu_about"
 		android:alphabeticShortcut="e"
 		android:title="@string/menu_close" />
 </menu>

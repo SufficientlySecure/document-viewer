@@ -3,8 +3,8 @@
         android:title="@string/pref_performance_category" >
 
         <EditTextPreference
-            android:defaultValue="0"
-            android:key="pagesinmemory"
+            android:defaultValue="@string/pref_pagesinmemory_defvalue"
+            android:key="@string/pref_pagesinmemory_id"
             android:maxLength="3"
             android:numeric="integer"
             android:summary="@string/pref_pagesinmemory_summary"
@@ -38,7 +38,7 @@
                 android:summary="@string/pref_drawthread_priority_summary"
                 android:title="@string/pref_drawthread_priority_title" />
 
-            <CheckBoxPreference
+            <org.emdev.ui.preference.SwitchPreferenceEx
                 android:defaultValue="@string/pref_hwa_enabled_defvalue"
                 android:key="@string/pref_hwa_enabled_id"
                 android:summary="@string/pref_hwa_enabled_summary"
@@ -52,31 +52,31 @@
                 android:summary="@string/pref_bitmapsize_summary"
                 android:title="@string/pref_bitmapsize_title" />
 
-            <CheckBoxPreference
+            <org.emdev.ui.preference.SwitchPreferenceEx
                 android:defaultValue="@string/pref_bitmapfilering_enabled_defvalue"
                 android:key="@string/pref_bitmapfilering_enabled_id"
                 android:summary="@string/pref_bitmapfilering_enabled_summary"
                 android:title="@string/pref_bitmapfilering_enabled_title" />
 
-            <CheckBoxPreference
+            <org.emdev.ui.preference.SwitchPreferenceEx
                 android:defaultValue="@string/pref_texturereuse_defvalue"
                 android:key="@string/pref_texturereuse_id"
                 android:summary="@string/pref_texturereuse_summary"
                 android:title="@string/pref_texturereuse_title" />
 
-            <CheckBoxPreference
+            <org.emdev.ui.preference.SwitchPreferenceEx
                 android:defaultValue="@string/pref_bitmaphack_defvalue"
                 android:key="@string/pref_bitmaphack_id"
                 android:summary="@string/pref_bitmaphack_summary"
                 android:title="@string/pref_bitmaphack_title" />
 
-            <CheckBoxPreference
+            <org.emdev.ui.preference.SwitchPreferenceEx
                 android:defaultValue="@string/pref_earlyrecycling_defvalue"
                 android:key="@string/pref_earlyrecycling_id"
                 android:summary="@string/pref_earlyrecycling_summary"
                 android:title="@string/pref_earlyrecycling_title" />
 
-            <CheckBoxPreference
+            <org.emdev.ui.preference.SwitchPreferenceEx
                 android:defaultValue="@string/pref_reloadduringzoom_defvalue"
                 android:key="@string/pref_reloadduringzoom_id"
                 android:summary="@string/pref_reloadduringzoom_summary"

@@ -169,6 +169,6 @@
     <string name="outline_title">Titre</string>
     <string name="outline_missed">Pas de titre</string>
     <string name="error_page_out_of_rande">Numéro de pagе incorrect. Gamme autorisée : 1-%i</string>
-    <string name="msg_loading">Chargement en cours... veuillez attendre</string>
+    <string name="msg_loading">Chargement en cours&#8230; veuillez attendre</string>
 
 </resources>

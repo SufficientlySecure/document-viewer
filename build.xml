@@ -1,4 +1,4 @@
-<project name="EBookDroid-refactoring" basedir="." default="EBookDroid-dev">
+<project name="EBookDroid" basedir="." default="EBookDroid-dev">
 
 	<property file="build.${user.name}.properties" />
 	<property file="build.properties" />

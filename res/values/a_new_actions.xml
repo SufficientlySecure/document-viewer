@@ -32,7 +32,7 @@
         <item>@string/menu_about</item>
         <item>@string/menu_close</item>
         <item>@string/menu_tap_configuration</item>
-        <item>Show options menu</item>
+        <item>@string/menu_show_options_menu</item>
         <item>Scroll Up</item>
         <item>Scroll Down</item>
     </string-array>

@@ -1,0 +1,13 @@
+Index: jni/mupdf/mupdf/fitz/memento.c
+===================================================================
+--- jni/mupdf/mupdf/fitz/memento.c	(revision 963)
++++ jni/mupdf/mupdf/fitz/memento.c	(working copy)
+@@ -659,7 +659,7 @@
+     env = getenv("MEMENTO_MAXMEMORY");
+     globals.maxMemory = (env ? atoi(env) : 0);
+ 
+-    atexit(Memento_fin);
++    // atexit(Memento_fin);
+ 
+     Memento_inited();
+ }

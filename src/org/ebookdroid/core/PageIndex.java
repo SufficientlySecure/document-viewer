@@ -1,7 +1,7 @@
 package org.ebookdroid.core;
 
+import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.core.models.DocumentModel;
-import org.ebookdroid.core.settings.books.BookSettings;
 
 public class PageIndex {
 

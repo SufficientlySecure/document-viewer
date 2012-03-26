@@ -1,22 +1,26 @@
 package org.ebookdroid.core.curl;
 
 import org.ebookdroid.R;
+import org.ebookdroid.common.bitmaps.BitmapManager;
+import org.ebookdroid.common.bitmaps.BitmapRef;
+import org.ebookdroid.core.EventDraw;
 import org.ebookdroid.core.Page;
-import org.ebookdroid.core.SinglePageDocumentView;
+import org.ebookdroid.core.SinglePageController;
 import org.ebookdroid.core.ViewState;
-import org.ebookdroid.core.bitmaps.BitmapManager;
-import org.ebookdroid.core.bitmaps.BitmapRef;
-import org.ebookdroid.core.models.DocumentModel;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.view.MotionEvent;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public abstract class AbstractPageAnimator extends SinglePageView implements PageAnimator {
+
+    protected static final Paint PAINT = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
 
     /** Fixed update time used to create a smooth curl animation */
     protected int mUpdateRate;
@@ -52,10 +56,15 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
 
     protected final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
-    public AbstractPageAnimator(final PageAnimationType type, final SinglePageDocumentView singlePageDocumentView) {
+    public AbstractPageAnimator(final PageAnimationType type, final SinglePageController singlePageDocumentView) {
         super(type, singlePageDocumentView);
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.curl.SinglePageView#init()
+     */
     @Override
     public void init() {
         super.init();
@@ -72,6 +81,12 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
         mUpdateRate = 5;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.curl.SinglePageView#isPageVisible(org.ebookdroid.core.Page,
+     *      org.ebookdroid.core.ViewState)
+     */
     @Override
     public final boolean isPageVisible(final Page page, final ViewState viewState) {
         final int pageIndex = page.index.viewIndex;
@@ -82,46 +97,48 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
      * Swap to next view
      */
     protected ViewState nextView(final ViewState viewState) {
-        final DocumentModel dm = view.getBase().getDocumentModel();
-        if (dm == null) {
+        if (viewState.model == null) {
             return viewState;
         }
 
-        foreIndex = viewState.currentIndex;
-        if (foreIndex >= dm.getPageCount()) {
+        foreIndex = viewState.pages.currentIndex;
+        if (foreIndex >= viewState.model.getPageCount()) {
             foreIndex = 0;
         }
         backIndex = foreIndex + 1;
-        if (backIndex >= dm.getPageCount()) {
+        if (backIndex >= viewState.model.getPageCount()) {
             backIndex = 0;
         }
 
-        return view.invalidatePages(viewState, dm.getPageObject(foreIndex), dm.getPageObject(backIndex));
+        return view.invalidatePages(viewState, viewState.model.getPageObject(foreIndex),
+                viewState.model.getPageObject(backIndex));
     }
 
     /**
      * Swap to previous view
      */
     protected ViewState previousView(final ViewState viewState) {
-        final DocumentModel dm = view.getBase().getDocumentModel();
-        if (dm == null) {
+        if (viewState.model == null) {
             return viewState;
         }
 
-        backIndex = viewState.currentIndex;
+        backIndex = viewState.pages.currentIndex;
         foreIndex = backIndex - 1;
         if (foreIndex < 0) {
-            foreIndex = dm.getPageCount() - 1;
+            foreIndex = viewState.model.getPageCount() - 1;
         }
 
-        return view.invalidatePages(viewState, dm.getPageObject(foreIndex), dm.getPageObject(backIndex));
+        return view.invalidatePages(viewState, viewState.model.getPageObject(foreIndex),
+                viewState.model.getPageObject(backIndex));
     }
 
     /**
-     * Execute a step of the flip animation
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.curl.SinglePageView#flipAnimationStep()
      */
     @Override
-    public synchronized void FlipAnimationStep() {
+    public synchronized void flipAnimationStep() {
         if (!bFlipping) {
             return;
         }
@@ -163,10 +180,10 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
             bFlipping = false;
             // System.out.println("FAS end");
             if (bFlipRight) {
-                view.goToPageImpl(backIndex);
+                view.goToPage(backIndex);
                 foreIndex = backIndex;
             } else {
-                view.goToPageImpl(foreIndex);
+                view.goToPage(foreIndex);
             }
 
             // Create values
@@ -196,11 +213,11 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
 
     protected abstract Vector2D fixMovement(Vector2D point, final boolean bMaintainMoveDir);
 
-    protected abstract void drawBackground(final Canvas canvas, final ViewState viewState);
+    protected abstract void drawBackground(EventDraw event);
 
-    protected abstract void drawForeground(final Canvas canvas, final ViewState viewState);
+    protected abstract void drawForeground(EventDraw event);
 
-    protected abstract void drawExtraObjects(final Canvas canvas, final ViewState viewState);
+    protected abstract void drawExtraObjects(EventDraw event);
 
     /**
      * Update points values values.
@@ -208,10 +225,15 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
     protected abstract void updateValues();
 
     /**
-     * @see org.ebookdroid.core.curl.PageAnimator#onDraw(android.graphics.Canvas)
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.curl.SinglePageView#draw(org.ebookdroid.core.EventDraw)
      */
     @Override
-    public final synchronized void draw(final Canvas canvas, final ViewState viewState) {
+    public final synchronized void draw(final EventDraw event) {
+        final Canvas canvas = event.canvas;
+        final ViewState viewState = event.viewState;
+
         if (!enabled()) {
             BitmapManager.release(foreBitmap);
             BitmapManager.release(backBitmap);
@@ -219,7 +241,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
             foreBitmap = null;
             backBitmap = null;
 
-            super.draw(canvas, viewState);
+            super.draw(event);
             return;
         }
 
@@ -234,8 +256,8 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
         // Draw our elements
         lock.readLock().lock();
         try {
-            drawInternal(canvas, viewState);
-            drawExtraObjects(canvas, viewState);
+            drawInternal(event);
+            drawExtraObjects(event);
         } finally {
             lock.readLock().unlock();
         }
@@ -247,20 +269,31 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
         }
     }
 
-    protected void drawInternal(Canvas canvas, ViewState viewState) {
-        drawForeground(canvas, viewState);
+    protected void drawInternal(final EventDraw event) {
+        drawForeground(event);
         if (foreIndex != backIndex) {
-            drawBackground(canvas, viewState);
+            drawBackground(event);
         }
     }
 
     protected abstract void onFirstDrawEvent(Canvas canvas, final ViewState viewState);
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.curl.SinglePageView#enabled()
+     */
     @Override
-    public boolean enabled() {
-        return view.getScrollLimits().width() <= 0;
+    public final boolean enabled() {
+        final Rect limits = view.getScrollLimits();
+        return limits.width() <= 0 && limits.height() <= 0;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.curl.SinglePageView#onTouchEvent(android.view.MotionEvent)
+     */
     @Override
     public final boolean onTouchEvent(final MotionEvent event) {
         if (!bBlockTouchInput) {
@@ -283,7 +316,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
                     if (bUserMoves) {
                         bUserMoves = false;
                         bFlipping = true;
-                        FlipAnimationStep();
+                        flipAnimationStep();
                     } else {
                         return false;
                     }
@@ -361,34 +394,42 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
         return width;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.curl.SinglePageView#pageUpdated(int)
+     */
     @Override
-    public void pageUpdated(int viewIndex) {
-        if (foreBitmapIndex == viewIndex) {
+    public void pageUpdated(final ViewState viewState, final Page page) {
+        if (foreBitmapIndex == page.index.viewIndex) {
             foreBitmapIndex = -1;
         }
-        if (backBitmapIndex == viewIndex) {
+        if (backBitmapIndex == page.index.viewIndex) {
             backBitmapIndex = -1;
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.ebookdroid.core.curl.SinglePageView#animate(int)
+     */
     @Override
-    public void animate(int direction) {
+    public void animate(final int direction) {
         resetClipEdge();
         mMovement = new Vector2D(direction < 0 ? 7 * view.getWidth() / 8 : view.getWidth() / 8, mInitialEdgeOffset);
         bFlipping = true;
         bFlipRight = direction > 0;
-        ViewState viewState = new ViewState(view);
+        final ViewState viewState = new ViewState(view);
         if (bFlipRight) {
             nextView(viewState);
         } else {
             previousView(viewState);
         }
 
-
         bUserMoves = false;
-        FlipAnimationStep();
+        flipAnimationStep();
 
     }
-
 
 }

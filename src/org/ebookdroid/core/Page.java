@@ -1,36 +1,43 @@
 package org.ebookdroid.core;
 
-import org.ebookdroid.R;
-import org.ebookdroid.core.bitmaps.Bitmaps;
+import org.ebookdroid.common.bitmaps.Bitmaps;
+import org.ebookdroid.common.log.LogContext;
+import org.ebookdroid.common.settings.SettingsManager;
+import org.ebookdroid.common.settings.types.PageType;
 import org.ebookdroid.core.codec.CodecPageInfo;
-import org.ebookdroid.core.log.LogContext;
-import org.ebookdroid.utils.MathUtils;
+import org.ebookdroid.core.codec.PageLink;
+import org.ebookdroid.ui.viewer.IActivityController;
 
-import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.RectF;
-import android.text.TextPaint;
+import android.util.FloatMath;
 
 import java.util.List;
 
+import org.emdev.utils.MathUtils;
+import org.emdev.utils.MatrixUtils;
+
 public class Page {
 
-    static final LogContext LCTX = LogContext.ROOT.lctx("Page", true);
+    static final LogContext LCTX = LogContext.ROOT.lctx("Page", false);
 
     public final PageIndex index;
     public final PageType type;
 
-    final IViewerActivity base;
+    final IActivityController base;
     final PageTree nodes;
 
     RectF bounds;
-    float aspectRatio;
+    int aspectRatio;
     boolean recycled;
     float storedZoom;
     RectF zoomedBounds;
 
     int zoomLevel = 1;
 
-    public Page(final IViewerActivity base, final PageIndex index, final PageType pt, final CodecPageInfo cpi) {
+    List<PageLink> links;
+
+    public Page(final IActivityController base, final PageIndex index, final PageType pt, final CodecPageInfo cpi) {
         this.base = base;
         this.index = index;
         this.type = pt != null ? pt : PageType.FULL_PAGE;
@@ -41,43 +48,19 @@ public class Page {
         nodes = new PageTree(this);
     }
 
-    public void recycle(List<Bitmaps> bitmapsToRecycle) {
+    public void recycle(final List<Bitmaps> bitmapsToRecycle) {
         recycled = true;
         nodes.recycleAll(bitmapsToRecycle, true);
     }
 
-    public boolean draw(final Canvas canvas, final ViewState viewState) {
-        return draw(canvas, viewState, false);
-    }
-
-    public boolean draw(final Canvas canvas, final ViewState viewState, final boolean drawInvisible) {
-        if (drawInvisible || viewState.isPageVisible(this)) {
-            final PagePaint paint = viewState.nightMode ? PagePaint.NIGHT : PagePaint.DAY;
-
-            final RectF bounds = viewState.getBounds(this);
-
-            if (!nodes.root.hasBitmap()) {
-                canvas.drawRect(bounds, paint.fillPaint);
-
-                final TextPaint textPaint = paint.textPaint;
-                textPaint.setTextSize(24 * base.getZoomModel().getZoom());
-                canvas.drawText(base.getContext().getString(R.string.text_page) + " " + (index.viewIndex + 1),
-                        bounds.centerX(), bounds.centerY(), textPaint);
-            }
-            nodes.root.draw(canvas, viewState, bounds, paint);
-
-            return true;
-        }
-        return false;
-    }
-
     public float getAspectRatio() {
-        return aspectRatio;
+        return aspectRatio / 128.0f;
     }
 
     private boolean setAspectRatio(final float aspectRatio) {
-        if (this.aspectRatio != aspectRatio) {
-            this.aspectRatio = aspectRatio;
+        final int newAspectRatio = (int) FloatMath.floor(aspectRatio * 128);
+        if (this.aspectRatio != newAspectRatio) {
+            this.aspectRatio = newAspectRatio;
             return true;
         }
         return false;
@@ -100,52 +83,25 @@ public class Page {
         bounds = pageBounds;
     }
 
-    public boolean onZoomChanged(final float oldZoom, final ViewState viewState, boolean committed,
-            final List<PageTreeNode> nodesToDecode, List<Bitmaps> bitmapsToRecycle) {
-        if (!recycled) {
-            if (viewState.isPageKeptInMemory(this) || viewState.isPageVisible(this)) {
-                return nodes.root.onZoomChanged(oldZoom, viewState, committed, viewState.getBounds(this),
-                        nodesToDecode, bitmapsToRecycle);
-            } else {
-                int oldSize = bitmapsToRecycle.size();
-                if (nodes.recycleAll(bitmapsToRecycle, true)) {
-                    if (LCTX.isDebugEnabled()) {
-                        if (LCTX.isDebugEnabled()) {
-                            LCTX.d("onZoomChanged: recycle page " + index + " " + viewState.firstCached + ":"
-                                    + viewState.lastCached + " = " + (bitmapsToRecycle.size() - oldSize));
-                        }
-                    }
-                }
-            }
+    public void setBounds(final float l, final float t, final float r, final float b) {
+        if (bounds == null) {
+            bounds = new RectF(l, t, r, b);
+        } else {
+            bounds.set(l, t, r, b);
         }
-        return false;
-    }
-
-    public boolean onPositionChanged(final ViewState viewState, final List<PageTreeNode> nodesToDecode,
-            List<Bitmaps> bitmapsToRecycle) {
-        if (!recycled) {
-            if (viewState.isPageKeptInMemory(this) || viewState.isPageVisible(this)) {
-                return nodes.root.onPositionChanged(viewState, viewState.getBounds(this), nodesToDecode,
-                        bitmapsToRecycle);
-            } else {
-                int oldSize = bitmapsToRecycle.size();
-                if (nodes.recycleAll(bitmapsToRecycle, true)) {
-                    if (LCTX.isDebugEnabled()) {
-                        LCTX.d("onPositionChanged: recycle page " + index + " " + viewState.firstCached + ":"
-                                + viewState.lastCached + " = " + (bitmapsToRecycle.size() - oldSize));
-                    }
-                }
-            }
-        }
-        return false;
     }
 
     public RectF getBounds(final float zoom) {
-        if (zoom != storedZoom) {
-            storedZoom = zoom;
-            zoomedBounds = MathUtils.zoom(bounds, zoom);
-        }
-        return zoomedBounds;
+        // if (zoom != storedZoom) {
+        // storedZoom = zoom;
+        // zoomedBounds = MathUtils.zoom(bounds, zoom);
+        // }
+        // return zoomedBounds;
+        return MathUtils.zoom(bounds, zoom);
+    }
+
+    public float getTargetRectScale() {
+        return type.getWidthScale();
     }
 
     @Override
@@ -164,16 +120,43 @@ public class Page {
         return buf.toString();
     }
 
-    public float getTargetRectScale() {
-        return type.getWidthScale();
+    public static RectF getTargetRect(final PageType pageType, final RectF pageBounds, final RectF normalizedRect) {
+        final Matrix tmpMatrix = MatrixUtils.get();
+
+        tmpMatrix.postScale(pageBounds.width() * pageType.getWidthScale(), pageBounds.height());
+        tmpMatrix.postTranslate(pageBounds.left - pageBounds.width() * pageType.getLeftPos(), pageBounds.top);
+
+        final RectF targetRectF = new RectF();
+        tmpMatrix.mapRect(targetRectF, normalizedRect);
+
+        MathUtils.floor(targetRectF);
+
+        return targetRectF;
     }
 
-    public float getTargetTranslate() {
-        return type.getLeftPos();
-    }
+    public RectF getLinkSourceRect(final RectF pageBounds, final PageLink link) {
+        RectF sourceRect = link.sourceRect;
+        if (sourceRect == null) {
+            return null;
+        }
+        final RectF cb = nodes.root.croppedBounds;
+        if (SettingsManager.getBookSettings().cropPages && cb != null) {
+            final Matrix m = MatrixUtils.get();
+            final RectF psb = nodes.root.pageSliceBounds;
+            m.postTranslate(psb.left - cb.left, psb.top - cb.top);
+            m.postScale(psb.width() / cb.width(), psb.height() / cb.height());
+            sourceRect = new RectF(link.sourceRect);
+            m.mapRect(sourceRect);
+        }
 
-    public RectF getCroppedRegion() {
-        return nodes.root.croppedBounds;
-    }
+        if (type == PageType.LEFT_PAGE && sourceRect.left >= 0.5f) {
+            return null;
+        }
 
+        if (type == PageType.RIGHT_PAGE && sourceRect.right < 0.5f) {
+            return null;
+        }
+
+        return getTargetRect(type, pageBounds, sourceRect);
+    }
 }

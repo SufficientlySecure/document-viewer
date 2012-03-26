@@ -1,18 +1,14 @@
 package org.ebookdroid.core;
 
-import org.ebookdroid.core.bitmaps.Bitmaps;
-import org.ebookdroid.core.log.LogContext;
+import org.ebookdroid.common.bitmaps.Bitmaps;
 
-import android.graphics.Canvas;
 import android.graphics.RectF;
-import android.util.SparseArray;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class PageTree {
 
-    private static final LogContext LCTX = Page.LCTX;
+    // private static final LogContext LCTX = Page.LCTX;
 
     static RectF[] splitMasks = {
             // Left Top
@@ -24,174 +20,180 @@ public class PageTree {
             // Right Bottom
             new RectF(0.5f, 0.5f, 1.0f, 1.0f), };
 
-    static final int ZOOM_THRESHOLD = 2;
-
     final Page owner;
+
     final PageTreeNode root;
 
-    final SparseArray<PageTreeNode> nodes = new SparseArray<PageTreeNode>();
+    private PageTreeNode[] treeNodes;
+
+    private volatile int maxNodeId;
 
     public PageTree(final Page owner) {
         this.owner = owner;
-        this.root = createRoot();
+        this.root = new PageTreeNode(owner);
+        this.maxNodeId = 1;
     }
 
-    public boolean recycleAll(List<Bitmaps> bitmapsToRecycle, boolean includeRoot) {
+    private synchronized PageTreeNode[] getNodes() {
+        if (this.treeNodes == null) {
+            this.treeNodes = new PageTreeNode[PageTreeLevel.NODES];
+            this.treeNodes[0] = root;
+        }
+        return this.treeNodes;
+    }
+
+    public boolean process(final IEvent event, final PageTreeLevel level, final boolean createNodes) {
         boolean res = false;
-        int oldCount = bitmapsToRecycle.size();
-        for (int index = 0; index < nodes.size(); index++) {
-            PageTreeNode node = nodes.valueAt(index);
-            if (includeRoot || node.id != 0) {
-                res |= node.recycle(bitmapsToRecycle);
-            }
-        }
-        if (nodes.size() > 1) {
-            nodes.clear();
-            nodes.append(0, root);
-        }
-        int newCount = bitmapsToRecycle.size();
-        if (LCTX.isDebugEnabled()) {
-            if (newCount != oldCount) {
-                LCTX.d("Recycle children for: " + owner.index + " : " + (newCount - oldCount));
+        if (createNodes || level.start < maxNodeId) {
+            final PageTreeNode[] nodes = getNodes();
+            for (int nodeIndex = level.start; nodeIndex < level.end; nodeIndex++) {
+                if (nodes[nodeIndex] == null) {
+                    createChildren(getParent(nodeIndex, true));
+                }
+                res |= event.process(nodes[nodeIndex]);
             }
         }
         return res;
     }
 
-    private PageTreeNode createRoot() {
-        final PageTreeNode root = new PageTreeNode(owner, ZOOM_THRESHOLD);
-        nodes.append(0, root);
-        return root;
-    }
-
-    public boolean createChildren(final PageTreeNode parent, final float newThreshold) {
-        int childId = getFirstChildId(parent.id);
-        for (int i = 0; i < splitMasks.length; i++, childId++) {
-            PageTreeNode child = new PageTreeNode(owner, parent, childId, splitMasks[i], newThreshold);
-            nodes.append(childId, child);
-        }
-        return true;
-    }
-
-    public boolean recycleChildren(final PageTreeNode parent, List<Bitmaps> bitmapsToRecycle) {
-        if (parent.id == 0) {
-            return recycleAll(bitmapsToRecycle, false);
-        } else {
-            return recycleChildrenImpl(parent, bitmapsToRecycle);
-        }
-    }
-
-    private boolean recycleChildrenImpl(final PageTreeNode parent, List<Bitmaps> bitmapsToRecycle) {
-        int childId = (int) getFirstChildId(parent.id);
-        PageTreeNode child = nodes.get(childId);
-        if (child == null) {
-            return false;
-        }
-        int oldCount = bitmapsToRecycle.size();
-
-        LinkedList<PageTreeNode> nodesToRemove = new LinkedList<PageTreeNode>();
-        nodesToRemove.add(child);
-        nodes.remove(childId);
-
-        childId++;
-        for (int end = childId + splitMasks.length; childId < end; childId++) {
-            child = nodes.get(childId);
-            if (child != null) {
-                nodesToRemove.add(child);
-                nodes.remove(childId);
-            }
-        }
-
-        while (!nodesToRemove.isEmpty()) {
-            child = nodesToRemove.removeFirst();
-            child.recycle(bitmapsToRecycle);
-
-            childId = (int) getFirstChildId(child.id);
-            for (int end = childId + splitMasks.length; childId < end; childId++) {
-                child = nodes.get(childId);
+    public boolean paintChildren(final EventDraw event, final PageTreeNode node, final RectF nodeRect) {
+        boolean res = true;
+        int childId = PageTree.getFirstChildId(node.id);
+        if (childId < maxNodeId) {
+            final PageTreeNode[] nodes = getNodes();
+            for (final int end = Math.min(nodes.length, childId + PageTree.splitMasks.length); childId < end; childId++) {
+                final PageTreeNode child = nodes[childId];
                 if (child != null) {
-                    nodesToRemove.add(child);
-                    nodes.remove(childId);
+                    res &= event.paintChild(node, child, nodeRect);
                 }
             }
         }
+        return res;
+    }
 
-        int newCount = bitmapsToRecycle.size();
-        if (LCTX.isDebugEnabled()) {
-            if (newCount != oldCount) {
-                LCTX.d("Recycle children for: " + parent.getFullId() + " : " + (newCount - oldCount));
+    public boolean createChildren(final PageTreeNode parent) {
+        final PageTreeNode[] nodes = getNodes();
+        int childId = getFirstChildId(parent.id);
+        for (int i = 0; i < splitMasks.length; i++, childId++) {
+            if (nodes[childId] == null) {
+                nodes[childId] = new PageTreeNode(owner, parent, childId, splitMasks[i]);
             }
         }
-
+        maxNodeId = Math.max(maxNodeId, childId);
         return true;
     }
 
-    public boolean allChildrenHasBitmap(final ViewState viewState, final PageTreeNode parent, final PagePaint paint) {
-        int childId = (int) getFirstChildId(parent.id);
-        for (int end = childId + splitMasks.length; childId < end; childId++) {
-            PageTreeNode child = nodes.get(childId);
-            if (child == null || !child.hasBitmap()) {
-                return false;
-            }
+    public PageTreeNode getParent(final int nodeIndex, final boolean create) {
+        if (nodeIndex == 0) {
+            return null;
         }
-        return true;
+        if (nodeIndex >= maxNodeId && !create) {
+            return null;
+        }
+        final PageTreeNode[] nodes = getNodes();
+        final int parentIndex = (nodeIndex - 1) / 4;
+        if (nodes[parentIndex] == null && create) {
+            createChildren(getParent(parentIndex, true));
+        }
+        return nodes[parentIndex];
     }
 
-    public void drawChildren(final Canvas canvas, final ViewState viewState, final RectF pageBounds,
-            final PageTreeNode parent, final PagePaint paint) {
-        int childId = (int) getFirstChildId(parent.id);
-        for (int end = childId + splitMasks.length; childId < end; childId++) {
-            PageTreeNode child = nodes.get(childId);
-            if (child != null) {
-                child.draw(canvas, viewState, pageBounds, paint);
+    public boolean recycleAll(final List<Bitmaps> bitmapsToRecycle, final boolean includeRoot) {
+        boolean res = false;
+        if (includeRoot) {
+            res |= root.recycle(bitmapsToRecycle);
+        }
+        if (maxNodeId > 1) {
+            final PageTreeNode[] nodes = getNodes();
+            for (int index = 1; index < maxNodeId; index++) {
+                if (nodes[index] != null) {
+                    res |= nodes[index].recycle(bitmapsToRecycle);
+                    nodes[index] = null;
+                }
             }
         }
+        maxNodeId = 1;
+        return res;
     }
 
-    public void onPositionChanged(final ViewState viewState, final RectF pageBounds, final PageTreeNode parent,
-            final List<PageTreeNode> nodesToDecode, final List<Bitmaps> bitmapsToRecycle) {
-        int childId = (int) getFirstChildId(parent.id);
-        for (int end = childId + splitMasks.length; childId < end; childId++) {
-            PageTreeNode child = nodes.get(childId);
-            if (child != null) {
-                child.onPositionChanged(viewState, pageBounds, nodesToDecode, bitmapsToRecycle);
+    public boolean recycleParents(final PageTreeNode child, final List<Bitmaps> bitmapsToRecycle) {
+        if (child.id == 0) {
+            return false;
+        }
+        boolean res = false;
+        int childId = child.id;
+        for (PageTreeNode p = getParent(childId, false); p != null; p = getParent(childId, false)) {
+            res |= p.recycle(bitmapsToRecycle);
+            childId = p.id;
+            if (child.id == 0) {
+                break;
             }
         }
+        return res;
     }
 
-    public void onZoomChanged(final float oldZoom, final ViewState viewState, final boolean committed,
-            final RectF pageBounds, final PageTreeNode parent, final List<PageTreeNode> nodesToDecode,
-            final List<Bitmaps> bitmapsToRecycle) {
-        int childId = (int) getFirstChildId(parent.id);
-        for (int end = childId + splitMasks.length; childId < end; childId++) {
-            PageTreeNode child = nodes.get(childId);
-            if (child != null) {
-                child.onZoomChanged(oldZoom, viewState, committed, pageBounds, nodesToDecode, bitmapsToRecycle);
+    public boolean recycleChildren(final PageTreeNode node, final List<Bitmaps> bitmapsToRecycle) {
+        boolean res = false;
+        int childId = getFirstChildId(node.id);
+        if (childId >= maxNodeId) {
+            return res;
+        }
+        final PageTreeNode[] nodes = getNodes();
+        for (final int end = Math.min(nodes.length, childId + splitMasks.length); childId < end; childId++) {
+            if (nodes[childId] != null) {
+                res |= nodes[childId].recycle(bitmapsToRecycle);
+                nodes[childId] = null;
             }
         }
+        if (childId >= maxNodeId) {
+            if (childId >= nodes.length) {
+                maxNodeId = nodes.length - 1;
+            }
+            while (maxNodeId > 0 && nodes[maxNodeId] == null) {
+                maxNodeId--;
+            }
+            maxNodeId++;
+        }
+        return res;
+    }
+
+    public void recycleNodes(final PageTreeLevel level, final List<Bitmaps> bitmapsToRecycle) {
+        if (level.start >= maxNodeId) {
+            return;
+        }
+        final PageTreeNode[] nodes = getNodes();
+        for (int i = level.start; i < maxNodeId; i++) {
+            if (nodes[i] != null) {
+                nodes[i].recycle(bitmapsToRecycle);
+                nodes[i] = null;
+            }
+        }
+        maxNodeId = level.start;
+        while (maxNodeId > 0 && nodes[maxNodeId] == null) {
+            maxNodeId--;
+        }
+        maxNodeId++;
     }
 
     public boolean isHiddenByChildren(final PageTreeNode parent, final ViewState viewState, final RectF pageBounds) {
-        int childId = (int) getFirstChildId(parent.id);
-        for (int end = childId + splitMasks.length; childId < end; childId++) {
-            final PageTreeNode child = nodes.get(childId);
+        int childId = getFirstChildId(parent.id);
+        if (childId >= maxNodeId) {
+            return false;
+        }
+        final PageTreeNode[] nodes = getNodes();
+        for (final int end = Math.min(nodes.length, childId + splitMasks.length); childId < end; childId++) {
+            final PageTreeNode child = nodes[childId];
             if (child == null) {
                 return false;
             }
-            if (!child.hasBitmap() && !child.decodingNow.get()) {
+            if (viewState.isNodeKeptInMemory(child, pageBounds) && !child.holder.hasBitmaps()) {
                 return false;
             }
         }
         return true;
     }
 
-    public boolean hasChildren(final PageTreeNode parent) {
-        int childId = getFirstChildId(parent.id);
-        return null != nodes.get(childId);
-    }
-
-    private int getFirstChildId(final long parentId) {
+    static int getFirstChildId(final long parentId) {
         return (int) (parentId * splitMasks.length + 1);
     }
-
 }

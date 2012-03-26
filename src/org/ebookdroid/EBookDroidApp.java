@@ -1,10 +1,10 @@
 package org.ebookdroid;
 
-import org.ebookdroid.core.cache.CacheManager;
-import org.ebookdroid.core.log.EmergencyHandler;
-import org.ebookdroid.core.log.LogContext;
-import org.ebookdroid.core.settings.SettingsManager;
-import org.ebookdroid.core.utils.AndroidVersion;
+import org.ebookdroid.common.bitmaps.BitmapManager;
+import org.ebookdroid.common.cache.CacheManager;
+import org.ebookdroid.common.log.EmergencyHandler;
+import org.ebookdroid.common.log.LogContext;
+import org.ebookdroid.common.settings.SettingsManager;
 
 import android.app.Application;
 import android.content.Context;
@@ -15,6 +15,8 @@ import android.os.Build;
 import android.os.Environment;
 
 import java.io.File;
+
+import org.emdev.utils.android.AndroidVersion;
 
 public class EBookDroidApp extends Application {
 
@@ -28,6 +30,11 @@ public class EBookDroidApp extends Application {
 
     public static File EXT_STORAGE;
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see android.app.Application#onCreate()
+     */
     @Override
     public void onCreate() {
         super.onCreate();
@@ -58,24 +65,35 @@ public class EBookDroidApp extends Application {
             LCTX.i("External storage dir: " + Environment.getExternalStorageDirectory());
             LCTX.i("Files            dir: " + getFilesDir().getAbsolutePath());
             LCTX.i("Cache            dir: " + getCacheDir().getAbsolutePath());
-            //LCTX.i("External cache   dir: " + getExternalCacheDir().getAbsolutePath());
+            // LCTX.i("External cache   dir: " + getExternalCacheDir().getAbsolutePath());
 
             LCTX.i("VERSION     : " + AndroidVersion.VERSION);
             LCTX.i("BOARD       : " + Build.BOARD);
             LCTX.i("BRAND       : " + Build.BRAND);
-            //LCTX.i("CPU_ABI     : " + Build.CPU_ABI);
-            //LCTX.i("CPU_ABI2    : " + Build.CPU_ABI2);
+            // LCTX.i("CPU_ABI     : " + Build.CPU_ABI);
+            // LCTX.i("CPU_ABI2    : " + Build.CPU_ABI2);
             LCTX.i("DEVICE      : " + Build.DEVICE);
             LCTX.i("DISPLAY     : " + Build.DISPLAY);
             LCTX.i("FINGERPRINT : " + Build.FINGERPRINT);
-            //LCTX.i("HARDWARE    : " + Build.HARDWARE);
+            // LCTX.i("HARDWARE    : " + Build.HARDWARE);
             LCTX.i("ID          : " + Build.ID);
-            //LCTX.i("MANUFACTURER: " + Build.MANUFACTURER);
+            // LCTX.i("MANUFACTURER: " + Build.MANUFACTURER);
             LCTX.i("MODEL       : " + Build.MODEL);
             LCTX.i("PRODUCT     : " + Build.PRODUCT);
-            
+
         } catch (final NameNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see android.app.Application#onLowMemory()
+     */
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        BitmapManager.clear("on Low Memory: ");
     }
 }

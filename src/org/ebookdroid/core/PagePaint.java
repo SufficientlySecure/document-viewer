@@ -2,7 +2,6 @@ package org.ebookdroid.core;
 
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PixelXorXfermode;
 import android.text.TextPaint;
 
 public enum PagePaint {
@@ -17,7 +16,6 @@ public enum PagePaint {
     NIGHT(Color.WHITE, Color.BLACK, Color.BLACK);
 
     public final Paint bitmapPaint;
-    public final Paint nightBitmapPaint;
     public final TextPaint textPaint = new TextPaint();
     public final Paint fillPaint = new Paint();
     public final Paint backgroundFillPaint = new Paint();
@@ -27,10 +25,6 @@ public enum PagePaint {
     private PagePaint(final int textColor, final int fillColor, final int bgFillPaint) {
         bitmapPaint = new Paint();
         bitmapPaint.setFilterBitmap(false);
-
-        nightBitmapPaint = new Paint();
-        nightBitmapPaint.setFilterBitmap(false);
-        nightBitmapPaint.setXfermode(new PixelXorXfermode(-1));
 
         textPaint.setColor(textColor);
         textPaint.setAntiAlias(true);

@@ -1,6 +1,6 @@
 package org.ebookdroid.core.curl;
 
-import org.ebookdroid.core.SinglePageDocumentView;
+import org.ebookdroid.core.SinglePageController;
 
 /**
  * The Class SinglePageCurler.
@@ -12,17 +12,24 @@ import org.ebookdroid.core.SinglePageDocumentView;
  */
 public class SinglePageSimpleCurler extends AbstractSinglePageCurler {
 
-    public SinglePageSimpleCurler(final SinglePageDocumentView singlePageDocumentView) {
+    public SinglePageSimpleCurler(final SinglePageController singlePageDocumentView) {
         super(PageAnimationType.CURLER, singlePageDocumentView);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#getInitialXForBackFlip(int)
+     */
     @Override
     protected int getInitialXForBackFlip(final int width) {
         return width;
     }
 
     /**
-     * Do the page curl depending on the methods we are using
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#updateValues()
      */
     @Override
     protected void updateValues() {

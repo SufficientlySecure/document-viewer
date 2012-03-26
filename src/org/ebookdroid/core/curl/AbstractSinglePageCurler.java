@@ -1,8 +1,8 @@
 package org.ebookdroid.core.curl;
 
+import org.ebookdroid.core.EventDraw;
 import org.ebookdroid.core.Page;
-import org.ebookdroid.core.PagePaint;
-import org.ebookdroid.core.SinglePageDocumentView;
+import org.ebookdroid.core.SinglePageController;
 import org.ebookdroid.core.ViewState;
 
 import android.graphics.Canvas;
@@ -21,12 +21,14 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
     /** Our points used to define the current clipping paths in our draw call */
     protected Vector2D mB, mC, mD, mE, mF, mOldF, mOrigin;
 
-    public AbstractSinglePageCurler(final PageAnimationType type, final SinglePageDocumentView singlePageDocumentView) {
+    public AbstractSinglePageCurler(final PageAnimationType type, final SinglePageController singlePageDocumentView) {
         super(type, singlePageDocumentView);
     }
 
     /**
-     * Initialize the view
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#init()
      */
     @Override
     public void init() {
@@ -42,6 +44,11 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
         mInitialEdgeOffset = 20;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#fixMovement(org.ebookdroid.core.curl.Vector2D, boolean)
+     */
     @Override
     protected Vector2D fixMovement(Vector2D point, final boolean bMaintainMoveDir) {
         // Make sure we never ever move too much
@@ -63,9 +70,9 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
     }
 
     /**
-     * Called on the first draw event of the view
+     * {@inheritDoc}
      *
-     * @param canvas
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#onFirstDrawEvent(android.graphics.Canvas, org.ebookdroid.core.ViewState)
      */
     @Override
     protected void onFirstDrawEvent(final Canvas canvas, final ViewState viewState) {
@@ -82,7 +89,9 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
     }
 
     /**
-     * Reset points to it's initial clip edge state
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#resetClipEdge()
      */
     @Override
     protected void resetClipEdge() {
@@ -106,56 +115,51 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
     }
 
     /**
-     * Draw the foreground
+     * {@inheritDoc}
      *
-     * @param canvas
-     * @param rect
-     * @param paint
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawForeground(org.ebookdroid.core.EventDraw)
      */
     @Override
-    protected void drawForeground(final Canvas canvas, final ViewState viewState) {
-        Page page = view.getBase().getDocumentModel().getPageObject(foreIndex);
+    protected void drawForeground(EventDraw event) {
+        Page page = event.viewState.model.getPageObject(foreIndex);
         if (page == null) {
-            page = view.getBase().getDocumentModel().getCurrentPageObject();
+            page = event.viewState.model.getCurrentPageObject();
         }
         if (page != null) {
-            canvas.save();
-            canvas.clipRect(viewState.getBounds(page));
-            page.draw(canvas, viewState, true);
-            canvas.restore();
+            event.canvas.save();
+            event.canvas.clipRect(event.viewState.getBounds(page));
+            event.process(page);
+            event.canvas.restore();
         }
     }
 
     /**
-     * Draw the background image.
+     * {@inheritDoc}
      *
-     * @param canvas
-     * @param rect
-     * @param paint
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawBackground(org.ebookdroid.core.EventDraw)
      */
     @Override
-    protected void drawBackground(final Canvas canvas, final ViewState viewState) {
+    protected void drawBackground(EventDraw event) {
         final Path mask = createBackgroundPath();
 
-        final Page page = view.getBase().getDocumentModel().getPageObject(backIndex);
+        final Page page = event.viewState.model.getPageObject(backIndex);
         if (page != null) {
             // Save current canvas so we do not mess it up
-            canvas.save();
-            canvas.clipPath(mask);
+            event.canvas.save();
+            event.canvas.clipPath(mask);
 
-            final PagePaint paint = viewState.nightMode ? PagePaint.NIGHT : PagePaint.DAY;
+            event.canvas.drawRect(event.canvas.getClipBounds(), event.viewState.paint.backgroundFillPaint);
 
-            canvas.drawRect(canvas.getClipBounds(), paint.backgroundFillPaint);
+            event.process(page);
 
-            page.draw(canvas, viewState, true);
-            canvas.restore();
+            event.canvas.restore();
         }
 
     }
 
     /**
      * Create a Path used as a mask to draw the background page
-     *
+     * 
      * @return
      */
     private Path createBackgroundPath() {
@@ -170,7 +174,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
 
     /**
      * Creates a path used to draw the curl edge in.
-     *
+     * 
      * @return
      */
     private Path createCurlEdgePath() {
@@ -184,14 +188,14 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
     }
 
     /**
-     * Draw the curl page edge
+     * {@inheritDoc}
      *
-     * @param canvas
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawExtraObjects(org.ebookdroid.core.EventDraw)
      */
     @Override
-    protected void drawExtraObjects(final Canvas canvas, final ViewState viewState) {
+    protected void drawExtraObjects(EventDraw event) {
         final Path path = createCurlEdgePath();
-        canvas.drawPath(path, mCurlEdgePaint);
+        event.canvas.drawPath(path, mCurlEdgePaint);
     }
 
 }

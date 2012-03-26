@@ -1,10 +1,9 @@
 package org.ebookdroid.core.codec;
 
-import org.ebookdroid.core.OutlineLink;
-import org.ebookdroid.core.PageLink;
 
 import android.graphics.Bitmap;
 
+import java.util.Collections;
 import java.util.List;
 
 public abstract class AbstractCodecDocument implements CodecDocument {
@@ -25,12 +24,12 @@ public abstract class AbstractCodecDocument implements CodecDocument {
     }
 
     @Override
-    public List<PageLink> getPageLinks(final int pageNuber) {
-        return null;
+    public List<OutlineLink> getOutline() {
+        return Collections.emptyList();
     }
 
     @Override
-    public List<OutlineLink> getOutline() {
+    public CodecPageInfo getUnifiedPageInfo() {
         return null;
     }
 

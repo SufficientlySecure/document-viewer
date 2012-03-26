@@ -1,13 +1,20 @@
 package org.ebookdroid.core.models;
 
-import org.ebookdroid.core.events.ListenerProxy;
 import org.ebookdroid.core.events.ZoomListener;
+
+import org.emdev.utils.MathUtils;
+import org.emdev.utils.listeners.ListenerProxy;
 
 public class ZoomModel extends ListenerProxy {
 
-    private float zoom = 1.0f;
-    private static final float INCREMENT_DELTA = 0.05f;
-    private boolean horizontalScrollEnabled;
+    public static final float MIN_ZOOM = 1.0f;
+    public static final float MAX_ZOOM = 32.0f;
+
+    private static final float ZOOM_ROUND_FACTOR = 32.0f;
+
+    private float initialZoom = MIN_ZOOM;
+    private float currentZoom = MIN_ZOOM;
+
     private boolean isCommited;
 
     public ZoomModel() {
@@ -15,49 +22,34 @@ public class ZoomModel extends ListenerProxy {
     }
 
     public void initZoom(final float zoom) {
-        this.zoom = Math.max(zoom, 1.0f);
+        this.initialZoom = this.currentZoom = MathUtils.adjust(MathUtils.round(zoom, ZOOM_ROUND_FACTOR), MIN_ZOOM,
+                MAX_ZOOM);
         isCommited = true;
     }
 
-    public void setZoom(float zoom) {
-        zoom = Math.max(zoom, 1.0f);
-        if (this.zoom != zoom) {
-            final float oldZoom = this.zoom;
-            this.zoom = zoom;
+    public void setZoom(final float zoom) {
+        final float newZoom = MathUtils.adjust(MathUtils.round(zoom, ZOOM_ROUND_FACTOR), MIN_ZOOM, MAX_ZOOM);
+        final float oldZoom = this.currentZoom;
+        if (newZoom != oldZoom) {
             isCommited = false;
-
-            this.<ZoomListener> getListener().zoomChanged(zoom, oldZoom);
+            this.currentZoom = newZoom;
+            this.<ZoomListener> getListener().zoomChanged(oldZoom, newZoom, false);
         }
     }
 
+    public void scaleZoom(final float factor) {
+        setZoom(currentZoom * factor);
+    }
+
     public float getZoom() {
-        return zoom;
-    }
-
-    public void increaseZoom() {
-        setZoom(getZoom() + INCREMENT_DELTA);
-    }
-
-    public void decreaseZoom() {
-        setZoom(getZoom() - INCREMENT_DELTA);
-    }
-
-    public void setHorizontalScrollEnabled(final boolean horizontalScrollEnabled) {
-        this.horizontalScrollEnabled = horizontalScrollEnabled;
-    }
-
-    public boolean isHorizontalScrollEnabled() {
-        return horizontalScrollEnabled;
-    }
-
-    public boolean canDecrement() {
-        return zoom > 1.0f;
+        return currentZoom;
     }
 
     public void commit() {
         if (!isCommited) {
             isCommited = true;
-            this.<ZoomListener> getListener().commitZoom();
+            this.<ZoomListener> getListener().zoomChanged(initialZoom, currentZoom, true);
+            initialZoom = currentZoom;
         }
     }
 }

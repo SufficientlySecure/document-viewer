@@ -1,9 +1,9 @@
 package org.ebookdroid.core.curl;
 
+import org.ebookdroid.core.EventDraw;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.ViewState;
 
-import android.graphics.Canvas;
 import android.view.MotionEvent;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -45,8 +45,8 @@ public class PageAnimatorProxy implements PageAnimator {
     }
 
     @Override
-    public void draw(Canvas canvas, ViewState viewState) {
-        orig.get().draw(canvas, viewState);
+    public void draw(EventDraw event) {
+        orig.get().draw(event);
     }
 
     @Override
@@ -55,8 +55,8 @@ public class PageAnimatorProxy implements PageAnimator {
     }
 
     @Override
-    public void FlipAnimationStep() {
-        orig.get().FlipAnimationStep();
+    public void flipAnimationStep() {
+        orig.get().flipAnimationStep();
     }
 
     @Override
@@ -64,8 +64,9 @@ public class PageAnimatorProxy implements PageAnimator {
         return orig.get().isPageVisible(page, viewState);
     }
 
-    public void pageUpdated(int viewIndex) {
-        orig.get().pageUpdated(viewIndex);
+    @Override
+    public void pageUpdated(final ViewState viewState, final Page page) {
+        orig.get().pageUpdated(viewState, page);
     }
 
     @Override

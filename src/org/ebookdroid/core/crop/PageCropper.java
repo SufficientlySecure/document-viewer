@@ -1,129 +1,142 @@
 package org.ebookdroid.core.crop;
 
-import org.ebookdroid.core.bitmaps.BitmapRef;
-import org.ebookdroid.core.bitmaps.RawBitmap;
+import org.ebookdroid.common.bitmaps.BitmapRef;
+import org.ebookdroid.common.bitmaps.RawBitmap;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
 public class PageCropper {
 
-    private final static int LINE_SIZE = 10;
+    public static final int BMP_SIZE = 400;
 
+    private final static int V_LINE_SIZE = 5;
+
+    private final static int H_LINE_SIZE = 5;
+
+    private static final int LINE_MARGIN = 20;
+
+    private static final double WHITE_THRESHOLD = 0.005;
+
+    private static RawBitmap VLINE = new RawBitmap(V_LINE_SIZE,  BMP_SIZE - 2 * LINE_MARGIN, false);
+    private static RawBitmap HLINE = new RawBitmap(BMP_SIZE - 2 * LINE_MARGIN, H_LINE_SIZE, false);
+
+    private static RawBitmap CENTER = new RawBitmap(BMP_SIZE / 5, BMP_SIZE / 5, false);
+
+    private static Bitmap BITMAP = Bitmap.createBitmap(BMP_SIZE, BMP_SIZE, Bitmap.Config.RGB_565);
+
+    private static final Rect RECT = new Rect(0, 0, BMP_SIZE, BMP_SIZE);
     private PageCropper() {
     }
 
     public static RectF getCropBounds(final BitmapRef bitmap, final Rect bitmapBounds, final RectF pageSliceBounds) {
-        // final long t0 = System.currentTimeMillis();
-        final float avgLum = calculateAvgLum(bitmap, bitmapBounds);
-        // final long t1 = System.currentTimeMillis();
-        final float left = getLeftBound(bitmap, bitmapBounds, avgLum);
-        final float right = getRightBound(bitmap, bitmapBounds, avgLum);
-        final float top = getTopBound(bitmap, bitmapBounds, avgLum);
-        final float bottom = getBottomBound(bitmap, bitmapBounds, avgLum);
-        // final long t5 = System.currentTimeMillis();
+        Canvas c = new Canvas(BITMAP);
+        c.drawBitmap(bitmap.getBitmap(), bitmapBounds, RECT, null);
 
-        // System.out.println("Crop: total=" + (t5 - t0) + "ms, avgLum=" + (t1 - t0) + "ms");
+        final float avgLum = calculateAvgLum();
+
+        final float left = getLeftBound(avgLum);
+        final float right = getRightBound(avgLum);
+        final float top = getTopBound(avgLum);
+        final float bottom = getBottomBound(avgLum);
 
         return new RectF(left * pageSliceBounds.width() + pageSliceBounds.left, top * pageSliceBounds.height()
                 + pageSliceBounds.top, right * pageSliceBounds.width() + pageSliceBounds.left, bottom
                 * pageSliceBounds.height() + pageSliceBounds.top);
     }
 
-    private static float getLeftBound(final BitmapRef bitmap, final Rect bitmapBounds, final float avgLum) {
-        final Bitmap bmp = bitmap.getBitmap();
-        final int w = bmp.getWidth() / 3;
+    private static float getLeftBound(final float avgLum) {
+        final int w = BITMAP.getWidth() / 3;
         int whiteCount = 0;
         int x = 0;
-        for (x = bitmapBounds.left; x < bitmapBounds.left + w; x += LINE_SIZE) {
-            final boolean white = isRectWhite(bmp, x, bitmapBounds.top + 20, x + LINE_SIZE, bitmapBounds.bottom - 20,
-                    avgLum);
+
+        for (x = RECT.left; x < RECT.left + w; x += V_LINE_SIZE) {
+            VLINE.retrieve(BITMAP, x, RECT.top + LINE_MARGIN, V_LINE_SIZE, VLINE.getHeight());
+            final boolean white = isRectWhite(VLINE, avgLum);
             if (white) {
                 whiteCount++;
             } else {
                 if (whiteCount >= 1) {
-                    return (float) (Math.max(bitmapBounds.left, x - LINE_SIZE) - bitmapBounds.left)
-                            / bitmapBounds.width();
+                    return (float) (Math.max(RECT.left, x - V_LINE_SIZE) - RECT.left)
+                            / RECT.width();
                 }
                 whiteCount = 0;
             }
         }
-        return whiteCount > 0 ? (float) (Math.max(bitmapBounds.left, x - LINE_SIZE) - bitmapBounds.left)
-                / bitmapBounds.width() : 0;
+        return whiteCount > 0 ? (float) (Math.max(RECT.left, x - V_LINE_SIZE) - RECT.left)
+                / RECT.width() : 0;
     }
 
-    private static float getTopBound(final BitmapRef bitmap, final Rect bitmapBounds, final float avgLum) {
-        final Bitmap bmp = bitmap.getBitmap();
-        final int h = bmp.getHeight() / 3;
+    private static float getTopBound(final float avgLum) {
+        final int h = BITMAP.getHeight() / 3;
         int whiteCount = 0;
         int y = 0;
-        for (y = bitmapBounds.top; y < bitmapBounds.top + h; y += LINE_SIZE) {
-            final boolean white = isRectWhite(bmp, bitmapBounds.left + 20, y, bitmapBounds.right - 20, y + LINE_SIZE,
-                    avgLum);
+
+        for (y = RECT.top; y < RECT.top + h; y += H_LINE_SIZE) {
+            HLINE.retrieve(BITMAP, RECT.left + LINE_MARGIN, y, HLINE.getWidth(), H_LINE_SIZE);
+            final boolean white = isRectWhite(HLINE, avgLum);
             if (white) {
                 whiteCount++;
             } else {
                 if (whiteCount >= 1) {
-                    return (float) (Math.max(bitmapBounds.top, y - LINE_SIZE) - bitmapBounds.top)
-                            / bitmapBounds.height();
+                    return (float) (Math.max(RECT.top, y - H_LINE_SIZE) - RECT.top)
+                            / RECT.height();
                 }
                 whiteCount = 0;
             }
         }
-        return whiteCount > 0 ? (float) (Math.max(bitmapBounds.top, y - LINE_SIZE) - bitmapBounds.top)
-                / bitmapBounds.height() : 0;
+        return whiteCount > 0 ? (float) (Math.max(RECT.top, y - H_LINE_SIZE) - RECT.top)
+                / RECT.height() : 0;
     }
 
-    private static float getRightBound(final BitmapRef bitmap, final Rect bitmapBounds, final float avgLum) {
-        final Bitmap bmp = bitmap.getBitmap();
-        final int w = bmp.getWidth() / 3;
+    private static float getRightBound(final float avgLum) {
+        final int w = BITMAP.getWidth() / 3;
         int whiteCount = 0;
         int x = 0;
-        for (x = bitmapBounds.right - LINE_SIZE; x > bitmapBounds.right - w; x -= LINE_SIZE) {
-            final boolean white = isRectWhite(bmp, x, bitmapBounds.top + 20, x + LINE_SIZE, bitmapBounds.bottom - 20,
-                    avgLum);
+
+        for (x = RECT.right - V_LINE_SIZE; x > RECT.right - w; x -= V_LINE_SIZE) {
+            VLINE.retrieve(BITMAP, x, RECT.top + LINE_MARGIN, V_LINE_SIZE, VLINE.getHeight());
+            final boolean white = isRectWhite(VLINE, avgLum);
             if (white) {
                 whiteCount++;
             } else {
                 if (whiteCount >= 1) {
-                    return (float) (Math.min(bitmapBounds.right, x + 2 * LINE_SIZE) - bitmapBounds.left)
-                            / bitmapBounds.width();
+                    return (float) (Math.min(RECT.right, x + 2 * V_LINE_SIZE) - RECT.left)
+                            / RECT.width();
                 }
                 whiteCount = 0;
             }
         }
-        return whiteCount > 0 ? (float) (Math.min(bitmapBounds.right, x + 2 * LINE_SIZE) - bitmapBounds.left)
-                / bitmapBounds.width() : 1;
+        return whiteCount > 0 ? (float) (Math.min(RECT.right, x + 2 * V_LINE_SIZE) - RECT.left)
+                / RECT.width() : 1;
     }
 
-    private static float getBottomBound(final BitmapRef bitmap, final Rect bitmapBounds, final float avgLum) {
-        final Bitmap bmp = bitmap.getBitmap();
-        final int h = bmp.getHeight() / 3;
+    private static float getBottomBound(final float avgLum) {
+        final int h = BITMAP.getHeight() / 3;
         int whiteCount = 0;
         int y = 0;
-        for (y = bitmapBounds.bottom - LINE_SIZE; y > bitmapBounds.bottom - h; y -= LINE_SIZE) {
-            final boolean white = isRectWhite(bmp, bitmapBounds.left + 20, y, bitmapBounds.right - 20, y + LINE_SIZE,
-                    avgLum);
+        for (y = RECT.bottom - H_LINE_SIZE; y > RECT.bottom - h; y -= H_LINE_SIZE) {
+            HLINE.retrieve(BITMAP, RECT.left + LINE_MARGIN, y, HLINE.getWidth(), H_LINE_SIZE);
+            final boolean white = isRectWhite(HLINE, avgLum);
             if (white) {
                 whiteCount++;
             } else {
                 if (whiteCount >= 1) {
-                    return (float) (Math.min(bitmapBounds.bottom, y + 2 * LINE_SIZE) - bitmapBounds.top)
-                            / bitmapBounds.height();
+                    return (float) (Math.min(RECT.bottom, y + 2 * H_LINE_SIZE) - RECT.top)
+                            / RECT.height();
                 }
                 whiteCount = 0;
             }
         }
-        return whiteCount > 0 ? (float) (Math.min(bitmapBounds.bottom, y + 2 * LINE_SIZE) - bitmapBounds.top)
-                / bitmapBounds.height() : 1;
+        return whiteCount > 0 ? (float) (Math.min(RECT.bottom, y + 2 * H_LINE_SIZE) - RECT.top)
+                / RECT.height() : 1;
     }
 
-    private static boolean isRectWhite(final Bitmap bmp, final int l, final int t, final int r, final int b,
-            final float avgLum) {
+    private static boolean isRectWhite(RawBitmap rb, final float avgLum) {
         int count = 0;
 
-        final RawBitmap rb = new RawBitmap(bmp, new Rect(l, t, r, b));
         final int[] pixels = rb.getPixels();
         for (final int c : pixels) {
             final float lum = getLum(c);
@@ -131,25 +144,14 @@ public class PageCropper {
                 count++;
             }
         }
-        return ((float) count / pixels.length) < 0.005;
+        return ((float) count / pixels.length) < WHITE_THRESHOLD;
     }
 
-    private static float calculateAvgLum(final BitmapRef bitmap, final Rect bitmapBounds) {
-        final Bitmap bmp = bitmap.getBitmap();
-        if (bmp == null) {
-            return 1000;
-        }
-
+    private static float calculateAvgLum() {
         float lum = 0f;
 
-        final int sizeX = bitmapBounds.width() / 10;
-        final int sizeY = bitmapBounds.height() / 10;
-        final int centerX = bitmapBounds.centerX();
-        final int centerY = bitmapBounds.centerX();
-
-        final RawBitmap rb = new RawBitmap(bmp, new Rect(centerX - sizeX, centerY - sizeY, centerX + sizeX, centerY
-                + sizeY));
-        final int[] pixels = rb.getPixels();
+        CENTER.retrieve(BITMAP,  4 * BMP_SIZE / 10, 4 * BMP_SIZE / 10, CENTER.getWidth(), CENTER.getHeight());
+        final int[] pixels = CENTER.getPixels();
         for (final int c : pixels) {
             lum += getLum(c);
         }

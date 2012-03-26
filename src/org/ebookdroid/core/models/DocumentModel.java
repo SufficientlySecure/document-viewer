@@ -1,46 +1,73 @@
 package org.ebookdroid.core.models;
 
+import org.ebookdroid.CodecType;
 import org.ebookdroid.R;
+import org.ebookdroid.common.bitmaps.BitmapManager;
+import org.ebookdroid.common.bitmaps.BitmapRef;
+import org.ebookdroid.common.bitmaps.Bitmaps;
+import org.ebookdroid.common.cache.CacheManager;
+import org.ebookdroid.common.cache.PageCacheFile;
+import org.ebookdroid.common.cache.ThumbnailFile;
+import org.ebookdroid.common.log.LogContext;
+import org.ebookdroid.common.settings.SettingsManager;
+import org.ebookdroid.common.settings.books.BookSettings;
+import org.ebookdroid.common.settings.types.PageType;
 import org.ebookdroid.core.DecodeService;
-import org.ebookdroid.core.IDocumentView;
-import org.ebookdroid.core.IViewerActivity;
+import org.ebookdroid.core.DecodeServiceBase;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.PageIndex;
-import org.ebookdroid.core.PageType;
-import org.ebookdroid.core.bitmaps.BitmapManager;
-import org.ebookdroid.core.bitmaps.Bitmaps;
-import org.ebookdroid.core.cache.CacheManager;
+import org.ebookdroid.core.codec.CodecContext;
 import org.ebookdroid.core.codec.CodecPageInfo;
-import org.ebookdroid.core.settings.SettingsManager;
-import org.ebookdroid.core.settings.books.BookSettings;
-import org.ebookdroid.utils.LengthUtils;
+import org.ebookdroid.core.events.CurrentPageListener;
+import org.ebookdroid.ui.viewer.IActivityController;
+import org.ebookdroid.ui.viewer.IView;
 
 import android.graphics.RectF;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class DocumentModel extends CurrentPageModel {
+import org.emdev.utils.CompareUtils;
+import org.emdev.utils.LengthUtils;
+import org.emdev.utils.listeners.ListenerProxy;
 
-    private static final boolean CACHE_ENABLED = true;
+public class DocumentModel extends ListenerProxy {
+
+    protected static final LogContext LCTX = LogContext.ROOT.lctx("DocModel");
+
+    protected PageIndex currentIndex = PageIndex.FIRST;
 
     private static final Page[] EMPTY_PAGES = {};
 
-    private DecodeService decodeService;
+    private final CodecContext context;
+    private final DecodeService decodeService;
 
     private Page[] pages = EMPTY_PAGES;
 
-    public DocumentModel(final DecodeService decodeService) {
-        this.decodeService = decodeService;
+    public DocumentModel(final CodecType activityType) {
+        super(CurrentPageListener.class);
+        if (activityType != null) {
+            try {
+                context = activityType.getContextClass().newInstance();
+                decodeService = new DecodeServiceBase(context);
+            } catch (final Throwable th) {
+                throw new RuntimeException(th);
+            }
+        } else {
+            context = null;
+            decodeService = null;
+        }
+    }
+
+    public void open(String fileName, String password) {
+        if (decodeService != null) {
+            decodeService.open(fileName, password);
+        }
+    }
+
+    public DecodeService getDecodeService() {
+        return decodeService;
     }
 
     public Page[] getPages() {
@@ -59,13 +86,8 @@ public class DocumentModel extends CurrentPageModel {
         return LengthUtils.length(pages);
     }
 
-    public DecodeService getDecodeService() {
-        return decodeService;
-    }
-
     public void recycle() {
         decodeService.recycle();
-        decodeService = null;
         recyclePages();
     }
 
@@ -85,6 +107,15 @@ public class DocumentModel extends CurrentPageModel {
         return pages != null && 0 <= viewIndex && viewIndex < pages.length ? pages[viewIndex] : null;
     }
 
+    public Page getPageByDocIndex(final int docIndex) {
+        for(Page page  : pages) {
+            if (page.index.docIndex == docIndex) {
+                return page;
+            }
+        }
+        return null;
+    }
+
     /**
      * Gets the current page object.
      * 
@@ -92,24 +123,6 @@ public class DocumentModel extends CurrentPageModel {
      */
     public Page getCurrentPageObject() {
         return getPageObject(this.currentIndex.viewIndex);
-    }
-
-    /**
-     * Gets the next page object.
-     * 
-     * @return the next page object
-     */
-    public Page getNextPageObject() {
-        return getPageObject(this.currentIndex.viewIndex + 1);
-    }
-
-    /**
-     * Gets the prev page object.
-     * 
-     * @return the prev page object
-     */
-    public Page getPrevPageObject() {
-        return getPageObject(this.currentIndex.viewIndex - 1);
     }
 
     /**
@@ -121,6 +134,31 @@ public class DocumentModel extends CurrentPageModel {
         return getPageObject(pages.length - 1);
     }
 
+    public void setCurrentPageIndex(final PageIndex newIndex) {
+        if (!CompareUtils.equals(currentIndex, newIndex)) {
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("Current page changed: " + "currentIndex" + " -> " + newIndex);
+            }
+
+            final PageIndex oldIndex = this.currentIndex;
+            this.currentIndex = newIndex;
+
+            this.<CurrentPageListener> getListener().currentPageChanged(oldIndex, newIndex);
+        }
+    }
+
+    public PageIndex getCurrentIndex() {
+        return this.currentIndex;
+    }
+
+    public int getCurrentViewPageIndex() {
+        return this.currentIndex.viewIndex;
+    }
+
+    public int getCurrentDocPageIndex() {
+        return this.currentIndex.docIndex;
+    }
+
     public void setCurrentPageByFirstVisible(final int firstVisiblePage) {
         final Page page = getPageObject(firstVisiblePage);
         if (page != null) {
@@ -128,16 +166,16 @@ public class DocumentModel extends CurrentPageModel {
         }
     }
 
-    public void initPages(final IViewerActivity base, final IViewerActivity.IBookLoadTask task) {
+    public void initPages(final IActivityController base, final IActivityController.IBookLoadTask task) {
         recyclePages();
 
         final BookSettings bs = SettingsManager.getBookSettings();
 
-        if (base == null || bs == null) {
+        if (base == null || bs == null || context == null || decodeService == null) {
             return;
         }
 
-        final IDocumentView view = base.getView();
+        final IView view = base.getView();
 
         final CodecPageInfo defCpi = new CodecPageInfo();
         defCpi.width = (view.getWidth());
@@ -173,16 +211,16 @@ public class DocumentModel extends CurrentPageModel {
         }
     }
 
-    public void createBookThumbnail(final BookSettings bs, Page page, boolean override) {
-        final File thumbnailFile = CacheManager.getThumbnailFile(bs.fileName);
+    public void createBookThumbnail(final BookSettings bs, final Page page, final boolean override) {
+        final ThumbnailFile thumbnailFile = CacheManager.getThumbnailFile(bs.fileName);
         if (!override && thumbnailFile.exists()) {
             return;
         }
 
         int width = 200, height = 200;
-        RectF bounds = page.getBounds(1.0f);
-        float pageWidth = bounds.width();
-        float pageHeight = bounds.height();
+        final RectF bounds = page.getBounds(1.0f);
+        final float pageWidth = bounds.width();
+        final float pageHeight = bounds.height();
 
         if (pageHeight > pageWidth) {
             width = (int) (200 * pageWidth / pageHeight);
@@ -190,104 +228,35 @@ public class DocumentModel extends CurrentPageModel {
             height = (int) (200 * pageHeight / pageWidth);
         }
 
-        decodeService.createThumbnail(thumbnailFile, width, height, page.index.docIndex, page.type.getInitialRect());
+        BitmapRef image = decodeService.createThumbnail(width, height, page.index.docIndex, page.type.getInitialRect());
+        thumbnailFile.setImage(image != null ? image.getBitmap() : null);
+        BitmapManager.release(image);
     }
 
-    private CodecPageInfo[] retrievePagesInfo(final IViewerActivity base, final BookSettings bs,
-            IViewerActivity.IBookLoadTask task) {
-        final File pagesFile = CacheManager.getPageFile(bs.fileName);
+    private CodecPageInfo[] retrievePagesInfo(final IActivityController base, final BookSettings bs,
+            final IActivityController.IBookLoadTask task) {
+        final PageCacheFile pagesFile = CacheManager.getPageFile(bs.fileName);
 
-        if (CACHE_ENABLED) {
-            if (pagesFile.exists()) {
-                final CodecPageInfo[] infos = loadPagesInfo(pagesFile);
-                if (infos != null) {
-                    boolean nullInfoFound = false;
-                    for (CodecPageInfo info : infos) {
-                        if (info == null) {
-                            nullInfoFound = true;
-                            break;
-                        }
-                    }
-                    if (!nullInfoFound) {
-                        return infos;
-                    }
-                }
+        if (decodeService.isPageSizeCacheable() && pagesFile.exists()) {
+            final CodecPageInfo[] infos = pagesFile.load();
+            if (infos != null) {
+                return infos;
             }
         }
 
         final CodecPageInfo[] infos = new CodecPageInfo[getDecodeService().getPageCount()];
+        final CodecPageInfo unified = decodeService.getUnifiedPageInfo();
         for (int i = 0; i < infos.length; i++) {
             if (task != null) {
                 task.setProgressDialogMessage(R.string.msg_getting_page_size, (i + 1), infos.length);
             }
-            infos[i] = getDecodeService().getPageInfo(i);
+            infos[i] = unified != null ? unified : getDecodeService().getPageInfo(i);
         }
 
-        if (CACHE_ENABLED) {
-            storePagesInfo(pagesFile, infos);
+        if (decodeService.isPageSizeCacheable()) {
+            pagesFile.save(infos);
         }
         return infos;
-    }
-
-    private CodecPageInfo[] loadPagesInfo(final File pagesFile) {
-        try {
-            final DataInputStream in = new DataInputStream(new FileInputStream(pagesFile));
-            try {
-                final int pages = in.readInt();
-                final CodecPageInfo[] infos = new CodecPageInfo[pages];
-                for (int i = 0; i < infos.length; i++) {
-                    final CodecPageInfo cpi = new CodecPageInfo();
-                    cpi.width = (in.readInt());
-                    cpi.height = (in.readInt());
-                    if (cpi.width != -1 && cpi.height != -1) {
-                        infos[i] = cpi;
-                    }
-                }
-                return infos;
-            } catch (final EOFException ex) {
-                LCTX.e("Loading pages cache failed: " + ex.getMessage());
-            } catch (final IOException ex) {
-                LCTX.e("Loading pages cache failed: " + ex.getMessage());
-            } finally {
-                try {
-                    in.close();
-                } catch (final IOException ex) {
-                }
-            }
-        } catch (final FileNotFoundException ex) {
-            LCTX.e("Loading pages cache failed: " + ex.getMessage());
-        }
-        return null;
-    }
-
-    private void storePagesInfo(final File pagesFile, final CodecPageInfo[] infos) {
-        if (!decodeService.isPageSizeCacheable()) {
-            return;
-        }
-        try {
-            final DataOutputStream out = new DataOutputStream(new FileOutputStream(pagesFile));
-            try {
-                out.writeInt(infos.length);
-                for (int i = 0; i < infos.length; i++) {
-                    if (infos[i] != null) {
-                        out.writeInt(infos[i].width);
-                        out.writeInt(infos[i].height);
-                    } else {
-                        out.writeInt(-1);
-                        out.writeInt(-1);
-                    }
-                }
-            } catch (final IOException ex) {
-                LCTX.e("Saving pages cache failed: " + ex.getMessage());
-            } finally {
-                try {
-                    out.close();
-                } catch (final IOException ex) {
-                }
-            }
-        } catch (final IOException ex) {
-            LCTX.e("Saving pages cache failed: " + ex.getMessage());
-        }
     }
 
     private final class PageIterator implements Iterable<Page>, Iterator<Page> {

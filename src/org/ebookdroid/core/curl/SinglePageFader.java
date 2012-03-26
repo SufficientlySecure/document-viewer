@@ -1,61 +1,57 @@
 package org.ebookdroid.core.curl;
 
+import org.ebookdroid.core.EventDraw;
 import org.ebookdroid.core.Page;
-import org.ebookdroid.core.SinglePageDocumentView;
-import org.ebookdroid.core.ViewState;
+import org.ebookdroid.core.SinglePageController;
 
-import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
 public class SinglePageFader extends AbstractPageSlider {
 
-    public SinglePageFader(final SinglePageDocumentView singlePageDocumentView) {
+    private final Paint paint = new Paint(PAINT);
+    
+    public SinglePageFader(final SinglePageController singlePageDocumentView) {
         super(PageAnimationType.FADER, singlePageDocumentView);
     }
 
     /**
-     * Draw the foreground
+     * {@inheritDoc}
      *
-     * @param canvas
-     * @param rect
-     * @param paint
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawForeground(org.ebookdroid.core.EventDraw)
      */
     @Override
-    protected void drawForeground(final Canvas canvas, final ViewState viewState) {
-        Page page = view.getBase().getDocumentModel().getPageObject(foreIndex);
+    protected void drawForeground(EventDraw event) {
+        Page page = event.viewState.model.getPageObject(foreIndex);
         if (page == null) {
-            page = view.getBase().getDocumentModel().getCurrentPageObject();
+            page = event.viewState.model.getCurrentPageObject();
         }
         if (page != null) {
-            page.draw(canvas, viewState, true);
+            event.process(page);
         }
     }
 
     /**
-     * Draw the background image.
+     * {@inheritDoc}
      *
-     * @param canvas
-     * @param rect
-     * @param paint
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawBackground(org.ebookdroid.core.EventDraw)
      */
     @Override
-    protected void drawBackground(final Canvas canvas, final ViewState viewState) {
-        final Page page = view.getBase().getDocumentModel().getPageObject(backIndex);
+    protected void drawBackground(EventDraw event) {
+        final Page page = event.viewState.model.getPageObject(backIndex);
         if (page != null) {
-            updateBackBitmap(canvas, viewState, page);
 
-            final Paint paint = new Paint();
-            paint.setFilterBitmap(true);
-            paint.setAntiAlias(true);
-            paint.setDither(true);
-            paint.setAlpha(255 * (int) mA.x / (int) viewState.viewRect.width());
-            final Rect src = new Rect(0, 0, (int) viewState.viewRect.width(), (int) viewState.viewRect.height());
-            final RectF dst = new RectF(0, 0, viewState.viewRect.width(), viewState.viewRect.height());
-            canvas.drawBitmap(backBitmap.getBitmap(), src, dst, paint);
+            updateBackBitmap(event, page);
+
+            RectF viewRect = event.viewState.viewRect;
+
+            final Rect src = new Rect(0, 0, (int) viewRect.width(), (int) viewRect.height());
+            final RectF dst = new RectF(0, 0, viewRect.width(), viewRect.height());
+
+            paint.setAlpha(255 * (int) mA.x / (int) viewRect.width());
+
+            event.canvas.drawBitmap(backBitmap.getBitmap(), src, dst, paint);
         }
-
     }
-
 }

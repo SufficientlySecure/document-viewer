@@ -1,23 +1,28 @@
 package org.ebookdroid.core.models;
 
 import org.ebookdroid.core.events.DecodingProgressListener;
-import org.ebookdroid.core.events.ListenerProxy;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.emdev.utils.listeners.ListenerProxy;
 
 public class DecodingProgressModel extends ListenerProxy {
 
-    private int currentlyDecoding;
+    private AtomicInteger currentlyDecoding = new AtomicInteger();
 
     public DecodingProgressModel() {
         super(DecodingProgressListener.class);
     }
 
     public void increase() {
-        currentlyDecoding++;
-        this.<DecodingProgressListener> getListener().decodingProgressChanged(currentlyDecoding);
+        this.<DecodingProgressListener> getListener().decodingProgressChanged(currentlyDecoding.incrementAndGet());
+    }
+
+    public void increase(int increment) {
+        this.<DecodingProgressListener> getListener().decodingProgressChanged(currentlyDecoding.addAndGet(increment));
     }
 
     public void decrease() {
-        currentlyDecoding--;
-        this.<DecodingProgressListener> getListener().decodingProgressChanged(currentlyDecoding);
+        this.<DecodingProgressListener> getListener().decodingProgressChanged(currentlyDecoding.decrementAndGet());
     }
 }

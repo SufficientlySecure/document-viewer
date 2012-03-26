@@ -5,7 +5,9 @@ include $(CLEAR_VARS)
 LOCAL_MODULE    := jpeg
 
 ifneq ($(TARGET_ARCH_ABI),x86)
+ifneq ($(TARGET_ARCH_ABI),mips)
     LOCAL_ARM_MODE := arm
+endif # TARGET_ARCH_ABI != mips
 endif # TARGET_ARCH_ABI != x86
 
 LOCAL_SRC_FILES := \

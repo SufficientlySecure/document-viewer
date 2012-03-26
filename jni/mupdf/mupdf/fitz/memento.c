@@ -659,7 +659,7 @@ static void Memento_init(void)
     env = getenv("MEMENTO_MAXMEMORY");
     globals.maxMemory = (env ? atoi(env) : 0);
 
-    atexit(Memento_fin);
+    // atexit(Memento_fin);
 
     Memento_inited();
 }

@@ -1,7 +1,5 @@
 package org.ebookdroid.core.codec;
 
-import org.ebookdroid.core.OutlineLink;
-import org.ebookdroid.core.PageLink;
 
 import android.graphics.Bitmap;
 
@@ -13,9 +11,9 @@ public interface CodecDocument {
 
     CodecPage getPage(int pageNuber);
 
-    CodecPageInfo getPageInfo(int pageNuber);
+    CodecPageInfo getUnifiedPageInfo();
 
-    List<PageLink> getPageLinks(int pageNuber);
+    CodecPageInfo getPageInfo(int pageNuber);
 
     List<OutlineLink> getOutline();
 

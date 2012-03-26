@@ -63,6 +63,7 @@ public class Bitmaps {
                 if (row == rows - 1 || col == columns - 1) {
                     final int right = Math.min(left + partSize, bounds.width());
                     final int bottom = Math.min(top + partSize, bounds.height());
+                    bmp.eraseColor(invert ? PagePaint.NIGHT.fillPaint.getColor() : PagePaint.DAY.fillPaint.getColor());
                     slice.retrieve(origBitmap, left, top, right - left, bottom - top);
                 } else {
                     slice.retrieve(origBitmap, left, top, partSize, partSize);
@@ -138,6 +139,7 @@ public class Bitmaps {
                     if (row == rows - 1 || col == columns - 1) {
                         final int right = Math.min(left + partSize, bounds.width());
                         final int bottom = Math.min(top + partSize, bounds.height());
+                        bmp.eraseColor(invert ? PagePaint.NIGHT.fillPaint.getColor() : PagePaint.DAY.fillPaint.getColor());
                         slice.retrieve(origBitmap, left, top, right - left, bottom - top);
                     } else {
                         slice.retrieve(origBitmap, left, top, partSize, partSize);

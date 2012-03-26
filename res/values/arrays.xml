@@ -1,137 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources
-	xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-	<string-array
-		name="list_rotation"
-		translatable="false">
-		<item>@string/list_rotation_auto</item>
-		<item>@string/list_rotation_land</item>
-		<item>@string/list_rotation_port</item>
-	</string-array>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-	<string-array
-		name="list_rotation_values"
-		translatable="false">
-		<item>Default</item>
-		<item>Force landscape</item>
-		<item>Force portrait</item>
-		<item>Automatic</item>
-	</string-array>
-
-	<string-array
-		name="list_align"
-		translatable="false">
-		<item>@string/list_align_by_width</item>
-		<item>@string/list_align_by_height</item>
-		<item>@string/list_align_auto</item>
-	</string-array>
-
-	<string-array
-		name="list_align_values"
-		translatable="false">
-		<item>By Width</item>
-		<item>By Height</item>
-		<item>Auto</item>
-	</string-array>
-
-	<string-array
-		name="list_animation"
-		translatable="false">
-		<item>@string/list_animation_none</item>
-		<item>@string/list_animation_curler_simple</item>
-		<item>@string/list_animation_curler_dynamic</item>
-		<item>@string/list_animation_curler_natural</item>
-		<item>@string/list_animation_slider</item>
-		<item>@string/list_animation_fader</item>
-		<item>@string/list_animation_squeezer</item>
-	</string-array>
-
-	<string-array
-		name="list_animation_values"
-		translatable="false">
-		<item>None</item>
-		<item>Simple curler</item>
-		<item>Dynamic curler</item>
-		<item>Natural curler</item>
-		<item>Slider</item>
-		<item>Fade in</item>
-		<item>Squeeze</item>
-	</string-array>
-
-	<string-array
-		name="list_filebrowser_add"
-		translatable="false">
-		<item>Open</item>
-		<item>Add to Scan Dir</item>
-	</string-array>
-
-	<string-array
-		name="list_filebrowser_del"
-		translatable="false">
-		<item>Open</item>
-		<item>Delete from Scan Dir</item>
-	</string-array>
-
-	<string-array
-		name="list_decodemode"
-		translatable="false">
-		<item>@string/list_decodemode_native</item>
-		<item>@string/list_decodemode_normal</item>
-		<item>@string/list_decodemode_low</item>
-	</string-array>
-	<string-array
-		name="list_decodemode_values"
-		translatable="false">
-		<item>Native</item>
-		<item>Normal</item>
-		<item>Low</item>
-	</string-array>
-
-	<string-array
-		name="list_djvu_rendering_mode"
-		translatable="false">
-		<item>@string/list_djvu_rendering_mode_0</item>
-		<item>@string/list_djvu_rendering_mode_1</item>
-		<item>@string/list_djvu_rendering_mode_2</item>
-		<item>@string/list_djvu_rendering_mode_3</item>
-		<item>@string/list_djvu_rendering_mode_4</item>
-		<item>@string/list_djvu_rendering_mode_5</item>
-	</string-array>
-	<string-array
-		name="list_djvu_rendering_mode_values"
-		translatable="false">
-		<item>0</item>
-		<item>1</item>
-		<item>2</item>
-		<item>3</item>
-		<item>4</item>
-		<item>5</item>
-	</string-array>
-
-	<string-array
-		name="list_clear_recent_mode"
-		translatable="true">
-		<item>@string/list_clear_recent_mode_clear_recent_list</item>
-		<item>@string/list_clear_recent_mode_delete_bookmarks</item>
-		<item>@string/list_clear_recent_mode_delete_book_settings</item>
-		<item>@string/list_clear_recent_mode_delete_cached_data</item>
-	</string-array>
-
-    <string-array
-        name="list_viewmode"
-        translatable="false">
-        <item>@string/list_viewmode_vertical_scroll</item>
-        <item>@string/list_viewmode_horizontal_scroll</item>
-        <item>@string/list_viewmode_single_page</item>
+    <string-array name="list_filebrowser_add" translatable="false">
+        <item>Open</item>
+        <item>Add to Scan Dir</item>
     </string-array>
-
-    <string-array
-        name="list_viewmode_values"
-        translatable="false">
-        <item>Vertical scroll</item>
-        <item>Horizontal scroll</item>
-        <item>Single page</item>
+    
+    <string-array name="list_filebrowser_del" translatable="false">
+        <item>Open</item>
+        <item>Delete from Scan Dir</item>
     </string-array>
-
+    
+    <string-array name="list_clear_recent_mode" translatable="true">
+        <item>@string/list_clear_recent_mode_clear_recent_list</item>
+        <item>@string/list_clear_recent_mode_delete_bookmarks</item>
+        <item>@string/list_clear_recent_mode_delete_book_settings</item>
+        <item>@string/list_clear_recent_mode_delete_cached_data</item>
+    </string-array>
 
 </resources>

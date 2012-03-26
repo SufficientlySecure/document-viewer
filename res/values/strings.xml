@@ -1,61 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-	<string name="app_name">"EBookDroid"</string>
-	<string name="pref_ui_category">"User interface"</string>
-	<string name="pref_rotation_title">"Rotation mode"</string>
-	<string name="pref_rotation_summary">"How to change rotation"</string>
-	<string name="pref_fullscreen_title">"Full screen"</string>
-	<string name="pref_fullscreen_summary">"Hide status bar."</string>
-	<string name="pref_title_title">"Show Title"</string>
-	<string name="pref_title_summary">"Show Title. Need Document reopen!!"</string>
-	<string name="pref_tap_title">"Touch scroll"</string>
-	<string name="pref_tap_summary">"Scroll by touch"</string>
-	<string name="pref_tapsize_title">"Tap size"</string>
-	<string name="pref_tapsize_summary">"Tap zone size in percents"</string>
-	<string name="pref_scroll_title">"Scroll height"</string>
-	<string name="pref_scroll_summary">"Set height for scroll "</string>
-	<string name="pref_render_category">"Rendering"</string>
-	<string name="pref_browser_category">"File Browser"</string>
-	<string name="pref_brautoscandir_title">"Auto Scan directory"</string>
-	<string name="pref_brautoscandir_summary">"Directory for automatic files search"</string>
-	<string name="pref_brbrfiletypesscreen_title">"Files Types"</string>
-	<string name="pref_brbrfiletypesscreen_summary">"Files Types for Show in library"</string>
-	<string name="pref_brfiletypedjvu_title">".djvu"</string>
-	<string name="pref_brfiletypedjvu_summary">"Show DjVu files"</string>
-	<string name="pref_brfiletypedjv_title">".djv"</string>
-	<string name="pref_brfiletypedjv_summary">"Show DjVu files"</string>
-	<string name="pref_brfiletypepdf_title">".pdf"</string>
-	<string name="pref_brfiletypepdf_summary">"Show PDF files"</string>
-	<string name="pref_brfiletypexps_title">".xps"</string>
-	<string name="pref_brfiletypexps_summary">"Show XPS files"</string>
-	<string name="pref_brfiletypeoxps_title">".oxps"</string>
-	<string name="pref_brfiletypeoxps_summary">"Show OXPS files"</string>
-	<string name="pref_brfiletypecbz_title">".cbz"</string>
-	<string name="pref_brfiletypecbz_summary">"Show CBZ files"</string>
-	<string name="pref_brfiletypecbr_title">".cbr"</string>
-	<string name="pref_brfiletypecbr_summary">"Show CBR files"</string>
-    <string name="pref_brfiletypefb2_title">".fb2"</string>
-    <string name="pref_brfiletypefb2_summary">"Show FB2 files"</string>
-    <string name="pref_brfiletypefb2.zip_title">".fb2.zip"</string>
-    <string name="pref_brfiletypefb2.zip_summary">"Show FB2.ZIP files"</string>
+	<string name="app_name">EBookDroid</string>
+	<string name="pref_ui_category">User interface</string>
+	<string name="pref_rotation_title">Rotation mode</string>
+	<string name="pref_rotation_summary">How to change rotation</string>
+	<string name="pref_fullscreen_title">Full screen</string>
+	<string name="pref_fullscreen_summary">Hide status bar.</string>
+	<string name="pref_title_title">Show Title</string>
+	<string name="pref_title_summary">Show Title. Need Document reopen!!</string>
+	<string name="pref_tap_title">Touch scroll</string>
+	<string name="pref_tap_summary">Scroll by touch</string>
+	<string name="pref_tapsize_title">Tap size</string>
+	<string name="pref_tapsize_summary">Tap zone size in percents</string>
+	<string name="pref_scroll_title">Scroll height</string>
+	<string name="pref_scroll_summary">Set height for scroll</string>
+	<string name="pref_render_category">Rendering</string>
+	<string name="pref_browser_category">File Browser</string>
+	<string name="pref_brautoscandir_title">Auto Scan directory</string>
+	<string name="pref_brautoscandir_summary">Directory for automatic files search</string>
+	<string name="pref_brbrfiletypesscreen_title">Files Types</string>
+	<string name="pref_brbrfiletypesscreen_summary">Files Types for Show in library</string>
+	<string name="pref_brfiletypedjvu_title">.djvu</string>
+	<string name="pref_brfiletypedjvu_summary">Show DjVu files</string>
+	<string name="pref_brfiletypedjv_title">.djv</string>
+	<string name="pref_brfiletypedjv_summary">Show DjVu files</string>
+	<string name="pref_brfiletypepdf_title">.pdf</string>
+	<string name="pref_brfiletypepdf_summary">Show PDF files</string>
+	<string name="pref_brfiletypexps_title">.xps</string>
+	<string name="pref_brfiletypexps_summary">Show XPS files</string>
+	<string name="pref_brfiletypeoxps_title">.oxps</string>
+	<string name="pref_brfiletypeoxps_summary">Show OXPS files</string>
+	<string name="pref_brfiletypecbz_title">.cbz</string>
+	<string name="pref_brfiletypecbz_summary">Show CBZ files</string>
+	<string name="pref_brfiletypecbr_title">.cbr</string>
+	<string name="pref_brfiletypecbr_summary">Show CBR files</string>
+    <string name="pref_brfiletypefb2_title">.fb2</string>
+    <string name="pref_brfiletypefb2_summary">Show FB2 files</string>
+    <string name="pref_brfiletypefb2.zip_title">.fb2.zip</string>
+    <string name="pref_brfiletypefb2.zip_summary">Show FB2.ZIP files</string>
 
-    <string name="pref_brfiletypespecific_title">"Format specific"</string>
-    <string name="pref_brfiletypespecific_summary">"Settings for each individual file format"</string>
-    <string name="pref_brfiletypespecificdjvu_title">"DJVU"</string>
-    <string name="pref_brfiletypespecificdjvu_summary">"DJVU format specific settings"</string>
-    <string name="pref_djvu_rendering_mode_title">"Rendering mode"</string>
-    <string name="pref_djvu_rendering_mode_summary">"Page rendering mode"</string>
+    <string name="pref_brfiletypespecific_title">Format specific</string>
+    <string name="pref_brfiletypespecific_summary">Settings for each individual file format</string>
+    <string name="pref_brfiletypespecificdjvu_title">DJVU</string>
+    <string name="pref_brfiletypespecificdjvu_summary">DJVU format specific settings</string>
+    <string name="pref_djvu_rendering_mode_title">Rendering mode</string>
+    <string name="pref_djvu_rendering_mode_summary">Page rendering mode</string>
 
-    <string name="list_djvu_rendering_mode_0">"Color"</string>
-    <string name="list_djvu_rendering_mode_1">"Black"</string>
-    <string name="list_djvu_rendering_mode_2">"Color only"</string>
-    <string name="list_djvu_rendering_mode_3">"Mask only"</string>
-    <string name="list_djvu_rendering_mode_4">"Background only"</string>
-    <string name="list_djvu_rendering_mode_5">"Foreground only"</string>
+    <string name="list_djvu_rendering_mode_0">Color</string>
+    <string name="list_djvu_rendering_mode_1">Black</string>
+    <string name="list_djvu_rendering_mode_2">Color only</string>
+    <string name="list_djvu_rendering_mode_3">Mask only</string>
+    <string name="list_djvu_rendering_mode_4">Background only</string>
+    <string name="list_djvu_rendering_mode_5">Foreground only</string>
 
-	<string name="list_rotation_auto">"Automatic"</string>
-	<string name="list_rotation_land">"Force landscape"</string>
-	<string name="list_rotation_port">"Force portrait"</string>
+	<string name="list_rotation_auto">Automatic</string>
+	<string name="list_rotation_land">Force landscape</string>
+	<string name="list_rotation_port">Force portrait</string>
 	<string name="menu_close">Close</string>
 	<string name="menu_goto_page">Go to page</string>
 	<string name="menu_outline">Outline</string>
@@ -73,78 +73,78 @@
 	<string name="list_align_by_width">By width</string>
 	<string name="list_align_by_height">By height</string>
 	<string name="list_align_auto">Automatic</string>
-	<string name="pref_align_title">"Page align mode"</string>
-	<string name="pref_align_summary">"How to align pages"</string>
-	<string name="pref_viewmode_title">"Page view mode"</string>
-	<string name="pref_viewmode_summary">"Page view mode"</string>
-	<string name="pref_pagesinmemory_title">"Pages in memory"</string>
-	<string name="pref_pagesinmemory_summary">"Number of pages to store in memory"</string>
-	<string name="pref_splitpages_title">"Split pages"</string>
-	<string name="pref_splitpages_summary">"Split landscape pages into two portrait"</string>
-	<string name="pref_useanimation_title">"Use animation"</string>
-	<string name="pref_useanimation_summary">"Use animation for page flipping"</string>
-	<string name="pref_nightmode_title">"Night mode"</string>
-	<string name="pref_nightmode_summary">"Use white symbols on black background"</string>
-	<string name="error_close">"Close"</string>
-	<string name="password_text">"Enter password"</string>
-	<string name="password_ok">"OK"</string>
-	<string name="password_cancel">"Cancel"</string>
+	<string name="pref_align_title">Page align mode</string>
+	<string name="pref_align_summary">How to align pages</string>
+	<string name="pref_viewmode_title">Page view mode</string>
+	<string name="pref_viewmode_summary">Page view mode</string>
+	<string name="pref_pagesinmemory_title">Pages in memory</string>
+	<string name="pref_pagesinmemory_summary">Number of pages to store in memory</string>
+	<string name="pref_splitpages_title">Split pages</string>
+	<string name="pref_splitpages_summary">Split landscape pages into two portrait</string>
+	<string name="pref_useanimation_title">Use animation</string>
+	<string name="pref_useanimation_summary">Use animation for page flipping</string>
+	<string name="pref_nightmode_title">Night mode</string>
+	<string name="pref_nightmode_summary">Use white symbols on black background</string>
+	<string name="error_close">Close</string>
+	<string name="password_text">Enter password</string>
+	<string name="password_ok">OK</string>
+	<string name="password_cancel">Cancel</string>
 	<string name="pref_ui_category_summary">User interface settings</string>
 	<string name="pref_pageintitle_title">Page in title</string>
 	<string name="pref_pageintitle_summary">Show page number in title bar</string>
 	<string name="pref_render_category_summary">Rendering settings</string>
 	<string name="pref_browser_category_summary">File browser and file types settings</string>
-	<string name="pref_book_category">"Book settings"</string>
-	<string name="pref_book_category_summary">"Current book settings"</string>
+	<string name="pref_book_category">Book settings</string>
+	<string name="pref_book_category_summary">Current book settings</string>
 	<string name="pref_animationtype_title">Animation type</string>
-	<string name="pref_animationtype_summary">"Select type of transition animation"</string>
-	<string name="list_animation_none">"None"</string>
-	<string name="list_animation_curler_simple">"Simple curler"</string>
-	<string name="list_animation_curler_dynamic">"Dynamic curler"</string>
-	<string name="list_animation_curler_natural">"Natural curler"</string>
-	<string name="list_animation_slider">"Slider"</string>
-	<string name="list_animation_fader">"Fade in"</string>
-	<string name="list_animation_squeezer">"Squeeze"</string>
-	<string name="pref_scroll_category">"Touch and Scrolling"</string>
-	<string name="pref_scroll_category_summary">"Touch and scrolling preferences"</string>
-	<string name="pref_singlepage_category">"Single page settings"</string>
-	<string name="pref_singlepage_category_summary">"Settings actual for single page mode"</string>
-	<string name="pref_memory_category">"Memory usage settings"</string>
-	<string name="pref_memory_category_summary">"Settings affected to memory usage"</string>
-	<string name="pref_brightness_title">"Brightness"</string>
-	<string name="pref_brightness_summary">"Set the overall image brightness (0&#8211;100)"</string>
-	<string name="pref_brightnessnightmodeonly_title">"Brightness in night mode"</string>
-	<string name="pref_brightnessnightmodeonly_summary">"Apply brightness setting only in night mode"</string>
-	<string name="pref_keepscreenon_title">"Keep screen On"</string>
-	<string name="pref_keepscreenon_summary">"Keep screen always on"</string>
-	<string name="pref_loadrecent_title">"Load recent"</string>
-	<string name="pref_loadrecent_summary">"Auto loading last opened book on app start"</string>
-	<string name="add_bookmark_name">"Enter bookmark description"</string>
+	<string name="pref_animationtype_summary">Select type of transition animation</string>
+	<string name="list_animation_none">None</string>
+	<string name="list_animation_curler_simple">Simple curler</string>
+	<string name="list_animation_curler_dynamic">Dynamic curler</string>
+	<string name="list_animation_curler_natural">Natural curler</string>
+	<string name="list_animation_slider">Slider</string>
+	<string name="list_animation_fader">Fade in</string>
+	<string name="list_animation_squeezer">Squeeze</string>
+	<string name="pref_scroll_category">Touch and Scrolling</string>
+	<string name="pref_scroll_category_summary">Touch and scrolling preferences</string>
+	<string name="pref_singlepage_category">Single page settings</string>
+	<string name="pref_singlepage_category_summary">Settings actual for single page mode</string>
+	<string name="pref_memory_category">Memory usage settings</string>
+	<string name="pref_memory_category_summary">Settings affected to memory usage</string>
+	<string name="pref_brightness_title">Brightness</string>
+	<string name="pref_brightness_summary">Set the overall image brightness (0&#8211;100)</string>
+	<string name="pref_brightnessnightmodeonly_title">Brightness in night mode</string>
+	<string name="pref_brightnessnightmodeonly_summary">Apply brightness setting only in night mode</string>
+	<string name="pref_keepscreenon_title">Keep screen On</string>
+	<string name="pref_keepscreenon_summary">Keep screen always on</string>
+	<string name="pref_loadrecent_title">Load recent</string>
+	<string name="pref_loadrecent_summary">Auto loading last opened book on app start</string>
+	<string name="add_bookmark_name">Enter bookmark description</string>
 	<string name="bookmark_start">Start</string>
 	<string name="bookmark_end">End</string>
-	<string name="bookmark_invalid_page">"Page number out of range. Valid range: 1-"</string>
-	<string name="bookmarks_title">"Bookmarks"</string>
-	<string name="clear_bookmarks_title">"Clear bookmarks"</string>
-	<string name="clear_bookmarks_text">"Do you really want to remove all bookmarks?"</string>
-	<string name="del_bookmark_title">"Delete bookmark"</string>
-	<string name="del_bookmark_text">"Do you really want to remove this bookmark?"</string>
-	<string name="clear_recent_title">"Clear recent items"</string>
-	<string name="clear_recent_text">"Do you really want to remove all recent books?"</string>
-	<string name="pref_zoomdoubletap_title">"Zoom by double tap"</string>
-	<string name="pref_zoomdoubletap_summary">"Show/hide zoom controls by double tap"</string>
+	<string name="bookmark_invalid_page">Page number out of range. Valid range: 1-</string>
+	<string name="bookmarks_title">Bookmarks</string>
+	<string name="clear_bookmarks_title">Clear bookmarks</string>
+	<string name="clear_bookmarks_text">Do you really want to remove all bookmarks?</string>
+	<string name="del_bookmark_title">Delete bookmark</string>
+	<string name="del_bookmark_text">Do you really want to remove this bookmark?</string>
+	<string name="clear_recent_title">Clear recent items</string>
+	<string name="clear_recent_text">Do you really want to remove all recent books?</string>
+	<string name="pref_zoomdoubletap_title">Zoom by double tap</string>
+	<string name="pref_zoomdoubletap_summary">Show/hide zoom controls by double tap</string>
 
-	<string name="pref_decodemode_title">"Memory usage mode"</string>
-	<string name="pref_decodemode_summary">"Defines memory usage mode"</string>
-	<string name="list_decodemode_native">"Render page in document resolution"</string>
-	<string name="list_decodemode_normal">"Normal page slices"</string>
-	<string name="list_decodemode_low">"Low memory mode - slice size limit used"</string>
-	<string name="pref_maximagesize_title">"Max slice size"</string>
-	<string name="pref_maximagesize_summary">"Max slice size (in KB)"</string>
+	<string name="pref_decodemode_title">Memory usage mode</string>
+	<string name="pref_decodemode_summary">Defines memory usage mode</string>
+	<string name="list_decodemode_native">Render page in document resolution</string>
+	<string name="list_decodemode_normal">Normal page slices</string>
+	<string name="list_decodemode_low">Low memory mode - slice size limit used</string>
+	<string name="pref_maximagesize_title">Max slice size</string>
+	<string name="pref_maximagesize_summary">Max slice size (in KB)</string>
 
-    <string name="bookcase_shelves">"Bookshelves"</string>
-    <string name="recent_title">"Recent books"</string>
-    <string name="pref_usebookcase_title">"Use bookcase view"</string>
-    <string name="pref_usebookcase_summary">"Use bookcase view instead of lists"</string>
+    <string name="bookcase_shelves">Bookshelves</string>
+    <string name="recent_title">Recent books</string>
+    <string name="pref_usebookcase_title">Use bookcase view</string>
+    <string name="pref_usebookcase_summary">Use bookcase view instead of lists</string>
 
 	<string name="list_clear_recent_mode_clear_recent_list">Clear list of recent books</string>
 	<string name="list_clear_recent_mode_delete_bookmarks">Delete all bookmarks</string>
@@ -155,36 +155,131 @@
     <string name="list_viewmode_horizontal_scroll">Horizontal scroll</string>
     <string name="list_viewmode_single_page">Single page</string>
 
-	<string name="pref_croppages_title">"Crop pages"</string>
-	<string name="pref_croppages_summary">"Crop margins of pages (experimantal)"</string>
+	<string name="pref_croppages_title">Crop pages</string>
+	<string name="pref_croppages_summary">Crop margins of pages (experimantal)</string>
 
-	<string name="pref_showanimicon_title">"Show animation icon"</string>
-	<string name="pref_showanimicon_summary">"Show animation or dragging icon if animation or dragging enabled"</string>
+	<string name="pref_showanimicon_title">Show animation icon</string>
+	<string name="pref_showanimicon_summary">Show animation or dragging icon if animation or dragging enabled</string>
 
-	<string name="about_title">"About EBookDroid"</string>
-	<string name="about_commmon_title">"Application info"</string>
-	<string name="about_license_title">"License"</string>
-	<string name="about_3dparty_title">"3rd party software"</string>
-	<string name="about_changelog_title">"Change Log"</string>
-	<string name="about_thanks_title">"Acknowledgments"</string>
+	<string name="about_title">About EBookDroid</string>
+	<string name="about_commmon_title">Application info</string>
+	<string name="about_license_title">License</string>
+	<string name="about_3dparty_title">3rd party software</string>
+	<string name="about_changelog_title">Change Log</string>
+	<string name="about_thanks_title">Acknowledgments</string>
 
-	<string name="content_description_icon">"Icon"</string>
-	<string name="content_description_library">"Library"</string>
-	<string name="content_description_browser">"Browser"</string>
-	<string name="content_description_clear">"Clear"</string>
-	<string name="content_description_settings">"Settings"</string>
-	<string name="content_description_thumb">"Thumb"</string>
-	<string name="content_description_left">"Left"</string>
-	<string name="content_description_right">"Right"</string>
-	<string name="content_description_home">"Home"</string>
-	<string name="content_description_up">"Up"</string>
-	<string name="content_description_recent">"Recent"</string>
+	<string name="content_description_icon">Icon</string>
+	<string name="content_description_library">Library</string>
+	<string name="content_description_browser">Browser</string>
+	<string name="content_description_clear">Clear</string>
+	<string name="content_description_settings">Settings</string>
+	<string name="content_description_thumb">Thumb</string>
+	<string name="content_description_left">Left</string>
+	<string name="content_description_right">Right</string>
+	<string name="content_description_home">Home</string>
+	<string name="content_description_up">Up</string>
+	<string name="content_description_recent">Recent</string>
 
 	<string name="outline_title">Outline</string>
 	<string name="outline_missed">Document without Outline</string>
 
 	<string name="error_page_out_of_rande">Page number out of range. Valid range: 1-%i</string>
 
-	<string name="msg_loading">Loading... Please wait</string>
-	<string name="msg_getting_page_size">"Getting page size %1$d/%2$d"</string>
+	<string name="msg_loading">Loading&#8230; Please wait</string>
+	<string name="msg_getting_page_size">Getting page size %1$d/%2$d</string>
+
+    <string name="menu_tap_configuration">Tap configuration</string>
+    <string name="menu_key_bindings">Key bindings</string>
+
+    <string name="pref_tapsenabled_title">Enable taps</string>
+    <string name="pref_tapsenabled_summary">Use Tap Configuration to define tap regions and actions</string>
+
+    <string name="pref_performance_category">Performance settings</string>
+    <string name="pref_performance_category_summary">Performance settings</string>
+
+    <string name="pref_lowlevel_category">Low level application preferences (Applied after document reload)</string>
+    <string name="pref_lowlevel_category_summary">Low level application preferences (Applied after document reload)</string>
+
+    <string name="pref_docviewtype_title">Document viewer implementation</string>
+    <string name="pref_docviewtype_summary">Defines viewer class</string>
+
+    <string name="list_docviewtype_base">Based on android.view.View</string>
+    <string name="list_docviewtype_surface">Based on android.view.SurfaceView</string>
+
+    <string name="pref_decodethread_priority_title">Decode thread priority</string>
+    <string name="pref_decodethread_priority_summary">Defines decode thread priority</string>
+
+    <string name="list_thread_priority_lowest">Lowest</string>
+    <string name="list_thread_priority_lower">Lower</string>
+    <string name="list_thread_priority_normal">Normal</string>
+    <string name="list_thread_priority_higher">Higher</string>
+    <string name="list_thread_priority_highest">Highest</string>
+
+    <string name="pref_drawthread_priority_title">Surface draw thread priority</string>
+    <string name="pref_drawthread_priority_summary">Defines surface draw thread priority</string>
+
+    <string name="pref_hwa_enabled_title">Hardware acceleration enabled</string>
+    <string name="pref_hwa_enabled_summary">Set if Hardware acceleration can be set by viewer</string>
+
+    <string name="pref_bitmapsize_title">Texture bitmap size</string>
+    <string name="pref_bitmapsize_summary">Defines size of texture parts</string>
+
+    <string name="list_bitmapsize_64">64 * 64</string>
+    <string name="list_bitmapsize_128">128 * 128</string>
+    <string name="list_bitmapsize_256">256 * 256</string>
+    <string name="list_bitmapsize_512">512 * 512</string>
+    <string name="list_bitmapsize_1024">1024 * 1024</string>
+
+    <string name="pref_texturereuse_title">Reuse texture bitmaps</string>
+    <string name="pref_texturereuse_summary">Reuse existing texture bitmaps when page part is decoded again</string>
+
+    <string name="pref_earlyrecycling_title">Early bitmap recycling</string>
+    <string name="pref_earlyrecycling_summary">Bitmaps are manually recycled when they are removed from pool</string>
+
+    <string name="pref_reloadduringzoom_title">Reload page during zoom</string>
+    <string name="pref_reloadduringzoom_summary">Reload page during zoom if zoom changed more than 20%</string>
+
+    <string name="pref_brfiletypespecificpdf_title">PDF</string>
+    <string name="pref_brfiletypespecificpdf_summary">PDF format specific settings</string>
+
+    <string name="pref_customdpi_title">Use custom DPI</string>
+    <string name="pref_customdpi_summary">Define custom DPI values below</string>
+
+    <string name="pref_xdpi_title">X DPI</string>
+    <string name="pref_xdpi_summary">X DPI</string>
+
+    <string name="pref_ydpi_title">Y DPI</string>
+    <string name="pref_ydpi_summary">Y DPI</string>
+
+    <string name="pref_brfiletypespecificfb2_title">FB2</string>
+    <string name="pref_brfiletypespecificfb2_summary">FB2 format specific settings</string>
+
+    <string name="pref_fontsize_title">Font size</string>
+    <string name="pref_fontsize_summary">Base font size</string>
+
+    <string name="list_fontsize_tiny">Tiny</string>
+    <string name="list_fontsize_small">Small</string>
+    <string name="list_fontsize_normal">Normal</string>
+    <string name="list_fontsize_large">Large</string>
+    <string name="list_fontsize_huge">Huge</string>
+
+    <string name="pref_fb2hyphen_title">Enable Hyphenation</string>
+    <string name="pref_fb2hyphen_summary">Experimental Hyphenation implementation</string>
+
+    <string name="pref_touchdelay_title">Touch processing delay</string>
+    <string name="pref_touchdelay_summary">Touch processing delay (in milliseconds)</string>
+
+    <string name="tap_zones_single_tap">Single Tap</string>
+    <string name="tap_zones_double_tap">Double Tap</string>
+    <string name="tap_zones_long_tap">Long tap</string>
+    <string name="tap_zones_two_finger_tap">Two finger tap</string>
+    <string name="tap_zones_reset">Reset</string>
+    <string name="tap_zones_delete">Delete</string>
+    <string name="tap_zones_clear">Clear</string>
+
+    <string name="menu_searchbook">Search</string>
+    <string name="content_description_searchbook">Search books by name&#8230;</string>
+    <string name="search_results_title">Search results</string>
+    <string name="search_book_dlg_title">Search&#8230;</string>
+
 </resources>

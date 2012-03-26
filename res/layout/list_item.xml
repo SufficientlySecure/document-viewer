@@ -2,17 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
-    android:background="@drawable/outline_background"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:padding="6dip" >
 
     <TextView
-        android:id="@+id/outline_title"
+        android:id="@+id/list_item"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_alignParentRight="true"
-        android:layout_marginLeft="20sp"
         android:ellipsize="marquee"
+        android:textColor="@color/list_item_color_android2"
         android:gravity="center_vertical"
-        />
+        android:textStyle="bold" />
 
 </RelativeLayout>

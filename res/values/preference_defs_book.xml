@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_book_id">book</string>
+
+    <string name="pref_book_nightmode_id">book_nightmode</string>
+
+    <string name="pref_book_contrast_id">book_contrast</string>
+
+    <string name="pref_book_exposure_id">book_exposure</string>
+
+    <string name="pref_book_autolevels_id">book_autolevels</string>
+
+    <string name="pref_book_splitpages_id">book_splitpages</string>
+
+    <string name="pref_book_croppages_id">book_croppages</string>
+
+    <string name="pref_book_viewmode_id">book_viewmode</string>
+
+    <string name="pref_book_align_id">book_align</string>
+
+    <string name="pref_book_animation_type_id">book_animationType</string>
+
+</resources>

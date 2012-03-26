@@ -8,7 +8,7 @@
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">@dimen/actionbar_height</item>
         <item name="android:orientation">horizontal</item>
-        <item name="android:background">@drawable/actionbar_background</item>
+        <item name="android:background">@drawable/gradient</item>
     </style>
 
     <style name="action_bar_icon">
@@ -32,7 +32,7 @@
         <item name="android:layout_height">@dimen/actionbar_separator_height</item>
         <item name="android:layout_marginLeft">2dip</item>
         <item name="android:layout_marginRight">2dip</item>
-        <item name="android:layout_marginTop">2dip</item>
+        <item name="android:layout_marginTop">4dip</item>
         <item name="android:layout_marginBottom">2dip</item>
         <item name="android:gravity">center</item>
         <item name="android:background">@drawable/actionbar_separator</item>

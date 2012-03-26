@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_djvu_rendering_mode_id">djvu_rendering_mode</string>
+    <string name="pref_djvu_rendering_mode_0">0</string>
+    <string name="pref_djvu_rendering_mode_1">1</string>
+    <string name="pref_djvu_rendering_mode_2">2</string>
+    <string name="pref_djvu_rendering_mode_3">3</string>
+    <string name="pref_djvu_rendering_mode_4">4</string>
+    <string name="pref_djvu_rendering_mode_5">5</string>
+
+    <string-array name="pref_djvu_rendering_mode_entries" translatable="false">
+        <item>@string/list_djvu_rendering_mode_0</item>
+        <item>@string/list_djvu_rendering_mode_1</item>
+        <item>@string/list_djvu_rendering_mode_2</item>
+        <item>@string/list_djvu_rendering_mode_3</item>
+        <item>@string/list_djvu_rendering_mode_4</item>
+        <item>@string/list_djvu_rendering_mode_5</item>
+    </string-array>
+    <string-array name="pref_djvu_rendering_mode_values" translatable="false">
+        <item>@string/pref_djvu_rendering_mode_0</item>
+        <item>@string/pref_djvu_rendering_mode_1</item>
+        <item>@string/pref_djvu_rendering_mode_2</item>
+        <item>@string/pref_djvu_rendering_mode_3</item>
+        <item>@string/pref_djvu_rendering_mode_4</item>
+        <item>@string/pref_djvu_rendering_mode_5</item>
+    </string-array>
+
+    <string name="pref_customdpi_id">customdpi</string>
+    <string name="pref_customdpi_defvalue">false</string>
+
+    <string name="pref_xdpi_id">xdpi</string>
+    <string name="pref_xdpi_defvalue">120</string>
+    <string name="pref_xdpi_minvalue">72</string>
+    <string name="pref_xdpi_maxvalue">720</string>
+
+    <string name="pref_ydpi_id">ydpi</string>
+    <string name="pref_ydpi_defvalue">120</string>
+    <string name="pref_ydpi_minvalue">72</string>
+    <string name="pref_ydpi_maxvalue">720</string>
+
+    <string name="pref_fontsize_id">fontsize</string>
+    <string name="pref_fontsize_tiny">TINY</string>
+    <string name="pref_fontsize_small">SMALL</string>
+    <string name="pref_fontsize_normal">NORMAL</string>
+    <string name="pref_fontsize_large">LARGE</string>
+    <string name="pref_fontsize_huge">HUGE</string>
+
+    <string-array name="pref_fontsize_entries" translatable="false">
+        <item>@string/list_fontsize_tiny</item>
+        <item>@string/list_fontsize_small</item>
+        <item>@string/list_fontsize_normal</item>
+        <item>@string/list_fontsize_large</item>
+        <item>@string/list_fontsize_huge</item>
+    </string-array>
+    <string-array name="pref_fontsize_values" translatable="false">
+        <item>@string/pref_fontsize_tiny</item>
+        <item>@string/pref_fontsize_small</item>
+        <item>@string/pref_fontsize_normal</item>
+        <item>@string/pref_fontsize_large</item>
+        <item>@string/pref_fontsize_huge</item>
+    </string-array>
+
+    <string name="pref_fb2hyphen_id">fb2hyphen</string>
+    <string name="pref_fb2hyphen_defvalue">false</string>
+
+</resources>

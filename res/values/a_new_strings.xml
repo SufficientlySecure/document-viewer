@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_pagenumbertoastposition_title">Position of page number toast</string>
+    <string name="pref_pagenumbertoastposition_summary">Position of page number toast</string>
+
+    <string name="pref_zoomtoastposition_title">Position of zoom toast</string>
+    <string name="pref_zoomtoastposition_summary">Position of zoom toast</string>
+
+    <string name="list_toastposition_invisible">Invisible</string>
+    <string name="list_toastposition_lefttop">Left top corner</string>
+    <string name="list_toastposition_righttop">Right top corner</string>
+    <string name="list_toastposition_leftbottom">Left bottom corner</string>
+    <string name="list_toastposition_bottom">Bottom of the screeen</string>
+    <string name="list_toastposition_righbottom">Right bottom corner</string>
+
+    <string name="pref_bitmapfilering_enabled_title">Texture filtering</string>
+    <string name="pref_bitmapfilering_enabled_summary">Enable bilinear texture filtering</string>
+
+    <string name="pref_bitmaphack_title">Bitmap allocation hack</string>
+    <string name="pref_bitmaphack_summary">Use bitmap allocation tracking hack</string>
+
+    <string name="pref_confirmclose_title">Confirm closing</string>
+    <string name="pref_confirmclose_summary">Ask close confirmation on Back pressed</string>
+
+    <string name="confirmclose_title">Closing viewer&#8230;</string>
+    <string name="confirmclose_msg">Do you really want to leave viewer?</string>
+
+    <string name="pref_postprocessing_category" >Post&#8211;processing effects</string>
+    <string name="pref_postprocessing_summary">Post&#8211;processing effects</string>
+
+    <string name="pref_contrast_title">Contrast</string>
+    <string name="pref_contrast_summary">Contrast correction level (0 &#8211; 1000, 100 by default)</string>
+
+    <string name="pref_exposure_title">Exposure</string>
+    <string name="pref_exposure_summary">Exposure correction level (0 &#8211; 200, 100 by default)</string>
+
+    <string name="pref_autolevels_title">Auto levels</string>
+    <string name="pref_autolevels_summary">Use auto levels correction</string>
+
+</resources>

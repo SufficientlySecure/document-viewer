@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_usebookcase_id">usebookcase</string>
+    <string name="pref_usebookcase_defvalue">true</string>
+
+    <string name="pref_brautoscandir_id">brautoscandir</string>
+    <string name="pref_brautoscandir_defvalue">/sdcard</string>
+
+    <string name="pref_brsearchbookquery_id">brsearchbookquery</string>
+
+</resources>

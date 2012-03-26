@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_loadrecent_id">loadrecent</string>
+    <string name="pref_loadrecent_defvalue">false</string>
+
+    <string name="pref_confirmclose_id">confirmclose</string>
+    <string name="pref_confirmclose_defvalue">false</string>
+
+    <string name="pref_brightnessnightmodeonly_id">brightnessnightmodeonly</string>
+    <string name="pref_brightnessnightmodeonly_defvalue">false</string>
+
+    <string name="pref_brightness_id">brightness</string>
+    <string name="pref_brightness_defvalue">100</string>
+    <string name="pref_brightness_minvalue">0</string>
+    <string name="pref_brightness_maxvalue">100</string>
+
+    <string name="pref_keepscreenon_id">keepscreenon</string>
+    <string name="pref_keepscreenon_defvalue">true</string>
+
+    <string name="pref_rotation_id">rotation</string>
+    <string name="pref_rotation_auto">Automatic</string>
+    <string name="pref_rotation_land">Force landscape</string>
+    <string name="pref_rotation_port">Force portrait</string>
+
+    <string-array name="pref_rotation_entries" translatable="false">
+        <item>@string/list_rotation_land</item>
+        <item>@string/list_rotation_port</item>
+        <item>@string/list_rotation_auto</item>
+    </string-array>
+
+    <string-array name="pref_rotation_values" translatable="false">
+        <item>@string/pref_rotation_land</item>
+        <item>@string/pref_rotation_port</item>
+        <item>@string/pref_rotation_auto</item>
+    </string-array>
+
+    <string name="pref_fullscreen_id">fullscreen</string>
+    <string name="pref_fullscreen_defvalue">false</string>
+
+    <string name="pref_title_id">title</string>
+    <string name="pref_title_defvalue">true</string>
+
+    <string name="pref_pageintitle_id">pageintitle</string>
+    <string name="pref_pageintitle_defvalue">true</string>
+
+    <string name="pref_pagenumbertoastposition_id">pagenumbertoastposition</string>
+    <string name="pref_zoomtoastposition_id">zoomtoastposition</string>
+    
+    <string name="pref_toastposition_invisible">Invisible</string>
+    <string name="pref_toastposition_lefttop">LeftTop</string>
+    <string name="pref_toastposition_righttop">RightTop</string>
+    <string name="pref_toastposition_leftbottom">LeftBottom</string>
+    <string name="pref_toastposition_bottom">Bottom</string>
+    <string name="pref_toastposition_righbottom">RightBottom</string>
+        
+    <string-array name="pref_toastposition_entries" translatable="false">
+        <item>@string/list_toastposition_invisible</item>
+        <item>@string/list_toastposition_lefttop</item>
+        <item>@string/list_toastposition_righttop</item>
+        <item>@string/list_toastposition_leftbottom</item>
+        <item>@string/list_toastposition_bottom</item>
+        <item>@string/list_toastposition_righbottom</item>
+    </string-array>
+
+    <string-array name="pref_toastposition_values" translatable="false">
+        <item>@string/pref_toastposition_invisible</item>
+        <item>@string/pref_toastposition_lefttop</item>
+        <item>@string/pref_toastposition_righttop</item>
+        <item>@string/pref_toastposition_leftbottom</item>
+        <item>@string/pref_toastposition_bottom</item>
+        <item>@string/pref_toastposition_righbottom</item>
+    </string-array>
+
+    <string name="pref_showanimicon_id">showanimicon</string>
+    <string name="pref_showanimicon_defvalue">true</string>
+
+</resources>

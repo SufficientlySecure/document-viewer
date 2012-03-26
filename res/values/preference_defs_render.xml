@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_nightmode_id">nightmode</string>
+    <string name="pref_nightmode_defvalue">false</string>
+
+    <string name="pref_contrast_id">contrast</string>
+    <string name="pref_contrast_defvalue">100</string>
+    <string name="pref_contrast_minvalue">0</string>
+    <string name="pref_contrast_maxvalue">1000</string>
+
+    <string name="pref_exposure_id">exposure</string>
+    <string name="pref_exposure_defvalue">100</string>
+    <string name="pref_exposure_minvalue">0</string>
+    <string name="pref_exposure_maxvalue">200</string>
+
+    <string name="pref_autolevels_id">autolevels</string>
+    <string name="pref_autolevels_defvalue">false</string>
+    
+    <string name="pref_splitpages_id">splitpages</string>
+    <string name="pref_splitpages_defvalue">false</string>
+
+    <string name="pref_croppages_id">croppages</string>
+    <string name="pref_croppages_defvalue">false</string>
+
+    <string name="pref_viewmode_id">viewmode</string>
+    <string name="pref_viewmode_vertical_scroll">Vertical scroll</string>
+    <string name="pref_viewmode_horizontal_scroll">Horizontal scroll</string>
+    <string name="pref_viewmode_single_page">Single page</string>
+
+    <string-array name="pref_viewmode_entries" translatable="false">
+        <item>@string/list_viewmode_vertical_scroll</item>
+        <item>@string/list_viewmode_horizontal_scroll</item>
+        <item>@string/list_viewmode_single_page</item>
+    </string-array>
+
+    <string-array name="pref_viewmode_values" translatable="false">
+        <item>@string/pref_viewmode_vertical_scroll</item>
+        <item>@string/pref_viewmode_horizontal_scroll</item>
+        <item>@string/pref_viewmode_single_page</item>
+    </string-array>
+
+    <string name="pref_align_id">align</string>
+    <string name="pref_align_by_width">By Width</string>
+    <string name="pref_align_by_height">By Height</string>
+    <string name="pref_align_auto">Auto</string>
+    
+    <string-array name="pref_align_entries" translatable="false">
+        <item>@string/list_align_by_width</item>
+        <item>@string/list_align_by_height</item>
+        <item>@string/list_align_auto</item>
+    </string-array>
+    
+    <string-array name="pref_align_values" translatable="false">
+        <item>@string/pref_align_by_width</item>
+        <item>@string/pref_align_by_height</item>
+        <item>@string/pref_align_auto</item>
+    </string-array>
+
+    <string name="pref_animation_type_id">animationType</string>
+    <string name="pref_animation_type_none">None</string>
+    <string name="pref_animation_type_curler_simple">Simple curler</string>
+    <string name="pref_animation_type_curler_dynamic">Dynamic curler</string>
+    <string name="pref_animation_type_curler_natural">Natural curler</string>
+    <string name="pref_animation_type_slider">Slider</string>
+    <string name="pref_animation_type_fader">Fade in</string>
+    <string name="pref_animation_type_squeezer">Squeeze</string>
+
+    <string-array name="pref_animation_type_entries" translatable="false">
+        <item>@string/list_animation_none</item>
+        <item>@string/list_animation_curler_simple</item>
+        <item>@string/list_animation_curler_dynamic</item>
+        <item>@string/list_animation_curler_natural</item>
+        <item>@string/list_animation_slider</item>
+        <item>@string/list_animation_fader</item>
+        <item>@string/list_animation_squeezer</item>
+    </string-array>
+
+    <string-array name="pref_animation_type_values" translatable="false">
+        <item>@string/pref_animation_type_none</item>
+        <item>@string/pref_animation_type_curler_simple</item>
+        <item>@string/pref_animation_type_curler_dynamic</item>
+        <item>@string/pref_animation_type_curler_natural</item>
+        <item>@string/pref_animation_type_slider</item>
+        <item>@string/pref_animation_type_fader</item>
+        <item>@string/pref_animation_type_squeezer</item>
+    </string-array>
+
+</resources>

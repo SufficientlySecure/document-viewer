@@ -92,7 +92,7 @@ public class Bitmaps {
             }
 
             final BitmapRef[] oldBitmaps = this.bitmaps;
-            final int oldBitmapsLength =LengthUtils.length(oldBitmaps);
+            final int oldBitmapsLength = LengthUtils.length(oldBitmaps);
 
             this.bounds = bitmapBounds;
             this.columns = (int) FloatMath.ceil(bitmapBounds.width() / (float) partSize);
@@ -139,7 +139,8 @@ public class Bitmaps {
                     if (row == rows - 1 || col == columns - 1) {
                         final int right = Math.min(left + partSize, bounds.width());
                         final int bottom = Math.min(top + partSize, bounds.height());
-                        bmp.eraseColor(invert ? PagePaint.NIGHT.fillPaint.getColor() : PagePaint.DAY.fillPaint.getColor());
+                        bmp.eraseColor(invert ? PagePaint.NIGHT.fillPaint.getColor() : PagePaint.DAY.fillPaint
+                                .getColor());
                         slice.retrieve(origBitmap, left, top, right - left, bottom - top);
                     } else {
                         slice.retrieve(origBitmap, left, top, partSize, partSize);
@@ -229,9 +230,16 @@ public class Bitmaps {
             for (int row = 0; row < rows; row++) {
                 for (int col = 0; col < columns; col++) {
                     final int index = row * columns + col;
-                    if (this.bitmaps[index] != null) {
+                    final BitmapRef ref = this.bitmaps[index];
+                    if (ref != null) {
                         r.set(rect);
-                        canvas.drawBitmap(this.bitmaps[index].bitmap, null, MathUtils.round(r), paint.bitmapPaint);
+                        if (ref.bitmap != null) {
+                            try {
+                                canvas.drawBitmap(ref.bitmap, null, MathUtils.round(r), paint.bitmapPaint);
+                            } catch (Throwable th) {
+                                LCTX.e("Unexpected error: ", th);
+                            }
+                        }
                     } else {
                         res = false;
                     }

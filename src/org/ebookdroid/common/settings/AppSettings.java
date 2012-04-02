@@ -57,6 +57,8 @@ public class AppSettings implements AppPreferences {
 
     public final int touchProcessingDelay;
 
+    public final boolean animateScrolling;
+
     /* =============== Tap & Keyboard settings =============== */
 
     public final String tapProfiles;
@@ -150,6 +152,7 @@ public class AppSettings implements AppPreferences {
         tapsEnabled = TAPS_ENABLED.getPreferenceValue(prefs);
         scrollHeight = SCROLL_HEIGHT.getPreferenceValue(prefs);
         touchProcessingDelay = TOUCH_DELAY.getPreferenceValue(prefs);
+        animateScrolling = ANIMATE_SCROLLING.getPreferenceValue(prefs);
         /* =============== Tap & Keyboard settings =============== */
         tapProfiles = TAP_PROFILES.getPreferenceValue(prefs);
         keysBinding = KEY_BINDINGS.getPreferenceValue(prefs);

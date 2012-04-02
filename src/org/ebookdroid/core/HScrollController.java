@@ -1,5 +1,6 @@
 package org.ebookdroid.core;
 
+import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
@@ -50,10 +51,14 @@ public class HScrollController extends AbstractScrollController {
      */
     @Override
     public final void verticalConfigScroll(final int direction) {
-        final int scrollheight = SettingsManager.getAppSettings().scrollHeight;
-        final int dx = (int) (direction * getWidth() * (scrollheight / 100.0));
+        final AppSettings app = SettingsManager.getAppSettings();
+        final int dx = (int) (direction * getWidth() * (app.scrollHeight / 100.0));
 
-        getView().startPageScroll(dx, 0);
+        if (app.animateScrolling) {
+            getView().startPageScroll(dx, 0);
+        } else {
+            getView().scrollBy(dx, 0);
+        }
     }
 
     /**
@@ -115,7 +120,8 @@ public class HScrollController extends AbstractScrollController {
     }
 
     @Override
-    public RectF calcPageBounds(final PageAlign pageAlign, final float pageAspectRatio, final int width, final int height) {
+    public RectF calcPageBounds(final PageAlign pageAlign, final float pageAspectRatio, final int width,
+            final int height) {
         return new RectF(0, 0, height * pageAspectRatio, height);
     }
 }

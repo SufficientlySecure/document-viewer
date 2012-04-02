@@ -14,4 +14,7 @@
     <string name="pref_touchdelay_minvalue">0</string>
     <string name="pref_touchdelay_maxvalue">250</string>
 
+    <string name="pref_animate_scrolling_id">animate_scrolling</string>
+    <string name="pref_animate_scrolling_defvalue">true</string>
+
 </resources>

@@ -115,6 +115,12 @@
             android:summary="@string/pref_touchdelay_summary"
             android:title="@string/pref_touchdelay_title" />
 
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_animate_scrolling_defvalue"
+            android:key="@string/pref_animate_scrolling_id"
+            android:summary="@string/pref_animate_scrolling_summary"
+            android:title="@string/pref_animate_scrolling_title" />
+
     </PreferenceScreen>
 
     <PreferenceScreen

@@ -66,6 +66,9 @@ public interface AppPreferences {
     IntegerPreferenceDefinition TOUCH_DELAY = new IntegerPreferenceDefinition(pref_touchdelay_id,
             pref_touchdelay_defvalue, pref_touchdelay_minvalue, pref_touchdelay_maxvalue);
 
+    BooleanPreferenceDefinition ANIMATE_SCROLLING = new BooleanPreferenceDefinition(pref_animate_scrolling_id,
+            pref_animate_scrolling_defvalue);
+
     /* =============== Tap & Keys settings =============== */
 
     StringPreferenceDefinition TAP_PROFILES = new StringPreferenceDefinition(pref_tapprofiles_id,

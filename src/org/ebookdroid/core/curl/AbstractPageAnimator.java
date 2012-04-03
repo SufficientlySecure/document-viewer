@@ -101,17 +101,14 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
             return viewState;
         }
 
-        foreIndex = viewState.pages.currentIndex;
-        if (foreIndex >= viewState.model.getPageCount()) {
-            foreIndex = 0;
-        }
-        backIndex = foreIndex + 1;
-        if (backIndex >= viewState.model.getPageCount()) {
-            backIndex = 0;
-        }
+        final int pageCount = viewState.model.getPageCount();
 
-        return view.invalidatePages(viewState, viewState.model.getPageObject(foreIndex),
-                viewState.model.getPageObject(backIndex));
+        foreIndex = viewState.pages.currentIndex % pageCount;
+        backIndex = (foreIndex + 1) % pageCount;
+
+        final Page forePage = viewState.model.getPageObject(foreIndex);
+        final Page backPage = viewState.model.getPageObject(backIndex);
+        return view.invalidatePages(viewState, forePage, backPage);
     }
 
     /**
@@ -122,14 +119,14 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
             return viewState;
         }
 
-        backIndex = viewState.pages.currentIndex;
-        foreIndex = backIndex - 1;
-        if (foreIndex < 0) {
-            foreIndex = viewState.model.getPageCount() - 1;
-        }
+        final int pageCount = viewState.model.getPageCount();
 
-        return view.invalidatePages(viewState, viewState.model.getPageObject(foreIndex),
-                viewState.model.getPageObject(backIndex));
+        backIndex = viewState.pages.currentIndex % pageCount;
+        foreIndex = (pageCount + backIndex - 1) % pageCount;
+
+        final Page forePage = viewState.model.getPageObject(foreIndex);
+        final Page backPage = viewState.model.getPageObject(backIndex);
+        return view.invalidatePages(viewState, forePage, backPage);
     }
 
     /**

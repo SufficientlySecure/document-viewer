@@ -19,6 +19,7 @@ import android.graphics.RectF;
 import java.util.List;
 
 import org.emdev.ui.uimanager.IUIManager;
+import org.emdev.utils.LengthUtils;
 
 /**
  * The Class SinglePageController.
@@ -200,7 +201,10 @@ public class SinglePageController extends AbstractViewController {
     }
 
     public final ViewState invalidatePages(final ViewState oldState, final Page... pages) {
-        return EventPool.newEventScrollTo(this, pages[0].index.viewIndex).process();
+        if (LengthUtils.isNotEmpty(pages) && pages[0] != null) {
+            return EventPool.newEventScrollTo(this, pages[0].index.viewIndex).process();
+        }
+        return oldState;
     }
 
     /**

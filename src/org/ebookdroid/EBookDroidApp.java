@@ -16,6 +16,7 @@ import android.os.Environment;
 
 import java.io.File;
 
+import org.emdev.utils.FileUtils;
 import org.emdev.utils.android.AndroidVersion;
 
 public class EBookDroidApp extends Application {
@@ -63,8 +64,8 @@ public class EBookDroidApp extends Application {
             LCTX.i("Root             dir: " + Environment.getRootDirectory());
             LCTX.i("Data             dir: " + Environment.getDataDirectory());
             LCTX.i("External storage dir: " + Environment.getExternalStorageDirectory());
-            LCTX.i("Files            dir: " + getFilesDir().getAbsolutePath());
-            LCTX.i("Cache            dir: " + getCacheDir().getAbsolutePath());
+            LCTX.i("Files            dir: " + FileUtils.getAbsolutePath(getFilesDir()));
+            LCTX.i("Cache            dir: " + FileUtils.getAbsolutePath(getCacheDir()));
             // LCTX.i("External cache   dir: " + getExternalCacheDir().getAbsolutePath());
 
             LCTX.i("VERSION     : " + AndroidVersion.VERSION);

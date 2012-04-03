@@ -667,14 +667,19 @@ public class DecodeServiceBase implements DecodeService {
 
     @Override
     public BitmapRef createThumbnail(int width, int height, final int pageNo, final RectF region) {
+        if (document == null) {
+            return null;
+        }
         final Bitmap thumbnail = document.getEmbeddedThumbnail();
         if (thumbnail != null) {
             width = 200;
             height = 200;
-            if (thumbnail.getHeight() > thumbnail.getWidth()) {
-                width = width * thumbnail.getWidth() / thumbnail.getHeight();
+            final int tw = thumbnail.getWidth();
+            final int th = thumbnail.getHeight();
+            if (th > tw) {
+                width = width * tw / th;
             } else {
-                height = height * thumbnail.getHeight() / thumbnail.getWidth();
+                height = height * th / tw;
             }
             final Bitmap scaled = Bitmap.createScaledBitmap(thumbnail, width, height, true);
             final BitmapRef ref = BitmapManager.addBitmap("Thumbnail", scaled);

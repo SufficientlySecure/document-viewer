@@ -702,8 +702,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
             final ViewerActivity activity = getManagedComponent();
             LCTX.d("BookLoadTask.onPreExecute(" + activity.LCTX + "): start");
             try {
-                final String message = activity.getString(R.string.msg_loading);
-                progressDialog = ProgressDialog.show(activity, "", message, true);
+                onProgressUpdate(activity.getString(R.string.msg_loading));
             } catch (final Throwable th) {
                 LCTX.e("BookLoadTask.onPreExecute(): Unexpected error", th);
             } finally {
@@ -751,16 +750,14 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                 }
 
                 try {
-                    progressDialog.dismiss();
+                    if (progressDialog != null) {
+                        progressDialog.dismiss();
+                        progressDialog = null;
+                    }
                 } catch (final Throwable th) {
                 }
 
                 if (result != null) {
-                    try {
-                        progressDialog.dismiss();
-                    } catch (final Throwable th) {
-                    }
-
                     final String msg = result.getMessage();
                     if ("PDF needs a password!".equals(msg)) {
                         askPassword(m_fileName, "Enter password...");
@@ -781,19 +778,18 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
         @Override
         public void setProgressDialogMessage(final int resourceID, final Object... args) {
-            final String message = getManagedComponent().getString(resourceID, args);
-            publishProgress(message);
+            publishProgress(getManagedComponent().getString(resourceID, args));
         }
 
         @Override
         protected void onProgressUpdate(final String... values) {
-            if (values != null && values.length > 0) {
-                if (!progressDialog.isShowing()) {
-                    final ViewerActivity activity = getManagedComponent();
-                    progressDialog = ProgressDialog.show(activity, "", values[0], true);
-                } else {
-                    progressDialog.setMessage(values[0]);
-                }
+            if (LengthUtils.isEmpty(values)) {
+                return;
+            }
+            if (progressDialog == null || !progressDialog.isShowing()) {
+                progressDialog = ProgressDialog.show(getManagedComponent(), "", values[0], true);
+            } else {
+                progressDialog.setMessage(values[0]);
             }
         }
     }

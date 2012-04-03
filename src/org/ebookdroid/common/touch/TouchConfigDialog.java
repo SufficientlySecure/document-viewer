@@ -210,6 +210,7 @@ public class TouchConfigDialog extends Dialog {
 
         RegionsAdapter(final Context context, final List<RegionWrapper> objects) {
             super(context, R.layout.list_item, R.id.list_item, objects);
+            setDropDownViewResource(R.layout.list_dropdown_item);
         }
     }
 

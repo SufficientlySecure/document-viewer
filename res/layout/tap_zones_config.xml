@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tapZonesConfigView"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:layout_gravity="center"
-    android:orientation="vertical" >
 
-    <Spinner
-        android:id="@+id/tapZonesConfigRegions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+<ScrollView android:layout_width="wrap_content" 
+                android:layout_height="wrap_content" 
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_gravity="center"
+    			android:orientation="vertical">
 
     <TableLayout
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dip"
-        android:layout_marginTop="20dip"
         android:stretchColumns="*" >
 
+ 		<TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent" >
+        	<Spinner
+        		android:id="@+id/tapZonesConfigRegions"
+        		android:layout_weight="3"
+        		android:layout_width="wrap_content"
+        		android:layout_height="fill_parent" />
+        </TableRow>
+        
         <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent" >
 
             <TextView
                 android:layout_width="0dip"
@@ -36,8 +39,8 @@
         </TableRow>
 
         <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent" >
 
             <TextView
                 android:layout_width="0dip"
@@ -53,8 +56,8 @@
         </TableRow>
 
         <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
             android:visibility="gone" >
 
             <TextView
@@ -71,8 +74,8 @@
         </TableRow>
 
         <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent" >
 
             <TextView
                 android:layout_width="0dip"
@@ -86,38 +89,28 @@
                 android:layout_width="0dip"
                 android:layout_weight="2" />
         </TableRow>
-    </TableLayout>
-
-    <TableLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:stretchColumns="*" >
 
         <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent" >
 
             <Button
                 android:id="@+id/tapZonesConfigReset"
                 android:layout_width="0dip"
                 android:layout_weight="1"
-                android:padding="15dip"
                 android:text="@string/tap_zones_reset" />
 
             <Button
                 android:id="@+id/tapZonesConfigDelete"
                 android:layout_width="0dip"
                 android:layout_weight="1"
-                android:padding="15dip"
                 android:text="@string/tap_zones_delete" />
 
             <Button
                 android:id="@+id/tapZonesConfigClear"
                 android:layout_width="0dip"
                 android:layout_weight="1"
-                android:padding="15dip"
                 android:text="@string/tap_zones_clear" />
         </TableRow>
     </TableLayout>
-
-</LinearLayout>
+</ScrollView>

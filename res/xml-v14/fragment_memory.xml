@@ -1,12 +1,14 @@
-    <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    <PreferenceScreen 
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:ebookdroid="http://ebookdroid.org" 
         android:summary="@string/pref_performance_category_summary"
         android:title="@string/pref_performance_category" >
 
-        <EditTextPreference
+        <org.emdev.ui.preference.SeekBarPreference
             android:defaultValue="@string/pref_pagesinmemory_defvalue"
             android:key="@string/pref_pagesinmemory_id"
-            android:maxLength="3"
-            android:numeric="integer"
+            ebookdroid:minValue="@string/pref_pagesinmemory_minvalue"
+            ebookdroid:maxValue="@string/pref_pagesinmemory_maxvalue"
             android:summary="@string/pref_pagesinmemory_summary"
             android:title="@string/pref_pagesinmemory_title" />
 

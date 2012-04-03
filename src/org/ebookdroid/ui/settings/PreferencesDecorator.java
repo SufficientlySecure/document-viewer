@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.emdev.ui.preference.SeekBarPreference;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.enums.EnumUtils;
 
@@ -119,6 +120,8 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
             decorateListPreference((ListPreference) pref);
         } else if (pref instanceof EditTextPreference) {
             decorateEditPreference((EditTextPreference) pref);
+        } else if (pref instanceof SeekBarPreference) {
+            decorateSeekPreference((SeekBarPreference) pref);
         }
     }
 
@@ -129,6 +132,24 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
         final String value = textPrefs.getText();
 
         setPreferenceSummary(textPrefs, value);
+
+        addListener(textPrefs, new OnPreferenceChangeListener() {
+
+            @Override
+            public boolean onPreferenceChange(final Preference preference, final Object newValue) {
+                setPreferenceSummary(textPrefs, (String) newValue);
+                return true;
+            }
+        });
+    }
+
+    protected void decorateSeekPreference(final SeekBarPreference textPrefs) {
+        final CharSequence summary = textPrefs.getSummary();
+        summaries.put(textPrefs.getKey(), summary);
+
+        final int value = textPrefs.getValue();
+
+        setPreferenceSummary(textPrefs, "" + value);
 
         addListener(textPrefs, new OnPreferenceChangeListener() {
 

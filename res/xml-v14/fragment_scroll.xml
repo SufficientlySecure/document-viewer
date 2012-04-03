@@ -1,4 +1,6 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<PreferenceScreen 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ebookdroid="http://ebookdroid.org" 
     android:summary="@string/pref_scroll_category_summary"
     android:title="@string/pref_scroll_category" >
 
@@ -8,19 +10,19 @@
             android:summary="@string/pref_tapsenabled_summary"
             android:title="@string/pref_tapsenabled_title" />
 
-    <EditTextPreference
+    <org.emdev.ui.preference.SeekBarPreference
             android:defaultValue="@string/pref_scrollheight_defvalue"
             android:key="@string/pref_scrollheight_id"
-            android:maxLength="3"
-            android:numeric="integer"
+            ebookdroid:minValue="@string/pref_scrollheight_minvalue"
+            ebookdroid:maxValue="@string/pref_scrollheight_maxvalue"
             android:summary="@string/pref_scroll_summary"
             android:title="@string/pref_scroll_title" />
 
-    <EditTextPreference
+    <org.emdev.ui.preference.SeekBarPreference
             android:defaultValue="@string/pref_touchdelay_defvalue"
             android:key="@string/pref_touchdelay_id"
-            android:maxLength="3"
-            android:numeric="integer"
+            ebookdroid:minValue="@string/pref_touchdelay_minvalue"
+            ebookdroid:maxValue="@string/pref_touchdelay_maxvalue"
             android:summary="@string/pref_touchdelay_summary"
             android:title="@string/pref_touchdelay_title" />
 

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<PreferenceScreen 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ebookdroid="http://ebookdroid.org" 
     android:summary="@string/pref_ui_category_summary"
     android:title="@string/pref_ui_category" >
 
@@ -15,11 +17,11 @@
             android:summary="@string/pref_confirmclose_summary"
             android:title="@string/pref_confirmclose_title" />
 
-    <EditTextPreference
+    <org.emdev.ui.preference.SeekBarPreference
             android:defaultValue="@string/pref_brightness_defvalue"
             android:key="@string/pref_brightness_id"
-            android:maxLength="3"
-            android:numeric="integer"
+            ebookdroid:minValue="@string/pref_brightness_minvalue"
+            ebookdroid:maxValue="@string/pref_brightness_maxvalue"
             android:summary="@string/pref_brightness_summary"
             android:title="@string/pref_brightness_title" />
 

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<PreferenceScreen 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ebookdroid="http://ebookdroid.org" 
     android:key="book_prefs"
     android:summary="@string/pref_book_category_summary"
     android:title="@string/pref_book_category" >
@@ -56,19 +58,19 @@
             android:summary="@string/pref_nightmode_summary"
             android:title="@string/pref_nightmode_title" />
 
-        <EditTextPreference
+        <org.emdev.ui.preference.SeekBarPreference
             android:defaultValue="@string/pref_contrast_defvalue"
             android:key="@string/pref_book_contrast_id"
-            android:maxLength="4"
-            android:numeric="integer"
+            ebookdroid:minValue="@string/pref_contrast_minvalue"
+            ebookdroid:maxValue="@string/pref_contrast_maxvalue"
             android:summary="@string/pref_contrast_summary"
             android:title="@string/pref_contrast_title" />
 
-        <EditTextPreference
+        <org.emdev.ui.preference.SeekBarPreference
             android:defaultValue="@string/pref_exposure_defvalue"
             android:key="@string/pref_book_exposure_id"
-            android:maxLength="3"
-            android:numeric="integer"
+            ebookdroid:minValue="@string/pref_exposure_minvalue"
+            ebookdroid:maxValue="@string/pref_exposure_maxvalue"
             android:summary="@string/pref_exposure_summary"
             android:title="@string/pref_exposure_title" />
 

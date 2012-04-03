@@ -98,8 +98,10 @@ public class ThumbnailFile extends File {
     private static Bitmap getDefaultThumbnail() {
         if (defaultImage == null) {
             Bitmap empty = Bitmap.createBitmap(160, 200, Bitmap.Config.ARGB_8888);
-            empty.eraseColor(Color.WHITE);
-            defaultImage = paint(empty);
+            if (empty != null) {
+                empty.eraseColor(Color.WHITE);
+                defaultImage = paint(empty);
+            }
         }
         return defaultImage;
     }

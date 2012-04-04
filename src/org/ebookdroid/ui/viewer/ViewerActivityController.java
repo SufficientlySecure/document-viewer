@@ -165,6 +165,10 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         createAction(R.id.actions_toggleTouchManagerView).putValue("view", activity.getTouchView());
 
         if (++loadingCount == 1) {
+            if (intent == null || intent.getScheme() == null) {
+                showErrorDlg("Bad intent or scheme:\n" + intent);
+                return;
+            }
             if (intent.getScheme().equals("content")) {
                 try {
                     final Cursor c = activity.getContentResolver().query(intent.getData(), null, null, null, null);
@@ -188,7 +192,8 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                 bookTitle = LengthUtils.safeString(intent.getData().getLastPathSegment(), E_MAIL_ATTACHMENT);
             }
             if (codecType == null) {
-                throw new RuntimeException("Unknown intent data type: " + intent.getData());
+                showErrorDlg("Unknown intent data type: " + intent.getData());
+                return;
             }
 
             documentModel = new DocumentModel(codecType);

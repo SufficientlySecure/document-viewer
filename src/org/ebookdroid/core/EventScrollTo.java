@@ -2,6 +2,8 @@ package org.ebookdroid.core;
 
 import java.util.Queue;
 
+import org.emdev.utils.LengthUtils;
+
 public class EventScrollTo extends AbstractEventScroll<EventScrollTo> {
 
     public int viewIndex;
@@ -26,6 +28,9 @@ public class EventScrollTo extends AbstractEventScroll<EventScrollTo> {
         int lastVisiblePage = viewIndex;
 
         final Page[] pages = ctrl.model.getPages();
+        if (LengthUtils.isEmpty(pages)) {
+            return initial;
+        }
 
         while (firstVisiblePage > 0) {
             final int index = firstVisiblePage - 1;

@@ -4,6 +4,8 @@ import org.ebookdroid.common.settings.SettingsManager;
 
 import java.util.Queue;
 
+import org.emdev.utils.LengthUtils;
+
 public abstract class AbstractEventZoom<E extends AbstractEventZoom<E>> extends AbstractEvent {
 
     private final Queue<E> eventQueue;
@@ -94,6 +96,9 @@ public abstract class AbstractEventZoom<E extends AbstractEventZoom<E>> extends 
         int lastVisiblePage = viewIndex;
 
         final Page[] pages = ctrl.model.getPages();
+        if (LengthUtils.isEmpty(pages)) {
+            return initial;
+        }
 
         while (firstVisiblePage > 0) {
             final int index = firstVisiblePage - 1;

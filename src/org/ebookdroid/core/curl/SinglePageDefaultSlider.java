@@ -22,7 +22,10 @@ public class SinglePageDefaultSlider extends AbstractPageSlider {
     @Override
     protected void drawForeground(final EventDraw event) {
         final ViewState viewState = event.viewState;
-        Page page = viewState.model.getPageObject(bFlipRight ? foreIndex : backIndex);
+        Page page = null;
+        if (bFlipping) {
+            page = viewState.model.getPageObject(bFlipRight ? foreIndex : backIndex);
+        }
         if (page == null) {
             page = viewState.model.getCurrentPageObject();
         }

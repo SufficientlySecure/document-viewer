@@ -181,6 +181,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
                 foreIndex = backIndex;
             } else {
                 view.goToPage(foreIndex);
+                backIndex = foreIndex;
             }
 
             // Create values

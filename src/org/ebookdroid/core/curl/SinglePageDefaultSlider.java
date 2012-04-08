@@ -24,7 +24,7 @@ public class SinglePageDefaultSlider extends AbstractPageSlider {
         final ViewState viewState = event.viewState;
         Page page = null;
         if (bFlipping) {
-            page = viewState.model.getPageObject(bFlipRight ? foreIndex : backIndex);
+            page = viewState.model.getPageObject(!bFlipRight ? foreIndex : backIndex);
         }
         if (page == null) {
             page = viewState.model.getCurrentPageObject();

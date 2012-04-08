@@ -12,15 +12,20 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import org.emdev.utils.LengthUtils;
+import org.emdev.utils.WidgetUtils;
 
 public final class SeekBarPreference extends DialogPreference implements OnSeekBarChangeListener {
 
     private static final String EBOOKDROID_NS = "http://ebookdroid.org";
     private static final String ANDROID_NS = "http://schemas.android.com/apk/res/android";
 
-    private static final String ATTR_DEFAULT_VALUE = "defaultValue";
     private static final String ATTR_MIN_VALUE = "minValue";
     private static final String ATTR_MAX_VALUE = "maxValue";
+    private static final String ATTR_DEFAULT_VALUE = "defaultValue";
+
+    private static final int DEFAULT_MIN_VALUE = 0;
+    private static final int DEFAULT_MAX_VALUE = 100;
+    private static final int DEFAULT_DEFAULT_VALUE = 50;
 
     private final int defaultValue;
     private final int maxValue;
@@ -30,11 +35,11 @@ public final class SeekBarPreference extends DialogPreference implements OnSeekB
     private SeekBar seekBar;
     private TextView text;
 
-    public SeekBarPreference(Context context, AttributeSet attrs) {
+    public SeekBarPreference(final Context context, final AttributeSet attrs) {
         super(context, attrs);
-        minValue = attrs.getAttributeIntValue(EBOOKDROID_NS, ATTR_MIN_VALUE, 0);
-        maxValue = attrs.getAttributeIntValue(EBOOKDROID_NS, ATTR_MAX_VALUE, 100);
-        defaultValue = attrs.getAttributeIntValue(ANDROID_NS, ATTR_DEFAULT_VALUE, 50);
+        minValue = WidgetUtils.getIntAttribute(context, attrs, EBOOKDROID_NS, ATTR_MIN_VALUE, DEFAULT_MIN_VALUE);
+        maxValue = WidgetUtils.getIntAttribute(context, attrs, EBOOKDROID_NS, ATTR_MAX_VALUE, DEFAULT_MAX_VALUE);
+        defaultValue = WidgetUtils.getIntAttribute(context, attrs, ANDROID_NS, ATTR_DEFAULT_VALUE, DEFAULT_DEFAULT_VALUE);
     }
 
     public int getValue() {
@@ -42,15 +47,15 @@ public final class SeekBarPreference extends DialogPreference implements OnSeekB
     }
 
     @Override
-    protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
+    protected void onSetInitialValue(final boolean restoreValue, final Object defaultValue) {
         currentValue = Integer.parseInt(getPersistedString(LengthUtils.toString(defaultValue)));
     }
 
     @Override
     protected View onCreateDialogView() {
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.pref_seek_dialog, null);
-        
+        final LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View view = inflater.inflate(R.layout.pref_seek_dialog, null);
+
         currentValue = Integer.parseInt(getPersistedString(Integer.toString(defaultValue)));
 
         ((TextView) view.findViewById(R.id.pref_seek_min_value)).setText(Integer.toString(minValue));
@@ -69,9 +74,9 @@ public final class SeekBarPreference extends DialogPreference implements OnSeekB
     }
 
     @Override
-    protected void onDialogClosed(boolean positiveResult) {
+    protected void onDialogClosed(final boolean positiveResult) {
         if (positiveResult) {
-            String value = Integer.toString(currentValue);
+            final String value = Integer.toString(currentValue);
             if (callChangeListener(value)) {
                 if (shouldPersist()) {
                     persistString(value);
@@ -83,25 +88,25 @@ public final class SeekBarPreference extends DialogPreference implements OnSeekB
 
     @Override
     public CharSequence getSummary() {
-        String summary = super.getSummary().toString();
-        int value = Integer.parseInt(getPersistedString(Integer.toString(defaultValue)));
+        final String summary = super.getSummary().toString();
+        final int value = Integer.parseInt(getPersistedString(Integer.toString(defaultValue)));
         return String.format(summary, value);
     }
 
     @Override
-    public void onProgressChanged(SeekBar seek, int value, boolean fromTouch) {
+    public void onProgressChanged(final SeekBar seek, final int value, final boolean fromTouch) {
         currentValue = value + minValue;
         text.setText(Integer.toString(currentValue));
     }
 
     @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
+    public void onStartTrackingTouch(final SeekBar seekBar) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
+    public void onStopTrackingTouch(final SeekBar seekBar) {
         // TODO Auto-generated method stub
 
     }

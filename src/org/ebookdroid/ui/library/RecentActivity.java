@@ -36,6 +36,7 @@ import android.widget.ViewFlipper;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.emdev.ui.AbstractActionActivity;
 import org.emdev.ui.actions.ActionDialogBuilder;
@@ -69,7 +70,9 @@ actions = {
 })
 public class RecentActivity extends AbstractActionActivity implements IBrowserActivity, ISettingsChangeListener {
 
-    public static final LogContext LCTX = LogContext.ROOT.lctx("Core");
+    public final LogContext LCTX;
+
+    private static final AtomicLong SEQ = new AtomicLong();
 
     private static final int CLEAR_RECENT_LIST = 0;
     private static final int DELETE_BOOKMARKS = 1;
@@ -90,8 +93,16 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
 
     private boolean firstResume = true;
 
+    public RecentActivity() {
+        super();
+        LCTX = LogContext.ROOT.lctx(this.getClass().getSimpleName(), true).lctx("" + SEQ.getAndIncrement(), true);
+    }
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("onCreate()");
+        }
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.recent);
@@ -115,27 +126,33 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
             setActionForView(R.id.ShelfRightButton);
         }
 
-        final boolean shouldLoad = SettingsManager.getAppSettings().loadRecent;
         final BookSettings recent = SettingsManager.getRecentBook();
-        final File file = (recent != null && recent.fileName != null) ? new File(recent.fileName) : null;
-        final boolean found = file != null ? file.exists()
-                && SettingsManager.getAppSettings().allowedFileTypes.accept(file) : false;
 
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("Last book: " + (file != null ? file.getAbsolutePath() : "") + ", found: " + found
-                    + ", should load: " + shouldLoad);
-        }
+        if (firstResume) {
+            final boolean shouldLoad = SettingsManager.getAppSettings().loadRecent;
+            final File file = (recent != null && recent.fileName != null) ? new File(recent.fileName) : null;
+            final boolean found = file != null ? file.exists()
+                    && SettingsManager.getAppSettings().allowedFileTypes.accept(file) : false;
 
-        if (shouldLoad && found) {
-            changeLibraryView(VIEW_RECENT);
-            showDocument(Uri.fromFile(file));
-        } else {
-            changeLibraryView(recent != null ? VIEW_RECENT : VIEW_LIBRARY);
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("Last book: " + (file != null ? file.getAbsolutePath() : "") + ", found: " + found
+                        + ", should load: " + shouldLoad);
+            }
+
+            if (shouldLoad && found) {
+                changeLibraryView(VIEW_RECENT);
+                showDocument(Uri.fromFile(file));
+                return;
+            }
         }
+        changeLibraryView(recent != null ? VIEW_RECENT : VIEW_LIBRARY);
     }
 
     @Override
     protected void onResume() {
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("onResume()");
+        }
         super.onResume();
 
         final AppSettings appSettings = SettingsManager.getAppSettings();
@@ -149,14 +166,30 @@ public class RecentActivity extends AbstractActionActivity implements IBrowserAc
                 if (SettingsManager.getRecentBook() == null) {
                     changeLibraryView(VIEW_LIBRARY);
                 } else {
-                    recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(),
-                            appSettings.allowedFileTypes);
+                    recentAdapter
+                            .setBooks(SettingsManager.getAllBooksSettings().values(), appSettings.allowedFileTypes);
                 }
 
             }
         }
 
         firstResume = false;
+    }
+
+    @Override
+    protected void onPause() {
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("onPause()");
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("onDestroy()");
+        }
+        super.onDestroy();
     }
 
     @Override

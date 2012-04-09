@@ -28,7 +28,7 @@ import org.emdev.utils.android.AndroidVersion;
 // actions
 actions = {
 // start
-@ActionMethodDef(id = R.id.mainmenu_about, method = "showAbout"),
+@ActionMethodDef(id = R.id.mainmenu_about, method = "showAbout")
 // finish
 })
 public class RecentActivity extends AbstractActionActivity {

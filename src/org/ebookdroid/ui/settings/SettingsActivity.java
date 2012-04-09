@@ -14,7 +14,9 @@ public class SettingsActivity extends BaseSettingsActivity {
     @Override
     protected final void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(SettingsManager.getAppSettings().rotation.getOrientation());
+        if (SettingsManager.getBookSettings() != null) {
+            setRequestedOrientation(SettingsManager.getAppSettings().rotation.getOrientation());
+        }
         onCreate();
     }
 

@@ -3,10 +3,16 @@ package org.emdev.ui.preference;
 import org.ebookdroid.R;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -34,12 +40,18 @@ public final class SeekBarPreference extends DialogPreference implements OnSeekB
 
     private SeekBar seekBar;
     private TextView text;
+    private View plus;
+    private View minus;
+
+    private final IncrementHandler handler;
 
     public SeekBarPreference(final Context context, final AttributeSet attrs) {
         super(context, attrs);
+        handler = new IncrementHandler();
         minValue = WidgetUtils.getIntAttribute(context, attrs, EBOOKDROID_NS, ATTR_MIN_VALUE, DEFAULT_MIN_VALUE);
         maxValue = WidgetUtils.getIntAttribute(context, attrs, EBOOKDROID_NS, ATTR_MAX_VALUE, DEFAULT_MAX_VALUE);
-        defaultValue = WidgetUtils.getIntAttribute(context, attrs, ANDROID_NS, ATTR_DEFAULT_VALUE, DEFAULT_DEFAULT_VALUE);
+        defaultValue = WidgetUtils.getIntAttribute(context, attrs, ANDROID_NS, ATTR_DEFAULT_VALUE,
+                DEFAULT_DEFAULT_VALUE);
     }
 
     public int getValue() {
@@ -69,6 +81,18 @@ public final class SeekBarPreference extends DialogPreference implements OnSeekB
 
         text = (TextView) view.findViewById(R.id.pref_seek_current_value);
         text.setText(Integer.toString(currentValue));
+
+        minus = view.findViewById(R.id.pref_seek_bar_minus);
+        minus.setTag(Integer.valueOf(-1));
+        minus.setOnTouchListener(handler);
+        minus.setOnClickListener(handler);
+        minus.setOnLongClickListener(handler);
+
+        plus = view.findViewById(R.id.pref_seek_bar_plus);
+        plus.setTag(Integer.valueOf(+1));
+        plus.setOnTouchListener(handler);
+        plus.setOnClickListener(handler);
+        plus.setOnLongClickListener(handler);
 
         return view;
     }
@@ -101,13 +125,68 @@ public final class SeekBarPreference extends DialogPreference implements OnSeekB
 
     @Override
     public void onStartTrackingTouch(final SeekBar seekBar) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void onStopTrackingTouch(final SeekBar seekBar) {
-        // TODO Auto-generated method stub
+    }
 
+    private class IncrementHandler extends Handler implements OnTouchListener, OnClickListener, OnLongClickListener {
+
+        private static final int DELAY = 200;
+        private static final int INIT_MULT = 5;
+        private static final int NEXT_MULT = 2;
+
+        boolean started;
+        int count;
+
+        @Override
+        public void handleMessage(final Message msg) {
+            if (started && seekBar != null) {
+                count++;
+                int delta = msg.what;
+                seekBar.incrementProgressBy(delta);
+                if (count % (1000 / DELAY) == 0) {
+                    delta = NEXT_MULT * delta;
+                }
+                sendMessageDelayed(obtainMessage(delta), DELAY);
+            }
+        }
+
+        public void startIncrement(final int delta) {
+            started = true;
+            count = 0;
+            handleMessage(obtainMessage(delta));
+        }
+
+        public void stopIncrement() {
+            started = false;
+        }
+
+        @Override
+        public boolean onTouch(final View v, final MotionEvent event) {
+            final int action = event.getAction();
+            if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP) {
+                stopIncrement();
+            }
+            return false;
+        }
+
+        @Override
+        public void onClick(final View v) {
+            if (seekBar != null) {
+                final int delta = ((Integer) v.getTag()).intValue();
+                seekBar.incrementProgressBy(delta);
+            }
+        }
+
+        @Override
+        public boolean onLongClick(final View v) {
+            if (seekBar != null) {
+                final int delta = INIT_MULT * ((Integer) v.getTag()).intValue();
+                startIncrement(delta);
+            }
+            return true;
+        }
     }
 }

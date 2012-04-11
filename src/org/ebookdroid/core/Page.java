@@ -3,6 +3,7 @@ package org.ebookdroid.core;
 import org.ebookdroid.common.bitmaps.Bitmaps;
 import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.common.settings.SettingsManager;
+import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.PageType;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.codec.PageLink;
@@ -135,12 +136,13 @@ public class Page {
     }
 
     public RectF getLinkSourceRect(final RectF pageBounds, final PageLink link) {
+        final BookSettings bs = SettingsManager.getBookSettings();
         RectF sourceRect = link.sourceRect;
-        if (sourceRect == null) {
+        if (sourceRect == null || bs == null) {
             return null;
         }
         final RectF cb = nodes.root.croppedBounds;
-        if (SettingsManager.getBookSettings().cropPages && cb != null) {
+        if (bs.cropPages && cb != null) {
             final Matrix m = MatrixUtils.get();
             final RectF psb = nodes.root.pageSliceBounds;
             m.postTranslate(psb.left - cb.left, psb.top - cb.top);

@@ -52,6 +52,11 @@ public class RecentActivity extends AbstractActionActivity {
     }
 
     @Override
+    public Object onRetainNonConfigurationInstance() {
+        return controller;
+    }
+
+   @Override
     public void onCreate(final Bundle savedInstanceState) {
         if (LCTX.isDebugEnabled()) {
             LCTX.d("onCreate()");

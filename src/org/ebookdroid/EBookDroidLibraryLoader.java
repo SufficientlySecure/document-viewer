@@ -1,6 +1,10 @@
 package org.ebookdroid;
 
+import org.ebookdroid.common.log.LogContext;
+
 public class EBookDroidLibraryLoader {
+
+    private static final LogContext LCTX = LogContext.ROOT.lctx("LibraryLoader");
 
     private static boolean alreadyLoaded = false;
 
@@ -13,6 +17,7 @@ public class EBookDroidLibraryLoader {
         System.loadLibrary("ebookdroid");
         alreadyLoaded = true;
         nativeGraphicsAvailable = isNativeGraphicsAvailable();
+        LCTX.i("Native graphics " + (nativeGraphicsAvailable ? "available" : "not available"));
     }
 
     public static native void free();

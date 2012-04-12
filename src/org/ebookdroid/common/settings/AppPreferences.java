@@ -91,6 +91,9 @@ public interface AppPreferences {
     IntegerPreferenceDefinition DRAW_THREAD_PRIORITY = new IntegerPreferenceDefinition(pref_drawthread_priority_id,
             pref_thread_priority_normal, pref_thread_priority_lowest, pref_thread_priority_highest);
 
+    BooleanPreferenceDefinition USE_NATIVE_GRAPHICS = new BooleanPreferenceDefinition(pref_usenativegraphics_id,
+            pref_usenativegraphics_defvalue);
+
     BooleanPreferenceDefinition HWA_ENABLED = new BooleanPreferenceDefinition(pref_hwa_enabled_id,
             pref_hwa_enabled_defvalue);
 

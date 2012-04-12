@@ -35,13 +35,14 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *jvm, void *reserved)
 }
 
 JNIEXPORT jboolean JNICALL
-Java_org_ebookdroid_core_EBookDroidLibraryLoader_free(JNIEnv *env, jobject this)
+Java_org_ebookdroid_EBookDroidLibraryLoader_free(JNIEnv *env, jobject this)
 {
     __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "Free EBookDroid JNI library");
     closeHandler();
 }
 
-int NativePresent()
+JNIEXPORT jboolean JNICALL
+Java_org_ebookdroid_EBookDroidLibraryLoader_isNativeGraphicsAvailable(JNIEnv *env, jobject this)
 {
     return present;
 }

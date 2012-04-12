@@ -336,12 +336,6 @@ Java_org_ebookdroid_droids_xps_codec_XpsPage_renderPage(JNIEnv *env, jobject thi
 /*JNI BITMAP API*/
 
 JNIEXPORT jboolean JNICALL
-Java_org_ebookdroid_droids_xps_codec_XpsContext_isNativeGraphicsAvailable(JNIEnv *env, jobject this)
-{
-    return NativePresent();
-}
-
-JNIEXPORT jboolean JNICALL
 Java_org_ebookdroid_droids_xps_codec_XpsPage_renderPageBitmap(JNIEnv *env, jobject this, jlong dochandle,
                                                             jlong pagehandle, jintArray viewboxarray,
                                                             jfloatArray matrixarray, jobject bitmap)

@@ -1,10 +1,11 @@
 package org.ebookdroid.droids.xps.codec;
 
+import org.ebookdroid.EBookDroidLibraryLoader;
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.BitmapRef;
+import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.PageLink;
-import org.ebookdroid.droids.pdf.codec.PdfContext;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -42,7 +43,7 @@ public class XpsPage implements CodecPage {
     public int getHeight() {
         return XpsContext.getHeightInPixels(pageBounds.height());
     }
-    
+
     private RectF getBounds() {
         final float[] box = new float[4];
         getBounds(docHandle, pageHandle, box);
@@ -100,9 +101,9 @@ public class XpsPage implements CodecPage {
 
         final int width = viewbox.width();
         final int height = viewbox.height();
-        
-        if (XpsContext.useNativeGraphics) {
-            final BitmapRef bmp = BitmapManager.getBitmap("PDF page", width, height, PdfContext.NATIVE_BITMAP_CFG);
+
+        if (EBookDroidLibraryLoader.nativeGraphicsAvailable && SettingsManager.getAppSettings().useNativeGraphics) {
+            final BitmapRef bmp = BitmapManager.getBitmap("PDF page", width, height, XpsContext.NATIVE_BITMAP_CFG);
             if (renderPageBitmap(docHandle, pageHandle, mRect, matrixArray, bmp.getBitmap())) {
                 return bmp;
             } else {
@@ -110,14 +111,14 @@ public class XpsPage implements CodecPage {
                 return null;
             }
         }
-        
+
         final int[] bufferarray = new int[width * height];
         renderPage(docHandle, pageHandle, mRect, matrixArray, bufferarray);
-        BitmapRef b = BitmapManager.getBitmap("XPS page", width, height, Bitmap.Config.RGB_565);
+        BitmapRef b = BitmapManager.getBitmap("XPS page", width, height, XpsContext.BITMAP_CFG);
         b.getBitmap().setPixels(bufferarray, 0, width, 0, 0, width, height);
         return b;
     }
-    
+
     private static native void getBounds(long dochandle, long handle, float[] bounds);
 
     private static native void free(long dochandle, long handle);
@@ -126,7 +127,7 @@ public class XpsPage implements CodecPage {
 
     private static native void renderPage(long dochandle, long pagehandle, int[] viewboxarray, float[] matrixarray,
             int[] bufferarray);
-    
+
     private static native boolean renderPageBitmap(long dochandle, long pagehandle, int[] viewboxarray,
             float[] matrixarray, Bitmap bitmap);
 }

@@ -41,6 +41,12 @@
                 android:title="@string/pref_drawthread_priority_title" />
 
             <org.emdev.ui.preference.SwitchPreferenceEx
+                android:defaultValue="@string/pref_usenativegraphics_defvalue"
+                android:key="@string/pref_usenativegraphics_id"
+                android:summary="@string/pref_usenativegraphics_summary"
+                android:title="@string/pref_usenativegraphics_title" />
+
+            <org.emdev.ui.preference.SwitchPreferenceEx
                 android:defaultValue="@string/pref_hwa_enabled_defvalue"
                 android:key="@string/pref_hwa_enabled_id"
                 android:summary="@string/pref_hwa_enabled_summary"

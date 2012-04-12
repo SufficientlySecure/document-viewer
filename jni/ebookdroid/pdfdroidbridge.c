@@ -526,12 +526,6 @@ Java_org_ebookdroid_droids_pdf_codec_PdfPage_renderPage(JNIEnv *env, jobject thi
 /*JNI BITMAP API*/
 
 JNIEXPORT jboolean JNICALL
-Java_org_ebookdroid_droids_pdf_codec_PdfContext_isNativeGraphicsAvailable(JNIEnv *env, jobject this)
-{
-    return NativePresent();
-}
-
-JNIEXPORT jboolean JNICALL
 Java_org_ebookdroid_droids_pdf_codec_PdfPage_renderPageBitmap(JNIEnv *env, jobject this, jlong dochandle,
                                                               jlong pagehandle, jintArray viewboxarray,
                                                               jfloatArray matrixarray, jobject bitmap)

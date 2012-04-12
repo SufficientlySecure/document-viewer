@@ -45,6 +45,9 @@
         <item>@string/pref_thread_priority_highest</item>
     </string-array>
 
+    <string name="pref_usenativegraphics_id">usenativegraphics</string>
+    <string name="pref_usenativegraphics_defvalue">true</string>
+
     <string name="pref_hwa_enabled_id">hwa_enabled</string>
     <string name="pref_hwa_enabled_defvalue">false</string>
 

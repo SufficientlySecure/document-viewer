@@ -40,8 +40,6 @@ AndroidBitmap_getInfo NativeBitmap_getInfo;
 AndroidBitmap_lockPixels NativeBitmap_lockPixels;
 AndroidBitmap_unlockPixels NativeBitmap_unlockPixels;
 
-int NativePresent();
-
 #ifdef __cplusplus
 }
 #endif

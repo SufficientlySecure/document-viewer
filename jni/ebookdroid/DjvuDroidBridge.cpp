@@ -449,16 +449,6 @@ extern "C" jboolean Java_org_ebookdroid_droids_djvu_codec_DjvuPage_renderPage(JN
 
 /*JNI BITMAP API*/
 
-extern "C" jboolean Java_org_ebookdroid_droids_djvu_codec_DjvuPage_isNativeGraphicsAvailable(JNIEnv *env, jclass cls)
-{
-    return NativePresent();
-//#ifdef USE_JNI_BITMAP_API
-//	return 1;
-//#else
-//	return 0;
-//#endif
-}
-
 extern "C" jboolean Java_org_ebookdroid_droids_djvu_codec_DjvuPage_renderPageBitmap(JNIEnv *env, jclass cls,
                                                                                   jlong pageHangle, jint targetWidth,
                                                                                   jint targetHeight, jfloat pageSliceX,

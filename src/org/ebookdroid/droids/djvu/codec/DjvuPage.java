@@ -1,5 +1,6 @@
 package org.ebookdroid.droids.djvu.codec;
 
+import org.ebookdroid.EBookDroidLibraryLoader;
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.BitmapRef;
 import org.ebookdroid.common.settings.SettingsManager;
@@ -18,12 +19,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class DjvuPage implements CodecPage {
-
-    private static final boolean useNativeGraphics;
-
-    static {
-        useNativeGraphics = isNativeGraphicsAvailable();
-    }
 
     private long docHandle;
     private long pageHandle;
@@ -45,8 +40,6 @@ public class DjvuPage implements CodecPage {
 
     private static native boolean renderPage(long pageHandle, int targetWidth, int targetHeight, float pageSliceX,
             float pageSliceY, float pageSliceWidth, float pageSliceHeight, int[] buffer, int renderMode);
-
-    private static native boolean isNativeGraphicsAvailable();
 
     private static native boolean renderPageBitmap(long pageHandle, int targetWidth, int targetHeight,
             float pageSliceX, float pageSliceY, float pageSliceWidth, float pageSliceHeight, Bitmap bitmap,
@@ -70,7 +63,7 @@ public class DjvuPage implements CodecPage {
         BitmapRef bmp = null;
         if (width > 0 && height > 0) {
             bmp = BitmapManager.getBitmap("Djvu page", width, height, Bitmap.Config.RGB_565);
-            if (useNativeGraphics) {
+            if (EBookDroidLibraryLoader.nativeGraphicsAvailable && SettingsManager.getAppSettings().useNativeGraphics) {
                 if (renderPageBitmap(pageHandle, width, height, pageSliceBounds.left, pageSliceBounds.top,
                         pageSliceBounds.width(), pageSliceBounds.height(), bmp.getBitmap(), renderMode)) {
                     return bmp;

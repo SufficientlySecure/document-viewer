@@ -459,7 +459,8 @@ public abstract class AbstractViewController extends AbstractComponentController
         return false;
     }
 
-    protected final boolean processLinkTap(Page page, PageLink link, RectF pageBounds, RectF tapRect) {
+    protected final boolean processLinkTap(final Page page, final PageLink link, final RectF pageBounds,
+            final RectF tapRect) {
         final RectF linkRect = page.getLinkSourceRect(pageBounds, link);
         if (linkRect == null || !RectF.intersects(linkRect, tapRect)) {
             return false;
@@ -469,13 +470,24 @@ public abstract class AbstractViewController extends AbstractComponentController
             LCTX.d("Page link found under tap: " + link);
         }
 
-        if (link.targetPage >= 0) {
-            Page target = model.getPageByDocIndex(link.targetPage);
+        goToLink(link.targetPage, link.targetRect, true);
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.ui.viewer.IViewController#goToLink(int, android.graphics.RectF)
+     */
+    @Override
+    public void goToLink(final int pageDocIndex, final RectF targetRect, boolean addToHistory) {
+        if (pageDocIndex >= 0) {
+            Page target = model.getPageByDocIndex(pageDocIndex);
             float offsetX = 0;
             float offsetY = 0;
-            if (link.targetRect != null) {
-                offsetX = link.targetRect.left;
-                offsetY = link.targetRect.top;
+            if (targetRect != null) {
+                offsetX = targetRect.left;
+                offsetY = targetRect.top;
                 if (target.type == PageType.LEFT_PAGE && offsetX >= 0.5f) {
                     target = model.getPageObject(target.index.viewIndex + 1);
                     offsetX -= 0.5f;
@@ -485,10 +497,9 @@ public abstract class AbstractViewController extends AbstractComponentController
                 LCTX.d("Target page found: " + target);
             }
             if (target != null) {
-                base.jumpToPage(target.index.viewIndex, offsetX, offsetY);
+                base.jumpToPage(target.index.viewIndex, offsetX, offsetY, addToHistory);
             }
         }
-        return true;
     }
 
     protected class GestureListener extends SimpleOnGestureListener implements IMultiTouchListener {

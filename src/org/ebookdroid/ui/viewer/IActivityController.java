@@ -32,7 +32,7 @@ public interface IActivityController extends IActionController<ViewerActivity> {
 
     IViewController switchDocumentController();
 
-    void jumpToPage(int viewIndex, float offsetX, float offsetY);
+    void jumpToPage(int viewIndex, float offsetX, float offsetY, boolean addToHistory);
 
     static interface IBookLoadTask {
 

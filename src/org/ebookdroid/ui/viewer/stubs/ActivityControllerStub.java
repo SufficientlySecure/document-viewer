@@ -77,6 +77,6 @@ public class ActivityControllerStub extends ActionController<ViewerActivity> imp
     }
 
     @Override
-    public void jumpToPage(final int viewIndex, final float offsetX, final float offsetY) {
+    public void jumpToPage(final int viewIndex, final float offsetX, final float offsetY, final boolean addToHistory) {
     }
 }

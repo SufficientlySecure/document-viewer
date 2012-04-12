@@ -143,7 +143,13 @@ public class ViewContollerStub implements IViewController {
     public final void onDestroy() {
     }
 
-    public RectF calcPageBounds(final PageAlign pageAlign, final float pageAspectRatio, final int width, final int height) {
+    @Override
+    public RectF calcPageBounds(final PageAlign pageAlign, final float pageAspectRatio, final int width,
+            final int height) {
         return new RectF();
+    }
+
+    @Override
+    public void goToLink(final int pageDocIndex, final RectF targetRect, final boolean addToHistory) {
     }
 }

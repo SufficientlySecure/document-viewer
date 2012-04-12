@@ -380,23 +380,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
             if (link.targetPage < 1 || link.targetPage > pageCount) {
                 getManagedComponent().showToastText(2000, R.string.error_page_out_of_rande, pageCount);
             } else {
-                Page target = documentModel.getPageByDocIndex(link.targetPage - 1);
-                float offsetX = 0;
-                float offsetY = 0;
-                if (link.targetRect != null) {
-                    offsetX = link.targetRect.left;
-                    offsetY = link.targetRect.top;
-                    if (target.type == PageType.LEFT_PAGE && offsetX >= 0.5f) {
-                        target = documentModel.getPageObject(target.index.viewIndex + 1);
-                        offsetX -= 0.5f;
-                    }
-                }
-                if (LCTX.isDebugEnabled()) {
-                    LCTX.d("Target page found: " + target);
-                }
-                if (target != null) {
-                    jumpToPage(target.index.viewIndex, offsetX, offsetY);
-                }
+                getDocumentController().goToLink(link.targetPage - 1, link.targetRect, true);
             }
             return;
         }
@@ -414,8 +398,10 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
      * @see org.ebookdroid.ui.viewer.IActivityController#jumpToPage(int, float, float)
      */
     @Override
-    public void jumpToPage(final int viewIndex, final float offsetX, final float offsetY) {
-        history.update();
+    public void jumpToPage(final int viewIndex, final float offsetX, final float offsetY, boolean addToHistory) {
+        if (addToHistory) {
+            history.update();
+        }
         getDocumentController().goToPage(viewIndex, offsetX, offsetY);
     }
 

@@ -136,18 +136,20 @@ public class Page {
     }
 
     public RectF getLinkSourceRect(final RectF pageBounds, final PageLink link) {
-        final BookSettings bs = SettingsManager.getBookSettings();
-        RectF sourceRect = link.sourceRect;
-        if (sourceRect == null || bs == null) {
+        if (link == null || link.sourceRect == null) {
             return null;
         }
+        return getPageRegion(pageBounds, new RectF(link.sourceRect));
+    }
+
+    public RectF getPageRegion(final RectF pageBounds, final RectF sourceRect) {
+        final BookSettings bs = SettingsManager.getBookSettings();
         final RectF cb = nodes.root.croppedBounds;
-        if (bs.cropPages && cb != null) {
+        if (bs != null && bs.cropPages && cb != null) {
             final Matrix m = MatrixUtils.get();
             final RectF psb = nodes.root.pageSliceBounds;
             m.postTranslate(psb.left - cb.left, psb.top - cb.top);
             m.postScale(psb.width() / cb.width(), psb.height() / cb.height());
-            sourceRect = new RectF(link.sourceRect);
             m.mapRect(sourceRect);
         }
 

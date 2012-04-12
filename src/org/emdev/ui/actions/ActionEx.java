@@ -226,9 +226,11 @@ public class ActionEx implements Runnable, View.OnClickListener, View.OnLongClic
 
     @Override
     public boolean onEditorAction(final TextView textView, final int actionId, final KeyEvent keyEvent) {
-        if (actionId == EditorInfo.IME_NULL || actionId == EditorInfo.IME_ACTION_DONE) {
-            this.putValue(IActionController.VIEW_PROPERTY, textView);
-            run();
+        if ((actionId == EditorInfo.IME_NULL || actionId == EditorInfo.IME_ACTION_DONE)) {
+            if ((keyEvent == null || keyEvent.getAction() == KeyEvent.ACTION_UP)) {
+                this.putValue(IActionController.VIEW_PROPERTY, textView);
+                run();
+            }
             return true;
         }
         return false;

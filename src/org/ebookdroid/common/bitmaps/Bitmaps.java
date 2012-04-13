@@ -212,7 +212,7 @@ public class Bitmaps {
             }
 
             final Rect orig = canvas.getClipBounds();
-            canvas.clipRect(cr.left - vb.x, cr.top - vb.y, cr.right - vb.x, cr.bottom - vb.y, Op.REPLACE);
+            canvas.clipRect(cr.left - vb.x, cr.top - vb.y, cr.right - vb.x, cr.bottom - vb.y, Op.INTERSECT);
 
             final float offsetX = tr.left - vb.x;
             final float offsetY = tr.top - vb.y;

@@ -20,7 +20,7 @@ public interface IUIManager {
 
     void onDestroy(Activity activity);
 
-    void setFullScreenMode(Activity activity, boolean fullScreen);
+    void setFullScreenMode(Activity activity, View view, boolean fullScreen);
 
     void setTitleVisible(Activity activity, boolean visible);
 

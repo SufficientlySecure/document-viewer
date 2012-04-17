@@ -170,6 +170,12 @@ public class ViewerActivity extends AbstractActionActivity {
         return controller;
     }
 
+    public void onWindowFocusChanged(boolean hasFocus) {
+        if (hasFocus && this.view != null) {
+            IUIManager.instance.setFullScreenMode(this, this.view.getView(), SettingsManager.getAppSettings().fullScreen);
+        }
+    }
+
     @Override
     protected void onDestroy() {
         if (LCTX.isDebugEnabled()) {

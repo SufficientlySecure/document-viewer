@@ -39,14 +39,22 @@ public class UIManager4x implements IUIManager {
     }
 
     @Override
-    public void setFullScreenMode(final Activity activity, final boolean fullScreen) {
+    public void setFullScreenMode(final Activity activity, final View view, final boolean fullScreen) {
+        this.statusBarHidden = fullScreen;
         if (!isTabletUi(activity)) {
-            this.statusBarHidden = fullScreen;
             final Window w = activity.getWindow();
             if (fullScreen) {
                 w.setFlags(FLAG_FULLSCREEN, FLAG_FULLSCREEN);
             } else {
                 w.clearFlags(FLAG_FULLSCREEN);
+            }
+        } else {
+            if (view != null) {
+                if (fullScreen) {
+                    view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+                } else {
+                    view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+                }
             }
         }
     }

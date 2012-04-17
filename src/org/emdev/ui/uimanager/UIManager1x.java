@@ -29,7 +29,7 @@ public class UIManager1x implements IUIManager {
     }
 
     @Override
-    public void setFullScreenMode(final Activity activity, final boolean fullScreen) {
+    public void setFullScreenMode(final Activity activity, final View view, final boolean fullScreen) {
         this.fullScreen = fullScreen;
         Window w = activity.getWindow();
         if (fullScreen) {

@@ -1,5 +1,6 @@
 package org.ebookdroid.ui.library;
 
+import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.ui.library.adapters.BrowserAdapter;
@@ -98,9 +99,8 @@ public class BrowserActivity extends AbstractActionActivity implements IBrowserA
 
     @ActionMethod(ids = R.id.browserhome)
     public void goHome(final ActionEx action) {
-        final File sdcardPath = new File("/sdcard");
-        if (sdcardPath.exists()) {
-            setCurrentDir(sdcardPath);
+        if (EBookDroidApp.EXT_STORAGE.exists()) {
+            setCurrentDir(EBookDroidApp.EXT_STORAGE);
         } else {
             setCurrentDir(new File("/"));
         }

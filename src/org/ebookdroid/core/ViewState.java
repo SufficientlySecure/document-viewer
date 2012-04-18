@@ -6,6 +6,7 @@ import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.core.models.DocumentModel;
+import org.ebookdroid.ui.viewer.IView;
 import org.ebookdroid.ui.viewer.IViewController;
 
 import android.graphics.PointF;
@@ -98,6 +99,20 @@ public class ViewState {
 
     public final boolean isNodeVisible(final RectF tr) {
         return RectF.intersects(viewRect, tr);
+    }
+
+    public final PointF getPositionOnPage(final Page page) {
+        final PointF pos = new PointF();
+        final IView view = ctrl.getView();
+        if (view != null) {
+            final int left = view.getScrollX();
+            final int top = view.getScrollY();
+            final RectF cpBounds = getBounds(page);
+
+            pos.x = (left - cpBounds.left) / cpBounds.width();
+            pos.y = (top - cpBounds.top) / cpBounds.height();
+        }
+        return pos;
     }
 
     @Override

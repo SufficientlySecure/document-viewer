@@ -14,6 +14,8 @@ class DBAdapterV4 extends DBAdapterV3 {
 
     public static final int VERSION = 4;
 
+    public static final float OFFSET_FACTOR = 100000.0f;
+
     public static final String DB_BOOK_CREATE = "create table book_settings ("
     // Book file path
             + "book varchar(1024) primary key, "
@@ -167,9 +169,11 @@ class DBAdapterV4 extends DBAdapterV3 {
                     // Bookmark name
                     bs.name,
                     // Offset x
-                    (int) bs.offsetX,
+                    (int) (bs.offsetX * OFFSET_FACTOR),
                     // Offset y
-                    (int) bs.offsetY };
+                    (int) (bs.offsetY * OFFSET_FACTOR)
+            // ..
+            };
             db.execSQL(DB_BOOKMARK_STORE, args);
         }
 
@@ -183,7 +187,11 @@ class DBAdapterV4 extends DBAdapterV3 {
         final int docIndex = c.getInt(index++);
         final int viewIndex = c.getInt(index++);
         final String name = c.getString(index++);
-        return new Bookmark(name, new PageIndex(docIndex, viewIndex), 0, 0);
+
+        final float offsetX = c.getInt(index++) / OFFSET_FACTOR;
+        final float offsetY = c.getInt(index++) / OFFSET_FACTOR;
+
+        return new Bookmark(name, new PageIndex(docIndex, viewIndex), offsetX, offsetY);
     }
 
 }

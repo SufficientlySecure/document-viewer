@@ -10,7 +10,7 @@ public class Bookmark {
     public float offsetX;
     public float offsetY;
 
-    public Bookmark(final String name, final PageIndex page, int offsetX, int offsetY) {
+    public Bookmark(final String name, final PageIndex page, float offsetX, float offsetY) {
         this(false, name, page, offsetX, offsetY);
     }
 

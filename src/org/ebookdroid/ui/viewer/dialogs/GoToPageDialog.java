@@ -54,6 +54,7 @@ public class GoToPageDialog extends Dialog {
 
     final IActivityController base;
     BookmarkAdapter adapter;
+    Bookmark current;
     DialogController<GoToPageDialog> actions;
 
     public GoToPageDialog(final IActivityController base) {
@@ -134,6 +135,7 @@ public class GoToPageDialog extends Dialog {
         if (actualPage != null) {
             updateControls(actualPage.index.viewIndex, true);
         }
+        current = bookmark;
     }
 
     @ActionMethod(ids = R.id.actions_showDeleteBookmarkDlg)
@@ -214,9 +216,18 @@ public class GoToPageDialog extends Dialog {
         if (updateBar) {
             seekbar.setProgress(viewIndex);
         }
+
+        current = null;
     }
 
     private void navigateToPage() {
+        if (current != null) {
+            final Page actualPage = current.page.getActualPage(base.getDocumentModel(), adapter.bookSettings);
+            if (actualPage != null) {
+                base.jumpToPage(actualPage.index.viewIndex, current.offsetX, current.offsetY, true);
+            }
+            return;
+        }
         final EditText text = (EditText) findViewById(R.id.pageNumberTextEdit);
         int pageNumber = 1;
         try {
@@ -230,7 +241,7 @@ public class GoToPageDialog extends Dialog {
                     .show();
             return;
         }
-        base.getDocumentController().goToPage(pageNumber - 1);
+        base.jumpToPage(pageNumber - 1, 0, 0, true);
     }
 
     private final class BookmarkAdapter extends BaseAdapter {

@@ -18,8 +18,6 @@ class DBAdapterV5 extends DBAdapterV4 {
 
     public static final long F_CROP_PAGES = 1 << 1;
 
-    public static final float OFFSET_FACTOR = 100000.0f;
-
     public static final String DB_BOOK_CREATE = "create table book_settings ("
     // Book file path
             + "book varchar(1024) primary key, "

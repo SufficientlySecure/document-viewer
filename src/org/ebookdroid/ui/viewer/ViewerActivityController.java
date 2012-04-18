@@ -18,6 +18,7 @@ import org.ebookdroid.core.DecodeService;
 import org.ebookdroid.core.NavigationHistory;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.PageIndex;
+import org.ebookdroid.core.ViewState;
 import org.ebookdroid.core.codec.OutlineLink;
 import org.ebookdroid.core.events.CurrentPageListener;
 import org.ebookdroid.core.events.DecodingProgressListener;
@@ -34,6 +35,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.PointF;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
@@ -466,8 +468,13 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         final Editable value = action.getParameter("input");
         final String name = value.toString();
         final BookSettings bs = SettingsManager.getBookSettings();
-        bs.bookmarks.add(new Bookmark(name, getDocumentModel().getCurrentIndex(), 0, 0));
-        SettingsManager.storeBookSettings();
+        final Page page = getDocumentModel().getCurrentPageObject();
+        if (page != null) {
+            final ViewState state = new ViewState(getDocumentController());
+            final PointF pos = state.getPositionOnPage(page);
+            bs.bookmarks.add(new Bookmark(name, getDocumentModel().getCurrentIndex(), pos.x, pos.y));
+            SettingsManager.storeBookSettings();
+        }
     }
 
     @ActionMethod(ids = R.id.actions_keyBindings)

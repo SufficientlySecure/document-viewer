@@ -21,6 +21,7 @@ import org.ebookdroid.ui.viewer.IActivityController.IBookLoadTask;
 import org.ebookdroid.ui.viewer.IView;
 import org.ebookdroid.ui.viewer.IViewController;
 
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.FloatMath;
@@ -184,13 +185,8 @@ public abstract class AbstractViewController extends AbstractComponentController
     }
 
     protected final void updatePosition(final Page page, final ViewState viewState) {
-        final int left = getScrollX();
-        final int top = getScrollY();
-
-        final RectF cpBounds = viewState.getBounds(page);
-        final float offsetX = (left - cpBounds.left) / cpBounds.width();
-        final float offsetY = (top - cpBounds.top) / cpBounds.height();
-        SettingsManager.positionChanged(offsetX, offsetY);
+        final PointF pos = viewState.getPositionOnPage(page);
+        SettingsManager.positionChanged(pos.x, pos.y);
     }
 
     /**

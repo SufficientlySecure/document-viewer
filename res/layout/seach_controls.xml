@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="top"
+    android:orientation="horizontal" >
+
+    <ImageButton
+        android:id="@+id/search_controls_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="4dp"
+        android:background="@drawable/rounded_background"
+        android:src="@drawable/arrowright" />
+
+    <ImageButton
+        android:id="@+id/search_controls_prev"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="2dp"
+        android:layout_toLeftOf="@id/search_controls_next"
+        android:background="@drawable/rounded_background"
+        android:src="@drawable/arrowleft" />
+
+    <EditText
+        android:id="@+id/search_controls_edit"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/search_controls_prev"
+        android:layout_alignTop="@id/search_controls_prev"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="2dp"
+        android:layout_toLeftOf="@id/search_controls_prev"
+        android:background="@drawable/rounded_background"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textColor="@color/actionbar_white" />
+
+</RelativeLayout>

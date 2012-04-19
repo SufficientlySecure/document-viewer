@@ -87,6 +87,7 @@ public class EventDraw implements IEvent {
         final boolean res = process(page.nodes);
 
         drawPageLinks(page);
+        drawHighlights(page);
 
         return res;
     }
@@ -163,6 +164,21 @@ public class EventDraw implements IEvent {
                 p.setAlpha(128);
                 canvas.drawRect(rect, p);
             }
+        }
+    }
+
+    private void drawHighlights(final Page page) {
+        if (LengthUtils.isEmpty(page.highlights)) {
+            return;
+        }
+        final Paint p = new Paint();
+        for (int i = 0; i < page.highlights.size(); i++) {
+            final boolean current = page.currrentHighlight != null && i == page.currrentHighlight.intValue();
+            final RectF link = page.highlights.get(i);
+            final RectF rect = page.getPageRegion(pageBounds, new RectF(link));
+            rect.offset(-viewState.viewBase.x, -viewState.viewBase.y);
+            p.setColor(current ? 0x7F007F00 : 0x3F00FF00);
+            canvas.drawRect(rect, p);
         }
     }
 

@@ -6,6 +6,7 @@ import org.ebookdroid.common.bitmaps.RawBitmap;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.codec.PageLink;
+import org.ebookdroid.core.codec.PageTextBox;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -104,6 +105,16 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
 
     @Override
     public List<PageLink> getPageLinks() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<PageTextBox> getPageText() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<? extends RectF> searchText(String pattern) {
         return Collections.emptyList();
     }
 

@@ -16,7 +16,7 @@ public class SinglePageDefaultSlider extends AbstractPageSlider {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawForeground(org.ebookdroid.core.EventDraw)
      */
     @Override
@@ -41,7 +41,7 @@ public class SinglePageDefaultSlider extends AbstractPageSlider {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawBackground(org.ebookdroid.core.EventDraw)
      */
     @Override

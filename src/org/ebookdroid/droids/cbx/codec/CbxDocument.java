@@ -4,6 +4,8 @@ import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.core.codec.AbstractCodecDocument;
 import org.ebookdroid.core.codec.CodecPageInfo;
 
+import android.graphics.RectF;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -95,4 +97,10 @@ public class CbxDocument<ArchiveEntryType extends ArchiveEntry> extends Abstract
             }
         }
     }
+
+    @Override
+    public List<? extends RectF> searchText(final int pageNuber, final String pattern) throws DocSearchNotSupported {
+        return null;
+    }
+
 }

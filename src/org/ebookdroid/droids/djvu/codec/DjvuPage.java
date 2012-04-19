@@ -6,6 +6,7 @@ import org.ebookdroid.common.bitmaps.BitmapRef;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.PageLink;
+import org.ebookdroid.core.codec.PageTextBox;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -18,34 +19,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.emdev.utils.LengthUtils;
+
 public class DjvuPage implements CodecPage {
 
-    private long docHandle;
+    private final long contextHandle;
+    private final long docHandle;
+    private final int pageNo;
     private long pageHandle;
-    private int pageNo;
 
-    // TODO: remove all async operations
-
-    DjvuPage(final long docHandle, final long pageHandle, final int pageNo) {
+    DjvuPage(final long contextHandle, final long docHandle, final long pageHandle, final int pageNo) {
+        this.contextHandle = contextHandle;
         this.docHandle = docHandle;
         this.pageHandle = pageHandle;
         this.pageNo = pageNo;
     }
-
-    private static native int getWidth(long pageHandle);
-
-    private static native int getHeight(long pageHandle);
-
-    private static native boolean isDecodingDone(long pageHandle);
-
-    private static native boolean renderPage(long pageHandle, int targetWidth, int targetHeight, float pageSliceX,
-            float pageSliceY, float pageSliceWidth, float pageSliceHeight, int[] buffer, int renderMode);
-
-    private static native boolean renderPageBitmap(long pageHandle, int targetWidth, int targetHeight,
-            float pageSliceX, float pageSliceY, float pageSliceWidth, float pageSliceHeight, Bitmap bitmap,
-            int renderMode);
-
-    private static native void free(long pageHandle);
 
     @Override
     public int getWidth() {
@@ -112,17 +100,14 @@ public class DjvuPage implements CodecPage {
         if (links != null) {
             final float width = getWidth();
             final float height = getHeight();
-            for (PageLink link : links) {
-                link.sourceRect.left = link.sourceRect.left / width;
-                link.sourceRect.right = link.sourceRect.right / width;
-                link.sourceRect.top = link.sourceRect.top / height;
-                link.sourceRect.bottom = link.sourceRect.bottom / height;
+            for (final PageLink link : links) {
+                normalize(link.sourceRect, width, height);
 
                 if (link.url != null && link.url.startsWith("#")) {
                     try {
                         link.targetPage = Integer.parseInt(link.url.substring(1)) - 1;
                         link.url = null;
-                    } catch (NumberFormatException ex) {
+                    } catch (final NumberFormatException ex) {
                         ex.printStackTrace();
                     }
                 }
@@ -133,5 +118,69 @@ public class DjvuPage implements CodecPage {
         return Collections.emptyList();
     }
 
+    @Override
+    public List<PageTextBox> getPageText() {
+        final List<PageTextBox> list = getPageText(docHandle, pageNo, contextHandle, null);
+        if (LengthUtils.isNotEmpty(list)) {
+            final float width = getWidth();
+            final float height = getHeight();
+            for (final PageTextBox ptb : list) {
+                normalizeTextBox(ptb, width, height);
+                // System.out.println("" + ptb);
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public List<? extends RectF> searchText(final String pattern) {
+        final List<PageTextBox> list = getPageText(docHandle, pageNo, contextHandle, pattern.toLowerCase());
+        if (LengthUtils.isNotEmpty(list)) {
+            final float width = getWidth();
+            final float height = getHeight();
+            for (final PageTextBox ptb : list) {
+                normalizeTextBox(ptb, width, height);
+                // System.out.println("" + ptb);
+            }
+        }
+        return list;
+    }
+
+    static void normalize(final RectF r, final float width, final float height) {
+        r.left = r.left / width;
+        r.right = r.right / width;
+        r.top = r.top / height;
+        r.bottom = r.bottom / height;
+    }
+
+    static void normalizeTextBox(final PageTextBox r, final float width, final float height) {
+        final float left = r.left / width;
+        final float right = r.right / width;
+        final float top = 1 - r.top / height;
+        final float bottom = 1 - r.bottom / height;
+        r.left = Math.min(left, right);
+        r.right = Math.max(left, right);
+        r.top = Math.min(top, bottom);
+        r.bottom = Math.max(top, bottom);
+    }
+
+    private static native int getWidth(long pageHandle);
+
+    private static native int getHeight(long pageHandle);
+
+    private static native boolean isDecodingDone(long pageHandle);
+
+    private static native boolean renderPage(long pageHandle, int targetWidth, int targetHeight, float pageSliceX,
+            float pageSliceY, float pageSliceWidth, float pageSliceHeight, int[] buffer, int renderMode);
+
+    private static native boolean renderPageBitmap(long pageHandle, int targetWidth, int targetHeight,
+            float pageSliceX, float pageSliceY, float pageSliceWidth, float pageSliceHeight, Bitmap bitmap,
+            int renderMode);
+
+    private static native void free(long pageHandle);
+
     private native static ArrayList<PageLink> getPageLinks(long docHandle, int pageNo);
+
+    native static List<PageTextBox> getPageText(long docHandle, int pageNo, long contextHandle, String pattern);
+
 }

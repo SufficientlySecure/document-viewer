@@ -14,6 +14,7 @@
 /*JNI BITMAP API */
 
 #include <nativebitmap.h>
+#include <javahelpers.h>
 
 void ThrowError(JNIEnv* env, const char* msg)
 {
@@ -348,6 +349,123 @@ extern "C" jobject Java_org_ebookdroid_droids_djvu_codec_DjvuPage_getPageLinks(J
     return djvu_links_get_links(env, (ddjvu_document_t*) docHandle, pageNumber);
 }
 
+class SearchHelper
+{
+    public:
+    bool valid;
+    ArrayListHelper arr;
+    StringHelper str;
+    PageTextBoxHelper box;
+
+    public:
+    SearchHelper(JNIEnv *env) : arr(env), str(env), box(env)
+    {
+        valid = arr.valid && str.valid && box.valid;
+    }
+};
+
+void djvu_get_djvu_words(SearchHelper& h, jobject list, miniexp_t expr, jstring pattern)
+{
+    int coords[4];
+
+    if (!miniexp_consp(expr))
+    {
+        return;
+    }
+
+    miniexp_t head = miniexp_car(expr);
+    expr = miniexp_cdr(expr);
+    if (!miniexp_symbolp(head))
+    {
+        return;
+    }
+
+    int i;
+    for (i = 0; i < 4 && miniexp_consp(expr); i++)
+    {
+        head = miniexp_car(expr);
+        expr = miniexp_cdr(expr);
+
+        if (!miniexp_numberp(head))
+        {
+            return;
+        }
+        coords[i] = miniexp_to_int(head);
+    }
+
+    while (miniexp_consp(expr))
+    {
+        head = miniexp_car(expr);
+
+        if (miniexp_stringp(head))
+        {
+            const char* text = miniexp_to_str(head);
+
+            // DEBUG_PRINT("%d, %d, %d, %d: %s", coords[0], coords[1], coords[2], coords[3], text);
+
+            bool add = !pattern;
+            jstring txt = h.str.toString(text);
+            if (pattern)
+            {
+                jstring ltxt = h.str.toLowerCase(txt);
+                add = h.str.indexOf(ltxt, pattern) >= 0;
+                h.str.release(ltxt);
+            }
+            if (add)
+            {
+                // add to list
+                jobject ptb = h.box.create();
+                h.box.setRect(ptb, coords);
+                h.box.setText(ptb, txt);
+                h.arr.add(list, ptb);
+            }
+            else
+            {
+                h.str.release(txt);
+            }
+        }
+        else if (miniexp_consp(head))
+        {
+            djvu_get_djvu_words(h, list, head, pattern);
+        }
+
+        expr = miniexp_cdr(expr);
+    }
+}
+
+extern "C" jobject Java_org_ebookdroid_droids_djvu_codec_DjvuPage_getPageText(JNIEnv *jenv, jclass cls,
+                                                                                 jlong docHandle, jint pageNumber, jlong contextHandle, jstring pattern)
+{
+    miniexp_t r = miniexp_nil;
+
+    while ((r = ddjvu_document_get_pagetext((ddjvu_document_t*) docHandle, pageNumber, "word")) == miniexp_dummy)
+    {
+        Java_org_ebookdroid_droids_djvu_codec_DjvuContext_handleMessage(jenv, cls, contextHandle);
+    }
+
+    if (r == miniexp_nil || !miniexp_consp(r))
+    {
+        // DEBUG_PRINT("getPageLinks(%d): no text on page", pageNumber);
+        return NULL;
+    }
+
+    // DEBUG_PRINT("getPageLinks(%d): text on page found", pageNumber);
+
+    SearchHelper h(jenv);
+
+    if (!h.valid)
+    {
+        DEBUG_PRINT("getPageLinks(%d): JNI helper initialization failed", pageNumber);
+        return NULL;
+    }
+
+    jobject arrayList = h.arr.create();
+
+    djvu_get_djvu_words(h, arrayList, r, pattern);
+
+    return arrayList;
+}
+
 extern "C" jint Java_org_ebookdroid_droids_djvu_codec_DjvuDocument_getPageInfo(JNIEnv *env, jclass cls, jlong docHandle,
                                                                              jint pageNumber, jlong contextHandle,
                                                                              jobject cpi)
@@ -361,28 +479,16 @@ extern "C" jint Java_org_ebookdroid_droids_djvu_codec_DjvuDocument_getPageInfo(J
     while ((r = ddjvu_document_get_pageinfo((ddjvu_document_t*) docHandle, pageNumber, &info)) < DDJVU_JOB_OK)
         Java_org_ebookdroid_droids_djvu_codec_DjvuContext_handleMessage(env, cls, contextHandle);
 
-    clazz = env->GetObjectClass(cpi);
-    if (0 == clazz)
+    CodecPageInfoHelper h(env);
+    if (!h.valid)
     {
-        return (-1);
+        return -1;
     }
-    fid = env->GetFieldID(clazz, "width", "I");
 
-    // This next line is where the power is hidden. Directly change
-    // even private fields within java objects. Nasty!
-    env->SetIntField(cpi, fid, info.width);
-
-    fid = env->GetFieldID(clazz, "height", "I");
-    env->SetIntField(cpi, fid, info.height);
-
-    fid = env->GetFieldID(clazz, "dpi", "I");
-    env->SetIntField(cpi, fid, info.dpi);
-
-    fid = env->GetFieldID(clazz, "rotation", "I");
-    env->SetIntField(cpi, fid, info.rotation);
-
-    fid = env->GetFieldID(clazz, "version", "I");
-    env->SetIntField(cpi, fid, info.version);
+    h.setSize(cpi, info.width, info.height);
+    h.setDpi(cpi, info.dpi);
+    h.setRotation(cpi, info.rotation);
+    h.setVersion(cpi, info.version);
 
     return 0;
 }

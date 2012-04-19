@@ -10,6 +10,10 @@
 		android:alphabeticShortcut="g"
 		android:title="@string/menu_goto_page" />
 	<item
+		android:id="@+id/mainmenu_search"
+		android:alphabeticShortcut="r"
+		android:title="Search" />
+	<item
 		android:id="@+id/mainmenu_outline"
 		android:alphabeticShortcut="o"
 		android:title="@string/menu_outline" />

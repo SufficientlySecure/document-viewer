@@ -7,6 +7,7 @@ import org.ebookdroid.core.codec.OutlineLink;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.RectF;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
@@ -25,6 +26,7 @@ import java.util.TreeMap;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.emdev.utils.LengthUtils;
 import org.emdev.utils.archives.zip.ZipArchive;
 import org.emdev.utils.archives.zip.ZipArchiveEntry;
 import org.xml.sax.InputSource;
@@ -146,12 +148,12 @@ public class FB2Document implements CodecDocument {
         } catch (final Exception e) {
             throw new RuntimeException("FB2 document can not be opened: " + e.getMessage(), e);
         } finally {
-            for (Closeable r : resources) {
+            for (final Closeable r : resources) {
                 try {
                     if (r != null) {
                         r.close();
                     }
-                } catch (IOException e) {
+                } catch (final IOException e) {
                 }
             }
             resources.clear();
@@ -170,13 +172,13 @@ public class FB2Document implements CodecDocument {
         lastPage.appendLine(line);
         final List<FB2Line> footnotes = line.getFootNotes();
         if (footnotes != null) {
-            Iterator<FB2Line> iterator = footnotes.iterator();
+            final Iterator<FB2Line> iterator = footnotes.iterator();
             if (lastPage.noteLines.size() > 0 && iterator.hasNext()) {
                 // Skip rule for non first note on page
                 iterator.next();
             }
             while (iterator.hasNext()) {
-                FB2Line l = iterator.next();
+                final FB2Line l = iterator.next();
                 lastPage = FB2Page.getLastPage(pages);
                 if (lastPage.contentHeight + 2 * FB2Page.MARGIN_Y + l.getTotalHeight() > FB2Page.PAGE_HEIGHT) {
                     commitPage();
@@ -284,7 +286,7 @@ public class FB2Document implements CodecDocument {
     public void publishElement(final AbstractFB2LineElement le) {
         FB2Line line = FB2Line.getLastLine(paragraphLines);
         final FB2LineWhiteSpace space = RenderingStyle.getTextPaint(line.getHeight()).space;
-        float remaining = FB2Page.PAGE_WIDTH - (line.width + 2 * FB2Page.MARGIN_X + space.width);
+        final float remaining = FB2Page.PAGE_WIDTH - (line.width + 2 * FB2Page.MARGIN_X + space.width);
         if (le.width < remaining) {
             if (line.hasNonWhiteSpaces() && insertSpace) {
                 line.append(space);
@@ -292,7 +294,7 @@ public class FB2Document implements CodecDocument {
             line.append(le);
             insertSpace = true;
         } else {
-            AbstractFB2LineElement[] splitted = le.split(remaining);
+            final AbstractFB2LineElement[] splitted = le.split(remaining);
             if (splitted != null && splitted.length > 1) {
                 if (line.hasNonWhiteSpaces() && insertSpace) {
                     line.append(space);
@@ -305,7 +307,7 @@ public class FB2Document implements CodecDocument {
             line = new FB2Line();
             paragraphLines.add(line);
 
-            line.append(splitted  == null ? le : splitted[splitted.length - 1]);
+            line.append(splitted == null ? le : splitted[splitted.length - 1]);
             insertSpace = true;
         }
     }
@@ -349,4 +351,48 @@ public class FB2Document implements CodecDocument {
         outline.add(new OutlineLink(title.title, "#" + pages.size(), title.level));
     }
 
+    @Override
+    public List<? extends RectF> searchText(final int pageNuber, final String pattern) throws DocSearchNotSupported {
+        if (LengthUtils.isEmpty(pattern)) {
+            return null;
+        }
+
+        final FB2Page page = (FB2Page) getPage(pageNuber);
+        if (page == null) {
+            return null;
+        }
+
+        final List<RectF> rects = new ArrayList<RectF>();
+
+        final char[] charArray = pattern.toCharArray();
+        final float y = searchText(page.lines, charArray, rects, FB2Page.MARGIN_Y);
+
+        searchText(page.noteLines, charArray, rects, y);
+
+        return rects;
+    }
+
+    private float searchText(final ArrayList<FB2Line> lines, final char[] pattern, final List<RectF> rects, float y) {
+        for (int i = 0, n = lines.size(); i < n; i++) {
+            final FB2Line line = lines.get(i);
+            final float top = y;
+            final float bottom = y + line.getHeight();
+            line.ensureJustification();
+            float x = FB2Page.MARGIN_X;
+            for (int i1 = 0, n1 = line.elements.size(); i1 < n1; i1++) {
+                final AbstractFB2LineElement e = line.elements.get(i1);
+                final float w = e.width + (e instanceof FB2LineWhiteSpace ? line.spaceWidth : 0);
+                if (e instanceof FB2TextElement) {
+                    final FB2TextElement textElement = (FB2TextElement) e;
+                    if (textElement.indexOf(pattern) != -1) {
+                        rects.add(new RectF(x / FB2Page.PAGE_WIDTH, top / FB2Page.PAGE_HEIGHT, (x + w)
+                                / FB2Page.PAGE_WIDTH, bottom / FB2Page.PAGE_HEIGHT));
+                    }
+                }
+                x += w;
+            }
+            y = bottom;
+        }
+        return y;
+    }
 }

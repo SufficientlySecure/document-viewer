@@ -7,12 +7,14 @@ import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.core.codec.AbstractCodecContext;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.PageLink;
+import org.ebookdroid.core.codec.PageTextBox;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.emdev.utils.MatrixUtils;
@@ -130,6 +132,16 @@ public class PdfPage implements CodecPage {
     @Override
     public List<PageLink> getPageLinks() {
         return PdfLinks.getPageLinks(docHandle, pageHandle, pageBounds);
+    }
+
+    @Override
+    public List<PageTextBox> getPageText() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<? extends RectF> searchText(String pattern) {
+        return Collections.emptyList();
     }
 
     private static native void getBounds(long dochandle, long handle, float[] bounds);

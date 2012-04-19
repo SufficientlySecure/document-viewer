@@ -9,14 +9,14 @@ import org.emdev.utils.LengthUtils;
 
 public class FB2Line {
 
-    private final ArrayList<AbstractFB2LineElement> elements = new ArrayList<AbstractFB2LineElement>();
+    final ArrayList<AbstractFB2LineElement> elements = new ArrayList<AbstractFB2LineElement>();
     private int height;
     float width = 0;
     private boolean hasNonWhiteSpaces = false;
     private List<FB2Line> footnotes;
     private boolean committed;
     private int sizeableCount;
-    private float spaceWidth;
+    float spaceWidth;
     private boolean justified;
     private JustificationMode justification = JustificationMode.Justify;
 
@@ -49,7 +49,7 @@ public class FB2Line {
     }
 
     public void render(final Canvas c, final int y, float left, float right) {
-        applyJustification();
+        ensureJustification();
         float x = FB2Page.MARGIN_X;
         for (int i = 0, n = elements.size(); i < n; i++) {
             final AbstractFB2LineElement e = elements.get(i);
@@ -69,7 +69,7 @@ public class FB2Line {
         return fb2Line;
     }
 
-    private void applyJustification() {
+    public void ensureJustification() {
         if (!justified) {
             switch (justification) {
                 case Center:

@@ -15,6 +15,12 @@
 		android:icon="@drawable/gotopage"
 		android:showAsAction="ifRoom" />
 	<item
+		android:id="@+id/mainmenu_search"
+		android:alphabeticShortcut="r"
+		android:title="Search"
+		android:icon="@drawable/zoomfit"
+		android:showAsAction="ifRoom" />
+		<item
 		android:id="@+id/mainmenu_outline"
 		android:alphabeticShortcut="o"
 		android:title="@string/menu_outline"

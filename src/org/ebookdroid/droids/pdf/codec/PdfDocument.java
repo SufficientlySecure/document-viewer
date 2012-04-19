@@ -78,4 +78,8 @@ public class PdfDocument extends AbstractCodecDocument {
 
     private static native int getPageCount(long handle);
 
+    @Override
+    public List<? extends RectF> searchText(final int pageNuber, final String pattern) throws DocSearchNotSupported {
+        return null;
+    }
 }

@@ -5,6 +5,7 @@ import org.ebookdroid.common.bitmaps.BitmapRef;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.codec.PageLink;
+import org.ebookdroid.core.codec.PageTextBox;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -51,6 +52,16 @@ public class FB2Page implements CodecPage {
 
     @Override
     public List<PageLink> getPageLinks() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<PageTextBox> getPageText() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<? extends RectF> searchText(String pattern) {
         return Collections.emptyList();
     }
 

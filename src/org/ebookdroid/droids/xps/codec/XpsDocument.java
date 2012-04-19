@@ -5,6 +5,8 @@ import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.codec.OutlineLink;
 
+import android.graphics.RectF;
+
 import java.util.List;
 
 public class XpsDocument extends AbstractCodecDocument {
@@ -58,4 +60,8 @@ public class XpsDocument extends AbstractCodecDocument {
 
     private static native int getPageCount(long handle);
 
+    @Override
+    public List<? extends RectF> searchText(final int pageNuber, final String pattern) throws DocSearchNotSupported {
+        return null;
+    }
 }

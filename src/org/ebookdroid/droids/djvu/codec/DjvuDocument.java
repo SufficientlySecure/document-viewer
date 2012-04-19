@@ -3,8 +3,13 @@ package org.ebookdroid.droids.djvu.codec;
 import org.ebookdroid.core.codec.AbstractCodecDocument;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.codec.OutlineLink;
+import org.ebookdroid.core.codec.PageTextBox;
+
+import android.graphics.RectF;
 
 import java.util.List;
+
+import org.emdev.utils.LengthUtils;
 
 public class DjvuDocument extends AbstractCodecDocument {
 
@@ -20,7 +25,7 @@ public class DjvuDocument extends AbstractCodecDocument {
 
     @Override
     public DjvuPage getPage(final int pageNumber) {
-        return new DjvuPage(documentHandle, getPage(documentHandle, pageNumber), pageNumber);
+        return new DjvuPage(context.getContextHandle(), documentHandle, getPage(documentHandle, pageNumber), pageNumber);
     }
 
     @Override
@@ -53,5 +58,16 @@ public class DjvuDocument extends AbstractCodecDocument {
     private native static int getPageCount(long docHandle);
 
     private native static void free(long pageHandle);
-
+    
+    @Override
+    public List<? extends RectF> searchText(final int pageNuber, final String pattern) throws DocSearchNotSupported {
+        final List<PageTextBox> list = DjvuPage.getPageText(documentHandle, pageNuber, context.getContextHandle(), pattern.toLowerCase());
+        if (LengthUtils.isNotEmpty(list)) {
+            CodecPageInfo cpi = getPageInfo(pageNuber);
+            for (final PageTextBox ptb : list) {
+                DjvuPage.normalizeTextBox(ptb, cpi.width, cpi.height);
+            }
+        }
+        return list;
+    }
 }

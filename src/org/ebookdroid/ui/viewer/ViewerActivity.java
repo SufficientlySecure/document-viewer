@@ -8,6 +8,7 @@ import org.ebookdroid.common.settings.types.ToastPosition;
 import org.ebookdroid.common.touch.TouchManagerView;
 import org.ebookdroid.ui.viewer.dialogs.GoToPageDialog;
 import org.ebookdroid.ui.viewer.views.PageViewZoomControls;
+import org.ebookdroid.ui.viewer.views.SearchControls;
 import org.ebookdroid.ui.viewer.views.ViewEffects;
 
 import android.app.Dialog;
@@ -60,6 +61,8 @@ public class ViewerActivity extends AbstractActionActivity {
     private Toast zoomToast;
 
     private PageViewZoomControls zoomControls;
+
+    private SearchControls searchControls;
 
     private FrameLayout frameLayout;
 
@@ -130,6 +133,7 @@ public class ViewerActivity extends AbstractActionActivity {
 
         frameLayout.addView(view.getView());
         frameLayout.addView(getZoomControls());
+        frameLayout.addView(getSearchControls());
         frameLayout.addView(getTouchView());
 
         this.controller.afterCreate();
@@ -258,6 +262,13 @@ public class ViewerActivity extends AbstractActionActivity {
             zoomControls.setGravity(Gravity.RIGHT | Gravity.BOTTOM);
         }
         return zoomControls;
+    }
+
+    public SearchControls getSearchControls() {
+        if (searchControls == null) {
+            searchControls = new SearchControls(this);
+        }
+        return searchControls;
     }
 
     @Override

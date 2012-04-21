@@ -2,6 +2,8 @@ package org.ebookdroid.ui.library;
 
 import org.ebookdroid.R;
 import org.ebookdroid.common.log.LogContext;
+import org.ebookdroid.ui.library.adapters.BookNode;
+import org.ebookdroid.ui.library.adapters.BookShelfAdapter;
 import org.ebookdroid.ui.library.adapters.BooksAdapter;
 import org.ebookdroid.ui.library.adapters.FileListAdapter;
 import org.ebookdroid.ui.library.adapters.RecentAdapter;
@@ -10,9 +12,17 @@ import org.ebookdroid.ui.library.views.LibraryView;
 import org.ebookdroid.ui.library.views.RecentBooksView;
 
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 import android.widget.ImageView;
 import android.widget.ViewFlipper;
 
@@ -43,6 +53,8 @@ public class RecentActivity extends AbstractActionActivity {
     private ViewFlipper viewflipper;
     private ImageView libraryButton;
     private BookcaseView bookcaseView;
+    private RecentBooksView recentBooksView;
+    private LibraryView libraryView;
 
     private RecentActivityController controller;
 
@@ -121,6 +133,46 @@ public class RecentActivity extends AbstractActionActivity {
     }
 
     @Override
+    public void onCreateContextMenu(final ContextMenu menu, final View v, final ContextMenuInfo menuInfo) {
+        Object source = null;
+
+        if (menuInfo instanceof AdapterContextMenuInfo) {
+            final AbsListView list = (AbsListView) v;
+            final AdapterContextMenuInfo mi = (AdapterContextMenuInfo) menuInfo;
+            source = list.getAdapter().getItem(mi.position);
+        } else if (menuInfo instanceof ExpandableListContextMenuInfo) {
+            final ExpandableListView list = (ExpandableListView) v;
+            final ExpandableListAdapter adapter = list.getExpandableListAdapter();
+            final ExpandableListContextMenuInfo mi = (ExpandableListContextMenuInfo) menuInfo;
+            final long pp = mi.packedPosition;
+            final int group = ExpandableListView.getPackedPositionGroup(pp);
+            final int child = ExpandableListView.getPackedPositionChild(pp);
+            if (child >= 0) {
+                source = ((ExpandableListAdapter) adapter).getChild(group, child);
+            } else {
+                source = ((ExpandableListAdapter) adapter).getGroup(group);
+            }
+        }
+
+        if (source instanceof BookNode) {
+            final BookNode node = (BookNode) source;
+
+            final MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.book_menu, menu);
+
+            menu.setHeaderTitle(node.name);
+            menu.findItem(R.id.bookmenu_recentgroup).setVisible(node.settings != null);
+        } else if (source instanceof BookShelfAdapter) {
+            BookShelfAdapter a = (BookShelfAdapter) source;
+
+            final MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.library_menu, menu);
+
+            menu.setHeaderTitle(a.name);
+        }
+    }
+
+    @Override
     public boolean onKeyDown(final int keyCode, final KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             System.exit(0);
@@ -170,18 +222,29 @@ public class RecentActivity extends AbstractActionActivity {
     }
 
     void showBookcase(final BooksAdapter bookshelfAdapter, final RecentAdapter recentAdapter) {
-        viewflipper.removeAllViews();
         if (bookcaseView == null) {
             bookcaseView = new BookcaseView(controller, bookshelfAdapter);
         }
+        viewflipper.removeAllViews();
         viewflipper.addView(bookcaseView, 0);
+
         libraryButton.setImageResource(R.drawable.actionbar_shelf);
     }
 
     void showLibrary(final FileListAdapter libraryAdapter, final RecentAdapter recentAdapter) {
+        if (recentBooksView == null) {
+            recentBooksView = new RecentBooksView(controller, recentAdapter);
+            registerForContextMenu(recentBooksView);
+        }
+        if (libraryView == null) {
+            libraryView = new LibraryView(controller, libraryAdapter);
+            registerForContextMenu(libraryView);
+        }
+
         viewflipper.removeAllViews();
-        viewflipper.addView(new RecentBooksView(controller, recentAdapter), VIEW_RECENT);
-        viewflipper.addView(new LibraryView(controller, libraryAdapter), VIEW_LIBRARY);
+        viewflipper.addView(recentBooksView, VIEW_RECENT);
+        viewflipper.addView(libraryView, VIEW_LIBRARY);
+
         libraryButton.setImageResource(R.drawable.actionbar_library);
     }
 }

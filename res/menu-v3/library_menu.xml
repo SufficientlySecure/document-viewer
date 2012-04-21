@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/librarymenu_properties"
+        android:title="Show folder properties"/>
+    <item
+        android:id="@+id/librarymenu_exclude"
+        android:title="Exclude from library"/>
+    <item
+        android:id="@+id/librarymenu_filegroup"
+        android:title="Books operations...">
+        <menu>
+            <item
+                android:id="@+id/librarymenu_copyall"
+                android:title="Copy all books to..."/>
+            <item
+                android:id="@+id/librarymenu_moveall"
+                android:title="Move all books to..."/>
+            <item
+                android:id="@+id/librarymenu_deleteall"
+                android:title="Delete all books"/>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/librarymenu_foldergroup"
+        android:title="Folder operations...">
+        <menu>
+            <item
+                android:id="@+id/librarymenu_copy"
+                android:title="Copy folder to..."/>
+            <item
+                android:id="@+id/librarymenu_move"
+                android:title="Move folder to..."/>
+            <item
+                android:id="@+id/librarymenu_delete"
+                android:title="Delete folder"/>
+        </menu>
+    </item>
+
+</menu>

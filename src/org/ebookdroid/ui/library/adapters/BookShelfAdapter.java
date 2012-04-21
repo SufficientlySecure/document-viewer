@@ -21,9 +21,9 @@ public class BookShelfAdapter extends BaseAdapter {
     private final IBrowserActivity base;
     private final IdentityHashMap<DataSetObserver, DataSetObserver> observers = new IdentityHashMap<DataSetObserver, DataSetObserver>();
 
-    final int id;
-    final String name;
-    final String path;
+    public final int id;
+    public final String name;
+    public final String path;
 
     final List<BookNode> nodes = new ArrayList<BookNode>();
 

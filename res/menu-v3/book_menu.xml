@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/bookmenu_open"
+        android:title="Open book"/>
+    <item
+        android:id="@+id/bookmenu_settings"
+        android:title="Show book settings"/>
+    <item
+        android:id="@+id/bookmenu_recentgroup"
+        android:title="Clear recent data...">
+        <menu>
+            <item
+                android:id="@+id/bookmenu_removefromrecent"
+                android:title="Exclude from recents"/>
+            <item
+                android:id="@+id/bookmenu_cleardata"
+                android:title="Clear cached data"/>
+            <item
+                android:id="@+id/bookmenu_deletesettings"
+                android:title="Delete settings"/>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/bookmenu_filegroup"
+        android:title="File operations...">
+        <menu>
+            <item
+                android:id="@+id/bookmenu_copy"
+                android:title="Copy book to..."/>
+            <item
+                android:id="@+id/bookmenu_move"
+                android:title="Move book to..."/>
+            <item
+                android:id="@+id/bookmenu_delete"
+                android:title="Delete book"/>
+        </menu>
+    </item>
+
+</menu>

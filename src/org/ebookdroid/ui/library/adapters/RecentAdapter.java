@@ -13,8 +13,9 @@ import android.widget.TextView;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.emdev.ui.adapters.BaseViewHolder;
 import org.emdev.utils.FileUtils;
@@ -24,7 +25,8 @@ public class RecentAdapter extends BaseAdapter {
 
     final IBrowserActivity base;
 
-    private List<BookSettings> books = Collections.emptyList();
+    private final List<BookNode> books = new ArrayList<BookNode>();
+    private final Map<String, BookNode> nodes = new HashMap<String, BookNode>();
 
     public RecentAdapter(IBrowserActivity base) {
         this.base = base;
@@ -36,7 +38,7 @@ public class RecentAdapter extends BaseAdapter {
     }
 
     @Override
-    public BookSettings getItem(final int i) {
+    public BookNode getItem(final int i) {
         return books.get(i);
     }
 
@@ -45,18 +47,21 @@ public class RecentAdapter extends BaseAdapter {
         return i;
     }
 
+    public BookNode getNode(final String path) {
+        return nodes.get(path);
+    }
+
     @Override
     public View getView(final int i, final View view, final ViewGroup parent) {
         final ViewHolder holder = BaseViewHolder.getOrCreateViewHolder(ViewHolder.class, R.layout.recentitem, view,
                 parent);
 
-        final BookSettings bs = books.get(i);
-        final File file = new File(bs.fileName);
+        final BookNode node = books.get(i);
+        final File file = new File(node.path);
 
         holder.name.setText(file.getName());
 
-        // holder.imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        base.loadThumbnail(file.getPath(), holder.imageView, R.drawable.book);
+        base.loadThumbnail(node.path, holder.imageView, R.drawable.book);
 
         holder.info.setText(FileUtils.getFileDate(file.lastModified()));
         holder.fileSize.setText(FileUtils.getFileSize(file.length()));
@@ -65,22 +70,22 @@ public class RecentAdapter extends BaseAdapter {
     }
 
     public void clearBooks() {
-        this.books = Collections.emptyList();
-        notifyDataSetInvalidated();
+        this.books.clear();
+        this.nodes.clear();
+        notifyDataSetChanged();
     }
 
     public void setBooks(final Collection<BookSettings> books, final FileExtensionFilter filter) {
-        if (filter != null) {
-            this.books = new ArrayList<BookSettings>(books.size());
-            for (final BookSettings bs : books) {
-                if (filter.accept(bs.fileName)) {
-                    this.books.add(bs);
-                }
+        this.books.clear();
+        this.nodes.clear();
+        for (final BookSettings bs : books) {
+            if (filter == null || filter.accept(bs.fileName)) {
+                BookNode node = new BookNode(bs);
+                this.books.add(node);
+                nodes.put(node.path, node);
             }
-        } else {
-            this.books = new ArrayList<BookSettings>(books);
         }
-        notifyDataSetInvalidated();
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends BaseViewHolder {

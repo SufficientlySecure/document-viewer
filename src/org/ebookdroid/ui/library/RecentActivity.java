@@ -56,24 +56,26 @@ public class RecentActivity extends AbstractActionActivity {
         return controller;
     }
 
-   @Override
+    @Override
+    @SuppressWarnings("deprecation")
     public void onCreate(final Bundle savedInstanceState) {
         if (LCTX.isDebugEnabled()) {
             LCTX.d("onCreate()");
         }
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.recent);
+        libraryButton = (ImageView) findViewById(R.id.recent_showlibrary);
+        viewflipper = (ViewFlipper) findViewById(R.id.recentflip);
+
         final Object last = this.getLastNonConfigurationInstance();
         if (last instanceof RecentActivityController) {
             this.controller = (RecentActivityController) last;
+            controller.onRestore(this);
         } else {
             this.controller = new RecentActivityController(this);
+            controller.onCreate();
         }
-
-        setContentView(R.layout.recent);
-
-        libraryButton = (ImageView) findViewById(R.id.recent_showlibrary);
-        viewflipper = (ViewFlipper) findViewById(R.id.recentflip);
 
         if (AndroidVersion.VERSION == 3) {
             setActionForView(R.id.recent_showlibrary);
@@ -82,8 +84,6 @@ public class RecentActivity extends AbstractActionActivity {
             setActionForView(R.id.ShelfCaption);
             setActionForView(R.id.ShelfRightButton);
         }
-
-        controller.onCreate();
     }
 
     @Override
@@ -160,27 +160,28 @@ public class RecentActivity extends AbstractActionActivity {
     void showNextBookshelf() {
         if (bookcaseView != null) {
             bookcaseView.nextList();
-            ;
         }
     }
 
     void showPrevBookshelf() {
         if (bookcaseView != null) {
             bookcaseView.prevList();
-            ;
         }
     }
 
     void showBookcase(final BooksAdapter bookshelfAdapter, final RecentAdapter recentAdapter) {
         viewflipper.removeAllViews();
-        libraryButton.setImageResource(R.drawable.actionbar_shelf);
-        bookcaseView = new BookcaseView(controller, bookshelfAdapter);
+        if (bookcaseView == null) {
+            bookcaseView = new BookcaseView(controller, bookshelfAdapter);
+        }
         viewflipper.addView(bookcaseView, 0);
+        libraryButton.setImageResource(R.drawable.actionbar_shelf);
     }
 
     void showLibrary(final FileListAdapter libraryAdapter, final RecentAdapter recentAdapter) {
-        libraryButton.setImageResource(R.drawable.actionbar_library);
+        viewflipper.removeAllViews();
         viewflipper.addView(new RecentBooksView(controller, recentAdapter), VIEW_RECENT);
         viewflipper.addView(new LibraryView(controller, libraryAdapter), VIEW_LIBRARY);
+        libraryButton.setImageResource(R.drawable.actionbar_library);
     }
 }

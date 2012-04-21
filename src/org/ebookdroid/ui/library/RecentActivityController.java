@@ -78,13 +78,14 @@ public class RecentActivityController extends ActionController<RecentActivity> i
 
     public RecentActivityController(RecentActivity activity) {
         super(activity);
-        LCTX = LogContext.ROOT.lctx(this.getClass().getSimpleName(), true).lctx("" + SEQ.getAndIncrement(), true);
+        LCTX = LogContext.ROOT.lctx(this.getClass().getSimpleName(), true).lctx("" + SEQ.getAndIncrement());
     }
 
     public void onCreate() {
         if (LCTX.isDebugEnabled()) {
-            LCTX.d("onCreate()");
+            LCTX.d("onCreate(): " + getManagedComponent());
         }
+
         recentAdapter = new RecentAdapter(this);
         bookshelfAdapter = new BooksAdapter(this, recentAdapter);
         libraryAdapter = new FileListAdapter(bookshelfAdapter);
@@ -111,6 +112,18 @@ public class RecentActivityController extends ActionController<RecentActivity> i
                 return;
             }
         }
+
+        changeLibraryView(recent != null ? RecentActivity.VIEW_RECENT : RecentActivity.VIEW_LIBRARY);
+    }
+
+    public void onRestore(RecentActivity activity) {
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("onRestore(): " + activity);
+        }
+        setManagedComponent(activity);
+
+        SettingsManager.applyAppSettingsChanges(null, SettingsManager.getAppSettings());
+        final BookSettings recent = SettingsManager.getRecentBook();
         changeLibraryView(recent != null ? RecentActivity.VIEW_RECENT : RecentActivity.VIEW_LIBRARY);
     }
 
@@ -130,8 +143,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
                 if (SettingsManager.getRecentBook() == null) {
                     changeLibraryView(RecentActivity.VIEW_LIBRARY);
                 } else {
-                    recentAdapter
-                            .setBooks(SettingsManager.getAllBooksSettings().values(), appSettings.allowedFileTypes);
+                    recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), appSettings.allowedFileTypes);
                 }
             }
         }

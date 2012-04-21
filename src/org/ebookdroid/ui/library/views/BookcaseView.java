@@ -52,6 +52,8 @@ public class BookcaseView extends LinearLayout {
                 shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentItem()));
             }
         });
+
+        shelfCaption.setText(BookcaseView.this.adapter.getListName(0));
     }
 
     public void setCurrentList(Integer item) {

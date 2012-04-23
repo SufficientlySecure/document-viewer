@@ -16,8 +16,9 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
 {
     __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid",
         "initializing EBookDroid JNI library based on MuPDF and DjVuLibre");
-    fz_accelerate();
-    // atexit(closeHandler);
+#ifndef __mips__
+     atexit(closeHandler);
+#endif
     NativeBitmap_getInfo = NULL;
     NativeBitmap_lockPixels = NULL;
     NativeBitmap_unlockPixels = NULL;

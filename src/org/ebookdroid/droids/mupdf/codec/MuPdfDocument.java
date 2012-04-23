@@ -1,4 +1,4 @@
-package org.ebookdroid.droids.pdf.codec;
+package org.ebookdroid.droids.mupdf.codec;
 
 import org.ebookdroid.core.codec.AbstractCodecDocument;
 import org.ebookdroid.core.codec.CodecPage;
@@ -9,24 +9,27 @@ import android.graphics.RectF;
 
 import java.util.List;
 
-public class PdfDocument extends AbstractCodecDocument {
+public class MuPdfDocument extends AbstractCodecDocument {
 
+    public static final int FORMAT_PDF = 0;
+    public static final int FORMAT_XPS = 1;
+    
     // TODO: Must be configurable
     private static final int STOREMEMORY = 64 << 20;
 
-    PdfDocument(final PdfContext context, final String fname, final String pwd) {
-        super(context, open(STOREMEMORY, fname, pwd));
+    MuPdfDocument(final MuPdfContext context, int format, final String fname, final String pwd) {
+        super(context, open(STOREMEMORY, format, fname, pwd));
     }
 
     @Override
     public List<OutlineLink> getOutline() {
-        final PdfOutline ou = new PdfOutline();
+        final MuPdfOutline ou = new MuPdfOutline();
         return ou.getOutline(documentHandle);
     }
 
     @Override
     public CodecPage getPage(final int pageNumber) {
-        return PdfPage.createPage(documentHandle, pageNumber + 1);
+        return MuPdfPage.createPage(documentHandle, pageNumber + 1);
     }
 
     @Override
@@ -43,8 +46,8 @@ public class PdfDocument extends AbstractCodecDocument {
         } else {
             // Check rotation
             info.rotation = (360 + info.rotation) % 360;
-            info.width = (PdfContext.getWidthInPixels(info.width));
-            info.height = (PdfContext.getHeightInPixels(info.height));
+            //info.width = (MuPdfContext.getWidthInPixels(info.width));
+            //info.height = (MuPdfContext.getHeightInPixels(info.height));
             return info;
         }
     }
@@ -56,7 +59,7 @@ public class PdfDocument extends AbstractCodecDocument {
 
     static void normalizeLinkTargetRect(final long docHandle, final int targetPage, final RectF targetRect) {
         final CodecPageInfo cpi = new CodecPageInfo();
-        PdfDocument.getPageInfo(docHandle, targetPage, cpi);
+        MuPdfDocument.getPageInfo(docHandle, targetPage, cpi);
 
         final float left = targetRect.left;
         final float top = targetRect.top;
@@ -72,14 +75,16 @@ public class PdfDocument extends AbstractCodecDocument {
 
     native static int getPageInfo(long docHandle, int pageNumber, CodecPageInfo cpi);
 
-    private static native long open(int storememory, String fname, String pwd);
+    private static native long open(int storememory, int format, String fname, String pwd);
 
     private static native void free(long handle);
 
     private static native int getPageCount(long handle);
 
     @Override
-    public List<? extends RectF> searchText(final int pageNuber, final String pattern) throws DocSearchNotSupported {
+    public List<? extends RectF> searchText(int pageNuber, String pattern) throws DocSearchNotSupported {
+        // TODO Auto-generated method stub
         return null;
     }
+
 }

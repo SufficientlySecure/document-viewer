@@ -1,4 +1,4 @@
-#include "fitz.h"
+#include "fitz-internal.h"
 
 /* TODO: check if this works with 16bpp images */
 
@@ -34,7 +34,6 @@ static inline int getcomponent(unsigned char *line, int x, int bpc)
 	}
 	return 0;
 }
-
 
 static inline void putcomponent(unsigned char *buf, int x, int bpc, int value)
 {

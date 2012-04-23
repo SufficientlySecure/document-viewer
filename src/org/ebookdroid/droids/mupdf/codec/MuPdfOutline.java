@@ -1,4 +1,4 @@
-package org.ebookdroid.droids.pdf.codec;
+package org.ebookdroid.droids.mupdf.codec;
 
 import org.ebookdroid.core.codec.OutlineLink;
 
@@ -7,7 +7,7 @@ import android.graphics.RectF;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PdfOutline {
+public class MuPdfOutline {
 
     private static final float[] temp = new float[4];
 
@@ -34,7 +34,7 @@ public class PdfOutline {
                         outlineLink.targetRect = new RectF();
                         outlineLink.targetRect.left = temp[0];
                         outlineLink.targetRect.top = temp[1];
-                        PdfDocument.normalizeLinkTargetRect(docHandle, outlineLink.targetPage, outlineLink.targetRect);
+                        MuPdfDocument.normalizeLinkTargetRect(docHandle, outlineLink.targetPage, outlineLink.targetRect);
                     }
                 }
                 ls.add(outlineLink);

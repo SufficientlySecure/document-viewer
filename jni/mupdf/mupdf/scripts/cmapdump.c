@@ -6,8 +6,8 @@
 /* We never want to build memento versions of the cmapdump util */
 #undef MEMENTO
 
-#include "fitz.h"
-#include "mupdf.h"
+#include "fitz-internal.h"
+#include "mupdf-internal.h"
 
 #include "../fitz/base_context.c"
 #include "../fitz/base_error.c"
@@ -49,7 +49,7 @@ main(int argc, char **argv)
 		return 1;
 	}
 
-	ctx = fz_new_context(NULL, FZ_STORE_UNLIMITED);
+	ctx = fz_new_context(NULL, NULL, FZ_STORE_UNLIMITED);
 	if (!ctx)
 	{
 		fprintf(stderr, "cannot initialise context\n");
@@ -85,7 +85,8 @@ main(int argc, char **argv)
 		clean(name);
 
 		fi = fz_open_file(ctx, argv[i]);
-		cmap = pdf_parse_cmap(fi);
+		fz_lock_stream(fi);
+		cmap = pdf_load_cmap(ctx, fi);
 		fz_close(fi);
 
 		fprintf(fo, "\n/* %s */\n\n", cmap->cmap_name);
@@ -164,8 +165,13 @@ void fz_new_font_context(fz_context *ctx)
 {
 }
 
-void fz_free_font_context(fz_context *ctx)
+void fz_drop_font_context(fz_context *ctx)
 {
+}
+
+fz_font_context *fz_keep_font_context(fz_context *ctx)
+{
+	return NULL;
 }
 
 void fz_new_aa_context(fz_context *ctx)
@@ -173,6 +179,10 @@ void fz_new_aa_context(fz_context *ctx)
 }
 
 void fz_free_aa_context(fz_context *ctx)
+{
+}
+
+void fz_copy_aa_context(fz_context *dst, fz_context *src)
 {
 }
 
@@ -189,11 +199,11 @@ void fz_new_store_context(fz_context *ctx, unsigned int max)
 {
 }
 
-void fz_free_store_context(fz_context *ctx)
+void fz_drop_store_context(fz_context *ctx)
 {
 }
 
-fz_store *fz_store_keep(fz_context *ctx)
+fz_store *fz_keep_store_context(fz_context *ctx)
 {
 	return NULL;
 }
@@ -203,6 +213,15 @@ int fz_store_scavenge(fz_context *ctx, unsigned int size, int *phase)
 	return 0;
 }
 
-void fz_free_glyph_cache_context(fz_context *ctx)
+void fz_new_glyph_cache_context(fz_context *ctx)
 {
+}
+
+void fz_drop_glyph_cache_context(fz_context *ctx)
+{
+}
+
+fz_glyph_cache *fz_keep_glyph_cache(fz_context *ctx)
+{
+	return NULL;
 }

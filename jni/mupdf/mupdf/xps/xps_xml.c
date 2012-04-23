@@ -1,5 +1,4 @@
-#include "fitz.h"
-#include "muxps.h"
+#include "muxps-internal.h"
 
 struct attribute
 {
@@ -95,6 +94,12 @@ void xml_free_element(fz_context *ctx, struct element *item)
 	}
 }
 
+void xml_detach(xml_element *node)
+{
+	if (node->up)
+		node->up->down = NULL;
+}
+
 static int xml_parse_entity(int *c, char *a)
 {
 	char *b;
@@ -185,7 +190,7 @@ static void xml_emit_att_value(struct parser *parser, char *a, char *b)
 	while (a < b) {
 		if (*a == '&') {
 			a += xml_parse_entity(&c, a);
-			s += runetochar(s, &c);
+			s += fz_runetochar(s, c);
 		}
 		else {
 			*s++ = *a++;
@@ -340,7 +345,7 @@ static char *convert_to_utf8(fz_context *doc, unsigned char *s, int n)
 		dst = d = fz_malloc(doc, n * 2);
 		while (s + 1 < e) {
 			c = s[0] << 8 | s[1];
-			d += runetochar(d, &c);
+			d += fz_runetochar(d, c);
 			s += 2;
 		}
 		*d = 0;
@@ -351,7 +356,7 @@ static char *convert_to_utf8(fz_context *doc, unsigned char *s, int n)
 		dst = d = fz_malloc(doc, n * 2);
 		while (s + 1 < e) {
 			c = s[0] | s[1] << 8;
-			d += runetochar(d, &c);
+			d += fz_runetochar(d, c);
 			s += 2;
 		}
 		*d = 0;

@@ -106,6 +106,7 @@ MY_JBIG2DEC_SRC_FILES := \
 MY_OPENJPEG_SRC_FILES := \
 	openjpeg/bio.c \
 	openjpeg/cio.c \
+	openjpeg/cidx_manager.c \
 	openjpeg/dwt.c \
 	openjpeg/event.c \
 	openjpeg/image.c \
@@ -116,12 +117,16 @@ MY_OPENJPEG_SRC_FILES := \
 	openjpeg/mct.c \
 	openjpeg/mqc.c \
 	openjpeg/openjpeg.c \
+	openjpeg/phix_manager.c \
 	openjpeg/pi.c \
+	openjpeg/ppix_manager.c \
 	openjpeg/raw.c \
 	openjpeg/t1.c \
 	openjpeg/t2.c \
 	openjpeg/tcd.c \
-	openjpeg/tgt.c
+	openjpeg/tgt.c \
+	openjpeg/thix_manager.c \
+	openjpeg/tpix_manager.c
 
 
 # mupdf
@@ -152,6 +157,7 @@ MY_MUPDF_C_INCLUDES := \
 MY_MUPDF_CFLAGS := -DNOCJK
 
 MY_MUPDF_SRC_FILES := \
+	mupdf/pdf/base_object.c \
 	mupdf/pdf/pdf_annot.c \
 	mupdf/pdf/pdf_cmap.c \
 	mupdf/pdf/pdf_cmap_load.c \
@@ -174,6 +180,7 @@ MY_MUPDF_SRC_FILES := \
 	mupdf/pdf/pdf_pattern.c \
 	mupdf/pdf/pdf_repair.c \
 	mupdf/pdf/pdf_shade.c \
+	mupdf/pdf/pdf_store.c \
 	mupdf/pdf/pdf_stream.c \
 	mupdf/pdf/pdf_type3.c \
 	mupdf/pdf/pdf_unicode.c \
@@ -191,7 +198,6 @@ MY_MUPDF_SRC_FILES := \
 	mupdf/xps/xps_util.c \
 	mupdf/xps/xps_xml.c \
 	mupdf/xps/xps_zip.c \
-	mupdf/draw/arch_port.c \
 	mupdf/draw/draw_affine.c \
 	mupdf/draw/draw_blend.c \
 	mupdf/draw/draw_device.c \
@@ -205,16 +211,16 @@ MY_MUPDF_SRC_FILES := \
 	mupdf/fitz/base_context.c \
 	mupdf/fitz/base_error.c \
 	mupdf/fitz/base_hash.c \
-	mupdf/fitz/base_link.c \
 	mupdf/fitz/base_memory.c \
-	mupdf/fitz/base_object.c \
 	mupdf/fitz/base_string.c \
 	mupdf/fitz/base_geometry.c \
 	mupdf/fitz/crypt_aes.c \
 	mupdf/fitz/crypt_arc4.c \
 	mupdf/fitz/crypt_md5.c \
 	mupdf/fitz/crypt_sha2.c \
+	mupdf/fitz/doc_document.c \
 	mupdf/fitz/doc_outline.c \
+	mupdf/fitz/doc_link.c \
 	mupdf/fitz/stm_buffer.c \
 	mupdf/fitz/stm_open.c \
 	mupdf/fitz/stm_read.c \
@@ -226,6 +232,8 @@ MY_MUPDF_SRC_FILES := \
 	mupdf/fitz/filt_predict.c \
 	mupdf/fitz/filt_jbig2d.c \
 	mupdf/fitz/image_png.c \
+	mupdf/fitz/image_save.c \
+	mupdf/fitz/image_md5.c \
 	mupdf/fitz/image_jpeg.c \
 	mupdf/fitz/image_jpx.c \
 	mupdf/fitz/image_tiff.c \

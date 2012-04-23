@@ -1,5 +1,13 @@
-#include "fitz.h"
-#include "muxps.h"
+#include "muxps-internal.h"
+
+#define REL_START_PART \
+	"http://schemas.microsoft.com/xps/2005/06/fixedrepresentation"
+#define REL_DOC_STRUCTURE \
+	"http://schemas.microsoft.com/xps/2005/06/documentstructure"
+#define REL_REQUIRED_RESOURCE \
+	"http://schemas.microsoft.com/xps/2005/06/required-resource"
+#define REL_REQUIRED_RESOURCE_RECURSIVE \
+	"http://schemas.microsoft.com/xps/2005/06/required-resource#recursive"
 
 static void
 xps_rels_for_part(char *buf, char *name, int buflen)
@@ -21,7 +29,7 @@ xps_rels_for_part(char *buf, char *name, int buflen)
  */
 
 void
-xps_debug_page_list(xps_document *doc)
+xps_print_page_list(xps_document *doc)
 {
 	xps_fixdoc *fixdoc = doc->first_fixdoc;
 	xps_page *page = doc->first_page;
@@ -69,6 +77,86 @@ xps_add_fixed_document(xps_document *doc, char *name)
 	}
 }
 
+void
+xps_add_link(xps_document *doc, fz_rect area, char *base_uri, char *target_uri)
+{
+	int len;
+	char *buffer = NULL;
+	char *uri;
+	xps_target *target;
+	fz_link_dest dest;
+	fz_link *link;
+	fz_context *ctx = doc->ctx;
+
+	fz_var(buffer);
+
+	if (doc->current_page == NULL || doc->current_page->links_resolved)
+		return;
+
+	fz_try(ctx)
+	{
+		len = 2 + (base_uri ? strlen(base_uri) : 0) +
+			(target_uri ? strlen(target_uri) : 0);
+		buffer = fz_malloc(doc->ctx, len);
+		xps_resolve_url(buffer, base_uri, target_uri, len);
+		if (xps_url_is_remote(buffer))
+		{
+			dest.kind = FZ_LINK_URI;
+			dest.ld.uri.is_map = 0;
+			dest.ld.uri.uri = buffer;
+			buffer = NULL;
+		}
+		else
+		{
+			uri = buffer;
+
+			/* FIXME: This won't work for remote docs */
+			/* Skip until we find the fragment marker */
+			while (*uri && *uri != '#')
+				uri++;
+			if (*uri == '#')
+				uri++;
+
+			for (target = doc->target; target; target = target->next)
+				if (!strcmp(target->name, uri))
+					break;
+
+			if (target == NULL)
+				break;
+
+			dest.kind = FZ_LINK_GOTO;
+			dest.ld.gotor.flags = 0;
+			dest.ld.gotor.lt.x = 0;
+			dest.ld.gotor.lt.y = 0;
+			dest.ld.gotor.rb.x = 0;
+			dest.ld.gotor.rb.y = 0;
+			dest.ld.gotor.page = target->page;
+			dest.ld.gotor.file_spec = NULL;
+			dest.ld.gotor.new_window = 0;
+		}
+
+		link = fz_new_link(doc->ctx, area, dest);
+		link->next = doc->current_page->links;
+		doc->current_page->links = link;
+	}
+	fz_always(ctx)
+	{
+		fz_free(doc->ctx, buffer);
+	}
+	fz_catch(ctx)
+	{
+		fz_rethrow(ctx);
+	}
+}
+
+fz_link *
+xps_load_links(xps_document *doc, xps_page *page)
+{
+	if (!page->links_resolved)
+		fz_warn(doc->ctx, "xps_load_links before page has been executed!");
+	return fz_keep_link(doc->ctx, page->links);
+}
+
 static void
 xps_add_fixed_page(xps_document *doc, char *name, int width, int height)
 {
@@ -84,6 +172,8 @@ xps_add_fixed_page(xps_document *doc, char *name, int width, int height)
 	page->number = doc->page_count++;
 	page->width = width;
 	page->height = height;
+	page->links = NULL;
+	page->links_resolved = 0;
 	page->root = NULL;
 	page->next = NULL;
 
@@ -111,7 +201,7 @@ xps_add_link_target(xps_document *doc, char *name)
 }
 
 int
-xps_find_link_target(xps_document *doc, char *target_uri)
+xps_lookup_link_target(xps_document *doc, char *target_uri)
 {
 	xps_target *target;
 	char *needle = strrchr(target_uri, '#');
@@ -143,6 +233,7 @@ xps_free_fixed_pages(xps_document *doc)
 	{
 		xps_page *next = page->next;
 		xps_free_page(doc, page);
+		fz_drop_link(doc->ctx, page->links);
 		fz_free(doc->ctx, page->name);
 		fz_free(doc->ctx, page);
 		page = next;
@@ -191,11 +282,13 @@ xps_parse_metadata_imp(xps_document *doc, xml_element *item, xps_fixdoc *fixdoc)
 			if (target && type)
 			{
 				char tgtbuf[1024];
-				xps_absolute_path(tgtbuf, doc->base_uri, target, sizeof tgtbuf);
+				xps_resolve_url(tgtbuf, doc->base_uri, target, sizeof tgtbuf);
 				if (!strcmp(type, REL_START_PART))
 					doc->start_part = fz_strdup(doc->ctx, tgtbuf);
 				if (!strcmp(type, REL_DOC_STRUCTURE) && fixdoc)
 					fixdoc->outline = fz_strdup(doc->ctx, tgtbuf);
+				if (!xml_att(item, "Id"))
+					fz_warn(doc->ctx, "missing relationship id for %s", target);
 			}
 		}
 
@@ -205,7 +298,7 @@ xps_parse_metadata_imp(xps_document *doc, xml_element *item, xps_fixdoc *fixdoc)
 			if (source)
 			{
 				char srcbuf[1024];
-				xps_absolute_path(srcbuf, doc->base_uri, source, sizeof srcbuf);
+				xps_resolve_url(srcbuf, doc->base_uri, source, sizeof srcbuf);
 				xps_add_fixed_document(doc, srcbuf);
 			}
 		}
@@ -220,7 +313,7 @@ xps_parse_metadata_imp(xps_document *doc, xml_element *item, xps_fixdoc *fixdoc)
 			if (source)
 			{
 				char srcbuf[1024];
-				xps_absolute_path(srcbuf, doc->base_uri, source, sizeof srcbuf);
+				xps_resolve_url(srcbuf, doc->base_uri, source, sizeof srcbuf);
 				xps_add_fixed_page(doc, srcbuf, width, height);
 			}
 		}
@@ -326,17 +419,41 @@ xps_load_fixed_page(xps_document *doc, xps_page *page)
 	part = xps_read_part(doc, page->name);
 	root = xml_parse_document(doc->ctx, part->data, part->size);
 	xps_free_part(doc, part);
+	if (!root)
+		fz_throw(doc->ctx, "FixedPage missing root element");
+
+	if (!strcmp(xml_tag(root), "mc:AlternateContent"))
+	{
+		xml_element *node = xps_lookup_alternate_content(root);
+		if (!node)
+		{
+			xml_free_element(doc->ctx, root);
+			fz_throw(doc->ctx, "FixedPage missing alternate root element");
+		}
+		xml_detach(node);
+		xml_free_element(doc->ctx, root);
+		root = node;
+	}
 
 	if (strcmp(xml_tag(root), "FixedPage"))
-		fz_throw(doc->ctx, "expected FixedPage element (found %s)", xml_tag(root));
+	{
+		xml_free_element(doc->ctx, root);
+		fz_throw(doc->ctx, "expected FixedPage element");
+	}
 
 	width_att = xml_att(root, "Width");
 	if (!width_att)
+	{
+		xml_free_element(doc->ctx, root);
 		fz_throw(doc->ctx, "FixedPage missing required attribute: Width");
+	}
 
 	height_att = xml_att(root, "Height");
 	if (!height_att)
+	{
+		xml_free_element(doc->ctx, root);
 		fz_throw(doc->ctx, "FixedPage missing required attribute: Height");
+	}
 
 	page->width = atoi(width_att);
 	page->height = atoi(height_att);
@@ -353,6 +470,7 @@ xps_load_page(xps_document *doc, int number)
 	{
 		if (n == number)
 		{
+			doc->current_page = page;
 			if (!page->root)
 				xps_load_fixed_page(doc, page);
 			return page;

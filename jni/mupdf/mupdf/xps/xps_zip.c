@@ -1,7 +1,17 @@
-#include "fitz.h"
-#include "muxps.h"
+#include "muxps-internal.h"
 
 #include <zlib.h>
+
+#define ZIP_LOCAL_FILE_SIG 0x04034b50
+#define ZIP_DATA_DESC_SIG 0x08074b50
+#define ZIP_CENTRAL_DIRECTORY_SIG 0x02014b50
+#define ZIP_END_OF_CENTRAL_DIRECTORY_SIG 0x06054b50
+
+#define ZIP64_END_OF_CENTRAL_DIRECTORY_LOCATOR_SIG 0x07064b50
+#define ZIP64_END_OF_CENTRAL_DIRECTORY_SIG 0x06064b50
+#define ZIP64_EXTRA_FIELD_SIG 0x0001
+
+static void xps_init_document(xps_document *doc);
 
 xps_part *
 xps_new_part(xps_document *doc, char *name, int size)
@@ -40,12 +50,6 @@ static inline int getlong(fz_stream *file)
 	int d = fz_read_byte(file);
 	return a | b << 8 | c << 16 | d << 24;
 }
-
-/* SumatraPDF: support ZIP64 extension */
-
-#define ZIP64_END_OF_CENTRAL_DIRECTORY_LOCATOR_SIG 0x07064b50
-#define ZIP64_END_OF_CENTRAL_DIRECTORY_SIG 0x06064b50
-#define ZIP64_EXTRA_FIELD_SIG 0x0001
 
 static inline int getlong64(fz_stream *file)
 {
@@ -102,12 +106,17 @@ xps_read_zip_entry(xps_document *doc, xps_entry *ent, unsigned char *outbuf)
 	int version, general, method;
 	int namelength, extralength;
 	int code;
+	fz_context *ctx = doc->ctx;
 
+	fz_lock(ctx, FZ_LOCK_FILE);
 	fz_seek(doc->file, ent->offset, 0);
 
 	sig = getlong(doc->file);
 	if (sig != ZIP_LOCAL_FILE_SIG)
+	{
+		fz_unlock(ctx, FZ_LOCK_FILE);
 		fz_throw(doc->ctx, "wrong zip local file signature (0x%x)", sig);
+	}
 
 	version = getshort(doc->file);
 	general = getshort(doc->file);
@@ -144,7 +153,7 @@ xps_read_zip_entry(xps_document *doc, xps_entry *ent, unsigned char *outbuf)
 		code = inflateInit2(&stream, -15);
 		if (code != Z_OK)
 		{
-			/* SumatraPDF: fix memory leak */
+			fz_unlock(ctx, FZ_LOCK_FILE);
 			fz_free(doc->ctx, inbuf);
 			fz_throw(doc->ctx, "zlib inflateInit2 error: %s", stream.msg);
 		}
@@ -152,14 +161,14 @@ xps_read_zip_entry(xps_document *doc, xps_entry *ent, unsigned char *outbuf)
 		if (code != Z_STREAM_END)
 		{
 			inflateEnd(&stream);
-			/* SumatraPDF: fix memory leak */
+			fz_unlock(ctx, FZ_LOCK_FILE);
 			fz_free(doc->ctx, inbuf);
 			fz_throw(doc->ctx, "zlib inflate error: %s", stream.msg);
 		}
 		code = inflateEnd(&stream);
 		if (code != Z_OK)
 		{
-			/* SumatraPDF: fix memory leak */
+			fz_unlock(ctx, FZ_LOCK_FILE);
 			fz_free(doc->ctx, inbuf);
 			fz_throw(doc->ctx, "zlib inflateEnd error: %s", stream.msg);
 		}
@@ -168,8 +177,10 @@ xps_read_zip_entry(xps_document *doc, xps_entry *ent, unsigned char *outbuf)
 	}
 	else
 	{
+		fz_unlock(ctx, FZ_LOCK_FILE);
 		fz_throw(doc->ctx, "unknown compression method (%d)", method);
 	}
+	fz_unlock(ctx, FZ_LOCK_FILE);
 }
 
 /*
@@ -197,7 +208,7 @@ xps_read_zip_dir(xps_document *doc, int start_offset)
 	(void) getlong(doc->file); /* size of central directory */
 	offset = getlong(doc->file); /* offset to central directory */
 
-	/* SumatraPDF: support ZIP64 extension */
+	/* ZIP64 */
 	if (count == 0xFFFF)
 	{
 		fz_seek(doc->file, start_offset - 20, 0);
@@ -232,8 +243,6 @@ xps_read_zip_dir(xps_document *doc, int start_offset)
 	}
 
 	doc->zip_table = fz_malloc_array(doc->ctx, count, sizeof(xps_entry));
-	/* SumatraPDF: don't crash in xps_free_context in case the above
-	   malloc fails or an exception is thrown in the loop below */
 	memset(doc->zip_table, 0, count * sizeof(xps_entry));
 	doc->zip_count = count;
 
@@ -266,7 +275,6 @@ xps_read_zip_dir(xps_document *doc, int start_offset)
 		fz_read(doc->file, (unsigned char*)doc->zip_table[i].name, namesize);
 		doc->zip_table[i].name[namesize] = 0;
 
-		/* SumatraPDF: support ZIP64 extension */
 		while (metasize > 0)
 		{
 			int type = getshort(doc->file);
@@ -296,7 +304,9 @@ xps_find_and_read_zip_dir(xps_document *doc)
 	unsigned char buf[512];
 	int file_size, back, maxback;
 	int i, n;
+	fz_context *ctx = doc->ctx;
 
+	fz_lock(ctx, FZ_LOCK_FILE);
 	fz_seek(doc->file, 0, SEEK_END);
 	file_size = fz_tell(doc->file);
 
@@ -312,6 +322,7 @@ xps_find_and_read_zip_dir(xps_document *doc)
 			if (!memcmp(buf + i, "PK\5\6", 4))
 			{
 				xps_read_zip_dir(doc, file_size - back + i);
+				fz_unlock(ctx, FZ_LOCK_FILE);
 				return;
 			}
 		}
@@ -319,6 +330,7 @@ xps_find_and_read_zip_dir(xps_document *doc)
 		back += sizeof buf - 4;
 	}
 
+	fz_unlock(ctx, FZ_LOCK_FILE);
 	fz_throw(doc->ctx, "cannot find end of central directory");
 }
 
@@ -344,10 +356,9 @@ xps_read_zip_part(xps_document *doc, char *partname)
 	if (ent)
 	{
 		part = xps_new_part(doc, partname, ent->usize);
-		/* SumatraPDF: fix memory leak */
 		fz_try(doc->ctx)
 		{
-		xps_read_zip_entry(doc, ent, part->data);
+			xps_read_zip_entry(doc, ent, part->data);
 		}
 		fz_catch(doc->ctx)
 		{
@@ -390,10 +401,9 @@ xps_read_zip_part(xps_document *doc, char *partname)
 			else
 				sprintf(buf, "%s/[%d].last.piece", name, i);
 			ent = xps_find_zip_entry(doc, buf);
-			/* SumatraPDF: fix memory leak */
 			fz_try(doc->ctx)
 			{
-			xps_read_zip_entry(doc, ent, part->data + offset);
+				xps_read_zip_entry(doc, ent, part->data + offset);
 			}
 			fz_catch(doc->ctx)
 			{
@@ -474,7 +484,6 @@ xps_read_dir_part(xps_document *doc, char *name)
 		size += ftell(file);
 		fclose(file);
 	}
-	/* SumatraPDF: consistent piece counting */
 	if (!seen_last)
 		fz_throw(doc->ctx, "cannot find all pieces for part '%s'", name);
 
@@ -492,7 +501,6 @@ xps_read_dir_part(xps_document *doc, char *name)
 			file = fopen(buf, "rb");
 			if (!file)
 			{
-				/* SumatraPDF: fix memory leak */
 				xps_free_part(doc, part);
 				fz_throw(doc->ctx, "cannot open file '%s'", buf);
 			}
@@ -560,8 +568,7 @@ xps_open_document_with_directory(fz_context *ctx, char *directory)
 	xps_document *doc;
 
 	doc = fz_malloc_struct(ctx, xps_document);
-	memset(doc, 0, sizeof *doc);
-
+	xps_init_document(doc);
 	doc->ctx = ctx;
 	doc->directory = fz_strdup(ctx, directory);
 
@@ -585,8 +592,7 @@ xps_open_document_with_stream(fz_stream *file)
 	xps_document *doc;
 
 	doc = fz_malloc_struct(ctx, xps_document);
-	memset(doc, 0, sizeof *doc);
-
+	xps_init_document(doc);
 	doc->ctx = ctx;
 	doc->file = fz_keep_stream(file);
 
@@ -670,4 +676,61 @@ xps_close_document(xps_document *doc)
 	fz_free(doc->ctx, doc->start_part);
 	fz_free(doc->ctx, doc->directory);
 	fz_free(doc->ctx, doc);
+}
+
+/* Document interface wrappers */
+
+static void xps_close_document_shim(fz_document *doc)
+{
+	xps_close_document((xps_document*)doc);
+}
+
+static fz_outline *xps_load_outline_shim(fz_document *doc)
+{
+	return xps_load_outline((xps_document*)doc);
+}
+
+static int xps_count_pages_shim(fz_document *doc)
+{
+	return xps_count_pages((xps_document*)doc);
+}
+
+static fz_page *xps_load_page_shim(fz_document *doc, int number)
+{
+	return (fz_page*) xps_load_page((xps_document*)doc, number);
+}
+
+static fz_link *xps_load_links_shim(fz_document *doc, fz_page *page)
+{
+	return xps_load_links((xps_document*)doc, (xps_page*)page);
+}
+
+static fz_rect xps_bound_page_shim(fz_document *doc, fz_page *page)
+{
+	return xps_bound_page((xps_document*)doc, (xps_page*)page);
+}
+
+static void xps_run_page_shim(fz_document *doc, fz_page *page, fz_device *dev, fz_matrix transform, fz_cookie *cookie)
+{
+	xps_run_page((xps_document*)doc, (xps_page*)page, dev, transform, cookie);
+}
+
+static void xps_free_page_shim(fz_document *doc, fz_page *page)
+{
+	xps_free_page((xps_document*)doc, (xps_page*)page);
+}
+
+static void
+xps_init_document(xps_document *doc)
+{
+	doc->super.close = xps_close_document_shim;
+	doc->super.needs_password = NULL;
+	doc->super.authenticate_password = NULL;
+	doc->super.load_outline = xps_load_outline_shim;
+	doc->super.count_pages = xps_count_pages_shim;
+	doc->super.load_page = xps_load_page_shim;
+	doc->super.load_links = xps_load_links_shim;
+	doc->super.bound_page = xps_bound_page_shim;
+	doc->super.run_page = xps_run_page_shim;
+	doc->super.free_page = xps_free_page_shim;
 }

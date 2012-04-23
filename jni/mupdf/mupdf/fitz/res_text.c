@@ -1,4 +1,4 @@
-#include "fitz.h"
+#include "fitz-internal.h"
 
 fz_text *
 fz_new_text(fz_context *ctx, fz_font *font, fz_matrix trm, int wmode)
@@ -6,7 +6,7 @@ fz_new_text(fz_context *ctx, fz_font *font, fz_matrix trm, int wmode)
 	fz_text *text;
 
 	text = fz_malloc_struct(ctx, fz_text);
-	text->font = fz_keep_font(font);
+	text->font = fz_keep_font(ctx, font);
 	text->trm = trm;
 	text->wmode = wmode;
 	text->len = 0;
@@ -44,7 +44,7 @@ fz_clone_text(fz_context *ctx, fz_text *old)
 		fz_rethrow(ctx);
 	}
 	memcpy(text->items, old->items, text->len * sizeof(fz_text_item));
-	text->font = fz_keep_font(old->font);
+	text->font = fz_keep_font(ctx, old->font);
 	text->trm = old->trm;
 	text->wmode = old->wmode;
 	text->cap = text->len;
@@ -100,11 +100,13 @@ fz_bound_text(fz_context *ctx, fz_text *text, fz_matrix ctm)
 static void
 fz_grow_text(fz_context *ctx, fz_text *text, int n)
 {
-	if (text->len + n < text->cap)
+	int new_cap = text->cap;
+	if (text->len + n < new_cap)
 		return;
-	while (text->len + n > text->cap)
-		text->cap = text->cap + 36;
-	text->items = fz_resize_array(ctx, text->items, text->cap, sizeof(fz_text_item));
+	while (text->len + n > new_cap)
+		new_cap = new_cap + 36;
+	text->items = fz_resize_array(ctx, text->items, new_cap, sizeof(fz_text_item));
+	text->cap = new_cap;
 }
 
 void
@@ -118,23 +120,30 @@ fz_add_text(fz_context *ctx, fz_text *text, int gid, int ucs, float x, float y)
 	text->len++;
 }
 
-static int isxmlmeta(int c)
+static int
+isxmlmeta(int c)
 {
 	return c < 32 || c >= 128 || c == '&' || c == '<' || c == '>' || c == '\'' || c == '"';
 }
 
-void fz_debug_text(fz_text *text, int indent)
+static void
+do_print_text(FILE *out, fz_text *text, int indent)
 {
 	int i, n;
 	for (i = 0; i < text->len; i++)
 	{
 		for (n = 0; n < indent; n++)
-			putchar(' ');
+			fputc(' ', out);
 		if (!isxmlmeta(text->items[i].ucs))
-			printf("<g ucs=\"%c\" gid=\"%d\" x=\"%g\" y=\"%g\" />\n",
+			fprintf(out, "<g ucs=\"%c\" gid=\"%d\" x=\"%g\" y=\"%g\" />\n",
 				text->items[i].ucs, text->items[i].gid, text->items[i].x, text->items[i].y);
 		else
-			printf("<g ucs=\"U+%04X\" gid=\"%d\" x=\"%g\" y=\"%g\" />\n",
+			fprintf(out, "<g ucs=\"U+%04X\" gid=\"%d\" x=\"%g\" y=\"%g\" />\n",
 				text->items[i].ucs, text->items[i].gid, text->items[i].x, text->items[i].y);
 	}
+}
+
+void fz_print_text(fz_context *ctx, FILE *out, fz_text *text)
+{
+	do_print_text(out, text, 0);
 }

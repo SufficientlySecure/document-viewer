@@ -1,5 +1,5 @@
 #include <assert.h>
-#include "fitz.h"
+#include "fitz-internal.h"
 
 fz_path *
 fz_new_path(fz_context *ctx)
@@ -219,7 +219,7 @@ static inline fz_rect bound_expand(fz_rect r, fz_point p)
 }
 
 fz_rect
-fz_bound_path(fz_path *path, fz_stroke_state *stroke, fz_matrix ctm)
+fz_bound_path(fz_context *ctx, fz_path *path, fz_stroke_state *stroke, fz_matrix ctm)
 {
 	fz_point p;
 	fz_rect r;
@@ -228,6 +228,10 @@ fz_bound_path(fz_path *path, fz_stroke_state *stroke, fz_matrix ctm)
 	/* If the path is empty, return the empty rectangle here - don't wait
 	 * for it to be expanded in the stroked case below. */
 	if (path->len == 0)
+		return fz_empty_rect;
+	/* A path must start with a moveto - and if that's all there is
+	 * then the path is empty. */
+	if (path->len == 3)
 		return fz_empty_rect;
 
 	p.x = path->items[1].v;
@@ -252,6 +256,13 @@ fz_bound_path(fz_path *path, fz_stroke_state *stroke, fz_matrix ctm)
 			r = bound_expand(r, fz_transform_point(ctm, p));
 			break;
 		case FZ_MOVETO:
+			if (i + 2 == path->len)
+			{
+				/* Trailing Moveto - cannot affect bbox */
+				i += 2;
+				break;
+			}
+			/* fallthrough */
 		case FZ_LINETO:
 			p.x = path->items[i++].v;
 			p.y = path->items[i++].v;
@@ -268,7 +279,7 @@ fz_bound_path(fz_path *path, fz_stroke_state *stroke, fz_matrix ctm)
 		if (expand == 0)
 			expand = 1.0f;
 		expand *= fz_matrix_max_expansion(ctm);
-		if (stroke->miterlimit > 1)
+		if ((stroke->linejoin == FZ_LINEJOIN_MITER || stroke->linejoin == FZ_LINEJOIN_MITER_XPS) && stroke->miterlimit > 1)
 			expand *= stroke->miterlimit;
 		r.x0 -= expand;
 		r.y0 -= expand;
@@ -280,7 +291,7 @@ fz_bound_path(fz_path *path, fz_stroke_state *stroke, fz_matrix ctm)
 }
 
 void
-fz_transform_path(fz_path *path, fz_matrix ctm)
+fz_transform_path(fz_context *ctx, fz_path *path, fz_matrix ctm)
 {
 	fz_point p;
 	int k, i = 0;
@@ -316,7 +327,7 @@ fz_transform_path(fz_path *path, fz_matrix ctm)
 }
 
 void
-fz_debug_path(fz_path *path, int indent)
+fz_print_path(fz_context *ctx, FILE *out, fz_path *path, int indent)
 {
 	float x, y;
 	int i = 0;
@@ -324,33 +335,130 @@ fz_debug_path(fz_path *path, int indent)
 	while (i < path->len)
 	{
 		for (n = 0; n < indent; n++)
-			putchar(' ');
+			fputc(' ', out);
 		switch (path->items[i++].k)
 		{
 		case FZ_MOVETO:
 			x = path->items[i++].v;
 			y = path->items[i++].v;
-			printf("%g %g m\n", x, y);
+			fprintf(out, "%g %g m\n", x, y);
 			break;
 		case FZ_LINETO:
 			x = path->items[i++].v;
 			y = path->items[i++].v;
-			printf("%g %g l\n", x, y);
+			fprintf(out, "%g %g l\n", x, y);
 			break;
 		case FZ_CURVETO:
 			x = path->items[i++].v;
 			y = path->items[i++].v;
-			printf("%g %g ", x, y);
+			fprintf(out, "%g %g ", x, y);
 			x = path->items[i++].v;
 			y = path->items[i++].v;
-			printf("%g %g ", x, y);
+			fprintf(out, "%g %g ", x, y);
 			x = path->items[i++].v;
 			y = path->items[i++].v;
-			printf("%g %g c\n", x, y);
+			fprintf(out, "%g %g c\n", x, y);
 			break;
 		case FZ_CLOSE_PATH:
-			printf("h\n");
+			fprintf(out, "h\n");
 			break;
 		}
 	}
+}
+
+fz_stroke_state *
+fz_keep_stroke_state(fz_context *ctx, fz_stroke_state *stroke)
+{
+	fz_lock(ctx, FZ_LOCK_ALLOC);
+
+	if (!stroke)
+		return NULL;
+
+	if (stroke->refs > 0)
+		stroke->refs++;
+	fz_unlock(ctx, FZ_LOCK_ALLOC);
+	return stroke;
+}
+
+void
+fz_drop_stroke_state(fz_context *ctx, fz_stroke_state *stroke)
+{
+	int drop;
+
+	if (!stroke)
+		return;
+
+	fz_lock(ctx, FZ_LOCK_ALLOC);
+	drop = (stroke->refs > 0 ? --stroke->refs == 0 : 0);
+	fz_unlock(ctx, FZ_LOCK_ALLOC);
+	if (drop)
+		fz_free(ctx, stroke);
+}
+
+fz_stroke_state *
+fz_new_stroke_state_with_len(fz_context *ctx, int len)
+{
+	fz_stroke_state *state;
+
+	len -= nelem(state->dash_list);
+	if (len < 0)
+		len = 0;
+
+	state = Memento_label(fz_malloc(ctx, sizeof(*state) + sizeof(state->dash_list[0]) * len), "fz_stroke_state");
+	state->refs = 1;
+	state->start_cap = FZ_LINECAP_BUTT;
+	state->dash_cap = FZ_LINECAP_BUTT;
+	state->end_cap = FZ_LINECAP_BUTT;
+	state->linejoin = FZ_LINEJOIN_MITER;
+	state->linewidth = 1;
+	state->miterlimit = 10;
+	state->dash_phase = 0;
+	state->dash_len = 0;
+	memset(state->dash_list, 0, sizeof(state->dash_list[0]) * (len + nelem(state->dash_list)));
+
+	return state;
+}
+
+fz_stroke_state *
+fz_new_stroke_state(fz_context *ctx)
+{
+	return fz_new_stroke_state_with_len(ctx, 0);
+}
+
+
+fz_stroke_state *
+fz_unshare_stroke_state_with_len(fz_context *ctx, fz_stroke_state *shared, int len)
+{
+	int single, unsize, shsize, shlen, drop;
+	fz_stroke_state *unshared;
+
+	fz_lock(ctx, FZ_LOCK_ALLOC);
+	single = (shared->refs == 1);
+	fz_unlock(ctx, FZ_LOCK_ALLOC);
+
+	shlen = shared->dash_len - nelem(shared->dash_list);
+	if (shlen < 0)
+		shlen = 0;
+	shsize = sizeof(*shared) + sizeof(shared->dash_list[0]) * shlen;
+	len -= nelem(shared->dash_list);
+	if (len < 0)
+		len = 0;
+	if (single && shlen >= len)
+		return shared;
+	unsize = sizeof(*unshared) + sizeof(unshared->dash_list[0]) * len;
+	unshared = Memento_label(fz_malloc(ctx, unsize), "fz_stroke_state");
+	memcpy(unshared, shared, (shsize > unsize ? unsize : shsize));
+	unshared->refs = 1;
+	fz_lock(ctx, FZ_LOCK_ALLOC);
+	drop = (shared->refs > 0 ? --shared->refs == 0 : 0);
+	fz_unlock(ctx, FZ_LOCK_ALLOC);
+	if (drop)
+		fz_free(ctx, shared);
+	return unshared;
+}
+
+fz_stroke_state *
+fz_unshare_stroke_state(fz_context *ctx, fz_stroke_state *shared)
+{
+	return fz_unshare_stroke_state_with_len(ctx, shared, shared->dash_len);
 }

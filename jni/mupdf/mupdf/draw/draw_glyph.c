@@ -1,4 +1,4 @@
-#include "fitz.h"
+#include "fitz-internal.h"
 
 #define MAX_FONT_SIZE 1000
 #define MAX_GLYPH_SIZE 256
@@ -8,6 +8,7 @@ typedef struct fz_glyph_key_s fz_glyph_key;
 
 struct fz_glyph_cache_s
 {
+	int refs;
 	fz_hash_table *hash;
 	int total;
 };
@@ -19,6 +20,7 @@ struct fz_glyph_key_s
 	int c, d;
 	unsigned short gid;
 	unsigned char e, f;
+	int aa;
 };
 
 void
@@ -29,7 +31,7 @@ fz_new_glyph_cache_context(fz_context *ctx)
 	cache = fz_malloc_struct(ctx, fz_glyph_cache);
 	fz_try(ctx)
 	{
-		cache->hash = fz_new_hash_table(ctx, 509, sizeof(fz_glyph_key));
+		cache->hash = fz_new_hash_table(ctx, 509, sizeof(fz_glyph_key), FZ_LOCK_GLYPHCACHE);
 	}
 	fz_catch(ctx)
 	{
@@ -37,10 +39,12 @@ fz_new_glyph_cache_context(fz_context *ctx)
 		fz_rethrow(ctx);
 	}
 	cache->total = 0;
+	cache->refs = 1;
 
 	ctx->glyph_cache = cache;
 }
 
+/* The glyph cache lock is always held when this function is called. */
 static void
 fz_evict_glyph_cache(fz_context *ctx)
 {
@@ -49,31 +53,46 @@ fz_evict_glyph_cache(fz_context *ctx)
 	fz_pixmap *pixmap;
 	int i;
 
-	for (i = 0; i < fz_hash_len(cache->hash); i++)
+	for (i = 0; i < fz_hash_len(ctx, cache->hash); i++)
 	{
-		key = fz_hash_get_key(cache->hash, i);
+		key = fz_hash_get_key(ctx, cache->hash, i);
 		if (key->font)
 			fz_drop_font(ctx, key->font);
-		pixmap = fz_hash_get_val(cache->hash, i);
+		pixmap = fz_hash_get_val(ctx, cache->hash, i);
 		if (pixmap)
 			fz_drop_pixmap(ctx, pixmap);
 	}
 
 	cache->total = 0;
 
-	fz_empty_hash(cache->hash);
+	fz_empty_hash(ctx, cache->hash);
 }
 
 void
-fz_free_glyph_cache_context(fz_context *ctx)
+fz_drop_glyph_cache_context(fz_context *ctx)
 {
 	if (!ctx->glyph_cache)
 		return;
 
-	fz_evict_glyph_cache(ctx);
-	fz_free_hash(ctx->glyph_cache->hash);
-	fz_free(ctx, ctx->glyph_cache);
-	ctx->glyph_cache = NULL;
+	fz_lock(ctx, FZ_LOCK_GLYPHCACHE);
+	ctx->glyph_cache->refs--;
+	if (ctx->glyph_cache->refs == 0)
+	{
+		fz_evict_glyph_cache(ctx);
+		fz_free_hash(ctx, ctx->glyph_cache->hash);
+		fz_free(ctx, ctx->glyph_cache);
+		ctx->glyph_cache = NULL;
+	}
+	fz_unlock(ctx, FZ_LOCK_GLYPHCACHE);
+}
+
+fz_glyph_cache *
+fz_keep_glyph_cache(fz_context *ctx)
+{
+	fz_lock(ctx, FZ_LOCK_GLYPHCACHE);
+	ctx->glyph_cache->refs++;
+	fz_unlock(ctx, FZ_LOCK_GLYPHCACHE);
+	return ctx->glyph_cache;
 }
 
 fz_pixmap *
@@ -92,8 +111,6 @@ fz_render_glyph(fz_context *ctx, fz_font *font, int gid, fz_matrix ctm, fz_color
 	fz_pixmap *val;
 	float size = fz_matrix_expansion(ctm);
 
-	if (!ctx->glyph_cache)
-		fz_new_glyph_cache_context(ctx);
 	cache = ctx->glyph_cache;
 
 	if (size > MAX_FONT_SIZE)
@@ -112,26 +129,51 @@ fz_render_glyph(fz_context *ctx, fz_font *font, int gid, fz_matrix ctm, fz_color
 	key.d = ctm.d * 65536;
 	key.e = (ctm.e - floorf(ctm.e)) * 256;
 	key.f = (ctm.f - floorf(ctm.f)) * 256;
+	key.aa = fz_aa_level(ctx);
 
-	val = fz_hash_find(cache->hash, &key);
+	fz_lock(ctx, FZ_LOCK_GLYPHCACHE);
+	val = fz_hash_find(ctx, cache->hash, &key);
 	if (val)
-		return fz_keep_pixmap(ctx, val);
+	{
+		fz_keep_pixmap(ctx, val);
+		fz_unlock(ctx, FZ_LOCK_GLYPHCACHE);
+		return val;
+	}
 
 	ctm.e = floorf(ctm.e) + key.e / 256.0f;
 	ctm.f = floorf(ctm.f) + key.f / 256.0f;
 
-	if (font->ft_face)
+	fz_try(ctx)
 	{
-		val = fz_render_ft_glyph(ctx, font, gid, ctm);
+		if (font->ft_face)
+		{
+			val = fz_render_ft_glyph(ctx, font, gid, ctm, key.aa);
+		}
+		else if (font->t3procs)
+		{
+			/* We drop the glyphcache here, and execute the t3
+			 * glyph code. The danger here is that some other
+			 * thread will come along, and want the same glyph
+			 * too. If it does, we may both end up rendering
+			 * pixmaps. We cope with this later on, by ensuring
+			 * that only one gets inserted into the cache. If
+			 * we insert ours to find one already there, we
+			 * abandon ours, and use the one there already.
+			 */
+			fz_unlock(ctx, FZ_LOCK_GLYPHCACHE);
+			val = fz_render_t3_glyph(ctx, font, gid, ctm, model);
+			fz_lock(ctx, FZ_LOCK_GLYPHCACHE);
+		}
+		else
+		{
+			fz_warn(ctx, "assert: uninitialized font structure");
+			val = NULL;
+		}
 	}
-	else if (font->t3procs)
+	fz_catch(ctx)
 	{
-		val = fz_render_t3_glyph(ctx, font, gid, ctm, model);
-	}
-	else
-	{
-		fz_warn(ctx, "assert: uninitialized font structure");
-		return NULL;
+		fz_unlock(ctx, FZ_LOCK_GLYPHCACHE);
+		fz_rethrow(ctx);
 	}
 
 	if (val)
@@ -142,8 +184,14 @@ fz_render_glyph(fz_context *ctx, fz_font *font, int gid, fz_matrix ctm, fz_color
 				fz_evict_glyph_cache(ctx);
 			fz_try(ctx)
 			{
-				fz_hash_insert(cache->hash, &key, val);
-				fz_keep_font(key.font);
+				fz_pixmap *pix = fz_hash_insert(ctx, cache->hash, &key, val);
+				if (pix)
+				{
+					fz_drop_pixmap(ctx, val);
+					val = pix;
+				}
+				else
+					fz_keep_font(ctx, key.font);
 				val = fz_keep_pixmap(ctx, val);
 			}
 			fz_catch(ctx)
@@ -151,10 +199,9 @@ fz_render_glyph(fz_context *ctx, fz_font *font, int gid, fz_matrix ctm, fz_color
 				fz_warn(ctx, "Failed to encache glyph - continuing");
 			}
 			cache->total += val->w * val->h;
-			return val;
 		}
-		return val;
 	}
 
-	return NULL;
+	fz_unlock(ctx, FZ_LOCK_GLYPHCACHE);
+	return val;
 }

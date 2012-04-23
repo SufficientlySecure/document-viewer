@@ -1,5 +1,4 @@
-#include "fitz.h"
-#include "muxps.h"
+#include "muxps-internal.h"
 
 #define TILE
 
@@ -126,6 +125,11 @@ xps_parse_tiling_brush(xps_document *doc, fz_matrix ctm, fz_rect area,
 	viewport = fz_unit_rect;
 	if (viewport_att)
 		xps_parse_rectangle(doc, viewport_att, &viewport);
+
+	if (fabsf(viewport.x1 - viewport.x0) < 0.01f || fabsf(viewport.y1 - viewport.y0) < 0.01f)
+		fz_warn(doc->ctx, "not drawing tile for viewport size %.4f x %.4f", viewport.x1 - viewport.x0, viewport.y1 - viewport.y0);
+	else if (fabsf(viewbox.x1 - viewbox.x0) < 0.01f || fabsf(viewbox.y1 - viewbox.y0) < 0.01f)
+		fz_warn(doc->ctx, "not drawing tile for viewbox size %.4f x %.4f", viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0);
 
 	/* some sanity checks on the viewport/viewbox size */
 	if (fabsf(viewport.x1 - viewport.x0) < 0.01f) return;
@@ -255,6 +259,7 @@ xps_parse_canvas(xps_document *doc, fz_matrix ctm, fz_rect area, char *base_uri,
 	char *clip_att;
 	char *opacity_att;
 	char *opacity_mask_att;
+	char *navigate_uri_att;
 
 	xml_element *transform_tag = NULL;
 	xml_element *clip_tag = NULL;
@@ -266,18 +271,24 @@ xps_parse_canvas(xps_document *doc, fz_matrix ctm, fz_rect area, char *base_uri,
 	clip_att = xml_att(root, "Clip");
 	opacity_att = xml_att(root, "Opacity");
 	opacity_mask_att = xml_att(root, "OpacityMask");
+	navigate_uri_att = xml_att(root, "FixedPage.NavigateUri");
 
 	for (node = xml_down(root); node; node = xml_next(node))
 	{
-		/* FIXME: Sumatra warns of memory leak here where we have multiple
-		 * Canvas.Resources. */
 		if (!strcmp(xml_tag(node), "Canvas.Resources") && xml_down(node))
 		{
-			new_dict = xps_parse_resource_dictionary(doc, base_uri, xml_down(node));
 			if (new_dict)
 			{
-				new_dict->parent = dict;
-				dict = new_dict;
+				fz_warn(doc->ctx, "ignoring follow-up resource dictionaries");
+			}
+			else
+			{
+				new_dict = xps_parse_resource_dictionary(doc, base_uri, xml_down(node));
+				if (new_dict)
+				{
+					new_dict->parent = dict;
+					dict = new_dict;
+				}
 			}
 		}
 
@@ -300,6 +311,9 @@ xps_parse_canvas(xps_document *doc, fz_matrix ctm, fz_rect area, char *base_uri,
 	if (transform_tag)
 		xps_parse_matrix_transform(doc, transform_tag, &transform);
 	ctm = fz_concat(transform, ctm);
+
+	if (navigate_uri_att)
+		xps_add_link(doc, area, base_uri, navigate_uri_att);
 
 	if (clip_att || clip_tag)
 		xps_clip(doc, ctm, dict, clip_att, clip_tag);
@@ -346,10 +360,13 @@ xps_parse_fixed_page(xps_document *doc, fz_matrix ctm, xps_page *page)
 
 	for (node = xml_down(page->root); node; node = xml_next(node))
 	{
-		/* FIXME: Sumatra warns of memory leak here where we have multiple
-		 * FixedPage.Resources. */
 		if (!strcmp(xml_tag(node), "FixedPage.Resources") && xml_down(node))
-			dict = xps_parse_resource_dictionary(doc, base_uri, xml_down(node));
+		{
+			if (dict)
+				fz_warn(doc->ctx, "ignoring follow-up resource dictionaries");
+			else
+				dict = xps_parse_resource_dictionary(doc, base_uri, xml_down(node));
+		}
 		xps_parse_element(doc, ctm, area, base_uri, dict, node);
 	}
 
@@ -370,4 +387,5 @@ xps_run_page(xps_document *doc, xps_page *page, fz_device *dev, fz_matrix ctm, f
 	xps_parse_fixed_page(doc, ctm, page);
 	doc->cookie = NULL;
 	doc->dev = NULL;
+	page->links_resolved = 1;
 }

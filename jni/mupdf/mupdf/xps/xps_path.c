@@ -1,8 +1,7 @@
-#include "fitz.h"
-#include "muxps.h"
+#include "muxps-internal.h"
 
-char *
-xps_get_real_params(char *s, int num, float *x)
+static char *
+xps_parse_float_array(char *s, int num, float *x)
 {
 	int k = 0;
 
@@ -25,12 +24,12 @@ xps_get_real_params(char *s, int num, float *x)
 }
 
 char *
-xps_get_point(char *s_in, float *x, float *y)
+xps_parse_point(char *s_in, float *x, float *y)
 {
 	char *s_out = s_in;
 	float xy[2];
 
-	s_out = xps_get_real_params(s_out, 2, &xy[0]);
+	s_out = xps_parse_float_array(s_out, 2, &xy[0]);
 	*x = xy[0];
 	*y = xy[1];
 	return s_out;
@@ -293,8 +292,7 @@ xps_parse_abbreviated_geometry(xps_document *doc, char *geom, int *fill_rule)
 		}
 	}
 
-	pargs[0] = s;
-	pargs[1] = 0;
+	*pargs = s;
 
 	n = pargs - args;
 	i = 0;
@@ -324,53 +322,63 @@ xps_parse_abbreviated_geometry(xps_document *doc, char *geom, int *fill_rule)
 		switch (cmd)
 		{
 		case 'F':
+			if (i >= n) break;
 			*fill_rule = atoi(args[i]);
 			i ++;
 			break;
 
 		case 'M':
+			if (i + 1 >= n) break;
 			fz_moveto(doc->ctx, path, fz_atof(args[i]), fz_atof(args[i+1]));
 			i += 2;
 			break;
 		case 'm':
+			if (i + 1 >= n) break;
 			pt = fz_currentpoint(path);
 			fz_moveto(doc->ctx, path, pt.x + fz_atof(args[i]), pt.y + fz_atof(args[i+1]));
 			i += 2;
 			break;
 
 		case 'L':
+			if (i + 1 >= n) break;
 			fz_lineto(doc->ctx, path, fz_atof(args[i]), fz_atof(args[i+1]));
 			i += 2;
 			break;
 		case 'l':
+			if (i + 1 >= n) break;
 			pt = fz_currentpoint(path);
 			fz_lineto(doc->ctx, path, pt.x + fz_atof(args[i]), pt.y + fz_atof(args[i+1]));
 			i += 2;
 			break;
 
 		case 'H':
+			if (i >= n) break;
 			pt = fz_currentpoint(path);
 			fz_lineto(doc->ctx, path, fz_atof(args[i]), pt.y);
 			i += 1;
 			break;
 		case 'h':
+			if (i >= n) break;
 			pt = fz_currentpoint(path);
 			fz_lineto(doc->ctx, path, pt.x + fz_atof(args[i]), pt.y);
 			i += 1;
 			break;
 
 		case 'V':
+			if (i >= n) break;
 			pt = fz_currentpoint(path);
 			fz_lineto(doc->ctx, path, pt.x, fz_atof(args[i]));
 			i += 1;
 			break;
 		case 'v':
+			if (i >= n) break;
 			pt = fz_currentpoint(path);
 			fz_lineto(doc->ctx, path, pt.x, pt.y + fz_atof(args[i]));
 			i += 1;
 			break;
 
 		case 'C':
+			if (i + 5 >= n) break;
 			x1 = fz_atof(args[i+0]);
 			y1 = fz_atof(args[i+1]);
 			x2 = fz_atof(args[i+2]);
@@ -385,6 +393,7 @@ xps_parse_abbreviated_geometry(xps_document *doc, char *geom, int *fill_rule)
 			break;
 
 		case 'c':
+			if (i + 5 >= n) break;
 			pt = fz_currentpoint(path);
 			x1 = fz_atof(args[i+0]) + pt.x;
 			y1 = fz_atof(args[i+1]) + pt.y;
@@ -400,6 +409,7 @@ xps_parse_abbreviated_geometry(xps_document *doc, char *geom, int *fill_rule)
 			break;
 
 		case 'S':
+			if (i + 3 >= n) break;
 			pt = fz_currentpoint(path);
 			x1 = fz_atof(args[i+0]);
 			y1 = fz_atof(args[i+1]);
@@ -413,6 +423,7 @@ xps_parse_abbreviated_geometry(xps_document *doc, char *geom, int *fill_rule)
 			break;
 
 		case 's':
+			if (i + 3 >= n) break;
 			pt = fz_currentpoint(path);
 			x1 = fz_atof(args[i+0]) + pt.x;
 			y1 = fz_atof(args[i+1]) + pt.y;
@@ -426,6 +437,7 @@ xps_parse_abbreviated_geometry(xps_document *doc, char *geom, int *fill_rule)
 			break;
 
 		case 'Q':
+			if (i + 3 >= n) break;
 			pt = fz_currentpoint(path);
 			x1 = fz_atof(args[i+0]);
 			y1 = fz_atof(args[i+1]);
@@ -438,6 +450,7 @@ xps_parse_abbreviated_geometry(xps_document *doc, char *geom, int *fill_rule)
 			i += 4;
 			break;
 		case 'q':
+			if (i + 3 >= n) break;
 			pt = fz_currentpoint(path);
 			x1 = fz_atof(args[i+0]) + pt.x;
 			y1 = fz_atof(args[i+1]) + pt.y;
@@ -451,6 +464,7 @@ xps_parse_abbreviated_geometry(xps_document *doc, char *geom, int *fill_rule)
 			break;
 
 		case 'A':
+			if (i + 6 >= n) break;
 			xps_draw_arc(doc->ctx, path,
 				fz_atof(args[i+0]), fz_atof(args[i+1]), fz_atof(args[i+2]),
 				atoi(args[i+3]), atoi(args[i+4]),
@@ -458,6 +472,7 @@ xps_parse_abbreviated_geometry(xps_document *doc, char *geom, int *fill_rule)
 			i += 7;
 			break;
 		case 'a':
+			if (i + 6 >= n) break;
 			pt = fz_currentpoint(path);
 			xps_draw_arc(doc->ctx, path,
 				fz_atof(args[i+0]), fz_atof(args[i+1]), fz_atof(args[i+2]),
@@ -516,8 +531,11 @@ xps_parse_arc_segment(fz_context *doc, fz_path *path, xml_element *root, int str
 	if (!is_stroked)
 		*skipped_stroke = 1;
 
-	xps_get_point(point_att, &point_x, &point_y);
-	xps_get_point(size_att, &size_x, &size_y);
+	point_x = point_y = 0;
+	size_x = size_y = 0;
+
+	xps_parse_point(point_att, &point_x, &point_y);
+	xps_parse_point(size_att, &size_x, &size_y);
 	rotation_angle = fz_atof(rotation_angle_att);
 	is_large_arc = !strcmp(is_large_arc_att, "true");
 	is_clockwise = !strcmp(sweep_direction_att, "Clockwise");
@@ -559,7 +577,7 @@ xps_parse_poly_quadratic_bezier_segment(fz_context *doc, fz_path *path, xml_elem
 	while (*s != 0)
 	{
 		while (*s == ' ') s++;
-		s = xps_get_point(s, &x[n], &y[n]);
+		s = xps_parse_point(s, &x[n], &y[n]);
 		n ++;
 		if (n == 2)
 		{
@@ -607,7 +625,7 @@ xps_parse_poly_bezier_segment(fz_context *doc, fz_path *path, xml_element *root,
 	while (*s != 0)
 	{
 		while (*s == ' ') s++;
-		s = xps_get_point(s, &x[n], &y[n]);
+		s = xps_parse_point(s, &x[n], &y[n]);
 		n ++;
 		if (n == 3)
 		{
@@ -645,7 +663,7 @@ xps_parse_poly_line_segment(fz_context *doc, fz_path *path, xml_element *root, i
 	while (*s != 0)
 	{
 		while (*s == ' ') s++;
-		s = xps_get_point(s, &x, &y);
+		s = xps_parse_point(s, &x, &y);
 		if (stroking && !is_stroked)
 			fz_moveto(doc, path, x, y);
 		else
@@ -678,7 +696,7 @@ xps_parse_path_figure(fz_context *doc, fz_path *path, xml_element *root, int str
 	if (is_filled_att)
 		is_filled = !strcmp(is_filled_att, "true");
 	if (start_point_att)
-		xps_get_point(start_point_att, &start_x, &start_y);
+		xps_parse_point(start_point_att, &start_x, &start_y);
 
 	if (!stroking && !is_filled) /* not filled, when filling */
 		return;
@@ -763,7 +781,7 @@ xps_parse_path_geometry(xps_document *doc, xps_resource *dict, xml_element *root
 	}
 
 	if (transform_att || transform_tag)
-		fz_transform_path(path, transform);
+		fz_transform_path(doc->ctx, path, transform);
 
 	return path;
 }
@@ -837,14 +855,17 @@ xps_parse_path(xps_document *doc, fz_matrix ctm, char *base_uri, xps_resource *d
 	char *stroke_line_join_att;
 	char *stroke_miter_limit_att;
 	char *stroke_thickness_att;
+	char *navigate_uri_att;
 
-	fz_stroke_state stroke;
+	fz_stroke_state *stroke = NULL;
 	fz_matrix transform;
 	float samples[32];
 	fz_colorspace *colorspace;
 	fz_path *path;
+	fz_path *stroke_path = NULL;
 	fz_rect area;
 	int fill_rule;
+	int dash_len = 0;
 
 	/*
 	 * Extract attributes and extended attributes.
@@ -866,6 +887,7 @@ xps_parse_path(xps_document *doc, fz_matrix ctm, char *base_uri, xps_resource *d
 	stroke_line_join_att = xml_att(root, "StrokeLineJoin");
 	stroke_miter_limit_att = xml_att(root, "StrokeMiterLimit");
 	stroke_thickness_att = xml_att(root, "StrokeThickness");
+	navigate_uri_att = xml_att(root, "FixedPage.NavigateUri");
 
 	for (node = xml_down(root); node; node = xml_next(node))
 	{
@@ -915,43 +937,63 @@ xps_parse_path(xps_document *doc, fz_matrix ctm, char *base_uri, xps_resource *d
 		stroke_tag = NULL;
 	}
 
-	stroke.start_cap = xps_parse_line_cap(stroke_start_line_cap_att);
-	stroke.dash_cap = xps_parse_line_cap(stroke_dash_cap_att);
-	stroke.end_cap = xps_parse_line_cap(stroke_end_line_cap_att);
-
-	stroke.linejoin = FZ_LINEJOIN_MITER_XPS;
-	if (stroke_line_join_att)
+	if (stroke_att || stroke_tag)
 	{
-		if (!strcmp(stroke_line_join_att, "Miter")) stroke.linejoin = FZ_LINEJOIN_MITER_XPS;
-		if (!strcmp(stroke_line_join_att, "Round")) stroke.linejoin = FZ_LINEJOIN_ROUND;
-		if (!strcmp(stroke_line_join_att, "Bevel")) stroke.linejoin = FZ_LINEJOIN_BEVEL;
-	}
-
-	stroke.miterlimit = 10;
-	if (stroke_miter_limit_att)
-		stroke.miterlimit = fz_atof(stroke_miter_limit_att);
-
-	stroke.linewidth = 1;
-	if (stroke_thickness_att)
-		stroke.linewidth = fz_atof(stroke_thickness_att);
-
-	stroke.dash_phase = 0;
-	stroke.dash_len = 0;
-	if (stroke_dash_array_att)
-	{
-		char *s = stroke_dash_array_att;
-
-		if (stroke_dash_offset_att)
-			stroke.dash_phase = fz_atof(stroke_dash_offset_att) * stroke.linewidth;
-
-		while (*s && stroke.dash_len < nelem(stroke.dash_list))
+		if (stroke_dash_array_att)
 		{
-			while (*s == ' ')
-				s++;
-			if (*s) /* needed in case of a space before the last quote */
-				stroke.dash_list[stroke.dash_len++] = fz_atof(s) * stroke.linewidth;
-			while (*s && *s != ' ')
-				s++;
+			char *s = stroke_dash_array_att;
+
+			while (*s)
+			{
+				while (*s == ' ')
+					s++;
+				if (*s) /* needed in case of a space before the last quote */
+					dash_len++;
+
+				while (*s && *s != ' ')
+					s++;
+			}
+		}
+		stroke = fz_new_stroke_state_with_len(doc->ctx, dash_len);
+		stroke->start_cap = xps_parse_line_cap(stroke_start_line_cap_att);
+		stroke->dash_cap = xps_parse_line_cap(stroke_dash_cap_att);
+		stroke->end_cap = xps_parse_line_cap(stroke_end_line_cap_att);
+
+		stroke->linejoin = FZ_LINEJOIN_MITER_XPS;
+		if (stroke_line_join_att)
+		{
+			if (!strcmp(stroke_line_join_att, "Miter")) stroke->linejoin = FZ_LINEJOIN_MITER_XPS;
+			if (!strcmp(stroke_line_join_att, "Round")) stroke->linejoin = FZ_LINEJOIN_ROUND;
+			if (!strcmp(stroke_line_join_att, "Bevel")) stroke->linejoin = FZ_LINEJOIN_BEVEL;
+		}
+
+		stroke->miterlimit = 10;
+		if (stroke_miter_limit_att)
+			stroke->miterlimit = fz_atof(stroke_miter_limit_att);
+
+		stroke->linewidth = 1;
+		if (stroke_thickness_att)
+			stroke->linewidth = fz_atof(stroke_thickness_att);
+
+		stroke->dash_phase = 0;
+		stroke->dash_len = 0;
+		if (stroke_dash_array_att)
+		{
+			char *s = stroke_dash_array_att;
+
+			if (stroke_dash_offset_att)
+				stroke->dash_phase = fz_atof(stroke_dash_offset_att) * stroke->linewidth;
+
+			while (*s)
+			{
+				while (*s == ' ')
+					s++;
+				if (*s) /* needed in case of a space before the last quote */
+					stroke->dash_list[stroke->dash_len++] = fz_atof(s) * stroke->linewidth;
+				while (*s && *s != ' ')
+					s++;
+			}
+			stroke->dash_len = dash_len;
 		}
 	}
 
@@ -969,12 +1011,25 @@ xps_parse_path(xps_document *doc, fz_matrix ctm, char *base_uri, xps_resource *d
 	if (data_att)
 		path = xps_parse_abbreviated_geometry(doc, data_att, &fill_rule);
 	else if (data_tag)
+	{
 		path = xps_parse_path_geometry(doc, dict, data_tag, 0, &fill_rule);
+		if (stroke_att || stroke_tag)
+			stroke_path = xps_parse_path_geometry(doc, dict, data_tag, 1, &fill_rule);
+	}
+	if (!stroke_path)
+		stroke_path = path;
 
 	if (stroke_att || stroke_tag)
-		area = fz_bound_path(path, &stroke, ctm);
+	{
+		area = fz_bound_path(doc->ctx, stroke_path, stroke, ctm);
+		if (stroke_path != path && (fill_att || fill_tag))
+			area = fz_union_rect(area, fz_bound_path(doc->ctx, path, NULL, ctm));
+	}
 	else
-		area = fz_bound_path(path, NULL, ctm);
+		area = fz_bound_path(doc->ctx, path, NULL, ctm);
+
+	if (navigate_uri_att)
+		xps_add_link(doc, area, base_uri, navigate_uri_att);
 
 	xps_begin_opacity(doc, ctm, area, opacity_mask_uri, dict, opacity_att, opacity_mask_tag);
 
@@ -982,7 +1037,7 @@ xps_parse_path(xps_document *doc, fz_matrix ctm, char *base_uri, xps_resource *d
 	{
 		xps_parse_color(doc, base_uri, fill_att, &colorspace, samples);
 		if (fill_opacity_att)
-			samples[0] = fz_atof(fill_opacity_att);
+			samples[0] *= fz_atof(fill_opacity_att);
 		xps_set_color(doc, colorspace, samples);
 
 		fz_fill_path(doc->dev, path, fill_rule == 0, ctm,
@@ -991,8 +1046,6 @@ xps_parse_path(xps_document *doc, fz_matrix ctm, char *base_uri, xps_resource *d
 
 	if (fill_tag)
 	{
-		area = fz_bound_path(path, NULL, ctm);
-
 		fz_clip_path(doc->dev, path, NULL, fill_rule == 0, ctm);
 		xps_parse_brush(doc, ctm, area, fill_uri, dict, fill_tag);
 		fz_pop_clip(doc->dev);
@@ -1002,24 +1055,27 @@ xps_parse_path(xps_document *doc, fz_matrix ctm, char *base_uri, xps_resource *d
 	{
 		xps_parse_color(doc, base_uri, stroke_att, &colorspace, samples);
 		if (stroke_opacity_att)
-			samples[0] = fz_atof(stroke_opacity_att);
+			samples[0] *= fz_atof(stroke_opacity_att);
 		xps_set_color(doc, colorspace, samples);
 
-		fz_stroke_path(doc->dev, path, &stroke, ctm,
+		fz_stroke_path(doc->dev, stroke_path, stroke, ctm,
 			doc->colorspace, doc->color, doc->alpha);
 	}
 
 	if (stroke_tag)
 	{
-		fz_clip_stroke_path(doc->dev, path, NULL, &stroke, ctm);
+		fz_clip_stroke_path(doc->dev, stroke_path, NULL, stroke, ctm);
 		xps_parse_brush(doc, ctm, area, stroke_uri, dict, stroke_tag);
 		fz_pop_clip(doc->dev);
 	}
 
 	xps_end_opacity(doc, opacity_mask_uri, dict, opacity_att, opacity_mask_tag);
 
+	if (stroke_path != path)
+		fz_free_path(doc->ctx, stroke_path);
 	fz_free_path(doc->ctx, path);
 	path = NULL;
+	fz_drop_stroke_state(doc->ctx, stroke);
 
 	if (clip_att || clip_tag)
 		fz_pop_clip(doc->dev);

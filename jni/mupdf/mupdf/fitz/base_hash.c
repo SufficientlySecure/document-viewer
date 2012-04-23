@@ -1,4 +1,4 @@
-#include "fitz.h"
+#include "fitz-internal.h"
 
 /*
 Simple hashtable with open addressing linear probe.
@@ -19,10 +19,10 @@ struct fz_hash_entry_s
 
 struct fz_hash_table_s
 {
-	fz_context *ctx;
 	int keylen;
 	int size;
 	int load;
+	int lock; /* -1 or the lock used to protect this hash table */
 	fz_hash_entry *ents;
 };
 
@@ -43,17 +43,17 @@ static unsigned hash(unsigned char *s, int len)
 }
 
 fz_hash_table *
-fz_new_hash_table(fz_context *ctx, int initialsize, int keylen)
+fz_new_hash_table(fz_context *ctx, int initialsize, int keylen, int lock)
 {
 	fz_hash_table *table;
 
 	assert(keylen <= MAX_KEY_LEN);
 
 	table = fz_malloc_struct(ctx, fz_hash_table);
-	table->ctx = ctx;
 	table->keylen = keylen;
 	table->size = initialsize;
 	table->load = 0;
+	table->lock = lock;
 	fz_try(ctx)
 	{
 		table->ents = fz_malloc_array(ctx, table->size, sizeof(fz_hash_entry));
@@ -69,52 +69,102 @@ fz_new_hash_table(fz_context *ctx, int initialsize, int keylen)
 }
 
 void
-fz_empty_hash(fz_hash_table *table)
+fz_empty_hash(fz_context *ctx, fz_hash_table *table)
 {
 	table->load = 0;
 	memset(table->ents, 0, sizeof(fz_hash_entry) * table->size);
 }
 
 int
-fz_hash_len(fz_hash_table *table)
+fz_hash_len(fz_context *ctx, fz_hash_table *table)
 {
 	return table->size;
 }
 
 void *
-fz_hash_get_key(fz_hash_table *table, int idx)
+fz_hash_get_key(fz_context *ctx, fz_hash_table *table, int idx)
 {
 	return table->ents[idx].key;
 }
 
 void *
-fz_hash_get_val(fz_hash_table *table, int idx)
+fz_hash_get_val(fz_context *ctx, fz_hash_table *table, int idx)
 {
 	return table->ents[idx].val;
 }
 
 void
-fz_free_hash(fz_hash_table *table)
+fz_free_hash(fz_context *ctx, fz_hash_table *table)
 {
-	fz_free(table->ctx, table->ents);
-	fz_free(table->ctx, table);
+	fz_free(ctx, table->ents);
+	fz_free(ctx, table);
+}
+
+static void *
+do_hash_insert(fz_context *ctx, fz_hash_table *table, void *key, void *val)
+{
+	fz_hash_entry *ents;
+	unsigned size;
+	unsigned pos;
+
+	ents = table->ents;
+	size = table->size;
+	pos = hash(key, table->keylen) % size;
+
+	if (table->lock >= 0)
+		fz_assert_lock_held(ctx, table->lock);
+
+	while (1)
+	{
+		if (!ents[pos].val)
+		{
+			memcpy(ents[pos].key, key, table->keylen);
+			ents[pos].val = val;
+			table->load ++;
+			return NULL;
+		}
+
+		if (memcmp(key, ents[pos].key, table->keylen) == 0)
+		{
+			fz_warn(ctx, "assert: overwrite hash slot");
+			return ents[pos].val;
+		}
+
+		pos = (pos + 1) % size;
+	}
 }
 
 static void
-fz_resize_hash(fz_hash_table *table, int newsize)
+fz_resize_hash(fz_context *ctx, fz_hash_table *table, int newsize)
 {
 	fz_hash_entry *oldents = table->ents;
+	fz_hash_entry *newents = table->ents;
 	int oldsize = table->size;
 	int oldload = table->load;
 	int i;
 
 	if (newsize < oldload * 8 / 10)
 	{
-		fz_warn(table->ctx, "assert: resize hash too small");
+		fz_warn(ctx, "assert: resize hash too small");
 		return;
 	}
 
-	table->ents = fz_malloc_array(table->ctx, newsize, sizeof(fz_hash_entry));
+	if (table->lock == FZ_LOCK_ALLOC)
+		fz_unlock(ctx, FZ_LOCK_ALLOC);
+	newents = fz_malloc_array(ctx, newsize, sizeof(fz_hash_entry));
+	if (table->lock == FZ_LOCK_ALLOC)
+		fz_lock(ctx, FZ_LOCK_ALLOC);
+	if (table->lock >= 0)
+	{
+		if (table->size >= newsize)
+		{
+			/* Someone else fixed it before we could lock! */
+			fz_unlock(ctx, table->lock);
+			fz_free(ctx, newents);
+			return;
+		}
+	}
+	table->ents = newents;
 	memset(table->ents, 0, sizeof(fz_hash_entry) * newsize);
 	table->size = newsize;
 	table->load = 0;
@@ -123,19 +173,26 @@ fz_resize_hash(fz_hash_table *table, int newsize)
 	{
 		if (oldents[i].val)
 		{
-			fz_hash_insert(table, oldents[i].key, oldents[i].val);
+			do_hash_insert(ctx, table, oldents[i].key, oldents[i].val);
 		}
 	}
 
-	fz_free(table->ctx, oldents);
+	if (table->lock == FZ_LOCK_ALLOC)
+		fz_unlock(ctx, FZ_LOCK_ALLOC);
+	fz_free(ctx, oldents);
+	if (table->lock == FZ_LOCK_ALLOC)
+		fz_lock(ctx, FZ_LOCK_ALLOC);
 }
 
 void *
-fz_hash_find(fz_hash_table *table, void *key)
+fz_hash_find(fz_context *ctx, fz_hash_table *table, void *key)
 {
 	fz_hash_entry *ents = table->ents;
 	unsigned size = table->size;
 	unsigned pos = hash(key, table->keylen) % size;
+
+	if (table->lock >= 0)
+		fz_assert_lock_held(ctx, table->lock);
 
 	while (1)
 	{
@@ -149,52 +206,33 @@ fz_hash_find(fz_hash_table *table, void *key)
 	}
 }
 
-void
-fz_hash_insert(fz_hash_table *table, void *key, void *val)
+void *
+fz_hash_insert(fz_context *ctx, fz_hash_table *table, void *key, void *val)
 {
-	fz_hash_entry *ents;
-	unsigned size;
-	unsigned pos;
-
 	if (table->load > table->size * 8 / 10)
 	{
-		fz_resize_hash(table, table->size * 2);
+		fz_resize_hash(ctx, table, table->size * 2);
 	}
 
-	ents = table->ents;
-	size = table->size;
-	pos = hash(key, table->keylen) % size;
-
-	while (1)
-	{
-		if (!ents[pos].val)
-		{
-			memcpy(ents[pos].key, key, table->keylen);
-			ents[pos].val = val;
-			table->load ++;
-			return;
-		}
-
-		if (memcmp(key, ents[pos].key, table->keylen) == 0)
-			fz_warn(table->ctx, "assert: overwrite hash slot");
-
-		pos = (pos + 1) % size;
-	}
+	return do_hash_insert(ctx, table, key, val);
 }
 
 void
-fz_hash_remove(fz_hash_table *table, void *key)
+fz_hash_remove(fz_context *ctx, fz_hash_table *table, void *key)
 {
 	fz_hash_entry *ents = table->ents;
 	unsigned size = table->size;
 	unsigned pos = hash(key, table->keylen) % size;
 	unsigned hole, look, code;
 
+	if (table->lock >= 0)
+		fz_assert_lock_held(ctx, table->lock);
+
 	while (1)
 	{
 		if (!ents[pos].val)
 		{
-			fz_warn(table->ctx, "assert: remove inexistent hash entry");
+			fz_warn(ctx, "assert: remove non-existent hash entry");
 			return;
 		}
 
@@ -230,22 +268,22 @@ fz_hash_remove(fz_hash_table *table, void *key)
 }
 
 void
-fz_debug_hash(fz_hash_table *table)
+fz_print_hash(fz_context *ctx, FILE *out, fz_hash_table *table)
 {
 	int i, k;
 
-	printf("cache load %d / %d\n", table->load, table->size);
+	fprintf(out, "cache load %d / %d\n", table->load, table->size);
 
 	for (i = 0; i < table->size; i++)
 	{
 		if (!table->ents[i].val)
-			printf("table % 4d: empty\n", i);
+			fprintf(out, "table % 4d: empty\n", i);
 		else
 		{
-			printf("table % 4d: key=", i);
+			fprintf(out, "table % 4d: key=", i);
 			for (k = 0; k < MAX_KEY_LEN; k++)
-				printf("%02x", ((char*)table->ents[i].key)[k]);
-			printf(" val=$%p\n", table->ents[i].val);
+				fprintf(out, "%02x", ((char*)table->ents[i].key)[k]);
+			fprintf(out, " val=$%p\n", table->ents[i].val);
 		}
 	}
 }

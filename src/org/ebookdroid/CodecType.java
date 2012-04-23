@@ -5,8 +5,8 @@ import org.ebookdroid.droids.cbx.CbrContext;
 import org.ebookdroid.droids.cbx.CbzContext;
 import org.ebookdroid.droids.djvu.codec.DjvuContext;
 import org.ebookdroid.droids.fb2.codec.FB2Context;
-import org.ebookdroid.droids.pdf.codec.PdfContext;
-import org.ebookdroid.droids.xps.codec.XpsContext;
+import org.ebookdroid.droids.mupdf.codec.PdfContext;
+import org.ebookdroid.droids.mupdf.codec.XpsContext;
 
 import java.util.HashMap;
 import java.util.Map;

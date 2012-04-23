@@ -1,5 +1,4 @@
-#include "fitz.h"
-#include "muxps.h"
+#include "muxps-internal.h"
 
 static xml_element *
 xps_find_resource(xps_document *doc, xps_resource *dict, char *name, char **urip)
@@ -63,15 +62,18 @@ xps_parse_remote_resource_dictionary(xps_document *doc, char *base_uri, char *so
 	char *s;
 
 	/* External resource dictionaries MUST NOT reference other resource dictionaries */
-	xps_absolute_path(part_name, base_uri, source_att, sizeof part_name);
+	xps_resolve_url(part_name, base_uri, source_att, sizeof part_name);
 	part = xps_read_part(doc, part_name);
 	xml = xml_parse_document(doc->ctx, part->data, part->size);
 	xps_free_part(doc, part);
 
+	if (!xml)
+		return NULL;
+
 	if (strcmp(xml_tag(xml), "ResourceDictionary"))
 	{
 		xml_free_element(doc->ctx, xml);
-		fz_throw(doc->ctx, "expected ResourceDictionary element (found %s)", xml_tag(xml));
+		fz_throw(doc->ctx, "expected ResourceDictionary element");
 	}
 
 	fz_strlcpy(part_uri, part_name, sizeof part_uri);
@@ -119,8 +121,6 @@ xps_parse_resource_dictionary(xps_document *doc, char *base_uri, xml_element *ro
 
 	if (head)
 		head->base_uri = fz_strdup(doc->ctx, base_uri);
-	else
-		fz_warn(doc->ctx, "empty resource dictionary");
 
 	return head;
 }
@@ -142,7 +142,7 @@ xps_free_resource_dictionary(xps_document *doc, xps_resource *dict)
 }
 
 void
-xps_debug_resource_dictionary(xps_resource *dict)
+xps_print_resource_dictionary(xps_resource *dict)
 {
 	while (dict)
 	{
@@ -152,7 +152,7 @@ xps_debug_resource_dictionary(xps_resource *dict)
 		if (dict->parent)
 		{
 			printf("PARENT = {\n");
-			xps_debug_resource_dictionary(dict->parent);
+			xps_print_resource_dictionary(dict->parent);
 			printf("}\n");
 		}
 		dict = dict->next;

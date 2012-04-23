@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005, Hervé Drolon, FreeImage Team
+ * Copyright (c) 2005, Herve Drolon, FreeImage Team
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -107,6 +107,7 @@ static INLINE long lrintf(float f){
 #include "j2k_lib.h"
 #include "opj_malloc.h"
 #include "event.h"
+#include "bio.h"
 #include "cio.h"
 
 #include "image.h"
@@ -127,9 +128,12 @@ static INLINE long lrintf(float f){
 #include "int.h"
 #include "fix.h"
 
+#include "cidx_manager.h"
+#include "indexbox_manager.h"
+
 /* JPWL>> */
 #ifdef USE_JPWL
-#include "../jpwl/jpwl.h"
+#include "./jpwl/jpwl.h"
 #endif /* USE_JPWL */
 /* <<JPWL */
 

@@ -1,10 +1,9 @@
-#include "fitz.h"
+#include "fitz-internal.h"
 
 fz_device *
 fz_new_device(fz_context *ctx, void *user)
 {
 	fz_device *dev = fz_malloc_struct(ctx, fz_device);
-	memset(dev, 0, sizeof *dev);
 	dev->hints = 0;
 	dev->flags = 0;
 	dev->user = user;
@@ -104,14 +103,14 @@ fz_fill_shade(fz_device *dev, fz_shade *shade, fz_matrix ctm, float alpha)
 }
 
 void
-fz_fill_image(fz_device *dev, fz_pixmap *image, fz_matrix ctm, float alpha)
+fz_fill_image(fz_device *dev, fz_image *image, fz_matrix ctm, float alpha)
 {
 	if (dev->fill_image)
 		dev->fill_image(dev, image, ctm, alpha);
 }
 
 void
-fz_fill_image_mask(fz_device *dev, fz_pixmap *image, fz_matrix ctm,
+fz_fill_image_mask(fz_device *dev, fz_image *image, fz_matrix ctm,
 	fz_colorspace *colorspace, float *color, float alpha)
 {
 	if (dev->fill_image_mask)
@@ -119,7 +118,7 @@ fz_fill_image_mask(fz_device *dev, fz_pixmap *image, fz_matrix ctm,
 }
 
 void
-fz_clip_image_mask(fz_device *dev, fz_pixmap *image, fz_rect *rect, fz_matrix ctm)
+fz_clip_image_mask(fz_device *dev, fz_image *image, fz_rect *rect, fz_matrix ctm)
 {
 	if (dev->clip_image_mask)
 		dev->clip_image_mask(dev, image, rect, ctm);

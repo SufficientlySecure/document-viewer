@@ -14,10 +14,9 @@ LOCAL_CFLAGS :=
 
 LOCAL_SRC_FILES := \
 	ebookdroidjni.c \
-	pdfdroidbridge.c \
-	xpsdroidbridge.c \
 	DjvuDroidBridge.cpp \
 	cbdroidbridge.c \
+	mupdfdroidbridge.c \
 
 LOCAL_C_INCLUDES := \
 	$(LOCAL_PATH)/../mupdf/mupdf/fitz \

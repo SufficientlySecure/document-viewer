@@ -1,16 +1,16 @@
-#include "fitz.h"
-#include "mupdf.h"
+#include "fitz-internal.h"
+#include "mupdf-internal.h"
 
-#ifndef NOCJK
+//#ifndef NOCJK
 #include "../generated/cmap_cns.h"
 #include "../generated/cmap_gb.h"
 #include "../generated/cmap_japan.h"
 #include "../generated/cmap_korea.h"
-#endif
+//#endif
 
 static const struct { char *name; pdf_cmap *cmap; } cmap_table[] =
 {
-#ifndef NOCJK
+//#ifndef NOCJK
 	{"78-EUC-H",&cmap_78_EUC_H},
 	{"78-EUC-V",&cmap_78_EUC_V},
 	{"78-H",&cmap_78_H},
@@ -161,11 +161,11 @@ static const struct { char *name; pdf_cmap *cmap; } cmap_table[] =
 	{"UniKS-UTF16-V",&cmap_UniKS_UTF16_V},
 	{"V",&cmap_V},
 	{"WP-Symbol",&cmap_WP_Symbol},
-#endif
+//#endif
 };
 
 pdf_cmap *
-pdf_find_builtin_cmap(char *cmap_name)
+pdf_load_builtin_cmap(fz_context *ctx, char *cmap_name)
 {
 	int l = 0;
 	int r = nelem(cmap_table) - 1;

@@ -303,7 +303,6 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
                         node = new BookNode(f, null);
                     }
                     a.nodes.add(node);
-                    a.nodes.add(node);
                     if (acceptSearch(node)) {
                         found = true;
                         search.nodes.add(node);

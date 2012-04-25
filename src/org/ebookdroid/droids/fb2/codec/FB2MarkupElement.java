@@ -1,6 +1,9 @@
 package org.ebookdroid.droids.fb2.codec;
 
-public interface FB2MarkupElement {
+import org.ebookdroid.droids.fb2.codec.FB2Document.LineCreationParams;
 
-    void publishToDocument(FB2Document doc);
+import java.util.ArrayList;
+
+public interface FB2MarkupElement {
+    void publishToLines(ArrayList<FB2Line> lines, LineCreationParams params);
 }

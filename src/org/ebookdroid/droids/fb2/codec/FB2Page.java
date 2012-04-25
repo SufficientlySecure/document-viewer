@@ -112,23 +112,11 @@ public class FB2Page implements CodecPage {
     }
 
     public void appendLine(final FB2Line line) {
-        if (committed) {
+        if (committed || !line.appendable()) {
             return;
         }
         lines.add(line);
         contentHeight += line.getHeight();
-    }
-
-    public static FB2Page getLastPage(final ArrayList<FB2Page> pages) {
-        if (pages.size() == 0) {
-            pages.add(new FB2Page());
-        }
-        FB2Page fb2Page = pages.get(pages.size() - 1);
-        if (fb2Page.committed) {
-            fb2Page = new FB2Page();
-            pages.add(fb2Page);
-        }
-        return fb2Page;
     }
 
     public void appendNoteLine(final FB2Line line) {
@@ -142,7 +130,7 @@ public class FB2Page implements CodecPage {
         }
         final int h = FB2Page.PAGE_HEIGHT - contentHeight - 2 * FB2Page.MARGIN_Y;
         if (h > 0) {
-            lines.add(new FB2Line().append(new FB2LineFixedWhiteSpace(0, h)));
+            lines.add(new FB2Line(0).append(new FB2LineFixedWhiteSpace(0, h)));
             contentHeight += h;
         }
         for (final FB2Line line : noteLines) {

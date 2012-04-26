@@ -21,7 +21,9 @@ public class FB2BaseHandler extends DefaultHandler {
     }
 
     protected final RenderingStyle setPrevStyle() {
-        crs = renderingStates.removeFirst();
+        if (!renderingStates.isEmpty()) {
+            crs = renderingStates.removeFirst();
+        }
         return crs;
     }
 

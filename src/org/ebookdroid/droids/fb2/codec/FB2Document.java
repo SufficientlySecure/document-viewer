@@ -46,7 +46,6 @@ public class FB2Document implements CodecDocument {
         final ArrayList<FB2MarkupElement> docMarkup = new ArrayList<FB2MarkupElement>();
 
         final HashMap<String, ArrayList<FB2MarkupElement>> streams = new HashMap<String, ArrayList<FB2MarkupElement>>();
-        String currentStream = null;
 
         public void clear() {
             docMarkup.clear();
@@ -56,10 +55,6 @@ public class FB2Document implements CodecDocument {
                     value.clear();
                 }
             }
-        }
-
-        public ArrayList<FB2MarkupElement> getMarkupStream() {
-            return getMarkupStream(currentStream);
         }
 
         public ArrayList<FB2MarkupElement> getMarkupStream(String streamName) {
@@ -95,18 +90,18 @@ public class FB2Document implements CodecDocument {
 
     private final List<OutlineLink> outline = new ArrayList<OutlineLink>();
 
-    private ParsedContent content;
+    private final ParsedContent content = new ParsedContent();
 
     public FB2Document(final String fileName) {
         final SAXParserFactory spf = SAXParserFactory.newInstance();
 
         final long t2 = System.currentTimeMillis();
-        content = parseContent(spf, fileName);
+        parseContent(spf, fileName);
         final long t3 = System.currentTimeMillis();
         System.out.println("SAX parser: " + (t3 - t2) + " ms");
         System.out.println("Words=" + FB2Words.words + ", uniques=" + FB2Words.uniques);
 
-        final List<FB2Line> documentLines = createLines(content.getMarkupStream(null), PAGE_WIDTH - 2 * MARGIN_X);
+        final List<FB2Line> documentLines = createLines(content.getMarkupStream(null), PAGE_WIDTH - 2 * MARGIN_X, JustificationMode.Justify);
         createPages(documentLines);
 
         content.clear();
@@ -116,11 +111,11 @@ public class FB2Document implements CodecDocument {
         System.out.println("Markup: " + (t4 - t3) + " ms");
     }
 
-    private ArrayList<FB2Line> createLines(List<FB2MarkupElement> markup, int maxLineWidth) {
+    private ArrayList<FB2Line> createLines(List<FB2MarkupElement> markup, int maxLineWidth, JustificationMode jm) {
         ArrayList<FB2Line> lines = new ArrayList<FB2Line>();
         if (LengthUtils.isNotEmpty(markup)) {
             LineCreationParams params = new LineCreationParams();
-            params.jm = JustificationMode.Justify;
+            params.jm = jm;
             params.maxLineWidth = maxLineWidth;
             params.doc = this;
             for (final FB2MarkupElement me : markup) {
@@ -179,8 +174,8 @@ public class FB2Document implements CodecDocument {
         }
     }
 
-    private ParsedContent parseContent(final SAXParserFactory spf, final String fileName) {
-        final FB2ContentHandler h = new FB2ContentHandler(this);
+    private void parseContent(final SAXParserFactory spf, final String fileName) {
+        final FB2ContentHandler h = new FB2ContentHandler(this, content);
         final List<Closeable> resources = new ArrayList<Closeable>();
 
         try {
@@ -263,7 +258,6 @@ public class FB2Document implements CodecDocument {
             }
             resources.clear();
         }
-        return h.parsedContent;
     }
 
     @Override
@@ -337,13 +331,22 @@ public class FB2Document implements CodecDocument {
                 stream = content.getMarkupStream(noteName.substring(1));
             }
             if (stream != null) {
-                note = createLines(stream, PAGE_WIDTH - 2 * MARGIN_X);
+                note = createLines(stream, PAGE_WIDTH - 2 * MARGIN_X, JustificationMode.Justify);
                 notes.put(noteName, note);
             }
         }
 
         return note;
     }
+
+    public List<FB2Line> getStreamLines(String streamName, int maxWidth, JustificationMode jm) {
+        ArrayList<FB2MarkupElement> stream = content.getMarkupStream(streamName);
+        if (stream != null) {
+            return createLines(stream, maxWidth, jm);
+        }
+        return null;
+    }
+
 
     public void setCover(final String value) {
         this.cover = value;

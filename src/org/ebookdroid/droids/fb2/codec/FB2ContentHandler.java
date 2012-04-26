@@ -5,6 +5,7 @@ import org.ebookdroid.droids.fb2.codec.RenderingStyle.Script;
 
 import android.util.SparseArray;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,31 +41,36 @@ public class FB2ContentHandler extends FB2BaseHandler {
 
     int sectionLevel = -1;
 
-    private boolean skipContent;
+    private boolean skipContent = true;
 
-    public ParsedContent parsedContent;
+    public final ParsedContent parsedContent;
+    String currentStream = null;
+    String oldStream = null;
 
-    public FB2ContentHandler(final FB2Document fb2Document) {
+    private FB2MarkupTable currentTable;
+
+    public FB2ContentHandler(final FB2Document fb2Document, ParsedContent content) {
         super(fb2Document);
-        parsedContent = fb2Document.new ParsedContent();
-        parsedContent.currentStream = null;
+        parsedContent = content;
+        currentStream = null;
     }
 
     @Override
     public void startElement(final String uri, final String localName, final String qName, final Attributes attributes)
             throws SAXException {
         spaceNeeded = true;
+        final ArrayList<FB2MarkupElement> markupStream = parsedContent.getMarkupStream(currentStream);
         if ("p".equals(qName)) {
             paragraphParsing = true;
             if (!parsingNotes) {
                 if (!inTitle) {
-                    parsedContent.getMarkupStream().add(crs.paint.pOffset);
+                    markupStream.add(crs.paint.pOffset);
                 }
             }
         } else if ("v".equals(qName)) {
             paragraphParsing = true;
-            parsedContent.getMarkupStream().add(crs.paint.pOffset);
-            parsedContent.getMarkupStream().add(crs.paint.vOffset);
+            markupStream.add(crs.paint.pOffset);
+            markupStream.add(crs.paint.vOffset);
         } else if ("binary".equals(qName)) {
             tmpBinaryName = attributes.getValue("id");
             tmpBinaryContents.setLength(0);
@@ -72,7 +78,8 @@ public class FB2ContentHandler extends FB2BaseHandler {
         } else if ("body".equals(qName)) {
             if (!documentStarted && !documentEnded) {
                 documentStarted = true;
-                parsedContent.currentStream = null;
+                skipContent = false;
+                currentStream = null;
             }
             if ("notes".equals(attributes.getValue("name"))) {
                 if (documentStarted) {
@@ -84,11 +91,11 @@ public class FB2ContentHandler extends FB2BaseHandler {
             }
         } else if ("section".equals(qName)) {
             if (parsingNotes) {
-                parsedContent.currentStream = attributes.getValue("id");
-                if (parsedContent.currentStream != null) {
-                    final String n = getNoteId(parsedContent.currentStream, true);
-                    parsedContent.getMarkupStream().add(text(n.toCharArray(), 0, n.length(), crs));
-                    parsedContent.getMarkupStream().add(crs.paint.fixedSpace);
+                currentStream = attributes.getValue("id");
+                if (currentStream != null) {
+                    final String n = getNoteId(currentStream, true);
+                    parsedContent.getMarkupStream(currentStream).add(text(n.toCharArray(), 0, n.length(), crs));
+                    parsedContent.getMarkupStream(currentStream).add(crs.paint.fixedSpace);
                 }
             } else {
                 inSection = true;
@@ -97,9 +104,9 @@ public class FB2ContentHandler extends FB2BaseHandler {
         } else if ("title".equals(qName)) {
             if (!parsingNotes) {
                 setTitleStyle(!inSection ? FB2FontStyle.MAIN_TITLE : FB2FontStyle.SECTION_TITLE);
-                parsedContent.getMarkupStream().add(crs.jm);
-                parsedContent.getMarkupStream().add(emptyLine(crs.textSize));
-                parsedContent.getMarkupStream().add(FB2MarkupParagraphEnd.E);
+                markupStream.add(crs.jm);
+                markupStream.add(emptyLine(crs.textSize));
+                markupStream.add(FB2MarkupParagraphEnd.E);
                 title.setLength(0);
             } else {
                 skipContent = true;
@@ -108,37 +115,37 @@ public class FB2ContentHandler extends FB2BaseHandler {
         } else if ("cite".equals(qName)) {
             inCite = true;
             setEmphasisStyle();
-            parsedContent.getMarkupStream().add(emptyLine(crs.textSize));
-            parsedContent.getMarkupStream().add(FB2MarkupParagraphEnd.E);
+            markupStream.add(emptyLine(crs.textSize));
+            markupStream.add(FB2MarkupParagraphEnd.E);
         } else if ("subtitle".equals(qName)) {
             paragraphParsing = true;
-            parsedContent.getMarkupStream().add(setSubtitleStyle().jm);
-            parsedContent.getMarkupStream().add(emptyLine(crs.textSize));
-            parsedContent.getMarkupStream().add(FB2MarkupParagraphEnd.E);
-        } else if ("text-author".equals(qName) || "date".equals(qName)) {
+            markupStream.add(setSubtitleStyle().jm);
+            markupStream.add(emptyLine(crs.textSize));
+            markupStream.add(FB2MarkupParagraphEnd.E);
+        } else if ("text-author".equals(qName) || ("date".equals(qName) && (documentStarted && !documentEnded || parsingNotes))) {
             paragraphParsing = true;
-            parsedContent.getMarkupStream().add(setTextAuthorStyle(inCite).jm);
-            parsedContent.getMarkupStream().add(crs.paint.pOffset);
+            markupStream.add(setTextAuthorStyle(inCite).jm);
+            markupStream.add(crs.paint.pOffset);
         } else if ("a".equals(qName)) {
             if (paragraphParsing) {
                 if ("note".equalsIgnoreCase(attributes.getValue("type"))) {
                     String note = attributes.getValue("href");
-                    parsedContent.getMarkupStream().add(new FB2MarkupNote(note));
+                    markupStream.add(new FB2MarkupNote(note));
                     String prettyNote = " " + getNoteId(note, false);
-                    parsedContent.getMarkupStream().add(FB2MarkupNoSpace._instance);
-                    parsedContent.getMarkupStream().add(
+                    markupStream.add(FB2MarkupNoSpace._instance);
+                    markupStream.add(
                             new FB2TextElement(prettyNote.toCharArray(), 0, prettyNote.length(), new RenderingStyle(
                                     crs, Script.SUPER)));
                     skipContent = true;
                 }
             }
         } else if ("empty-line".equals(qName)) {
-            parsedContent.getMarkupStream().add(emptyLine(crs.textSize));
-            parsedContent.getMarkupStream().add(FB2MarkupParagraphEnd.E);
+            markupStream.add(emptyLine(crs.textSize));
+            markupStream.add(FB2MarkupParagraphEnd.E);
         } else if ("poem".equals(qName)) {
-            parsedContent.getMarkupStream().add(FB2MarkupParagraphEnd.E);
-            parsedContent.getMarkupStream().add(emptyLine(crs.textSize));
-            parsedContent.getMarkupStream().add(setPoemStyle().jm);
+            markupStream.add(FB2MarkupParagraphEnd.E);
+            markupStream.add(emptyLine(crs.textSize));
+            markupStream.add(setPoemStyle().jm);
         } else if ("strong".equals(qName)) {
             setBoldStyle();
         } else if ("sup".equals(qName)) {
@@ -152,25 +159,42 @@ public class FB2ContentHandler extends FB2BaseHandler {
         } else if ("emphasis".equals(qName)) {
             setEmphasisStyle();
         } else if ("epigraph".equals(qName)) {
-            parsedContent.getMarkupStream().add(FB2MarkupParagraphEnd.E);
-            parsedContent.getMarkupStream().add(setEpigraphStyle().jm);
+            markupStream.add(FB2MarkupParagraphEnd.E);
+            markupStream.add(setEpigraphStyle().jm);
         } else if ("image".equals(qName)) {
             final String ref = attributes.getValue("href");
             if (cover) {
                 document.setCover(ref);
             } else {
                 if (!paragraphParsing) {
-                    parsedContent.getMarkupStream().add(emptyLine(crs.textSize));
-                    parsedContent.getMarkupStream().add(FB2MarkupParagraphEnd.E);
+                    markupStream.add(emptyLine(crs.textSize));
+                    markupStream.add(FB2MarkupParagraphEnd.E);
                 }
-                parsedContent.getMarkupStream().add(new FB2MarkupImageRef(ref, paragraphParsing));
+                markupStream.add(new FB2MarkupImageRef(ref, paragraphParsing));
                 if (!paragraphParsing) {
-                    parsedContent.getMarkupStream().add(emptyLine(crs.textSize));
-                    parsedContent.getMarkupStream().add(FB2MarkupParagraphEnd.E);
+                    markupStream.add(emptyLine(crs.textSize));
+                    markupStream.add(FB2MarkupParagraphEnd.E);
                 }
             }
         } else if ("coverpage".equals(qName)) {
             cover = true;
+        } else if ("annotation".equals(qName)) {
+            skipContent = false;
+        } else if ("table".equals(qName)) {
+            currentTable = new FB2MarkupTable();
+            markupStream.add(currentTable);
+        } else if ("tr".equals(qName)) {
+            if (currentTable != null) {
+                currentTable.rowCount++;
+                currentTable.colCount = 0;
+            }
+        } else if ("td".equals(qName) || "th".equals(qName)) {
+            if (currentTable != null) {
+                currentTable.colCount++;
+                paragraphParsing = true;
+                oldStream = currentStream;
+                currentStream = currentTable.uuid + ":" + currentTable.rowCount + ":" + currentTable.colCount;
+            }
         }
     }
 
@@ -190,9 +214,10 @@ public class FB2ContentHandler extends FB2BaseHandler {
     @Override
     public void endElement(final String uri, final String localName, final String qName) throws SAXException {
         spaceNeeded = true;
+        final ArrayList<FB2MarkupElement> markupStream = parsedContent.getMarkupStream(currentStream);
         if ("p".equals(qName) || "v".equals(qName)) {
             if (!skipContent) {
-                parsedContent.getMarkupStream().add(FB2MarkupParagraphEnd.E);
+                markupStream.add(FB2MarkupParagraphEnd.E);
             }
             paragraphParsing = false;
         } else if ("binary".equals(qName)) {
@@ -204,14 +229,14 @@ public class FB2ContentHandler extends FB2BaseHandler {
             parsingBinary = false;
         } else if ("body".equals(qName)) {
             parsingNotes = false;
-            parsedContent.currentStream = null;
+            currentStream = null;
         } else if ("section".equals(qName)) {
             if (parsingNotes) {
                 noteId = -1;
                 noteFirstWord = true;
             } else {
                 if (inSection) {
-                    parsedContent.getMarkupStream().add(FB2MarkupEndPage.E);
+                    markupStream.add(FB2MarkupEndPage.E);
                     sectionLevel--;
                     inSection = false;
                 }
@@ -220,33 +245,33 @@ public class FB2ContentHandler extends FB2BaseHandler {
             inTitle = false;
             skipContent = false;
             if (!parsingNotes) {
-                parsedContent.getMarkupStream().add(new FB2MarkupTitle(title.toString(), sectionLevel));
-                parsedContent.getMarkupStream().add(emptyLine(crs.textSize));
-                parsedContent.getMarkupStream().add(FB2MarkupParagraphEnd.E);
-                parsedContent.getMarkupStream().add(setPrevStyle().jm);
+                markupStream.add(new FB2MarkupTitle(title.toString(), sectionLevel));
+                markupStream.add(emptyLine(crs.textSize));
+                markupStream.add(FB2MarkupParagraphEnd.E);
+                markupStream.add(setPrevStyle().jm);
             }
         } else if ("cite".equals(qName)) {
             inCite = false;
-            parsedContent.getMarkupStream().add(emptyLine(crs.textSize));
-            parsedContent.getMarkupStream().add(FB2MarkupParagraphEnd.E);
-            parsedContent.getMarkupStream().add(setPrevStyle().jm);
+            markupStream.add(emptyLine(crs.textSize));
+            markupStream.add(FB2MarkupParagraphEnd.E);
+            markupStream.add(setPrevStyle().jm);
         } else if ("subtitle".equals(qName)) {
-            parsedContent.getMarkupStream().add(FB2MarkupParagraphEnd.E);
-            parsedContent.getMarkupStream().add(emptyLine(crs.textSize));
-            parsedContent.getMarkupStream().add(FB2MarkupParagraphEnd.E);
-            parsedContent.getMarkupStream().add(setPrevStyle().jm);
+            markupStream.add(FB2MarkupParagraphEnd.E);
+            markupStream.add(emptyLine(crs.textSize));
+            markupStream.add(FB2MarkupParagraphEnd.E);
+            markupStream.add(setPrevStyle().jm);
             paragraphParsing = false;
         } else if ("text-author".equals(qName) || "date".equals(qName)) {
-            parsedContent.getMarkupStream().add(FB2MarkupParagraphEnd.E);
-            parsedContent.getMarkupStream().add(setPrevStyle().jm);
+            markupStream.add(FB2MarkupParagraphEnd.E);
+            markupStream.add(setPrevStyle().jm);
             paragraphParsing = false;
         } else if ("stanza".equals(qName)) {
-            parsedContent.getMarkupStream().add(emptyLine(crs.textSize));
-            parsedContent.getMarkupStream().add(FB2MarkupParagraphEnd.E);
+            markupStream.add(emptyLine(crs.textSize));
+            markupStream.add(FB2MarkupParagraphEnd.E);
         } else if ("poem".equals(qName)) {
-            parsedContent.getMarkupStream().add(emptyLine(crs.textSize));
-            parsedContent.getMarkupStream().add(FB2MarkupParagraphEnd.E);
-            parsedContent.getMarkupStream().add(setPrevStyle().jm);
+            markupStream.add(emptyLine(crs.textSize));
+            markupStream.add(FB2MarkupParagraphEnd.E);
+            markupStream.add(setPrevStyle().jm);
         } else if ("strong".equals(qName)) {
             setPrevStyle();
             spaceNeeded = false;
@@ -254,25 +279,33 @@ public class FB2ContentHandler extends FB2BaseHandler {
             setPrevStyle();
         } else if ("sup".equals(qName)) {
             setPrevStyle();
-            if (parsedContent.getMarkupStream().get(parsedContent.getMarkupStream().size() - 1) instanceof FB2MarkupNoSpace) {
-                parsedContent.getMarkupStream().remove(parsedContent.getMarkupStream().size() - 1);
+            if (markupStream.get(markupStream.size() - 1) instanceof FB2MarkupNoSpace) {
+                markupStream.remove(markupStream.size() - 1);
             }
         } else if ("sub".equals(qName)) {
             setPrevStyle();
-            if (parsedContent.getMarkupStream().get(parsedContent.getMarkupStream().size() - 1) instanceof FB2MarkupNoSpace) {
-                parsedContent.getMarkupStream().remove(parsedContent.getMarkupStream().size() - 1);
+            if (markupStream.get(markupStream.size() - 1) instanceof FB2MarkupNoSpace) {
+                markupStream.remove(markupStream.size() - 1);
             }
         } else if ("emphasis".equals(qName)) {
             setPrevStyle();
             spaceNeeded = false;
         } else if ("epigraph".equals(qName)) {
-            parsedContent.getMarkupStream().add(setPrevStyle().jm);
+            markupStream.add(setPrevStyle().jm);
         } else if ("coverpage".equals(qName)) {
             cover = false;
         } else if ("a".equals(qName)) {
             if (paragraphParsing) {
                 skipContent = false;
             }
+        } else if ("annotation".equals(qName)) {
+            skipContent = true;
+            parsedContent.getMarkupStream(null).add(FB2MarkupEndPage.E);
+        } else if ("table".equals(qName)) {
+            currentTable = null;
+        } else if ("td".equals(qName) || "th".equals(qName)) {
+            paragraphParsing = false;
+            currentStream = oldStream;
         }
     }
 
@@ -291,8 +324,9 @@ public class FB2ContentHandler extends FB2BaseHandler {
             final int count = StringUtils.split(ch, start, length, starts, lengths);
 
             if (count > 0) {
+                final ArrayList<FB2MarkupElement> markupStream = parsedContent.getMarkupStream(currentStream);
                 if (!spaceNeeded && !Character.isWhitespace(ch[start])) {
-                    parsedContent.getMarkupStream().add(FB2MarkupNoSpace._instance);
+                    markupStream.add(FB2MarkupNoSpace._instance);
                 }
                 spaceNeeded = true;
 
@@ -313,14 +347,14 @@ public class FB2ContentHandler extends FB2BaseHandler {
                             }
                         }
                     }
-                    parsedContent.getMarkupStream().add(text(ch, st, len, crs));
+                    markupStream.add(text(ch, st, len, crs));
                     if (crs.script != null) {
-                        parsedContent.getMarkupStream().add(FB2MarkupNoSpace._instance);
+                        markupStream.add(FB2MarkupNoSpace._instance);
                     }
                 }
                 if (Character.isWhitespace(ch[start + length - 1])) {
-                    parsedContent.getMarkupStream().add(FB2MarkupNoSpace._instance);
-                    parsedContent.getMarkupStream().add(crs.paint.space);
+                    markupStream.add(FB2MarkupNoSpace._instance);
+                    markupStream.add(crs.paint.space);
                 }
                 spaceNeeded = false;
             }

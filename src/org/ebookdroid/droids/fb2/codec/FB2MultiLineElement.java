@@ -9,13 +9,15 @@ import java.util.List;
 
 import org.emdev.utils.LengthUtils;
 
-
 public class FB2MultiLineElement extends AbstractFB2LineElement {
+
+    public static final int BORDER_WIDTH = 3;
 
     private List<FB2Line> lines;
     private boolean hasBorder;
 
-    public FB2MultiLineElement(int cellWidth, int maxHeight, List<FB2Line> cellLines, boolean hasBorder, boolean background) {
+    public FB2MultiLineElement(int cellWidth, int maxHeight, List<FB2Line> cellLines, boolean hasBorder,
+            boolean background) {
         super(cellWidth, maxHeight);
         this.lines = cellLines;
         this.hasBorder = hasBorder;
@@ -40,9 +42,9 @@ public class FB2MultiLineElement extends AbstractFB2LineElement {
             c.drawRect(x, y - height, x + width, y, paint);
         }
         if (LengthUtils.isNotEmpty(lines)) {
-            int y1 = y - height + 10;
+            int y1 = y - height + BORDER_WIDTH;
             for (FB2Line line : lines) {
-                line.render(c, x + 10, y1 + line.getHeight(), left, right);
+                line.render(c, x + BORDER_WIDTH, y1 + line.getHeight(), left, right);
                 y1 += line.getHeight();
             }
         }

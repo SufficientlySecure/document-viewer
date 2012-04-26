@@ -24,8 +24,13 @@ public abstract class AbstractFB2LineElement implements FB2LineElement {
     public void publishToLines(ArrayList<FB2Line> lines, LineCreationParams params) {
         FB2Line line = FB2Line.getLastLine(lines, params.maxLineWidth);
         final FB2LineWhiteSpace space = RenderingStyle.getTextPaint(line.getHeight()).space;
-        final float remaining = params.maxLineWidth - (line.width + space.width);
-        if (this.width < remaining) {
+        float remaining = params.maxLineWidth - (line.width + space.width);
+        if (remaining <= 0) {
+            line = new FB2Line(params.maxLineWidth);
+            lines.add(line);
+            remaining = params.maxLineWidth;
+        }
+        if (this.width <= remaining) {
             if (line.hasNonWhiteSpaces() && params.insertSpace) {
                 line.append(space);
             }

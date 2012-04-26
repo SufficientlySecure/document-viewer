@@ -8,6 +8,8 @@ import java.util.UUID;
 
 public class FB2MarkupTable implements FB2MarkupElement {
 
+    private static final int DOUBLE_BORDER_WIDTH = FB2MultiLineElement.BORDER_WIDTH * 2;
+
     final String uuid = UUID.randomUUID().toString();
 
     int rowCount = 0;
@@ -24,7 +26,7 @@ public class FB2MarkupTable implements FB2MarkupElement {
                 int maxHeight = 0;
                 for (int j = 0; j < colCount; j++) {
                     final List<FB2Line> cellLines = params.doc.getStreamLines(uuid + ":" + (i + 1) + ":" + (j + 1),
-                            cellWidth - 20, JustificationMode.Left);
+                            cellWidth - DOUBLE_BORDER_WIDTH, JustificationMode.Left);
                     cells.add(cellLines);
                     final int height = FB2MultiLineElement.calcHeight(cellLines);
                     if (height > maxHeight) {
@@ -32,7 +34,7 @@ public class FB2MarkupTable implements FB2MarkupElement {
                     }
                 }
                 for (List<FB2Line> list : cells) {
-                    row.append(new FB2MultiLineElement(cellWidth, maxHeight + 20, list, true, false));
+                    row.append(new FB2MultiLineElement(cellWidth, maxHeight + DOUBLE_BORDER_WIDTH, list, true, false));
                 }
 
                 row.applyJustification(JustificationMode.Center);

@@ -30,7 +30,6 @@ public abstract class AbstractFB2LineElement implements FB2LineElement {
                 line.append(space);
             }
             line.append(this);
-            params.insertSpace = true;
         } else {
             final AbstractFB2LineElement[] splitted = split(remaining);
             if (splitted != null && splitted.length > 1) {
@@ -45,9 +44,13 @@ public abstract class AbstractFB2LineElement implements FB2LineElement {
             line = new FB2Line(params.maxLineWidth);
             lines.add(line);
 
-            line.append(splitted == null ? this : splitted[splitted.length - 1]);
-            params.insertSpace = true;
+            if (splitted == null) {
+                line.append(this);
+            } else {
+                splitted[splitted.length - 1].publishToLines(lines, params);
+            }
         }
+        params.insertSpace = true;
     }
 
     public AbstractFB2LineElement[] split(final float remaining) {

@@ -22,11 +22,11 @@ public abstract class AbstractFB2LineElement implements FB2LineElement {
 
     @Override
     public void publishToLines(ArrayList<FB2Line> lines, LineCreationParams params) {
-        FB2Line line = FB2Line.getLastLine(lines, params.maxLineWidth);
+        FB2Line line = FB2Line.getLastLine(lines, params.maxLineWidth, params.jm);
         final FB2LineWhiteSpace space = RenderingStyle.getTextPaint(line.getHeight()).space;
         float remaining = params.maxLineWidth - (line.width + space.width);
         if (remaining <= 0) {
-            line = new FB2Line(params.maxLineWidth);
+            line = new FB2Line(params.maxLineWidth, params.jm);
             lines.add(line);
             remaining = params.maxLineWidth;
         }
@@ -46,7 +46,7 @@ public abstract class AbstractFB2LineElement implements FB2LineElement {
                 }
             }
 
-            line = new FB2Line(params.maxLineWidth);
+            line = new FB2Line(params.maxLineWidth, params.jm);
             lines.add(line);
 
             if (splitted == null) {

@@ -1,6 +1,7 @@
 package org.ebookdroid.droids.fb2.codec;
 
 import org.ebookdroid.droids.fb2.codec.FB2Document.ParsedContent;
+import org.ebookdroid.droids.fb2.codec.FB2MarkupTable.Cell;
 import org.ebookdroid.droids.fb2.codec.RenderingStyle.Script;
 
 import android.util.SparseArray;
@@ -185,15 +186,26 @@ public class FB2ContentHandler extends FB2BaseHandler {
             markupStream.add(currentTable);
         } else if ("tr".equals(qName)) {
             if (currentTable != null) {
-                currentTable.rowCount++;
-                currentTable.colCount = 0;
+                currentTable.addRow();
             }
         } else if ("td".equals(qName) || "th".equals(qName)) {
             if (currentTable != null) {
-                currentTable.colCount++;
+                final int rowCount = currentTable.getRowCount();
+                final Cell c = currentTable.new Cell();
+                currentTable.addCol(c);
+                final String streamId = currentTable.uuid + ":" + rowCount + ":" + currentTable.getColCount(rowCount - 1);
+                c.stream = streamId;
+                c.hasBackground = "th".equals(qName);
+                final String align = attributes.getValue("align");
+                if ("right".equals(align)) {
+                    c.align = JustificationMode.Right;
+                }
+                if ("center".equals(align)) {
+                    c.align = JustificationMode.Center;
+                }
                 paragraphParsing = true;
                 oldStream = currentStream;
-                currentStream = currentTable.uuid + ":" + currentTable.rowCount + ":" + currentTable.colCount;
+                currentStream = streamId;
             }
         }
     }

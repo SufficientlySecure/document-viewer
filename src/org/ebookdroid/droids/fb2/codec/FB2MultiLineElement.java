@@ -16,11 +16,15 @@ public class FB2MultiLineElement extends AbstractFB2LineElement {
     private List<FB2Line> lines;
     private boolean hasBorder;
 
+    private boolean hasBackground;
+    final static Paint paint = new Paint();
+
     public FB2MultiLineElement(int cellWidth, int maxHeight, List<FB2Line> cellLines, boolean hasBorder,
-            boolean background) {
+            boolean hasBackground) {
         super(cellWidth, maxHeight);
         this.lines = cellLines;
         this.hasBorder = hasBorder;
+        this.hasBackground = hasBackground;
     }
 
     static int calcHeight(List<FB2Line> cellLines) {
@@ -35,9 +39,15 @@ public class FB2MultiLineElement extends AbstractFB2LineElement {
 
     @Override
     public float render(Canvas c, int y, int x, float additionalWidth, float left, float right) {
+        if (hasBackground) {
+            paint.setStyle(Style.FILL);
+            paint.setStrokeWidth(0);
+            paint.setColor(Color.GRAY);
+            c.drawRect(x, y - height, x + width, y, paint);
+        }
         if (hasBorder) {
-            final Paint paint = new Paint();
             paint.setStyle(Style.STROKE);
+            paint.setStrokeWidth(1);
             paint.setColor(Color.BLACK);
             c.drawRect(x, y - height, x + width, y, paint);
         }
@@ -50,5 +60,18 @@ public class FB2MultiLineElement extends AbstractFB2LineElement {
         }
         return width;
     }
+
+    public void applyNotes(FB2Line line) {
+        if (LengthUtils.isNotEmpty(lines)) {
+            for (FB2Line l : lines) {
+                final List<FB2Line> notes = l.getFootNotes();
+                if (LengthUtils.isNotEmpty(notes)) {
+                    notes.remove(0);
+                    line.addNote(notes);
+                }
+            }
+        }
+    }
+
 
 }

@@ -22,7 +22,7 @@ public class FB2TextElement extends AbstractFB2LineElement {
     public final RenderingStyle style;
 
     public FB2TextElement(final char[] ch, final int st, final int len, final RenderingStyle style) {
-        super(style.paint.measureText(ch, st, len), style.textSize);
+        super(style.paint.measureText(ch, st, len), style.script == Script.SUPER ? style.textSize * 5 / 2 : style.textSize);
         this.chars = ch;
         this.start = st;
         this.length = len;

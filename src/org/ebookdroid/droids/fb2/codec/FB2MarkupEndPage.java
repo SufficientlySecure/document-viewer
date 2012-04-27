@@ -9,7 +9,7 @@ public class FB2MarkupEndPage extends FB2Line implements FB2MarkupElement {
     public static final FB2MarkupElement E = new FB2MarkupEndPage();
 
     private FB2MarkupEndPage() {
-        super(0);
+        super(0, JustificationMode.Left);
     }
 
     @Override

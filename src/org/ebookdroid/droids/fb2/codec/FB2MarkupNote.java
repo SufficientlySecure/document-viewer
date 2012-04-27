@@ -22,7 +22,7 @@ public class FB2MarkupNote implements FB2MarkupElement {
     public void publishToLines(ArrayList<FB2Line> lines, LineCreationParams params) {
         final List<FB2Line> note = params.doc.getNote(ref);
         if (note != null && LengthUtils.isNotEmpty(lines)) {
-            final FB2Line line = FB2Line.getLastLine(lines, params.maxLineWidth);
+            final FB2Line line = FB2Line.getLastLine(lines, params.maxLineWidth, params.jm);
             line.addNote(note);
         }
     }

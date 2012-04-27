@@ -22,8 +22,9 @@ public class FB2Line {
     private FB2MarkupTitle title;
     private int maxLineWidth;
 
-    public FB2Line(int lineWidth) {
+    public FB2Line(int lineWidth, JustificationMode jm) {
         this.maxLineWidth = lineWidth;
+        justification = jm;
     }
 
     public FB2Line append(final AbstractFB2LineElement element) {
@@ -60,13 +61,13 @@ public class FB2Line {
         }
     }
 
-    public static FB2Line getLastLine(final ArrayList<FB2Line> lines, int maxLineWidth) {
+    public static FB2Line getLastLine(final ArrayList<FB2Line> lines, int maxLineWidth, JustificationMode jm) {
         if (lines.size() == 0) {
-            lines.add(new FB2Line(maxLineWidth));
+            lines.add(new FB2Line(maxLineWidth, jm));
         }
         FB2Line fb2Line = lines.get(lines.size() - 1);
         if (fb2Line.committed) {
-            fb2Line = new FB2Line(maxLineWidth);
+            fb2Line = new FB2Line(maxLineWidth, jm);
             lines.add(fb2Line);
         }
         return fb2Line;
@@ -111,7 +112,7 @@ public class FB2Line {
         }
         if (footnotes == null) {
             footnotes = new ArrayList<FB2Line>();
-            final FB2Line lastLine = new FB2Line(FB2Page.PAGE_WIDTH / 4);
+            final FB2Line lastLine = new FB2Line(FB2Page.PAGE_WIDTH / 4, justification);
             footnotes.add(lastLine);
             lastLine.append(new FB2HorizontalRule(FB2Page.PAGE_WIDTH / 4, FB2FontStyle.FOOTNOTE.getFontSize()));
             lastLine.applyJustification(JustificationMode.Left);

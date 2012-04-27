@@ -19,7 +19,7 @@ public class FB2MarkupImageRef implements FB2MarkupElement {
         final FB2Image image = params.doc.getImage(ref, inline);
         if (image != null) {
             if (!inline) {
-                final FB2Line line = new FB2Line(params.maxLineWidth);
+                final FB2Line line = new FB2Line(params.maxLineWidth, params.jm);
                 line.append(image);
                 line.applyJustification(JustificationMode.Center);
                 lines.add(line);

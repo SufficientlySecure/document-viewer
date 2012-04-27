@@ -16,7 +16,7 @@ public class FB2MarkupTitle implements FB2MarkupElement {
 
     @Override
     public void publishToLines(ArrayList<FB2Line> lines, LineCreationParams params) {
-        FB2Line.getLastLine(lines, params.maxLineWidth).setTitle(this);
+        FB2Line.getLastLine(lines, params.maxLineWidth, params.jm).setTitle(this);
     }
 
 }

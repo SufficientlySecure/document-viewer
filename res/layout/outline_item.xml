@@ -5,14 +5,27 @@
     android:background="@drawable/outline_background"
     android:orientation="horizontal" >
 
+    <LinearLayout
+        android:id="@+id/outline_space"
+        android:layout_width="48.0px"
+        android:layout_height="48.0px" />
+
+    <LinearLayout
+        android:id="@+id/outline_collapse"
+        android:layout_width="48.0px"
+        android:layout_height="48.0px"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:layout_toRightOf="@id/outline_space"
+        android:background="@drawable/seekbar_pref_minus" />
+
     <TextView
         android:id="@+id/outline_title"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentRight="true"
-        android:layout_marginLeft="20sp"
+        android:layout_toRightOf="@id/outline_collapse"
         android:ellipsize="marquee"
-        android:gravity="center_vertical"
-        />
+        android:gravity="center_vertical" />
 
 </RelativeLayout>

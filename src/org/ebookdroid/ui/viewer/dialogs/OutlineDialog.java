@@ -45,22 +45,21 @@ public class OutlineDialog extends Dialog implements OnItemClickListener {
 
         setContentView(listView);
 
-        final OutlineAdapter adapter = new OutlineAdapter(getContext(), outline);
-
-        listView.setAdapter(adapter);
-
         final BookSettings bs = SettingsManager.getBookSettings();
+        OutlineLink current = null;
         if (bs != null) {
-            final int current = bs.currentPage.docIndex;
-            for (int i = 0; i < adapter.getCount(); i++) {
-                final OutlineLink item = adapter.getItem(i);
-                if (current <= item.targetPage) {
-                    listView.setItemChecked(i, true);
-                    listView.setSelection(i);
+            final int currentIndex = bs.currentPage.docIndex;
+            for (final OutlineLink item : outline) {
+                if (currentIndex <= item.targetPage) {
+                    current = item;
                     break;
                 }
             }
         }
+
+        final OutlineAdapter adapter = new OutlineAdapter(getContext(), outline, current);
+
+        listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(this);
     }

@@ -50,7 +50,7 @@ public class OutlineDialog extends Dialog implements OnItemClickListener {
         if (bs != null) {
             final int currentIndex = bs.currentPage.docIndex;
             for (final OutlineLink item : outline) {
-                if (currentIndex <= item.targetPage) {
+                if (currentIndex <= item.targetPage - 1) {
                     current = item;
                     break;
                 }
@@ -60,8 +60,14 @@ public class OutlineDialog extends Dialog implements OnItemClickListener {
         final OutlineAdapter adapter = new OutlineAdapter(getContext(), outline, current);
 
         listView.setAdapter(adapter);
-
         listView.setOnItemClickListener(this);
+
+        if (current != null) {
+            int pos = adapter.getItemPosition(current);
+            if (pos != -1) {
+                listView.setSelection(pos);
+            }
+        }
     }
 
     @Override

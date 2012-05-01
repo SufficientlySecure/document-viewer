@@ -27,6 +27,7 @@ import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.models.ZoomModel;
 import org.ebookdroid.ui.settings.SettingsUI;
 import org.ebookdroid.ui.viewer.dialogs.OutlineDialog;
+import org.ebookdroid.ui.viewer.stubs.ActivityControllerStub;
 import org.ebookdroid.ui.viewer.stubs.ViewContollerStub;
 import org.ebookdroid.ui.viewer.views.SearchControls;
 import org.ebookdroid.ui.viewer.views.ViewEffects;
@@ -180,13 +181,24 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         createAction(R.id.actions_toggleTouchManagerView).putValue("view", activity.getTouchView());
 
         if (++loadingCount == 1) {
-            if (intent == null || intent.getScheme() == null) {
+            documentModel = ActivityControllerStub.DM_STUB;
+            if (intent == null) {
                 showErrorDlg("Bad intent or scheme:\n" + intent);
                 return;
             }
-            if (intent.getScheme().equals("content")) {
+            final String scheme = intent.getScheme();
+            if (LengthUtils.isEmpty(scheme)) {
+                showErrorDlg("Bad intent or scheme:\n" + intent);
+                return;
+            }
+            final Uri data = intent.getData();
+            if (data == null) {
+                showErrorDlg("No intent data:\n" + intent);
+                return;
+            }
+            if (scheme.equals("content")) {
                 try {
-                    final Cursor c = activity.getContentResolver().query(intent.getData(), null, null, null, null);
+                    final Cursor c = activity.getContentResolver().query(data, null, null, null, null);
                     c.moveToFirst();
                     final int fileNameColumnId = c.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME);
                     if (fileNameColumnId >= 0) {
@@ -203,11 +215,21 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                 }
             }
             if (codecType == null) {
-                codecType = CodecType.getByUri(intent.getData().toString());
-                bookTitle = LengthUtils.safeString(intent.getData().getLastPathSegment(), E_MAIL_ATTACHMENT);
+                bookTitle = LengthUtils.safeString(data.getLastPathSegment(), E_MAIL_ATTACHMENT);
+                codecType = CodecType.getByUri(data.toString());
+                if (codecType == null) {
+                    final String type = intent.getType();
+                    LCTX.i("Book mime type: " + type);
+                    if (LengthUtils.isNotEmpty(type)) {
+                        codecType = CodecType.getByMimeType(type);
+                    }
+                }
             }
+
+            LCTX.i("Book codec type: " + codecType);
+            LCTX.i("Book title: " + bookTitle);
             if (codecType == null) {
-                showErrorDlg("Unknown intent data type: " + intent.getData());
+                showErrorDlg("Unknown intent data type:\n" + data);
                 return;
             }
 
@@ -216,10 +238,10 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
             progressModel = new DecodingProgressModel();
             progressModel.addListener(ViewerActivityController.this);
 
-            final Uri uri = intent.getData();
+            final Uri uri = data;
             m_fileName = "";
 
-            if (intent.getScheme().equals("content")) {
+            if (scheme.equals("content")) {
                 temporaryBook = true;
                 m_fileName = E_MAIL_ATTACHMENT;
                 CacheManager.clear(m_fileName);
@@ -243,7 +265,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
             LCTX.d("afterPostCreate()");
         }
         setWindowTitle();
-        if (loadingCount == 1) {
+        if (loadingCount == 1 && documentModel != ActivityControllerStub.DM_STUB) {
             startDecoding(m_fileName, "");
         }
     }
@@ -328,21 +350,21 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         startDecoding(fileName, password);
     }
 
-    @Override
-    public IViewController switchDocumentController() {
-        try {
-            final BookSettings bs = SettingsManager.getBookSettings();
-
-            final IViewController newDc = bs.viewMode.create(this);
-            final IViewController oldDc = ctrl.getAndSet(newDc);
-
-            getZoomModel().removeListener(oldDc);
-            getZoomModel().addListener(newDc);
-
-            return ctrl.get();
-        } catch (final Throwable e) {
-            throw new RuntimeException(e);
+    protected IViewController switchDocumentController(final BookSettings bs) {
+        if (bs != null) {
+            try {
+                final IViewController newDc = bs.viewMode.create(this);
+                if (newDc != null) {
+                    final IViewController oldDc = ctrl.getAndSet(newDc);
+                    getZoomModel().removeListener(oldDc);
+                    getZoomModel().addListener(newDc);
+                    return ctrl.get();
+                }
+            } catch (final Throwable e) {
+                LCTX.e("Unexpected error: ", e);
+            }
         }
+        return null;
     }
 
     @Override
@@ -413,7 +435,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
      * @see org.ebookdroid.ui.viewer.IActivityController#jumpToPage(int, float, float)
      */
     @Override
-    public void jumpToPage(final int viewIndex, final float offsetX, final float offsetY, boolean addToHistory) {
+    public void jumpToPage(final int viewIndex, final float offsetX, final float offsetY, final boolean addToHistory) {
         if (addToHistory) {
             history.update();
         }
@@ -664,12 +686,15 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
     @Override
     public void onBookSettingsChanged(final BookSettings oldSettings, final BookSettings newSettings,
             final BookSettings.Diff diff, final AppSettings.Diff appDiff) {
+        if (newSettings == null) {
+            return;
+        }
 
         boolean redrawn = false;
         if (diff.isViewModeChanged() || diff.isSplitPagesChanged() || diff.isCropPagesChanged()) {
             redrawn = true;
-            final IViewController newDc = switchDocumentController();
-            if (!diff.isFirstTime()) {
+            final IViewController newDc = switchDocumentController(newSettings);
+            if (!diff.isFirstTime() && newDc != null) {
                 newDc.init(null);
                 newDc.show();
             }

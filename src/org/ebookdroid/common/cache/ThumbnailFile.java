@@ -78,6 +78,9 @@ public class ThumbnailFile extends File {
         final int height = image.getHeight() + top;
 
         final Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        if (bmp == null) {
+             return null;
+        }
 
         bmp.eraseColor(Color.TRANSPARENT);
 

@@ -67,19 +67,41 @@ public class DrawThread extends Thread {
             task = queue.poll(timeout, unit);
             if (task != null && useLastState) {
                 final ArrayList<ViewState> list = new ArrayList<ViewState>();
-                if (queue.drainTo(list) > 0) {
-                    task = list.get(list.size() - 1);
+                // Workaround for possible ConcurrentModificationException
+                while (true) {
+                    list.clear();
+                    try {
+                        if (queue.drainTo(list) > 0) {
+                            task = list.get(list.size() - 1);
+                        }
+                        break;
+                    } catch (Throwable ex) {
+                        // Go to next attempt
+                        LCTX.e("Unexpected error on retrieving last view state from draw queue: " + ex.getMessage());
+                    }
                 }
             }
         } catch (final InterruptedException e) {
             Thread.interrupted();
+        } catch (Throwable ex) {
+            // Go to next attempt
+            LCTX.e("Unexpected error on retrieving view state from draw queue: " + ex.getMessage());
         }
         return task;
     }
 
     public void draw(final ViewState viewState) {
         if (viewState != null) {
-            queue.offer(viewState);
+            // Workaround for possible ConcurrentModificationException
+            while (true) {
+                try {
+                    queue.offer(viewState);
+                    break;
+                } catch (Throwable ex) {
+                    // Go to next attempt
+                    LCTX.e("Unexpected error on adding view state to draw queue: " + ex.getMessage());
+                }
+            }
         }
     }
 }

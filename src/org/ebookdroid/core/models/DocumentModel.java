@@ -14,6 +14,7 @@ import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.PageType;
 import org.ebookdroid.core.DecodeService;
 import org.ebookdroid.core.DecodeServiceBase;
+import org.ebookdroid.core.DecodeServiceStub;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.core.codec.CodecContext;
@@ -56,14 +57,12 @@ public class DocumentModel extends ListenerProxy {
             }
         } else {
             context = null;
-            decodeService = null;
+            decodeService = new DecodeServiceStub();
         }
     }
 
     public void open(String fileName, String password) {
-        if (decodeService != null) {
-            decodeService.open(fileName, password);
-        }
+        decodeService.open(fileName, password);
     }
 
     public DecodeService getDecodeService() {

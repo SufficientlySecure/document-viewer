@@ -69,7 +69,7 @@ public class ViewContollerStub implements IViewController {
 
     @Override
     public IActivityController getBase() {
-        return null;
+        return ActivityControllerStub.STUB;
     }
 
     @Override

@@ -8,25 +8,30 @@ import org.ebookdroid.droids.fb2.codec.FB2Context;
 import org.ebookdroid.droids.mupdf.codec.PdfContext;
 import org.ebookdroid.droids.mupdf.codec.XpsContext;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public enum CodecType {
 
-    PDF(PdfContext.class, "pdf"),
+    PDF(PdfContext.class, Arrays.asList("pdf"), Arrays.asList("application/pdf")),
 
-    DJVU(DjvuContext.class, "djvu", "djv"),
+    DJVU(DjvuContext.class, Arrays.asList("djvu", "djv"), Arrays.asList("image/djvu", "image/vnd.djvu", "image/x-djvu")),
 
-    XPS(XpsContext.class, "xps", "oxps"),
+    XPS(XpsContext.class, Arrays.asList("xps", "oxps"), Arrays.asList("application/vnd.ms-xpsdocument",
+            "application/oxps")),
 
-    CBZ(CbzContext.class, "cbz"),
+    CBZ(CbzContext.class, Arrays.asList("cbz"), Arrays.asList("application/x-cbz")),
 
-    CBR(CbrContext.class, "cbr"),
+    CBR(CbrContext.class, Arrays.asList("cbr"), Arrays.asList("application/x-cbr")),
 
-    FB2(FB2Context.class, "fb2", "fb2.zip");
+    FB2(FB2Context.class, Arrays.asList("fb2", "fb2.zip"), Arrays.asList("application/x-fb2"));
 
     private final static Map<String, CodecType> extensionToActivity;
+
+    private final static Map<String, CodecType> mimeTypesToActivity;
 
     static {
         extensionToActivity = new HashMap<String, CodecType>();
@@ -35,27 +40,45 @@ public enum CodecType {
                 extensionToActivity.put(ext.toLowerCase(), a);
             }
         }
+        mimeTypesToActivity = new HashMap<String, CodecType>();
+        for (final CodecType a : values()) {
+            for (final String type : a.getMimeTypes()) {
+                mimeTypesToActivity.put(type.toLowerCase(), a);
+            }
+        }
     }
 
     private final Class<? extends CodecContext> contextClass;
 
-    private final String[] extensions;
+    private final List<String> extensions;
 
-    private CodecType(final Class<? extends CodecContext> contextClass, final String... extensions) {
+    private final List<String> mimeTypes;
+
+    private CodecType(final Class<? extends CodecContext> contextClass, final List<String> extensions,
+            final List<String> mimeTypes) {
         this.contextClass = contextClass;
         this.extensions = extensions;
+        this.mimeTypes = mimeTypes;
     }
 
     public Class<? extends CodecContext> getContextClass() {
         return contextClass;
     }
 
-    public String[] getExtensions() {
+    public List<String> getExtensions() {
         return extensions;
+    }
+
+    public List<String> getMimeTypes() {
+        return mimeTypes;
     }
 
     public static Set<String> getAllExtensions() {
         return extensionToActivity.keySet();
+    }
+
+    public static Set<String> getAllMimeTypes() {
+        return mimeTypesToActivity.keySet();
     }
 
     public static CodecType getByUri(final String uri) {
@@ -70,5 +93,9 @@ public enum CodecType {
 
     public static CodecType getByExtension(final String ext) {
         return extensionToActivity.get(ext.toLowerCase());
+    }
+
+    public static CodecType getByMimeType(final String type) {
+        return mimeTypesToActivity.get(type.toLowerCase());
     }
 }

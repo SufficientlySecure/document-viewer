@@ -30,8 +30,6 @@ public interface IActivityController extends IActionController<ViewerActivity> {
 
     DecodingProgressModel getDecodingProgressModel();
 
-    IViewController switchDocumentController();
-
     void jumpToPage(int viewIndex, float offsetX, float offsetY, boolean addToHistory);
 
     static interface IBookLoadTask {

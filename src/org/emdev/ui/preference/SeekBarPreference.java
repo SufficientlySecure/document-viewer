@@ -60,7 +60,11 @@ public final class SeekBarPreference extends DialogPreference implements OnSeekB
 
     @Override
     protected void onSetInitialValue(final boolean restoreValue, final Object defaultValue) {
-        currentValue = Integer.parseInt(getPersistedString(LengthUtils.toString(defaultValue)));
+        try {
+            currentValue = Integer.parseInt(getPersistedString(LengthUtils.toString(defaultValue)));
+        } catch (NumberFormatException ex) {
+            currentValue = minValue;
+        }
     }
 
     @Override
@@ -68,7 +72,11 @@ public final class SeekBarPreference extends DialogPreference implements OnSeekB
         final LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View view = inflater.inflate(R.layout.pref_seek_dialog, null);
 
-        currentValue = Integer.parseInt(getPersistedString(Integer.toString(defaultValue)));
+        try {
+            currentValue = Integer.parseInt(getPersistedString(Integer.toString(defaultValue)));
+        } catch (NumberFormatException ex) {
+            currentValue = minValue;
+        }
 
         ((TextView) view.findViewById(R.id.pref_seek_min_value)).setText(Integer.toString(minValue));
         ((TextView) view.findViewById(R.id.pref_seek_max_value)).setText(Integer.toString(maxValue));
@@ -113,7 +121,11 @@ public final class SeekBarPreference extends DialogPreference implements OnSeekB
     @Override
     public CharSequence getSummary() {
         final String summary = super.getSummary().toString();
-        final int value = Integer.parseInt(getPersistedString(Integer.toString(defaultValue)));
+        int value = minValue;
+        try {
+            value = Integer.parseInt(getPersistedString(Integer.toString(defaultValue)));
+        } catch (NumberFormatException ex) {
+        }
         return String.format(summary, value);
     }
 

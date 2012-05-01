@@ -20,7 +20,9 @@ public class ActivityControllerStub extends ActionController<ViewerActivity> imp
 
     public static final ActivityControllerStub STUB = new ActivityControllerStub();
 
-    public static final DocumentModel MODEL_STUB = new DocumentModel(null);
+    public static final DocumentModel DM_STUB = new DocumentModel(null);
+
+    public static final ZoomModel ZM_STUB = new ZoomModel();
 
     private ActivityControllerStub() {
         super(null, null);
@@ -43,7 +45,7 @@ public class ActivityControllerStub extends ActionController<ViewerActivity> imp
 
     @Override
     public DocumentModel getDocumentModel() {
-        return MODEL_STUB;
+        return DM_STUB;
     }
 
     @Override
@@ -63,16 +65,11 @@ public class ActivityControllerStub extends ActionController<ViewerActivity> imp
 
     @Override
     public ZoomModel getZoomModel() {
-        return null;
+        return ZM_STUB;
     }
 
     @Override
     public DecodingProgressModel getDecodingProgressModel() {
-        return null;
-    }
-
-    @Override
-    public IViewController switchDocumentController() {
         return null;
     }
 

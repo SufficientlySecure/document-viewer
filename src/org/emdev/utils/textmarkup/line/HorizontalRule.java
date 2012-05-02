@@ -1,14 +1,16 @@
-package org.ebookdroid.droids.fb2.codec;
+package org.emdev.utils.textmarkup.line;
+
 
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-public class FB2HorizontalRule extends AbstractFB2LineElement {
+
+public class HorizontalRule extends AbstractLineElement {
 
     private static Paint rulePaint;
 
-    public FB2HorizontalRule(final int width, final int height) {
+    public HorizontalRule(final int width, final int height) {
         super(width, height);
         if (rulePaint == null) {
             rulePaint = new Paint();

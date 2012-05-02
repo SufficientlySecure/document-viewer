@@ -1,14 +1,15 @@
-package org.ebookdroid.droids.fb2.codec;
+package org.emdev.utils.textmarkup.line;
 
 import org.ebookdroid.common.settings.SettingsManager;
-import org.ebookdroid.droids.fb2.codec.RenderingStyle.Script;
-import org.ebookdroid.droids.fb2.codec.RenderingStyle.Strike;
 
 import android.graphics.Canvas;
 
 import org.emdev.utils.HyphenationUtils;
+import org.emdev.utils.textmarkup.RenderingStyle;
+import org.emdev.utils.textmarkup.RenderingStyle.Script;
+import org.emdev.utils.textmarkup.RenderingStyle.Strike;
 
-public class FB2TextElement extends AbstractFB2LineElement {
+public class TextElement extends AbstractLineElement {
 
     private static final int[] starts = new int[100];
     private static final int[] lengths = new int[100];
@@ -21,7 +22,7 @@ public class FB2TextElement extends AbstractFB2LineElement {
 
     public final RenderingStyle style;
 
-    public FB2TextElement(final char[] ch, final int st, final int len, final RenderingStyle style) {
+    public TextElement(final char[] ch, final int st, final int len, final RenderingStyle style) {
         super(style.paint.measureText(ch, st, len), style.script == Script.SUPER ? style.textSize * 5 / 2 : style.textSize);
         this.chars = ch;
         this.start = st;
@@ -31,7 +32,7 @@ public class FB2TextElement extends AbstractFB2LineElement {
                 : style.script == Script.SUB ? style.textSize / 2 : 0;
     }
 
-    FB2TextElement(final FB2TextElement original, final int st, final int len, final float width) {
+    TextElement(final TextElement original, final int st, final int len, final float width) {
         super(width, original.style.textSize);
         this.chars = original.chars;
         this.start = st;
@@ -55,7 +56,7 @@ public class FB2TextElement extends AbstractFB2LineElement {
     }
 
     @Override
-    public AbstractFB2LineElement[] split(final float remaining) {
+    public AbstractLineElement[] split(final float remaining) {
         if (!SettingsManager.getAppSettings().fb2HyphenEnabled) {
             return null;
         }
@@ -88,10 +89,10 @@ public class FB2TextElement extends AbstractFB2LineElement {
         final int secondStart = starts[next];
         final int secondLength = this.length - (starts[next] - this.start);
 
-        final FB2TextElement first = new FB2TextElement(this, firstStart, firstLen, summ - dwidth);
-        final FB2TextElement second = new FB2TextElement(this, secondStart, secondLength, this.width - first.width);
+        final TextElement first = new TextElement(this, firstStart, firstLen, summ - dwidth);
+        final TextElement second = new TextElement(this, secondStart, secondLength, this.width - first.width);
 
-        final AbstractFB2LineElement[] result = { first, this.style.defis, second };
+        final AbstractLineElement[] result = { first, this.style.defis, second };
         return result;
     }
 

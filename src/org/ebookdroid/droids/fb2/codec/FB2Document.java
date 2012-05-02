@@ -11,7 +11,6 @@ import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.codec.OutlineLink;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.RectF;
 
 import java.io.BufferedReader;
@@ -24,11 +23,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.TreeMap;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -36,57 +32,19 @@ import javax.xml.parsers.SAXParserFactory;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.archives.zip.ZipArchive;
 import org.emdev.utils.archives.zip.ZipArchiveEntry;
+import org.emdev.utils.textmarkup.FontStyle;
+import org.emdev.utils.textmarkup.MarkupTitle;
+import org.emdev.utils.textmarkup.Words;
+import org.emdev.utils.textmarkup.JustificationMode;
+import org.emdev.utils.textmarkup.line.AbstractLineElement;
+import org.emdev.utils.textmarkup.line.HorizontalRule;
+import org.emdev.utils.textmarkup.line.Line;
+import org.emdev.utils.textmarkup.line.LineWhiteSpace;
+import org.emdev.utils.textmarkup.line.TextElement;
 import org.xml.sax.InputSource;
 
 public class FB2Document implements CodecDocument {
-
-
-
-    public class ParsedContent {
-        final ArrayList<FB2MarkupElement> docMarkup = new ArrayList<FB2MarkupElement>();
-
-        final HashMap<String, ArrayList<FB2MarkupElement>> streams = new HashMap<String, ArrayList<FB2MarkupElement>>();
-
-        public void clear() {
-            docMarkup.clear();
-            for (Entry<String, ArrayList<FB2MarkupElement>> entry : streams.entrySet()) {
-                final ArrayList<FB2MarkupElement> value = entry.getValue();
-                if (value != null) {
-                    value.clear();
-                }
-            }
-        }
-
-        public ArrayList<FB2MarkupElement> getMarkupStream(String streamName) {
-            if (streamName == null) {
-                return docMarkup;
-            }
-            ArrayList<FB2MarkupElement> stream = streams.get(streamName);
-            if (stream == null) {
-                stream = new ArrayList<FB2MarkupElement>();
-                streams.put(streamName, stream);
-            }
-            return stream;
-        }
-    }
-
-    public class LineCreationParams {
-
-        public JustificationMode jm;
-        public int maxLineWidth;
-        public boolean insertSpace = true;
-        public FB2Document doc;
-
-    }
-
-    private final TreeMap<String, FB2Image> images = new TreeMap<String, FB2Image>();
-    private final TreeMap<String, ArrayList<FB2Line>> notes = new TreeMap<String, ArrayList<FB2Line>>();
-
-    JustificationMode jm = JustificationMode.Justify;
-
     private final ArrayList<FB2Page> pages = new ArrayList<FB2Page>();
-
-    private String cover;
 
     private final List<OutlineLink> outline = new ArrayList<OutlineLink>();
 
@@ -99,9 +57,9 @@ public class FB2Document implements CodecDocument {
         parseContent(spf, fileName);
         final long t3 = System.currentTimeMillis();
         System.out.println("SAX parser: " + (t3 - t2) + " ms");
-        System.out.println("Words=" + FB2Words.words + ", uniques=" + FB2Words.uniques);
+        System.out.println("Words=" + Words.words + ", uniques=" + Words.uniques);
 
-        final List<FB2Line> documentLines = createLines(content.getMarkupStream(null), PAGE_WIDTH - 2 * MARGIN_X, JustificationMode.Justify);
+        final List<Line> documentLines = content.createLines(content.getMarkupStream(null), PAGE_WIDTH - 2 * MARGIN_X, JustificationMode.Justify);
         createPages(documentLines);
 
         content.clear();
@@ -111,30 +69,14 @@ public class FB2Document implements CodecDocument {
         System.out.println("Markup: " + (t4 - t3) + " ms");
     }
 
-    private ArrayList<FB2Line> createLines(List<FB2MarkupElement> markup, int maxLineWidth, JustificationMode jm) {
-        ArrayList<FB2Line> lines = new ArrayList<FB2Line>();
-        if (LengthUtils.isNotEmpty(markup)) {
-            LineCreationParams params = new LineCreationParams();
-            params.jm = jm;
-            params.maxLineWidth = maxLineWidth;
-            params.doc = this;
-            for (final FB2MarkupElement me : markup) {
-                if (me instanceof FB2MarkupEndDocument) {
-                    break;
-                }
-                me.publishToLines(lines, params);
-            }
-        }
-        return lines;
-    }
 
-    private void createPages(List<FB2Line> documentLines) {
+    private void createPages(List<Line> documentLines) {
         pages.clear();
         if (LengthUtils.isEmpty(documentLines)) {
             return;
         }
 
-        for (FB2Line line : documentLines) {
+        for (Line line : documentLines) {
             FB2Page lastPage = getLastPage();
 
             if (lastPage.contentHeight + 2 * MARGIN_Y + line.getTotalHeight() > PAGE_HEIGHT) {
@@ -144,27 +86,27 @@ public class FB2Document implements CodecDocument {
             }
 
             lastPage.appendLine(line);
-            FB2MarkupTitle title = line.getTitle();
+            MarkupTitle title = line.getTitle();
             if (title != null) {
                 addTitle(title);
             }
 
-            final List<FB2Line> footnotes = line.getFootNotes();
+            final List<Line> footnotes = line.getFootNotes();
             if (footnotes != null) {
-                final Iterator<FB2Line> iterator = footnotes.iterator();
+                final Iterator<Line> iterator = footnotes.iterator();
                 if (lastPage.noteLines.size() > 0 && iterator.hasNext()) {
                     // Skip rule for non first note on page
                     iterator.next();
                 }
                 while (iterator.hasNext()) {
-                    final FB2Line l = iterator.next();
+                    final Line l = iterator.next();
                     lastPage = getLastPage();
                     if (lastPage.contentHeight + 2 * MARGIN_Y + l.getTotalHeight() > PAGE_HEIGHT) {
                         commitPage();
                         lastPage = new FB2Page();
                         pages.add(lastPage);
-                        final FB2Line ruleLine = new FB2Line(PAGE_WIDTH / 4, JustificationMode.Left);
-                        ruleLine.append(new FB2HorizontalRule(PAGE_WIDTH / 4, FB2FontStyle.FOOTNOTE.getFontSize()));
+                        final Line ruleLine = new Line(PAGE_WIDTH / 4, JustificationMode.Left);
+                        ruleLine.append(new HorizontalRule(PAGE_WIDTH / 4, FontStyle.FOOTNOTE.getFontSize()));
                         ruleLine.applyJustification(JustificationMode.Left);
                         lastPage.appendNoteLine(ruleLine);
                     }
@@ -175,7 +117,7 @@ public class FB2Document implements CodecDocument {
     }
 
     private void parseContent(final SAXParserFactory spf, final String fileName) {
-        final FB2ContentHandler h = new FB2ContentHandler(this, content);
+        final FB2ContentHandler h = new FB2ContentHandler(content);
         final List<Closeable> resources = new ArrayList<Closeable>();
 
         try {
@@ -302,68 +244,13 @@ public class FB2Document implements CodecDocument {
         getLastPage().commit();
     }
 
-    public void addImage(final String tmpBinaryName, final String encoded) {
-        if (tmpBinaryName != null && encoded != null) {
-            images.put("I" + tmpBinaryName, new FB2Image(encoded, true));
-            images.put("O" + tmpBinaryName, new FB2Image(encoded, false));
-        }
-    }
-
-    public FB2Image getImage(final String name, final boolean inline) {
-        if (name == null) {
-            return null;
-        }
-        FB2Image img = images.get((inline ? "I" : "O") + name);
-        if (img == null && name.startsWith("#")) {
-            img = images.get((inline ? "I" : "O") + name.substring(1));
-        }
-        return img;
-    }
-
-    public List<FB2Line> getNote(final String noteName) {
-        ArrayList<FB2Line> note = notes.get(noteName);
-        if (note != null) {
-            return note;
-        }
-        if (content != null) {
-            ArrayList<FB2MarkupElement> stream = content.getMarkupStream(noteName);
-            if (LengthUtils.isEmpty(stream) && noteName.startsWith("#")) {
-                stream = content.getMarkupStream(noteName.substring(1));
-            }
-            if (stream != null) {
-                note = createLines(stream, PAGE_WIDTH - 2 * MARGIN_X, JustificationMode.Justify);
-                notes.put(noteName, note);
-            }
-        }
-
-        return note;
-    }
-
-    public List<FB2Line> getStreamLines(String streamName, int maxWidth, JustificationMode jm) {
-        ArrayList<FB2MarkupElement> stream = content.getMarkupStream(streamName);
-        if (stream != null) {
-            return createLines(stream, maxWidth, jm);
-        }
-        return null;
-    }
-
-
-    public void setCover(final String value) {
-        this.cover = value;
-    }
-
     @Override
     public Bitmap getEmbeddedThumbnail() {
-        final FB2Image image = getImage(cover, false);
-        if (image != null) {
-            final byte[] data = image.getData();
-            return BitmapFactory.decodeByteArray(data, 0, data.length);
-        }
-        return null;
+        return content.getCoverImage();
     }
 
 
-    public void addTitle(final FB2MarkupTitle title) {
+    public void addTitle(final MarkupTitle title) {
         outline.add(new OutlineLink(title.title, "#" + pages.size(), title.level));
     }
 
@@ -388,18 +275,18 @@ public class FB2Document implements CodecDocument {
         return rects;
     }
 
-    private float searchText(final ArrayList<FB2Line> lines, final char[] pattern, final List<RectF> rects, float y) {
+    private float searchText(final ArrayList<Line> lines, final char[] pattern, final List<RectF> rects, float y) {
         for (int i = 0, n = lines.size(); i < n; i++) {
-            final FB2Line line = lines.get(i);
+            final Line line = lines.get(i);
             final float top = y;
             final float bottom = y + line.getHeight();
             line.ensureJustification();
             float x = FB2Page.MARGIN_X;
             for (int i1 = 0, n1 = line.elements.size(); i1 < n1; i1++) {
-                final AbstractFB2LineElement e = line.elements.get(i1);
-                final float w = e.width + (e instanceof FB2LineWhiteSpace ? line.spaceWidth : 0);
-                if (e instanceof FB2TextElement) {
-                    final FB2TextElement textElement = (FB2TextElement) e;
+                final AbstractLineElement e = line.elements.get(i1);
+                final float w = e.width + (e instanceof LineWhiteSpace ? line.spaceWidth : 0);
+                if (e instanceof TextElement) {
+                    final TextElement textElement = (TextElement) e;
                     if (textElement.indexOf(pattern) != -1) {
                         rects.add(new RectF(x / FB2Page.PAGE_WIDTH, top / FB2Page.PAGE_HEIGHT, (x + w)
                                 / FB2Page.PAGE_WIDTH, bottom / FB2Page.PAGE_HEIGHT));

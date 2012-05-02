@@ -1,10 +1,12 @@
-package org.ebookdroid.droids.fb2.codec;
+package org.emdev.utils.textmarkup.line;
+
 
 import android.graphics.Canvas;
 
-public class FB2LineFixedWhiteSpace extends AbstractFB2LineElement {
 
-    public FB2LineFixedWhiteSpace(final float width, final int height) {
+public class LineFixedWhiteSpace extends AbstractLineElement {
+
+    public LineFixedWhiteSpace(final float width, final int height) {
         super(width, height);
     }
 

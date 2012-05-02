@@ -2,23 +2,20 @@ package org.ebookdroid.droids.fb2.codec;
 
 import java.util.LinkedList;
 
+import org.emdev.utils.textmarkup.FontStyle;
+import org.emdev.utils.textmarkup.JustificationMode;
+import org.emdev.utils.textmarkup.RenderingStyle;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class FB2BaseHandler extends DefaultHandler {
-
-    protected final FB2Document document;
 
     protected final int[] starts = new int[10000];
 
     protected final int[] lengths = new int[10000];
 
-    protected RenderingStyle crs = new RenderingStyle(FB2FontStyle.TEXT);
+    protected RenderingStyle crs = new RenderingStyle(FontStyle.TEXT);
 
     private final LinkedList<RenderingStyle> renderingStates = new LinkedList<RenderingStyle>();
-
-    public FB2BaseHandler(final FB2Document fb2Document) {
-        this.document = fb2Document;
-    }
 
     protected final RenderingStyle setPrevStyle() {
         if (!renderingStates.isEmpty()) {
@@ -27,7 +24,7 @@ public class FB2BaseHandler extends DefaultHandler {
         return crs;
     }
 
-    protected final RenderingStyle setTitleStyle(final FB2FontStyle font) {
+    protected final RenderingStyle setTitleStyle(final FontStyle font) {
         renderingStates.addFirst(crs);
         crs = new RenderingStyle(crs, font, JustificationMode.Center);
         return crs;
@@ -71,21 +68,21 @@ public class FB2BaseHandler extends DefaultHandler {
 
     protected final RenderingStyle setSubtitleStyle() {
         renderingStates.addFirst(crs);
-        crs = new RenderingStyle(crs, FB2FontStyle.SUBTITLE, JustificationMode.Center, true,
+        crs = new RenderingStyle(crs, FontStyle.SUBTITLE, JustificationMode.Center, true,
                 RenderingStyle.NORMAL_TF);
         return crs;
     }
 
     protected final RenderingStyle setTextAuthorStyle(final boolean italic) {
         renderingStates.addFirst(crs);
-        crs = new RenderingStyle(crs, FB2FontStyle.TEXT, JustificationMode.Right, false,
+        crs = new RenderingStyle(crs, FontStyle.TEXT, JustificationMode.Right, false,
                 italic ? RenderingStyle.ITALIC_TF : RenderingStyle.NORMAL_TF);
         return crs;
     }
 
     protected final RenderingStyle setPoemStyle() {
         renderingStates.addFirst(crs);
-        crs = new RenderingStyle(crs, FB2FontStyle.TEXT, JustificationMode.Left, false, RenderingStyle.ITALIC_TF);
+        crs = new RenderingStyle(crs, FontStyle.TEXT, JustificationMode.Left, false, RenderingStyle.ITALIC_TF);
         return crs;
     }
 }

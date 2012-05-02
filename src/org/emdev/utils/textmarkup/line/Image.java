@@ -1,5 +1,7 @@
-package org.ebookdroid.droids.fb2.codec;
+package org.emdev.utils.textmarkup.line;
 
+
+import org.ebookdroid.droids.fb2.codec.FB2Page;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,13 +17,13 @@ import java.io.InputStream;
 import org.emdev.utils.base64.Base64;
 import org.emdev.utils.base64.Base64InputStream;
 
-public class FB2Image extends AbstractFB2LineElement {
+public class Image extends AbstractLineElement {
 
     private final String encoded;
     private byte[] data;
     private final Paint paint;
 
-    public FB2Image(final String encoded, final boolean inline) {
+    public Image(final String encoded, final boolean inline) {
         super(calculateImageRect(encoded, inline));
         this.encoded = encoded;
         paint = new Paint();

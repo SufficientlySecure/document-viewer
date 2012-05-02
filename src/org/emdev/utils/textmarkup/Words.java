@@ -1,26 +1,28 @@
-package org.ebookdroid.droids.fb2.codec;
+package org.emdev.utils.textmarkup;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-public class FB2Words {
+import org.emdev.utils.textmarkup.line.TextElement;
+
+public class Words {
 
     public static int words = 0;
     public static int uniques = 0;
 
     static final FB2Word key = new FB2Word();
 
-    final Map<FB2Word, FB2TextElement> all = new HashMap<FB2Word, FB2TextElement>(32 * 1024);
+    final Map<FB2Word, TextElement> all = new HashMap<FB2Word, TextElement>(32 * 1024);
 
     final LinkedList<Buffer> buffers = new LinkedList<Buffer>();
 
-    public FB2TextElement get(final char[] ch, final int st, final int len, final RenderingStyle style) {
+    public TextElement get(final char[] ch, final int st, final int len, final RenderingStyle style) {
         words++;
 
         key.reuse(ch, st, len);
 
-        FB2TextElement e = all.get(key);
+        TextElement e = all.get(key);
         if (e == null) {
             char[] arr = null;
             int index = 0;
@@ -37,7 +39,7 @@ public class FB2Words {
                 arr = b.chars;
                 buffers.addFirst(b);
             }
-            e = new FB2TextElement(arr, index, len, style);
+            e = new TextElement(arr, index, len, style);
             all.put(new FB2Word(arr, index, len, key.hash), e);
             uniques++;
         }

@@ -19,6 +19,10 @@ import java.util.Collections;
 import java.util.List;
 
 import org.emdev.utils.MatrixUtils;
+import org.emdev.utils.textmarkup.FontStyle;
+import org.emdev.utils.textmarkup.JustificationMode;
+import org.emdev.utils.textmarkup.line.Line;
+import org.emdev.utils.textmarkup.line.LineFixedWhiteSpace;
 
 public class FB2Page implements CodecPage {
 
@@ -34,8 +38,8 @@ public class FB2Page implements CodecPage {
 
     static final RectF PAGE_RECT = new RectF(0, 0, PAGE_WIDTH, PAGE_HEIGHT);
 
-    final ArrayList<FB2Line> lines = new ArrayList<FB2Line>(PAGE_HEIGHT / FB2FontStyle.TEXT.getFontSize());
-    final ArrayList<FB2Line> noteLines = new ArrayList<FB2Line>(PAGE_HEIGHT / FB2FontStyle.FOOTNOTE.getFontSize());
+    final ArrayList<Line> lines = new ArrayList<Line>(PAGE_HEIGHT / FontStyle.TEXT.getFontSize());
+    final ArrayList<Line> noteLines = new ArrayList<Line>(PAGE_HEIGHT / FontStyle.FOOTNOTE.getFontSize());
 
     boolean committed = false;
     int contentHeight = 0;
@@ -90,7 +94,7 @@ public class FB2Page implements CodecPage {
 
         int y = MARGIN_Y;
         for (int i = 0, n = lines.size(); i < n; i++) {
-            final FB2Line line = lines.get(i);
+            final Line line = lines.get(i);
             int top = y;
             int bottom = y + line.getHeight();
             if (bounds.top < bottom && top < bounds.bottom) {
@@ -99,7 +103,7 @@ public class FB2Page implements CodecPage {
             y = bottom;
         }
         for (int i = 0, n = noteLines.size(); i < n; i++) {
-            final FB2Line line = noteLines.get(i);
+            final Line line = noteLines.get(i);
             int top = y;
             int bottom = y + line.getHeight();
             if (bounds.top < bottom && top < bounds.bottom) {
@@ -111,7 +115,7 @@ public class FB2Page implements CodecPage {
         return bmp;
     }
 
-    public void appendLine(final FB2Line line) {
+    public void appendLine(final Line line) {
         if (committed || !line.appendable()) {
             return;
         }
@@ -119,7 +123,7 @@ public class FB2Page implements CodecPage {
         contentHeight += line.getHeight();
     }
 
-    public void appendNoteLine(final FB2Line line) {
+    public void appendNoteLine(final Line line) {
         noteLines.add(line);
         contentHeight += line.getHeight();
     }
@@ -130,10 +134,10 @@ public class FB2Page implements CodecPage {
         }
         final int h = FB2Page.PAGE_HEIGHT - contentHeight - 2 * FB2Page.MARGIN_Y;
         if (h > 0) {
-            lines.add(new FB2Line(0, JustificationMode.Center).append(new FB2LineFixedWhiteSpace(0, h)));
+            lines.add(new Line(0, JustificationMode.Center).append(new LineFixedWhiteSpace(0, h)));
             contentHeight += h;
         }
-        for (final FB2Line line : noteLines) {
+        for (final Line line : noteLines) {
             lines.add(line);
         }
         noteLines.clear();

@@ -1,30 +1,30 @@
-package org.ebookdroid.droids.fb2.codec;
+package org.emdev.utils.textmarkup;
 
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.types.FontSize;
 
 import android.util.FloatMath;
 
-public enum FB2FontStyle {
+public enum FontStyle {
 
     /**
-     * 
+     *
      */
     TEXT(1.0f),
     /**
-     * 
+     *
      */
     MAIN_TITLE(2.0f),
     /**
-     * 
+     *
      */
     SECTION_TITLE(1.5f),
     /**
-     * 
+     *
      */
     SUBTITLE(1.25f),
     /**
-     * 
+     *
      */
     FOOTNOTE(0.84f);
 
@@ -32,11 +32,11 @@ public enum FB2FontStyle {
 
     public final float factor;
 
-    private FB2FontStyle(final float factor) {
+    private FontStyle(final float factor) {
         this.factor = factor;
     }
 
-    int getFontSize() {
+    public int getFontSize() {
         final FontSize fs = SettingsManager.getAppSettings().fontSize;
         return (int) FloatMath.ceil(TEXT_SIZE * fs.factor * this.factor);
     }

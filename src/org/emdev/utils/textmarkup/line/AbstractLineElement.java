@@ -1,32 +1,36 @@
-package org.ebookdroid.droids.fb2.codec;
+package org.emdev.utils.textmarkup.line;
 
-import org.ebookdroid.droids.fb2.codec.FB2Document.LineCreationParams;
+
+import org.ebookdroid.droids.fb2.codec.LineCreationParams;
 
 import android.graphics.RectF;
 
 import java.util.ArrayList;
 
-public abstract class AbstractFB2LineElement implements FB2LineElement {
+import org.emdev.utils.textmarkup.RenderingStyle;
+
+
+public abstract class AbstractLineElement implements LineElement {
 
     public final int height;
     public float width;
 
-    public AbstractFB2LineElement(final float width, final int height) {
+    public AbstractLineElement(final float width, final int height) {
         this.height = height;
         this.width = width;
     }
 
-    public AbstractFB2LineElement(final RectF rect) {
+    public AbstractLineElement(final RectF rect) {
         this(rect.width(), (int) rect.height());
     }
 
     @Override
-    public void publishToLines(ArrayList<FB2Line> lines, LineCreationParams params) {
-        FB2Line line = FB2Line.getLastLine(lines, params.maxLineWidth, params.jm);
-        final FB2LineWhiteSpace space = RenderingStyle.getTextPaint(line.getHeight()).space;
+    public void publishToLines(ArrayList<Line> lines, LineCreationParams params) {
+        Line line = Line.getLastLine(lines, params.maxLineWidth, params.jm);
+        final LineWhiteSpace space = RenderingStyle.getTextPaint(line.getHeight()).space;
         float remaining = params.maxLineWidth - (line.width + space.width);
         if (remaining <= 0) {
-            line = new FB2Line(params.maxLineWidth, params.jm);
+            line = new Line(params.maxLineWidth, params.jm);
             lines.add(line);
             remaining = params.maxLineWidth;
         }
@@ -36,7 +40,7 @@ public abstract class AbstractFB2LineElement implements FB2LineElement {
             }
             line.append(this);
         } else {
-            final AbstractFB2LineElement[] splitted = split(remaining);
+            final AbstractLineElement[] splitted = split(remaining);
             if (splitted != null && splitted.length > 1) {
                 if (line.hasNonWhiteSpaces() && params.insertSpace) {
                     line.append(space);
@@ -46,7 +50,7 @@ public abstract class AbstractFB2LineElement implements FB2LineElement {
                 }
             }
 
-            line = new FB2Line(params.maxLineWidth, params.jm);
+            line = new Line(params.maxLineWidth, params.jm);
             lines.add(line);
 
             if (splitted == null) {
@@ -58,7 +62,7 @@ public abstract class AbstractFB2LineElement implements FB2LineElement {
         params.insertSpace = true;
     }
 
-    public AbstractFB2LineElement[] split(final float remaining) {
+    public AbstractLineElement[] split(final float remaining) {
         return null;
     }
 }

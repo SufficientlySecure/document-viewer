@@ -12,6 +12,8 @@ import java.util.List;
 
 public class BookSettings implements CurrentPageListener {
 
+    public boolean persistent;
+
     public final String fileName;
 
     public long lastUpdated;
@@ -45,6 +47,7 @@ public class BookSettings implements CurrentPageListener {
     public boolean autoLevels;
 
     public BookSettings(BookSettings current) {
+        this.persistent = current.persistent;
         this.fileName = current.fileName;
         this.currentPage = current.currentPage;
         this.lastUpdated = current.lastUpdated;
@@ -64,6 +67,7 @@ public class BookSettings implements CurrentPageListener {
     }
 
     public BookSettings(final String fileName) {
+        this.persistent = true;
         this.fileName = fileName;
         this.currentPage = PageIndex.FIRST;
         this.lastUpdated = System.currentTimeMillis();

@@ -132,7 +132,7 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter {
 
     @Override
     public boolean storeBookSettings(final BookSettings bs) {
-        return adapter.storeBookSettings(bs);
+        return bs.persistent ? adapter.storeBookSettings(bs) : false;
     }
 
     @Override

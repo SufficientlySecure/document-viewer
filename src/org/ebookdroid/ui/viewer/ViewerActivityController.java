@@ -249,7 +249,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                 m_fileName = PathFromUri.retrieve(activity.getContentResolver(), uri);
             }
 
-            SettingsManager.init(m_fileName);
+            SettingsManager.init(m_fileName, intent);
             SettingsManager.applyBookSettingsChanges(null, SettingsManager.getBookSettings(), null);
         }
     }

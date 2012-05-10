@@ -2,9 +2,12 @@ package org.ebookdroid.common.settings;
 
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.books.DBSettingsManager;
+import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.core.PageIndex;
+import org.ebookdroid.core.curl.PageAnimationType;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 
 import java.util.HashMap;
@@ -13,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.emdev.utils.LengthUtils;
 import org.emdev.utils.listeners.ListenerProxy;
 
 public class SettingsManager {
@@ -39,11 +43,50 @@ public class SettingsManager {
         }
     }
 
-    public static BookSettings init(final String fileName) {
+    public static BookSettings init(final String fileName, Intent intent) {
         lock.writeLock().lock();
         try {
             getAppSettings().clearPseudoBookSettings();
-            current = getBookSettingsImpl(fileName, true);
+
+            boolean store = false;
+            current = bookSettings.get(fileName);
+            if (current == null) {
+                current = db.getBookSettings(fileName);
+                if (current == null) {
+                    current = new BookSettings(fileName);
+                    getAppSettings().fillBookSettings(current);
+                    store = true;
+                }
+                bookSettings.put(fileName, current);
+            }
+
+            if (intent != null) {
+                current.persistent = Boolean.parseBoolean(LengthUtils.safeString(intent.getStringExtra("persistent"),
+                        "true"));
+
+                current.animationType = PageAnimationType.valueOf(LengthUtils.safeString(
+                        intent.getStringExtra("animationType"), current.animationType.toString()));
+                current.pageAlign = PageAlign.valueOf(LengthUtils.safeString(intent.getStringExtra("pageAlign"),
+                        current.pageAlign.toString()));
+                current.splitPages = Boolean.parseBoolean(LengthUtils.safeString(intent.getStringExtra("splitPages"),
+                        Boolean.toString(current.splitPages)));
+                current.cropPages = Boolean.parseBoolean(LengthUtils.safeString(intent.getStringExtra("cropPages"),
+                        Boolean.toString(current.cropPages)));
+                current.nightMode = Boolean.parseBoolean(LengthUtils.safeString(intent.getStringExtra("nightMode"),
+                        Boolean.toString(current.nightMode)));
+
+                int pageIndex = Integer.parseInt(LengthUtils.safeString(intent.getStringExtra("pageIndex"),
+                        Integer.toString(current.currentPage.viewIndex)));
+                current.currentPage = new PageIndex(current.splitPages ? current.currentPage.docIndex : pageIndex,
+                        pageIndex);
+
+                store = current.persistent;
+            }
+
+            if (store) {
+                db.storeBookSettings(current);
+            }
+
             getAppSettings().updatePseudoBookSettings(current);
 
             return current;
@@ -66,20 +109,6 @@ public class SettingsManager {
         } finally {
             lock.writeLock().unlock();
         }
-    }
-
-    private static BookSettings getBookSettingsImpl(final String fileName, final boolean createOnDemand) {
-        BookSettings bs = bookSettings.get(fileName);
-        if (bs == null) {
-            bs = db.getBookSettings(fileName);
-            if (bs == null) {
-                bs = new BookSettings(fileName);
-                getAppSettings().fillBookSettings(bs);
-                db.storeBookSettings(bs);
-            }
-            bookSettings.put(fileName, bs);
-        }
-        return bs;
     }
 
     private static void replaceCurrentBookSettings(final BookSettings newBS) {

@@ -21,7 +21,7 @@ public class PageIndex {
         // If now page splitting is switched off:
         // The document index is valid in all cases
         if (!bs.splitPages) {
-            return dm.getPageObject(docIndex);
+            return dm.getPageObject(viewIndex);
         }
         // If now page splitting is switched on and bookmark was created in splitting mode (page.docIndex != page.viewIndex)
         // The view index is valid

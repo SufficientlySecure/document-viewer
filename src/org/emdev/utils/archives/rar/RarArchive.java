@@ -1,5 +1,7 @@
 package org.emdev.utils.archives.rar;
 
+import org.ebookdroid.common.log.LogContext;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +17,8 @@ import org.emdev.utils.LengthUtils;
 import org.emdev.utils.archives.ArchiveFile;
 
 public class RarArchive implements ArchiveFile<RarArchiveEntry> {
+
+    private static final LogContext LCTX = LogContext.ROOT.lctx("Unrar");
 
     final File rarfile;
     final List<RarArchiveEntry> entries = new LinkedList<RarArchiveEntry>();
@@ -33,12 +37,14 @@ public class RarArchive implements ArchiveFile<RarArchiveEntry> {
         final Set<String> dirs = new HashSet<String>();
 
         final Process process = UnrarBridge.exec("vb", rarfile.getAbsolutePath());
-        final BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        final BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()), 8 * 1024);
 
+        LCTX.i("List archive entries for: " + rarfile.getAbsolutePath());
         for (String s = in.readLine(); s != null; s = in.readLine()) {
             if (dirs.contains(s)) {
                 continue;
             }
+            LCTX.i("Entry: " + s);
             final File f = new File(s);
             entries.add(new RarArchiveEntry(this, s, f.getName()));
 

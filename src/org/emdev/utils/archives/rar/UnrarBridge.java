@@ -6,10 +6,10 @@ import org.ebookdroid.common.log.LogContext;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.channels.WritableByteChannel;
+import java.io.InputStream;
+import java.util.Arrays;
+
+import org.emdev.utils.FileUtils;
 
 public class UnrarBridge {
 
@@ -36,7 +36,7 @@ public class UnrarBridge {
     public static Process exec(final String... args) throws IOException {
         if (init()) {
             if (LCTX.isDebugEnabled()) {
-                LCTX.d("Unrar executing: ");
+                LCTX.d("Unrar executing: " + Arrays.toString(args));
             }
             return execImpl(args);
         }
@@ -51,47 +51,28 @@ public class UnrarBridge {
         if (args.length > 0) {
             System.arraycopy(args, 0, cmd, 1, args.length);
         }
-        return Runtime.getRuntime().exec(cmd);
+        final ProcessBuilder pb = new ProcessBuilder(cmd);
+        pb.redirectErrorStream(false);
+        return pb.start();
     }
 
     private static boolean copy(final File unrar) {
-        ReadableByteChannel in = null;
-        WritableByteChannel out = null;
         try {
-            in = Channels.newChannel(EBookDroidApp.context.getResources().getAssets().open("unrar/unrar"));
-            out = Channels.newChannel(new FileOutputStream(unrar));
-            final ByteBuffer buf = ByteBuffer.allocateDirect(512 * 1024);
-            while (in.read(buf) > 0) {
-                buf.flip();
-                out.write(buf);
-                buf.flip();
-            }
+            final InputStream source = EBookDroidApp.context.getResources().getAssets().open("unrar/unrar");
+            final FileOutputStream target = new FileOutputStream(unrar);
+            FileUtils.copy(source, target);
             return true;
         } catch (final IOException ex) {
             LCTX.e("Unrar executable cannot be copied from assets: " + ex.getMessage());
             return false;
-        } finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (final IOException ex) {
-                }
-            }
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (final IOException ex) {
-                }
-            }
         }
-
     }
 
     private static boolean chmod(final File unrar) {
         final String[] cmd = { "chmod", "777", unrar.getAbsolutePath() };
         try {
             final Process p = Runtime.getRuntime().exec(cmd);
-            int res = p.waitFor();
+            final int res = p.waitFor();
             return 0 == res;
         } catch (final IOException ex) {
             LCTX.e("Unrar executable cannot be copied from assets: " + ex.getMessage());

@@ -8,14 +8,12 @@ import android.net.Uri;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.ref.SoftReference;
-import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.channels.WritableByteChannel;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.emdev.utils.FileUtils;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.StringUtils;
 import org.emdev.utils.filesystem.FilePrefixFilter;
@@ -52,33 +50,23 @@ public class CacheManager {
         return new PageCacheFile(cacheDir, md5 + ".cache");
     }
 
-    public static File createTempFile(final Uri uri) throws IOException {
+    public static File createTempFile(final InputStream source, final String suffix) throws IOException {
         final File cacheDir = s_context.getFilesDir();
-        File tempfile = null;
-        tempfile = File.createTempFile("ebookdroid", "content", cacheDir);
+        File tempfile = File.createTempFile("ebookdroid", suffix, cacheDir);
         tempfile.deleteOnExit();
 
-        ReadableByteChannel in = null;
-        WritableByteChannel out = null;
-        try {
-            in = Channels.newChannel(s_context.getContentResolver().openInputStream(uri));
-            out = Channels.newChannel(new FileOutputStream(tempfile));
-            final ByteBuffer buf = ByteBuffer.allocate(1024 * 1024);
-            while (in.read(buf) > 0) {
-                buf.flip();
-                out.write(buf);
-                buf.flip();
-            }
-        } finally {
-            try {
-                out.close();
-            } catch (final Exception ex) {
-            }
-            try {
-                in.close();
-            } catch (final Exception ex) {
-            }
-        }
+        FileUtils.copy(source, new FileOutputStream(tempfile));
+
+        return tempfile;
+    }
+
+    public static File createTempFile(final Uri uri) throws IOException {
+        final File cacheDir = s_context.getFilesDir();
+        File tempfile = File.createTempFile("ebookdroid", "content", cacheDir);
+        tempfile.deleteOnExit();
+
+        InputStream source = s_context.getContentResolver().openInputStream(uri);
+        FileUtils.copy(source, new FileOutputStream(tempfile));
 
         return tempfile;
     }

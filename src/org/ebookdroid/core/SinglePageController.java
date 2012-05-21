@@ -81,6 +81,7 @@ public class SinglePageController extends AbstractViewController {
             getView().scrollTo((int) left, (int) top);
 
             final ViewState viewState = EventPool.newEventScrollTo(this, page.index.viewIndex).process();
+            pageUpdated(viewState, page);
             getView().redrawView(viewState);
             return viewState;
         }

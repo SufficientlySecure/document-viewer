@@ -879,19 +879,32 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                     }
                 }
 
+                final int pageCount = documentModel.getPageCount();
                 final int currentIndex = documentModel.getCurrentViewPageIndex();
                 Page p = documentModel.getPageObject(currentIndex);
+
+                // Set default values for search direction and range
+                final int direction = forward ? +1 : -1;
+                final int startIndex;
+                final int endIndex;
+
+                // Check if current page contains actual search results
                 if (p.areHighlightsActual(pattern)) {
+                    // Try to find next/prev inclusion
                     final RectF next = forward ? p.getNextHighlight() : p.getPrevHighlight();
                     if (next != null) {
+                        // Use the current page as search result page
                         targetPage = p;
                         return next;
                     }
+                    // Start search from next/prev page
+                    startIndex = forward ? currentIndex + 1 : currentIndex - 1;
+                    endIndex = forward ? pageCount : -1;
+                } else {
+                    // Try to search starting from the current page
+                    startIndex = currentIndex;
+                    endIndex = forward ? pageCount : -1;
                 }
-
-                final int startIndex = forward ? currentIndex + 1 : currentIndex - 1;
-                final int endIndex = forward ? documentModel.getPageCount() : -1;
-                final int direction = forward ? +1 : -1;
 
                 for (int index = startIndex; (forward && index < endIndex || index > endIndex) && continueFlag.get(); index += direction) {
                     publishProgress("Searching on page " + (index + 1) + "...");

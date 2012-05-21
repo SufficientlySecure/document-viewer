@@ -13,8 +13,12 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
+import org.emdev.utils.LengthUtils;
 import org.emdev.utils.MatrixUtils;
 
 public class MuPdfPage implements CodecPage {
@@ -30,8 +34,8 @@ public class MuPdfPage implements CodecPage {
         this.pageHandle = pageHandle;
         this.docHandle = docHandle;
         this.pageBounds = getBounds();
-        //this.actualWidth = AbstractCodecContext.getWidthInPixels(pageBounds.width());
-        //this.actualHeight = AbstractCodecContext.getHeightInPixels(pageBounds.height());
+        // this.actualWidth = AbstractCodecContext.getWidthInPixels(pageBounds.width());
+        // this.actualHeight = AbstractCodecContext.getHeightInPixels(pageBounds.height());
         this.actualWidth = (int) pageBounds.width();
         this.actualHeight = (int) pageBounds.height();
     }
@@ -133,7 +137,7 @@ public class MuPdfPage implements CodecPage {
     public List<PageLink> getPageLinks() {
         return MuPdfLinks.getPageLinks(docHandle, pageHandle, pageBounds);
     }
-    
+
     private static native void getBounds(long dochandle, long handle, float[] bounds);
 
     private static native void free(long dochandle, long handle);
@@ -146,6 +150,8 @@ public class MuPdfPage implements CodecPage {
     private static native boolean renderPageBitmap(long dochandle, long pagehandle, int[] viewboxarray,
             float[] matrixarray, Bitmap bitmap);
 
+    private native static List<PageTextBox> search(long docHandle, long pageHandle, String pattern);
+
     @Override
     public List<PageTextBox> getPageText() {
         // TODO Auto-generated method stub
@@ -153,9 +159,23 @@ public class MuPdfPage implements CodecPage {
     }
 
     @Override
-    public List<? extends RectF> searchText(String pattern) {
-        // TODO Auto-generated method stub
-        return null;
+    public List<? extends RectF> searchText(final String pattern) {
+        final List<PageTextBox> rects = search(docHandle, pageHandle, pattern);
+        if (LengthUtils.isNotEmpty(rects)) {
+            final Set<String> temp = new HashSet<String>();
+            final Iterator<PageTextBox> iter = rects.iterator();
+            while (iter.hasNext()) {
+                final PageTextBox b = iter.next();
+                if (temp.add(b.toString())) {
+                    b.left = (b.left - pageBounds.left) / pageBounds.width();
+                    b.top = (b.top - pageBounds.top) / pageBounds.height();
+                    b.right = (b.right - pageBounds.left) / pageBounds.width();
+                    b.bottom = (b.bottom - pageBounds.top) / pageBounds.height();
+                } else {
+                    iter.remove();
+                }
+            }
+        }
+        return rects;
     }
-    
 }

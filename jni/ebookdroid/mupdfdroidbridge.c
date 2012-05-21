@@ -3,6 +3,7 @@
 #include <android/log.h>
 
 #include <nativebitmap.h>
+#include <javahelpers.h>
 
 #include <fitz.h>
 #include <mupdf.h>
@@ -565,187 +566,227 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPageBitmap(JNIEnv *env, j
     return JNI_TRUE;
 }
 
-/*
-#define MAX_SEARCH_HITS 500
 
 static fz_text_char textcharat(fz_text_page *page, int idx)
 {
-	static fz_text_char emptychar = { {0,0,0,0}, ' ' };
-	fz_text_block *block;
-	fz_text_line *line;
-	fz_text_span *span;
-	int ofs = 0;
-	for (block = page->blocks; block < page->blocks + page->len; block++)
-	{
-		for (line = block->lines; line < block->lines + block->len; line++)
-		{
-			for (span = line->spans; span < line->spans + line->len; span++)
-			{
-				if (idx < ofs + span->len)
-					return span->text[idx - ofs];
-				if (span + 1 == line->spans + line->len)
-				{
-					if (idx == ofs + span->len)
-						return emptychar;
-					ofs++;
-				}
-				ofs += span->len;
-			}
-		}
-	}
-	return emptychar;
+    static fz_text_char emptychar = { { 0, 0, 0, 0 }, ' ' };
+    fz_text_block *block;
+    fz_text_line *line;
+    fz_text_span *span;
+    int ofs = 0;
+    for (block = page->blocks; block < page->blocks + page->len; block++)
+    {
+        for (line = block->lines; line < block->lines + block->len; line++)
+        {
+            for (span = line->spans; span < line->spans + line->len; span++)
+            {
+                if (idx < ofs + span->len)
+                {
+                    return span->text[idx - ofs];
+                }
+                if (span + 1 == line->spans + line->len)
+                {
+                    if (idx == ofs + span->len)
+                    {
+                        return emptychar;
+                    }
+                    ofs++;
+                }
+                ofs += span->len;
+            }
+        }
+    }
+    return emptychar;
 }
 
-static int
-charat(fz_text_page *page, int idx)
+static int charat(fz_text_page *page, int idx)
 {
-	return textcharat(page, idx).c;
+    return textcharat(page, idx).c;
 }
 
-static fz_bbox
-bboxcharat(fz_text_page *page, int idx)
+static fz_bbox bboxcharat(fz_text_page *page, int idx)
 {
-	return fz_round_rect(textcharat(page, idx).bbox);
+    return fz_round_rect(textcharat(page, idx).bbox);
 }
 
-static int
-textlen(fz_text_page *page)
+static int textlen(fz_text_page *page)
 {
-	fz_text_block *block;
-	fz_text_line *line;
-	fz_text_span *span;
-	int len = 0;
-	for (block = page->blocks; block < page->blocks + page->len; block++)
-	{
-		for (line = block->lines; line < block->lines + block->len; line++)
-		{
-			for (span = line->spans; span < line->spans + line->len; span++)
-				len += span->len;
-			len++;
-		}
-	}
-	return len;
+    fz_text_block *block;
+    fz_text_line *line;
+    fz_text_span *span;
+    int len = 0;
+    for (block = page->blocks; block < page->blocks + page->len; block++)
+    {
+        for (line = block->lines; line < block->lines + block->len; line++)
+        {
+            for (span = line->spans; span < line->spans + line->len; span++)
+            {
+                len += span->len;
+            }
+            len++;
+        }
+    }
+    return len;
 }
 
-static int
-match(fz_text_page *page, const char *s, int n)
+static int match(fz_text_page *page, const char *s, int n)
 {
-	int orig = n;
-	int c;
-	while (*s) {
-		s += fz_chartorune(&c, (char *)s);
-		if (c == ' ' && charat(page, n) == ' ') {
-			while (charat(page, n) == ' ')
-				n++;
-		} else {
-			if (tolower(c) != tolower(charat(page, n)))
-				return 0;
-			n++;
-		}
-	}
-	return n - orig;
+    int orig = n;
+    int c;
+    while (*s)
+    {
+        s += fz_chartorune(&c, (char *) s);
+        if (c == ' ' && charat(page, n) == ' ')
+        {
+            while (charat(page, n) == ' ')
+            {
+                n++;
+            }
+        }
+        else
+        {
+            if (tolower(c) != tolower(charat(page, n)))
+            {
+                return 0;
+            }
+            n++;
+        }
+    }
+    return n - orig;
 }
-
-
 
 JNIEXPORT jobjectArray JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_search(JNIEnv * env, jobject thiz, jlong dochandle, jlong pagehandle, jstring text)
+Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_search(JNIEnv * env, jobject thiz, jlong dochandle, jlong pagehandle,
+                                                        jstring text)
 {
 
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
     renderpage_t *page = (renderpage_t*) (long) pagehandle;
-    // DEBUG("MuPdfPage(%p).search(%p, %p)", this, doc, page);
+    // DEBUG("MuPdfPage(%p).search(%p, %p)", thiz, doc, page);
 
-    if (!doc || !page) return NULL;
+    if (!doc || !page)
+    {
+        return NULL;
+    }
 
+    const char *str = (*env)->GetStringUTFChars(env, text, NULL);
+    if (str == NULL)
+    {
+        return NULL;
+    }
+
+    ArrayListHelper alh;
+    PageTextBoxHelper ptbh;
+    if (!ArrayListHelper_init(&alh, env) || !PageTextBoxHelper_init(&ptbh, env))
+    {
+        DEBUG("search(): JNI helper initialization failed", pagehandle);
+        return NULL;
+    }
+    jobject arrayList = ArrayListHelper_create(&alh);
+    // DEBUG("MuPdfPage(%p).search(%p, %p): array: %p", thiz, doc, page, arrayList);
+    if (!arrayList)
+    {
+        return NULL;
+    }
 
     fz_bbox *hit_bbox = NULL;
 
-    jclass         rectClass;
-    jmethodID      ctor;
-    jobjectArray   arr;
-    jobject        rect;
     fz_text_sheet *sheet = NULL;
-    fz_text_page  *pagetext = NULL;
-    fz_device     *dev  = NULL;
-    int            pos;
-    int            len;
-    int            i, n;
-    int            hit_count = 0;
-    const char    *str;
-
-    rectClass = (*env)->FindClass(env, "android/graphics/RectF");
-    if (rectClass == NULL) return NULL;
-    ctor = (*env)->GetMethodID(env, rectClass, "<init>", "(FFFF)V");
-    if (ctor == NULL) return NULL;
-    str = (*env)->GetStringUTFChars(env, text, NULL);
-    if (str == NULL) return NULL;
+    fz_text_page *pagetext = NULL;
+    fz_device *dev = NULL;
+    int pos;
+    int len;
+    int i, n;
+    int hit_count = 0;
 
     fz_try(doc->ctx)
     {
-	fz_rect rect;
+        fz_rect rect;
 
-	if (hit_bbox == NULL)
-	    hit_bbox = fz_malloc_array(doc->ctx, MAX_SEARCH_HITS, sizeof(*hit_bbox));
+        // DEBUG("MuPdfPage(%p).search(%p, %p): load page text", thiz, doc, page);
 
-	rect = fz_bound_page(doc->document, page->page);
-	sheet = fz_new_text_sheet(doc->ctx);
-	pagetext = fz_new_text_page(doc->ctx, rect);
-	dev  = fz_new_text_device(doc->ctx, sheet, pagetext);
-	fz_run_page(doc->document, page->page, dev, fz_identity, NULL);
-	fz_free_device(dev);
-	dev = NULL;
+        rect = fz_bound_page(doc->document, page->page);
+        sheet = fz_new_text_sheet(doc->ctx);
+        pagetext = fz_new_text_page(doc->ctx, rect);
+        dev = fz_new_text_device(doc->ctx, sheet, pagetext);
+        fz_run_page(doc->document, page->page, dev, fz_identity, NULL);
 
-	len = textlen(pagetext);
-	for (pos = 0; pos < len; pos++)
-	{
-		fz_bbox rr = fz_empty_bbox;
-		n = match(pagetext, str, pos);
-		for (i = 0; i < n; i++)
-    		    rr = fz_union_bbox(rr, bboxcharat(pagetext, pos + i));
+        // DEBUG("MuPdfPage(%p).search(%p, %p): free text device", thiz, doc, page);
 
-		if (!fz_is_empty_bbox(rr) && hit_count < MAX_SEARCH_HITS)
-			hit_bbox[hit_count++] = rr;
-	}
-    }
-    fz_always(doc->ctx)
+        fz_free_device(dev);
+        dev = NULL;
+
+        len = textlen(pagetext);
+
+        // DEBUG("MuPdfPage(%p).search(%p, %p): text length: %d", thiz, doc, page, len);
+
+        for (pos = 0; pos < len; pos++)
+        {
+            fz_bbox rr = fz_empty_bbox;
+            // DEBUG("MuPdfPage(%p).search(%p, %p): match %d", thiz, doc, page, pos);
+
+            n = match(pagetext, str, pos);
+            if (n > 0)
+            {
+                DEBUG("MuPdfPage(%p).search(%p, %p): match found: %d, %d", thiz, doc, page, pos, n);
+                for (i = 0; i < n; i++)
+                {
+                    rr = fz_union_bbox(rr, bboxcharat(pagetext, pos + i));
+                }
+
+                if (!fz_is_empty_bbox(rr))
+                {
+                    int coords[4];
+                    coords[0] = (rr.x0);
+                    coords[1] = (rr.y0);
+                    coords[2] = (rr.x1);
+                    coords[3] = (rr.y1);
+                    DEBUG("MuPdfPage(%p).search(%p, %p): found rectangle (%d, %d - %d, %d)", thiz, doc, page, coords[0], coords[1], coords[2], coords[3]);
+                    jobject ptb = PageTextBoxHelper_create(&ptbh);
+                    if (ptb)
+                    {
+                        // DEBUG("MuPdfPage(%p).search(%p, %p): rect %p", thiz, doc, page, ptb);
+                        PageTextBoxHelper_setRect(&ptbh, ptb, coords);
+                        // PageTextBoxHelper_setText(&ptbh, ptb, txt);
+                        // DEBUG("MuPdfPage(%p).search(%p, %p): add rect %p to array %p", thiz, doc, page, ptb, arrayList);
+                        ArrayListHelper_add(&alh, arrayList, ptb);
+                    }
+                }
+            }
+        }
+    } fz_always(doc->ctx)
     {
-	fz_free_text_page(doc->ctx, pagetext);
-	fz_free_text_sheet(doc->ctx, sheet);
-	fz_free_device(dev);
-    }
-    fz_catch(doc->ctx)
+        // DEBUG("MuPdfPage(%p).search(%p, %p): free resources", thiz, doc, page);
+        if (pagetext)
+        {
+            fz_free_text_page(doc->ctx, pagetext);
+        }
+        if (sheet)
+        {
+            fz_free_text_sheet(doc->ctx, sheet);
+        }
+        if (dev)
+        {
+            fz_free_device(dev);
+        }
+    }fz_catch(doc->ctx)
     {
-	jclass cls;
-	(*env)->ReleaseStringUTFChars(env, text, str);
-	cls = (*env)->FindClass(env, "java/lang/OutOfMemoryError");
-	if (cls != NULL)
-		(*env)->ThrowNew(env, cls, "Out of memory in MuPDFCore_searchPage");
-	(*env)->DeleteLocalRef(env, cls);
-	return NULL;
+        jclass cls;
+        (*env)->ReleaseStringUTFChars(env, text, str);
+        cls = (*env)->FindClass(env, "java/lang/OutOfMemoryError");
+        if (cls != NULL)
+        {
+            (*env)->ThrowNew(env, cls, "Out of memory in MuPDFCore_searchPage");
+        }
+        (*env)->DeleteLocalRef(env, cls);
+        return NULL;
     }
 
     (*env)->ReleaseStringUTFChars(env, text, str);
 
-    arr = (*env)->NewObjectArray(env, hit_count, rectClass, NULL);
-    if (arr == NULL) return NULL;
-
-    for (i = 0; i < hit_count; i++) 
-    {
-	rect = (*env)->NewObject(env, rectClass, ctor,
-			(float) (hit_bbox[i].x0),
-			(float) (hit_bbox[i].y0),
-			(float) (hit_bbox[i].x1),
-			(float) (hit_bbox[i].y1));
-	if (rect == NULL)
-		return NULL;
-	(*env)->SetObjectArrayElement(env, arr, i, rect);
-	(*env)->DeleteLocalRef(env, rect);
-    }
-
-    return arr;
+    return arrayList;
 }
-*/
+
 
 //Outline
 JNIEXPORT jlong JNICALL

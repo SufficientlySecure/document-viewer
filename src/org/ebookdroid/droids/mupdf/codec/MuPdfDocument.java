@@ -83,8 +83,7 @@ public class MuPdfDocument extends AbstractCodecDocument {
 
     @Override
     public List<? extends RectF> searchText(int pageNuber, String pattern) throws DocSearchNotSupported {
-        // TODO Auto-generated method stub
-        return null;
+        throw new DocSearchNotSupported();
     }
 
 }

@@ -3,6 +3,8 @@
 
 #include <jni.h>
 
+#ifdef __cplusplus
+
 class ArrayListHelper
 {
 private:
@@ -220,5 +222,104 @@ public:
     }
 
 };
+
+#else /* not __cplusplus */
+
+typedef struct ArrayListHelper_s ArrayListHelper;
+typedef struct PageTextBoxHelper_s PageTextBoxHelper;
+
+struct ArrayListHelper_s
+{
+    JNIEnv* jenv;
+    jclass cls;
+    jmethodID cid;
+    jmethodID midAdd;
+    int valid;
+};
+
+int ArrayListHelper_init(ArrayListHelper* that, JNIEnv* env)
+{
+    that->jenv = env;
+    that->cls = (*(that->jenv))->FindClass(that->jenv, "java/util/ArrayList");
+    if (that->cls)
+    {
+        that->cid = (*(that->jenv))->GetMethodID(that->jenv, that->cls, "<init>", "()V");
+        that->midAdd = (*(that->jenv))->GetMethodID(that->jenv, that->cls, "add", "(Ljava/lang/Object;)Z");
+    }
+    that->valid = that->cls && that->cid && that->midAdd;
+    return that->valid;
+}
+
+jobject ArrayListHelper_create(ArrayListHelper* that)
+{
+    return that->valid ? (*(that->jenv))->NewObject(that->jenv, that->cls, that->cid) : NULL;
+}
+
+void ArrayListHelper_add(ArrayListHelper* that, jobject arrayList, jobject obj)
+{
+    if (that->valid && arrayList)
+    {
+        (*(that->jenv))->CallBooleanMethod(that->jenv, arrayList, that->midAdd, obj);
+    }
+}
+
+struct PageTextBoxHelper_s
+{
+    JNIEnv* jenv;
+    jclass cls;
+    jmethodID cid;
+    jfieldID fidLeft;
+    jfieldID fidTop;
+    jfieldID fidRight;
+    jfieldID fidBottom;
+    jfieldID fidText;
+    int valid;
+};
+
+int PageTextBoxHelper_init(PageTextBoxHelper* that, JNIEnv* env)
+{
+    that->jenv = env;
+    that->cls = (*(that->jenv))->FindClass(that->jenv, "org/ebookdroid/core/codec/PageTextBox");
+    if (that->cls)
+    {
+        that->cid = (*(that->jenv))->GetMethodID(that->jenv, that->cls, "<init>", "()V");
+        that->fidLeft = (*(that->jenv))->GetFieldID(that->jenv, that->cls, "left", "F");
+        that->fidTop = (*(that->jenv))->GetFieldID(that->jenv, that->cls, "top", "F");
+        that->fidRight = (*(that->jenv))->GetFieldID(that->jenv, that->cls, "right", "F");
+        that->fidBottom = (*(that->jenv))->GetFieldID(that->jenv, that->cls, "bottom", "F");
+        that->fidText = (*(that->jenv))->GetFieldID(that->jenv, that->cls, "text", "Ljava/lang/String;");
+    }
+
+    that->valid = that->cls && that->cid && that->fidLeft && that->fidTop && that->fidRight && that->fidBottom && that->fidText;
+    return that->valid;
+}
+
+jobject PageTextBoxHelper_create(PageTextBoxHelper* that)
+{
+    return that->valid ? (*(that->jenv))->NewObject(that->jenv, that->cls, that->cid) : NULL;
+}
+
+jobject PageTextBoxHelper_setRect(PageTextBoxHelper* that, jobject ptb, const int* coords)
+{
+    if (that->valid && ptb)
+    {
+        (*(that->jenv))->SetFloatField(that->jenv, ptb, that->fidLeft, (jfloat) (float) coords[0]);
+        (*(that->jenv))->SetFloatField(that->jenv, ptb, that->fidTop, (jfloat) (float) coords[1]);
+        (*(that->jenv))->SetFloatField(that->jenv, ptb, that->fidRight, (jfloat) (float) coords[2]);
+        (*(that->jenv))->SetFloatField(that->jenv, ptb, that->fidBottom, (jfloat) (float) coords[3]);
+    }
+    return ptb;
+}
+
+jobject PageTextBoxHelper_setText(PageTextBoxHelper* that, jobject ptb, jstring text)
+{
+    if (that->valid && ptb)
+    {
+        (*(that->jenv))->SetObjectField(that->jenv, ptb, that->fidText, text);
+    }
+    return ptb;
+}
+
+#endif
 
 #endif

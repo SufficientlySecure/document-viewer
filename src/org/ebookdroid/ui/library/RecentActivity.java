@@ -71,6 +71,11 @@ public class RecentActivity extends AbstractActionActivity {
     @Override
     @SuppressWarnings("deprecation")
     public void onCreate(final Bundle savedInstanceState) {
+        if (!isTaskRoot()) {
+            // Workaround for Android 2.1-
+            finish();
+            return;
+        }
         if (LCTX.isDebugEnabled()) {
             LCTX.d("onCreate()");
         }

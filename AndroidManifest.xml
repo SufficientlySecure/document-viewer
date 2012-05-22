@@ -35,11 +35,11 @@
                 <data android:pathPattern=".*\\.oxps" />
                 <data android:pathPattern=".*\\.cbz" />
                 <data android:pathPattern=".*\\.cbr" />
-                <data android:pathPattern=".*\\.fb2" /> 
-                <data android:pathPattern=".*\\.fb2\\.zip" /> 
+                <data android:pathPattern=".*\\.fb2" />
+                <data android:pathPattern=".*\\.fb2\\.zip" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.library.RecentActivity" android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar" android:configChanges="keyboardHidden|orientation" android:launchMode="singleTask" android:hardwareAccelerated="true">
+        <activity android:name=".ui.library.RecentActivity" android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar" android:configChanges="keyboardHidden|orientation" android:hardwareAccelerated="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -56,6 +56,6 @@
         <activity android:name=".ui.settings.BookSettingsActivity" android:configChanges="keyboardHidden|orientation" android:launchMode="singleTask"/>
         <activity android:name=".ui.library.BrowserActivity" android:theme="@android:style/Theme.NoTitleBar" android:configChanges="keyboardHidden|orientation" android:launchMode="singleTask"/>
         <activity android:name=".ui.about.AboutActivity" android:icon="@drawable/icon" android:theme="@android:style/Theme.Dialog"/>
-        
+
     </application>
 </manifest>

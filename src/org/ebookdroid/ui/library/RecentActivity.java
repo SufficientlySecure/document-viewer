@@ -73,6 +73,9 @@ public class RecentActivity extends AbstractActionActivity {
     public void onCreate(final Bundle savedInstanceState) {
         if (!isTaskRoot()) {
             // Workaround for Android 2.1-
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("onCreate(): close duplicated activity");
+            }
             finish();
             return;
         }

@@ -12,6 +12,7 @@ import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.ui.library.adapters.BooksAdapter;
 import org.ebookdroid.ui.library.adapters.FileListAdapter;
 import org.ebookdroid.ui.library.adapters.RecentAdapter;
+import org.ebookdroid.ui.opds.OPDSActivity;
 import org.ebookdroid.ui.settings.SettingsUI;
 import org.ebookdroid.ui.viewer.ViewerActivity;
 
@@ -55,7 +56,8 @@ actions = {
         @ActionMethodDef(id = R.id.ShelfLeftButton, method = "selectPrevShelf"),
         @ActionMethodDef(id = R.id.ShelfRightButton, method = "selectNextShelf"),
         @ActionMethodDef(id = R.id.recentmenu_searchBook, method = "showSearchDlg"),
-        @ActionMethodDef(id = R.id.actions_searchBook, method = "searchBook")
+        @ActionMethodDef(id = R.id.actions_searchBook, method = "searchBook"),
+        @ActionMethodDef(id = R.id.mainmenu_opds, method = "goOPDSBrowser")
 // finish
 })
 public class RecentActivityController extends ActionController<RecentActivity> implements IBrowserActivity,
@@ -300,6 +302,12 @@ public class RecentActivityController extends ActionController<RecentActivity> i
     @ActionMethod(ids = R.id.recent_showbrowser)
     public void goFileBrowser(final ActionEx action) {
         final Intent myIntent = new Intent(getManagedComponent(), BrowserActivity.class);
+        getManagedComponent().startActivity(myIntent);
+    }
+
+    @ActionMethod(ids = R.id.mainmenu_opds)
+    public void goOPDSBrowser(final ActionEx action) {
+        final Intent myIntent = new Intent(getManagedComponent(), OPDSActivity.class);
         getManagedComponent().startActivity(myIntent);
     }
 

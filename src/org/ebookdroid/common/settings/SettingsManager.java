@@ -18,6 +18,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.listeners.ListenerProxy;
+import org.json.JSONArray;
 
 public class SettingsManager {
 
@@ -284,6 +285,20 @@ public class SettingsManager {
                 appSettings = new AppSettings(ctx);
                 applyAppSettingsChanges(oldSettings, appSettings);
             }
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    public static void changeOpdsCatalogs(final JSONArray opdsCatalogs) {
+        lock.writeLock().lock();
+        try {
+            final Editor edit = appSettings.prefs.edit();
+            AppPreferences.OPDS_CATALOGS.setPreferenceValue(edit, opdsCatalogs);
+            edit.commit();
+            final AppSettings oldSettings = appSettings;
+            appSettings = new AppSettings(ctx);
+            applyAppSettingsChanges(oldSettings, appSettings);
         } finally {
             lock.writeLock().unlock();
         }

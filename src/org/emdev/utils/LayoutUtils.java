@@ -1,5 +1,7 @@
 package org.emdev.utils;
 
+import org.ebookdroid.EBookDroidApp;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -31,4 +33,8 @@ public final class LayoutUtils {
         window.setLayout(FILL_PARENT, FILL_PARENT);
     }
 
+    public static int getDeviceSize(final int dipSize) {
+        return (int) (dipSize *
+                EBookDroidApp.context.getResources().getDisplayMetrics().density + 0.5f);
+    }
 }

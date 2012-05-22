@@ -5,6 +5,7 @@ import org.ebookdroid.R;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.ui.library.adapters.BrowserAdapter;
 import org.ebookdroid.ui.library.views.FileBrowserView;
+import org.ebookdroid.ui.opds.OPDSActivity;
 import org.ebookdroid.ui.settings.SettingsUI;
 import org.ebookdroid.ui.viewer.ViewerActivity;
 
@@ -41,7 +42,8 @@ actions = {
         @ActionMethodDef(id = R.id.browserupfolder, method = "goUp"),
         @ActionMethodDef(id = R.id.mainmenu_settings, method = "showSettings"),
         @ActionMethodDef(id = R.id.mainmenu_about, method = "showAbout"),
-        @ActionMethodDef(id = R.id.browserrecent, method = "goRecent")
+        @ActionMethodDef(id = R.id.browserrecent, method = "goRecent"),
+        @ActionMethodDef(id = R.id.mainmenu_opds, method = "goOPDSBrowser")
 // finish
 })
 public class BrowserActivity extends AbstractActionActivity implements IBrowserActivity {
@@ -127,10 +129,19 @@ public class BrowserActivity extends AbstractActionActivity implements IBrowserA
         finish();
     }
 
+    @ActionMethod(ids = R.id.mainmenu_opds)
+    public void goOPDSBrowser(final ActionEx action) {
+        final Intent myIntent = new Intent(BrowserActivity.this, OPDSActivity.class);
+        startActivity(myIntent);
+    }
+
+
     @Override
     public void showDocument(final Uri uri) {
         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         intent.setClass(this, ViewerActivity.class);
+        intent.putExtra("persistent", "false");
+        intent.putExtra("nightMode", "true");
         startActivity(intent);
     }
 

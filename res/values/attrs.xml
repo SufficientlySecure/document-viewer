@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	
+
 	<declare-styleable name="org.emdev.ui.preference.SeekBarPreference">
 		<attr name="minValue" format="integer" />
 		<attr name="maxValue" format="integer" />
 	</declare-styleable>
-	
+
+     <declare-styleable name="org.emdev.ui.widget.TextViewMultilineEllipse">
+        <attr name="text" format="string" />
+        <attr name="textColor" format="color" />
+        <attr name="textSize" format="dimension" />
+        <attr name="maxLines" format="integer" />
+     </declare-styleable>
+
 </resources>

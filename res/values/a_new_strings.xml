@@ -46,4 +46,15 @@
     <string name="pref_usenativegraphics_title">Use native graphics</string>
     <string name="pref_usenativegraphics_summary">Use Android 2+ native graphics library</string>
 
+    <string name="menu_opds">OPDS Browser</string>
+
+    <string name="opds_connecting" formatted="false">"Connecting&#8230;"</string>
+    <string name="opds_loading_catalog" formatted="false">"Loading catalog&#8230;"</string>
+    <string name="opds_loading_book" formatted="false">"Loading book: %s/%s&#8230;"</string>
+    <string name="opds_unpacking_book" formatted="false">"Unpacking book: %s/%s&#8230;"</string>
+
+    <string name="opds_addfeed_title">"Adding new catalog"</string>
+    <string name="opds_addfeed_msg">"Enter alias and URL for the catalog"</string>
+    <string name="opds_addfeed_ok">"Add"</string>
+    
 </resources>

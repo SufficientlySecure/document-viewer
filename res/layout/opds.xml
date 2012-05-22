@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainscreen"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <ExpandableListView
+        android:id="@+id/opdslist"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1.0" />
+
+    <LinearLayout
+        android:id="@+id/opdsbottompanel"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+>
+
+        <Button
+            android:id="@+id/opdsaddfeed"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Add new feed" />
+    </LinearLayout>
+
+</LinearLayout>

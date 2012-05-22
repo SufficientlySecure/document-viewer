@@ -2,11 +2,13 @@ package org.ebookdroid.common.settings;
 
 import static org.ebookdroid.R.string.*;
 
+import org.ebookdroid.R;
 import org.ebookdroid.common.settings.base.BooleanPreferenceDefinition;
 import org.ebookdroid.common.settings.base.EnumPreferenceDefinition;
 import org.ebookdroid.common.settings.base.FileListPreferenceDefinition;
 import org.ebookdroid.common.settings.base.FileTypeFilterPreferenceDefinition;
 import org.ebookdroid.common.settings.base.IntegerPreferenceDefinition;
+import org.ebookdroid.common.settings.base.JsonArrayPreferenceDefinition;
 import org.ebookdroid.common.settings.base.StringPreferenceDefinition;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.DocumentViewType;
@@ -201,4 +203,7 @@ public interface AppPreferences {
 
     FileTypeFilterPreferenceDefinition FILE_TYPE_FILTER = new FileTypeFilterPreferenceDefinition("brfiletype");
 
+    /* =============== OPDS settings =============== */
+
+    JsonArrayPreferenceDefinition OPDS_CATALOGS = new JsonArrayPreferenceDefinition(R.string.pref_opdscatalogs_id);
 }

@@ -16,5 +16,9 @@
    
    <item android:id="@+id/actions_clearRecent" />
    <item android:id="@+id/actions_searchBook" />
+
+   <item android:id="@+id/actions_downloadBook" />
+   
+   <item android:id="@+id/actions_addFeed" />
    
 </menu>

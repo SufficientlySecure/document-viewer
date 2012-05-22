@@ -177,8 +177,8 @@ public class OutlineAdapter extends BaseAdapter {
             btn.setBackgroundColor(Color.TRANSPARENT);
         } else {
             btn.setOnClickListener(collapseListener);
-            btn.setBackgroundResource(states[id] == OutlineItemState.EXPANDED ? R.drawable.seekbar_pref_minus
-                    : R.drawable.seekbar_pref_plus);
+            btn.setBackgroundResource(states[id] == OutlineItemState.EXPANDED ? R.drawable.triangle_down
+                    : R.drawable.triangle_right);
         }
 
         return container;

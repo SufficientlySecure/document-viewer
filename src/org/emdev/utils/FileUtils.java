@@ -63,4 +63,41 @@ public final class FileUtils {
             }
         }
     }
+
+    public static void copy(final InputStream source, final OutputStream target, int bufsize, CopingProgress progress)
+            throws IOException {
+        ReadableByteChannel in = null;
+        WritableByteChannel out = null;
+        try {
+            in = Channels.newChannel(source);
+            out = Channels.newChannel(target);
+            final ByteBuffer buf = ByteBuffer.allocateDirect(bufsize);
+            long read = 0;
+            while (in.read(buf) > 0) {
+                buf.flip();
+                read += buf.remaining();
+                progress.progress(read);
+                out.write(buf);
+                buf.flip();
+            }
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (final IOException ex) {
+                }
+            }
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (final IOException ex) {
+                }
+            }
+        }
+    }
+
+    public static interface CopingProgress {
+
+        void progress(long bytes);
+    }
 }

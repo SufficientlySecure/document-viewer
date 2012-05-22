@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
-  xmlns:android="http://schemas.android.com/apk/res/android">
-	<item
-		android:id="@+id/mainmenu_settings"
-		android:alphabeticShortcut="s"
-		android:title="@string/menu_settings"
-		android:icon="@drawable/settings"
-		android:showAsAction="ifRoom" />
-	<item
-		android:id="@+id/mainmenu_about"
-		android:title="@string/menu_about" 
-		android:icon="@drawable/about"/>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/mainmenu_settings"
+        android:alphabeticShortcut="s"
+        android:icon="@drawable/settings"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_settings"/>
+    <item
+        android:id="@+id/mainmenu_opds"
+        android:alphabeticShortcut="o"
+        android:icon="@drawable/opds"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_opds"/>
+    <item
+        android:id="@+id/mainmenu_about"
+        android:icon="@drawable/about"
+        android:title="@string/menu_about"/>
+
 </menu>

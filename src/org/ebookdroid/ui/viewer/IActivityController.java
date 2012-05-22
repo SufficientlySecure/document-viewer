@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Context;
 
 import org.emdev.ui.actions.IActionController;
+import org.emdev.ui.progress.IProgressIndicator;
 
 public interface IActivityController extends IActionController<ViewerActivity> {
 
@@ -32,10 +33,8 @@ public interface IActivityController extends IActionController<ViewerActivity> {
 
     void jumpToPage(int viewIndex, float offsetX, float offsetY, boolean addToHistory);
 
-    static interface IBookLoadTask {
-
-        void setProgressDialogMessage(int resourceID, Object... args);
-
+    @Deprecated
+    static interface IBookLoadTask extends IProgressIndicator {
     }
 
 }

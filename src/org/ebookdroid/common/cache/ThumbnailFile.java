@@ -29,7 +29,17 @@ public class ThumbnailFile extends File {
     public Bitmap getImage() {
         if (ref == null) {
             try {
-                ref = load();
+                ref = load(false);
+            } catch (final OutOfMemoryError ex) {
+            }
+        }
+        return ref != null && !ref.isRecycled() ? ref : null;
+    }
+
+    public Bitmap getRawImage() {
+        if (ref == null) {
+            try {
+                ref = load(true);
             } catch (final OutOfMemoryError ex) {
             }
         }
@@ -45,11 +55,11 @@ public class ThumbnailFile extends File {
         }
     }
 
-    private Bitmap load() {
+    private Bitmap load(boolean raw) {
         if (this.exists()) {
             Bitmap stored = BitmapFactory.decodeFile(this.getPath());
             if (stored != null) {
-                return paint(stored);
+                return raw ? stored : paint(stored);
             }
         }
         return getDefaultThumbnail();
@@ -79,7 +89,7 @@ public class ThumbnailFile extends File {
 
         final Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         if (bmp == null) {
-             return null;
+            return null;
         }
 
         bmp.eraseColor(Color.TRANSPARENT);

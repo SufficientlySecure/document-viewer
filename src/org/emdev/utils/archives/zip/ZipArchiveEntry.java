@@ -1,6 +1,5 @@
 package org.emdev.utils.archives.zip;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
@@ -37,9 +36,22 @@ public class ZipArchiveEntry implements ArchiveEntry {
         return entry.isDirectory();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.emdev.utils.archives.ArchiveEntry#open()
+     */
     @Override
     public InputStream open() throws IOException {
         return archive.open(this);
+    }
+
+    public long getCompressedSize() {
+        return entry.getCompressedSize();
+    }
+
+    public long getSize() {
+        return entry.getSize();
     }
 
 }

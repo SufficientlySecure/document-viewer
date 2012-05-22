@@ -37,6 +37,13 @@
             android:onClick="onButtonClick"
             android:src="@drawable/actionbar_open" />
 
+        <ImageView
+            android:id="@+id/mainmenu_opds"
+            style="@style/action_bar_action"
+            android:contentDescription="@string/content_description_browser"
+            android:onClick="onButtonClick"
+            android:src="@drawable/opds" />
+
         <View style="@style/action_bar_separator" />
 
         <ImageView

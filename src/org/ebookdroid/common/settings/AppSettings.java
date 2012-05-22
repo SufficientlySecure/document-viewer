@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.emdev.utils.android.AndroidVersion;
 import org.emdev.utils.filesystem.FileExtensionFilter;
+import org.json.JSONArray;
 
 public class AppSettings implements AppPreferences {
 
@@ -135,6 +136,10 @@ public class AppSettings implements AppPreferences {
 
     public final FileExtensionFilter allowedFileTypes;
 
+    /* =============== OPDS settings =============== */
+
+    public final JSONArray opdsCatalogs;
+
     AppSettings(final Context context) {
         this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
         /* =============== UI settings =============== */
@@ -193,6 +198,8 @@ public class AppSettings implements AppPreferences {
         autoScanDirs = AUTO_SCAN_DIRS.getPreferenceValue(prefs);
         searchBookQuery = SEARCH_BOOK_QUERY.getPreferenceValue(prefs);
         allowedFileTypes = FILE_TYPE_FILTER.getPreferenceValue(prefs);
+        /* =============== OPDS settings =============== */
+        opdsCatalogs = OPDS_CATALOGS.getPreferenceValue(prefs);
     }
 
     /* =============== UI settings =============== */

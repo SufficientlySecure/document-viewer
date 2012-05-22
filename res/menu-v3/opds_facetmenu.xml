@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/opdsgoto"
+        android:alphabeticShortcut="g"
+        android:title="Open"/>
+    <item
+        android:id="@+id/opdsupfolder"
+        android:alphabeticShortcut="u"
+        android:title="Up"/>
+    <item
+        android:id="@+id/opdsrefreshfolder"
+        android:alphabeticShortcut="r"
+        android:title="Refresh"/>
+    <item
+        android:id="@+id/opdsprevfolder"
+        android:alphabeticShortcut="p"
+        android:title="Prev section"/>
+    <item
+        android:id="@+id/opdsnextfolder"
+        android:alphabeticShortcut="n"
+        android:title="Next section"/>
+    <item
+        android:id="@+id/opds_feed_add"
+        android:alphabeticShortcut="a"
+        android:title="Add"/>
+    <item
+        android:id="@+id/opdsclose"
+        android:alphabeticShortcut="c"
+        android:title="Close"/>
+</menu>

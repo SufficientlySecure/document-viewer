@@ -11,6 +11,9 @@
 		android:title="@string/menu_settings"
 		android:showAsAction="ifRoom" />
 	<item
+		android:id="@+id/mainmenu_opds"
+		android:title="@string/menu_opds" />
+	<item
 		android:id="@+id/mainmenu_about"
 		android:title="@string/menu_about" />
 </menu>

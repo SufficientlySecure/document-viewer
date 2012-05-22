@@ -325,10 +325,10 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    if ((mFinger.distanceSquared(mOldMovement) > 625)) {
+                    if ((mFinger.absdistancex(mOldMovement) > 25)) {
                         if (!bUserMoves) {
-                            // If we moved over the half of the display flip to next
-                            if (mOldMovement.x > (width >> 1)) {
+                            // Check current and start positions
+                            if (mFinger.x  < mOldMovement.x) {
                                 mMovement.x = mInitialEdgeOffset;
                                 mMovement.y = mInitialEdgeOffset;
 

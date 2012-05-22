@@ -71,6 +71,14 @@ class Vector2D {
         return FloatMath.sqrt(distanceSquared(other));
     }
 
+    public float absdistancex(final Vector2D other) {
+        return Math.abs(this.x - other.x);
+    }
+
+    public float absdistancey(final Vector2D other) {
+        return Math.abs(this.y - other.y);
+    }
+
     public float dotProduct(final Vector2D other) {
         return other.x * x + other.y * y;
     }

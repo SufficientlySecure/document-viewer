@@ -25,4 +25,8 @@
             android:title="@string/pref_browser_category"
             android:summary="@string/pref_browser_category_summary" />
 
+    <header android:fragment="org.ebookdroid.ui.settings.fragments.OpdsFragment"
+            android:title="@string/pref_opds_category"
+            android:summary="@string/pref_opds_category_summary" />
+
 </preference-headers>

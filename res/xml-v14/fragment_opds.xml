@@ -1,0 +1,37 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ebookdroid="http://ebookdroid.org"
+    android:key="opds_prefs"
+    android:summary="@string/pref_opds_category_summary"
+    android:title="@string/pref_opds_category" >
+
+    <EditTextPreference
+        android:defaultValue="@string/pref_opds_downloaddir_defvalue"
+        android:key="@string/pref_opds_downloaddir_id"
+        android:summary="@string/pref_opds_downloaddir_summary"
+        android:title="@string/pref_opds_downloaddir_title" />
+
+    <org.emdev.ui.preference.SwitchPreferenceEx
+        android:defaultValue="@string/pref_opds_filterbooktypes_defvalue"
+        android:key="@string/pref_opds_filterbooktypes_id"
+        android:summary="@string/pref_opds_filterbooktypes_summary"
+        android:title="@string/pref_opds_filterbooktypes_title" />
+
+    <org.emdev.ui.preference.SwitchPreferenceEx
+        android:defaultValue="@string/pref_opds_downloadarchives_defvalue"
+        android:key="@string/pref_opds_downloadarchives_id"
+        android:summary="@string/pref_opds_downloadarchives_summary"
+        android:title="@string/pref_opds_downloadarchives_title" />
+    
+    <org.emdev.ui.preference.SwitchPreferenceEx
+        android:defaultValue="@string/pref_opds_unpackarchives_defvalue"
+        android:key="@string/pref_opds_unpackarchives_id"
+        android:summary="@string/pref_opds_unpackarchives_summary"
+        android:title="@string/pref_opds_unpackarchives_title" />
+
+    <org.emdev.ui.preference.SwitchPreferenceEx
+        android:defaultValue="@string/pref_opds_deletearchives_defvalue"
+        android:key="@string/pref_opds_deletearchives_id"
+        android:summary="@string/pref_opds_deletearchives_summary"
+        android:title="@string/pref_opds_deletearchives_title" />
+
+</PreferenceScreen>

@@ -5,6 +5,7 @@ import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.definitions.AppPreferences;
 import org.ebookdroid.common.settings.definitions.BookPreferences;
 import org.ebookdroid.common.settings.definitions.LibPreferences;
+import org.ebookdroid.common.settings.definitions.OpdsPreferences;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.core.curl.PageAnimationType;
@@ -28,7 +29,7 @@ import org.emdev.utils.enums.EnumUtils;
  * @author whippet
  * 
  */
-public class PreferencesDecorator implements IPreferenceContainer, AppPreferences, BookPreferences, LibPreferences {
+public class PreferencesDecorator implements IPreferenceContainer, AppPreferences, BookPreferences, LibPreferences, OpdsPreferences {
 
     private final Map<String, CharSequence> summaries = new HashMap<String, CharSequence>();
 
@@ -48,6 +49,7 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
     public void decorateSettings() {
         decorateBooksSettings();
         decorateBrowserSettings();
+        decorateOpdsSettings();
         decorateMemorySettings();
         decorateRenderSettings();
         decorateScrollSettings();
@@ -68,6 +70,10 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
 
     public void decorateBrowserSettings() {
         decoratePreferences(AUTO_SCAN_DIRS.key);
+    }
+
+    public void decorateOpdsSettings() {
+        decoratePreferences(OPDS_DOWNLOAD_DIR.key);
     }
 
     public void decorateMemorySettings() {

@@ -15,11 +15,21 @@ public class OpdsSettings implements OpdsPreferences {
     /* =============== OPDS settings =============== */
 
     public final JSONArray opdsCatalogs;
+    public final String downloadDir;
+    public final boolean filterTypes;
+    public final boolean downloadArchives;
+    public final boolean unpackArchives;
+    public final boolean deleteArchives;
 
     OpdsSettings(final Context context) {
         this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
         /* =============== OPDS settings =============== */
         opdsCatalogs = OPDS_CATALOGS.getPreferenceValue(prefs);
+        downloadDir = OPDS_DOWNLOAD_DIR.getPreferenceValue(prefs);
+        filterTypes = OPDS_FILTER_TYPES.getPreferenceValue(prefs);
+        downloadArchives = OPDS_DOWNLOAD_ARCHIVES.getPreferenceValue(prefs);
+        unpackArchives = OPDS_UNPACK_ARCHIVES.getPreferenceValue(prefs);
+        deleteArchives = OPDS_DELETE_ARCHIVES.getPreferenceValue(prefs);
     }
 
     /* =============== OPDS settings =============== */
@@ -27,6 +37,8 @@ public class OpdsSettings implements OpdsPreferences {
     /* =============== */
 
     public static class Diff {
+
+        private static final int D_OpdsCatalogs = 0x0001 << 0;
 
         private int mask;
         private final boolean firstTime;
@@ -36,12 +48,18 @@ public class OpdsSettings implements OpdsPreferences {
             if (firstTime) {
                 mask = 0xFFFFFFFF;
             } else if (news != null) {
-                mask = 0x00000000;
+                if (!olds.opdsCatalogs.equals(news.opdsCatalogs)) {
+                    mask |= D_OpdsCatalogs;
+                }
             }
         }
 
         public boolean isFirstTime() {
             return firstTime;
+        }
+
+        public boolean isOpdsCatalogsChanged() {
+            return 0 != (mask & D_OpdsCatalogs);
         }
     }
 }

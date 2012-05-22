@@ -5,9 +5,9 @@ import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.log.LogContext;
+import org.ebookdroid.common.settings.SettingsManager;
 
 import android.net.http.AndroidHttpClient;
-import android.os.Environment;
 import android.webkit.URLUtil;
 
 import java.io.BufferedInputStream;
@@ -40,7 +40,7 @@ public class OPDSClient {
     private final AndroidHttpClient client;
     private final IEntryBuilder builder;
 
-    public OPDSClient(IEntryBuilder builder) {
+    public OPDSClient(final IEntryBuilder builder) {
         this.client = AndroidHttpClient.newInstance(EBookDroidApp.APP_PACKAGE + " " + EBookDroidApp.APP_VERSION);
         this.builder = builder;
     }
@@ -78,6 +78,7 @@ public class OPDSClient {
             final String encoding = enc != null ? enc.getValue() : "";
 
             h.parse(new InputStreamReader(entity.getContent(), LengthUtils.safeString(encoding, "UTF-8")));
+
         } catch (final Throwable th) {
             LCTX.e("Error on OPDS catalog access: ", th);
         }
@@ -140,20 +141,25 @@ public class OPDSClient {
             LCTX.d("File name: " + guessFileName);
 
             // create a new file, specifying the path, and the filename which we want to save the file as.
-            final File SDCardRoot = Environment.getExternalStorageDirectory();
+            final File SDCardRoot = new File(SettingsManager.getOpdsSettings().downloadDir);
+            if (!SDCardRoot.exists()) {
+                SDCardRoot.mkdirs();
+            }
             final File file = new File(SDCardRoot, guessFileName);
 
-            boolean exists = file.exists() && file.length() == contentLength;
+            final boolean exists = file.exists() && file.length() == contentLength;
 
             // this will be used to write the downloaded data into the file we created
             try {
                 if (!exists) {
                     final UIFileCopying worker = new UIFileCopying(R.string.opds_loading_book, 64 * 1024, progress);
                     final BufferedInputStream input = new BufferedInputStream(entity.getContent(), 64 * 1024);
-                    final BufferedOutputStream fileOutput = new BufferedOutputStream(new FileOutputStream(file), 256*1024);
+                    final BufferedOutputStream fileOutput = new BufferedOutputStream(new FileOutputStream(file),
+                            256 * 1024);
                     worker.copy(contentLength, input, fileOutput);
                 }
-                if (link.isZipped && !link.bookType.isZipSupported()) {
+                if (SettingsManager.getOpdsSettings().unpackArchives && link.isZipped
+                        && !link.bookType.isZipSupported()) {
                     return unpack(file, progress);
                 }
             } catch (final ClosedByInterruptException ex) {
@@ -172,55 +178,55 @@ public class OPDSClient {
 
     protected File unpack(final File file, final IProgressIndicator progress) {
         try {
-            ZipArchive archive = new ZipArchive(file);
+            final ZipArchive archive = new ZipArchive(file);
             try {
                 final Enumeration<ZipArchiveEntry> entries = archive.entries();
                 while (entries.hasMoreElements()) {
                     final ZipArchiveEntry entry = entries.nextElement();
-                    CodecType codecType = CodecType.getByUri(entry.getName());
+                    final CodecType codecType = CodecType.getByUri(entry.getName());
                     if (codecType != null) {
 
-                        File entryFile = new File(file.getParentFile(), entry.getName());
+                        final File entryFile = new File(file.getParentFile(), entry.getName());
                         LCTX.d("Unpacked file name: " + entryFile.getAbsolutePath());
 
-                        int bufsize = 256 * 1024;
+                        final int bufsize = 256 * 1024;
                         final UIFileCopying worker = new UIFileCopying(R.string.opds_unpacking_book, bufsize, progress);
 
-                        BufferedInputStream in = new BufferedInputStream(entry.open(), bufsize);
-                        BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(entryFile), bufsize);
+                        final BufferedInputStream in = new BufferedInputStream(entry.open(), bufsize);
+                        final BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(entryFile),
+                                bufsize);
                         worker.copy(entry.getSize(), in, out);
 
-                        try {
-                            archive.close();
-                        } catch (Exception ex1) {
-                        }
-                        try {
-                            file.delete();
-                        } catch (Exception ex) {
-                        }
+                        release(file, archive);
                         return entryFile;
                     }
                 }
             } catch (final ClosedByInterruptException ex) {
-                try {
-                    archive.close();
-                } catch (Exception ex1) {
-                }
-                try {
-                    file.delete();
-                } catch (Exception ex2) {
-                }
-            } catch (Exception ex) {
+                release(file, archive);
+            } catch (final Exception ex) {
                 LCTX.e("Error on unpacking book: ", ex);
                 try {
                     archive.close();
-                } catch (Exception ex1) {
+                } catch (final Exception ex1) {
                 }
             }
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LCTX.e("Error on unpacking book: ", ex);
         }
         return file;
+    }
+
+    private void release(final File file, final ZipArchive archive) {
+        try {
+            archive.close();
+        } catch (final Exception ex1) {
+        }
+        if (SettingsManager.getOpdsSettings().deleteArchives) {
+            try {
+                file.delete();
+            } catch (final Exception ex) {
+            }
+        }
     }
 
     protected HttpResponse connect(final AtomicReference<String> uri) throws IOException {

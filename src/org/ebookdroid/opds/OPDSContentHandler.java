@@ -1,5 +1,8 @@
 package org.ebookdroid.opds;
 
+import org.ebookdroid.common.settings.OpdsSettings;
+import org.ebookdroid.common.settings.SettingsManager;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -34,7 +37,7 @@ public class OPDSContentHandler extends DefaultHandler {
 
     private final StringBuilder buf = new StringBuilder();
     private final Map<String, String> values = new HashMap<String, String>();
-    private Map<String, Link> facets = new LinkedHashMap<String, Link>();
+    private final Map<String, Link> facets = new LinkedHashMap<String, Link>();
 
     private Link feedLink;
 
@@ -42,13 +45,13 @@ public class OPDSContentHandler extends DefaultHandler {
     private List<BookDownloadLink> bookLinks;
 
     private final Set<String> unsupportedTypes = new HashSet<String>();
-    
-    public OPDSContentHandler(final Feed feed, IEntryBuilder builder) {
+
+    public OPDSContentHandler(final Feed feed, final IEntryBuilder builder) {
         this.feed = feed;
         this.builder = builder;
     }
 
-    public void parse(InputStreamReader inputStreamReader) throws ParserConfigurationException, SAXException,
+    public void parse(final InputStreamReader inputStreamReader) throws ParserConfigurationException, SAXException,
             IOException {
         final Reader isr = new BufferedReader(inputStreamReader, 32 * 1024);
         final InputSource is = new InputSource();
@@ -71,7 +74,7 @@ public class OPDSContentHandler extends DefaultHandler {
                 final String rel = a.getValue("rel");
                 final String type = a.getValue("type");
 
-                LinkKind kind = LinkKind.valueOf(rel, type);
+                final LinkKind kind = LinkKind.valueOf(rel, type);
                 switch (kind) {
                     case FEED:
                         feedLink = new Link(kind, ref, rel, type);
@@ -83,16 +86,19 @@ public class OPDSContentHandler extends DefaultHandler {
                         }
                         break;
                     case BOOK_DOWNLOAD:
-                        BookDownloadLink bdl = new BookDownloadLink(kind, ref, rel, type);
-                        if (bdl.bookType != null) {
+                        final BookDownloadLink bdl = new BookDownloadLink(kind, ref, rel, type);
+                        if (bdl.bookType == null) {
+                            if (unsupportedTypes.add(type)) {
+                                System.out.println("Unsupported mime type: " + type);
+                            }
+                        }
+
+                        final OpdsSettings s = SettingsManager.getOpdsSettings();
+                        if (!s.filterTypes || bdl.bookType != null && (!bdl.isZipped || s.downloadArchives)) {
                             if (bookLinks == null) {
                                 bookLinks = new LinkedList<BookDownloadLink>();
                             }
                             bookLinks.add(bdl);
-                        } else {
-                            if (unsupportedTypes.add(type)) {
-                                System.out.println("Unsupported mime type: " + type);
-                            }
                         }
                         break;
                     case BOOK_THUMBNAIL:
@@ -116,7 +122,7 @@ public class OPDSContentHandler extends DefaultHandler {
                 final String ref = a.getValue("href");
                 final String rel = a.getValue("rel");
                 final String type = a.getValue("type");
-                LinkKind kind = LinkKind.valueOf(rel, type);
+                final LinkKind kind = LinkKind.valueOf(rel, type);
                 if (kind == LinkKind.NEXT_FEED) {
                     feed.next = new Feed(feed.parent, ref, feed.title, feed.content);
                     feed.next.link = new Link(kind, ref, rel, type);

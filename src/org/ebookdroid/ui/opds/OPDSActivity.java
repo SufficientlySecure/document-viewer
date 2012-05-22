@@ -188,7 +188,7 @@ public class OPDSActivity extends AbstractActionActivity implements ExpandableLi
     }
 
     private String getFeedTitle(final Feed feed) {
-        return feed != null ? feed.title : "OPDS feeds";
+        return feed != null ? feed.title : getResources().getString(R.string.opds);
     }
 
     @ActionMethod(ids = { R.id.opdsaddfeed, R.id.opds_feed_add})

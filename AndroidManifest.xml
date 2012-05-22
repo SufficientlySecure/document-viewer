@@ -45,11 +45,16 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".ui.opds.OPDSActivity" android:label="@string/opds" android:configChanges="keyboardHidden|orientation" android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".ui.settings.SettingsActivity" android:configChanges="keyboardHidden|orientation" />
         <activity android:name=".ui.settings.FragmentedSettingsActivity" android:configChanges="keyboardHidden|orientation"/>
         <activity android:name=".ui.settings.BookSettingsActivity" android:configChanges="keyboardHidden|orientation" android:launchMode="singleTask"/>
         <activity android:name=".ui.library.BrowserActivity" android:theme="@android:style/Theme.NoTitleBar" android:configChanges="keyboardHidden|orientation" android:launchMode="singleTask"/>
-        <activity android:name=".ui.opds.OPDSActivity" android:configChanges="keyboardHidden|orientation" android:launchMode="singleTask"/>
         <activity android:name=".ui.about.AboutActivity" android:icon="@drawable/icon" android:theme="@android:style/Theme.Dialog"/>
         
     </application>

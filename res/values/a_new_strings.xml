@@ -46,6 +46,7 @@
     <string name="pref_usenativegraphics_title">Use native graphics</string>
     <string name="pref_usenativegraphics_summary">Use Android 2+ native graphics library</string>
 
+    <string name="opds">OPDS Browser</string>
     <string name="menu_opds">OPDS Browser</string>
 
     <string name="opds_connecting" formatted="false">"Connecting&#8230;"</string>

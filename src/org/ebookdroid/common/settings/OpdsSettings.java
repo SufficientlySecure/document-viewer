@@ -2,15 +2,11 @@ package org.ebookdroid.common.settings;
 
 import org.ebookdroid.common.settings.definitions.OpdsPreferences;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 import org.json.JSONArray;
 
 public class OpdsSettings implements OpdsPreferences {
-
-    final SharedPreferences prefs;
 
     /* =============== OPDS settings =============== */
 
@@ -21,8 +17,7 @@ public class OpdsSettings implements OpdsPreferences {
     public final boolean unpackArchives;
     public final boolean deleteArchives;
 
-    OpdsSettings(final Context context) {
-        this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    OpdsSettings(final SharedPreferences prefs) {
         /* =============== OPDS settings =============== */
         opdsCatalogs = OPDS_CATALOGS.getPreferenceValue(prefs);
         downloadDir = OPDS_DOWNLOAD_DIR.getPreferenceValue(prefs);

@@ -92,7 +92,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         libraryAdapter = new FileListAdapter(bookshelfAdapter);
 
         SettingsManager.addListener(this);
-        SettingsManager.applyAppSettingsChanges(null, SettingsManager.getAppSettings());
+        SettingsManager.applyLibSettingsChanges(null, SettingsManager.getLibSettings());
 
         final BookSettings recent = SettingsManager.getRecentBook();
 
@@ -222,7 +222,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         final Editable value = action.getParameter("input");
         final String searchQuery = value.toString();
         if (bookshelfAdapter.startSearch(searchQuery)) {
-            if (SettingsManager.getLibSettings().useBookcase) {
+            if (SettingsManager.getLibSettings().getUseBookcase()) {
                 getManagedComponent().showBookshelf(BooksAdapter.SEARCH_INDEX);
             }
         }

@@ -2,9 +2,7 @@ package org.ebookdroid.common.settings;
 
 import org.ebookdroid.common.settings.definitions.LibPreferences;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 import java.util.Set;
 
@@ -12,8 +10,6 @@ import org.emdev.utils.android.AndroidVersion;
 import org.emdev.utils.filesystem.FileExtensionFilter;
 
 public class LibSettings implements LibPreferences {
-
-    final SharedPreferences prefs;
 
     /* =============== Browser settings =============== */
 
@@ -25,8 +21,7 @@ public class LibSettings implements LibPreferences {
 
     public final FileExtensionFilter allowedFileTypes;
 
-    LibSettings(final Context context) {
-        this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    LibSettings(final SharedPreferences prefs) {
         /* =============== Browser settings =============== */
         useBookcase = USE_BOOK_CASE.getPreferenceValue(prefs);
         autoScanDirs = AUTO_SCAN_DIRS.getPreferenceValue(prefs);

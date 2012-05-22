@@ -15,7 +15,9 @@ import org.ebookdroid.core.curl.PageAnimationType;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,6 +32,8 @@ import org.json.JSONArray;
 public class SettingsManager {
 
     private static Context ctx;
+
+    private static SharedPreferences prefs;
 
     private static DBSettingsManager db;
 
@@ -51,10 +55,11 @@ public class SettingsManager {
     public static void init(final Context context) {
         if (ctx == null) {
             ctx = context;
+            prefs = PreferenceManager.getDefaultSharedPreferences(context);
             db = new DBSettingsManager(context);
-            appSettings = new AppSettings(context);
-            libSettings = new LibSettings(context);
-            opdsSettings = new OpdsSettings(context);
+            appSettings = new AppSettings(prefs);
+            libSettings = new LibSettings(prefs);
+            opdsSettings = new OpdsSettings(prefs);
         }
     }
 
@@ -280,11 +285,11 @@ public class SettingsManager {
     public static void updateTapProfiles(final String profiles) {
         lock.writeLock().lock();
         try {
-            final Editor edit = appSettings.prefs.edit();
+            final Editor edit = prefs.edit();
             AppPreferences.TAP_PROFILES.setPreferenceValue(edit, profiles);
             edit.commit();
             final AppSettings oldSettings = appSettings;
-            appSettings = new AppSettings(ctx);
+            appSettings = new AppSettings(prefs);
             applyAppSettingsChanges(oldSettings, appSettings);
         } finally {
             lock.writeLock().unlock();
@@ -296,11 +301,11 @@ public class SettingsManager {
         try {
             final Set<String> dirs = new HashSet<String>(libSettings.autoScanDirs);
             if (add && dirs.add(dir) || dirs.remove(dir)) {
-                final Editor edit = libSettings.prefs.edit();
+                final Editor edit = prefs.edit();
                 LibPreferences.AUTO_SCAN_DIRS.setPreferenceValue(edit, dirs);
                 edit.commit();
                 final LibSettings oldSettings = libSettings;
-                libSettings = new LibSettings(ctx);
+                libSettings = new LibSettings(prefs);
                 applyLibSettingsChanges(oldSettings, libSettings);
             }
         } finally {
@@ -311,11 +316,11 @@ public class SettingsManager {
     public static void updateSearchBookQuery(final String searchQuery) {
         lock.writeLock().lock();
         try {
-            final Editor edit = libSettings.prefs.edit();
+            final Editor edit = prefs.edit();
             LibPreferences.SEARCH_BOOK_QUERY.setPreferenceValue(edit, searchQuery);
             edit.commit();
             final LibSettings oldSettings = libSettings;
-            libSettings = new LibSettings(ctx);
+            libSettings = new LibSettings(prefs);
             applyLibSettingsChanges(oldSettings, libSettings);
         } finally {
             lock.writeLock().unlock();
@@ -325,11 +330,11 @@ public class SettingsManager {
     public static void changeOpdsCatalogs(final JSONArray opdsCatalogs) {
         lock.writeLock().lock();
         try {
-            final Editor edit = appSettings.prefs.edit();
+            final Editor edit = prefs.edit();
             OpdsPreferences.OPDS_CATALOGS.setPreferenceValue(edit, opdsCatalogs);
             edit.commit();
             final OpdsSettings oldSettings = opdsSettings;
-            opdsSettings = new OpdsSettings(ctx);
+            opdsSettings = new OpdsSettings(prefs);
             applyOpdsSettingsChanges(oldSettings, opdsSettings);
         } finally {
             lock.writeLock().unlock();
@@ -339,11 +344,11 @@ public class SettingsManager {
     public static void updateKeysBinding(final String json) {
         lock.writeLock().lock();
         try {
-            final Editor edit = appSettings.prefs.edit();
+            final Editor edit = prefs.edit();
             AppPreferences.KEY_BINDINGS.setPreferenceValue(edit, json);
             edit.commit();
             final AppSettings oldSettings = appSettings;
-            appSettings = new AppSettings(ctx);
+            appSettings = new AppSettings(prefs);
             applyAppSettingsChanges(oldSettings, appSettings);
         } finally {
             lock.writeLock().unlock();
@@ -408,10 +413,19 @@ public class SettingsManager {
     public static void onSettingsChanged() {
         lock.writeLock().lock();
         try {
-            final AppSettings oldSettings = appSettings;
-            appSettings = new AppSettings(ctx);
+            final AppSettings oldAppSettings = appSettings;
+            appSettings = new AppSettings(prefs);
 
-            final AppSettings.Diff appDiff = applyAppSettingsChanges(oldSettings, appSettings);
+            LibSettings oldLibSettings = libSettings;
+            libSettings = new LibSettings(prefs);
+
+            OpdsSettings oldOpdsSettings = opdsSettings;
+            opdsSettings = new OpdsSettings(prefs);
+
+            final AppSettings.Diff appDiff = applyAppSettingsChanges(oldAppSettings, appSettings);
+
+            applyLibSettingsChanges(oldLibSettings, libSettings);
+            applyOpdsSettingsChanges(oldOpdsSettings, opdsSettings);
             onBookSettingsChanged(appDiff);
 
         } finally {

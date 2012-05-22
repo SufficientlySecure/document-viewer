@@ -11,14 +11,12 @@ import org.ebookdroid.common.settings.types.RotationType;
 import org.ebookdroid.common.settings.types.ToastPosition;
 import org.ebookdroid.core.curl.PageAnimationType;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.preference.PreferenceManager;
 
 public class AppSettings implements AppPreferences, BookPreferences {
 
-    final SharedPreferences prefs;
+    private final SharedPreferences prefs;
 
     /* =============== UI settings =============== */
 
@@ -122,8 +120,8 @@ public class AppSettings implements AppPreferences, BookPreferences {
 
     public final boolean fb2HyphenEnabled;
 
-    AppSettings(final Context context) {
-        this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    AppSettings(final SharedPreferences prefs) {
+        this.prefs = prefs;
         /* =============== UI settings =============== */
         loadRecent = LOAD_RECENT.getPreferenceValue(prefs);
         confirmClose = CONFIRM_CLOSE.getPreferenceValue(prefs);

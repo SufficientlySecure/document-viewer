@@ -4,11 +4,10 @@ import org.ebookdroid.R;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.cache.ThumbnailFile;
 import org.ebookdroid.common.log.LogContext;
-import org.ebookdroid.common.settings.AppSettings;
-import org.ebookdroid.common.settings.AppSettings.Diff;
-import org.ebookdroid.common.settings.ISettingsChangeListener;
+import org.ebookdroid.common.settings.LibSettings;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
+import org.ebookdroid.common.settings.listeners.ILibSettingsChangeListener;
 import org.ebookdroid.ui.library.adapters.BooksAdapter;
 import org.ebookdroid.ui.library.adapters.FileListAdapter;
 import org.ebookdroid.ui.library.adapters.RecentAdapter;
@@ -61,7 +60,7 @@ actions = {
 // finish
 })
 public class RecentActivityController extends ActionController<RecentActivity> implements IBrowserActivity,
-        ISettingsChangeListener {
+        ILibSettingsChangeListener {
 
     public final LogContext LCTX;
 
@@ -101,7 +100,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
             final boolean shouldLoad = SettingsManager.getAppSettings().loadRecent;
             final File file = (recent != null && recent.fileName != null) ? new File(recent.fileName) : null;
             final boolean found = file != null ? file.exists()
-                    && SettingsManager.getAppSettings().allowedFileTypes.accept(file) : false;
+                    && SettingsManager.getLibSettings().allowedFileTypes.accept(file) : false;
 
             if (LCTX.isDebugEnabled()) {
                 LCTX.d("Last book: " + (file != null ? file.getAbsolutePath() : "") + ", found: " + found
@@ -134,18 +133,18 @@ public class RecentActivityController extends ActionController<RecentActivity> i
             LCTX.d("onResume()");
         }
 
-        final AppSettings appSettings = SettingsManager.getAppSettings();
-        if (appSettings.getUseBookcase()) {
+        final LibSettings libSettings = SettingsManager.getLibSettings();
+        if (libSettings.getUseBookcase()) {
             if (firstResume) {
                 bookshelfAdapter.startScan();
             }
-            recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), appSettings.allowedFileTypes);
+            recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), libSettings.allowedFileTypes);
         } else {
             if (getManagedComponent().getViewMode() == RecentActivity.VIEW_RECENT) {
                 if (SettingsManager.getRecentBook() == null) {
                     changeLibraryView(RecentActivity.VIEW_LIBRARY);
                 } else {
-                    recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), appSettings.allowedFileTypes);
+                    recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), libSettings.allowedFileTypes);
                 }
             }
         }
@@ -223,7 +222,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         final Editable value = action.getParameter("input");
         final String searchQuery = value.toString();
         if (bookshelfAdapter.startSearch(searchQuery)) {
-            if (SettingsManager.getAppSettings().useBookcase) {
+            if (SettingsManager.getLibSettings().useBookcase) {
                 getManagedComponent().showBookshelf(BooksAdapter.SEARCH_INDEX);
             }
         }
@@ -289,7 +288,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
 
     @ActionMethod(ids = R.id.recent_showlibrary)
     public void goLibrary(final ActionEx action) {
-        if (!SettingsManager.getAppSettings().getUseBookcase()) {
+        if (!SettingsManager.getLibSettings().getUseBookcase()) {
             int viewMode = getManagedComponent().getViewMode();
             if (viewMode == RecentActivity.VIEW_RECENT) {
                 changeLibraryView(RecentActivity.VIEW_LIBRARY);
@@ -331,11 +330,11 @@ public class RecentActivityController extends ActionController<RecentActivity> i
     }
 
     @Override
-    public void onAppSettingsChanged(final AppSettings oldSettings, final AppSettings newSettings, final Diff diff) {
+    public void onLibSettingsChanged(final LibSettings oldSettings, final LibSettings newSettings, final LibSettings.Diff diff) {
         final FileExtensionFilter filter = newSettings.allowedFileTypes;
         if (diff.isUseBookcaseChanged()) {
 
-            if (SettingsManager.getAppSettings().getUseBookcase()) {
+            if (newSettings.getUseBookcase()) {
                 recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), filter);
                 getManagedComponent().showBookcase(bookshelfAdapter, recentAdapter);
             } else {
@@ -363,20 +362,14 @@ public class RecentActivityController extends ActionController<RecentActivity> i
     }
 
     public void changeLibraryView(final int view) {
-        if (!SettingsManager.getAppSettings().getUseBookcase()) {
+        if (!SettingsManager.getLibSettings().getUseBookcase()) {
             getManagedComponent().changeLibraryView(view);
             if (view == RecentActivity.VIEW_LIBRARY) {
                 libraryAdapter.startScan();
             } else {
-                final FileExtensionFilter filter = SettingsManager.getAppSettings().allowedFileTypes;
+                final FileExtensionFilter filter = SettingsManager.getLibSettings().allowedFileTypes;
                 recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), filter);
             }
         }
-    }
-
-    @Override
-    public void onBookSettingsChanged(final BookSettings oldSettings, final BookSettings newSettings,
-            final org.ebookdroid.common.settings.books.BookSettings.Diff diff, final Diff appDiff) {
-
     }
 }

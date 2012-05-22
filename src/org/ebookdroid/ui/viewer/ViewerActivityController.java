@@ -9,10 +9,11 @@ import org.ebookdroid.common.keysbinding.KeyBindingsManager;
 import org.ebookdroid.common.log.EmergencyHandler;
 import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.common.settings.AppSettings;
-import org.ebookdroid.common.settings.ISettingsChangeListener;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.books.Bookmark;
+import org.ebookdroid.common.settings.listeners.IAppSettingsChangeListener;
+import org.ebookdroid.common.settings.listeners.IBookSettingsChangeListener;
 import org.ebookdroid.common.touch.TouchManager;
 import org.ebookdroid.core.DecodeService;
 import org.ebookdroid.core.NavigationHistory;
@@ -99,7 +100,7 @@ actions = {
 // finish
 })
 public class ViewerActivityController extends ActionController<ViewerActivity> implements IActivityController,
-        DecodingProgressListener, CurrentPageListener, ISettingsChangeListener {
+        DecodingProgressListener, CurrentPageListener, IAppSettingsChangeListener, IBookSettingsChangeListener {
 
     private static final String E_MAIL_ATTACHMENT = "[E-mail Attachment]";
 
@@ -644,7 +645,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
     /**
      * {@inheritDoc}
      * 
-     * @see org.ebookdroid.common.settings.ISettingsChangeListener#onAppSettingsChanged(org.ebookdroid.common.settings.AppSettings,
+     * @see org.ebookdroid.common.settings.listeners.ISettingsChangeListener#onAppSettingsChanged(org.ebookdroid.common.settings.AppSettings,
      *      org.ebookdroid.common.settings.AppSettings, org.ebookdroid.common.settings.AppSettings.Diff)
      */
     @Override
@@ -679,7 +680,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
     /**
      * {@inheritDoc}
      * 
-     * @see org.ebookdroid.common.settings.ISettingsChangeListener#onBookSettingsChanged(org.ebookdroid.common.settings.books.BookSettings,
+     * @see org.ebookdroid.common.settings.listeners.ISettingsChangeListener#onBookSettingsChanged(org.ebookdroid.common.settings.books.BookSettings,
      *      org.ebookdroid.common.settings.books.BookSettings, org.ebookdroid.common.settings.books.BookSettings.Diff,
      *      org.ebookdroid.common.settings.AppSettings.Diff)
      */

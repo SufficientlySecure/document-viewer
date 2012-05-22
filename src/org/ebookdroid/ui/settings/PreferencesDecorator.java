@@ -1,8 +1,10 @@
 package org.ebookdroid.ui.settings;
 
-import org.ebookdroid.common.settings.AppPreferences;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
+import org.ebookdroid.common.settings.definitions.AppPreferences;
+import org.ebookdroid.common.settings.definitions.BookPreferences;
+import org.ebookdroid.common.settings.definitions.LibPreferences;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.core.curl.PageAnimationType;
@@ -26,7 +28,7 @@ import org.emdev.utils.enums.EnumUtils;
  * @author whippet
  * 
  */
-public class PreferencesDecorator implements IPreferenceContainer, AppPreferences {
+public class PreferencesDecorator implements IPreferenceContainer, AppPreferences, BookPreferences, LibPreferences {
 
     private final Map<String, CharSequence> summaries = new HashMap<String, CharSequence>();
 

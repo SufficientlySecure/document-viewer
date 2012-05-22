@@ -1,6 +1,6 @@
 package org.ebookdroid.common.settings.books;
 
-import org.ebookdroid.common.settings.AppPreferences;
+import org.ebookdroid.common.settings.definitions.AppPreferences;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.core.PageIndex;

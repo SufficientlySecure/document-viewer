@@ -61,7 +61,7 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
 
         this.rootFeeds = new ArrayList<Feed>();
 
-        final JSONArray feeds = SettingsManager.getAppSettings().opdsCatalogs;
+        final JSONArray feeds = SettingsManager.getOpdsSettings().opdsCatalogs;
         for (int i = 0, n = feeds.length(); i < n; i++) {
             try {
                 final JSONObject obj = feeds.getJSONObject(i);
@@ -97,7 +97,7 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
     }
 
     public void addFeeds(final Feed... feeds) {
-        final JSONArray catalogs = SettingsManager.getAppSettings().opdsCatalogs;
+        final JSONArray catalogs = SettingsManager.getOpdsSettings().opdsCatalogs;
         for (final Feed feed : feeds) {
             rootFeeds.add(feed);
             try {

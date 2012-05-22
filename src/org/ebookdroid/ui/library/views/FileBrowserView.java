@@ -52,7 +52,7 @@ public class FileBrowserView extends ListView implements AdapterView.OnItemClick
 
         if (selected.isDirectory()) {
 
-            final Set<String> dirs = SettingsManager.getAppSettings().autoScanDirs;
+            final Set<String> dirs = SettingsManager.getLibSettings().autoScanDirs;
             scannedDir = dirs.contains(selected.getPath());
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(base.getActivity());

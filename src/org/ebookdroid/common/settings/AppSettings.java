@@ -1,6 +1,8 @@
 package org.ebookdroid.common.settings;
 
 import org.ebookdroid.common.settings.books.BookSettings;
+import org.ebookdroid.common.settings.definitions.AppPreferences;
+import org.ebookdroid.common.settings.definitions.BookPreferences;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.DocumentViewType;
 import org.ebookdroid.common.settings.types.FontSize;
@@ -14,13 +16,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
-import java.util.Set;
-
-import org.emdev.utils.android.AndroidVersion;
-import org.emdev.utils.filesystem.FileExtensionFilter;
-import org.json.JSONArray;
-
-public class AppSettings implements AppPreferences {
+public class AppSettings implements AppPreferences, BookPreferences {
 
     final SharedPreferences prefs;
 
@@ -126,20 +122,6 @@ public class AppSettings implements AppPreferences {
 
     public final boolean fb2HyphenEnabled;
 
-    /* =============== Browser settings =============== */
-
-    public final boolean useBookcase;
-
-    public final Set<String> autoScanDirs;
-
-    public final String searchBookQuery;
-
-    public final FileExtensionFilter allowedFileTypes;
-
-    /* =============== OPDS settings =============== */
-
-    public final JSONArray opdsCatalogs;
-
     AppSettings(final Context context) {
         this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
         /* =============== UI settings =============== */
@@ -193,13 +175,6 @@ public class AppSettings implements AppPreferences {
         yDpi = PDF_CUSTOM_YDPI.getPreferenceValue(prefs);
         fontSize = FB2_FONT_SIZE.getPreferenceValue(prefs);
         fb2HyphenEnabled = FB2_HYPHEN.getPreferenceValue(prefs);
-        /* =============== Browser settings =============== */
-        useBookcase = USE_BOOK_CASE.getPreferenceValue(prefs);
-        autoScanDirs = AUTO_SCAN_DIRS.getPreferenceValue(prefs);
-        searchBookQuery = SEARCH_BOOK_QUERY.getPreferenceValue(prefs);
-        allowedFileTypes = FILE_TYPE_FILTER.getPreferenceValue(prefs);
-        /* =============== OPDS settings =============== */
-        opdsCatalogs = OPDS_CATALOGS.getPreferenceValue(prefs);
     }
 
     /* =============== UI settings =============== */
@@ -214,12 +189,6 @@ public class AppSettings implements AppPreferences {
 
     public float getYDpi(final float def) {
         return useCustomDpi ? yDpi : def;
-    }
-
-    /* =============== Browser settings =============== */
-
-    public boolean getUseBookcase() {
-        return !AndroidVersion.is1x && useBookcase;
     }
 
     /* =============== */
@@ -268,7 +237,6 @@ public class AppSettings implements AppPreferences {
 
     public static class Diff {
 
-        // private static final int D_NightMode = 0x0001 << 0;
         private static final int D_Rotation = 0x0001 << 1;
         private static final int D_FullScreen = 0x0001 << 2;
         private static final int D_ShowTitle = 0x0001 << 3;
@@ -295,9 +263,6 @@ public class AppSettings implements AppPreferences {
             if (firstTime) {
                 mask = 0xFFFFFFFF;
             } else if (news != null) {
-                // if (olds.nightMode != news.nightMode) {
-                // mask |= D_NightMode;
-                // }
                 if (olds.rotation != news.rotation) {
                     mask |= D_Rotation;
                 }
@@ -331,17 +296,8 @@ public class AppSettings implements AppPreferences {
                 if (olds.loadRecent != news.loadRecent) {
                     mask |= D_LoadRecent;
                 }
-                if (olds.getUseBookcase() != news.getUseBookcase()) {
-                    mask |= D_UseBookcase;
-                }
                 if (olds.djvuRenderingMode != news.djvuRenderingMode) {
                     mask |= D_DjvuRenderingMode;
-                }
-                if (!olds.autoScanDirs.equals(news.autoScanDirs)) {
-                    mask |= D_AutoScanDirs;
-                }
-                if (!olds.allowedFileTypes.equals(news.allowedFileTypes)) {
-                    mask |= D_AllowedFileTypes;
                 }
                 if (!olds.tapProfiles.equals(news.tapProfiles)) {
                     mask |= D_TapConfigChanged;
@@ -355,10 +311,6 @@ public class AppSettings implements AppPreferences {
         public boolean isFirstTime() {
             return firstTime;
         }
-
-        // public boolean isNightModeChanged() {
-        // return 0 != (mask & D_NightMode);
-        // }
 
         public boolean isRotationChanged() {
             return 0 != (mask & D_Rotation);

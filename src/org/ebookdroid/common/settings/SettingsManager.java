@@ -2,6 +2,13 @@ package org.ebookdroid.common.settings;
 
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.books.DBSettingsManager;
+import org.ebookdroid.common.settings.definitions.AppPreferences;
+import org.ebookdroid.common.settings.definitions.LibPreferences;
+import org.ebookdroid.common.settings.definitions.OpdsPreferences;
+import org.ebookdroid.common.settings.listeners.IAppSettingsChangeListener;
+import org.ebookdroid.common.settings.listeners.IBookSettingsChangeListener;
+import org.ebookdroid.common.settings.listeners.ILibSettingsChangeListener;
+import org.ebookdroid.common.settings.listeners.IOpdsSettingsChangeListener;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.core.curl.PageAnimationType;
@@ -30,21 +37,28 @@ public class SettingsManager {
 
     private static AppSettings appSettings;
 
+    private static LibSettings libSettings;
+
+    private static OpdsSettings opdsSettings;
+
     private static final Map<String, BookSettings> bookSettings = new HashMap<String, BookSettings>();
 
     private static BookSettings current;
 
-    private static ListenerProxy listeners = new ListenerProxy(ISettingsChangeListener.class);
+    private static ListenerProxy listeners = new ListenerProxy(IAppSettingsChangeListener.class,
+            ILibSettingsChangeListener.class, IOpdsSettingsChangeListener.class, IBookSettingsChangeListener.class);
 
     public static void init(final Context context) {
         if (ctx == null) {
             ctx = context;
             db = new DBSettingsManager(context);
             appSettings = new AppSettings(context);
+            libSettings = new LibSettings(context);
+            opdsSettings = new OpdsSettings(context);
         }
     }
 
-    public static BookSettings init(final String fileName, Intent intent) {
+    public static BookSettings init(final String fileName, final Intent intent) {
         lock.writeLock().lock();
         try {
             getAppSettings().clearPseudoBookSettings();
@@ -76,7 +90,7 @@ public class SettingsManager {
                 current.nightMode = Boolean.parseBoolean(LengthUtils.safeString(intent.getStringExtra("nightMode"),
                         Boolean.toString(current.nightMode)));
 
-                int pageIndex = Integer.parseInt(LengthUtils.safeString(intent.getStringExtra("pageIndex"),
+                final int pageIndex = Integer.parseInt(LengthUtils.safeString(intent.getStringExtra("pageIndex"),
                         Integer.toString(current.currentPage.viewIndex)));
                 current.currentPage = new PageIndex(current.splitPages ? current.currentPage.docIndex : pageIndex,
                         pageIndex);
@@ -205,6 +219,24 @@ public class SettingsManager {
         }
     }
 
+    public static LibSettings getLibSettings() {
+        lock.readLock().lock();
+        try {
+            return libSettings;
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    public static OpdsSettings getOpdsSettings() {
+        lock.readLock().lock();
+        try {
+            return opdsSettings;
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
     public static BookSettings getBookSettings() {
         lock.readLock().lock();
         try {
@@ -245,20 +277,6 @@ public class SettingsManager {
         }
     }
 
-    public static void updateSearchBookQuery(final String searchQuery) {
-        lock.writeLock().lock();
-        try {
-            final Editor edit = appSettings.prefs.edit();
-            AppPreferences.SEARCH_BOOK_QUERY.setPreferenceValue(edit, searchQuery);
-            edit.commit();
-            final AppSettings oldSettings = appSettings;
-            appSettings = new AppSettings(ctx);
-            applyAppSettingsChanges(oldSettings, appSettings);
-        } finally {
-            lock.writeLock().unlock();
-        }
-    }
-
     public static void updateTapProfiles(final String profiles) {
         lock.writeLock().lock();
         try {
@@ -276,15 +294,29 @@ public class SettingsManager {
     public static void changeAutoScanDirs(final String dir, final boolean add) {
         lock.writeLock().lock();
         try {
-            final Set<String> dirs = new HashSet<String>(appSettings.autoScanDirs);
+            final Set<String> dirs = new HashSet<String>(libSettings.autoScanDirs);
             if (add && dirs.add(dir) || dirs.remove(dir)) {
-                final Editor edit = appSettings.prefs.edit();
-                AppPreferences.AUTO_SCAN_DIRS.setPreferenceValue(edit, dirs);
+                final Editor edit = libSettings.prefs.edit();
+                LibPreferences.AUTO_SCAN_DIRS.setPreferenceValue(edit, dirs);
                 edit.commit();
-                final AppSettings oldSettings = appSettings;
-                appSettings = new AppSettings(ctx);
-                applyAppSettingsChanges(oldSettings, appSettings);
+                final LibSettings oldSettings = libSettings;
+                libSettings = new LibSettings(ctx);
+                applyLibSettingsChanges(oldSettings, libSettings);
             }
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    public static void updateSearchBookQuery(final String searchQuery) {
+        lock.writeLock().lock();
+        try {
+            final Editor edit = libSettings.prefs.edit();
+            LibPreferences.SEARCH_BOOK_QUERY.setPreferenceValue(edit, searchQuery);
+            edit.commit();
+            final LibSettings oldSettings = libSettings;
+            libSettings = new LibSettings(ctx);
+            applyLibSettingsChanges(oldSettings, libSettings);
         } finally {
             lock.writeLock().unlock();
         }
@@ -294,11 +326,11 @@ public class SettingsManager {
         lock.writeLock().lock();
         try {
             final Editor edit = appSettings.prefs.edit();
-            AppPreferences.OPDS_CATALOGS.setPreferenceValue(edit, opdsCatalogs);
+            OpdsPreferences.OPDS_CATALOGS.setPreferenceValue(edit, opdsCatalogs);
             edit.commit();
-            final AppSettings oldSettings = appSettings;
-            appSettings = new AppSettings(ctx);
-            applyAppSettingsChanges(oldSettings, appSettings);
+            final OpdsSettings oldSettings = opdsSettings;
+            opdsSettings = new OpdsSettings(ctx);
+            applyOpdsSettingsChanges(oldSettings, opdsSettings);
         } finally {
             lock.writeLock().unlock();
         }
@@ -322,7 +354,7 @@ public class SettingsManager {
         lock.writeLock().lock();
         try {
             if (current != null) {
-                BookSettings olds = new BookSettings(current);
+                final BookSettings olds = new BookSettings(current);
 
                 current.nightMode = !current.nightMode;
                 db.storeBookSettings(current);
@@ -347,7 +379,7 @@ public class SettingsManager {
         }
     }
 
-    public static void zoomChanged(final float zoom, boolean committed) {
+    public static void zoomChanged(final float zoom, final boolean committed) {
         lock.readLock().lock();
         try {
             if (current != null) {
@@ -417,23 +449,38 @@ public class SettingsManager {
 
     public static AppSettings.Diff applyAppSettingsChanges(final AppSettings oldSettings, final AppSettings newSettings) {
         final AppSettings.Diff diff = new AppSettings.Diff(oldSettings, newSettings);
-        final ISettingsChangeListener l = listeners.getListener();
+        final IAppSettingsChangeListener l = listeners.getListener();
         l.onAppSettingsChanged(oldSettings, newSettings, diff);
+        return diff;
+    }
+
+    public static LibSettings.Diff applyLibSettingsChanges(final LibSettings oldSettings, final LibSettings newSettings) {
+        final LibSettings.Diff diff = new LibSettings.Diff(oldSettings, newSettings);
+        final ILibSettingsChangeListener l = listeners.getListener();
+        l.onLibSettingsChanged(oldSettings, newSettings, diff);
+        return diff;
+    }
+
+    public static OpdsSettings.Diff applyOpdsSettingsChanges(final OpdsSettings oldSettings,
+            final OpdsSettings newSettings) {
+        final OpdsSettings.Diff diff = new OpdsSettings.Diff(oldSettings, newSettings);
+        final IOpdsSettingsChangeListener l = listeners.getListener();
+        l.onOpdsSettingsChanged(oldSettings, newSettings, diff);
         return diff;
     }
 
     public static void applyBookSettingsChanges(final BookSettings oldSettings, final BookSettings newSettings,
             final AppSettings.Diff appDiff) {
         final BookSettings.Diff diff = new BookSettings.Diff(oldSettings, newSettings);
-        final ISettingsChangeListener l = listeners.getListener();
+        final IBookSettingsChangeListener l = listeners.getListener();
         l.onBookSettingsChanged(oldSettings, newSettings, diff, appDiff);
     }
 
-    public static void addListener(final ISettingsChangeListener l) {
+    public static void addListener(final Object l) {
         listeners.addListener(l);
     }
 
-    public static void removeListener(final ISettingsChangeListener l) {
+    public static void removeListener(final Object l) {
         listeners.removeListener(l);
     }
 }

@@ -57,7 +57,7 @@ public class BrowserActivity extends AbstractActionActivity implements IBrowserA
 
     public BrowserActivity() {
         this.filter = new CompositeFilter(false, DirectoryFilter.NOT_HIDDEN,
-                SettingsManager.getAppSettings().allowedFileTypes);
+                SettingsManager.getLibSettings().allowedFileTypes);
     }
 
     @Override

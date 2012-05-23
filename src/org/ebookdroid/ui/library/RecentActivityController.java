@@ -123,7 +123,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         }
         setManagedComponent(activity);
 
-        SettingsManager.applyAppSettingsChanges(null, SettingsManager.getAppSettings());
+        SettingsManager.applyLibSettingsChanges(null, SettingsManager.getLibSettings());
         final BookSettings recent = SettingsManager.getRecentBook();
         changeLibraryView(recent != null ? RecentActivity.VIEW_RECENT : RecentActivity.VIEW_LIBRARY);
     }

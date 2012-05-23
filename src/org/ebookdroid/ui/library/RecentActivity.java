@@ -71,6 +71,10 @@ public class RecentActivity extends AbstractActionActivity {
     @Override
     @SuppressWarnings("deprecation")
     public void onCreate(final Bundle savedInstanceState) {
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("onCreate()");
+        }
+        super.onCreate(savedInstanceState);
         if (!isTaskRoot()) {
             // Workaround for Android 2.1-
             if (LCTX.isDebugEnabled()) {
@@ -79,10 +83,6 @@ public class RecentActivity extends AbstractActionActivity {
             finish();
             return;
         }
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("onCreate()");
-        }
-        super.onCreate(savedInstanceState);
 
         setContentView(R.layout.recent);
         libraryButton = (ImageView) findViewById(R.id.recent_showlibrary);

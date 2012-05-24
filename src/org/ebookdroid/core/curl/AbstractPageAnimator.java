@@ -88,7 +88,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
      *      org.ebookdroid.core.ViewState)
      */
     @Override
-    public final boolean isPageVisible(final Page page, final ViewState viewState) {
+    public boolean isPageVisible(final Page page, final ViewState viewState) {
         final int pageIndex = page.index.viewIndex;
         return pageIndex == this.foreIndex || pageIndex == this.backIndex;
     }

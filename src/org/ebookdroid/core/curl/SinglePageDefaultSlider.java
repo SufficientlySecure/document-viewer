@@ -17,6 +17,17 @@ public class SinglePageDefaultSlider extends AbstractPageSlider {
     /**
      * {@inheritDoc}
      *
+     * @see org.ebookdroid.core.curl.PageAnimator#isPageVisible(org.ebookdroid.core.Page, org.ebookdroid.core.ViewState)
+     */
+    @Override
+    public boolean isPageVisible(final Page page, final ViewState viewState) {
+        final int pageIndex = page.index.viewIndex;
+        return pageIndex == viewState.model.getCurrentViewPageIndex();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawForeground(org.ebookdroid.core.EventDraw)
      */
     @Override

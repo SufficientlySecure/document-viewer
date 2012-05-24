@@ -39,7 +39,7 @@ import org.emdev.utils.MathUtils;
 
 public class DecodeServiceBase implements DecodeService {
 
-    public static final LogContext LCTX = LogContext.ROOT.lctx("Decoding", false);
+    public static final LogContext LCTX = LogContext.ROOT.lctx("Decoding", true);
 
     static final AtomicLong TASK_ID_SEQ = new AtomicLong();
 
@@ -388,11 +388,12 @@ public class DecodeServiceBase implements DecodeService {
 
     protected int getCacheSize() {
         final ViewState vs = viewState.get();
-        int minSize = 3;
+        int minSize = 1;
         if (vs != null) {
             minSize = vs.pages.lastVisible - vs.pages.firstVisible + 1;
         }
-        return Math.max(minSize, SettingsManager.getAppSettings().pagesInMemory + 1);
+        int pagesInMemory = SettingsManager.getAppSettings().pagesInMemory;
+        return pagesInMemory == 0 ? 0 : Math.max(minSize, pagesInMemory);
     }
 
     class Executor implements Runnable {

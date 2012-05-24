@@ -170,6 +170,11 @@ public class RecentActivity extends AbstractActionActivity {
 
             menu.setHeaderTitle(node.name);
             menu.findItem(R.id.bookmenu_recentgroup).setVisible(node.settings != null);
+
+            getController().getOrCreateAction(R.id.bookmenu_copy).putValue("source", source);
+            getController().getOrCreateAction(R.id.bookmenu_move).putValue("source", source);
+            getController().getOrCreateAction(R.id.bookmenu_open).putValue("source", source);
+
         } else if (source instanceof BookShelfAdapter) {
             BookShelfAdapter a = (BookShelfAdapter) source;
 

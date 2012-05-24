@@ -9,16 +9,17 @@
    <item android:id="@+id/actions_no_action" />
    <item android:id="@+id/actions_toggleTouchManagerView" />
    <item android:id="@+id/actions_openOptionsMenu" />
-   
 
    <item android:id="@+id/actions_verticalConfigScrollUp" />
    <item android:id="@+id/actions_verticalConfigScrollDown" />
-   
+
    <item android:id="@+id/actions_clearRecent" />
    <item android:id="@+id/actions_searchBook" />
 
    <item android:id="@+id/actions_downloadBook" />
-   
    <item android:id="@+id/actions_addFeed" />
-   
+
+   <item android:id="@+id/actions_doCopyBook" />
+   <item android:id="@+id/actions_doMoveBook" />
+
 </menu>

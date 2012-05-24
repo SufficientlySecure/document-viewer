@@ -49,8 +49,30 @@ public class BookSettings implements CurrentPageListener {
     public BookSettings(BookSettings current) {
         this.persistent = current.persistent;
         this.fileName = current.fileName;
-        this.currentPage = current.currentPage;
         this.lastUpdated = current.lastUpdated;
+
+        this.currentPage = current.currentPage;
+        this.zoom = current.zoom;
+        this.splitPages = current.splitPages;
+        this.viewMode = current.viewMode;
+        this.pageAlign = current.pageAlign;
+        this.animationType = current.animationType;
+        this.bookmarks.addAll(current.bookmarks);
+        this.cropPages = current.cropPages;
+        this.offsetX = current.offsetX;
+        this.offsetY = current.offsetY;
+        this.nightMode = current.nightMode;
+        this.contrast = current.contrast;
+        this.exposure = current.exposure;
+        this.autoLevels = current.autoLevels;
+    }
+
+    public BookSettings(String fileName, BookSettings current) {
+        this.persistent = true;
+        this.fileName = fileName;
+        this.lastUpdated = current.lastUpdated;
+
+        this.currentPage = current.currentPage;
         this.zoom = current.zoom;
         this.splitPages = current.splitPages;
         this.viewMode = current.viewMode;
@@ -69,8 +91,8 @@ public class BookSettings implements CurrentPageListener {
     public BookSettings(final String fileName) {
         this.persistent = true;
         this.fileName = fileName;
-        this.currentPage = PageIndex.FIRST;
         this.lastUpdated = System.currentTimeMillis();
+        this.currentPage = PageIndex.FIRST;
     }
 
     @Override
@@ -177,11 +199,11 @@ public class BookSettings implements CurrentPageListener {
         public boolean isNightModeChanged() {
             return 0 != (mask & D_NightMode);
         }
-        
+
         public boolean isAutoLevelsChanged() {
             return 0 != (mask & D_AutoLevels);
         }
-        
+
         public boolean isEffectsChanged() {
             return 0 != (mask & (D_Effects));
         }

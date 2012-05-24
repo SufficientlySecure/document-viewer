@@ -15,6 +15,10 @@ import org.emdev.ui.actions.IActionController;
 
 public abstract class AbstractActionActivity extends Activity {
 
+    public static final String ACTIVITY_RESULT_DATA = "activityResultData";
+    public static final String ACTIVITY_RESULT_CODE = "activityResultCode";
+    public static final String ACTIVITY_RESULT_ACTION_ID = "activityResultActionId";
+
     private IActionController<? extends AbstractActionActivity> actions;
 
     protected AbstractActionActivity() {
@@ -57,6 +61,22 @@ public abstract class AbstractActionActivity extends Activity {
         final int actionId = view.getId();
         final ActionEx action = getController().getOrCreateAction(actionId);
         action.onClick(view);
+    }
+
+    @Override
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        if (resultCode == RESULT_CANCELED) {
+            return;
+        }
+        if (data != null) {
+            final int actionId = data.getIntExtra(ACTIVITY_RESULT_ACTION_ID, 0);
+            if (actionId != 0) {
+                final ActionEx action = getController().getOrCreateAction(actionId);
+                action.putValue(ACTIVITY_RESULT_CODE, Integer.valueOf(resultCode));
+                action.putValue(ACTIVITY_RESULT_DATA, data);
+                action.run();
+            }
+        }
     }
 
     public final void setActionForView(final int id) {

@@ -28,7 +28,7 @@ public class RecentAdapter extends BaseAdapter {
     private final List<BookNode> books = new ArrayList<BookNode>();
     private final Map<String, BookNode> nodes = new HashMap<String, BookNode>();
 
-    public RecentAdapter(IBrowserActivity base) {
+    public RecentAdapter(final IBrowserActivity base) {
         this.base = base;
     }
 
@@ -80,11 +80,24 @@ public class RecentAdapter extends BaseAdapter {
         this.nodes.clear();
         for (final BookSettings bs : books) {
             if (filter == null || filter.accept(bs.fileName)) {
-                BookNode node = new BookNode(bs);
+                final BookNode node = new BookNode(bs);
                 this.books.add(node);
                 nodes.put(node.path, node);
             }
         }
+        notifyDataSetChanged();
+    }
+
+    public void replaceBook(final BookNode origin, final BookSettings target) {
+        final BookNode replaceNode = new BookNode(target);
+        final int ind = origin != null ? books.indexOf(origin) : -1;
+        if (ind >= 0) {
+            books.set(ind, replaceNode);
+            nodes.remove(origin.path);
+        } else {
+            books.add(0, replaceNode);
+        }
+        nodes.put(replaceNode.path, replaceNode);
         notifyDataSetChanged();
     }
 

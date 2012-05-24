@@ -19,6 +19,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -179,6 +180,16 @@ public class SettingsManager {
             } else {
                 apps.clearPseudoBookSettings();
             }
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    public static void deleteBookSettings(final BookSettings bs) {
+        lock.writeLock().lock();
+        try {
+            db.delete(bs);
+            bookSettings.remove(bs.fileName);
         } finally {
             lock.writeLock().unlock();
         }
@@ -416,10 +427,10 @@ public class SettingsManager {
             final AppSettings oldAppSettings = appSettings;
             appSettings = new AppSettings(prefs);
 
-            LibSettings oldLibSettings = libSettings;
+            final LibSettings oldLibSettings = libSettings;
             libSettings = new LibSettings(prefs);
 
-            OpdsSettings oldOpdsSettings = opdsSettings;
+            final OpdsSettings oldOpdsSettings = opdsSettings;
             opdsSettings = new OpdsSettings(prefs);
 
             final AppSettings.Diff appDiff = applyAppSettingsChanges(oldAppSettings, appSettings);
@@ -444,6 +455,19 @@ public class SettingsManager {
                 db.updateBookmarks(current);
                 applyBookSettingsChanges(oldBS, current, appDiff);
             }
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    public static BookSettings copyBookSettings(final File target, final BookSettings settings) {
+        lock.writeLock().lock();
+        try {
+            final BookSettings bs = new BookSettings(target.getAbsolutePath(), settings);
+            db.storeBookSettings(bs);
+            db.updateBookmarks(bs);
+            bookSettings.put(bs.fileName, bs);
+            return bs;
         } finally {
             lock.writeLock().unlock();
         }

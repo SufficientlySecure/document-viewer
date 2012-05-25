@@ -1,6 +1,5 @@
 package org.ebookdroid.ui.opds.adapters;
 
-import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.cache.ThumbnailFile;
@@ -28,16 +27,17 @@ import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.emdev.ui.adapters.BaseViewHolder;
 import org.emdev.ui.progress.IProgressIndicator;
+import org.emdev.ui.tasks.BaseFileAsyncTask;
 import org.emdev.ui.widget.TextViewMultilineEllipse;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.listeners.ListenerProxy;
@@ -441,63 +441,22 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
         new DownloadBookTask().execute(book, link);
     }
 
-    final class DownloadBookTask extends AsyncTask<Object, String, File> implements OnCancelListener,
-            IProgressIndicator {
+    final class DownloadBookTask extends BaseFileAsyncTask<Object> implements OnCancelListener, IProgressIndicator {
 
-        private ProgressDialog progressDialog;
-
-        @Override
-        protected void onPreExecute() {
-            onProgressUpdate(context.getResources().getString(R.string.opds_connecting));
+        public DownloadBookTask() {
+            super(OPDSAdapter.this.context, R.string.opds_connecting, R.string.opds_download_complete,
+                    R.string.opds_download_error, true);
         }
 
         @Override
-        public void onCancel(final DialogInterface dialog) {
-            this.cancel(true);
-        }
-
-        @Override
-        protected File doInBackground(final Object... params) {
+        protected FileTaskResult doInBackground(final Object... params) {
             // final Book book = (Book) params[0];
             final BookDownloadLink link = (BookDownloadLink) params[1];
-            final File file = client.download(link, this);
-            return file;
-        }
-
-        @Override
-        protected void onPostExecute(final File result) {
-            if (progressDialog != null) {
-                try {
-                    progressDialog.dismiss();
-                } catch (final Throwable th) {
-                }
-            }
-            if (result != null) {
-                Toast.makeText(EBookDroidApp.context, "Book download complete: " + result.getAbsolutePath(), 0).show();
-            } else {
-                Toast.makeText(EBookDroidApp.context, "Book download failed", 0).show();
-            }
-        }
-
-        @Override
-        public void setProgressDialogMessage(final int resourceID, final Object... args) {
-            publishProgress(context.getResources().getString(resourceID, args));
-        }
-
-        @Override
-        protected void onProgressUpdate(final String... values) {
-            final int length = LengthUtils.length(values);
-            if (length == 0) {
-                return;
-            }
-            final String last = values[length - 1];
-            if (progressDialog == null || !progressDialog.isShowing()) {
-                progressDialog = ProgressDialog.show(context, "", last, true);
-                progressDialog.setCancelable(true);
-                progressDialog.setCanceledOnTouchOutside(true);
-                progressDialog.setOnCancelListener(this);
-            } else {
-                progressDialog.setMessage(last);
+            try {
+                final File file = client.download(link, this);
+                return new FileTaskResult(file);
+            } catch (IOException ex) {
+                return new FileTaskResult(ex);
             }
         }
     }

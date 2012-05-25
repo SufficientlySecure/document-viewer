@@ -54,8 +54,22 @@
     <string name="opds_loading_book" formatted="false">"Loading book: %s/%s&#8230;"</string>
     <string name="opds_unpacking_book" formatted="false">"Unpacking book: %s/%s&#8230;"</string>
 
+    <string name="opds_download_complete" formatted="false">"Book download complete: %s"</string>
+    <string name="opds_download_error" formatted="false">"Book download failed: %s"</string>
+
     <string name="opds_addfeed_title">"Adding new catalog"</string>
     <string name="opds_addfeed_msg">"Enter alias and URL for the catalog"</string>
     <string name="opds_addfeed_ok">"Add"</string>
-    
+
+    <string name="book_copy_start" formatted="false">"Copying book..."</string>
+    <string name="book_copy_progress" formatted="false">"Copying book: %s/%s&#8230;"</string>
+    <string name="book_copy_complete" formatted="false">"Book copying complete: %s"</string>
+    <string name="book_copy_error" formatted="false">"Book copying failed: %s"</string>
+
+    <string name="book_move_start" formatted="false">"Moving book..."</string>
+    <string name="book_move_progress" formatted="false">"Moving book: %s/%s&#8230;"</string>
+    <string name="book_move_complete" formatted="false">"Book moving complete: %s"</string>
+    <string name="book_move_error" formatted="false">"Book moving failed: %s"</string>
+
+
 </resources>

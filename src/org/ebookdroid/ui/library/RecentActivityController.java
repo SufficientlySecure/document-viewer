@@ -1,6 +1,5 @@
 package org.ebookdroid.ui.library;
 
-import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.cache.ThumbnailFile;
@@ -14,33 +13,27 @@ import org.ebookdroid.ui.library.adapters.BooksAdapter;
 import org.ebookdroid.ui.library.adapters.FileListAdapter;
 import org.ebookdroid.ui.library.adapters.RecentAdapter;
 import org.ebookdroid.ui.library.dialogs.FolderDlg;
+import org.ebookdroid.ui.library.tasks.CopyBookTask;
+import org.ebookdroid.ui.library.tasks.MoveBookTask;
 import org.ebookdroid.ui.opds.OPDSActivity;
 import org.ebookdroid.ui.settings.SettingsUI;
 import org.ebookdroid.ui.viewer.ViewerActivity;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.emdev.ui.AbstractActionActivity;
 import org.emdev.ui.actions.ActionController;
 import org.emdev.ui.actions.ActionDialogBuilder;
 import org.emdev.ui.actions.ActionEx;
@@ -49,11 +42,8 @@ import org.emdev.ui.actions.ActionMethodDef;
 import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.actions.IActionController;
 import org.emdev.ui.actions.params.EditableValue;
-import org.emdev.ui.progress.IProgressIndicator;
-import org.emdev.ui.progress.UIFileCopying;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.filesystem.FileExtensionFilter;
-import org.emdev.utils.filesystem.PathFromUri;
 
 @ActionTarget(
 // actions
@@ -256,124 +246,27 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         if (book == null) {
             return;
         }
-        int id = action.id == R.id.bookmenu_copy ? R.id.actions_doCopyBook : R.id.actions_doMoveBook;
+        final boolean isCopy = action.id == R.id.bookmenu_copy;
+        final String title = isCopy ? "Copy book to..." : "Move book to...";
+        final int id = isCopy ? R.id.actions_doCopyBook : R.id.actions_doMoveBook;
         getOrCreateAction(id).putValue("source", book);
 
-        final Intent intent = new Intent("copyBook", Uri.fromFile(new File(book.path)), getManagedComponent(),
-                FolderDlg.class);
-        intent.putExtra(AbstractActionActivity.ACTIVITY_RESULT_ACTION_ID, id);
-
-        getManagedComponent().startActivityForResult(intent, 1);
+        final FolderDlg dlg = new FolderDlg(this);
+        dlg.show(new File(book.path), title, id);
     }
 
-    @ActionMethod(ids = { R.id.actions_doCopyBook, R.id.actions_doMoveBook })
+    @ActionMethod(ids = { R.id.actions_doCopyBook, })
     public void doCopyBook(final ActionEx action) {
-        Intent data = action.getParameter("activityResultData");
-        File targetFolder = new File(PathFromUri.retrieve(getManagedComponent().getContentResolver(), data.getData()));
-        BookNode book = action.getParameter("source");
-
-        new CopyBookTask(targetFolder, action.id == R.id.actions_doMoveBook).execute(book);
+        final File targetFolder = action.getParameter(FolderDlg.SELECTED_FOLDER);
+        final BookNode book = action.getParameter("source");
+        new CopyBookTask(this.getContext(), recentAdapter, targetFolder).execute(book);
     }
 
-    private class CopyBookTask extends AsyncTask<BookNode, String, File> implements IProgressIndicator {
-
-        private final File targetFolder;
-        private final boolean removeOrigin;
-
-        private ProgressDialog progressDialog;
-        private BookNode book;
-        private File origin;
-
-        public CopyBookTask(final File targetFolder, final boolean removeOrigin) {
-            this.targetFolder = targetFolder;
-            this.removeOrigin = removeOrigin;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            onProgressUpdate(getManagedComponent().getResources().getString(R.string.opds_connecting));
-        }
-
-        @Override
-        protected File doInBackground(final BookNode... params) {
-            book = params[0];
-            origin = new File(book.path);
-            final File target = new File(targetFolder, origin.getName());
-
-            try {
-                final UIFileCopying worker = new UIFileCopying(R.string.opds_loading_book, 256 * 1024, this);
-                final BufferedInputStream in = new BufferedInputStream(new FileInputStream(origin), 256 * 1024);
-                final BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(target), 256 * 1024);
-
-                worker.copy(origin.length(), in, out);
-
-                return target;
-            } catch (final Throwable th) {
-                th.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(final File result) {
-            if (progressDialog != null) {
-                try {
-                    progressDialog.dismiss();
-                } catch (final Throwable th) {
-                }
-            }
-            if (result != null && book != null && origin != null) {
-                try {
-                    BookSettings bs = null;
-                    if (book.settings != null) {
-                        bs = SettingsManager.copyBookSettings(result, book.settings);
-                    }
-                    if (removeOrigin) {
-                        if (bs != null) {
-                            recentAdapter.replaceBook(book, bs);
-                            SettingsManager.deleteBookSettings(book.settings);
-                            book.settings = null;
-                        }
-                        origin.delete();
-                    } else {
-                        if (bs != null) {
-                            recentAdapter.replaceBook(null, bs);
-                        }
-                    }
-                } catch (Throwable th) {
-                    // TODO Auto-generated catch block
-                    th.printStackTrace();
-                }
-
-                Toast.makeText(EBookDroidApp.context, "Book download complete: " + result.getAbsolutePath(), 0).show();
-            } else {
-                Toast.makeText(EBookDroidApp.context, "Book download failed", 0).show();
-            }
-        }
-
-        @Override
-        public void setProgressDialogMessage(final int resourceID, final Object... args) {
-            publishProgress(getManagedComponent().getResources().getString(resourceID, args));
-        }
-
-        @Override
-        protected void onProgressUpdate(final String... values) {
-            final int length = LengthUtils.length(values);
-            if (length == 0) {
-                return;
-            }
-            final String last = values[length - 1];
-            if (progressDialog == null || !progressDialog.isShowing()) {
-                progressDialog = ProgressDialog.show(getManagedComponent(), "", last, true);
-                // progressDialog.setCancelable(true);
-                // progressDialog.setCanceledOnTouchOutside(true);
-                // progressDialog.setOnCancelListener(this);
-            } else {
-                progressDialog.setMessage(last);
-            }
-        }
-
+    @ActionMethod(ids = { R.id.actions_doMoveBook })
+    public void doMoveBook(final ActionEx action) {
+        final File targetFolder = action.getParameter(FolderDlg.SELECTED_FOLDER);
+        final BookNode book = action.getParameter("source");
+        new MoveBookTask(this.getContext(), recentAdapter, targetFolder).execute(book);
     }
 
     @Override

@@ -115,7 +115,7 @@ public class OPDSClient {
         return null;
     }
 
-    public File download(final BookDownloadLink link, final IProgressIndicator progress) {
+    public File download(final BookDownloadLink link, final IProgressIndicator progress) throws IOException {
         try {
             final AtomicReference<String> uri = new AtomicReference<String>(link.uri);
             final HttpResponse resp = connect(uri);
@@ -170,6 +170,9 @@ public class OPDSClient {
             }
 
             return file;
+        } catch (final IOException ex) {
+            LCTX.e("Error on downloading book: " + ex.getMessage());
+            throw ex;
         } catch (final Throwable th) {
             LCTX.e("Error on downloading book: ", th);
         }

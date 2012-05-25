@@ -255,14 +255,14 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         dlg.show(new File(book.path), title, id);
     }
 
-    @ActionMethod(ids = { R.id.actions_doCopyBook, })
+    @ActionMethod(ids = R.id.actions_doCopyBook)
     public void doCopyBook(final ActionEx action) {
         final File targetFolder = action.getParameter(FolderDlg.SELECTED_FOLDER);
         final BookNode book = action.getParameter("source");
         new CopyBookTask(this.getContext(), recentAdapter, targetFolder).execute(book);
     }
 
-    @ActionMethod(ids = { R.id.actions_doMoveBook })
+    @ActionMethod(ids = R.id.actions_doMoveBook)
     public void doMoveBook(final ActionEx action) {
         final File targetFolder = action.getParameter(FolderDlg.SELECTED_FOLDER);
         final BookNode book = action.getParameter("source");

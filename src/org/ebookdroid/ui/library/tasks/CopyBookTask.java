@@ -1,6 +1,8 @@
 package org.ebookdroid.ui.library.tasks;
 
 import org.ebookdroid.R;
+import org.ebookdroid.common.cache.CacheManager;
+import org.ebookdroid.common.cache.ThumbnailFile;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.ui.library.adapters.BookNode;
@@ -17,6 +19,7 @@ import java.io.IOException;
 
 import org.emdev.ui.progress.UIFileCopying;
 import org.emdev.ui.tasks.BaseFileAsyncTask;
+import org.emdev.utils.FileUtils;
 
 public class CopyBookTask extends BaseFileAsyncTask<BookNode> {
 
@@ -45,6 +48,9 @@ public class CopyBookTask extends BaseFileAsyncTask<BookNode> {
 
             worker.copy(origin.length(), in, out);
 
+            copyThumbnail(target);
+            copyPageCache(target);
+
             return new FileTaskResult(target);
         } catch (final IOException ex) {
             return new FileTaskResult(ex);
@@ -69,4 +75,35 @@ public class CopyBookTask extends BaseFileAsyncTask<BookNode> {
         }
         super.processTargetFile(target);
     }
+
+    protected void copyThumbnail(final File target) {
+        final ThumbnailFile ot = CacheManager.getThumbnailFile(book.path);
+        if (ot.exists()) {
+            try {
+                final ThumbnailFile tt = CacheManager.getThumbnailFile(target.getAbsolutePath());
+                final BufferedInputStream in = new BufferedInputStream(new FileInputStream(origin), 256 * 1024);
+                final BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(tt), 256 * 1024);
+                FileUtils.copy(in, out);
+            } catch (IOException ex) {
+                // TODO Auto-generated catch block
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    protected void copyPageCache(final File target) {
+        final File ot = CacheManager.getPageFile(book.path);
+        if (ot.exists()) {
+            try {
+                final File tt = CacheManager.getPageFile(target.getAbsolutePath());
+                final BufferedInputStream in = new BufferedInputStream(new FileInputStream(origin), 256 * 1024);
+                final BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(tt), 256 * 1024);
+                FileUtils.copy(in, out);
+            } catch (IOException ex) {
+                // TODO Auto-generated catch block
+                ex.printStackTrace();
+            }
+        }
+    }
+
 }

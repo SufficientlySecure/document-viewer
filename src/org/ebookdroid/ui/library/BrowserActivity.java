@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileFilter;
 
 import org.emdev.ui.AbstractActionActivity;
+import org.emdev.ui.actions.ActionController;
 import org.emdev.ui.actions.ActionEx;
 import org.emdev.ui.actions.ActionMethod;
 import org.emdev.ui.actions.ActionMethodDef;
@@ -46,7 +47,7 @@ actions = {
         @ActionMethodDef(id = R.id.mainmenu_opds, method = "goOPDSBrowser")
 // finish
 })
-public class BrowserActivity extends AbstractActionActivity implements IBrowserActivity {
+public class BrowserActivity extends AbstractActionActivity<BrowserActivity, ActionController<BrowserActivity>> implements IBrowserActivity {
 
     private BrowserAdapter adapter;
     protected final FileFilter filter;
@@ -58,6 +59,12 @@ public class BrowserActivity extends AbstractActionActivity implements IBrowserA
     public BrowserActivity() {
         this.filter = new CompositeFilter(false, DirectoryFilter.NOT_HIDDEN,
                 SettingsManager.getLibSettings().allowedFileTypes);
+    }
+
+    
+    @Override
+    protected ActionController<BrowserActivity> createController() {
+        return new ActionController<BrowserActivity>(this);
     }
 
     @Override

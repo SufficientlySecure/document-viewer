@@ -41,6 +41,9 @@ public interface IActionController<ManagedComponent> {
      */
     ManagedComponent getManagedComponent();
 
+    /**
+     * @param component manager component to set
+     */
     void setManagedComponent(ManagedComponent component);
 
     /**

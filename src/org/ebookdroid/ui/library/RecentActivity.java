@@ -31,7 +31,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.emdev.ui.AbstractActionActivity;
 import org.emdev.ui.actions.ActionMethodDef;
 import org.emdev.ui.actions.ActionTarget;
-import org.emdev.ui.actions.IActionController;
 import org.emdev.utils.android.AndroidVersion;
 
 @ActionTarget(
@@ -41,7 +40,7 @@ actions = {
 @ActionMethodDef(id = R.id.mainmenu_about, method = "showAbout")
 // finish
 })
-public class RecentActivity extends AbstractActionActivity {
+public class RecentActivity extends AbstractActionActivity<RecentActivity, RecentActivityController> {
 
     public final LogContext LCTX;
 
@@ -56,20 +55,17 @@ public class RecentActivity extends AbstractActionActivity {
     private RecentBooksView recentBooksView;
     private LibraryView libraryView;
 
-    private RecentActivityController controller;
-
     public RecentActivity() {
         super();
         LCTX = LogContext.ROOT.lctx(this.getClass().getSimpleName(), true).lctx("" + SEQ.getAndIncrement(), true);
     }
 
     @Override
-    public Object onRetainNonConfigurationInstance() {
-        return controller;
+    protected RecentActivityController createController() {
+        return new RecentActivityController(this);
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public void onCreate(final Bundle savedInstanceState) {
         if (LCTX.isDebugEnabled()) {
             LCTX.d("onCreate()");
@@ -88,13 +84,11 @@ public class RecentActivity extends AbstractActionActivity {
         libraryButton = (ImageView) findViewById(R.id.recent_showlibrary);
         viewflipper = (ViewFlipper) findViewById(R.id.recentflip);
 
-        final Object last = this.getLastNonConfigurationInstance();
-        if (last instanceof RecentActivityController) {
-            this.controller = (RecentActivityController) last;
-            controller.onRestore(this);
+        RecentActivityController c = restoreController();
+        if (c != null) {
+            c.onRestore(this);
         } else {
-            this.controller = new RecentActivityController(this);
-            controller.onCreate();
+            getController().onCreate();
         }
 
         if (AndroidVersion.VERSION == 3) {
@@ -112,7 +106,7 @@ public class RecentActivity extends AbstractActionActivity {
             LCTX.d("onResume()");
         }
         super.onResume();
-        controller.onResume();
+        getController().onResume();
     }
 
     @Override
@@ -121,7 +115,7 @@ public class RecentActivity extends AbstractActionActivity {
             LCTX.d("onPause(): " + isFinishing());
         }
         super.onPause();
-        controller.onPause();
+        getController().onPause();
     }
 
     @Override
@@ -130,7 +124,7 @@ public class RecentActivity extends AbstractActionActivity {
             LCTX.d("onDestroy(): " + isFinishing());
         }
         super.onDestroy();
-        controller.onDestroy();
+        getController().onDestroy();
     }
 
     @Override
@@ -168,7 +162,7 @@ public class RecentActivity extends AbstractActionActivity {
             final MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.book_menu, menu);
 
-            menu.setHeaderTitle(node.name);
+            menu.setHeaderTitle(node.path);
             menu.findItem(R.id.bookmenu_recentgroup).setVisible(node.settings != null);
 
             getController().getOrCreateAction(R.id.bookmenu_copy).putValue("source", source);
@@ -208,14 +202,6 @@ public class RecentActivity extends AbstractActionActivity {
         return viewflipper.getDisplayedChild();
     }
 
-    @Override
-    protected IActionController<? extends AbstractActionActivity> createController() {
-        if (controller == null) {
-            controller = new RecentActivityController(this);
-        }
-        return controller;
-    }
-
     void showBookshelf(final int shelfIndex) {
         if (bookcaseView != null) {
             bookcaseView.setCurrentList(shelfIndex);
@@ -236,7 +222,7 @@ public class RecentActivity extends AbstractActionActivity {
 
     void showBookcase(final BooksAdapter bookshelfAdapter, final RecentAdapter recentAdapter) {
         if (bookcaseView == null) {
-            bookcaseView = new BookcaseView(controller, bookshelfAdapter);
+            bookcaseView = new BookcaseView(getController(), bookshelfAdapter);
         }
         viewflipper.removeAllViews();
         viewflipper.addView(bookcaseView, 0);
@@ -246,11 +232,11 @@ public class RecentActivity extends AbstractActionActivity {
 
     void showLibrary(final FileListAdapter libraryAdapter, final RecentAdapter recentAdapter) {
         if (recentBooksView == null) {
-            recentBooksView = new RecentBooksView(controller, recentAdapter);
+            recentBooksView = new RecentBooksView(getController(), recentAdapter);
             registerForContextMenu(recentBooksView);
         }
         if (libraryView == null) {
-            libraryView = new LibraryView(controller, libraryAdapter);
+            libraryView = new LibraryView(getController(), libraryAdapter);
             registerForContextMenu(libraryView);
         }
 

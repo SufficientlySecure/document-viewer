@@ -11,29 +11,41 @@ import android.view.View;
 import org.emdev.ui.actions.ActionController;
 import org.emdev.ui.actions.ActionEx;
 import org.emdev.ui.actions.ActionMethod;
-import org.emdev.ui.actions.IActionController;
 
-public abstract class AbstractActionActivity extends Activity {
+public abstract class AbstractActionActivity<A extends Activity, C extends ActionController<A>> extends Activity {
 
     public static final String ACTIVITY_RESULT_DATA = "activityResultData";
     public static final String ACTIVITY_RESULT_CODE = "activityResultCode";
     public static final String ACTIVITY_RESULT_ACTION_ID = "activityResultActionId";
 
-    private IActionController<? extends AbstractActionActivity> actions;
+    private C controller;
 
     protected AbstractActionActivity() {
     }
 
-    public final IActionController<? extends AbstractActionActivity> getController() {
-        if (actions == null) {
-            actions = createController();
-        }
-        return actions;
+    @Override
+    public final Object onRetainNonConfigurationInstance() {
+        return getController();
     }
 
-    protected IActionController<? extends AbstractActionActivity> createController() {
-        return new ActionController<AbstractActionActivity>(this);
+    @SuppressWarnings({ "unchecked", "deprecation" })
+    public final C restoreController() {
+        final Object last = this.getLastNonConfigurationInstance();
+        if (last instanceof ActionController) {
+            this.controller = (C) last;
+            return controller;
+        }
+        return null;
     }
+
+    public final C getController() {
+        if (controller == null) {
+            controller = createController();
+        }
+        return controller;
+    }
+
+    protected abstract C createController();
 
     @Override
     public final boolean onOptionsItemSelected(final MenuItem item) {

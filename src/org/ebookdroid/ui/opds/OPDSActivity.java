@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.emdev.ui.AbstractActionActivity;
+import org.emdev.ui.actions.ActionController;
 import org.emdev.ui.actions.ActionDialogBuilder;
 import org.emdev.ui.actions.ActionEx;
 import org.emdev.ui.actions.ActionMethod;
@@ -32,8 +33,8 @@ import org.emdev.ui.actions.params.Constant;
 import org.emdev.ui.actions.params.EditableValue;
 import org.emdev.utils.LengthUtils;
 
-public class OPDSActivity extends AbstractActionActivity implements ExpandableListView.OnGroupClickListener,
-        ExpandableListView.OnChildClickListener, OPDSAdapter.FeedListener {
+public class OPDSActivity extends AbstractActionActivity<OPDSActivity, ActionController<OPDSActivity>> implements
+        ExpandableListView.OnGroupClickListener, ExpandableListView.OnChildClickListener, OPDSAdapter.FeedListener {
 
     private OPDSAdapter adapter;
 
@@ -42,6 +43,11 @@ public class OPDSActivity extends AbstractActionActivity implements ExpandableLi
     private Menu optionsMenu;
 
     public OPDSActivity() {
+    }
+
+    @Override
+    protected ActionController<OPDSActivity> createController() {
+        return new ActionController<OPDSActivity>(this);
     }
 
     @Override
@@ -191,19 +197,19 @@ public class OPDSActivity extends AbstractActionActivity implements ExpandableLi
         return feed != null ? feed.title : getResources().getString(R.string.opds);
     }
 
-    @ActionMethod(ids = { R.id.opdsaddfeed, R.id.opds_feed_add})
+    @ActionMethod(ids = { R.id.opdsaddfeed, R.id.opds_feed_add })
     public void showAddFeedDlg(final ActionEx action) {
-    
+
         final View childView = LayoutInflater.from(this).inflate(R.layout.alias_url, null);
-    
+
         final ActionDialogBuilder builder = new ActionDialogBuilder(this, getController());
         builder.setTitle(R.string.opds_addfeed_title);
         builder.setMessage(R.string.opds_addfeed_msg);
         builder.setView(childView);
-    
+
         final EditText aliasEdit = (EditText) childView.findViewById(R.id.editAlias);
         final EditText urlEdit = (EditText) childView.findViewById(R.id.editURL);
-    
+
         builder.setPositiveButton(R.string.opds_addfeed_ok, R.id.actions_addFeed,
                 new EditableValue("alias", aliasEdit), new EditableValue("url", urlEdit));
         builder.setNegativeButton();
@@ -214,7 +220,7 @@ public class OPDSActivity extends AbstractActionActivity implements ExpandableLi
     public void addFeed(final ActionEx action) {
         final String alias = LengthUtils.toString(action.getParameter("alias"));
         final String url = LengthUtils.toString(action.getParameter("url"));
-    
+
         if (LengthUtils.isAllNotEmpty(alias, url)) {
             adapter.addFeed(alias, url);
         }
@@ -385,4 +391,5 @@ public class OPDSActivity extends AbstractActionActivity implements ExpandableLi
             v.setEnabled(enabled);
         }
     }
+
 }

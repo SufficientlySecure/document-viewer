@@ -32,7 +32,6 @@ import org.emdev.ui.actions.ActionEx;
 import org.emdev.ui.actions.ActionMethod;
 import org.emdev.ui.actions.ActionMethodDef;
 import org.emdev.ui.actions.ActionTarget;
-import org.emdev.ui.actions.IActionController;
 import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.utils.LayoutUtils;
 import org.emdev.utils.LengthUtils;
@@ -44,7 +43,7 @@ actions = {
 @ActionMethodDef(id = R.id.mainmenu_about, method = "showAbout")
 // finish
 })
-public class ViewerActivity extends AbstractActionActivity {
+public class ViewerActivity extends AbstractActionActivity<ViewerActivity, ViewerActivityController> {
 
     private static final int DIALOG_GOTO = 0;
 
@@ -70,8 +69,6 @@ public class ViewerActivity extends AbstractActionActivity {
 
     private boolean menuClosedCalled;
 
-    private ViewerActivityController controller;
-
     /**
      * Instantiates a new base viewer activity.
      */
@@ -86,11 +83,8 @@ public class ViewerActivity extends AbstractActionActivity {
      * @see org.emdev.ui.AbstractActionActivity#createController()
      */
     @Override
-    protected IActionController<? extends AbstractActionActivity> createController() {
-        if (controller == null) {
-            controller = new ViewerActivityController(this);
-        }
-        return controller;
+    protected ViewerActivityController createController() {
+        return new ViewerActivityController(this);
     }
 
     @Override
@@ -110,14 +104,8 @@ public class ViewerActivity extends AbstractActionActivity {
             LCTX.d("onCreate(): " + getIntent());
         }
 
-        Object last = this.getLastNonConfigurationInstance();
-        if (last instanceof ViewerActivityController) {
-            this.controller = (ViewerActivityController) last;
-        } else {
-            this.controller = new ViewerActivityController(this);
-        }
-
-        this.controller.beforeCreate(this);
+        restoreController();
+        getController().beforeCreate(this);
 
         super.onCreate(savedInstanceState);
 
@@ -126,7 +114,7 @@ public class ViewerActivity extends AbstractActionActivity {
 
         frameLayout = new FrameLayout(this);
 
-        view = SettingsManager.getAppSettings().viewType.create(controller);
+        view = SettingsManager.getAppSettings().viewType.create(getController());
         this.registerForContextMenu(view.getView());
 
         LayoutUtils.fillInParent(frameLayout, view.getView());
@@ -136,7 +124,7 @@ public class ViewerActivity extends AbstractActionActivity {
         frameLayout.addView(getSearchControls());
         frameLayout.addView(getTouchView());
 
-        this.controller.afterCreate();
+        getController().afterCreate();
 
         setContentView(frameLayout);
     }
@@ -147,12 +135,12 @@ public class ViewerActivity extends AbstractActionActivity {
             LCTX.d("onResume()");
         }
 
-        this.controller.beforeResume();
+        getController().beforeResume();
 
         super.onResume();
         IUIManager.instance.onResume(this);
 
-        this.controller.afterResume();
+        getController().afterResume();
     }
 
     @Override
@@ -161,22 +149,18 @@ public class ViewerActivity extends AbstractActionActivity {
             LCTX.d("onPause(): " + isFinishing());
         }
 
-        this.controller.beforePause();
+        getController().beforePause();
 
         super.onPause();
         IUIManager.instance.onPause(this);
 
-        this.controller.afterPause();
-    }
-
-    @Override
-    public Object onRetainNonConfigurationInstance() {
-        return controller;
+        getController().afterPause();
     }
 
     public void onWindowFocusChanged(boolean hasFocus) {
         if (hasFocus && this.view != null) {
-            IUIManager.instance.setFullScreenMode(this, this.view.getView(), SettingsManager.getAppSettings().fullScreen);
+            IUIManager.instance.setFullScreenMode(this, this.view.getView(),
+                    SettingsManager.getAppSettings().fullScreen);
         }
     }
 
@@ -186,18 +170,18 @@ public class ViewerActivity extends AbstractActionActivity {
             LCTX.d("onDestroy(): " + isFinishing());
         }
 
-        controller.beforeDestroy();
+        getController().beforeDestroy();
         super.onDestroy();
-        controller.afterDestroy();
+        getController().afterDestroy();
     }
 
     protected IView createView() {
-        return SettingsManager.getAppSettings().viewType.create(controller);
+        return SettingsManager.getAppSettings().viewType.create(getController());
     }
 
     public TouchManagerView getTouchView() {
         if (touchView == null) {
-            touchView = new TouchManagerView(controller);
+            touchView = new TouchManagerView(getController());
         }
         return touchView;
     }
@@ -251,14 +235,14 @@ public class ViewerActivity extends AbstractActionActivity {
 
     @Override
     protected void onPostCreate(final Bundle savedInstanceState) {
-        controller.beforePostCreate();
+        getController().beforePostCreate();
         super.onPostCreate(savedInstanceState);
-        controller.afterPostCreate();
+        getController().afterPostCreate();
     }
 
     public PageViewZoomControls getZoomControls() {
         if (zoomControls == null) {
-            zoomControls = new PageViewZoomControls(this, controller.getZoomModel());
+            zoomControls = new PageViewZoomControls(this, getController().getZoomModel());
             zoomControls.setGravity(Gravity.RIGHT | Gravity.BOTTOM);
         }
         return zoomControls;
@@ -333,7 +317,7 @@ public class ViewerActivity extends AbstractActionActivity {
     protected Dialog onCreateDialog(final int id) {
         switch (id) {
             case DIALOG_GOTO:
-                return new GoToPageDialog(controller);
+                return new GoToPageDialog(getController());
         }
         return null;
     }
@@ -346,7 +330,7 @@ public class ViewerActivity extends AbstractActionActivity {
 
     @Override
     public final boolean dispatchKeyEvent(final KeyEvent event) {
-        if (controller.dispatchKeyEvent(event)) {
+        if (getController().dispatchKeyEvent(event)) {
             return true;
         }
 

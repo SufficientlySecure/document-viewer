@@ -9,11 +9,7 @@ import org.ebookdroid.ui.library.adapters.RecentAdapter;
 
 import android.content.Context;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.emdev.ui.progress.UIFileCopying;
@@ -41,10 +37,7 @@ public class CopyBookTask extends BaseFileAsyncTask<BookNode> {
         try {
 
             final UIFileCopying worker = new UIFileCopying(R.string.book_copy_progress, 256 * 1024, this);
-            final BufferedInputStream in = new BufferedInputStream(new FileInputStream(origin), 256 * 1024);
-            final BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(target), 256 * 1024);
-
-            worker.copy(origin.length(), in, out);
+            worker.copy(origin, target);
 
             CacheManager.copy(book.path, target.getAbsolutePath(), false);
 

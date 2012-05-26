@@ -57,7 +57,7 @@ public final class FileUtils {
             return;
         }
         long length = source.length();
-        int bufsize = MathUtils.adjust((int) length, 1024, 256 * 1024);
+        int bufsize = MathUtils.adjust((int) length, 1024, 512 * 1024);
 
         ReadableByteChannel in = null;
         WritableByteChannel out = null;

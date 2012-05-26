@@ -89,15 +89,17 @@ public class RecentAdapter extends BaseAdapter {
     }
 
     public void replaceBook(final BookNode origin, final BookSettings target) {
-        final BookNode replaceNode = new BookNode(target);
-        final int ind = origin != null ? books.indexOf(origin) : -1;
-        if (ind >= 0) {
-            books.set(ind, replaceNode);
-            nodes.remove(origin.path);
-        } else {
-            books.add(0, replaceNode);
+        if (origin != null) {
+            final BookNode oldNode = nodes.remove(origin.path);
+            books.remove(oldNode != null ? oldNode : origin);
         }
-        nodes.put(replaceNode.path, replaceNode);
+
+        final BookNode newNode = new BookNode(target);
+        final BookNode prevNode = nodes.put(newNode.path, newNode);
+        if (prevNode != null) {
+            books.remove(prevNode);
+        }
+        books.add(0, newNode);
         notifyDataSetChanged();
     }
 

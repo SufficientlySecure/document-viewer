@@ -52,7 +52,7 @@ public class CacheManager {
 
     public static File createTempFile(final InputStream source, final String suffix) throws IOException {
         final File cacheDir = s_context.getFilesDir();
-        File tempfile = File.createTempFile("ebookdroid", suffix, cacheDir);
+        final File tempfile = File.createTempFile("ebookdroid", suffix, cacheDir);
         tempfile.deleteOnExit();
 
         FileUtils.copy(source, new FileOutputStream(tempfile));
@@ -62,10 +62,10 @@ public class CacheManager {
 
     public static File createTempFile(final Uri uri) throws IOException {
         final File cacheDir = s_context.getFilesDir();
-        File tempfile = File.createTempFile("ebookdroid", "content", cacheDir);
+        final File tempfile = File.createTempFile("ebookdroid", "content", cacheDir);
         tempfile.deleteOnExit();
 
-        InputStream source = s_context.getContentResolver().openInputStream(uri);
+        final InputStream source = s_context.getContentResolver().openInputStream(uri);
         FileUtils.copy(source, new FileOutputStream(tempfile));
 
         return tempfile;
@@ -91,4 +91,34 @@ public class CacheManager {
         }
     }
 
+    public static void copy(final String sourcePath, final String targetPath, final boolean deleteSource) {
+        final File cacheDir = s_context.getFilesDir();
+        final String[] files = cacheDir.list(new FilePrefixFilter(StringUtils.md5(sourcePath) + "."));
+        if (LengthUtils.isEmpty(files)) {
+            return;
+        }
+        final String targetPrefix = StringUtils.md5(targetPath);
+        for (final String file : files) {
+            final File source = new File(cacheDir, file);
+            final File target = new File(cacheDir, targetPrefix + FileUtils.getExtensionWithDot(source));
+            if (deleteSource) {
+                if (!source.renameTo(target)) {
+                    try {
+                        FileUtils.copy(source, target);
+                        source.delete();
+                        LCTX.e("Moving file completed: " + target.getName());
+                    } catch (final IOException ex) {
+                        LCTX.e("Moving file failed: " + ex.getMessage());
+                    }
+                }
+            } else {
+                try {
+                    FileUtils.copy(source, target);
+                    LCTX.e("Copying file completed: " + target.getName());
+                } catch (final IOException ex) {
+                    LCTX.e("Copying file failed: " + ex.getMessage());
+                }
+            }
+        }
+    }
 }

@@ -1,10 +1,10 @@
 package org.ebookdroid.ui.library.adapters;
 
-
 import org.ebookdroid.common.settings.books.BookSettings;
 
 import java.io.File;
 
+import org.emdev.utils.LengthUtils;
 import org.emdev.utils.StringUtils;
 
 public class BookNode implements Comparable<BookNode> {
@@ -13,14 +13,14 @@ public class BookNode implements Comparable<BookNode> {
     public final String path;
     public BookSettings settings;
 
-    BookNode(final File f, BookSettings settings) {
+    BookNode(final File f, final BookSettings settings) {
         this.name = f.getName();
         this.path = f.getAbsolutePath();
         this.settings = settings;
     }
 
-    BookNode(BookSettings settings) {
-        File f = new File(settings.fileName);
+    BookNode(final BookSettings settings) {
+        final File f = new File(settings.fileName);
         this.name = f.getName();
         this.path = f.getAbsolutePath();
         this.settings = settings;
@@ -32,11 +32,26 @@ public class BookNode implements Comparable<BookNode> {
     }
 
     @Override
-    public int compareTo(BookNode that) {
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof BookNode) {
+            return 0 == compareTo((BookNode) obj);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return LengthUtils.safeString(this.path).hashCode();
+    }
+
+    @Override
+    public int compareTo(final BookNode that) {
         if (this == that) {
             return 0;
         }
-
         return StringUtils.compareNatural(this.path, that.path);
     }
 }

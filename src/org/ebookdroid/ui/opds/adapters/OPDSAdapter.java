@@ -77,7 +77,8 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
 
         // TODO remove in release
         if (rootFeeds.isEmpty()) {
-            addFeeds(new Feed("Flibusta", "http://flibusta.net/opds"), new Feed("Plough", "http://www.plough.com/ploughCatalog_opds.xml"));
+            addFeeds(new Feed("Flibusta", "http://flibusta.net/opds"), new Feed("Plough",
+                    "http://www.plough.com/ploughCatalog_opds.xml"));
         }
 
         this.currentFeed = null;
@@ -400,13 +401,20 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
 
         @Override
         protected String doInBackground(final Feed... params) {
-            final Feed feed = params[0];
-            for (final Book book : feed.books) {
-                if (currentFeed != book.parent) {
-                    break;
+            if (LengthUtils.isEmpty(params)) {
+                return null;
+            }
+            for (Feed feed : params) {
+                if (feed == null) {
+                    continue;
                 }
-                loadBookThumbnail(book);
-                publishProgress(book);
+                for (final Book book : feed.books) {
+                    if (currentFeed != book.parent) {
+                        break;
+                    }
+                    loadBookThumbnail(book);
+                    publishProgress(book);
+                }
             }
             return null;
         }

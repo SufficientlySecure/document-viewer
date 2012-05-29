@@ -168,6 +168,7 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
             getController().getOrCreateAction(R.id.bookmenu_copy).putValue("source", source);
             getController().getOrCreateAction(R.id.bookmenu_move).putValue("source", source);
             getController().getOrCreateAction(R.id.bookmenu_open).putValue("source", source);
+            getController().getOrCreateAction(R.id.bookmenu_delete).putValue("source", source);
 
         } else if (source instanceof BookShelfAdapter) {
             BookShelfAdapter a = (BookShelfAdapter) source;

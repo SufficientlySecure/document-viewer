@@ -61,15 +61,17 @@
     <string name="opds_addfeed_msg">"Enter alias and URL for the catalog"</string>
     <string name="opds_addfeed_ok">"Add"</string>
 
-    <string name="book_copy_start" formatted="false">"Copying book..."</string>
+    <string name="book_copy_start" formatted="false">"Copying book&#8230;"</string>
     <string name="book_copy_progress" formatted="false">"Copying book: %s/%s&#8230;"</string>
     <string name="book_copy_complete" formatted="false">"Book copying complete: %s"</string>
     <string name="book_copy_error" formatted="false">"Book copying failed: %s"</string>
 
-    <string name="book_move_start" formatted="false">"Moving book..."</string>
+    <string name="book_move_start" formatted="false">"Moving book&#8230;"</string>
     <string name="book_move_progress" formatted="false">"Moving book: %s/%s&#8230;"</string>
     <string name="book_move_complete" formatted="false">"Book moving complete: %s"</string>
     <string name="book_move_error" formatted="false">"Book moving failed: %s"</string>
 
+    <string name="book_delete_title" formatted="false">"Delete book"</string>
+    <string name="book_delete_msg" formatted="false">"Are you sure you want to delete this book?"</string>
 
 </resources>

@@ -22,4 +22,5 @@
    <item android:id="@+id/actions_doCopyBook" />
    <item android:id="@+id/actions_doMoveBook" />
 
+   <item android:id="@+id/actions_doDeleteBook" />
 </menu>

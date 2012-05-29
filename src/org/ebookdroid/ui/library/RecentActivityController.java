@@ -41,6 +41,7 @@ import org.emdev.ui.actions.ActionMethod;
 import org.emdev.ui.actions.ActionMethodDef;
 import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.actions.IActionController;
+import org.emdev.ui.actions.params.Constant;
 import org.emdev.ui.actions.params.EditableValue;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.filesystem.FileExtensionFilter;
@@ -267,6 +268,40 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         final File targetFolder = action.getParameter(FolderDlg.SELECTED_FOLDER);
         final BookNode book = action.getParameter("source");
         new MoveBookTask(this.getContext(), recentAdapter, targetFolder).execute(book);
+    }
+
+    @ActionMethod(ids = R.id.bookmenu_delete)
+    public void deleteBook(final ActionEx action) {
+        final BookNode book = action.getParameter("source");
+        if (book == null) {
+            return;
+        }
+
+        final ActionDialogBuilder builder = new ActionDialogBuilder(getContext(), this);
+        builder.setTitle(R.string.book_delete_title);
+        builder.setMessage(R.string.book_delete_msg);
+        builder.setPositiveButton(R.id.actions_doDeleteBook, new Constant("source", book));
+        builder.setNegativeButton().show();
+    }
+
+    @ActionMethod(ids = R.id.actions_doDeleteBook)
+    public void doDeleteBook(final ActionEx action) {
+        final BookNode book = action.getParameter("source");
+        if (book == null) {
+            return;
+        }
+
+        final File f = new File(book.path);
+        if (f.delete()) {
+            CacheManager.clear(book.path);
+            final LibSettings libSettings = SettingsManager.getLibSettings();
+            if (libSettings.getUseBookcase()) {
+                bookshelfAdapter.startScan();
+            } else {
+                libraryAdapter.startScan();
+            }
+            recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), libSettings.allowedFileTypes);
+        }
     }
 
     @Override

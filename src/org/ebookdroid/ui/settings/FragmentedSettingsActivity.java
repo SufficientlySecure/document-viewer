@@ -12,6 +12,7 @@ import java.util.List;
 @TargetApi(11)
 public class FragmentedSettingsActivity extends SettingsActivity {
 
+
     @Override
     protected void onCreate() {
     }

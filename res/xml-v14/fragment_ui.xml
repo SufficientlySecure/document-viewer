@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen 
+<PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ebookdroid="http://ebookdroid.org" 
+    xmlns:ebookdroid="http://ebookdroid.org"
     android:summary="@string/pref_ui_category_summary"
     android:title="@string/pref_ui_category" >
 
@@ -85,5 +85,10 @@
             android:key="@string/pref_showanimicon_id"
             android:summary="@string/pref_showanimicon_summary"
             android:title="@string/pref_showanimicon_title" />
+
+        <Preference
+            android:key="link_highlight"
+            android:summary="Choose color for link highlight."
+            android:title="Link highlight" />
 
 </PreferenceScreen>

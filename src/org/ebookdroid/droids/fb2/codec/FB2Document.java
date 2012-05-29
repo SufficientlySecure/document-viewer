@@ -11,6 +11,7 @@ import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.codec.OutlineLink;
 
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 import java.io.BufferedReader;
@@ -288,8 +289,12 @@ public class FB2Document implements CodecDocument {
                 if (e instanceof TextElement) {
                     final TextElement textElement = (TextElement) e;
                     if (textElement.indexOf(pattern) != -1) {
-                        rects.add(new RectF(x / FB2Page.PAGE_WIDTH, top / FB2Page.PAGE_HEIGHT, (x + w)
-                                / FB2Page.PAGE_WIDTH, bottom / FB2Page.PAGE_HEIGHT));
+                        Rect bounds = new Rect();
+                        textElement.getTextBounds(bounds);
+
+
+                        rects.add(new RectF((x - 3) / FB2Page.PAGE_WIDTH, (bottom + bounds.top - 3) / FB2Page.PAGE_HEIGHT, (x + w + 3)
+                                / FB2Page.PAGE_WIDTH, (bottom + bounds.bottom + 3) / FB2Page.PAGE_HEIGHT));
                     }
                 }
                 x += w;

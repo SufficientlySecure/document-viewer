@@ -3,6 +3,7 @@ package org.emdev.utils.textmarkup.line;
 import org.ebookdroid.common.settings.SettingsManager;
 
 import android.graphics.Canvas;
+import android.graphics.Rect;
 
 import org.emdev.utils.HyphenationUtils;
 import org.emdev.utils.textmarkup.RenderingStyle;
@@ -130,6 +131,10 @@ public class TextElement extends AbstractLineElement {
     @Override
     public String toString() {
         return new String(chars, start, length);
+    }
+
+    public void getTextBounds(Rect bounds) {
+        style.paint.getTextBounds(chars, start, length, bounds);
     }
 
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ebookdroid="http://ebookdroid.org" 
+    xmlns:ebookdroid="http://ebookdroid.org"
     >
 
     <PreferenceScreen
@@ -88,6 +88,21 @@
             android:key="@string/pref_showanimicon_id"
             android:summary="@string/pref_showanimicon_summary"
             android:title="@string/pref_showanimicon_title" />
+
+    	<org.emdev.ui.preference.ColorPickerPreference
+            android:key="link_highlight"
+            android:summary="@string/pref_link_highlight_summary"
+            android:title="@string/pref_link_highlight_title" />
+
+    	<org.emdev.ui.preference.ColorPickerPreference
+            android:key="search_highlight"
+            android:summary="@string/pref_search_highlight_summary"
+            android:title="@string/pref_search_highlight_title" />
+
+    	<org.emdev.ui.preference.ColorPickerPreference
+            android:key="current_search_highlight"
+            android:summary="@string/pref_current_search_highlight_summary"
+            android:title="@string/pref_current_search_highlight_title" />
 
     </PreferenceScreen>
 
@@ -541,7 +556,7 @@
         </PreferenceCategory>
     </PreferenceScreen>
 
-    <PreferenceScreen 
+    <PreferenceScreen
         android:key="opds_prefs"
         android:summary="@string/pref_opds_category_summary"
         android:title="@string/pref_opds_category" >
@@ -563,7 +578,7 @@
             android:key="@string/pref_opds_downloadarchives_id"
             android:summary="@string/pref_opds_downloadarchives_summary"
             android:title="@string/pref_opds_downloadarchives_title" />
-    
+
         <CheckBoxPreference
             android:defaultValue="@string/pref_opds_unpackarchives_defvalue"
             android:key="@string/pref_opds_unpackarchives_id"

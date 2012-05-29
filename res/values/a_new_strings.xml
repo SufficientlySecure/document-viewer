@@ -74,4 +74,14 @@
     <string name="book_delete_title" formatted="false">"Delete book"</string>
     <string name="book_delete_msg" formatted="false">"Are you sure you want to delete this book?"</string>
 
+    <string name="pref_link_highlight_summary">"Choose color for link highlight"</string>
+    <string name="pref_link_highlight_title">"Link highlight"</string>
+
+    <string name="pref_search_highlight_summary">"Choose color for search result highlight"</string>
+    <string name="pref_search_highlight_title">"Search highlight"</string>
+
+    <string name="pref_current_search_highlight_summary">"Choose color for current search result highlight"</string>
+    <string name="pref_current_search_highlight_title">"Current search highlight"</string>
+
+
 </resources>

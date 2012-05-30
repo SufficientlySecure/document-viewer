@@ -53,6 +53,15 @@ public interface AppPreferences {
     BooleanPreferenceDefinition SHOW_ANIM_ICON = new BooleanPreferenceDefinition(pref_showanimicon_id,
             pref_showanimicon_defvalue);
 
+    IntegerPreferenceDefinition LINK_HIGHLIGHT_COLOR = new IntegerPreferenceDefinition(pref_link_highlight_id,
+            pref_link_highlight_defvalue);
+
+    IntegerPreferenceDefinition SEARCH_HIGHLIGHT_COLOR = new IntegerPreferenceDefinition(pref_search_highlight_id,
+            pref_search_highlight_defvalue);
+
+    IntegerPreferenceDefinition CURRENT_SEARCH_HIGHLIGHT_COLOR = new IntegerPreferenceDefinition(pref_current_search_highlight_id,
+            pref_current_search_highlight_defvalue);
+
     /* =============== Tap & Scroll settings =============== */
 
     BooleanPreferenceDefinition TAPS_ENABLED = new BooleanPreferenceDefinition(pref_tapsenabled_id,

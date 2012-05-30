@@ -3,6 +3,7 @@ package org.ebookdroid.core;
 import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
 import org.ebookdroid.common.log.LogContext;
+import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.core.codec.PageLink;
 
 import android.graphics.Canvas;
@@ -155,13 +156,13 @@ public class EventDraw implements IEvent {
         if (LengthUtils.isEmpty(page.links)) {
             return;
         }
+
         for (final PageLink link : page.links) {
             final RectF rect = page.getLinkSourceRect(pageBounds, link);
             if (rect != null) {
                 rect.offset(-viewState.viewBase.x, -viewState.viewBase.y);
                 final Paint p = new Paint();
-                p.setColor(Color.YELLOW);
-                p.setAlpha(128);
+                p.setColor(SettingsManager.getAppSettings().linkHighlightColor);
                 canvas.drawRect(rect, p);
             }
         }
@@ -177,7 +178,7 @@ public class EventDraw implements IEvent {
             final RectF link = page.highlights.get(i);
             final RectF rect = page.getPageRegion(pageBounds, new RectF(link));
             rect.offset(-viewState.viewBase.x, -viewState.viewBase.y);
-            p.setColor(current ? 0x7F007F00 : 0x3F00FF00);
+            p.setColor(current ? SettingsManager.getAppSettings().currentSearchHighlightColor : SettingsManager.getAppSettings().searchHighlightColor);
             canvas.drawRect(rect, p);
         }
     }

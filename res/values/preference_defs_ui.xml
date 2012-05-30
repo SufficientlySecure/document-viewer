@@ -46,14 +46,14 @@
 
     <string name="pref_pagenumbertoastposition_id">pagenumbertoastposition</string>
     <string name="pref_zoomtoastposition_id">zoomtoastposition</string>
-    
+
     <string name="pref_toastposition_invisible">Invisible</string>
     <string name="pref_toastposition_lefttop">LeftTop</string>
     <string name="pref_toastposition_righttop">RightTop</string>
     <string name="pref_toastposition_leftbottom">LeftBottom</string>
     <string name="pref_toastposition_bottom">Bottom</string>
     <string name="pref_toastposition_righbottom">RightBottom</string>
-        
+
     <string-array name="pref_toastposition_entries" translatable="false">
         <item>@string/list_toastposition_invisible</item>
         <item>@string/list_toastposition_lefttop</item>
@@ -75,4 +75,12 @@
     <string name="pref_showanimicon_id">showanimicon</string>
     <string name="pref_showanimicon_defvalue">true</string>
 
+    <string name="pref_link_highlight_id">link_highlight</string>
+    <string name="pref_link_highlight_defvalue">0x80FFFF00</string>
+
+    <string name="pref_search_highlight_id">search_highlight</string>
+    <string name="pref_search_highlight_defvalue">0x3F00FF00</string>
+
+    <string name="pref_current_search_highlight_id">current_search_highlight</string>
+    <string name="pref_current_search_highlight_defvalue">0x7F007F00</string>
 </resources>

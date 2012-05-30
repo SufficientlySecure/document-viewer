@@ -18,16 +18,16 @@ public class IntegerPreferenceDefinition extends BasePreferenceDefinition {
 
     public IntegerPreferenceDefinition(final int keyRes, final int defValRef) {
         super(keyRes);
-        defValue = Integer.parseInt(EBookDroidApp.context.getString(defValRef));
+        defValue = (int)(Long.decode(EBookDroidApp.context.getString(defValRef)) & 0xFFFFFFFF);
         minValue = Integer.MIN_VALUE;
         maxValue = Integer.MAX_VALUE;
     }
 
     public IntegerPreferenceDefinition(final int keyRes, final int defValRef, final int minValRef, final int maxValRef) {
         super(keyRes);
-        defValue = Integer.parseInt(EBookDroidApp.context.getString(defValRef));
-        minValue = Integer.parseInt(EBookDroidApp.context.getString(minValRef));
-        maxValue = Integer.parseInt(EBookDroidApp.context.getString(maxValRef));
+        defValue = (int)(Long.decode(EBookDroidApp.context.getString(defValRef)) & 0xFFFFFFFF);
+        minValue = (int)(Long.decode(EBookDroidApp.context.getString(minValRef)) & 0xFFFFFFFF);
+        maxValue = (int)(Long.decode(EBookDroidApp.context.getString(maxValRef)) & 0xFFFFFFFF);
     }
 
     public int getPreferenceValue(final SharedPreferences prefs) {

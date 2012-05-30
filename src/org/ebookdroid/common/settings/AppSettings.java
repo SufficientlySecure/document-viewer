@@ -44,6 +44,12 @@ public class AppSettings implements AppPreferences, BookPreferences {
 
     public final boolean showAnimIcon;
 
+    public final int linkHighlightColor;
+
+    public final int searchHighlightColor;
+
+    public final int currentSearchHighlightColor;
+
     /* =============== Tap & Scroll settings =============== */
 
     public final boolean tapsEnabled;
@@ -135,6 +141,9 @@ public class AppSettings implements AppPreferences, BookPreferences {
         pageNumberToastPosition = PAGE_NUMBER_TOAST_POSITION.getPreferenceValue(prefs);
         zoomToastPosition = ZOOM_TOAST_POSITION.getPreferenceValue(prefs);
         showAnimIcon = SHOW_ANIM_ICON.getPreferenceValue(prefs);
+        linkHighlightColor = LINK_HIGHLIGHT_COLOR.getPreferenceValue(prefs);
+        searchHighlightColor = SEARCH_HIGHLIGHT_COLOR.getPreferenceValue(prefs);
+        currentSearchHighlightColor = CURRENT_SEARCH_HIGHLIGHT_COLOR.getPreferenceValue(prefs);
         /* =============== Tap & Scroll settings =============== */
         tapsEnabled = TAPS_ENABLED.getPreferenceValue(prefs);
         scrollHeight = SCROLL_HEIGHT.getPreferenceValue(prefs);

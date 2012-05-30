@@ -432,7 +432,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IActivityController#jumpToPage(int, float, float)
      */
     @Override
@@ -531,7 +531,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * Gets the zoom model.
-     * 
+     *
      * @return the zoom model
      */
     @Override
@@ -549,7 +549,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * Gets the decoding progress model.
-     * 
+     *
      * @return the decoding progress model
      */
     @Override
@@ -644,7 +644,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.common.settings.listeners.ISettingsChangeListener#onAppSettingsChanged(org.ebookdroid.common.settings.AppSettings,
      *      org.ebookdroid.common.settings.AppSettings, org.ebookdroid.common.settings.AppSettings.Diff)
      */
@@ -679,7 +679,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.common.settings.listeners.ISettingsChangeListener#onBookSettingsChanged(org.ebookdroid.common.settings.books.BookSettings,
      *      org.ebookdroid.common.settings.books.BookSettings, org.ebookdroid.common.settings.books.BookSettings.Diff,
      *      org.ebookdroid.common.settings.AppSettings.Diff)
@@ -853,7 +853,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
         @Override
         protected void onPreExecute() {
-            onProgressUpdate("Searching...");
+//            onProgressUpdate("Searching...");
         }
 
         @Override
@@ -908,7 +908,6 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                 }
 
                 for (int index = startIndex; (forward && index < endIndex || index > endIndex) && continueFlag.get(); index += direction) {
-                    publishProgress("Searching on page " + (index + 1) + "...");
                     p = documentModel.getPageObject(index);
                     if (p.areHighlightsActual(pattern)) {
                         final RectF next = forward ? p.getNextHighlight() : p.getPrevHighlight();
@@ -917,6 +916,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                             return next;
                         }
                     }
+                    publishProgress("Searching on page " + (index + 1) + "...");
                     sync = new CountDownLatch(1);
                     documentModel.getDecodeService().searchText(p, pattern, this);
                     while (continueFlag.get()) {

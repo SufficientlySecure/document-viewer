@@ -53,9 +53,19 @@
     <string name="list_djvu_rendering_mode_4">Background only</string>
     <string name="list_djvu_rendering_mode_5">Foreground only</string>
 
-	<string name="list_rotation_auto">Automatic</string>
+    <string name="list_rotation_unspecified">Unspecified</string>
 	<string name="list_rotation_land">Force landscape</string>
 	<string name="list_rotation_port">Force portrait</string>
+    <string name="list_rotation_user">User</string>
+    <string name="list_rotation_behind">Behind</string>
+    <string name="list_rotation_auto">Automatic</string>
+    <string name="list_rotation_nosensor">No sensor</string>
+    <string name="list_rotation_sensor_landscape">Sensor landscape</string>
+    <string name="list_rotation_sensor_portrait">Sensor portrait</string>
+    <string name="list_rotation_reverse_landscape">Reverse landscape</string>
+    <string name="list_rotation_reverse_portrait">Reverse portrait</string>
+    <string name="list_rotation_full_sensor">Full sensor</string>
+
 	<string name="menu_close">Close</string>
 	<string name="menu_goto_page">Go to page</string>
 	<string name="menu_outline">Outline</string>

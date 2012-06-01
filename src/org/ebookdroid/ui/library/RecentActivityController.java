@@ -34,6 +34,7 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.emdev.ui.AbstractActionActivity;
 import org.emdev.ui.actions.ActionController;
 import org.emdev.ui.actions.ActionDialogBuilder;
 import org.emdev.ui.actions.ActionEx;
@@ -316,6 +317,15 @@ public class RecentActivityController extends ActionController<RecentActivity> i
 
     @Override
     public void setCurrentDir(final File newDir) {
+    }
+
+    @ActionMethod(ids = R.id.bookmenu_open)
+    public void openBook(final ActionEx action) {
+        final BookNode book = action.getParameter(AbstractActionActivity.MENU_ITEM_SOURCE);
+        final File file = new File(book.path);
+        if (!file.isDirectory()) {
+            showDocument(Uri.fromFile(file));
+        }
     }
 
     @Override

@@ -5,6 +5,7 @@ import org.ebookdroid.ui.about.AboutActivity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -14,6 +15,7 @@ import org.emdev.ui.actions.ActionMethod;
 
 public abstract class AbstractActionActivity<A extends Activity, C extends ActionController<A>> extends Activity {
 
+    public static final String MENU_ITEM_SOURCE = "source";
     public static final String ACTIVITY_RESULT_DATA = "activityResultData";
     public static final String ACTIVITY_RESULT_CODE = "activityResultCode";
     public static final String ACTIVITY_RESULT_ACTION_ID = "activityResultActionId";
@@ -58,6 +60,18 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Actio
         return super.onOptionsItemSelected(item);
     }
 
+    protected void setMenuSource(final Menu menu, final Object source) {
+        for (int i = 0, n = menu.size(); i < n; i++) {
+            final MenuItem item = menu.getItem(i);
+            if (item instanceof Menu) {
+                setMenuSource((Menu) item, source);
+            } else {
+                final int itemId = item.getItemId();
+                getController().getOrCreateAction(itemId).putValue(MENU_ITEM_SOURCE, source);
+            }
+        }
+    }
+
     @Override
     public boolean onContextItemSelected(final MenuItem item) {
         final int actionId = item.getItemId();
@@ -66,7 +80,7 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Actio
             action.run();
             return true;
         }
-        return super.onOptionsItemSelected(item);
+        return super.onContextItemSelected(item);
     }
 
     public final void onButtonClick(final View view) {

@@ -165,11 +165,6 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
             menu.setHeaderTitle(node.path);
             menu.findItem(R.id.bookmenu_recentgroup).setVisible(node.settings != null);
 
-            getController().getOrCreateAction(R.id.bookmenu_copy).putValue("source", source);
-            getController().getOrCreateAction(R.id.bookmenu_move).putValue("source", source);
-            getController().getOrCreateAction(R.id.bookmenu_open).putValue("source", source);
-            getController().getOrCreateAction(R.id.bookmenu_delete).putValue("source", source);
-
         } else if (source instanceof BookShelfAdapter) {
             BookShelfAdapter a = (BookShelfAdapter) source;
 
@@ -178,6 +173,8 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
 
             menu.setHeaderTitle(a.name);
         }
+
+        setMenuSource(menu, source);
     }
 
     @Override

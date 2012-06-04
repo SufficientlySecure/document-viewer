@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 
 import org.emdev.ui.actions.ActionController;
@@ -63,8 +64,9 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Actio
     protected void setMenuSource(final Menu menu, final Object source) {
         for (int i = 0, n = menu.size(); i < n; i++) {
             final MenuItem item = menu.getItem(i);
-            if (item instanceof Menu) {
-                setMenuSource((Menu) item, source);
+            SubMenu subMenu = item.getSubMenu();
+            if (subMenu != null) {
+                setMenuSource(subMenu, source);
             } else {
                 final int itemId = item.getItemId();
                 getController().getOrCreateAction(itemId).putValue(MENU_ITEM_SOURCE, source);

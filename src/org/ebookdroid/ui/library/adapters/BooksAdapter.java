@@ -2,7 +2,6 @@ package org.ebookdroid.ui.library.adapters;
 
 import org.ebookdroid.R;
 import org.ebookdroid.common.settings.LibSettings;
-import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.ui.library.IBrowserActivity;
 import org.ebookdroid.ui.library.views.BookshelfView;
 
@@ -66,7 +65,7 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
         this.recent.registerDataSetObserver(updater);
         this.scanner = new FileSystemScanner(base);
         this.scanner.addListener(this);
-        this.searchQuery = SettingsManager.getLibSettings().searchBookQuery;
+        this.searchQuery = LibSettings.current().searchBookQuery;
     }
 
     @Override
@@ -246,7 +245,7 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
 
     public void startScan() {
         clearData();
-        final LibSettings libSettings = SettingsManager.getLibSettings();
+        final LibSettings libSettings = LibSettings.current();
         scanner.startScan(libSettings.allowedFileTypes, libSettings.autoScanDirs);
     }
 
@@ -256,7 +255,7 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
 
     public boolean startSearch(final String searchQuery) {
         this.searchQuery = LengthUtils.safeString(searchQuery).trim();
-        SettingsManager.updateSearchBookQuery(this.searchQuery);
+        LibSettings.updateSearchBookQuery(this.searchQuery);
 
         clearSearch();
 
@@ -401,7 +400,7 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
 
     @Override
     public void onDirAdded(final File parent, final File f) {
-        final LibSettings libSettings = SettingsManager.getLibSettings();
+        final LibSettings libSettings = LibSettings.current();
         scanner.startScan(libSettings.allowedFileTypes, f.getAbsolutePath());
     }
 

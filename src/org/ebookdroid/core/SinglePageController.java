@@ -1,5 +1,6 @@
 package org.ebookdroid.core;
 
+import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
@@ -143,7 +144,7 @@ public class SinglePageController extends AbstractViewController {
             final float pageHeight = bounds.height();
             final float viewHeight = viewRect.height();
 
-            final float diff = direction * viewHeight * SettingsManager.getAppSettings().scrollHeight / 100.0f;
+            final float diff = direction * viewHeight * AppSettings.current().scrollHeight / 100.0f;
             final float oldTop = getScrollY();
             final float newTop = oldTop + diff;
 
@@ -284,7 +285,7 @@ public class SinglePageController extends AbstractViewController {
         final PageAnimationType animationType = SettingsManager.getBookSettings().animationType;
         final PageAnimator newCurler = PageAnimationType.create(animationType, this);
 
-        IUIManager.instance.setHardwareAccelerationEnabled(SettingsManager.getAppSettings().hwaEnabled);
+        IUIManager.instance.setHardwareAccelerationEnabled(AppSettings.current().hwaEnabled);
         IUIManager.instance.setHardwareAccelerationMode(getView().getView(), animationType.isHardwareAccelSupported());
 
         newCurler.init();

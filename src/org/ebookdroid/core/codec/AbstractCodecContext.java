@@ -1,6 +1,6 @@
 package org.ebookdroid.core.codec;
 
-import org.ebookdroid.common.settings.SettingsManager;
+import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.ui.viewer.ViewerActivity;
 
 import android.graphics.Bitmap;
@@ -91,11 +91,11 @@ public abstract class AbstractCodecContext implements CodecContext {
     }
 
     public static int getWidthInPixels(final float pdfWidth) {
-        return getSizeInPixels(pdfWidth, SettingsManager.getAppSettings().getXDpi(ViewerActivity.DM.xdpi));
+        return getSizeInPixels(pdfWidth, AppSettings.current().getXDpi(ViewerActivity.DM.xdpi));
     }
 
     public static int getHeightInPixels(final float pdfHeight) {
-        return getSizeInPixels(pdfHeight, SettingsManager.getAppSettings().getYDpi(ViewerActivity.DM.ydpi));
+        return getSizeInPixels(pdfHeight, AppSettings.current().getYDpi(ViewerActivity.DM.ydpi));
     }
 
     public static int getSizeInPixels(final float pdfHeight, float dpi) {

@@ -51,7 +51,7 @@ public class HScrollController extends AbstractScrollController {
      */
     @Override
     public final void verticalConfigScroll(final int direction) {
-        final AppSettings app = SettingsManager.getAppSettings();
+        final AppSettings app = AppSettings.current();
         final int dx = (int) (direction * getWidth() * (app.scrollHeight / 100.0));
 
         if (app.animateScrolling) {

@@ -3,6 +3,7 @@ package org.ebookdroid.core;
 import org.ebookdroid.R;
 import org.ebookdroid.common.keysbinding.KeyBindingsManager;
 import org.ebookdroid.common.log.LogContext;
+import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
@@ -273,7 +274,7 @@ public abstract class AbstractViewController extends AbstractComponentController
      */
     @Override
     public final boolean onTouchEvent(final MotionEvent ev) {
-        final int delay = SettingsManager.getAppSettings().touchProcessingDelay;
+        final int delay = AppSettings.current().touchProcessingDelay;
         if (delay > 0) {
             try {
                 Thread.sleep(Math.min(250, delay));

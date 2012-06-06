@@ -4,7 +4,7 @@ import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.BitmapRef;
 import org.ebookdroid.common.log.EmergencyHandler;
 import org.ebookdroid.common.log.LogContext;
-import org.ebookdroid.common.settings.SettingsManager;
+import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.core.codec.CodecContext;
 import org.ebookdroid.core.codec.CodecDocument;
 import org.ebookdroid.core.codec.CodecDocument.DocSearchNotSupported;
@@ -226,7 +226,7 @@ public class DecodeServiceBase implements DecodeService {
         } catch (final OutOfMemoryError ex) {
             LCTX.e("Task " + task.id + ": No memory to decode " + task.node);
 
-            for (int i = 0; i <= SettingsManager.getAppSettings().pagesInMemory; i++) {
+            for (int i = 0; i <= AppSettings.current().pagesInMemory; i++) {
                 pages.put(Integer.MAX_VALUE - i, null);
             }
             pages.clear();
@@ -392,7 +392,7 @@ public class DecodeServiceBase implements DecodeService {
         if (vs != null) {
             minSize = vs.pages.lastVisible - vs.pages.firstVisible + 1;
         }
-        int pagesInMemory = SettingsManager.getAppSettings().pagesInMemory;
+        int pagesInMemory = AppSettings.current().pagesInMemory;
         return pagesInMemory == 0 ? 0 : Math.max(minSize, pagesInMemory);
     }
 
@@ -409,7 +409,7 @@ public class DecodeServiceBase implements DecodeService {
             tasks = new ArrayList<Task>();
             thread = new Thread(this);
 
-            final int decodingThreadPriority = SettingsManager.getAppSettings().decodingThreadPriority;
+            final int decodingThreadPriority = AppSettings.current().decodingThreadPriority;
             LCTX.i("Decoding thread priority: " + decodingThreadPriority);
             thread.setPriority(decodingThreadPriority);
 

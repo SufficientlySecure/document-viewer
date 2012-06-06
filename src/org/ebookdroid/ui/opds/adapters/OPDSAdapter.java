@@ -3,7 +3,7 @@ package org.ebookdroid.ui.opds.adapters;
 import org.ebookdroid.R;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.cache.ThumbnailFile;
-import org.ebookdroid.common.settings.SettingsManager;
+import org.ebookdroid.common.settings.OpdsSettings;
 import org.ebookdroid.opds.Book;
 import org.ebookdroid.opds.BookDownloadLink;
 import org.ebookdroid.opds.Entry;
@@ -61,7 +61,7 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
 
         this.rootFeeds = new ArrayList<Feed>();
 
-        final JSONArray feeds = SettingsManager.getOpdsSettings().opdsCatalogs;
+        final JSONArray feeds = OpdsSettings.current().opdsCatalogs;
         for (int i = 0, n = feeds.length(); i < n; i++) {
             try {
                 final JSONObject obj = feeds.getJSONObject(i);
@@ -98,7 +98,7 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
     }
 
     public void addFeeds(final Feed... feeds) {
-        final JSONArray catalogs = SettingsManager.getOpdsSettings().opdsCatalogs;
+        final JSONArray catalogs = OpdsSettings.current().opdsCatalogs;
         for (final Feed feed : feeds) {
             rootFeeds.add(feed);
             try {
@@ -110,7 +110,7 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
                 ex.printStackTrace();
             }
         }
-        SettingsManager.changeOpdsCatalogs(catalogs);
+        OpdsSettings.changeOpdsCatalogs(catalogs);
         if (currentFeed == null) {
             notifyDataSetChanged();
         }

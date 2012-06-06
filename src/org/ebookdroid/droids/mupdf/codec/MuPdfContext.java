@@ -1,7 +1,7 @@
 package org.ebookdroid.droids.mupdf.codec;
 
 import org.ebookdroid.EBookDroidLibraryLoader;
-import org.ebookdroid.common.settings.SettingsManager;
+import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.core.codec.AbstractCodecContext;
 import org.ebookdroid.core.codec.CodecDocument;
 
@@ -20,7 +20,7 @@ public class MuPdfContext extends AbstractCodecContext {
 
     @Override
     public Bitmap.Config getBitmapConfig() {
-        return EBookDroidLibraryLoader.nativeGraphicsAvailable && SettingsManager.getAppSettings().useNativeGraphics ? NATIVE_BITMAP_CFG : BITMAP_CFG;
+        return EBookDroidLibraryLoader.nativeGraphicsAvailable && AppSettings.current().useNativeGraphics ? NATIVE_BITMAP_CFG : BITMAP_CFG;
     }
 
 

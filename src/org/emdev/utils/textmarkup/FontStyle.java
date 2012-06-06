@@ -1,6 +1,6 @@
 package org.emdev.utils.textmarkup;
 
-import org.ebookdroid.common.settings.SettingsManager;
+import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.types.FontSize;
 
 import android.util.FloatMath;
@@ -37,7 +37,7 @@ public enum FontStyle {
     }
 
     public int getFontSize() {
-        final FontSize fs = SettingsManager.getAppSettings().fontSize;
+        final FontSize fs = AppSettings.current().fontSize;
         return (int) FloatMath.ceil(TEXT_SIZE * fs.factor * this.factor);
     }
 }

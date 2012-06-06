@@ -1,7 +1,6 @@
 package org.ebookdroid.opds;
 
 import org.ebookdroid.common.settings.OpdsSettings;
-import org.ebookdroid.common.settings.SettingsManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -93,7 +92,7 @@ public class OPDSContentHandler extends DefaultHandler {
                             }
                         }
 
-                        final OpdsSettings s = SettingsManager.getOpdsSettings();
+                        final OpdsSettings s = OpdsSettings.current();
                         if (!s.filterTypes || bdl.bookType != null && (!bdl.isZipped || s.downloadArchives)) {
                             if (bookLinks == null) {
                                 bookLinks = new LinkedList<BookDownloadLink>();

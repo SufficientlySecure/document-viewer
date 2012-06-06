@@ -3,7 +3,7 @@ package org.ebookdroid.droids.djvu.codec;
 import org.ebookdroid.EBookDroidLibraryLoader;
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.BitmapRef;
-import org.ebookdroid.common.settings.SettingsManager;
+import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.PageLink;
 import org.ebookdroid.core.codec.PageTextBox;
@@ -47,11 +47,11 @@ public class DjvuPage implements CodecPage {
 
     @Override
     public BitmapRef renderBitmap(final int width, final int height, final RectF pageSliceBounds) {
-        final int renderMode = SettingsManager.getAppSettings().djvuRenderingMode;
+        final int renderMode = AppSettings.current().djvuRenderingMode;
         BitmapRef bmp = null;
         if (width > 0 && height > 0) {
             bmp = BitmapManager.getBitmap("Djvu page", width, height, Bitmap.Config.RGB_565);
-            if (EBookDroidLibraryLoader.nativeGraphicsAvailable && SettingsManager.getAppSettings().useNativeGraphics) {
+            if (EBookDroidLibraryLoader.nativeGraphicsAvailable && AppSettings.current().useNativeGraphics) {
                 if (renderPageBitmap(pageHandle, width, height, pageSliceBounds.left, pageSliceBounds.top,
                         pageSliceBounds.width(), pageSliceBounds.height(), bmp.getBitmap(), renderMode)) {
                     return bmp;

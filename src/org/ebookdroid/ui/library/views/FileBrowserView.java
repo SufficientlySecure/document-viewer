@@ -1,7 +1,7 @@
 package org.ebookdroid.ui.library.views;
 
 import org.ebookdroid.R;
-import org.ebookdroid.common.settings.SettingsManager;
+import org.ebookdroid.common.settings.LibSettings;
 import org.ebookdroid.ui.library.IBrowserActivity;
 import org.ebookdroid.ui.library.adapters.BrowserAdapter;
 
@@ -52,7 +52,7 @@ public class FileBrowserView extends ListView implements AdapterView.OnItemClick
 
         if (selected.isDirectory()) {
 
-            final Set<String> dirs = SettingsManager.getLibSettings().autoScanDirs;
+            final Set<String> dirs = LibSettings.current().autoScanDirs;
             scannedDir = dirs.contains(selected.getPath());
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(base.getActivity());
@@ -74,7 +74,7 @@ public class FileBrowserView extends ListView implements AdapterView.OnItemClick
                 base.setCurrentDir(selected);
                 break;
             case 1:
-                SettingsManager.changeAutoScanDirs(selected.getPath(), !scannedDir);
+                LibSettings.changeAutoScanDirs(selected.getPath(), !scannedDir);
                 adapter.notifyDataSetInvalidated();
                 Toast.makeText(base.getActivity().getApplicationContext(), "Done.", Toast.LENGTH_SHORT).show();
                 break;

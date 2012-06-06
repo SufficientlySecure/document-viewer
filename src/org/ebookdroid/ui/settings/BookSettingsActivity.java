@@ -1,6 +1,7 @@
 package org.ebookdroid.ui.settings;
 
 import org.ebookdroid.R;
+import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 
@@ -18,7 +19,7 @@ public class BookSettingsActivity extends BaseSettingsActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setRequestedOrientation(SettingsManager.getAppSettings().rotation.getOrientation());
+        setRequestedOrientation(AppSettings.current().rotation.getOrientation());
 
         final Uri uri = getIntent().getData();
         final String fileName = PathFromUri.retrieve(getContentResolver(), uri);

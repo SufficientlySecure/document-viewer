@@ -2,7 +2,7 @@ package org.ebookdroid.ui.library;
 
 import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
-import org.ebookdroid.common.settings.SettingsManager;
+import org.ebookdroid.common.settings.LibSettings;
 import org.ebookdroid.ui.library.adapters.BrowserAdapter;
 import org.ebookdroid.ui.library.views.FileBrowserView;
 import org.ebookdroid.ui.opds.OPDSActivity;
@@ -58,7 +58,7 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
 
     public BrowserActivity() {
         this.filter = new CompositeFilter(false, DirectoryFilter.NOT_HIDDEN,
-                SettingsManager.getLibSettings().allowedFileTypes);
+                LibSettings.current().allowedFileTypes);
     }
 
     

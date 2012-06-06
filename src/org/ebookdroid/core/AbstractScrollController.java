@@ -1,6 +1,7 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.R;
+import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
@@ -23,7 +24,7 @@ public abstract class AbstractScrollController extends AbstractViewController {
         if (dragBitmap == null) {
             dragBitmap = BitmapFactory.decodeResource(base.getContext().getResources(), R.drawable.drag);
         }
-        IUIManager.instance.setHardwareAccelerationEnabled(SettingsManager.getAppSettings().hwaEnabled);
+        IUIManager.instance.setHardwareAccelerationEnabled(AppSettings.current().hwaEnabled);
         IUIManager.instance.setHardwareAccelerationMode(getView().getView(), true);
     }
 

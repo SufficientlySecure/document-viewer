@@ -1,6 +1,6 @@
 package org.ebookdroid.ui.viewer.viewers;
 
-import org.ebookdroid.common.settings.SettingsManager;
+import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.core.DecodeService;
 import org.ebookdroid.core.EventPool;
@@ -48,7 +48,7 @@ public final class BaseView extends View implements IView {
         this.base = baseActivity;
         this.scroller = new Scroller(getContext());
 
-        setKeepScreenOn(SettingsManager.getAppSettings().keepScreenOn);
+        setKeepScreenOn(AppSettings.current().keepScreenOn);
         setFocusable(true);
         setFocusableInTouchMode(true);
 

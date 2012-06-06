@@ -1,6 +1,7 @@
 package org.ebookdroid.ui.settings;
 
 import org.ebookdroid.R;
+import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.SettingsManager;
 
 import android.content.SharedPreferences;
@@ -15,7 +16,7 @@ public class SettingsActivity extends BaseSettingsActivity {
     protected final void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (SettingsManager.getBookSettings() != null) {
-            setRequestedOrientation(SettingsManager.getAppSettings().rotation.getOrientation());
+            setRequestedOrientation(AppSettings.current().rotation.getOrientation());
         }
         onCreate();
     }

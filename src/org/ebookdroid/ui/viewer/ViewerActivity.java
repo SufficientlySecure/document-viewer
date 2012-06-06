@@ -3,7 +3,6 @@ package org.ebookdroid.ui.viewer;
 import org.ebookdroid.R;
 import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.common.settings.AppSettings;
-import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.types.ToastPosition;
 import org.ebookdroid.common.touch.TouchManagerView;
 import org.ebookdroid.ui.viewer.dialogs.GoToPageDialog;
@@ -114,7 +113,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
         frameLayout = new FrameLayout(this);
 
-        view = SettingsManager.getAppSettings().viewType.create(getController());
+        view = AppSettings.current().viewType.create(getController());
         this.registerForContextMenu(view.getView());
 
         LayoutUtils.fillInParent(frameLayout, view.getView());
@@ -160,7 +159,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
     public void onWindowFocusChanged(boolean hasFocus) {
         if (hasFocus && this.view != null) {
             IUIManager.instance.setFullScreenMode(this, this.view.getView(),
-                    SettingsManager.getAppSettings().fullScreen);
+                    AppSettings.current().fullScreen);
         }
     }
 
@@ -176,7 +175,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
     }
 
     protected IView createView() {
-        return SettingsManager.getAppSettings().viewType.create(getController());
+        return AppSettings.current().viewType.create(getController());
     }
 
     public TouchManagerView getTouchView() {
@@ -191,7 +190,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
             return;
         }
 
-        AppSettings app = SettingsManager.getAppSettings();
+        AppSettings app = AppSettings.current();
         if (app.showTitle && app.pageInTitle) {
             getWindow().setTitle("(" + pageText + ") " + bookTitle);
             return;
@@ -215,7 +214,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
             return;
         }
 
-        AppSettings app = SettingsManager.getAppSettings();
+        AppSettings app = AppSettings.current();
 
         if (app.zoomToastPosition == ToastPosition.Invisible) {
             return;

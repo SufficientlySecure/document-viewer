@@ -1,15 +1,20 @@
 package org.ebookdroid.common.settings;
 
 import org.ebookdroid.common.settings.definitions.LibPreferences;
+import org.ebookdroid.common.settings.listeners.ILibSettingsChangeListener;
 
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.emdev.utils.android.AndroidVersion;
 import org.emdev.utils.filesystem.FileExtensionFilter;
 
 public class LibSettings implements LibPreferences {
+
+    private static LibSettings current;
 
     /* =============== Browser settings =============== */
 
@@ -21,7 +26,8 @@ public class LibSettings implements LibPreferences {
 
     public final FileExtensionFilter allowedFileTypes;
 
-    LibSettings(final SharedPreferences prefs) {
+    private LibSettings() {
+        SharedPreferences prefs = SettingsManager.prefs;
         /* =============== Browser settings =============== */
         useBookcase = USE_BOOK_CASE.getPreferenceValue(prefs);
         autoScanDirs = AUTO_SCAN_DIRS.getPreferenceValue(prefs);
@@ -37,7 +43,65 @@ public class LibSettings implements LibPreferences {
 
     /* =============== */
 
+    public static void init() {
+        current = new LibSettings();
+    }
+
+    public static LibSettings current() {
+        SettingsManager.lock.readLock().lock();
+        try {
+            return current;
+        } finally {
+            SettingsManager.lock.readLock().unlock();
+        }
+    }
+    
+    public static void changeAutoScanDirs(final String dir, final boolean add) {
+        SettingsManager.lock.writeLock().lock();
+        try {
+            final Set<String> dirs = new HashSet<String>(current.autoScanDirs);
+            if (add && dirs.add(dir) || dirs.remove(dir)) {
+                final Editor edit = SettingsManager.prefs.edit();
+                LibPreferences.AUTO_SCAN_DIRS.setPreferenceValue(edit, dirs);
+                edit.commit();
+                final LibSettings oldSettings = current;
+                current = new LibSettings();
+                applyLibSettingsChanges(oldSettings, current);
+            }
+        } finally {
+            SettingsManager.lock.writeLock().unlock();
+        }
+    }
+
+    public static void updateSearchBookQuery(final String searchQuery) {
+        SettingsManager.lock.writeLock().lock();
+        try {
+            final Editor edit = SettingsManager.prefs.edit();
+            LibPreferences.SEARCH_BOOK_QUERY.setPreferenceValue(edit, searchQuery);
+            edit.commit();
+            final LibSettings oldSettings = current;
+            current = new LibSettings();
+            applyLibSettingsChanges(oldSettings, current);
+        } finally {
+            SettingsManager.lock.writeLock().unlock();
+        }
+    }
+
+    static Diff onSettingsChanged() {
+        final LibSettings oldLibSettings = current;
+        current = new LibSettings();
+        return applyLibSettingsChanges(oldLibSettings, current);
+    }
+
+    public static LibSettings.Diff applyLibSettingsChanges(final LibSettings oldSettings, final LibSettings newSettings) {
+        final LibSettings.Diff diff = new LibSettings.Diff(oldSettings, newSettings);
+        final ILibSettingsChangeListener l = SettingsManager.listeners.getListener();
+        l.onLibSettingsChanged(oldSettings, newSettings, diff);
+        return diff;
+    }
+
     public static class Diff {
+
         private static final int D_UseBookcase = 0x0001 << 12;
         private static final int D_AutoScanDirs = 0x0001 << 14;
         private static final int D_AllowedFileTypes = 0x0001 << 15;

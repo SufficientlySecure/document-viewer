@@ -264,9 +264,9 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
         public Bitmaps reuse(final String nodeId, final BitmapRef bitmap, final Rect bitmapBounds) {
             final BookSettings bs = SettingsManager.getBookSettings();
-            final AppSettings app = SettingsManager.getAppSettings();
+            final AppSettings app = AppSettings.current();
             final boolean invert = bs != null ? bs.nightMode : app.nightMode;
-            if (SettingsManager.getAppSettings().textureReuseEnabled) {
+            if (AppSettings.current().textureReuseEnabled) {
                 final Bitmaps bitmaps = ref.get();
                 if (bitmaps != null) {
                     if (bitmaps.reuse(nodeId, bitmap, bitmapBounds, invert)) {

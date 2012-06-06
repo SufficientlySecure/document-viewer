@@ -21,7 +21,7 @@ package org.ebookdroid.core.curl;
 
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.BitmapRef;
-import org.ebookdroid.common.settings.SettingsManager;
+import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.core.EventDraw;
 import org.ebookdroid.core.EventPool;
 import org.ebookdroid.core.Page;
@@ -279,7 +279,7 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
     @Override
     protected void drawExtraObjects(final EventDraw event) {
 
-        if (SettingsManager.getAppSettings().showAnimIcon) {
+        if (AppSettings.current().showAnimIcon) {
             final Canvas canvas = event.canvas;
             canvas.drawBitmap(arrowsBitmap, view.getWidth() - arrowsBitmap.getWidth(),
                     view.getHeight() - arrowsBitmap.getHeight(), PAINT);

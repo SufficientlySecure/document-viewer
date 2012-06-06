@@ -3,8 +3,6 @@ package org.ebookdroid.common.keysbinding;
 import org.ebookdroid.R;
 import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.common.settings.AppSettings;
-import org.ebookdroid.common.settings.SettingsManager;
-
 
 import android.view.KeyEvent;
 
@@ -50,7 +48,7 @@ public class KeyBindingsManager {
     public static void persist() {
         try {
             final JSONObject json = toJSON();
-            SettingsManager.updateKeysBinding(json.toString());
+            AppSettings.updateKeysBinding(json.toString());
         } catch (final JSONException ex) {
             LCTX.e("Unexpected error: ", ex);
         }

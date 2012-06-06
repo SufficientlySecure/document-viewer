@@ -38,7 +38,7 @@ public class ViewState {
     }
 
     public ViewState(final IViewController dc, final float zoom) {
-        this.app = SettingsManager.getAppSettings();
+        this.app = AppSettings.current();
         this.book = SettingsManager.getBookSettings();
         this.ctrl = dc;
         this.model = dc.getBase().getDocumentModel();

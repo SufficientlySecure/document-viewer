@@ -1,5 +1,6 @@
 package org.ebookdroid.ui.settings;
 
+import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.definitions.AppPreferences;
@@ -87,7 +88,7 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
         addViewModeListener(VIEW_MODE.key, PAGE_ALIGN.key, ANIMATION_TYPE.key);
         addAnimationTypeListener(ANIMATION_TYPE.key, PAGE_ALIGN.key);
 
-        enableSinglePageModeSetting(SettingsManager.getAppSettings().viewMode, PAGE_ALIGN.key, ANIMATION_TYPE.key);
+        enableSinglePageModeSetting(AppSettings.current().viewMode, PAGE_ALIGN.key, ANIMATION_TYPE.key);
 
         decoratePreferences(DJVU_RENDERING_MODE.key, PDF_CUSTOM_XDPI.key, PDF_CUSTOM_YDPI.key, FB2_FONT_SIZE.key);
     }

@@ -3,7 +3,7 @@ package org.ebookdroid.droids.mupdf.codec;
 import org.ebookdroid.EBookDroidLibraryLoader;
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.BitmapRef;
-import org.ebookdroid.common.settings.SettingsManager;
+import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.PageLink;
 import org.ebookdroid.core.codec.PageTextBox;
@@ -116,7 +116,7 @@ public class MuPdfPage implements CodecPage {
         final int width = viewbox.width();
         final int height = viewbox.height();
 
-        if (EBookDroidLibraryLoader.nativeGraphicsAvailable && SettingsManager.getAppSettings().useNativeGraphics) {
+        if (EBookDroidLibraryLoader.nativeGraphicsAvailable && AppSettings.current().useNativeGraphics) {
             final BitmapRef bmp = BitmapManager.getBitmap("PDF page", width, height, MuPdfContext.NATIVE_BITMAP_CFG);
             if (renderPageBitmap(docHandle, pageHandle, mRect, ctm, bmp.getBitmap())) {
                 return bmp;

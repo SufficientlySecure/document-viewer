@@ -1,6 +1,6 @@
 package org.ebookdroid.ui.viewer.viewers;
 
-import org.ebookdroid.common.settings.SettingsManager;
+import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.core.DecodeService;
 import org.ebookdroid.core.Page;
@@ -44,7 +44,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
         this.base = baseActivity;
         this.scroller = new Scroller(getContext());
 
-        setKeepScreenOn(SettingsManager.getAppSettings().keepScreenOn);
+        setKeepScreenOn(AppSettings.current().keepScreenOn);
         setFocusable(true);
         setFocusableInTouchMode(true);
 
@@ -343,7 +343,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
     public final void surfaceCreated(final SurfaceHolder holder) {
         drawThread = new DrawThread(getHolder());
 
-        int drawThreadPriority = SettingsManager.getAppSettings().drawThreadPriority;
+        int drawThreadPriority = AppSettings.current().drawThreadPriority;
         LCTX.i("Draw thread priority: " + drawThreadPriority);
         drawThread.setPriority(drawThreadPriority);
 

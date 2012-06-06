@@ -3,7 +3,6 @@ package org.ebookdroid.common.touch;
 import org.ebookdroid.R;
 import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.common.settings.AppSettings;
-import org.ebookdroid.common.settings.SettingsManager;
 
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -81,7 +80,7 @@ public class TouchManager {
     public static void persist() {
         try {
             final JSONObject json = toJSON();
-            SettingsManager.updateTapProfiles(json.toString());
+            AppSettings.updateTapProfiles(json.toString());
         } catch (final JSONException ex) {
             ex.printStackTrace();
         }
@@ -117,7 +116,7 @@ public class TouchManager {
 
     public static Integer getAction(final Touch type, final float x, final float y, final float width,
             final float height) {
-        return SettingsManager.getAppSettings().tapsEnabled ? stack.peek().getAction(type, x, y, width, height) : null;
+        return AppSettings.current().tapsEnabled ? stack.peek().getAction(type, x, y, width, height) : null;
     }
 
     public static TouchProfile addProfile(final String name) {

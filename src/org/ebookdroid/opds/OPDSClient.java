@@ -5,7 +5,7 @@ import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.log.LogContext;
-import org.ebookdroid.common.settings.SettingsManager;
+import org.ebookdroid.common.settings.OpdsSettings;
 
 import android.net.http.AndroidHttpClient;
 import android.webkit.URLUtil;
@@ -141,7 +141,7 @@ public class OPDSClient {
             LCTX.d("File name: " + guessFileName);
 
             // create a new file, specifying the path, and the filename which we want to save the file as.
-            final File SDCardRoot = new File(SettingsManager.getOpdsSettings().downloadDir);
+            final File SDCardRoot = new File(OpdsSettings.current().downloadDir);
             if (!SDCardRoot.exists()) {
                 SDCardRoot.mkdirs();
             }
@@ -158,7 +158,7 @@ public class OPDSClient {
                             256 * 1024);
                     worker.copy(contentLength, input, fileOutput);
                 }
-                if (SettingsManager.getOpdsSettings().unpackArchives && link.isZipped
+                if (OpdsSettings.current().unpackArchives && link.isZipped
                         && !link.bookType.isZipSupported()) {
                     return unpack(file, progress);
                 }
@@ -224,7 +224,7 @@ public class OPDSClient {
             archive.close();
         } catch (final Exception ex1) {
         }
-        if (SettingsManager.getOpdsSettings().deleteArchives) {
+        if (OpdsSettings.current().deleteArchives) {
             try {
                 file.delete();
             } catch (final Exception ex) {

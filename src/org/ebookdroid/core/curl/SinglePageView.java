@@ -1,7 +1,7 @@
 package org.ebookdroid.core.curl;
 
 import org.ebookdroid.common.log.LogContext;
-import org.ebookdroid.common.settings.SettingsManager;
+import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.core.EventDraw;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.SinglePageController;
@@ -93,7 +93,7 @@ public class SinglePageView implements PageAnimator {
         final Page page = event.viewState.model.getCurrentPageObject();
         if (page != null) {
             event.process(page);
-            if (SettingsManager.getAppSettings().showAnimIcon) {
+            if (AppSettings.current().showAnimIcon) {
                 DragMark.draw(event.canvas, event.viewState);
             }
         }

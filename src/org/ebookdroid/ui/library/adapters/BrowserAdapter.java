@@ -1,7 +1,7 @@
 package org.ebookdroid.ui.library.adapters;
 
 import org.ebookdroid.R;
-import org.ebookdroid.common.settings.SettingsManager;
+import org.ebookdroid.common.settings.LibSettings;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +61,7 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
         holder.textView.setText(file.getName());
 
         if (file.isDirectory()) {
-            final boolean watched = SettingsManager.getLibSettings().autoScanDirs.contains(file.getPath());
+            final boolean watched = LibSettings.current().autoScanDirs.contains(file.getPath());
             holder.imageView.setImageResource(watched ? R.drawable.folderwatched : R.drawable.folderopen);
             holder.info.setText("");
             holder.fileSize.setText("");

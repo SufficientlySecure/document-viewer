@@ -154,7 +154,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
             setManagedComponent(activity);
         }
 
-        final AppSettings newSettings = SettingsManager.getAppSettings();
+        final AppSettings newSettings = AppSettings.current();
 
         activity.setRequestedOrientation(newSettings.rotation.getOrientation());
 
@@ -171,10 +171,10 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         }
 
         final ViewerActivity activity = getManagedComponent();
+        final AppSettings appSettings = AppSettings.current();
 
-        IUIManager.instance.setFullScreenMode(activity, getManagedComponent().view.getView(),
-                SettingsManager.getAppSettings().fullScreen);
-        IUIManager.instance.setTitleVisible(activity, SettingsManager.getAppSettings().showTitle);
+        IUIManager.instance.setFullScreenMode(activity, getManagedComponent().view.getView(), appSettings.fullScreen);
+        IUIManager.instance.setTitleVisible(activity, appSettings.showTitle);
 
         createAction(R.id.mainmenu_goto_page, new Constant("dialogId", DIALOG_GOTO));
         createAction(R.id.mainmenu_zoom).putValue("view", activity.getZoomControls());
@@ -432,7 +432,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.ui.viewer.IActivityController#jumpToPage(int, float, float)
      */
     @Override
@@ -531,7 +531,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * Gets the zoom model.
-     *
+     * 
      * @return the zoom model
      */
     @Override
@@ -549,7 +549,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * Gets the decoding progress model.
-     *
+     * 
      * @return the decoding progress model
      */
     @Override
@@ -609,7 +609,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                                 return true;
                             }
 
-                            if (SettingsManager.getAppSettings().confirmClose) {
+                            if (AppSettings.current().confirmClose) {
                                 final ActionDialogBuilder builder = new ActionDialogBuilder(getManagedComponent(), this);
                                 builder.setTitle(R.string.confirmclose_title);
                                 builder.setMessage(R.string.confirmclose_msg);
@@ -644,7 +644,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.common.settings.listeners.ISettingsChangeListener#onAppSettingsChanged(org.ebookdroid.common.settings.AppSettings,
      *      org.ebookdroid.common.settings.AppSettings, org.ebookdroid.common.settings.AppSettings.Diff)
      */
@@ -679,7 +679,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.common.settings.listeners.ISettingsChangeListener#onBookSettingsChanged(org.ebookdroid.common.settings.books.BookSettings,
      *      org.ebookdroid.common.settings.books.BookSettings, org.ebookdroid.common.settings.books.BookSettings.Diff,
      *      org.ebookdroid.common.settings.AppSettings.Diff)
@@ -853,7 +853,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
         @Override
         protected void onPreExecute() {
-//            onProgressUpdate("Searching...");
+            // onProgressUpdate("Searching...");
         }
 
         @Override

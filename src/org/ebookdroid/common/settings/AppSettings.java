@@ -3,6 +3,7 @@ package org.ebookdroid.common.settings;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.definitions.AppPreferences;
 import org.ebookdroid.common.settings.definitions.BookPreferences;
+import org.ebookdroid.common.settings.listeners.IAppSettingsChangeListener;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.DocumentViewType;
 import org.ebookdroid.common.settings.types.FontSize;
@@ -16,7 +17,7 @@ import android.content.SharedPreferences.Editor;
 
 public class AppSettings implements AppPreferences, BookPreferences {
 
-    private final SharedPreferences prefs;
+    private static AppSettings current;
 
     /* =============== UI settings =============== */
 
@@ -126,8 +127,8 @@ public class AppSettings implements AppPreferences, BookPreferences {
 
     public final boolean fb2HyphenEnabled;
 
-    AppSettings(final SharedPreferences prefs) {
-        this.prefs = prefs;
+    private AppSettings() {
+        final SharedPreferences prefs = SettingsManager.prefs;
         /* =============== UI settings =============== */
         loadRecent = LOAD_RECENT.getPreferenceValue(prefs);
         confirmClose = CONFIRM_CLOSE.getPreferenceValue(prefs);
@@ -200,7 +201,64 @@ public class AppSettings implements AppPreferences, BookPreferences {
 
     /* =============== */
 
-    void clearPseudoBookSettings() {
+    public static void init() {
+        current = new AppSettings();
+    }
+
+    public static AppSettings current() {
+        SettingsManager.lock.readLock().lock();
+        try {
+            return current;
+        } finally {
+            SettingsManager.lock.readLock().unlock();
+        }
+    }
+
+    public static void updateTapProfiles(final String profiles) {
+        SettingsManager.lock.writeLock().lock();
+        try {
+            final Editor edit = SettingsManager.prefs.edit();
+            AppPreferences.TAP_PROFILES.setPreferenceValue(edit, profiles);
+            edit.commit();
+            final AppSettings oldSettings = current;
+            current = new AppSettings();
+            applyAppSettingsChanges(oldSettings, current);
+        } finally {
+            SettingsManager.lock.writeLock().unlock();
+        }
+    }
+
+    public static void updateKeysBinding(final String json) {
+        SettingsManager.lock.writeLock().lock();
+        try {
+            final Editor edit = SettingsManager.prefs.edit();
+            AppPreferences.KEY_BINDINGS.setPreferenceValue(edit, json);
+            edit.commit();
+            final AppSettings oldSettings = current;
+            current = new AppSettings();
+            applyAppSettingsChanges(oldSettings, current);
+        } finally {
+            SettingsManager.lock.writeLock().unlock();
+        }
+    }
+
+    /* =============== */
+
+    static void fillBookSettings(final BookSettings bs) {
+        final SharedPreferences prefs = SettingsManager.prefs;
+        bs.nightMode = BOOK_NIGHT_MODE.getPreferenceValue(prefs, current.nightMode);
+        bs.contrast = BOOK_CONTRAST.getPreferenceValue(prefs, current.contrast);
+        bs.exposure = BOOK_EXPOSURE.getPreferenceValue(prefs, current.exposure);
+        bs.autoLevels = BOOK_AUTO_LEVELS.getPreferenceValue(prefs, current.autoLevels);
+        bs.splitPages = BOOK_SPLIT_PAGES.getPreferenceValue(prefs, current.splitPages);
+        bs.cropPages = BOOK_CROP_PAGES.getPreferenceValue(prefs, current.cropPages);
+        bs.viewMode = BOOK_VIEW_MODE.getPreferenceValue(prefs, current.viewMode);
+        bs.pageAlign = BOOK_PAGE_ALIGN.getPreferenceValue(prefs, current.pageAlign);
+        bs.animationType = BOOK_ANIMATION_TYPE.getPreferenceValue(prefs, current.animationType);
+    }
+
+    static void clearPseudoBookSettings() {
+        final SharedPreferences prefs = SettingsManager.prefs;
         final Editor edit = prefs.edit();
         edit.remove(BOOK.key);
         edit.remove(BOOK_NIGHT_MODE.key);
@@ -215,7 +273,8 @@ public class AppSettings implements AppPreferences, BookPreferences {
         edit.commit();
     }
 
-    void updatePseudoBookSettings(final BookSettings bs) {
+    static void updatePseudoBookSettings(final BookSettings bs) {
+        final SharedPreferences prefs = SettingsManager.prefs;
         final Editor edit = prefs.edit();
         BOOK.setPreferenceValue(edit, bs.fileName);
         BOOK_NIGHT_MODE.setPreferenceValue(edit, bs.nightMode);
@@ -230,16 +289,17 @@ public class AppSettings implements AppPreferences, BookPreferences {
         edit.commit();
     }
 
-    void fillBookSettings(final BookSettings bs) {
-        bs.nightMode = BOOK_NIGHT_MODE.getPreferenceValue(prefs, nightMode);
-        bs.contrast = BOOK_CONTRAST.getPreferenceValue(prefs, contrast);
-        bs.exposure = BOOK_EXPOSURE.getPreferenceValue(prefs, exposure);
-        bs.autoLevels = BOOK_AUTO_LEVELS.getPreferenceValue(prefs, autoLevels);
-        bs.splitPages = BOOK_SPLIT_PAGES.getPreferenceValue(prefs, splitPages);
-        bs.cropPages = BOOK_CROP_PAGES.getPreferenceValue(prefs, cropPages);
-        bs.viewMode = BOOK_VIEW_MODE.getPreferenceValue(prefs, viewMode);
-        bs.pageAlign = BOOK_PAGE_ALIGN.getPreferenceValue(prefs, pageAlign);
-        bs.animationType = BOOK_ANIMATION_TYPE.getPreferenceValue(prefs, animationType);
+    static Diff onSettingsChanged() {
+        final AppSettings oldAppSettings = current;
+        current = new AppSettings();
+        return applyAppSettingsChanges(oldAppSettings, current);
+    }
+
+    static AppSettings.Diff applyAppSettingsChanges(final AppSettings oldSettings, final AppSettings newSettings) {
+        final AppSettings.Diff diff = new AppSettings.Diff(oldSettings, newSettings);
+        final IAppSettingsChangeListener l = SettingsManager.listeners.getListener();
+        l.onAppSettingsChanged(oldSettings, newSettings, diff);
+        return diff;
     }
 
     public static class Diff {

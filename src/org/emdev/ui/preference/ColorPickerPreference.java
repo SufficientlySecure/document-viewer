@@ -23,6 +23,8 @@ import afzkl.development.mColorPicker.views.ColorPickerView;
 import afzkl.development.mColorPicker.views.ColorPickerView.OnColorChangedListener;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -44,6 +46,7 @@ public class ColorPickerPreference extends DialogPreference implements ColorPick
 
     public ColorPickerPreference(final Context context, final AttributeSet attrs) {
         super(context, attrs);
+        setWidgetLayoutResource(R.layout.color_picker_preference_widget);
     }
 
     @Override
@@ -54,15 +57,28 @@ public class ColorPickerPreference extends DialogPreference implements ColorPick
     private void readColor(final Object defaultValue) {
         try {
             color = Integer.parseInt(getPersistedString(LengthUtils.toString(defaultValue)));
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             color = 0x00FFFFFF;
         }
     }
 
     @Override
+    protected void onBindView(View view) {
+        super.onBindView(view);
+        View v = view.findViewById(R.id.color_picke_preference_view);
+        if (v != null) {
+            Drawable background = v.getBackground();
+            if (background instanceof GradientDrawable) {
+                GradientDrawable grad = (GradientDrawable) background;
+                grad.setColor(color);
+            }
+        }
+    }
+
+    @Override
     protected View onCreateDialogView() {
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View layout = inflater.inflate(R.layout.dialog_color_picker, null);
+        final LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View layout = inflater.inflate(R.layout.dialog_color_picker, null);
         readColor(0x00FFFFFF);
         mColorPicker = (ColorPickerView) layout.findViewById(R.id.color_picker_view);
         mOldColor = (ColorPanelView) layout.findViewById(R.id.old_color_panel);
@@ -82,7 +98,8 @@ public class ColorPickerPreference extends DialogPreference implements ColorPick
     @Override
     protected void onDialogClosed(final boolean positiveResult) {
         if (positiveResult) {
-            final String value = Integer.toString(getColor());
+            color = getColor();
+            final String value = Integer.toString(color);
             if (callChangeListener(value)) {
                 if (shouldPersist()) {
                     persistString(value);
@@ -93,7 +110,7 @@ public class ColorPickerPreference extends DialogPreference implements ColorPick
     }
 
     @Override
-    public void onColorChanged(int color) {
+    public void onColorChanged(final int color) {
 
         mNewColor.setColor(color);
 
@@ -103,7 +120,7 @@ public class ColorPickerPreference extends DialogPreference implements ColorPick
 
     }
 
-    public void setAlphaSliderVisible(boolean visible) {
+    public void setAlphaSliderVisible(final boolean visible) {
         mColorPicker.setAlphaSliderVisible(visible);
     }
 

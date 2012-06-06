@@ -49,6 +49,8 @@ class DBAdapterV1 implements IDBAdapter {
 
     public static final String DB_BOOK_CLEAR_RECENT = "UPDATE book_settings set last_updated = 0";
 
+    public static final String DB_BOOK_REMOVE_BOOK_FROM_RECENT = "UPDATE book_settings set last_updated = 0 WHERE book=?";
+
     public static final String DB_BOOK_DROP = "DROP TABLE IF EXISTS book_settings";
 
     protected final DBSettingsManager manager;
@@ -226,6 +228,27 @@ class DBAdapterV1 implements IDBAdapter {
             }
         } catch (final Throwable th) {
             LCTX.e("Update book settings failed: ", th);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean removeBookFromRecents(final BookSettings bs) {
+        try {
+            final SQLiteDatabase db = manager.getWritableDatabase();
+            try {
+                db.beginTransaction();
+
+                db.execSQL(DB_BOOK_REMOVE_BOOK_FROM_RECENT, new Object[] { bs.fileName });
+
+                db.setTransactionSuccessful();
+
+                return true;
+            } finally {
+                endTransaction(db);
+            }
+        } catch (final Throwable th) {
+            LCTX.e("Removing book from recents failed: ", th);
         }
         return false;
     }

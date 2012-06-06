@@ -103,6 +103,13 @@ public class RecentAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void removeBook(final BookNode book) {
+        if (books.remove(book)) {
+            nodes.remove(book.path);
+            notifyDataSetChanged();
+        }
+    }
+
     public static class ViewHolder extends BaseViewHolder {
 
         TextView name;

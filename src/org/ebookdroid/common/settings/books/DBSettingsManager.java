@@ -20,9 +20,9 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter {
         super(context, context.getPackageName() + ".settings", null, DB_VERSION);
         adapter = createAdapter(DB_VERSION);
         try {
-            SQLiteDatabase db = getWritableDatabase();
+            final SQLiteDatabase db = getWritableDatabase();
             db.close();
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LCTX.e("Unexpected DB error: ", ex);
         }
     }
@@ -145,7 +145,13 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter {
         return adapter.clearRecent();
     }
 
-    public void delete(BookSettings current) {
+    @Override
+    public boolean removeBookFromRecents(final BookSettings bs) {
+        return adapter.removeBookFromRecents(bs);
+    }
+
+    @Override
+    public void delete(final BookSettings current) {
         adapter.delete(current);
     }
 

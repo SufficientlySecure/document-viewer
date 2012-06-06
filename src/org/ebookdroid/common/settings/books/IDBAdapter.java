@@ -36,4 +36,6 @@ interface IDBAdapter {
 
     boolean deleteAllBookmarks();
 
+    boolean removeBookFromRecents(BookSettings bs);
+
 }

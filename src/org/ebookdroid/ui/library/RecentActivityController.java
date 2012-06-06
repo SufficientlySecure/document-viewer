@@ -99,15 +99,16 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         libraryAdapter = new FileListAdapter(bookshelfAdapter);
 
         SettingsManager.addListener(this);
-        LibSettings.applyLibSettingsChanges(null, LibSettings.current());
+
+        final LibSettings libSettings = LibSettings.current();
+        LibSettings.applyLibSettingsChanges(null, libSettings);
 
         final BookSettings recent = SettingsManager.getRecentBook();
 
         if (firstResume) {
             final boolean shouldLoad = AppSettings.current().loadRecent;
             final File file = (recent != null && recent.fileName != null) ? new File(recent.fileName) : null;
-            final boolean found = file != null ? file.exists()
-                    && LibSettings.current().allowedFileTypes.accept(file) : false;
+            final boolean found = file != null ? file.exists() && libSettings.allowedFileTypes.accept(file) : false;
 
             if (LCTX.isDebugEnabled()) {
                 LCTX.d("Last book: " + (file != null ? file.getAbsolutePath() : "") + ", found: " + found
@@ -209,9 +210,35 @@ public class RecentActivityController extends ActionController<RecentActivity> i
     }
 
     @ActionMethod(ids = R.id.bookmenu_removefromrecent)
-    public void removeBookFromRecent(final ActionEx action) {
-        BookNode source = action.getParameter(AbstractActionActivity.MENU_ITEM_SOURCE);
-        if (source != null) {
+    public void removeBookFromRecents(final ActionEx action) {
+        final BookNode book = action.getParameter(AbstractActionActivity.MENU_ITEM_SOURCE);
+        if (book != null) {
+            SettingsManager.removeBookFromRecents(book.path);
+            recentAdapter.removeBook(book);
+            libraryAdapter.notifyDataSetInvalidated();
+        }
+    }
+
+    @ActionMethod(ids = R.id.bookmenu_cleardata)
+    public void removeCachedBookFiles(final ActionEx action) {
+        final BookNode book = action.getParameter(AbstractActionActivity.MENU_ITEM_SOURCE);
+        if (book != null) {
+            CacheManager.clear(book.path);
+            recentAdapter.notifyDataSetInvalidated();
+            libraryAdapter.notifyDataSetInvalidated();
+        }
+    }
+
+    @ActionMethod(ids = R.id.bookmenu_cleardata)
+    public void removeBookSettings(final ActionEx action) {
+        final BookNode book = action.getParameter(AbstractActionActivity.MENU_ITEM_SOURCE);
+        if (book != null) {
+            final BookSettings bs = SettingsManager.getBookSettings(book.path);
+            if (bs != null) {
+                SettingsManager.deleteBookSettings(bs);
+                recentAdapter.removeBook(book);
+                libraryAdapter.notifyDataSetInvalidated();
+            }
         }
     }
 

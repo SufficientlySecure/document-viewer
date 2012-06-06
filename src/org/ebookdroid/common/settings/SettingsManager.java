@@ -172,6 +172,18 @@ public class SettingsManager {
         }
     }
 
+    public static void removeBookFromRecents(String path) {
+        lock.writeLock().lock();
+        try {
+            BookSettings bs = bookSettings.get(path);
+           if (bs != null) {
+               db.removeBookFromRecents(bs);
+            }
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
     public static void deleteBookSettings(final BookSettings bs) {
         lock.writeLock().lock();
         try {

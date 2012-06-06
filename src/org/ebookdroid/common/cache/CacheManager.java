@@ -72,6 +72,8 @@ public class CacheManager {
     }
 
     public static void clear() {
+        thumbmails.clear();
+
         final File cacheDir = s_context.getFilesDir();
         final String[] files = cacheDir.list();
         if (LengthUtils.isNotEmpty(files)) {
@@ -82,8 +84,11 @@ public class CacheManager {
     }
 
     public static void clear(final String path) {
+        final String md5 = StringUtils.md5(path);
+        thumbmails.remove(md5);
+
         final File cacheDir = s_context.getFilesDir();
-        final String[] files = cacheDir.list(new FilePrefixFilter(StringUtils.md5(path) + "."));
+        final String[] files = cacheDir.list(new FilePrefixFilter(md5 + "."));
         if (LengthUtils.isNotEmpty(files)) {
             for (final String file : files) {
                 new File(cacheDir, file).delete();

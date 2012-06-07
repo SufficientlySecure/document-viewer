@@ -18,11 +18,11 @@ import org.emdev.ui.tasks.BaseFileAsyncTask;
 
 public class MoveBookTask extends BaseFileAsyncTask<BookNode> {
 
-    private final RecentAdapter recentAdapter;
-    private final File targetFolder;
+    protected final RecentAdapter recentAdapter;
+    protected final File targetFolder;
 
-    private BookNode book;
-    private File origin;
+    protected BookNode book;
+    protected File origin;
 
     public MoveBookTask(final Context context, final RecentAdapter recentAdapter, final File targetFolder) {
         super(context, R.string.book_move_start, R.string.book_move_complete, R.string.book_move_error, false);

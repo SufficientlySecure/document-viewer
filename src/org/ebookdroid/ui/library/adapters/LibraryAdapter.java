@@ -15,12 +15,12 @@ import java.io.File;
 import org.emdev.ui.adapters.BaseViewHolder;
 import org.emdev.utils.FileUtils;
 
-public class FileListAdapter extends BaseExpandableListAdapter {
+public class LibraryAdapter extends BaseExpandableListAdapter {
 
     final BooksAdapter adapter;
     final FolderObserver observer = new FolderObserver();
 
-    public FileListAdapter(final BooksAdapter adapter) {
+    public LibraryAdapter(final BooksAdapter adapter) {
         this.adapter = adapter;
         adapter.registerDataSetObserver(new DataSetObserver() {
 

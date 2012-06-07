@@ -11,8 +11,11 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import org.emdev.ui.adapters.BaseViewHolder;
 import org.emdev.utils.FileUtils;
@@ -23,7 +26,7 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
     private final FileFilter filter;
 
     private File currentDirectory;
-    private File[] files = null;
+    private List<File> files = Collections.emptyList();
 
     public BrowserAdapter(final FileFilter filter) {
         this.filter = filter;
@@ -31,18 +34,12 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
 
     @Override
     public int getCount() {
-        if (LengthUtils.isNotEmpty(files)) {
-            return files.length;
-        }
-        return 0;
+        return files.size();
     }
 
     @Override
     public File getItem(final int i) {
-        if (LengthUtils.isNotEmpty(files)) {
-            return files[i];
-        }
-        return null;
+        return 0 <= i && i < files.size() ? files.get(i) : null;
     }
 
     @Override
@@ -85,16 +82,24 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
         if (LengthUtils.isNotEmpty(files)) {
             Arrays.sort(files, this);
         }
+
         setFiles(files);
     }
 
     private void setFiles(final File[] files) {
-        this.files = files;
-        notifyDataSetInvalidated();
+        final List<File> ff = new ArrayList<File>(Arrays.asList(files));
+        this.files = ff;
+        notifyDataSetChanged();
     }
 
     public File getCurrentDirectory() {
         return currentDirectory;
+    }
+
+    public void remove(final File file) {
+        if (files.remove(file)) {
+            notifyDataSetChanged();
+        }
     }
 
     @Override

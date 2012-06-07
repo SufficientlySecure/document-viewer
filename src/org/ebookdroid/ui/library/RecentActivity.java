@@ -5,7 +5,7 @@ import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.ui.library.adapters.BookNode;
 import org.ebookdroid.ui.library.adapters.BookShelfAdapter;
 import org.ebookdroid.ui.library.adapters.BooksAdapter;
-import org.ebookdroid.ui.library.adapters.FileListAdapter;
+import org.ebookdroid.ui.library.adapters.LibraryAdapter;
 import org.ebookdroid.ui.library.adapters.RecentAdapter;
 import org.ebookdroid.ui.library.views.BookcaseView;
 import org.ebookdroid.ui.library.views.LibraryView;
@@ -228,7 +228,7 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
         libraryButton.setImageResource(R.drawable.actionbar_shelf);
     }
 
-    void showLibrary(final FileListAdapter libraryAdapter, final RecentAdapter recentAdapter) {
+    void showLibrary(final LibraryAdapter libraryAdapter, final RecentAdapter recentAdapter) {
         if (recentBooksView == null) {
             recentBooksView = new RecentBooksView(getController(), recentAdapter);
             registerForContextMenu(recentBooksView);

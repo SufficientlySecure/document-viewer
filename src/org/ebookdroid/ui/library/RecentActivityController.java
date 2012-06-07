@@ -11,7 +11,7 @@ import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.listeners.ILibSettingsChangeListener;
 import org.ebookdroid.ui.library.adapters.BookNode;
 import org.ebookdroid.ui.library.adapters.BooksAdapter;
-import org.ebookdroid.ui.library.adapters.FileListAdapter;
+import org.ebookdroid.ui.library.adapters.LibraryAdapter;
 import org.ebookdroid.ui.library.adapters.RecentAdapter;
 import org.ebookdroid.ui.library.dialogs.FolderDlg;
 import org.ebookdroid.ui.library.tasks.CopyBookTask;
@@ -79,7 +79,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
     private static final int ERASE_DISK_CACHE = 3;
 
     private RecentAdapter recentAdapter;
-    private FileListAdapter libraryAdapter;
+    private LibraryAdapter libraryAdapter;
     private BooksAdapter bookshelfAdapter;
 
     private boolean firstResume = true;
@@ -96,7 +96,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
 
         recentAdapter = new RecentAdapter(this);
         bookshelfAdapter = new BooksAdapter(this, recentAdapter);
-        libraryAdapter = new FileListAdapter(bookshelfAdapter);
+        libraryAdapter = new LibraryAdapter(bookshelfAdapter);
 
         SettingsManager.addListener(this);
 

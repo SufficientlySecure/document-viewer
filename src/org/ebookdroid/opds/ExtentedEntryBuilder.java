@@ -1,5 +1,8 @@
 package org.ebookdroid.opds;
 
+import org.ebookdroid.opds.model.Feed;
+import org.ebookdroid.opds.model.Link;
+
 import java.util.Map;
 
 public class ExtentedEntryBuilder extends BaseEntryBuilder {

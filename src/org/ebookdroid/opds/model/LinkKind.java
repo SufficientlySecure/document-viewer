@@ -1,4 +1,4 @@
-package org.ebookdroid.opds;
+package org.ebookdroid.opds.model;
 
 public enum LinkKind {
 
@@ -6,7 +6,8 @@ public enum LinkKind {
 
         @Override
         public boolean accept(final String rel, final String type) {
-            return type != null && type.contains("profile=opds-catalog") && "http://www.feedbooks.com/opds/facet".equals(rel);
+            return type != null && type.contains("profile=opds-catalog")
+                    && "http://www.feedbooks.com/opds/facet".equals(rel);
         }
 
     },

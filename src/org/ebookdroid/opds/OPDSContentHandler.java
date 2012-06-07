@@ -1,6 +1,11 @@
 package org.ebookdroid.opds;
 
 import org.ebookdroid.common.settings.OpdsSettings;
+import org.ebookdroid.opds.model.BookDownloadLink;
+import org.ebookdroid.opds.model.Content;
+import org.ebookdroid.opds.model.Feed;
+import org.ebookdroid.opds.model.Link;
+import org.ebookdroid.opds.model.LinkKind;
 
 import java.io.BufferedReader;
 import java.io.IOException;

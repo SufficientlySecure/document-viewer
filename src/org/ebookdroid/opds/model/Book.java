@@ -1,4 +1,4 @@
-package org.ebookdroid.opds;
+package org.ebookdroid.opds.model;
 
 import java.util.List;
 

@@ -1,10 +1,10 @@
 package org.ebookdroid.ui.opds;
 
 import org.ebookdroid.R;
-import org.ebookdroid.opds.Book;
-import org.ebookdroid.opds.Entry;
-import org.ebookdroid.opds.Feed;
-import org.ebookdroid.opds.Link;
+import org.ebookdroid.opds.model.Book;
+import org.ebookdroid.opds.model.Entry;
+import org.ebookdroid.opds.model.Feed;
+import org.ebookdroid.opds.model.Link;
 import org.ebookdroid.ui.opds.adapters.OPDSAdapter;
 
 import android.os.Bundle;

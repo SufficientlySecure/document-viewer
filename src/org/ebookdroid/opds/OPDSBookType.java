@@ -11,7 +11,7 @@ public enum OPDSBookType {
     private final boolean supportZip;
     private final Set<String> mimeTypes;
 
-    private OPDSBookType(boolean supportZip, String... mimeTypes) {
+    private OPDSBookType(final boolean supportZip, final String... mimeTypes) {
         this.supportZip = supportZip;
         this.mimeTypes = new LinkedHashSet<String>(Arrays.asList(mimeTypes));
     }
@@ -20,8 +20,8 @@ public enum OPDSBookType {
         return supportZip;
     }
 
-    public static OPDSBookType getByMimeType(String mimeType) {
-        for (OPDSBookType t : values()) {
+    public static OPDSBookType getByMimeType(final String mimeType) {
+        for (final OPDSBookType t : values()) {
             if (t.mimeTypes.contains(mimeType)) {
                 return t;
             }
@@ -33,8 +33,8 @@ public enum OPDSBookType {
         }
         return null;
     }
-    
-    public static boolean isZippedContent(String mimeType) {
+
+    public static boolean isZippedContent(final String mimeType) {
         return mimeType.endsWith("+zip");
     }
 }

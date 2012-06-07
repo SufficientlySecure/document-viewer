@@ -1,4 +1,4 @@
-package org.ebookdroid.opds;
+package org.ebookdroid.opds.model;
 
 public class Link {
 
@@ -13,8 +13,8 @@ public class Link {
         this.rel = rel;
         this.type = type;
     }
-    
-    public Link(String uri) {
+
+    public Link(final String uri) {
         this.kind = LinkKind.FEED;
         this.uri = uri;
         this.rel = null;

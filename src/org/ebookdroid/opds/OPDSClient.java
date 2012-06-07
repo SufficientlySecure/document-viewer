@@ -6,6 +6,9 @@ import org.ebookdroid.R;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.common.settings.OpdsSettings;
+import org.ebookdroid.opds.model.BookDownloadLink;
+import org.ebookdroid.opds.model.Feed;
+import org.ebookdroid.opds.model.Link;
 
 import android.net.http.AndroidHttpClient;
 import android.webkit.URLUtil;

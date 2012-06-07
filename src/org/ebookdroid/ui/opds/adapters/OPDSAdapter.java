@@ -4,13 +4,13 @@ import org.ebookdroid.R;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.cache.ThumbnailFile;
 import org.ebookdroid.common.settings.OpdsSettings;
-import org.ebookdroid.opds.Book;
-import org.ebookdroid.opds.BookDownloadLink;
-import org.ebookdroid.opds.Entry;
 import org.ebookdroid.opds.ExtentedEntryBuilder;
-import org.ebookdroid.opds.Feed;
-import org.ebookdroid.opds.Link;
 import org.ebookdroid.opds.OPDSClient;
+import org.ebookdroid.opds.model.Book;
+import org.ebookdroid.opds.model.BookDownloadLink;
+import org.ebookdroid.opds.model.Entry;
+import org.ebookdroid.opds.model.Feed;
+import org.ebookdroid.opds.model.Link;
 
 import android.app.ProgressDialog;
 import android.content.Context;

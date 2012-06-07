@@ -1,5 +1,11 @@
 package org.ebookdroid.opds;
 
+import org.ebookdroid.opds.model.Book;
+import org.ebookdroid.opds.model.BookDownloadLink;
+import org.ebookdroid.opds.model.Content;
+import org.ebookdroid.opds.model.Feed;
+import org.ebookdroid.opds.model.Link;
+
 import java.util.List;
 import java.util.Map;
 

@@ -223,6 +223,7 @@ public class Bitmaps {
             final float sizeX = partSize * scaleX;
             final float sizeY = partSize * scaleY;
 
+            final Rect src = new Rect();
             final RectF rect = new RectF(offsetX, offsetY, offsetX + sizeX, offsetY + sizeY);
             final RectF r = new RectF();
 
@@ -235,7 +236,8 @@ public class Bitmaps {
                         r.set(rect);
                         if (ref.bitmap != null) {
                             try {
-                                canvas.drawBitmap(ref.bitmap, null, MathUtils.round(r), paint.bitmapPaint);
+                                src.set(0, 0, ref.bitmap.getWidth(), ref.bitmap.getHeight());
+                                canvas.drawBitmap(ref.bitmap, src, MathUtils.round(r), paint.bitmapPaint);
                             } catch (Throwable th) {
                                 LCTX.e("Unexpected error: ", th);
                             }

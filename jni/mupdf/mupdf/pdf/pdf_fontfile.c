@@ -26,7 +26,7 @@ char font_DroidSerifItalic[] = "/system/fonts/DroidSerif-Italic.ttf";
 char font_DroidSerifBoldItalic[] = "/system/fonts/DroidSerif-BoldItalic.ttf";
 char font_StandardSym[] = "/sdcard/.org.ebookdroid/StandardSymL.cff";
 char font_Dingbats[] = "/sdcard/.org.ebookdroid/Dingbats.cff";
-char font_DroidSansFallback[] = "/system/fonts/DroidSandFallback.ttf";
+char font_DroidSansFallback[] = "/system/fonts/DroidSansFallback.ttf";
 
 //TODO: load from config file
 char* ext_font_Courier = "/sdcard/.org.ebookdroid/fonts/FreeMono.ttf";

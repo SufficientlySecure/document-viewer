@@ -88,8 +88,10 @@ public class ZoomRoll extends View implements ZoomListener {
         if ((ev.getAction() & MotionEvent.ACTION_UP) == MotionEvent.ACTION_UP) {
             inTouch = false;
         }
-        
-        return gestureDetector.onTouchEvent(ev);
+
+        final boolean res = gestureDetector.onTouchEvent(ev);
+        computeScroll();
+        return res;
     }
 
     @Override
@@ -165,7 +167,7 @@ public class ZoomRoll extends View implements ZoomListener {
             zoomModel.commit();
             return true;
         }
-        
+
     }
 
 }

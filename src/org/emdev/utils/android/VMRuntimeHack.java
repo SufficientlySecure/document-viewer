@@ -66,4 +66,31 @@ public final class VMRuntimeHack {
             return false;
         }
     }
+
+    /**
+     * Preallocate heap.
+     *
+     * @param size
+     *            the size in megabytes
+     * @return the object
+     */
+    public static Object preallocateHeap(int size) {
+        int i = size;
+        Log.i("VMRuntimeHack", "Trying to preallocate " + size + "Mb");
+        while (i > 0) {
+            try {
+                byte[] tmp = new byte[i * 1024 * 1024];
+                tmp[(int) (size - 1)] = (byte) size;
+                Log.i("VMRuntimeHack", "Preallocated " + i + "Mb");
+                tmp = null;
+                return tmp;
+            } catch (OutOfMemoryError e) {
+                i--;
+            } catch (IllegalArgumentException e) {
+                i--;
+            }
+        }
+        Log.i("VMRuntimeHack", "Heap preallocation failed");
+        return null;
+    }
 }

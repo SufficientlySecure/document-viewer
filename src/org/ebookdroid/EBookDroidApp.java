@@ -18,6 +18,7 @@ import java.io.File;
 
 import org.emdev.utils.FileUtils;
 import org.emdev.utils.android.AndroidVersion;
+import org.emdev.utils.android.VMRuntimeHack;
 
 public class EBookDroidApp extends Application {
 
@@ -33,7 +34,7 @@ public class EBookDroidApp extends Application {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see android.app.Application#onCreate()
      */
     @Override
@@ -46,6 +47,8 @@ public class EBookDroidApp extends Application {
         LogContext.init(this);
         SettingsManager.init(this);
         CacheManager.init(this);
+
+        VMRuntimeHack.preallocateHeap(48);
     }
 
     protected void init() {
@@ -89,7 +92,7 @@ public class EBookDroidApp extends Application {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see android.app.Application#onLowMemory()
      */
     @Override

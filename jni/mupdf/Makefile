@@ -40,15 +40,11 @@ $(OUT)/%.o : mupdf/scripts/%.c | $(OUT)
 # --- Generated CMAP and FONT files ---
 
 CMAPDUMP := $(OUT)/cmapdump
-FONTDUMP := $(OUT)/fontdump
 
 CMAP_CNS_SRC := $(wildcard mupdf/cmaps/cns/*)
 CMAP_GB_SRC := $(wildcard mupdf/cmaps/gb/*)
 CMAP_JAPAN_SRC := $(wildcard mupdf/cmaps/japan/*)
 CMAP_KOREA_SRC := $(wildcard mupdf/cmaps/korea/*)
-FONT_BASE14_SRC := $(wildcard mupdf/fonts/*.cff)
-FONT_DROID_SRC := mupdf/fonts/droid/DroidSans.ttf mupdf/fonts/droid/DroidSansMono.ttf
-FONT_CJK_SRC := mupdf/fonts/droid/DroidSansFallback.ttf
 
 $(GEN)/cmap_cns.h : $(CMAP_CNS_SRC)
 	$(QUIET_GEN) ./$(CMAPDUMP) $@ $(CMAP_CNS_SRC)
@@ -59,18 +55,9 @@ $(GEN)/cmap_japan.h : $(CMAP_JAPAN_SRC)
 $(GEN)/cmap_korea.h : $(CMAP_KOREA_SRC)
 	$(QUIET_GEN) ./$(CMAPDUMP) $@ $(CMAP_KOREA_SRC)
 
-$(GEN)/font_base14.h : $(FONT_BASE14_SRC)
-	$(QUIET_GEN) ./$(FONTDUMP) $@ $(FONT_BASE14_SRC)
-$(GEN)/font_droid.h : $(FONT_DROID_SRC)
-	$(QUIET_GEN) ./$(FONTDUMP) $@ $(FONT_DROID_SRC)
-$(GEN)/font_cjk.h : $(FONT_CJK_SRC)
-	$(QUIET_GEN) ./$(FONTDUMP) $@ $(FONT_CJK_SRC)
-
 CMAP_HDR := $(addprefix $(GEN)/, cmap_cns.h cmap_gb.h cmap_japan.h cmap_korea.h)
-FONT_HDR := $(GEN)/font_base14.h $(GEN)/font_droid.h $(GEN)/font_cjk.h
 
 $(CMAP_HDR) : $(CMAPDUMP) | $(GEN)
-$(FONT_HDR) : $(FONTDUMP) | $(GEN)
 
 $(OUT)/pdf_cmap_table.o : $(CMAP_HDR)
 $(OUT)/pdf_fontfile.o : $(FONT_HDR)
@@ -78,7 +65,7 @@ $(OUT)/cmapdump.o : mupdf/pdf/pdf_cmap.c mupdf/pdf/pdf_cmap_parse.c
 
 
 
-all: $(CMAP_HDR) $(FONT_HDR)
+all: $(CMAP_HDR)
 
 clean:
 	rm -rf $(OUT) $(GEN)

@@ -645,20 +645,26 @@ fz_paint_image_imp(fz_pixmap *dst, fz_bbox scissor, fz_pixmap *shape, fz_pixmap 
 	if (shape && shape->y + shape->h < h)
 		h = shape->y + shape->h;
 	h -= y;
+	if (w < 0 || h < 0)
+		return;
 
 	/* map from screen space (x,y) to image space (u,v) */
 	inv = fz_scale(1.0f / img->w, 1.0f / img->h);
 	inv = fz_concat(inv, ctm);
 	inv = fz_invert_matrix(inv);
 
-	fa = inv.a * 65536;
-	fb = inv.b * 65536;
-	fc = inv.c * 65536;
-	fd = inv.d * 65536;
+	fa = (int)(inv.a *= 65536.0f);
+	fb = (int)(inv.b *= 65536.0f);
+	fc = (int)(inv.c *= 65536.0f);
+	fd = (int)(inv.d *= 65536.0f);
+	inv.e *= 65536.0f;
+	inv.f *= 65536.0f;
 
 	/* Calculate initial texture positions. Do a half step to start. */
-	u = (fa * x) + (fc * y) + inv.e * 65536 + ((fa + fc) >> 1);
-	v = (fb * x) + (fd * y) + inv.f * 65536 + ((fb + fd) >> 1);
+	/* Bug 693021: Keep calculation in float for as long as possible to
+	 * avoid overflow. */
+	u = (int)((inv.a * x) + (inv.c * y) + inv.e + ((inv.a + inv.c) * .5f));
+	v = (int)((inv.b * x) + (inv.d * y) + inv.f + ((inv.b + inv.d) * .5f));
 
 	/* RJW: The following is voodoo. No idea why it works, but it gives
 	 * the best match between scaled/unscaled/interpolated/non-interpolated
@@ -668,7 +674,7 @@ fz_paint_image_imp(fz_pixmap *dst, fz_bbox scissor, fz_pixmap *shape, fz_pixmap 
 		v -= 32768;
 	}
 
-	dp = dst->samples + ((y - dst->y) * dst->w + (x - dst->x)) * dst->n;
+	dp = dst->samples + (unsigned int)(((y - dst->y) * dst->w + (x - dst->x)) * dst->n);
 	n = dst->n;
 	sp = img->samples;
 	sw = img->w;
@@ -676,7 +682,7 @@ fz_paint_image_imp(fz_pixmap *dst, fz_bbox scissor, fz_pixmap *shape, fz_pixmap 
 	if (shape)
 	{
 		hw = shape->w;
-		hp = shape->samples + ((y - shape->y) * hw) + x - shape->x;
+		hp = shape->samples + (unsigned int)(((y - shape->y) * hw) + x - shape->x);
 	}
 	else
 	{

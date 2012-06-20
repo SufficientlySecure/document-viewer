@@ -24,7 +24,6 @@ fz_new_stream(fz_context *ctx, void *state,
 
 	stm->bits = 0;
 	stm->avail = 0;
-	stm->locked = 0;
 
 	stm->bp = stm->buf;
 	stm->rp = stm->bp;
@@ -38,16 +37,6 @@ fz_new_stream(fz_context *ctx, void *state,
 	stm->ctx = ctx;
 
 	return stm;
-}
-
-void
-fz_lock_stream(fz_stream *stm)
-{
-	if (stm)
-	{
-		fz_lock(stm->ctx, FZ_LOCK_FILE);
-		stm->locked = 1;
-	}
 }
 
 fz_stream *
@@ -67,8 +56,6 @@ fz_close(fz_stream *stm)
 	{
 		if (stm->close)
 			stm->close(stm->ctx, stm->state);
-		if (stm->locked)
-			fz_unlock(stm->ctx, FZ_LOCK_FILE);
 		fz_free(stm->ctx, stm);
 	}
 }
@@ -78,7 +65,6 @@ fz_close(fz_stream *stm)
 static int read_file(fz_stream *stm, unsigned char *buf, int len)
 {
 	int n = read(*(int*)stm->state, buf, len);
-	fz_assert_lock_held(stm->ctx, FZ_LOCK_FILE);
 	if (n < 0)
 		fz_throw(stm->ctx, "read error: %s", strerror(errno));
 	return n;
@@ -87,7 +73,6 @@ static int read_file(fz_stream *stm, unsigned char *buf, int len)
 static void seek_file(fz_stream *stm, int offset, int whence)
 {
 	int n = lseek(*(int*)stm->state, offset, whence);
-	fz_assert_lock_held(stm->ctx, FZ_LOCK_FILE);
 	if (n < 0)
 		fz_throw(stm->ctx, "cannot lseek: %s", strerror(errno));
 	stm->pos = n;
@@ -129,7 +114,21 @@ fz_open_fd(fz_context *ctx, int fd)
 fz_stream *
 fz_open_file(fz_context *ctx, const char *name)
 {
+#ifdef _WIN32
+	char *s = (char*)name;
+	wchar_t *wname, *d;
+	int c, fd;
+	d = wname = fz_malloc(ctx, (strlen(name)+1) * sizeof(wchar_t));
+	while (*s) {
+		s += fz_chartorune(&c, s);
+		*d++ = c;
+	}
+	*d = 0;
+	fd = _wopen(wname, O_BINARY | O_RDONLY, 0);
+	fz_free(ctx, wname);
+#else
 	int fd = open(name, O_BINARY | O_RDONLY, 0);
+#endif
 	if (fd == -1)
 		fz_throw(ctx, "cannot open %s", name);
 	return fz_open_fd(ctx, fd);

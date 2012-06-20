@@ -27,14 +27,22 @@ fz_document *
 fz_open_document(fz_context *ctx, char *filename)
 {
 	char *ext = strrchr(filename, '.');
-	if (ext && !fz_strcasecmp(ext, ".pdf"))
-		return (fz_document*) pdf_open_document(ctx, filename);
-	if (ext && !fz_strcasecmp(ext, ".xps"))
+	if (ext && (!fz_strcasecmp(ext, ".xps") || !fz_strcasecmp(ext, ".rels")))
 		return (fz_document*) xps_open_document(ctx, filename);
 //	if (ext && !fz_strcasecmp(ext, ".cbz"))
 //		return (fz_document*) cbz_open_document(ctx, filename);
+#if 0
+	/* We used to only open pdf files if they ended in .pdf. For now,
+	 * until we move to detecting filetypes by their content, we disable
+	 * this code, and assume that any file that hasn't matched an
+	 * extension already, is a PDF. */
+	if (ext && !fz_strcasecmp(ext, ".pdf"))
+		return (fz_document*) pdf_open_document(ctx, filename);
 	fz_throw(ctx, "unknown document type: '%s'", filename);
 	return NULL;
+#else
+	return (fz_document*) pdf_open_document(ctx, filename);
+#endif
 }
 
 void
@@ -112,4 +120,19 @@ fz_free_page(fz_document *doc, fz_page *page)
 {
 	if (doc && doc->free_page && page)
 		doc->free_page(doc, page);
+}
+
+int
+fz_meta(fz_document *doc, int key, void *ptr, int size)
+{
+	if (doc && doc->meta)
+		return doc->meta(doc, key, ptr, size);
+	return FZ_META_UNKNOWN_KEY;
+}
+
+void
+fz_write_document(fz_document *doc, char *filename, fz_write_options *opts)
+{
+	if (doc && doc->write)
+		doc->write(doc, filename, opts);
 }

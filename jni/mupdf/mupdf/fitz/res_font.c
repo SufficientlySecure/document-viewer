@@ -56,7 +56,7 @@ fz_new_font(fz_context *ctx, char *name, int use_glyph_bbox, int glyph_count)
 	else
 	{
 		if (use_glyph_bbox)
-			fz_warn(ctx, "not building glyph bbox table for font '%s' with %d glyphs", name, glyph_count);
+			fz_warn(ctx, "not building glyph bbox table for font '%s' with %d glyphs", font->name, glyph_count);
 		font->bbox_count = 0;
 		font->bbox_table = NULL;
 	}
@@ -356,8 +356,8 @@ fz_copy_ft_bitmap(fz_context *ctx, int left, int top, FT_Bitmap *bitmap)
 	{
 		for (y = 0; y < pixmap->h; y++)
 		{
-			unsigned char *out = pixmap->samples + y * pixmap->w;
-			unsigned char *in = bitmap->buffer + (pixmap->h - y - 1) * bitmap->pitch;
+			unsigned char *out = pixmap->samples + (unsigned int)(y * pixmap->w);
+			unsigned char *in = bitmap->buffer + (unsigned int)((pixmap->h - y - 1) * bitmap->pitch);
 			unsigned char bit = 0x80;
 			int w = pixmap->w;
 			while (w--)
@@ -376,8 +376,8 @@ fz_copy_ft_bitmap(fz_context *ctx, int left, int top, FT_Bitmap *bitmap)
 	{
 		for (y = 0; y < pixmap->h; y++)
 		{
-			memcpy(pixmap->samples + y * pixmap->w,
-				bitmap->buffer + (pixmap->h - y - 1) * bitmap->pitch,
+			memcpy(pixmap->samples + (unsigned int)(y * pixmap->w),
+			       bitmap->buffer + (unsigned int)((pixmap->h - y - 1) * bitmap->pitch),
 				pixmap->w);
 		}
 	}
@@ -423,7 +423,7 @@ fz_render_ft_glyph(fz_context *ctx, fz_font *font, int gid, fz_matrix trm, int a
 
 	if (aa == 0)
 	{
-		/* If you really want grid fitting, enable this code. */
+		/* enable grid fitting for non-antialiased rendering */
 		float scale = fz_matrix_expansion(trm);
 		m.xx = trm.a * 65536 / scale;
 		m.xy = trm.b * 65536 / scale;
@@ -437,8 +437,10 @@ fz_render_ft_glyph(fz_context *ctx, fz_font *font, int gid, fz_matrix trm, int a
 			fz_warn(ctx, "freetype setting character size: %s", ft_error_string(fterr));
 		FT_Set_Transform(face, &m, &v);
 		fterr = FT_Load_Glyph(face, gid, FT_LOAD_NO_BITMAP | FT_LOAD_TARGET_MONO);
-		if (fterr)
-			fz_warn(ctx, "freetype load glyph (gid %d): %s", gid, ft_error_string(fterr));
+		if (fterr) {
+			fz_warn(ctx, "freetype load hinted glyph (gid %d): %s", gid, ft_error_string(fterr));
+			goto retry_unhinted;
+		}
 	}
 	else if (font->ft_hint)
 	{
@@ -450,11 +452,14 @@ fz_render_ft_glyph(fz_context *ctx, fz_font *font, int gid, fz_matrix trm, int a
 		so that we get the correct outline shape.
 		*/
 		fterr = FT_Load_Glyph(face, gid, FT_LOAD_NO_BITMAP);
-		if (fterr)
-			fz_warn(ctx, "freetype load glyph (gid %d): %s", gid, ft_error_string(fterr));
+		if (fterr) {
+			fz_warn(ctx, "freetype load hinted glyph (gid %d): %s", gid, ft_error_string(fterr));
+			goto retry_unhinted;
+		}
 	}
 	else
 	{
+retry_unhinted:
 		fterr = FT_Load_Glyph(face, gid, FT_LOAD_NO_BITMAP | FT_LOAD_NO_HINTING);
 		if (fterr)
 		{
@@ -687,7 +692,7 @@ static fz_rect
 fz_bound_t3_glyph(fz_context *ctx, fz_font *font, int gid, fz_matrix trm)
 {
 	fz_matrix ctm;
-	fz_buffer *contents;
+	void *contents;
 	fz_rect bounds;
 	fz_bbox bbox;
 	fz_device *dev;
@@ -721,7 +726,7 @@ fz_pixmap *
 fz_render_t3_glyph(fz_context *ctx, fz_font *font, int gid, fz_matrix trm, fz_colorspace *model)
 {
 	fz_matrix ctm;
-	fz_buffer *contents;
+	void *contents;
 	fz_bbox bbox;
 	fz_device *dev;
 	fz_pixmap *glyph;
@@ -781,7 +786,7 @@ void
 fz_render_t3_glyph_direct(fz_context *ctx, fz_device *dev, fz_font *font, int gid, fz_matrix trm, void *gstate)
 {
 	fz_matrix ctm;
-	fz_buffer *contents;
+	void *contents;
 
 	if (gid < 0 || gid > 255)
 		return;

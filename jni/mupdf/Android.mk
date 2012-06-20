@@ -157,7 +157,6 @@ MY_MUPDF_C_INCLUDES := \
 MY_MUPDF_CFLAGS := -DNOCJK
 
 MY_MUPDF_SRC_FILES := \
-	mupdf/pdf/base_object.c \
 	mupdf/pdf/pdf_annot.c \
 	mupdf/pdf/pdf_cmap.c \
 	mupdf/pdf/pdf_cmap_load.c \
@@ -174,6 +173,7 @@ MY_MUPDF_SRC_FILES := \
 	mupdf/pdf/pdf_lex.c \
 	mupdf/pdf/pdf_metrics.c \
 	mupdf/pdf/pdf_nametree.c \
+	mupdf/pdf/pdf_object.c \
 	mupdf/pdf/pdf_outline.c \
 	mupdf/pdf/pdf_page.c \
 	mupdf/pdf/pdf_parse.c \
@@ -184,7 +184,9 @@ MY_MUPDF_SRC_FILES := \
 	mupdf/pdf/pdf_stream.c \
 	mupdf/pdf/pdf_type3.c \
 	mupdf/pdf/pdf_unicode.c \
+	mupdf/pdf/pdf_write.c \
 	mupdf/pdf/pdf_xobject.c \
+	mupdf/pdf/pdf_xref_aux.c \
 	mupdf/pdf/pdf_xref.c \
 	mupdf/xps/xps_common.c \
 	mupdf/xps/xps_doc.c \

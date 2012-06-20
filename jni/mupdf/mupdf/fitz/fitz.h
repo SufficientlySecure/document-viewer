@@ -22,18 +22,10 @@
 
 #include "memento.h"
 
-/*
-	Some versions of setjmp/longjmp (notably MacOSX and ios) store/restore
-	signal handlers too. We don't alter signal handlers within mupdf, so
-	there is no need for us to store/restore - hence we use the
-	non-restoring variants. This makes a large speed difference.
-*/
 #ifdef __APPLE__
-#define fz_setjmp _setjmp
-#define fz_longjmp _longjmp
-#else
-#define fz_setjmp setjmp
-#define fz_longjmp longjmp
+#define HAVE_SIGSETJMP
+#elif defined(__unix)
+#define HAVE_SIGSETJMP
 #endif
 
 #ifdef __ANDROID__
@@ -92,17 +84,32 @@ int gettimeofday(struct timeval *tv, struct timezone *tz);
 
 /*
 	Variadic macros, inline and restrict keywords
+
+	inline is standard in C++, so don't touch the definition in this case.
+	For some compilers we can enable it within C too.
 */
 
+#ifndef __cplusplus
 #if __STDC_VERSION__ == 199901L /* C99 */
 #elif _MSC_VER >= 1500 /* MSVC 9 or newer */
 #define inline __inline
-#define restrict __restrict
 #elif __GNUC__ >= 3 /* GCC 3 or newer */
 #define inline __inline
-#define restrict __restrict
 #else /* Unknown or ancient */
 #define inline
+#endif
+#endif
+
+/*
+	restrict is standard in C99, but not in all C++ compilers. Enable
+	where possible, disable if in doubt.
+ */
+#if __STDC_VERSION__ == 199901L /* C99 */
+#elif _MSC_VER >= 1500 /* MSVC 9 or newer */
+#define restrict __restrict
+#elif __GNUC__ >= 3 /* GCC 3 or newer */
+#define restrict __restrict
+#else /* Unknown or ancient */
 #define restrict
 #endif
 
@@ -141,18 +148,37 @@ struct fz_alloc_context_s
 	void (*free)(void *, void *);
 };
 
+/*
+	Where possible (i.e. on platforms on which they are provided), use
+	sigsetjmp/siglongjmp in preference to setjmp/longjmp. We don't alter
+	signal handlers within mupdf, so there is no need for us to
+	store/restore them - hence we use the non-restoring variants. This
+	makes a large speed difference on MacOSX (and probably other
+	platforms too.
+*/
+#ifdef HAVE_SIGSETJMP
+#define fz_setjmp(BUF) sigsetjmp(BUF, 0)
+#define fz_longjmp(BUF,VAL) siglongjmp(BUF, VAL)
+#define fz_jmp_buf sigjmp_buf
+#else
+#define fz_setjmp(BUF) setjmp(BUF)
+#define fz_longjmp(BUF,VAL) longjmp(BUF,VAL)
+#define fz_jmp_buf jmp_buf
+#endif
+
 struct fz_error_context_s
 {
 	int top;
 	struct {
 		int code;
-		jmp_buf buffer;
+		fz_jmp_buf buffer;
 	} stack[256];
 	char message[256];
 };
 
 void fz_var_imp(void *);
 #define fz_var(var) fz_var_imp((void *)&(var))
+
 
 /*
 	Exception macro definitions. Just treat these as a black box - pay no
@@ -377,7 +403,7 @@ void *fz_calloc(fz_context *ctx, unsigned int count, unsigned int size);
 	exception on failure to allocate.
 */
 #define fz_malloc_struct(CTX, STRUCT) \
-	Memento_label(fz_calloc(CTX,1,sizeof(STRUCT)), #STRUCT)
+	((STRUCT *)Memento_label(fz_calloc(CTX,1,sizeof(STRUCT)), #STRUCT))
 
 /*
 	fz_malloc_array: Allocate a block of (non zeroed) memory (with
@@ -534,20 +560,20 @@ int fz_strlcpy(char *dst, const char *src, int n);
 int fz_strlcat(char *dst, const char *src, int n);
 
 /*
-	fz_chartorune: UTF8 decode a string of chars to a rune.
+	fz_chartorune: UTF8 decode a single rune from a sequence of chars.
 
 	rune: Pointer to an int to assign the decoded 'rune' to.
 
-	str: Pointer to a UTF8 encoded string
+	str: Pointer to a UTF8 encoded string.
 
 	Returns the number of bytes consumed. Does not throw exceptions.
 */
 int fz_chartorune(int *rune, char *str);
 
 /*
-	runetochar: UTF8 encode a run to a string of chars.
+	fz_runetochar: UTF8 encode a rune to a sequence of chars.
 
-	str: Pointer to a place to put the UTF8 encoded string.
+	str: Pointer to a place to put the UTF8 encoded character.
 
 	rune: Pointer to a 'rune'.
 
@@ -557,7 +583,7 @@ int fz_chartorune(int *rune, char *str);
 int fz_runetochar(char *str, int rune);
 
 /*
-	fz_runelen: Count many chars are required to represent a rune.
+	fz_runelen: Count how many chars are required to represent a rune.
 
 	rune: The rune to encode.
 
@@ -703,7 +729,7 @@ extern const fz_bbox fz_infinite_bbox;
 	different representations.
 
 	/ a b 0 \
-	| c d 0 |   normally represented as    [ a b c d e f ].
+	| c d 0 | normally represented as [ a b c d e f ].
 	\ e f 1 /
 */
 typedef struct fz_matrix_s fz_matrix;
@@ -986,7 +1012,12 @@ typedef struct fz_stream_s fz_stream;
 /*
 	fz_open_file: Open the named file and wrap it in a stream.
 
-	filename: Path to a file as it would be given to open(2).
+	filename: Path to a file. On non-Windows machines the filename should
+	be exactly as it would be passed to open(2). On Windows machines, the
+	path should be UTF-8 encoded so that non-ASCII characters can be
+	represented. Other platforms do the encoding as standard anyway (and
+	in most cases, particularly for MacOS and Linux, the encoding they
+	use is UTF-8 anyway).
 */
 fz_stream *fz_open_file(fz_context *ctx, const char *filename);
 
@@ -1518,6 +1549,20 @@ fz_device *fz_new_bbox_device(fz_context *ctx, fz_bbox *bboxp);
 fz_device *fz_new_draw_device(fz_context *ctx, fz_pixmap *dest);
 
 /*
+	fz_new_draw_device_with_bbox: Create a device to draw on a pixmap.
+
+	dest: Target pixmap for the draw device. See fz_new_pixmap*
+	for how to obtain a pixmap. The pixmap is not cleared by the
+	draw device, see fz_clear_pixmap* for how to clear it prior to
+	calling fz_new_draw_device. Free the device by calling
+	fz_free_device.
+
+	clip: Bounding box to restrict any marking operations of the
+	draw device.
+*/
+fz_device *fz_new_draw_device_with_bbox(fz_context *ctx, fz_pixmap *dest, fz_bbox clip);
+
+/*
 	Text extraction device: Used for searching, format conversion etc.
 
 	(In development - Subject to change in future versions)
@@ -1716,12 +1761,15 @@ typedef struct fz_cookie_s fz_cookie;
 	may change from -1 to a positive value once an upper bound is
 	known, so take this into consideration when comparing the
 	value of progress to that of progress_max.
+
+	errors: count of errors during current rendering.
 */
 struct fz_cookie_s
 {
 	int abort;
 	int progress;
 	int progress_max; /* -1 for unknown */
+	int errors;
 };
 
 /*
@@ -2139,5 +2187,124 @@ void fz_run_page(fz_document *doc, fz_page *page, fz_device *dev, fz_matrix tran
 	Does not throw exceptions.
 */
 void fz_free_page(fz_document *doc, fz_page *page);
+
+/*
+	fz_meta: Perform a meta operation on a document.
+
+	(In development - Subject to change in future versions)
+
+	Meta operations provide a way to perform format specific
+	operations on a document. The meta operation scheme is
+	designed to be extensible so that new features can be
+	transparently added in later versions of the library.
+
+	doc: The document on which to perform the meta operation.
+
+	key: The meta operation to try. If a particular operation
+	is unsupported on a given document, the function will return
+	FZ_META_UNKNOWN_KEY.
+
+	ptr: An operation dependent (possibly NULL) pointer.
+
+	size: An operation dependent integer. Often this will
+	be the size of the block pointed to by ptr, but not always.
+
+	Returns an operation dependent value; FZ_META_UNKNOWN_KEY
+	always means "unknown operation for this document". In general
+	FZ_META_OK should be used to indicate successful operation.
+*/
+int fz_meta(fz_document *doc, int key, void *ptr, int size);
+
+enum
+{
+	FZ_META_UNKNOWN_KEY = -1,
+	FZ_META_OK = 0,
+
+	/*
+		ptr: Pointer to block (uninitialised on entry)
+		size: Size of block (at least 64 bytes)
+		Returns: Document format as a brief text string.
+		All formats should support this.
+	*/
+	FZ_META_FORMAT_INFO = 1,
+
+	/*
+		ptr: Pointer to block (uninitialised on entry)
+		size: Size of block (at least 64 bytes)
+		Returns: Encryption info as a brief text string.
+	*/
+	FZ_META_CRYPT_INFO = 2,
+
+	/*
+		ptr: NULL
+		size: Which permission to check
+		Returns: 1 if permitted, 0 otherwise.
+	*/
+	FZ_META_HAS_PERMISSION = 3,
+
+	FZ_PERMISSION_PRINT = 0,
+	FZ_PERMISSION_CHANGE = 1,
+	FZ_PERMISSION_COPY = 2,
+	FZ_PERMISSION_NOTES = 3,
+
+	/*
+		ptr: Pointer to block. First entry in the block is
+		a pointer to a UTF8 string to lookup. The rest of the
+		block is uninitialised on entry.
+		size: size of the block in bytes.
+		Returns: 0 if not found. 1 if found. The string
+		result is copied into the block (truncated to size
+		and NULL terminated)
+
+	*/
+	FZ_META_INFO = 4,
+};
+
+typedef struct fz_write_options_s fz_write_options;
+
+/*
+	In calls to fz_write, the following options structure can be used
+	to control aspects of the writing process. This structure may grow
+	in future, and should be zero-filled to allow forwards compatiblity.
+*/
+struct fz_write_options_s
+{
+	int do_ascii;    /*	If non-zero then attempt (where possible) to
+				make the output ascii. */
+	int do_expand;	/*	Bitflags; each non zero bit indicates an aspect
+				of the file that should be 'expanded' on
+				writing. */
+	int do_garbage;	/*	If non-zero then attempt (where possible) to
+				garbage collect the file before writing. */
+	int do_linear;   /*	If non-zero then write linearised. */
+};
+
+/*	An enumeration of bitflags to use in the above 'do_expand' field of
+	fz_write_options.
+*/
+enum
+{
+	fz_expand_images = 1,
+	fz_expand_fonts = 2,
+	fz_expand_all = -1
+};
+
+/*
+	fz_write: Write a document out.
+
+	(In development - Subject to change in future versions)
+
+	Save a copy of the current document in its original format.
+	Internally the document may change.
+
+	doc: The document to save.
+
+	filename: The filename to save to.
+
+	opts: NULL, or a pointer to an options structure.
+
+	May throw exceptions.
+*/
+void fz_write_document(fz_document *doc, char *filename, fz_write_options *opts);
 
 #endif

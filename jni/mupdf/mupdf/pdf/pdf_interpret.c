@@ -104,7 +104,7 @@ struct pdf_csi_s
 	fz_cookie *cookie;
 };
 
-static void pdf_run_buffer(pdf_csi *csi, pdf_obj *rdb, fz_buffer *contents);
+static void pdf_run_contents_object(pdf_csi *csi, pdf_obj *rdb, pdf_obj *contents);
 static void pdf_run_xobject(pdf_csi *csi, pdf_obj *resources, pdf_xobject *xobj, fz_matrix transform);
 static void pdf_show_pattern(pdf_csi *csi, pdf_pattern *pat, fz_rect area, int what);
 
@@ -1264,18 +1264,19 @@ pdf_show_pattern(pdf_csi *csi, pdf_pattern *pat, fz_rect area, int what)
 	ptm = fz_concat(pat->matrix, csi->top_ctm);
 	invptm = fz_invert_matrix(ptm);
 
-	/* patterns are painted using the ctm in effect at the beginning of the content stream */
-	/* get bbox of shape in pattern space for stamping */
+	/* patterns are painted using the ctm in effect at the beginning
+	 * of the content stream. area = bbox of shape to be filled in
+	 * device space. Map it back to pattern space. */
 	area = fz_transform_rect(invptm, area);
 
 	/* When calculating the number of tiles required, we adjust by a small
 	 * amount to allow for rounding errors. By choosing this amount to be
 	 * smaller than 1/256, we guarantee we won't cause problems that will
 	 * be visible even under our most extreme antialiasing. */
-	x0 = floorf(area.x0 / pat->xstep + 0.001);
-	y0 = floorf(area.y0 / pat->ystep + 0.001);
-	x1 = ceilf(area.x1 / pat->xstep - 0.001);
-	y1 = ceilf(area.y1 / pat->ystep - 0.001);
+	x0 = floorf((area.x0 - pat->bbox.x0) / pat->xstep + 0.001);
+	y0 = floorf((area.y0 - pat->bbox.y0) / pat->ystep + 0.001);
+	x1 = ceilf((area.x1 - pat->bbox.x0) / pat->xstep - 0.001);
+	y1 = ceilf((area.y1 - pat->bbox.y0) / pat->ystep - 0.001);
 
 	oldtopctm = csi->top_ctm;
 	oldtop = csi->gtop;
@@ -1290,7 +1291,7 @@ pdf_show_pattern(pdf_csi *csi, pdf_pattern *pat, fz_rect area, int what)
 		gstate->ctm = ptm;
 		csi->top_ctm = gstate->ctm;
 		pdf_gsave(csi);
-		pdf_run_buffer(csi, pat->resources, pat->contents);
+		pdf_run_contents_object(csi, pat->resources, pat->contents);
 		/* RJW: "cannot render pattern tile" */
 		pdf_grestore(csi);
 		while (oldtop < csi->gtop)
@@ -1309,7 +1310,7 @@ pdf_show_pattern(pdf_csi *csi, pdf_pattern *pat, fz_rect area, int what)
 				pdf_gsave(csi);
 				fz_try(ctx)
 				{
-					pdf_run_buffer(csi, pat->resources, pat->contents);
+					pdf_run_contents_object(csi, pat->resources, pat->contents);
 				}
 				fz_catch(ctx)
 				{
@@ -1406,7 +1407,7 @@ pdf_run_xobject(pdf_csi *csi, pdf_obj *resources, pdf_xobject *xobj, fz_matrix t
 		if (xobj->resources)
 			resources = xobj->resources;
 
-		pdf_run_buffer(csi, resources, xobj->contents);
+		pdf_run_contents_object(csi, resources, xobj->contents);
 		/* RJW: "cannot interpret XObject stream" */
 	}
 	fz_always(ctx)
@@ -2392,7 +2393,7 @@ static void pdf_run_dquote(pdf_csi *csi)
 #define B(a,b) (a | b << 8)
 #define C(a,b,c) (a | b << 8 | c << 16)
 
-static void
+static int
 pdf_run_keyword(pdf_csi *csi, pdf_obj *rdb, fz_stream *file, char *buf)
 {
 	fz_context *ctx = csi->dev->ctx;
@@ -2433,7 +2434,7 @@ pdf_run_keyword(pdf_csi *csi, pdf_obj *rdb, fz_stream *file, char *buf)
 		}
 		fz_catch(ctx)
 		{
-			fz_warn(ctx, "cannot draw xobject/image");
+			fz_throw(ctx, "cannot draw xobject/image");
 		}
 		break;
 	case C('E','M','C'): pdf_run_EMC(csi); break;
@@ -2463,7 +2464,7 @@ pdf_run_keyword(pdf_csi *csi, pdf_obj *rdb, fz_stream *file, char *buf)
 		}
 		fz_catch(ctx)
 		{
-			fz_warn(ctx, "cannot set font");
+			fz_throw(ctx, "cannot set font");
 		}
 		break;
 	case B('T','j'): pdf_run_Tj(csi); break;
@@ -2492,7 +2493,7 @@ pdf_run_keyword(pdf_csi *csi, pdf_obj *rdb, fz_stream *file, char *buf)
 		}
 		fz_catch(ctx)
 		{
-			fz_warn(ctx, "cannot set graphics state");
+			fz_throw(ctx, "cannot set graphics state");
 		}
 		break;
 	case A('h'): pdf_run_h(csi); break;
@@ -2516,7 +2517,7 @@ pdf_run_keyword(pdf_csi *csi, pdf_obj *rdb, fz_stream *file, char *buf)
 		}
 		fz_catch(ctx)
 		{
-			fz_warn(ctx, "cannot draw shading");
+			fz_throw(ctx, "cannot draw shading");
 		}
 		break;
 	case A('v'): pdf_run_v(csi); break;
@@ -2524,21 +2525,28 @@ pdf_run_keyword(pdf_csi *csi, pdf_obj *rdb, fz_stream *file, char *buf)
 	case A('y'): pdf_run_y(csi); break;
 	default:
 		if (!csi->xbalance)
+		{
 			fz_warn(ctx, "unknown keyword: '%s'", buf);
+			return 1;
+		}
 		break;
 	}
-	fz_assert_lock_not_held(ctx, FZ_LOCK_FILE);
+	return 0;
 }
 
 static void
 pdf_run_stream(pdf_csi *csi, pdf_obj *rdb, fz_stream *file, pdf_lexbuf *buf)
 {
 	fz_context *ctx = csi->dev->ctx;
-	int tok, in_array;
+	int tok = PDF_TOK_ERROR;
+	int in_array;
 
 	/* make sure we have a clean slate if we come here from flush_text */
 	pdf_clear_stack(csi);
 	in_array = 0;
+
+	fz_var(in_array);
+	fz_var(tok);
 
 	if (csi->cookie)
 	{
@@ -2546,114 +2554,139 @@ pdf_run_stream(pdf_csi *csi, pdf_obj *rdb, fz_stream *file, pdf_lexbuf *buf)
 		csi->cookie->progress = 0;
 	}
 
-	while (1)
+	do
 	{
-		if (csi->top == nelem(csi->stack) - 1)
-			fz_throw(ctx, "stack overflow");
-
-		/* Check the cookie */
-		if (csi->cookie)
+		fz_try(ctx)
 		{
-			if (csi->cookie->abort)
-				break;
-			csi->cookie->progress++;
+			do
+			{
+				if (csi->top == nelem(csi->stack) - 1)
+					fz_throw(ctx, "stack overflow");
+
+				/* Check the cookie */
+				if (csi->cookie)
+				{
+					if (csi->cookie->abort)
+					{
+						tok = PDF_TOK_EOF;
+						break;
+					}
+					csi->cookie->progress++;
+				}
+
+				tok = pdf_lex(file, buf);
+				/* RJW: "lexical error in content stream" */
+
+				if (in_array)
+				{
+					if (tok == PDF_TOK_CLOSE_ARRAY)
+					{
+						in_array = 0;
+					}
+					else if (tok == PDF_TOK_REAL)
+					{
+						pdf_gstate *gstate = csi->gstate + csi->gtop;
+						pdf_show_space(csi, -buf->f * gstate->size * 0.001f);
+					}
+					else if (tok == PDF_TOK_INT)
+					{
+						pdf_gstate *gstate = csi->gstate + csi->gtop;
+						pdf_show_space(csi, -buf->i * gstate->size * 0.001f);
+					}
+					else if (tok == PDF_TOK_STRING)
+					{
+						pdf_show_string(csi, (unsigned char *)buf->scratch, buf->len);
+					}
+					else if (tok == PDF_TOK_KEYWORD)
+					{
+						if (!strcmp(buf->scratch, "Tw") || !strcmp(buf->scratch, "Tc"))
+							fz_warn(ctx, "ignoring keyword '%s' inside array", buf->scratch);
+						else
+							fz_throw(ctx, "syntax error in array");
+					}
+					else if (tok == PDF_TOK_EOF)
+						break;
+					else
+						fz_throw(ctx, "syntax error in array");
+				}
+
+				else switch (tok)
+				{
+				case PDF_TOK_ENDSTREAM:
+				case PDF_TOK_EOF:
+					tok = PDF_TOK_EOF;
+					break;
+
+				case PDF_TOK_OPEN_ARRAY:
+					if (!csi->in_text)
+					{
+						csi->obj = pdf_parse_array(csi->xref, file, buf);
+						/* RJW: "cannot parse array" */
+					}
+					else
+					{
+						in_array = 1;
+					}
+					break;
+
+				case PDF_TOK_OPEN_DICT:
+					csi->obj = pdf_parse_dict(csi->xref, file, buf);
+					/* RJW: "cannot parse dictionary" */
+					break;
+
+				case PDF_TOK_NAME:
+					fz_strlcpy(csi->name, buf->scratch, sizeof(csi->name));
+					break;
+
+				case PDF_TOK_INT:
+					csi->stack[csi->top] = buf->i;
+					csi->top ++;
+					break;
+
+				case PDF_TOK_REAL:
+					csi->stack[csi->top] = buf->f;
+					csi->top ++;
+					break;
+
+				case PDF_TOK_STRING:
+					if (buf->len <= sizeof(csi->string))
+					{
+						memcpy(csi->string, buf->scratch, buf->len);
+						csi->string_len = buf->len;
+					}
+					else
+					{
+						csi->obj = pdf_new_string(ctx, buf->scratch, buf->len);
+					}
+					break;
+
+				case PDF_TOK_KEYWORD:
+					if (pdf_run_keyword(csi, rdb, file, buf->scratch))
+					{
+						tok = PDF_TOK_EOF;
+					}
+					/* RJW: "cannot run keyword" */
+					pdf_clear_stack(csi);
+					break;
+
+				default:
+					fz_throw(ctx, "syntax error in content stream");
+				}
+			}
+			while (tok != PDF_TOK_EOF);
 		}
-
-		tok = pdf_lex(file, buf);
-		/* RJW: "lexical error in content stream" */
-
-		if (in_array)
+		fz_catch(ctx)
 		{
-			if (tok == PDF_TOK_CLOSE_ARRAY)
-			{
-				in_array = 0;
-			}
-			else if (tok == PDF_TOK_REAL)
-			{
-				pdf_gstate *gstate = csi->gstate + csi->gtop;
-				pdf_show_space(csi, -buf->f * gstate->size * 0.001f);
-			}
-			else if (tok == PDF_TOK_INT)
-			{
-				pdf_gstate *gstate = csi->gstate + csi->gtop;
-				pdf_show_space(csi, -buf->i * gstate->size * 0.001f);
-			}
-			else if (tok == PDF_TOK_STRING)
-			{
-				pdf_show_string(csi, (unsigned char *)buf->scratch, buf->len);
-			}
-			else if (tok == PDF_TOK_KEYWORD)
-			{
-				if (!strcmp(buf->scratch, "Tw") || !strcmp(buf->scratch, "Tc"))
-					fz_warn(ctx, "ignoring keyword '%s' inside array", buf->scratch);
-				else
-					fz_throw(ctx, "syntax error in array");
-			}
-			else if (tok == PDF_TOK_EOF)
-				return;
-			else
-				fz_throw(ctx, "syntax error in array");
-		}
-
-		else switch (tok)
-		{
-		case PDF_TOK_ENDSTREAM:
-		case PDF_TOK_EOF:
-			return;
-
-		case PDF_TOK_OPEN_ARRAY:
-			if (!csi->in_text)
-			{
-				csi->obj = pdf_parse_array(csi->xref, file, buf);
-				/* RJW: "cannot parse array" */
-			}
-			else
-			{
-				in_array = 1;
-			}
-			break;
-
-		case PDF_TOK_OPEN_DICT:
-			csi->obj = pdf_parse_dict(csi->xref, file, buf);
-			/* RJW: "cannot parse dictionary" */
-			break;
-
-		case PDF_TOK_NAME:
-			fz_strlcpy(csi->name, buf->scratch, sizeof(csi->name));
-			break;
-
-		case PDF_TOK_INT:
-			csi->stack[csi->top] = buf->i;
-			csi->top ++;
-			break;
-
-		case PDF_TOK_REAL:
-			csi->stack[csi->top] = buf->f;
-			csi->top ++;
-			break;
-
-		case PDF_TOK_STRING:
-			if (buf->len <= sizeof(csi->string))
-			{
-				memcpy(csi->string, buf->scratch, buf->len);
-				csi->string_len = buf->len;
-			}
-			else
-			{
-				csi->obj = pdf_new_string(ctx, buf->scratch, buf->len);
-			}
-			break;
-
-		case PDF_TOK_KEYWORD:
-			pdf_run_keyword(csi, rdb, file, buf->scratch);
-			/* RJW: "cannot run keyword" */
-			pdf_clear_stack(csi);
-			break;
-
-		default:
-			fz_throw(ctx, "syntax error in content stream");
+			/* Swallow the error */
+			if (csi->cookie)
+				csi->cookie->errors++;
+			fz_warn(ctx, "Ignoring error during rendering");
+			/* If we do catch an error, then reset ourselves to a
+			 * base lexing state */
+			in_array = 0;
 		}
 	}
+	while (tok != PDF_TOK_EOF);
 }
 
 /*
@@ -2661,44 +2694,78 @@ pdf_run_stream(pdf_csi *csi, pdf_obj *rdb, fz_stream *file, pdf_lexbuf *buf)
  */
 
 static void
-pdf_run_buffer(pdf_csi *csi, pdf_obj *rdb, fz_buffer *contents)
+pdf_run_contents_stream(pdf_csi *csi, pdf_obj *rdb, fz_stream *file)
 {
 	fz_context *ctx = csi->dev->ctx;
 	pdf_lexbuf_large *buf;
-	fz_stream * file = NULL;
 	int save_in_text;
 
 	fz_var(buf);
-	fz_var(file);
+
+	if (file == NULL)
+		return;
+
+	buf = fz_malloc(ctx, sizeof(*buf)); /* we must be re-entrant for type3 fonts */
+	buf->base.size = PDF_LEXBUF_LARGE;
+	save_in_text = csi->in_text;
+	csi->in_text = 0;
+	fz_try(ctx)
+	{
+		pdf_run_stream(csi, rdb, file, &buf->base);
+	}
+	fz_catch(ctx)
+	{
+		fz_warn(ctx, "Content stream parsing error - rendering truncated");
+	}
+	csi->in_text = save_in_text;
+	fz_free(ctx, buf);
+}
+
+static void
+pdf_run_contents_object(pdf_csi *csi, pdf_obj *rdb, pdf_obj *contents)
+{
+	fz_context *ctx = csi->dev->ctx;
+	fz_stream *file = NULL;
 
 	if (contents == NULL)
 		return;
 
+	file = pdf_open_contents_stream(csi->xref, contents);
 	fz_try(ctx)
 	{
-		buf = fz_malloc(ctx, sizeof(*buf)); /* we must be re-entrant for type3 fonts */
-		buf->base.size = PDF_LEXBUF_LARGE;
-		file = fz_open_buffer(ctx, contents);
-		save_in_text = csi->in_text;
-		csi->in_text = 0;
-		fz_try(ctx)
-		{
-			pdf_run_stream(csi, rdb, file, &buf->base);
-		}
-		fz_catch(ctx)
-		{
-			fz_warn(ctx, "Content stream parsing error - rendering truncated");
-		}
-		csi->in_text = save_in_text;
+		pdf_run_contents_stream(csi, rdb, file);
 	}
 	fz_always(ctx)
 	{
 		fz_close(file);
-		fz_free(ctx, buf);
 	}
 	fz_catch(ctx)
 	{
-		fz_throw(ctx, "cannot parse context stream");
+		fz_rethrow(ctx);
+	}
+}
+
+static void
+pdf_run_contents_buffer(pdf_csi *csi, pdf_obj *rdb, fz_buffer *contents)
+{
+	fz_context *ctx = csi->dev->ctx;
+	fz_stream *file = NULL;
+
+	if (contents == NULL)
+		return;
+
+	file = fz_open_buffer(ctx, contents);
+	fz_try(ctx)
+	{
+		pdf_run_contents_stream(csi, rdb, file);
+	}
+	fz_always(ctx)
+	{
+		fz_close(file);
+	}
+	fz_catch(ctx)
+	{
+		fz_rethrow(ctx);
 	}
 }
 
@@ -2718,14 +2785,16 @@ pdf_run_page_with_usage(pdf_document *xref, pdf_page *page, fz_device *dev, fz_m
 	csi = pdf_new_csi(xref, dev, ctm, event, cookie, NULL);
 	fz_try(ctx)
 	{
-		pdf_run_buffer(csi, page->resources, page->contents);
+		pdf_run_contents_object(csi, page->resources, page->contents);
+	}
+	fz_always(ctx)
+	{
+		pdf_free_csi(csi);
 	}
 	fz_catch(ctx)
 	{
-		pdf_free_csi(csi);
 		fz_throw(ctx, "cannot parse page content stream");
 	}
-	pdf_free_csi(csi);
 
 	if (cookie && cookie->progress_max != -1)
 	{
@@ -2791,7 +2860,7 @@ pdf_run_glyph(pdf_document *xref, pdf_obj *resources, fz_buffer *contents, fz_de
 
 	fz_try(ctx)
 	{
-		pdf_run_buffer(csi, resources, contents);
+		pdf_run_contents_buffer(csi, resources, contents);
 	}
 	fz_catch(ctx)
 	{

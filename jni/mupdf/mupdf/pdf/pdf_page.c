@@ -27,75 +27,120 @@ put_marker_bool(fz_context *ctx, pdf_obj *rdb, char *marker, int val)
 	pdf_drop_obj(tmp);
 }
 
+typedef struct pdf_page_load_s pdf_page_load;
+
+struct pdf_page_load_s
+{
+	int max;
+	int pos;
+	pdf_obj *node;
+	pdf_obj *kids;
+	struct info info;
+};
+
 static void
 pdf_load_page_tree_node(pdf_document *xref, pdf_obj *node, struct info info)
 {
 	pdf_obj *dict, *kids, *count;
 	pdf_obj *obj;
-	int i, n;
 	fz_context *ctx = xref->ctx;
-
-	/* prevent infinite recursion */
-	if (!node || pdf_dict_mark(node))
-		return;
+	pdf_page_load *stack = NULL;
+	int stacklen = -1;
+	int stackmax = 0;
 
 	fz_try(ctx)
 	{
-		kids = pdf_dict_gets(node, "Kids");
-		count = pdf_dict_gets(node, "Count");
-
-		if (pdf_is_array(kids) && pdf_is_int(count))
+		do
 		{
-			obj = pdf_dict_gets(node, "Resources");
-			if (obj)
-				info.resources = obj;
-			obj = pdf_dict_gets(node, "MediaBox");
-			if (obj)
-				info.mediabox = obj;
-			obj = pdf_dict_gets(node, "CropBox");
-			if (obj)
-				info.cropbox = obj;
-			obj = pdf_dict_gets(node, "Rotate");
-			if (obj)
-				info.rotate = obj;
-
-			n = pdf_array_len(kids);
-			for (i = 0; i < n; i++)
+			if (!node || pdf_dict_mark(node))
 			{
-				obj = pdf_array_get(kids, i);
-				pdf_load_page_tree_node(xref, obj, info);
+				/* NULL node, or we've been here before.
+				 * Nothing to do. */
 			}
-		}
-		else if ((dict = pdf_to_dict(node)) != NULL)
-		{
-			if (info.resources && !pdf_dict_gets(dict, "Resources"))
-				pdf_dict_puts(dict, "Resources", info.resources);
-			if (info.mediabox && !pdf_dict_gets(dict, "MediaBox"))
-				pdf_dict_puts(dict, "MediaBox", info.mediabox);
-			if (info.cropbox && !pdf_dict_gets(dict, "CropBox"))
-				pdf_dict_puts(dict, "CropBox", info.cropbox);
-			if (info.rotate && !pdf_dict_gets(dict, "Rotate"))
-				pdf_dict_puts(dict, "Rotate", info.rotate);
-
-			if (xref->page_len == xref->page_cap)
+			else
 			{
-				fz_warn(ctx, "found more pages than expected");
-				xref->page_refs = fz_resize_array(ctx, xref->page_refs, xref->page_cap+1, sizeof(pdf_obj*));
-				xref->page_objs = fz_resize_array(ctx, xref->page_objs, xref->page_cap+1, sizeof(pdf_obj*));
-				xref->page_cap ++;
-			}
+				kids = pdf_dict_gets(node, "Kids");
+				count = pdf_dict_gets(node, "Count");
+				if (pdf_is_array(kids) && pdf_is_int(count))
+				{
+					/* Push this onto the stack */
+					obj = pdf_dict_gets(node, "Resources");
+					if (obj)
+						info.resources = obj;
+					obj = pdf_dict_gets(node, "MediaBox");
+					if (obj)
+						info.mediabox = obj;
+					obj = pdf_dict_gets(node, "CropBox");
+					if (obj)
+						info.cropbox = obj;
+					obj = pdf_dict_gets(node, "Rotate");
+					if (obj)
+						info.rotate = obj;
+					stacklen++;
+					if (stacklen == stackmax)
+					{
+						stack = fz_resize_array(ctx, stack, stackmax ? stackmax*2 : 10, sizeof(*stack));
+						stackmax = stackmax ? stackmax*2 : 10;
+					}
+					stack[stacklen].kids = kids;
+					stack[stacklen].node = node;
+					stack[stacklen].pos = -1;
+					stack[stacklen].max = pdf_array_len(kids);
+					stack[stacklen].info = info;
+				}
+				else if ((dict = pdf_to_dict(node)) != NULL)
+				{
+					if (info.resources && !pdf_dict_gets(dict, "Resources"))
+						pdf_dict_puts(dict, "Resources", info.resources);
+					if (info.mediabox && !pdf_dict_gets(dict, "MediaBox"))
+						pdf_dict_puts(dict, "MediaBox", info.mediabox);
+					if (info.cropbox && !pdf_dict_gets(dict, "CropBox"))
+						pdf_dict_puts(dict, "CropBox", info.cropbox);
+					if (info.rotate && !pdf_dict_gets(dict, "Rotate"))
+						pdf_dict_puts(dict, "Rotate", info.rotate);
 
-			xref->page_refs[xref->page_len] = pdf_keep_obj(node);
-			xref->page_objs[xref->page_len] = pdf_keep_obj(dict);
-			xref->page_len ++;
+					if (xref->page_len == xref->page_cap)
+					{
+						fz_warn(ctx, "found more pages than expected");
+						xref->page_refs = fz_resize_array(ctx, xref->page_refs, xref->page_cap+1, sizeof(pdf_obj*));
+						xref->page_objs = fz_resize_array(ctx, xref->page_objs, xref->page_cap+1, sizeof(pdf_obj*));
+						xref->page_cap ++;
+					}
+
+					xref->page_refs[xref->page_len] = pdf_keep_obj(node);
+					xref->page_objs[xref->page_len] = pdf_keep_obj(dict);
+					xref->page_len ++;
+					pdf_dict_unmark(node);
+				}
+			}
+			/* Get the next node */
+			if (stacklen < 0)
+				break;
+			while (++stack[stacklen].pos == stack[stacklen].max)
+			{
+				pdf_dict_unmark(stack[stacklen].node);
+				stacklen--;
+				if (stacklen < 0) /* No more to pop! */
+					break;
+				node = stack[stacklen].node;
+				info = stack[stacklen].info;
+				pdf_dict_unmark(node); /* Unmark it, cos we're about to mark it again */
+			}
+			if (stacklen >= 0)
+				node = pdf_array_get(stack[stacklen].kids, stack[stacklen].pos);
 		}
+		while (stacklen >= 0);
+	}
+	fz_always(ctx)
+	{
+		while (stacklen >= 0)
+			pdf_dict_unmark(stack[stacklen--].node);
+		fz_free(ctx, stack);
 	}
 	fz_catch(ctx)
 	{
-		pdf_dict_unmark(node);
 		fz_rethrow(ctx);
 	}
-	pdf_dict_unmark(node);
 }
 
 static void
@@ -236,72 +281,6 @@ found:
 	return useBM;
 }
 
-/* we need to combine all sub-streams into one for the content stream interpreter */
-
-static fz_buffer *
-pdf_load_page_contents_array(pdf_document *xref, pdf_obj *list)
-{
-	fz_buffer *big;
-	fz_buffer *one;
-	int i, n;
-	fz_context *ctx = xref->ctx;
-
-	big = fz_new_buffer(ctx, 32 * 1024);
-
-	n = pdf_array_len(list);
-	fz_var(i); /* Workaround Mac compiler bug */
-	for (i = 0; i < n; i++)
-	{
-		pdf_obj *stm = pdf_array_get(list, i);
-		fz_try(ctx)
-		{
-			one = pdf_load_stream(xref, pdf_to_num(stm), pdf_to_gen(stm));
-		}
-		fz_catch(ctx)
-		{
-			fz_warn(ctx, "cannot load content stream part %d/%d", i + 1, n);
-			continue;
-		}
-
-		if (big->len + one->len + 1 > big->cap)
-			fz_resize_buffer(ctx, big, big->len + one->len + 1);
-		memcpy(big->data + big->len, one->data, one->len);
-		big->data[big->len + one->len] = ' ';
-		big->len += one->len + 1;
-
-		fz_drop_buffer(ctx, one);
-	}
-
-	if (n > 0 && big->len == 0)
-	{
-		fz_drop_buffer(ctx, big);
-		fz_throw(ctx, "cannot load content stream");
-	}
-	fz_trim_buffer(ctx, big);
-
-	return big;
-}
-
-static fz_buffer *
-pdf_load_page_contents(pdf_document *xref, pdf_obj *obj)
-{
-	fz_context *ctx = xref->ctx;
-
-	if (pdf_is_array(obj))
-	{
-		return pdf_load_page_contents_array(xref, obj);
-		/* RJW: "cannot load content stream array" */
-	}
-	else if (pdf_is_stream(xref, pdf_to_num(obj), pdf_to_gen(obj)))
-	{
-		return pdf_load_stream(xref, pdf_to_num(obj), pdf_to_gen(obj));
-		/* RJW: "cannot load content stream (%d 0 R)", pdf_to_num(obj) */
-	}
-
-	fz_warn(ctx, "page contents missing, leaving page blank");
-	return fz_new_buffer(ctx, 0);
-}
-
 pdf_page *
 pdf_load_page(pdf_document *xref, int number)
 {
@@ -311,6 +290,7 @@ pdf_load_page(pdf_document *xref, int number)
 	pdf_obj *pageobj, *pageref, *obj;
 	fz_rect mediabox, cropbox, realbox;
 	fz_matrix ctm;
+	float userunit;
 
 	pdf_load_page_tree(xref);
 	if (number < 0 || number >= xref->page_len)
@@ -326,6 +306,12 @@ pdf_load_page(pdf_document *xref, int number)
 	page->links = NULL;
 	page->annots = NULL;
 
+	obj = pdf_dict_gets(pageobj, "UserUnit");
+	if (pdf_is_real(obj))
+		userunit = pdf_to_real(obj);
+	else
+		userunit = 1;
+
 	mediabox = pdf_to_rect(ctx, pdf_dict_gets(pageobj, "MediaBox"));
 	if (fz_is_empty_rect(mediabox))
 	{
@@ -340,10 +326,10 @@ pdf_load_page(pdf_document *xref, int number)
 	if (!fz_is_empty_rect(cropbox))
 		mediabox = fz_intersect_rect(mediabox, cropbox);
 
-	page->mediabox.x0 = MIN(mediabox.x0, mediabox.x1);
-	page->mediabox.y0 = MIN(mediabox.y0, mediabox.y1);
-	page->mediabox.x1 = MAX(mediabox.x0, mediabox.x1);
-	page->mediabox.y1 = MAX(mediabox.y0, mediabox.y1);
+	page->mediabox.x0 = MIN(mediabox.x0, mediabox.x1) * userunit;
+	page->mediabox.y0 = MIN(mediabox.y0, mediabox.y1) * userunit;
+	page->mediabox.x1 = MAX(mediabox.x0, mediabox.x1) * userunit;
+	page->mediabox.y1 = MAX(mediabox.y0, mediabox.y1) * userunit;
 
 	if (page->mediabox.x1 - page->mediabox.x0 < 1 || page->mediabox.y1 - page->mediabox.y0 < 1)
 	{
@@ -363,7 +349,9 @@ pdf_load_page(pdf_document *xref, int number)
 
 	ctm = fz_concat(fz_rotate(-page->rotate), fz_scale(1, -1));
 	realbox = fz_transform_rect(ctm, page->mediabox);
-	page->ctm = fz_concat(ctm, fz_translate(-realbox.x0, -realbox.y0));
+	ctm = fz_concat(ctm, fz_scale(userunit, userunit));
+	ctm = fz_concat(ctm, fz_translate(-realbox.x0, -realbox.y0));
+	page->ctm = ctm;
 
 	obj = pdf_dict_gets(pageobj, "Annots");
 	if (obj)
@@ -379,7 +367,7 @@ pdf_load_page(pdf_document *xref, int number)
 	obj = pdf_dict_gets(pageobj, "Contents");
 	fz_try(ctx)
 	{
-		page->contents = pdf_load_page_contents(xref, obj);
+		page->contents = pdf_keep_obj(obj);
 
 		if (pdf_resources_use_blending(ctx, page->resources))
 			page->transparency = 1;
@@ -419,7 +407,7 @@ pdf_free_page(pdf_document *xref, pdf_page *page)
 	if (page->resources)
 		pdf_drop_obj(page->resources);
 	if (page->contents)
-		fz_drop_buffer(xref->ctx, page->contents);
+		pdf_drop_obj(page->contents);
 	if (page->links)
 		fz_drop_link(xref->ctx, page->links);
 	if (page->annots)

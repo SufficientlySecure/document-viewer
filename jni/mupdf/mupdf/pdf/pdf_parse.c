@@ -370,7 +370,7 @@ pdf_parse_dict(pdf_document *xref, fz_stream *file, pdf_lexbuf *buf)
 					(tok == PDF_TOK_KEYWORD && !strcmp(buf->scratch, "ID")))
 				{
 					val = pdf_new_int(ctx, a);
-					fz_dict_put(dict, key, val);
+					pdf_dict_put(dict, key, val);
 					pdf_drop_obj(val);
 					val = NULL;
 					pdf_drop_obj(key);
@@ -393,7 +393,7 @@ pdf_parse_dict(pdf_document *xref, fz_stream *file, pdf_lexbuf *buf)
 				fz_throw(ctx, "unknown token in dict");
 			}
 
-			fz_dict_put(dict, key, val);
+			pdf_dict_put(dict, key, val);
 			pdf_drop_obj(val);
 			val = NULL;
 			pdf_drop_obj(key);
@@ -453,21 +453,19 @@ pdf_parse_ind_obj(pdf_document *xref,
 	fz_var(obj);
 
 	tok = pdf_lex(file, buf);
-	/* RJW: cannot parse indirect object (%d %d R)", num, gen */
 	if (tok != PDF_TOK_INT)
-		fz_throw(ctx, "expected object number (%d %d R)", num, gen);
+		fz_throw(ctx, "expected object number");
 	num = buf->i;
 
 	tok = pdf_lex(file, buf);
-	/* RJW: "cannot parse indirect object (%d %d R)", num, gen */
 	if (tok != PDF_TOK_INT)
-		fz_throw(ctx, "expected generation number (%d %d R)", num, gen);
+		fz_throw(ctx, "expected generation number (%d ? obj)", num);
 	gen = buf->i;
 
 	tok = pdf_lex(file, buf);
 	/* RJW: "cannot parse indirect object (%d %d R)", num, gen */
 	if (tok != PDF_TOK_OBJ)
-		fz_throw(ctx, "expected 'obj' keyword (%d %d R)", num, gen);
+		fz_throw(ctx, "expected 'obj' keyword (%d %d ?)", num, gen);
 
 	tok = pdf_lex(file, buf);
 	/* RJW: "cannot parse indirect object (%d %d R)", num, gen */

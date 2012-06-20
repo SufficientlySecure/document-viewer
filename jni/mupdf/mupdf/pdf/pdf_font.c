@@ -182,9 +182,7 @@ pdf_load_builtin_font(fz_context *ctx, pdf_font_desc *fontdesc, char *fontname)
 	if (!data)
 		fz_throw(ctx, "cannot find builtin font: '%s'", fontname);
 
-
 	fontdesc->font = fz_new_font_from_file(ctx, data, 0, 1);
-//	fontdesc->font = fz_new_font_from_memory(ctx, data, len, 0, 1);
 	/* RJW: "cannot load freetype font from memory" */
 
 	if (!strcmp(fontname, "Symbol") || !strcmp(fontname, "ZapfDingbats"))
@@ -201,9 +199,7 @@ pdf_load_substitute_font(fz_context *ctx, pdf_font_desc *fontdesc, int mono, int
 	if (!data)
 		fz_throw(ctx, "cannot find substitute font");
 
-//	fontdesc->font = fz_new_font_from_memory(ctx, data, len, 0, 1);
 	fontdesc->font = fz_new_font_from_file(ctx, data, 0, 1);
-
 	/* RJW: "cannot load freetype font from memory" */
 
 	fontdesc->font->ft_substitute = 1;
@@ -222,9 +218,7 @@ pdf_load_substitute_cjk_font(fz_context *ctx, pdf_font_desc *fontdesc, int ros, 
 		fz_throw(ctx, "cannot find builtin CJK font");
 
 	/* a glyph bbox cache is too big for droid sans fallback (51k glyphs!) */
-//	fontdesc->font = fz_new_font_from_memory(ctx, data, len, 0, 0);
 	fontdesc->font = fz_new_font_from_file(ctx, data, 0, 0);
-
 	/* RJW: "cannot load builtin CJK font" */
 
 	fontdesc->font->ft_substitute = 1;

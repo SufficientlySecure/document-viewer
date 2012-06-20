@@ -42,6 +42,9 @@ struct renderpage_s
 
 #define RUNTIME_EXCEPTION "java/lang/RuntimeException"
 
+extern fz_locks_context * jni_new_locks();
+extern void jni_free_locks(fz_locks_context *locks);
+
 void mupdf_throw_exception(JNIEnv *env, char *message)
 {
     jthrowable new_exception = (*env)->FindClass(env, RUNTIME_EXCEPTION);
@@ -54,19 +57,29 @@ void mupdf_throw_exception(JNIEnv *env, char *message)
 static void mupdf_free_document(renderdocument_t* doc)
 {
     if (!doc)
-	return;
+    {
+        return;
+    }
+
+    fz_locks_context *locks = doc->ctx->locks;
 
     if (doc->outline)
+    {
         fz_free_outline(doc->ctx, doc->outline);
+    }
     doc->outline = NULL;
 
     if (doc->document)
+    {
         fz_close_document(doc->document);
+    }
     doc->document = NULL;
 
     fz_flush_warnings(doc->ctx);
     fz_free_context(doc->ctx);
     doc->ctx = NULL;
+
+    jni_free_locks(locks);
 
     free(doc);
     doc = NULL;
@@ -94,7 +107,12 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfDocument_open(JNIEnv *env, jclass cl
     }
     DEBUG("MuPdfDocument.nativeOpen(): storememory = %d", storememory);
 
-    doc->ctx = fz_new_context(NULL, NULL, storememory);
+    fz_locks_context *locks = jni_new_locks();
+    if (!locks)
+    {
+        DEBUG("MuPdfDocument.nativeOpen(): no locks available");
+    }
+    doc->ctx = fz_new_context(NULL, locks, storememory);
     if (!doc->ctx)
     {
         free(doc);

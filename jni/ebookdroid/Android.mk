@@ -17,6 +17,7 @@ LOCAL_SRC_FILES := \
 	DjvuDroidBridge.cpp \
 	cbdroidbridge.c \
 	mupdfdroidbridge.c \
+	jni_concurrent.c \
 
 LOCAL_C_INCLUDES := \
 	$(LOCAL_PATH)/../mupdf/mupdf/fitz \

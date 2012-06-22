@@ -12,6 +12,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 import java.util.ArrayList;
@@ -21,8 +22,11 @@ import java.util.List;
 import org.emdev.utils.MatrixUtils;
 import org.emdev.utils.textmarkup.FontStyle;
 import org.emdev.utils.textmarkup.JustificationMode;
+import org.emdev.utils.textmarkup.line.AbstractLineElement;
 import org.emdev.utils.textmarkup.line.Line;
 import org.emdev.utils.textmarkup.line.LineFixedWhiteSpace;
+import org.emdev.utils.textmarkup.line.LineWhiteSpace;
+import org.emdev.utils.textmarkup.line.TextElement;
 
 public class FB2Page implements CodecPage {
 
@@ -66,7 +70,41 @@ public class FB2Page implements CodecPage {
 
     @Override
     public List<? extends RectF> searchText(String pattern) {
-        return Collections.emptyList();
+        final List<RectF> rects = new ArrayList<RectF>();
+
+        final char[] charArray = pattern.toCharArray();
+        final float y = searchText(lines, charArray, rects, FB2Page.MARGIN_Y);
+
+        searchText(noteLines, charArray, rects, y);
+
+        return rects;
+    }
+
+    private float searchText(final ArrayList<Line> lines, final char[] pattern, final List<RectF> rects, float y) {
+        for (int i = 0, n = lines.size(); i < n; i++) {
+            final Line line = lines.get(i);
+            final float bottom = y + line.getHeight();
+            line.ensureJustification();
+            float x = FB2Page.MARGIN_X;
+            for (int i1 = 0, n1 = line.elements.size(); i1 < n1; i1++) {
+                final AbstractLineElement e = line.elements.get(i1);
+                final float w = e.width + (e instanceof LineWhiteSpace ? line.spaceWidth : 0);
+                if (e instanceof TextElement) {
+                    final TextElement textElement = (TextElement) e;
+                    if (textElement.indexOf(pattern) != -1) {
+                        Rect bounds = new Rect();
+                        textElement.getTextBounds(bounds);
+
+
+                        rects.add(new RectF((x - 3) / FB2Page.PAGE_WIDTH, (bottom + bounds.top - 3) / FB2Page.PAGE_HEIGHT, (x + w + 3)
+                                / FB2Page.PAGE_WIDTH, (bottom + bounds.bottom + 3) / FB2Page.PAGE_HEIGHT));
+                    }
+                }
+                x += w;
+            }
+            y = bottom;
+        }
+        return y;
     }
 
     @Override

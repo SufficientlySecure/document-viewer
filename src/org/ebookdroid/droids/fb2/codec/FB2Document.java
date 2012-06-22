@@ -11,7 +11,6 @@ import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.codec.OutlineLink;
 
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.graphics.RectF;
 
 import java.io.BufferedReader;
@@ -34,14 +33,11 @@ import org.emdev.utils.LengthUtils;
 import org.emdev.utils.archives.zip.ZipArchive;
 import org.emdev.utils.archives.zip.ZipArchiveEntry;
 import org.emdev.utils.textmarkup.FontStyle;
+import org.emdev.utils.textmarkup.JustificationMode;
 import org.emdev.utils.textmarkup.MarkupTitle;
 import org.emdev.utils.textmarkup.Words;
-import org.emdev.utils.textmarkup.JustificationMode;
-import org.emdev.utils.textmarkup.line.AbstractLineElement;
 import org.emdev.utils.textmarkup.line.HorizontalRule;
 import org.emdev.utils.textmarkup.line.Line;
-import org.emdev.utils.textmarkup.line.LineWhiteSpace;
-import org.emdev.utils.textmarkup.line.TextElement;
 import org.xml.sax.InputSource;
 
 public class FB2Document implements CodecDocument {
@@ -262,46 +258,8 @@ public class FB2Document implements CodecDocument {
         }
 
         final FB2Page page = (FB2Page) getPage(pageNuber);
-        if (page == null) {
-            return null;
-        }
+        return (page == null) ? null : page.searchText(pattern);
 
-        final List<RectF> rects = new ArrayList<RectF>();
-
-        final char[] charArray = pattern.toCharArray();
-        final float y = searchText(page.lines, charArray, rects, FB2Page.MARGIN_Y);
-
-        searchText(page.noteLines, charArray, rects, y);
-
-        return rects;
-    }
-
-    private float searchText(final ArrayList<Line> lines, final char[] pattern, final List<RectF> rects, float y) {
-        for (int i = 0, n = lines.size(); i < n; i++) {
-            final Line line = lines.get(i);
-            final float top = y;
-            final float bottom = y + line.getHeight();
-            line.ensureJustification();
-            float x = FB2Page.MARGIN_X;
-            for (int i1 = 0, n1 = line.elements.size(); i1 < n1; i1++) {
-                final AbstractLineElement e = line.elements.get(i1);
-                final float w = e.width + (e instanceof LineWhiteSpace ? line.spaceWidth : 0);
-                if (e instanceof TextElement) {
-                    final TextElement textElement = (TextElement) e;
-                    if (textElement.indexOf(pattern) != -1) {
-                        Rect bounds = new Rect();
-                        textElement.getTextBounds(bounds);
-
-
-                        rects.add(new RectF((x - 3) / FB2Page.PAGE_WIDTH, (bottom + bounds.top - 3) / FB2Page.PAGE_HEIGHT, (x + w + 3)
-                                / FB2Page.PAGE_WIDTH, (bottom + bounds.bottom + 3) / FB2Page.PAGE_HEIGHT));
-                    }
-                }
-                x += w;
-            }
-            y = bottom;
-        }
-        return y;
     }
 
     public FB2Page getLastPage() {

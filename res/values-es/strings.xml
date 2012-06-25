@@ -1,175 +1,295 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-
     <string name="app_name">"EBookDroid"</string>
     <string name="pref_ui_category">"Interfaz de usuario"</string>
     <string name="pref_rotation_title">"Modo de rotación"</string>
-    <string name="pref_rotation_summary">"Cuales el modoparausar"</string>
-    <string name="pref_fullscreen_title">"Pantallacompleta"</string>
+    <string name="pref_rotation_summary">"Cómo actúa la rotación"</string>
+    <string name="pref_fullscreen_title">"Pantalla completa"</string>
     <string name="pref_fullscreen_summary">"Ocultar la barra de estado."</string>
-    <string name="pref_title_title">"Заголовок"</string>
-    <string name="pref_title_summary">"Mostrartítulo.Se exige la reapertura del documento"</string>
-    <string name="pref_tap_title">"Desplazamientotáctil"</string>
-    <string name="pref_tap_summary">"Desplazamientotáctil"</string>
-    <string name="pref_tapsize_title">"Tamaño de la tapa"</string>
-    <string name="pref_tapsize_summary">"Tamaño de la zona de la tapa comoporcentaje"</string>
-    <string name="pref_scroll_title">"Alturadel desplazamiento"</string>
-    <string name="pref_scroll_summary">"Ajuste la altura del desplazamiento"</string>
+    <string name="pref_title_title">"Mostrar título"</string>
+    <string name="pref_title_summary">"Mostrar título. Se necesita reabrir el documento"</string>
+    <string name="pref_tap_title">"Desplazamiento táctil"</string>
+    <string name="pref_tap_summary">"Desplazamiento táctil"</string>
+    <string name="pref_tapsize_title">"Tamaño del toque"</string>
+    <string name="pref_tapsize_summary">"Tamaño de la zona de toque en porcentaje"</string>
+    <string name="pref_scroll_title">"Longitud del desplazamiento"</string>
+    <string name="pref_scroll_summary">"Ajuste la longitud del desplazamiento"</string>
     <string name="pref_render_category">"Representación"</string>
-    <string name="pref_browser_category">"Verarchivos"</string>
-    <string name="pref_brautoscandir_title">"Directorioparaanalizar"</string>
-    <string name="pref_brautoscandir_summary">"Directorio de análisisautomáticos"</string>
-    <string name="pref_brbrfiletypesscreen_title">"Tipos de archivos"</string>
-    <string name="pref_brbrfiletypesscreen_summary">"Tipos de archivosparamostrar"</string>
+    <string name="pref_browser_category">"Ver archivos"</string>
+    <string name="pref_brautoscandir_title">"Directorio con escaneo automático"</string>
+    <string name="pref_brautoscandir_summary">"Directorio para búsqueda automática de archivos"</string>
+    <string name="pref_brbrfiletypesscreen_title">"Tipos de Archivo"</string>
+    <string name="pref_brbrfiletypesscreen_summary">"Tipos de Archivo a mostrar en la biblioteca"</string>
     <string name="pref_brfiletypedjvu_title">".djvu"</string>
-    <string name="pref_brfiletypedjvu_summary">"Mostrar los archivosDjVu"</string>
+    <string name="pref_brfiletypedjvu_summary">"Mostrar los archivos DjVu"</string>
     <string name="pref_brfiletypedjv_title">".djv"</string>
-    <string name="pref_brfiletypedjv_summary">"Mostrar los archivosDjVu"</string>
+    <string name="pref_brfiletypedjv_summary">"Mostrar los archivos DjVu"</string>
     <string name="pref_brfiletypepdf_title">".pdf"</string>
-    <string name="pref_brfiletypepdf_summary">"Mostrar  los archivos PDF"</string>
+    <string name="pref_brfiletypepdf_summary">"Mostrar los archivos PDF"</string>
     <string name="pref_brfiletypexps_title">".xps"</string>
-    <string name="pref_brfiletypexps_summary">"Mostrararchivos XPS"</string>
+    <string name="pref_brfiletypexps_summary">"Mostrar los archivos XPS"</string>
     <string name="pref_brfiletypeoxps_title">".oxps"</string>
-    <string name="pref_brfiletypeoxps_summary">"Mostrararchivos OXPS"</string>
+    <string name="pref_brfiletypeoxps_summary">"Mostrar los archivos OXPS"</string>
     <string name="pref_brfiletypecbz_title">".cbz"</string>
-    <string name="pref_brfiletypecbz_summary">"Mostrararchivos CBZ"</string>
+    <string name="pref_brfiletypecbz_summary">"Mostrar los archivos CBZ"</string>
     <string name="pref_brfiletypecbr_title">".cbr"</string>
-    <string name="pref_brfiletypecbr_summary">"Mostrararchivos CBR"</string>
+    <string name="pref_brfiletypecbr_summary">"Mostrar los archivos CBR"</string>
     <string name="pref_brfiletypefb2_title">".fb2"</string>
-    <string name="pref_brfiletypefb2_summary">"Mostrararchivos FB2 "</string>
+    <string name="pref_brfiletypefb2_summary">"Mostrar los archivos FB2 "</string>
     <string name="pref_brfiletypefb2.zip_title">".fb2.zip"</string>
-    <string name="pref_brfiletypefb2.zip_summary">"Mostrar  los archivos FB2.ZIP"</string>
-    <string name="pref_brfiletypespecific_title">"Ajustesespeciales"</string>
-    <string name="pref_brfiletypespecific_summary">"Opcionesespecíficaspara el formato"</string>
+    <string name="pref_brfiletypefb2.zip_summary">"Mostrar los archivos FB2.ZIP"</string>
+	
+    <string name="pref_brfiletypespecific_title">"Ajustes específicos"</string>
+    <string name="pref_brfiletypespecific_summary">"Ajustes específicos para cada formato"</string>
     <string name="pref_brfiletypespecificdjvu_title">"DJVU"</string>
-    <string name="pref_brfiletypespecificdjvu_summary">"AjustesparaDJVU"</string>
+    <string name="pref_brfiletypespecificdjvu_summary">"Ajustes para DJVU"</string>
     <string name="pref_djvu_rendering_mode_title">"Modo de representación"</string>
     <string name="pref_djvu_rendering_mode_summary">"Modo de representación de la página"</string>
-    <string name="list_djvu_rendering_mode_0">"En colores</string>
-    <string name="list_djvu_rendering_mode_1">"Blanco/Negro"</string>
-    <string name="list_djvu_rendering_mode_2">"Sólo el color "</string>
+	
+    <string name="list_djvu_rendering_mode_0">"Color</string>
+    <string name="list_djvu_rendering_mode_1">"Blanco y Negro"</string>
+    <string name="list_djvu_rendering_mode_2">"Sólo el color"</string>
     <string name="list_djvu_rendering_mode_3">"Sólo la máscara"</string>
     <string name="list_djvu_rendering_mode_4">"Sólo la capa de fondo"</string>
     <string name="list_djvu_rendering_mode_5">"Sólo la capa principal"</string>
-    <string name="list_rotation_auto">"Automáticamente"</string>
-    <string name="list_rotation_land">"Hacercumplir el álbum"</string>
-    <string name="list_rotation_port">"Hacercumpliel retrato "</string>
+	
+	<string name="list_rotation_unspecified">Sin especificar</string>
+	<string name="list_rotation_land">Forzar apaisado</string>
+	<string name="list_rotation_port">Forzar retrato</string>
+    <string name="list_rotation_user">Usuario</string>
+    <string name="list_rotation_behind">Behind</string>
+    <string name="list_rotation_auto">"Automático"</string>
+	<string name="list_rotation_nosensor">No sensor</string>
+    <string name="list_rotation_sensor_landscape">Sensor apaisado</string>
+    <string name="list_rotation_sensor_portrait">Sensor retrato</string>
+    <string name="list_rotation_reverse_landscape">Modo apaisado invertido</string>
+    <string name="list_rotation_reverse_portrait">Modo retrato invertido</string>
+    <string name="list_rotation_full_sensor">Sensor completo</string>
+	
     <string name="menu_close">Cerrar</string>
-    <string name="menu_goto_page">Página</string>
+    <string name="menu_goto_page">Ir a Página</string>
     <string name="menu_outline">Sumario</string>
-    <string name="menu_zoom">Amplificación</string>
+    <string name="menu_zoom">Ampliar</string>
     <string name="menu_nightmode">Día/Noche</string>
-    <string name="menu_settings">Todosajustes</string>
+    <string name="menu_settings">Todos los ajustes</string>
     <string name="menu_booksettings">Configuración del libro</string>
     <string name="menu_cleanrecent">Borrar los datos</string>
-    <string name="menu_add_bookmark">Adición de un favorito</string>
-    <string name="menu_thumbnail">Coloque la tapa</string>
-    <string name="dialog_title_goto_page">Página</string>
-    <string name="button_goto_page">Pasar</string>
+    <string name="menu_add_bookmark">Añadir marcador</string>
+    <string name="menu_thumbnail">Colocar como miniatura</string>
+	<string name="menu_about">Acerca de</string>
+    <string name="dialog_title_goto_page">Ir a Página</string>
+    <string name="button_goto_page">Ir a Página</string>
     <string name="text_page">Página</string>
-    <string name="list_align_by_width">Ajustar al ancho</string>
-    <string name="list_align_by_height">Por la altura</string>
-    <string name="list_align_auto">Automáticamente</string>
-    <string name="pref_align_title">"Modode alineaciónde páginas"</string>
-    <string name="pref_align_summary">"¿En quélado de la páginaparaalinear?"</string>
-    <string name="pref_viewmode_title">"Modo de revista"</string>
-    <string name="pref_viewmode_summary">"Modo de visualización de la página del documento"</string>
-    <string name="pref_pagesinmemory_title">"Páginas en la memoria"</string>
-    <string name="pref_pagesinmemory_summary">"El número de páginasalmacenadas en la memoria"</string>
-    <string name="pref_splitpages_title">"Dividirlasaperturas"</string>
-    <string name="pref_splitpages_summary">"Dividirlasaperturas en dos páginas"</string>
-    <string name="pref_useanimation_title">"Utilizar la animación"</string>
-    <string name="pref_useanimation_summary">"Utilizar la animaciónparavolver a dibujar la página"</string>
-    <string name="pref_nightmode_title">"Modonocturno"</string>
-    <string name="pref_nightmode_summary">"Letrasblancassobrefondo negro"</string>
+    <string name="list_align_by_width">Según anchura</string>
+    <string name="list_align_by_height">Según altura</string>
+    <string name="list_align_auto">Automático</string>
+    <string name="pref_align_title">"Modo de alineación de página"</string>
+    <string name="pref_align_summary">"Cómo alinear las páginas"</string>
+    <string name="pref_viewmode_title">"Modo de visualizado"</string>
+    <string name="pref_viewmode_summary">"Cómo visualizar el paginado del documento"</string>
+    <string name="pref_pagesinmemory_title">"Páginas en memoria"</string>
+    <string name="pref_pagesinmemory_summary">"Número de páginas a almacenar en memoria"</string>
+    <string name="pref_splitpages_title">"Dividir páginas"</string>
+    <string name="pref_splitpages_summary">"Dividir páginas apaisadas en dos de tipo retrato"</string>
+    <string name="pref_useanimation_title">"Usar la animación"</string>
+    <string name="pref_useanimation_summary">"Usar animación para redibujar la página"</string>
+    <string name="pref_nightmode_title">"Modo nocturno"</string>
+    <string name="pref_nightmode_summary">"Letras blancas sobre fondo negro"</string>
     <string name="error_close">"Cerrar"</string>
     <string name="password_text">"Introduzca la contraseña"</string>
-    <string name="password_ok">"OK"</string>
+    <string name="password_ok">"Aceptar"</string>
     <string name="password_cancel">"Cancelar"</string>
-    <string name="pref_ui_category_summary">Personalizar la interfaz de usuario</string>
-    <string name="pref_pageintitle_title">Título de la página</string>
-    <string name="pref_pageintitle_summary">Mostrar el número de página actual en el encabezado</string>
-    <string name="pref_render_category_summary">Configuración de la prestación</string>
-    <string name="pref_browser_category_summary">Configuración del navegador y tipos de archivos compatibles</string>
-    <string name="pref_book_category">"Configuración del  libro"</string>
-    <string name="pref_book_category_summary">Configuración de la prestaciónpara el librocorriente</string>
+    <string name="pref_ui_category_summary">Configuración de la interfaz de usuario</string>
+    <string name="pref_pageintitle_title">Página en el título</string>
+    <string name="pref_pageintitle_summary">Mostrar número de página actual en el encabezado</string>
+    <string name="pref_render_category_summary">Configuración de la Representación</string>
+    <string name="pref_browser_category_summary">Configuración de archivos y tipos compatibles</string>
+    <string name="pref_book_category">"Configuración del libro"</string>
+    <string name="pref_book_category_summary">Configuración para el libro actual</string>
     <string name="pref_animationtype_title">Animación</string>
-    <string name="pref_animationtype_summary">"Seleccione el tipo de animación de trashojar"</string>
-    <string name="list_animation_none">"Discapacitado"</string>
-    <string name="list_animation_curler_simple">"Trashojar  simple"</string>
-    <string name="list_animation_curler_dynamic">"Trashojardinámico"</string>
-    <string name="list_animation_curler_natural">"Trashojar natural"</string>
+    <string name="pref_animationtype_summary">"Seleccione el tipo de animación para las transiciones"</string>
+    <string name="list_animation_none">"Ninguno"</string>
+    <string name="list_animation_curler_simple">"Transición simple"</string>
+    <string name="list_animation_curler_dynamic">"Transición dinámica"</string>
+    <string name="list_animation_curler_natural">"Transición natural"</string>
     <string name="list_animation_slider">"Desplazamiento"</string>
-    <string name="list_animation_fader">"Manifestación"</string>
+    <string name="list_animation_fader">"Fundido"</string>
     <string name="list_animation_squeezer">"Compresión"</string>
-    <string name="pref_scroll_category">" Al hacerclic y desplazarse"</string>
-    <string name="pref_scroll_category_summary">"Configuración del desplazamiento"</string>
-    <string name="pref_singlepage_category">"Modo de una sola página"</string>
-    <string name="pref_singlepage_category_summary">"Ajustespara el modo de una sola página"</string>
-    <string name="pref_memory_category">"Uso de la memoria"</string>
-    <string name="pref_memory_category_summary">"Ajustespara elUso de la memoria"</string>
-    <string name="pref_brightness_title">"Intensidad"</string>
-    <string name="pref_brightness_summary">"Ajustes de la Intensidad general de la imagen(0–100)"</string>
-    <string name="pref_brightnessnightmodeonly_title">"la Intensidadpor la noche"</string>
-    <string name="pref_brightnessnightmodeonly_summary">"Sólo se aplicanparaajustar la intensidad en modonocturno"</string>
-    <string name="pref_keepscreenon_title">"No apague la pantalla"</string>
-    <string name="pref_keepscreenon_summary">"No pase al modo de sueño"</string>
-    <string name="pref_loadrecent_title">"Abra lo reciente"</string>
-    <string name="pref_loadrecent_summary">"Al arrancar, se abreautomáticamente el últimolibro"</string>
-    <string name="add_bookmark_name">"Introduzcaunadescripciónpara el marcador"</string>
+    <string name="pref_scroll_category">"Táctil y desplazamientos"</string>
+    <string name="pref_scroll_category_summary">"Configuración táctil y desplazamientos"</string>
+    <string name="pref_singlepage_category">"Configuración de página única"</string>
+    <string name="pref_singlepage_category_summary">"Ajustes para el modo de página única"</string>
+    <string name="pref_memory_category">"Uso de memoria"</string>
+    <string name="pref_memory_category_summary">"Ajustes de uso de memoria"</string>
+    <string name="pref_brightness_title">"Brillo"</string>
+    <string name="pref_brightness_summary">"Establecer la Intensidad general de la imagen (0–100)"</string>
+    <string name="pref_brightnessnightmodeonly_title">"Brillo en modo nocturno"</string>
+    <string name="pref_brightnessnightmodeonly_summary">"Aplicar la configuración de brillo sólo para el modo nocturno"</string>
+    <string name="pref_keepscreenon_title">"No apagar la pantalla"</string>
+    <string name="pref_keepscreenon_summary">"Mantener la pantalla siempre encendida"</string>
+    <string name="pref_loadrecent_title">"Abrir reciente"</string>
+    <string name="pref_loadrecent_summary">"Al arrancar, abrir automáticamente el último libro"</string>
+    <string name="add_bookmark_name">"Introduzca una descripción para el marcador"</string>
     <string name="bookmark_start">Inicio</string>
-    <string name="bookmark_end">Конец</string>
-    <string name="bookmark_invalid_page">"Númeroerrado de la página. Páginasdisponibles: 1-"</string>
+    <string name="bookmark_end">Fin</string>
+    <string name="bookmark_invalid_page">"Número de página inválido. Rango: 1-"</string>
     <string name="bookmarks_title">"Marcadores"</string>
-    <string name="clear_bookmarks_title">"Borrar los marcadores"</string>
-    <string name="clear_bookmarks_text">"¿Estáseguroquequiereborrartodos los marcadores?"</string>
-    <string name="del_bookmark_title">"Eliminarel  marcador"</string>
-    <string name="del_bookmark_text">"¿Estáseguroquequiereborrarestemarcador?"</string>
-    <string name="clear_recent_title">"Borrarlo reciente"</string>
-    <string name="clear_recent_text">"">"¿Estáseguroquequiereborrarla lista de los librosabiertos?"</string>
-    <string name="pref_zoomdoubletap_title">"El aumento de la tapu"</string>
-    <string name="pref_zoomdoubletap_summary">"Mostrar / ocultar la reglaparaaumentar con un doble-tapu"</string>
-    <string name="pref_decodemode_title">"Uso de la memoria"</string>
-    <string name="pref_decodemode_summary">"Establece los modos del uso de la memória</string>
-    <string name="list_decodemode_native">"Decodificar la página en la resolución original"</string>
-    <string name="list_decodemode_normal">"Decodificar  la página de acuerdo con lasáreas"</string>
-    <string name="list_decodemode_low">"Ahorro de memoria - paralimitarla dimensión de lasregiones en la descodificación"</string>
+    <string name="clear_bookmarks_title">"Eliminar los marcadores"</string>
+    <string name="clear_bookmarks_text">"¿Está seguro de querer eliminar todos los marcadores?"</string>
+    <string name="del_bookmark_title">"Eliminar marcador"</string>
+    <string name="del_bookmark_text">"¿Está seguro de querer eliminar este marcador?"</string>
+    <string name="clear_recent_title">"Borrar historial reciente"</string>
+    <string name="clear_recent_text">"">"¿Está seguro de querer borrar la lista de los libros recientes?"</string>
+    <string name="pref_zoomdoubletap_title">"Ampliar con doble toque"</string>
+    <string name="pref_zoomdoubletap_summary">"Mostrar/ocultar los controles de Ampliar con doble toque"</string>
+	
+    <string name="pref_decodemode_title">"Parámetros uso de memoria"</string>
+    <string name="pref_decodemode_summary">"Establece los modos de uso de memória</string>
+    <string name="list_decodemode_native">"Representar la página en la resolución original"</string>
+    <string name="list_decodemode_normal">"Representar la página según áreas"</string>
+    <string name="list_decodemode_low">"Bajo consumo de memoria - usar limite de tamaño para el área"</string>
     <string name="pref_maximagesize_title">"Dimensión maxima del área"</string>
-    <string name="pref_maximagesize_summary">"Dimensión maxima del áreadurantela descodificación(en Qb)"</string>
+    <string name="pref_maximagesize_summary">"Máximo tamaño del area (en KB)"</string>
+	
     <string name="bookcase_shelves">"Estanterías"</string>
-    <string name="recent_title">"Librosrecientes"</string>
-    <string name="pref_usebookcase_title">"Use el gabinete"</string>
-    <string name="pref_usebookcase_summary">"Use gabinete con cubiertas en lugar de laslistas"</string>
-    <string name="list_clear_recent_mode_clear_recent_list">Borrar la listadelorecienleido</string>
-    <string name="list_clear_recent_mode_delete_bookmarks">Eliminartodos los marcadores</string>
-    <string name="list_clear_recent_mode_delete_book_settings">Eliminartodos los ajustes de los libros</string>
-    <string name="list_clear_recent_mode_delete_cached_data">Eliminartodos los archivosalmacenados en caché</string>
-    <string name="list_viewmode_vertical_scroll">Rollo vertical</string>
-    <string name="list_viewmode_horizontal_scroll">Rollo horizontal</string>
-    <string name="list_viewmode_single_page">Modo de una sola página</string>
-    <string name="pref_croppages_title">"Recortarlaspáginas"</string>
-    <string name="pref_croppages_summary">"Recortarlasmárgenes de la página(experimentalmente)"</string>
-    <string name="pref_showanimicon_title">"Mostrar el tipo de animación"</string>
-    <string name="pref_showanimicon_summary">"Mostrar el tipo de animaciónsiemprecuando la animación o el desplazamiento son posibles "</string>
-    <string name="about_title">"Sobre el programa"</string>
+    <string name="recent_title">"Libros recientes"</string>
+    <string name="pref_usebookcase_title">"Usar la vista de biblioteca"</string>
+    <string name="pref_usebookcase_summary">"Usar cubiertas/portadas en biblioteca en lugar de listas"</string>
+	
+    <string name="list_clear_recent_mode_clear_recent_list">Borrar la lista de recientes</string>
+    <string name="list_clear_recent_mode_delete_bookmarks">Eliminar todos los marcadores</string>
+    <string name="list_clear_recent_mode_delete_book_settings">Eliminar todos los ajustes de los libros</string>
+    <string name="list_clear_recent_mode_delete_cached_data">Eliminar todos los archivos almacenados en caché</string>
+	
+    <string name="list_viewmode_vertical_scroll">Desplazamiento vertical</string>
+    <string name="list_viewmode_horizontal_scroll">Desplazamiento horizontal</string>
+    <string name="list_viewmode_single_page">Página única</string>
+	
+    <string name="pref_croppages_title">"Recortar las páginas"</string>
+    <string name="pref_croppages_summary">"Recortar los márgenes de las páginas (experimental)"</string>
+	
+    <string name="pref_showanimicon_title">"Mostrar icono de animación"</string>
+    <string name="pref_showanimicon_summary">"Mostrar animación o icono de desplazamiento si están activados"</string>
+	
+    <string name="about_title">"Acerca del programa"</string>
     <string name="about_commmon_title">"Información general"</string>
     <string name="about_license_title">"Licencia"</string>
-    <string name="about_3dparty_title">"El software de terceros"</string>
+    <string name="about_3dparty_title">"Software de terceros"</string>
     <string name="about_changelog_title">"Modificaciones"</string>
-    <string name="content_description_icon">"Icon"</string>
-    <string name="content_description_library">"Library"</string>
-    <string name="content_description_browser">"Browser"</string>
-    <string name="content_description_clear">"Clear"</string>
-    <string name="content_description_settings">"Settings"</string>
+	<string name="about_thanks_title">Agradecimientos</string>
+	
+    <string name="content_description_icon">"Icono"</string>
+    <string name="content_description_library">"Biblioteca"</string>
+    <string name="content_description_browser">"Explorador"</string>
+    <string name="content_description_clear">"Limpiar"</string>
+    <string name="content_description_settings">"Ajustes"</string>
     <string name="content_description_thumb">"Thumb"</string>
-    <string name="content_description_left">"Left"</string>
-    <string name="content_description_right">"Right"</string>
-    <string name="content_description_home">"Home"</string>
-    <string name="content_description_up">"Up"</string>
-    <string name="content_description_recent">"Recent"</string>
-    <string name="outline_title">Sumario</string>
-    <string name="outline_missed">El Sumario no existe</string>
-    <string name="error_page_out_of_rande">Número de páginaerrado. El rangoválido: 1-%i</string>
-    <string name="msg_loading">Cargando… Espereunpoco</string>
+    <string name="content_description_left">"Izquierda"</string>
+    <string name="content_description_right">"Derecha"</string>
+    <string name="content_description_home">"Inicio"</string>
+    <string name="content_description_up">"Arriba"</string>
+    <string name="content_description_recent">"Reciente"</string>
+	
+    <string name="outline_title">Índice</string>
+    <string name="outline_missed">No existe índice</string>
+	
+    <string name="error_page_out_of_rande">Número de página inválido. Rango: 1-%i</string>
+	
+    <string name="msg_loading">Cargando&#8230; Espere por favor</string>
+	<string name="msg_getting_page_size">Obteniendo tamaño de página %1$d/%2$d</string>
+
+    <string name="menu_tap_configuration">Configurar toque</string>
+    <string name="menu_key_bindings">Atajos de teclado</string>
+
+    <string name="pref_tapsenabled_title">Habilitar toques</string>
+    <string name="pref_tapsenabled_summary">Utilice la configuración de toques para definir regiones y acciones</string>
+
+    <string name="pref_performance_category">Ajustes de rendimiento</string>
+    <string name="pref_performance_category_summary">Mejorar el rendimiento ajustando determinados parámetros</string>
+
+    <string name="pref_lowlevel_category">Preferencias de bajo nivel</string>
+    <string name="pref_lowlevel_category_summary">Preferencias de bajo nivel para la aplicación (se aplican tras recargar el documento)</string>
+
+    <string name="pref_docviewtype_title">Tipo del visor del Documento</string>
+    <string name="pref_docviewtype_summary">Define la clase del visor</string>
+
+    <string name="list_docviewtype_base">Basada en android.view.View</string>
+    <string name="list_docviewtype_surface">Basada en android.view.SurfaceView</string>
+
+    <string name="pref_decodethread_priority_title">Prioridad del hilo de decodificación</string>
+    <string name="pref_decodethread_priority_summary">Define la prioridad del hilo encargado de la decodificación</string>
+
+    <string name="list_thread_priority_lowest">Baja</string>
+    <string name="list_thread_priority_lower">Debajo de lo normal</string>
+    <string name="list_thread_priority_normal">Normal</string>
+    <string name="list_thread_priority_higher">Arriba de lo normal</string>
+    <string name="list_thread_priority_highest">Alta</string>
+
+    <string name="pref_drawthread_priority_title">Prioridad del hilo de dibujo</string>
+    <string name="pref_drawthread_priority_summary">Define la prioridad del hilo encargado del dibujo en pantalla</string>
+
+    <string name="pref_hwa_enabled_title">Activar aceleración hardware</string>
+    <string name="pref_hwa_enabled_summary">Establece si el visor debe utilizar la aceleración por hardware</string>
+
+    <string name="pref_bitmapsize_title">Tamaño de la texturas</string>
+    <string name="pref_bitmapsize_summary">Define el tamaño de las texturas</string>
+
+    <string name="list_bitmapsize_64">64 * 64</string>
+    <string name="list_bitmapsize_128">128 * 128</string>
+    <string name="list_bitmapsize_256">256 * 256</string>
+    <string name="list_bitmapsize_512">512 * 512</string>
+    <string name="list_bitmapsize_1024">1024 * 1024</string>
+
+    <string name="pref_texturereuse_title">Reutilizar las texturas</string>
+    <string name="pref_texturereuse_summary">Reutilizar las texturas cuando una parte de la página de decodifica de nuevo</string>
+
+    <string name="pref_earlyrecycling_title">Reciclado temprano de texturas</string>
+    <string name="pref_earlyrecycling_summary">Las texturas se reciclan manualmente cuando son retiradas del mapeado</string>
+
+    <string name="pref_reloadduringzoom_title">Recargar página al ampliar/reducir</string>
+    <string name="pref_reloadduringzoom_summary">Recargar página al ampliar/reducir si se amplía/reduce mas de un 20%</string>
+
+    <string name="pref_brfiletypespecificpdf_title">PDF</string>
+    <string name="pref_brfiletypespecificpdf_summary">Opciones específicas para PDF</string>
+
+    <string name="pref_customdpi_title">Personalizar DPI</string>
+    <string name="pref_customdpi_summary">Definir los valores personalizados de DPI a continuación</string>
+
+    <string name="pref_xdpi_title">X DPI</string>
+    <string name="pref_xdpi_summary">X DPI</string>
+
+    <string name="pref_ydpi_title">Y DPI</string>
+    <string name="pref_ydpi_summary">Y DPI</string>
+
+    <string name="pref_brfiletypespecificfb2_title">FB2</string>
+    <string name="pref_brfiletypespecificfb2_summary">Opciones específicas para FB2</string>
+
+    <string name="pref_fontsize_title">Tamaño de la fuente</string>
+    <string name="pref_fontsize_summary">Tamaño base de la fuente</string>
+
+    <string name="list_fontsize_tiny">Diminuta</string>
+    <string name="list_fontsize_small">Pequeña</string>
+    <string name="list_fontsize_normal">Normal</string>
+    <string name="list_fontsize_large">Grande</string>
+    <string name="list_fontsize_huge">Enorme</string>
+
+    <string name="pref_fb2hyphen_title">Habilitar separación silábica</string>
+    <string name="pref_fb2hyphen_summary">Activar el soporte experimental para la separación silábica</string>
+
+    <string name="pref_touchdelay_title">Demora al procesar toque</string>
+    <string name="pref_touchdelay_summary">Demora al procesar toque (en milisegundos)</string>
+
+    <string name="tap_zones_single_tap">Toque simple</string>
+    <string name="tap_zones_double_tap">Toque doble</string>
+    <string name="tap_zones_long_tap">Toque largo</string>
+    <string name="tap_zones_two_finger_tap">Toque con dos dedos</string>
+    <string name="tap_zones_reset">Reiniciar</string>
+    <string name="tap_zones_delete">Borrar</string>
+    <string name="tap_zones_clear">Limpiar</string>
+
+    <string name="menu_searchbook">Buscar</string>
+    <string name="content_description_searchbook">Buscar libros por título&#8230;</string>
+    <string name="search_results_title">Resultado de la búsqueda</string>
+    <string name="search_book_dlg_title">Buscar&#8230;</string>
 
 </resources>

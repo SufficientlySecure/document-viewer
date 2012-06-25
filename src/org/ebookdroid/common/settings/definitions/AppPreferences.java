@@ -122,6 +122,9 @@ public interface AppPreferences {
     BooleanPreferenceDefinition RELOAD_DURING_ZOOM = new BooleanPreferenceDefinition(pref_reloadduringzoom_id,
             pref_reloadduringzoom_defvalue);
 
+    IntegerPreferenceDefinition HEAP_PREALLOCATE = new IntegerPreferenceDefinition(pref_heappreallocate_id,
+            pref_heappreallocate_defvalue, pref_heappreallocate_minvalue, pref_heappreallocate_maxvalue);
+
     /* =============== Default rendering settings =============== */
 
     BooleanPreferenceDefinition NIGHT_MODE = new BooleanPreferenceDefinition(pref_nightmode_id, pref_nightmode_defvalue);

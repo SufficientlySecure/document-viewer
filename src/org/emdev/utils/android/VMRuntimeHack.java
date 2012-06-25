@@ -75,6 +75,10 @@ public final class VMRuntimeHack {
      * @return the object
      */
     public static Object preallocateHeap(int size) {
+        if (size <= 0) {
+            Log.i("VMRuntimeHack", "No heap preallocation");
+            return null;
+        }
         int i = size;
         Log.i("VMRuntimeHack", "Trying to preallocate " + size + "Mb");
         while (i > 0) {

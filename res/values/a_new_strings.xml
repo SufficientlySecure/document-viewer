@@ -86,5 +86,7 @@
     <string name="pref_current_search_highlight_summary">"Choose color for current search result highlight"</string>
     <string name="pref_current_search_highlight_title">"Current search highlight"</string>
 
+	<string name="pref_heappreallocate_title">Heap preallocation</string>
+	<string name="pref_heappreallocate_summary">Size in megabytes of heap preallocation at application startup</string>
 
 </resources>

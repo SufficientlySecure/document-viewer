@@ -65,7 +65,7 @@
         <item>@string/list_bitmapsize_512</item>
         <item>@string/list_bitmapsize_1024</item>
     </string-array>
-    
+
     <string-array name="pref_bitmapsize_values" translatable="false">
         <item>@string/pref_bitmapsize_64</item>
         <item>@string/pref_bitmapsize_128</item>
@@ -88,5 +88,10 @@
 
     <string name="pref_reloadduringzoom_id">reloadduringzoom</string>
     <string name="pref_reloadduringzoom_defvalue">false</string>
+
+    <string name="pref_heappreallocate_id">heappreallocate</string>
+    <string name="pref_heappreallocate_defvalue">0</string>
+    <string name="pref_heappreallocate_minvalue">0</string>
+    <string name="pref_heappreallocate_maxvalue">256</string>
 
 </resources>

@@ -230,6 +230,14 @@
                 android:summary="@string/pref_reloadduringzoom_summary"
                 android:title="@string/pref_reloadduringzoom_title" />
 
+            <org.emdev.ui.preference.SeekBarPreference
+                android:defaultValue="@string/pref_heappreallocate_defvalue"
+                android:key="@string/pref_heappreallocate_id"
+                ebookdroid:minValue="@string/pref_heappreallocate_minvalue"
+                ebookdroid:maxValue="@string/pref_heappreallocate_maxvalue"
+                android:summary="@string/pref_heappreallocate_summary"
+                android:title="@string/pref_heappreallocate_title" />
+
             </PreferenceCategory>
     </PreferenceScreen>
 

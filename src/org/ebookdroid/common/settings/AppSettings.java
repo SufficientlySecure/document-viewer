@@ -93,6 +93,8 @@ public class AppSettings implements AppPreferences, BookPreferences {
 
     public final boolean reloadDuringZoom;
 
+    public final int heapPreallocate;
+
     /* =============== Default rendering settings =============== */
 
     public final boolean nightMode;
@@ -166,6 +168,7 @@ public class AppSettings implements AppPreferences, BookPreferences {
         useBitmapHack = USE_BITMAP_HACK.getPreferenceValue(prefs);
         useEarlyRecycling = EARLY_RECYCLING.getPreferenceValue(prefs);
         reloadDuringZoom = RELOAD_DURING_ZOOM.getPreferenceValue(prefs);
+        heapPreallocate = HEAP_PREALLOCATE.getPreferenceValue(prefs);
         /* =============== Default rendering settings =============== */
         nightMode = NIGHT_MODE.getPreferenceValue(prefs);
         contrast = CONTRAST.getPreferenceValue(prefs);

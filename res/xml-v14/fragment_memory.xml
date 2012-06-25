@@ -1,6 +1,6 @@
-    <PreferenceScreen 
+    <PreferenceScreen
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:ebookdroid="http://ebookdroid.org" 
+        xmlns:ebookdroid="http://ebookdroid.org"
         android:summary="@string/pref_performance_category_summary"
         android:title="@string/pref_performance_category" >
 
@@ -23,7 +23,7 @@
                 android:key="@string/pref_docviewtype_id"
                 android:summary="@string/pref_docviewtype_summary"
                 android:title="@string/pref_docviewtype_title" />
-        
+
             <ListPreference
                 android:defaultValue="@string/pref_thread_priority_normal"
                 android:entries="@array/pref_thread_priority_entries"
@@ -89,6 +89,14 @@
                 android:key="@string/pref_reloadduringzoom_id"
                 android:summary="@string/pref_reloadduringzoom_summary"
                 android:title="@string/pref_reloadduringzoom_title" />
+
+            <org.emdev.ui.preference.SeekBarPreference
+                android:defaultValue="@string/pref_heappreallocate_defvalue"
+                android:key="@string/pref_heappreallocate_id"
+                ebookdroid:minValue="@string/pref_heappreallocate_minvalue"
+                ebookdroid:maxValue="@string/pref_heappreallocate_maxvalue"
+                android:summary="@string/pref_heappreallocate_summary"
+                android:title="@string/pref_heappreallocate_title" />
 
         </PreferenceCategory>
 

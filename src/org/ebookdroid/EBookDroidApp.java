@@ -4,6 +4,7 @@ import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.log.EmergencyHandler;
 import org.ebookdroid.common.log.LogContext;
+import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.SettingsManager;
 
 import android.app.Application;
@@ -48,7 +49,7 @@ public class EBookDroidApp extends Application {
         SettingsManager.init(this);
         CacheManager.init(this);
 
-        VMRuntimeHack.preallocateHeap(48);
+        VMRuntimeHack.preallocateHeap(AppSettings.current().heapPreallocate);
     }
 
     protected void init() {

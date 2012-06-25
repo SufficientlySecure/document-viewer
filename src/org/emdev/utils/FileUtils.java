@@ -13,6 +13,7 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 
 public final class FileUtils {
 
@@ -44,20 +45,37 @@ public final class FileUtils {
         if (file == null) {
             return "";
         }
-        String name = file.getName();
-        int index = name.lastIndexOf(".");
+        final String name = file.getName();
+        final int index = name.lastIndexOf(".");
         if (index == -1) {
             return "";
         }
         return name.substring(index);
     }
 
+    public static final FilePath parseFilePath(final String path, final Collection<String> extensions) {
+        final File file = new File(path);
+        final FilePath result = new FilePath();
+        result.path = LengthUtils.safeString(file.getParent());
+        result.name = file.getName();
+
+        for (final String ext : extensions) {
+            final String dext = "." + ext;
+            if (result.name.endsWith(dext)) {
+                result.extWithDot = dext;
+                result.name = result.name.substring(0, result.name.length() - ext.length() - 1);
+                break;
+            }
+        }
+        return result;
+    }
+
     public static void copy(final File source, final File target) throws IOException {
         if (!source.exists()) {
             return;
         }
-        long length = source.length();
-        int bufsize = MathUtils.adjust((int) length, 1024, 512 * 1024);
+        final long length = source.length();
+        final int bufsize = MathUtils.adjust((int) length, 1024, 512 * 1024);
 
         ReadableByteChannel in = null;
         WritableByteChannel out = null;
@@ -117,8 +135,8 @@ public final class FileUtils {
         }
     }
 
-    public static void copy(final InputStream source, final OutputStream target, int bufsize, CopingProgress progress)
-            throws IOException {
+    public static void copy(final InputStream source, final OutputStream target, final int bufsize,
+            final CopingProgress progress) throws IOException {
         ReadableByteChannel in = null;
         WritableByteChannel out = null;
         try {
@@ -152,5 +170,16 @@ public final class FileUtils {
     public static interface CopingProgress {
 
         void progress(long bytes);
+    }
+
+    public static final class FilePath {
+
+        public String path;
+        public String name;
+        public String extWithDot;
+
+        public File toFile() {
+            return new File(path, name + LengthUtils.safeString(extWithDot));
+        }
     }
 }

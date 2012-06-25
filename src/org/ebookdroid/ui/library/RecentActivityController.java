@@ -1,5 +1,6 @@
 package org.ebookdroid.ui.library;
 
+import org.ebookdroid.CodecType;
 import org.ebookdroid.R;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.cache.ThumbnailFile;
@@ -16,6 +17,7 @@ import org.ebookdroid.ui.library.adapters.RecentAdapter;
 import org.ebookdroid.ui.library.dialogs.FolderDlg;
 import org.ebookdroid.ui.library.tasks.CopyBookTask;
 import org.ebookdroid.ui.library.tasks.MoveBookTask;
+import org.ebookdroid.ui.library.tasks.RenameBookTask;
 import org.ebookdroid.ui.opds.OPDSActivity;
 import org.ebookdroid.ui.settings.SettingsUI;
 import org.ebookdroid.ui.viewer.ViewerActivity;
@@ -45,6 +47,8 @@ import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.actions.IActionController;
 import org.emdev.ui.actions.params.Constant;
 import org.emdev.ui.actions.params.EditableValue;
+import org.emdev.utils.CompareUtils;
+import org.emdev.utils.FileUtils;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.filesystem.FileExtensionFilter;
 
@@ -304,6 +308,40 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         final File targetFolder = action.getParameter(FolderDlg.SELECTED_FOLDER);
         final BookNode book = action.getParameter("source");
         new MoveBookTask(this.getContext(), recentAdapter, targetFolder).execute(book);
+    }
+
+    @ActionMethod(ids = R.id.bookmenu_rename)
+    public void renameBook(final ActionEx action) {
+        final BookNode book = action.getParameter("source");
+        if (book == null) {
+            return;
+        }
+
+        final FileUtils.FilePath file = FileUtils.parseFilePath(book.path, CodecType.getAllExtensions());
+        final EditText input = new EditText(getManagedComponent());
+        input.setSingleLine();
+        input.setText(file.name);
+        input.selectAll();
+
+        final ActionDialogBuilder builder = new ActionDialogBuilder(getContext(), this);
+        builder.setTitle(R.string.book_rename_title);
+        builder.setMessage(R.string.book_rename_msg);
+        builder.setView(input);
+        builder.setPositiveButton(R.id.actions_doRenameBook, new Constant("source", book), new Constant("file", file),
+                new EditableValue("input", input));
+        builder.setNegativeButton().show();
+    }
+
+    @ActionMethod(ids = R.id.actions_doRenameBook)
+    public void doRenameBook(final ActionEx action) {
+        final BookNode book = action.getParameter("source");
+        final FileUtils.FilePath path = action.getParameter("file");
+        final Editable value = action.getParameter("input");
+        final String newName = value.toString();
+        if (!CompareUtils.equals(path.name, newName)) {
+            path.name = newName;
+            new RenameBookTask(this.getContext(), recentAdapter, path).execute(book);
+        }
     }
 
     @ActionMethod(ids = R.id.bookmenu_delete)

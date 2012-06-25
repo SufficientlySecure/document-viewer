@@ -1,5 +1,6 @@
 package org.ebookdroid.ui.library;
 
+import org.ebookdroid.CodecType;
 import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
 import org.ebookdroid.common.cache.CacheManager;
@@ -11,6 +12,7 @@ import org.ebookdroid.ui.library.adapters.BrowserAdapter;
 import org.ebookdroid.ui.library.dialogs.FolderDlg;
 import org.ebookdroid.ui.library.tasks.CopyBookTask;
 import org.ebookdroid.ui.library.tasks.MoveBookTask;
+import org.ebookdroid.ui.library.tasks.RenameBookTask;
 import org.ebookdroid.ui.library.views.FileBrowserView;
 import org.ebookdroid.ui.opds.OPDSActivity;
 import org.ebookdroid.ui.settings.SettingsUI;
@@ -21,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -29,6 +32,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.EditText;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
@@ -47,6 +51,9 @@ import org.emdev.ui.actions.ActionMethod;
 import org.emdev.ui.actions.ActionMethodDef;
 import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.actions.params.Constant;
+import org.emdev.ui.actions.params.EditableValue;
+import org.emdev.utils.CompareUtils;
+import org.emdev.utils.FileUtils;
 import org.emdev.utils.LayoutUtils;
 import org.emdev.utils.android.AndroidVersion;
 import org.emdev.utils.filesystem.CompositeFilter;
@@ -337,6 +344,48 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
         }.execute(node);
     }
 
+    @ActionMethod(ids = R.id.bookmenu_rename)
+    public void renameBook(final ActionEx action) {
+        final File file = action.getParameter("source");
+        if (file == null) {
+            return;
+        }
+
+        final FileUtils.FilePath path = FileUtils.parseFilePath(file.getAbsolutePath(), CodecType.getAllExtensions());
+        final EditText input = new EditText(this);
+        input.setSingleLine();
+        input.setText(path.name);
+        input.selectAll();
+
+        final ActionDialogBuilder builder = new ActionDialogBuilder(this, this.getController());
+        builder.setTitle(R.string.book_rename_title);
+        builder.setMessage(R.string.book_rename_msg);
+        builder.setView(input);
+        builder.setPositiveButton(R.id.actions_doRenameBook, new Constant("source", file), new Constant("file", path),
+                new EditableValue("input", input));
+        builder.setNegativeButton().show();
+    }
+
+    @ActionMethod(ids = R.id.actions_doRenameBook)
+    public void doRenameBook(final ActionEx action) {
+        final File book = action.getParameter("source");
+        final BookNode node = new BookNode(book, SettingsManager.getBookSettings(book.getAbsolutePath()));
+        final FileUtils.FilePath path = action.getParameter("file");
+        final Editable value = action.getParameter("input");
+        final String newName = value.toString();
+        if (!CompareUtils.equals(path.name, newName)) {
+            path.name = newName;
+            new RenameBookTask(this.getContext(), null, path) {
+
+                @Override
+                protected void processTargetFile(final File target) {
+                    super.processTargetFile(target);
+                    adapter.remove(origin);
+                }
+            }.execute(node);
+        }
+    }
+
     @ActionMethod(ids = R.id.bookmenu_delete)
     public void deleteBook(final ActionEx action) {
         final File file = action.getParameter("source");
@@ -363,20 +412,4 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
             adapter.remove(file);
         }
     }
-
-    /*
-     * @Override
-     * public void onClick(final DialogInterface dialog, final int item) {
-     * switch (item) {
-     * case 0:
-     * base.setCurrentDir(selected);
-     * break;
-     * case 1:
-     * LibSettings.changeAutoScanDirs(selected.getPath(), !scannedDir);
-     * adapter.notifyDataSetInvalidated();
-     * Toast.makeText(base.getActivity().getApplicationContext(), "Done.", Toast.LENGTH_SHORT).show();
-     * break;
-     * }
-     * }
-     */
 }

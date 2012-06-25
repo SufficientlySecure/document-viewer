@@ -30,6 +30,9 @@
                 android:id="@+id/bookmenu_copy"
                 android:title="Copy book to..."/>
             <item
+                android:id="@+id/bookmenu_rename"
+                android:title="Rename book..."/>
+            <item
                 android:id="@+id/bookmenu_move"
                 android:title="Move book to..."/>
             <item

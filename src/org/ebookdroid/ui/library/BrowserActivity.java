@@ -169,8 +169,8 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
     public void showDocument(final Uri uri) {
         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         intent.setClass(this, ViewerActivity.class);
-        intent.putExtra("persistent", "false");
-        intent.putExtra("nightMode", "true");
+//        intent.putExtra("persistent", "false");
+//        intent.putExtra("nightMode", "true");
         startActivity(intent);
     }
 

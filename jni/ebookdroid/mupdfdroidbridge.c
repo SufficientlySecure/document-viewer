@@ -41,17 +41,27 @@ struct renderpage_s
 };
 
 #define RUNTIME_EXCEPTION "java/lang/RuntimeException"
+#define PASSWORD_REQUIRED_EXCEPTION "org/ebookdroid/droids/mupdf/codec/exceptions/MuPdfPasswordRequiredException"
+#define WRONG_PASSWORD_EXCEPTION "org/ebookdroid/droids/mupdf/codec/exceptions/MuPdfWrongPasswordEnteredException"
 
 extern fz_locks_context * jni_new_locks();
 extern void jni_free_locks(fz_locks_context *locks);
 
+void mupdf_throw_exception_ex(JNIEnv *env, const char* exception, char *message)
+{
+    jthrowable new_exception = (*env)->FindClass(env, exception);
+    if (new_exception == NULL)
+    {
+        DEBUG("Exception class not found: '%s'", exception);
+        return;
+    }
+    DEBUG("Exception '%s', Message: '%s'", exception, message);
+    (*env)->ThrowNew(env, new_exception, message);
+}
+
 void mupdf_throw_exception(JNIEnv *env, char *message)
 {
-    jthrowable new_exception = (*env)->FindClass(env, RUNTIME_EXCEPTION);
-    if (new_exception == NULL)
-	return;
-    DEBUG("Exception '%s', Message: '%s'", RUNTIME_EXCEPTION, message);
-    (*env)->ThrowNew(env, new_exception, message);
+    mupdf_throw_exception_ex(env, RUNTIME_EXCEPTION, message);
 }
 
 static void mupdf_free_document(renderdocument_t* doc)
@@ -153,14 +163,14 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfDocument_open(JNIEnv *env, jclass cl
             if (!ok)
             {
                 mupdf_free_document(doc);
-                mupdf_throw_exception(env, "Wrong password given");
+                mupdf_throw_exception_ex(env, WRONG_PASSWORD_EXCEPTION, "Wrong password given");
                 goto cleanup;
             }
         }
         else
         {
             mupdf_free_document(doc);
-            mupdf_throw_exception(env, "Document needs a password!");
+            mupdf_throw_exception_ex(env, PASSWORD_REQUIRED_EXCEPTION, "Document needs a password!");
             goto cleanup;
         }
     }

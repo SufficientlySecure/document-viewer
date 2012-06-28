@@ -26,6 +26,7 @@ import org.ebookdroid.core.events.DecodingProgressListener;
 import org.ebookdroid.core.models.DecodingProgressModel;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.models.ZoomModel;
+import org.ebookdroid.droids.mupdf.codec.exceptions.MuPdfPasswordException;
 import org.ebookdroid.ui.settings.SettingsUI;
 import org.ebookdroid.ui.viewer.dialogs.OutlineDialog;
 import org.ebookdroid.ui.viewer.stubs.ActivityControllerStub;
@@ -770,6 +771,9 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                 documentModel.open(m_fileName, m_password);
                 getDocumentController().init(this);
                 return null;
+            } catch (MuPdfPasswordException pex) {
+                LCTX.i(pex.getMessage());
+                return pex;
             } catch (final Exception e) {
                 LCTX.e(e.getMessage(), e);
                 return e;
@@ -805,16 +809,14 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                 } catch (final Throwable th) {
                 }
 
-                if (result != null) {
+                if (result instanceof MuPdfPasswordException) {
+                    MuPdfPasswordException pex = (MuPdfPasswordException) result;
+                    askPassword(m_fileName, pex.isWrongPasswordEntered() ? "Wrong password given..."
+                            : "Enter password...");
+                } else if (result != null) {
                     final String msg = result.getMessage();
-                    if ("PDF needs a password!".equals(msg)) {
-                        askPassword(m_fileName, "Enter password...");
-                    } else if ("Wrong password given".equals(msg)) {
-                        askPassword(m_fileName, msg + "...");
-                    } else {
-                        EmergencyHandler.onUnexpectedError(result);
-                        showErrorDlg(msg);
-                    }
+                    EmergencyHandler.onUnexpectedError(result);
+                    showErrorDlg(msg);
                 }
             } catch (final Throwable th) {
                 LCTX.e("BookLoadTask.onPostExecute(): Unexpected error", th);

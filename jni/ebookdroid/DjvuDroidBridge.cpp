@@ -11,6 +11,10 @@
 #include <ddjvuapi.h>
 #include <miniexp.h>
 
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 /*JNI BITMAP API */
 
 #include <nativebitmap.h>
@@ -310,6 +314,16 @@ void CallDocInfoCallback(JNIEnv* env, jobject thiz, const ddjvu_message_t* msg)
     env->CallVoidMethod(thiz, handleDocInfoId);
 }
 
+void 
+sleep(int milliseconds)
+{
+  struct timeval tv;
+  tv.tv_sec = milliseconds / 1000;
+  tv.tv_usec = (milliseconds - (tv.tv_sec * 1000)) * 1000;
+  select(0, NULL, NULL, NULL, &tv);
+}
+
+
 extern "C" void Java_org_ebookdroid_droids_djvu_codec_DjvuContext_handleMessage(JNIEnv *env, jobject thiz,
                                                                               jlong contextHandle)
 {
@@ -333,6 +347,7 @@ extern "C" void Java_org_ebookdroid_droids_djvu_codec_DjvuContext_handleMessage(
         }
         ddjvu_message_pop(ctx);
     }
+    sleep(200);
 }
 
 extern "C" jlong Java_org_ebookdroid_droids_djvu_codec_DjvuDocument_getPage(JNIEnv *env, jclass cls, jlong docHandle,

@@ -41,7 +41,6 @@ public class DjvuContext extends AbstractCodecContext implements Runnable {
                         return;
                     }
                     handleMessage(getContextHandle());
-                    wait(200);
                 }
             } catch (final Exception e) {
                 LCTX.e("Codec error", e);

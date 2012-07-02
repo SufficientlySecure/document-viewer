@@ -36,12 +36,10 @@ public class DjvuContext extends AbstractCodecContext implements Runnable {
     public void run() {
         for (;;) {
             try {
-                synchronized (this) {
-                    if (isRecycled()) {
-                        return;
-                    }
-                    handleMessage(getContextHandle());
+                if (isRecycled()) {
+                    return;
                 }
+                handleMessage(getContextHandle());
             } catch (final Exception e) {
                 LCTX.e("Codec error", e);
             }

@@ -1,28 +1,25 @@
 package org.emdev.utils.archives.rar;
 
 import org.ebookdroid.common.cache.CacheManager;
-import org.ebookdroid.common.log.LogContext;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.OutputStream;
 
 import org.emdev.utils.archives.ArchiveEntry;
+import org.emdev.utils.bytes.ByteString;
 
 public class RarArchiveEntry implements ArchiveEntry {
 
-    private static final LogContext LCTX = LogContext.ROOT.lctx("Unrar");
-
     final RarArchive archive;
-    final String path;
-    final String name;
+    final ByteString path;
+    final ByteString name;
 
     private File cached;
 
-    RarArchiveEntry(final RarArchive archive, final String path, final String name) {
+    RarArchiveEntry(final RarArchive archive, final ByteString path, final ByteString name) {
         this.archive = archive;
         this.path = path;
         this.name = name;
@@ -35,7 +32,7 @@ public class RarArchiveEntry implements ArchiveEntry {
      */
     @Override
     public String getName() {
-        return name;
+        return name.toString();
     }
 
     /**
@@ -55,32 +52,24 @@ public class RarArchiveEntry implements ArchiveEntry {
      */
     @Override
     public InputStream open() throws IOException {
+        if (!archive.decodeInFile) {
+            final Process process = startExtracting();
+            return process.getInputStream();
+        }
+
         if (cached == null || !cached.exists()) {
-            final Process process = UnrarBridge.exec("p", "-inul", archive.rarfile.getAbsolutePath(), path);
-            final InputStream inputStream = process.getInputStream();
-            final InputStream errorStream = process.getErrorStream();
-
-            new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    BufferedReader err = new BufferedReader(new InputStreamReader(errorStream), 8 * 1024);
-                    try {
-                        for (String s = err.readLine(); s != null; s = err.readLine()) {
-                            LCTX.e(s);
-                        }
-                    } catch (IOException ex) {
-                    }
-                    try {
-                        err.close();
-                    } catch (IOException ex) {
-                    }
-                }
-            }).start();
-
-            cached = CacheManager.createTempFile(inputStream, "page");
+            final Process process = startExtracting();
+            cached = CacheManager.createTempFile(process.getInputStream(), ".page");
         }
         FileInputStream tempin = new FileInputStream(cached);
         return tempin;
+    }
+
+    private Process startExtracting() throws IOException {
+        final Process process = UnrarBridge.exec("p", "-inul", "-n@", archive.rarfile.getAbsolutePath());
+        final OutputStream outputStream = process.getOutputStream();
+        path.writeTo(outputStream);
+        outputStream.close();
+        return process;
     }
 }

@@ -22,7 +22,7 @@ public class CbrContext extends CbxContext<RarArchiveEntry> {
      */
     @Override
     public ArchiveFile<RarArchiveEntry> createArchive(final File file, final String password) throws IOException {
-        return new RarArchive(file);
+        return new RarArchive(file, false);
     }
 
 }

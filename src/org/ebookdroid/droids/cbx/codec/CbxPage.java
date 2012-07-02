@@ -57,7 +57,7 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
                 opts.inJustDecodeBounds = onlyBounds;
                 opts.inSampleSize = scale;
 
-                final Bitmap bitmap = BitmapFactory.decodeStream(new BufferedInputStream(is), null, opts);
+                final Bitmap bitmap = BitmapFactory.decodeStream(new BufferedInputStream(is, 64 * 1024), null, opts);
                 pageInfo = new CodecPageInfo();
                 if (onlyBounds) {
                     pageInfo.height = (opts.outHeight * scale);

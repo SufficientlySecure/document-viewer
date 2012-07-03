@@ -25,7 +25,7 @@ public class EventZoomOut extends AbstractEventZoom<EventZoomOut> {
             return false;
         }
 
-        if (viewState.isNodeVisible(node, pageBounds) && (!node.holder.hasBitmaps() || committed)) {
+        if (!node.holder.hasBitmaps() || committed) {
             node.decodePageTreeNode(nodesToDecode, viewState);
         }
 

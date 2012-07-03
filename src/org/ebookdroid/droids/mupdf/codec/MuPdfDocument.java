@@ -1,5 +1,6 @@
 package org.ebookdroid.droids.mupdf.codec;
 
+import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.core.codec.AbstractCodecDocument;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
@@ -13,12 +14,9 @@ public class MuPdfDocument extends AbstractCodecDocument {
 
     public static final int FORMAT_PDF = 0;
     public static final int FORMAT_XPS = 1;
-    
-    // TODO: Must be configurable
-    private static final int STOREMEMORY = 64 << 20;
 
     MuPdfDocument(final MuPdfContext context, int format, final String fname, final String pwd) {
-        super(context, open(STOREMEMORY, format, fname, pwd));
+        super(context, open(AppSettings.current().pdfStorageSize << 20, format, fname, pwd));
     }
 
     @Override
@@ -46,8 +44,8 @@ public class MuPdfDocument extends AbstractCodecDocument {
         } else {
             // Check rotation
             info.rotation = (360 + info.rotation) % 360;
-            //info.width = (MuPdfContext.getWidthInPixels(info.width));
-            //info.height = (MuPdfContext.getHeightInPixels(info.height));
+            // info.width = (MuPdfContext.getWidthInPixels(info.width));
+            // info.height = (MuPdfContext.getHeightInPixels(info.height));
             return info;
         }
     }

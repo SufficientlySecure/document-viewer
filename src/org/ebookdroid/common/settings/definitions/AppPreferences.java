@@ -140,6 +140,9 @@ public interface AppPreferences {
     IntegerPreferenceDefinition HEAP_PREALLOCATE = new IntegerPreferenceDefinition(pref_heappreallocate_id,
             pref_heappreallocate_defvalue, pref_heappreallocate_minvalue, pref_heappreallocate_maxvalue);
 
+    IntegerPreferenceDefinition PDF_STORAGE_SIZE = new IntegerPreferenceDefinition(pref_pdfstoragesize_id,
+            pref_pdfstoragesize_defvalue, pref_pdfstoragesize_minvalue, pref_pdfstoragesize_maxvalue);
+
     /* =============== Default rendering settings =============== */
 
     BooleanPreferenceDefinition NIGHT_MODE = new BooleanPreferenceDefinition(pref_nightmode_id, pref_nightmode_defvalue);

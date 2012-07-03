@@ -14,6 +14,7 @@ import org.ebookdroid.core.curl.PageAnimationType;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.PreferenceGroup;
 import android.preference.Preference.OnPreferenceChangeListener;
 
 import java.util.Arrays;
@@ -48,7 +49,13 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
         return parent.findPreference(key);
     }
 
+    @Override
+    public Preference getRoot() {
+        return parent.getRoot();
+    }
+
     public void decorateSettings() {
+        decoratePreference(getRoot());
         decorateBooksSettings();
         decorateBrowserSettings();
         decorateOpdsSettings();
@@ -59,8 +66,6 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
     }
 
     public void decorateBooksSettings() {
-        decoratePreferences(BOOK_CONTRAST.key, BOOK_EXPOSURE.key);
-        decoratePreferences(BOOK_VIEW_MODE.key, BOOK_PAGE_ALIGN.key, BOOK_ANIMATION_TYPE.key);
         addViewModeListener(BOOK_VIEW_MODE.key, BOOK_PAGE_ALIGN.key, BOOK_ANIMATION_TYPE.key);
         addAnimationTypeListener(BOOK_ANIMATION_TYPE.key, BOOK_PAGE_ALIGN.key);
 
@@ -71,35 +76,25 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
     }
 
     public void decorateBrowserSettings() {
-        decoratePreferences(AUTO_SCAN_DIRS.key);
     }
 
     public void decorateOpdsSettings() {
-        decoratePreferences(OPDS_DOWNLOAD_DIR.key);
     }
 
     public void decorateMemorySettings() {
-        decoratePreferences(PAGES_IN_MEMORY.key, VIEW_TYPE.key, DECODING_THREADS.key, DECODE_THREAD_PRIORITY.key,
-                DRAW_THREAD_PRIORITY.key, BITMAP_SIZE.key, HEAP_PREALLOCATE.key);
     }
 
     public void decorateRenderSettings() {
-        decoratePreferences(CONTRAST.key, EXPOSURE.key);
-        decoratePreferences(VIEW_MODE.key, PAGE_ALIGN.key, ANIMATION_TYPE.key);
         addViewModeListener(VIEW_MODE.key, PAGE_ALIGN.key, ANIMATION_TYPE.key);
         addAnimationTypeListener(ANIMATION_TYPE.key, PAGE_ALIGN.key);
 
         enableSinglePageModeSetting(AppSettings.current().viewMode, PAGE_ALIGN.key, ANIMATION_TYPE.key);
-
-        decoratePreferences(DJVU_RENDERING_MODE.key, PDF_CUSTOM_XDPI.key, PDF_CUSTOM_YDPI.key, FB2_FONT_SIZE.key);
     }
 
     public void decorateScrollSettings() {
-        decoratePreferences(SCROLL_HEIGHT.key, TOUCH_DELAY.key);
     }
 
     public void decorateUISettings() {
-        decoratePreferences(ROTATION.key, BRIGHTNESS.key, PAGE_NUMBER_TOAST_POSITION.key, ZOOM_TOAST_POSITION.key);
     }
 
     public void setPageAlign(final PageAnimationType type, final String alignPrefKey) {
@@ -125,13 +120,18 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
         }
     }
 
-    protected void decoratePreference(final Preference pref) {
+    public void decoratePreference(final Preference pref) {
         if (pref instanceof ListPreference) {
             decorateListPreference((ListPreference) pref);
         } else if (pref instanceof EditTextPreference) {
             decorateEditPreference((EditTextPreference) pref);
         } else if (pref instanceof SeekBarPreference) {
             decorateSeekPreference((SeekBarPreference) pref);
+        } else if (pref instanceof PreferenceGroup) {
+            PreferenceGroup group = (PreferenceGroup) pref;
+            for (int i = 0, n = group.getPreferenceCount(); i < n; i++) {
+                decoratePreference(group.getPreference(i));
+            }
         }
     }
 

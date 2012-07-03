@@ -13,6 +13,7 @@ public class OpdsFragment extends BasePreferenceFragment {
 
     @Override
     public void decorate() {
+        super.decorate();
         decorator.decorateOpdsSettings();
     }
 

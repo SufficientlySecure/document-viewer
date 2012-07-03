@@ -13,6 +13,7 @@ public class MemoryFragment extends BasePreferenceFragment {
 
     @Override
     public void decorate() {
+        super.decorate();
         decorator.decorateMemorySettings();
     }
 }

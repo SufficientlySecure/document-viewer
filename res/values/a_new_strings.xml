@@ -100,4 +100,8 @@
     <string name="pref_storeOutlineGotoHistory_summary"></string>
     <string name="pref_storeSearchGotoHistory_title">Store goto search result in navigation history</string>
     <string name="pref_storeSearchGotoHistory_summary"></string>
+
+    <string name="pref_pdfstoragesize_title">MuPDF internal storage size</string>
+    <string name="pref_pdfstoragesize_summary">Size in megabytes of MuPDF internal storage</string>
+
 </resources>

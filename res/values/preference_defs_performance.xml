@@ -99,4 +99,10 @@
     <string name="pref_heappreallocate_minvalue">0</string>
     <string name="pref_heappreallocate_maxvalue">256</string>
 
+    <string name="pref_pdfstoragesize_id">pdfstoragesize</string>
+    <string name="pref_pdfstoragesize_defvalue">64</string>
+    <string name="pref_pdfstoragesize_minvalue">16</string>
+    <string name="pref_pdfstoragesize_maxvalue">128</string>
+
+    
 </resources>

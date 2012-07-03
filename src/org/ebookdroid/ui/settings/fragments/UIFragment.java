@@ -12,6 +12,7 @@ public class UIFragment extends BasePreferenceFragment {
 
     @Override
     public void decorate() {
+        super.decorate();
         decorator.decorateUISettings();
     }
 }

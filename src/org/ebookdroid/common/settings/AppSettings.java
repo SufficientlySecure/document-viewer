@@ -105,6 +105,8 @@ public class AppSettings implements AppPreferences, BookPreferences {
 
     public final int heapPreallocate;
 
+    public final int pdfStorageSize;
+
     /* =============== Default rendering settings =============== */
 
     public final boolean nightMode;
@@ -184,6 +186,7 @@ public class AppSettings implements AppPreferences, BookPreferences {
         useEarlyRecycling = EARLY_RECYCLING.getPreferenceValue(prefs);
         reloadDuringZoom = RELOAD_DURING_ZOOM.getPreferenceValue(prefs);
         heapPreallocate = HEAP_PREALLOCATE.getPreferenceValue(prefs);
+        pdfStorageSize = PDF_STORAGE_SIZE.getPreferenceValue(prefs);
         /* =============== Default rendering settings =============== */
         nightMode = NIGHT_MODE.getPreferenceValue(prefs);
         contrast = CONTRAST.getPreferenceValue(prefs);

@@ -5,6 +5,7 @@ import org.ebookdroid.ui.settings.PreferencesDecorator;
 
 import android.annotation.TargetApi;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
 @TargetApi(11)
@@ -30,5 +31,11 @@ public class BasePreferenceFragment extends PreferenceFragment implements IPrefe
     }
 
     public void decorate() {
+        decorator.decoratePreference(getRoot());
+    }
+
+    @Override
+    public Preference getRoot() {
+        return this.getPreferenceScreen();
     }
 }

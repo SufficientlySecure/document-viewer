@@ -106,6 +106,14 @@
                 android:summary="@string/pref_heappreallocate_summary"
                 android:title="@string/pref_heappreallocate_title" />
 
+            <org.emdev.ui.preference.SeekBarPreference
+                android:defaultValue="@string/pref_pdfstoragesize_defvalue"
+                android:key="@string/pref_pdfstoragesize_id"
+                ebookdroid:minValue="@string/pref_pdfstoragesize_minvalue"
+                ebookdroid:maxValue="@string/pref_pdfstoragesize_maxvalue"
+                android:summary="@string/pref_pdfstoragesize_summary"
+                android:title="@string/pref_pdfstoragesize_title" />
+
         </PreferenceCategory>
 
     </PreferenceScreen>

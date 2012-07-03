@@ -59,8 +59,20 @@ public interface AppPreferences {
     IntegerPreferenceDefinition SEARCH_HIGHLIGHT_COLOR = new IntegerPreferenceDefinition(pref_search_highlight_id,
             pref_search_highlight_defvalue);
 
-    IntegerPreferenceDefinition CURRENT_SEARCH_HIGHLIGHT_COLOR = new IntegerPreferenceDefinition(pref_current_search_highlight_id,
-            pref_current_search_highlight_defvalue);
+    IntegerPreferenceDefinition CURRENT_SEARCH_HIGHLIGHT_COLOR = new IntegerPreferenceDefinition(
+            pref_current_search_highlight_id, pref_current_search_highlight_defvalue);
+
+    BooleanPreferenceDefinition STORE_GOTO_HISTORY = new BooleanPreferenceDefinition(pref_storeGotoHistory_id,
+            pref_storeGotoHistory_defvalue);
+
+    BooleanPreferenceDefinition STORE_LINK_GOTO_HISTORY = new BooleanPreferenceDefinition(pref_storeLinkGotoHistory_id,
+            pref_storeLinkGotoHistory_defvalue);
+
+    BooleanPreferenceDefinition STORE_OUTLINE_GOTO_HISTORY = new BooleanPreferenceDefinition(
+            pref_storeOutlineGotoHistory_id, pref_storeOutlineGotoHistory_defvalue);
+
+    BooleanPreferenceDefinition STORE_SEARCH_GOTO_HISTORY = new BooleanPreferenceDefinition(
+            pref_storeSearchGotoHistory_id, pref_storeSearchGotoHistory_defvalue);
 
     /* =============== Tap & Scroll settings =============== */
 
@@ -132,13 +144,14 @@ public interface AppPreferences {
 
     BooleanPreferenceDefinition NIGHT_MODE = new BooleanPreferenceDefinition(pref_nightmode_id, pref_nightmode_defvalue);
 
-    IntegerPreferenceDefinition CONTRAST = new IntegerPreferenceDefinition(pref_contrast_id,
-            pref_contrast_defvalue, pref_contrast_minvalue, pref_contrast_maxvalue);
+    IntegerPreferenceDefinition CONTRAST = new IntegerPreferenceDefinition(pref_contrast_id, pref_contrast_defvalue,
+            pref_contrast_minvalue, pref_contrast_maxvalue);
 
-    IntegerPreferenceDefinition EXPOSURE = new IntegerPreferenceDefinition(pref_exposure_id,
-            pref_exposure_defvalue, pref_exposure_minvalue, pref_exposure_maxvalue);
+    IntegerPreferenceDefinition EXPOSURE = new IntegerPreferenceDefinition(pref_exposure_id, pref_exposure_defvalue,
+            pref_exposure_minvalue, pref_exposure_maxvalue);
 
-    BooleanPreferenceDefinition AUTO_LEVELS = new BooleanPreferenceDefinition(pref_autolevels_id, pref_autolevels_defvalue);
+    BooleanPreferenceDefinition AUTO_LEVELS = new BooleanPreferenceDefinition(pref_autolevels_id,
+            pref_autolevels_defvalue);
 
     BooleanPreferenceDefinition SPLIT_PAGES = new BooleanPreferenceDefinition(pref_splitpages_id,
             pref_splitpages_defvalue);

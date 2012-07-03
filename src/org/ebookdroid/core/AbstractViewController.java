@@ -467,7 +467,7 @@ public abstract class AbstractViewController extends AbstractComponentController
             LCTX.d("Page link found under tap: " + link);
         }
 
-        goToLink(link.targetPage, link.targetRect, true);
+        goToLink(link.targetPage, link.targetRect, AppSettings.current().storeLinkGotoHistory);
         return true;
     }
 

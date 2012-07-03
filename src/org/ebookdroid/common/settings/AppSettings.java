@@ -51,6 +51,14 @@ public class AppSettings implements AppPreferences, BookPreferences {
 
     public final int currentSearchHighlightColor;
 
+    public final boolean storeGotoHistory;
+
+    public final boolean storeLinkGotoHistory;
+
+    public final boolean storeOutlineGotoHistory;
+
+    public final boolean storeSearchGotoHistory;
+
     /* =============== Tap & Scroll settings =============== */
 
     public final boolean tapsEnabled;
@@ -149,6 +157,10 @@ public class AppSettings implements AppPreferences, BookPreferences {
         linkHighlightColor = LINK_HIGHLIGHT_COLOR.getPreferenceValue(prefs);
         searchHighlightColor = SEARCH_HIGHLIGHT_COLOR.getPreferenceValue(prefs);
         currentSearchHighlightColor = CURRENT_SEARCH_HIGHLIGHT_COLOR.getPreferenceValue(prefs);
+        storeGotoHistory = STORE_GOTO_HISTORY.getPreferenceValue(prefs);
+        storeLinkGotoHistory = STORE_LINK_GOTO_HISTORY.getPreferenceValue(prefs);
+        storeOutlineGotoHistory = STORE_OUTLINE_GOTO_HISTORY.getPreferenceValue(prefs);
+        storeSearchGotoHistory = STORE_SEARCH_GOTO_HISTORY.getPreferenceValue(prefs);
         /* =============== Tap & Scroll settings =============== */
         tapsEnabled = TAPS_ENABLED.getPreferenceValue(prefs);
         scrollHeight = SCROLL_HEIGHT.getPreferenceValue(prefs);

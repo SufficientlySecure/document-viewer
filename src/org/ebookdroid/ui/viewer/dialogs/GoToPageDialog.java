@@ -1,6 +1,7 @@
 package org.ebookdroid.ui.viewer.dialogs;
 
 import org.ebookdroid.R;
+import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.books.Bookmark;
@@ -224,7 +225,7 @@ public class GoToPageDialog extends Dialog {
         if (current != null) {
             final Page actualPage = current.page.getActualPage(base.getDocumentModel(), adapter.bookSettings);
             if (actualPage != null) {
-                base.jumpToPage(actualPage.index.viewIndex, current.offsetX, current.offsetY, true);
+                base.jumpToPage(actualPage.index.viewIndex, current.offsetX, current.offsetY, AppSettings.current().storeGotoHistory);
             }
             return;
         }
@@ -241,7 +242,7 @@ public class GoToPageDialog extends Dialog {
                     .show();
             return;
         }
-        base.jumpToPage(pageNumber - 1, 0, 0, true);
+        base.jumpToPage(pageNumber - 1, 0, 0, AppSettings.current().storeGotoHistory);
     }
 
     private final class BookmarkAdapter extends BaseAdapter {

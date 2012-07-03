@@ -92,4 +92,12 @@
     <string name="pref_decoding_threads_title">"Number of decoding threads"</string>
     <string name="pref_decoding_threads_summary">"Number of decoding threads"</string>
 
+    <string name="pref_storeGotoHistory_title">Store goto page in navigation history</string>
+    <string name="pref_storeGotoHistory_summary"></string>
+    <string name="pref_storeLinkGotoHistory_title">Store goto link in navigation history</string>
+    <string name="pref_storeLinkGotoHistory_summary"></string>
+    <string name="pref_storeOutlineGotoHistory_title">Store goto outline link in navigation history</string>
+    <string name="pref_storeOutlineGotoHistory_summary"></string>
+    <string name="pref_storeSearchGotoHistory_title">Store goto search result in navigation history</string>
+    <string name="pref_storeSearchGotoHistory_summary"></string>
 </resources>

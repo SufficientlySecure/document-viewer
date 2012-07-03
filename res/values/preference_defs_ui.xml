@@ -130,4 +130,17 @@
 
     <string name="pref_current_search_highlight_id">current_search_highlight</string>
     <string name="pref_current_search_highlight_defvalue">0x7F007F00</string>
+    
+    <string name="pref_storeGotoHistory_id">store_goto_history</string>
+    <string name="pref_storeGotoHistory_defvalue">true</string>
+    
+    <string name="pref_storeLinkGotoHistory_id">store_link_goto_history</string>
+    <string name="pref_storeLinkGotoHistory_defvalue">true</string>
+    
+    <string name="pref_storeOutlineGotoHistory_id">store_outline_goto_history</string>
+    <string name="pref_storeOutlineGotoHistory_defvalue">true</string>
+    
+    <string name="pref_storeSearchGotoHistory_id">store_search_goto_history</string>
+    <string name="pref_storeSearchGotoHistory_defvalue">false</string>
+    
 </resources>

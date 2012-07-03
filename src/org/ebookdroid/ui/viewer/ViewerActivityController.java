@@ -422,7 +422,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
             if (link.targetPage < 1 || link.targetPage > pageCount) {
                 getManagedComponent().showToastText(2000, R.string.error_page_out_of_rande, pageCount);
             } else {
-                getDocumentController().goToLink(link.targetPage - 1, link.targetRect, true);
+                getDocumentController().goToLink(link.targetPage - 1, link.targetRect, AppSettings.current().storeOutlineGotoHistory);
             }
             return;
         }
@@ -914,7 +914,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                 final int controlsHeight = 3 + sc.getActualHeight();
                 final float pageHeight = targetPage.getBounds(getZoomModel().getZoom()).height();
                 newRect.offset(0, -(controlsHeight / pageHeight));
-                getDocumentController().goToLink(targetPage.index.docIndex, newRect, false);
+                getDocumentController().goToLink(targetPage.index.docIndex, newRect, AppSettings.current().storeSearchGotoHistory);
             } else {
                 Toast.makeText(getManagedComponent(), "Text not found", 0).show();
             }

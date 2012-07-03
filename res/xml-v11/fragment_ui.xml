@@ -101,4 +101,28 @@
             android:summary="@string/pref_current_search_highlight_summary"
             android:title="@string/pref_current_search_highlight_title" />
 
+    <CheckBoxPreference
+            android:defaultValue="@string/pref_storeGotoHistory_defvalue"
+            android:key="@string/pref_storeGotoHistory_id"
+            android:summary="@string/pref_storeGotoHistory_summary"
+            android:title="@string/pref_storeGotoHistory_title" />
+
+    <CheckBoxPreference
+            android:defaultValue="@string/pref_storeLinkGotoHistory_defvalue"
+            android:key="@string/pref_storeLinkGotoHistory_id"
+            android:summary="@string/pref_storeLinkGotoHistory_summary"
+            android:title="@string/pref_storeLinkGotoHistory_title" />
+
+    <CheckBoxPreference
+            android:defaultValue="@string/pref_storeOutlineGotoHistory_defvalue"
+            android:key="@string/pref_storeOutlineGotoHistory_id"
+            android:summary="@string/pref_storeOutlineGotoHistory_summary"
+            android:title="@string/pref_storeOutlineGotoHistory_title" />
+
+    <CheckBoxPreference
+            android:defaultValue="@string/pref_storeSearchGotoHistory_defvalue"
+            android:key="@string/pref_storeSearchGotoHistory_id"
+            android:summary="@string/pref_storeSearchGotoHistory_summary"
+            android:title="@string/pref_storeSearchGotoHistory_title" />
+
 </PreferenceScreen>

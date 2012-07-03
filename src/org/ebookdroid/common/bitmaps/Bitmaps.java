@@ -26,7 +26,7 @@ public class Bitmaps {
 
     private static boolean useDefaultBitmapType = true;
 
-    private static volatile RawBitmap slice;
+    private static final ThreadLocal<RawBitmap> threadSlices = new ThreadLocal<RawBitmap>();
 
     public final Bitmap.Config config;
     public final int partSize;
@@ -48,8 +48,10 @@ public class Bitmaps {
         this.bitmaps = new BitmapRef[columns * rows];
 
         final boolean hasAlpha = origBitmap.hasAlpha();
+        RawBitmap slice = threadSlices.get();
         if (slice == null || slice.pixels.length < partSize * partSize || slice.hasAlpha != hasAlpha) {
             slice = new RawBitmap(partSize, partSize, hasAlpha);
+            threadSlices.set(slice);
         }
 
         int top = 0;
@@ -124,8 +126,10 @@ public class Bitmaps {
             }
 
             final boolean hasAlpha = origBitmap.hasAlpha();
+            RawBitmap slice = threadSlices.get();
             if (slice == null || slice.pixels.length < partSize * partSize || slice.hasAlpha != hasAlpha) {
                 slice = new RawBitmap(partSize, partSize, hasAlpha);
+                threadSlices.set(slice);
             }
 
             int top = 0;
@@ -181,7 +185,7 @@ public class Bitmaps {
     BitmapRef[] clear() {
         lock.writeLock().lock();
         try {
-            BitmapRef[] refs = this.bitmaps;
+            final BitmapRef[] refs = this.bitmaps;
             this.bitmaps = null;
             return refs;
         } finally {
@@ -194,7 +198,7 @@ public class Bitmaps {
         lock.writeLock().lock();
         try {
             if (bitmaps != null) {
-                for (BitmapRef ref : bitmaps) {
+                for (final BitmapRef ref : bitmaps) {
                     BitmapManager.release(ref);
                 }
                 bitmaps = null;
@@ -238,7 +242,7 @@ public class Bitmaps {
                             try {
                                 src.set(0, 0, ref.bitmap.getWidth(), ref.bitmap.getHeight());
                                 canvas.drawBitmap(ref.bitmap, src, MathUtils.round(r), paint.bitmapPaint);
-                            } catch (Throwable th) {
+                            } catch (final Throwable th) {
                                 LCTX.e("Unexpected error: ", th);
                             }
                         }

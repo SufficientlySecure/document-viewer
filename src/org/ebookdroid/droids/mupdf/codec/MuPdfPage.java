@@ -4,7 +4,7 @@ import org.ebookdroid.EBookDroidLibraryLoader;
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.BitmapRef;
 import org.ebookdroid.common.settings.AppSettings;
-import org.ebookdroid.core.codec.CodecPage;
+import org.ebookdroid.core.codec.AbstractCodecPage;
 import org.ebookdroid.core.codec.PageLink;
 import org.ebookdroid.core.codec.PageTextBox;
 
@@ -21,7 +21,7 @@ import java.util.Set;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.MatrixUtils;
 
-public class MuPdfPage implements CodecPage {
+public class MuPdfPage extends AbstractCodecPage {
 
     private long pageHandle;
     private final long docHandle;
@@ -34,8 +34,6 @@ public class MuPdfPage implements CodecPage {
         this.pageHandle = pageHandle;
         this.docHandle = docHandle;
         this.pageBounds = getBounds();
-        // this.actualWidth = AbstractCodecContext.getWidthInPixels(pageBounds.width());
-        // this.actualHeight = AbstractCodecContext.getHeightInPixels(pageBounds.height());
         this.actualWidth = (int) pageBounds.width();
         this.actualHeight = (int) pageBounds.height();
     }
@@ -107,6 +105,9 @@ public class MuPdfPage implements CodecPage {
     }
 
     public BitmapRef render(final Rect viewbox, final float[] ctm) {
+        if (isRecycled()) {
+            throw new RuntimeException("The page has been recycled before: " + this);
+        }
         final int[] mRect = new int[4];
         mRect[0] = viewbox.left;
         mRect[1] = viewbox.top;
@@ -151,12 +152,6 @@ public class MuPdfPage implements CodecPage {
             float[] matrixarray, Bitmap bitmap);
 
     private native static List<PageTextBox> search(long docHandle, long pageHandle, String pattern);
-
-    @Override
-    public List<PageTextBox> getPageText() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
     @Override
     public List<? extends RectF> searchText(final String pattern) {

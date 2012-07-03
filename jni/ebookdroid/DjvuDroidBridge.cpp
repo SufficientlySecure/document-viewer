@@ -11,10 +11,6 @@
 #include <ddjvuapi.h>
 #include <miniexp.h>
 
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
-
 /*JNI BITMAP API */
 
 #include <nativebitmap.h>
@@ -37,6 +33,36 @@ void ThrowDjvuError(JNIEnv* env, const ddjvu_message_t* msg)
     else ThrowError(env, msg->m_error.message);
 }
 
+void handleMessages(JNIEnv *env, ddjvu_context_t* ctx)
+{
+    const ddjvu_message_t *msg;
+    while((msg = ddjvu_message_peek(ctx)))
+    {
+        switch (msg->m_any.tag)
+        {
+        case DDJVU_ERROR:
+            ThrowDjvuError(env, msg);
+            break;
+        case DDJVU_INFO:
+            break;
+        case DDJVU_DOCINFO:
+            break;
+        default:
+            break;
+        }
+        ddjvu_message_pop(ctx);
+    }
+}
+
+void waitAndHandleMessages(JNIEnv *env, jlong contextHandle)
+{
+    ddjvu_context_t* ctx = (ddjvu_context_t*) (contextHandle);
+    // Wait for first message
+    ddjvu_message_wait(ctx);
+    // Process available messages
+    handleMessages(env, ctx);
+}
+
 #define HANDLE_TO_DOC(handle) (ddjvu_document_t*)handle
 #define HANDLE(ptr) (jlong)ptr
 
@@ -49,7 +75,9 @@ extern "C" jlong Java_org_ebookdroid_droids_djvu_codec_DjvuContext_create(JNIEnv
 
 extern "C" void Java_org_ebookdroid_droids_djvu_codec_DjvuContext_free(JNIEnv *env, jclass cls, jlong contextHandle)
 {
-    ddjvu_context_release((ddjvu_context_t *) contextHandle);
+    ddjvu_context_t* ctx = (ddjvu_context_t*) (contextHandle);
+    handleMessages(env, ctx);
+    ddjvu_context_release(ctx);
 }
 
 bool number_from_miniexp(miniexp_t sexp, int *number)
@@ -288,66 +316,11 @@ extern "C" jlong Java_org_ebookdroid_droids_djvu_codec_DjvuDocument_open(JNIEnv 
     const char* fileNameString = env->GetStringUTFChars(fileName, NULL);
     DEBUG_PRINT("Opening document: %s", fileNameString);
 
-    jlong docHandle = (jlong)(
-        ddjvu_document_create_by_filename((ddjvu_context_t*) (contextHandle), fileNameString, FALSE));
-//    jlong docHandle = (jlong)(ddjvu_document_create_by_filename_utf8((ddjvu_context_t*)(contextHandle), fileNameString, FALSE));
+    jlong docHandle = (jlong) ddjvu_document_create_by_filename((ddjvu_context_t*) (contextHandle), fileNameString, FALSE);
     env->ReleaseStringUTFChars(fileName, fileNameString);
     if (!docHandle)
         ThrowError(env, "DJVU file not found or corrupted.");
-//    if(docHandle)
-//    {
-//	char *s = ddjvu_document_get_filedump((ddjvu_document_t*)docHandle, 1);
-//        DEBUG_PRINT("%s",s);
-//    }
     return docHandle;
-}
-
-void CallDocInfoCallback(JNIEnv* env, jobject thiz, const ddjvu_message_t* msg)
-{
-    DEBUG_WRITE("Calling handleDocInfo callback");
-    jclass cls = env->GetObjectClass(thiz);
-    if (!cls)
-        return;
-    jmethodID handleDocInfoId = env->GetMethodID(cls, "handleDocInfo", "()V");
-    if (!handleDocInfoId)
-        return;
-    env->CallVoidMethod(thiz, handleDocInfoId);
-}
-
-void 
-sleep(int milliseconds)
-{
-  struct timeval tv;
-  tv.tv_sec = milliseconds / 1000;
-  tv.tv_usec = (milliseconds - (tv.tv_sec * 1000)) * 1000;
-  select(0, NULL, NULL, NULL, &tv);
-}
-
-
-extern "C" void Java_org_ebookdroid_droids_djvu_codec_DjvuContext_handleMessage(JNIEnv *env, jobject thiz,
-                                                                              jlong contextHandle)
-{
-    const ddjvu_message_t *msg;
-    ddjvu_context_t* ctx = (ddjvu_context_t*) (contextHandle);
-//    DEBUG_PRINT("handleMessage for ctx: %x",ctx);
-    if (msg = ddjvu_message_peek(ctx))
-    {
-        switch (msg->m_any.tag)
-        {
-        case DDJVU_ERROR:
-            ThrowDjvuError(env, msg);
-            break;
-        case DDJVU_INFO:
-            break;
-        case DDJVU_DOCINFO:
-            CallDocInfoCallback(env, thiz, msg);
-            break;
-        default:
-            break;
-        }
-        ddjvu_message_pop(ctx);
-    }
-    sleep(200);
 }
 
 extern "C" jlong Java_org_ebookdroid_droids_djvu_codec_DjvuDocument_getPage(JNIEnv *env, jclass cls, jlong docHandle,
@@ -455,7 +428,7 @@ extern "C" jobject Java_org_ebookdroid_droids_djvu_codec_DjvuPage_getPageText(JN
 
     while ((r = ddjvu_document_get_pagetext((ddjvu_document_t*) docHandle, pageNumber, "word")) == miniexp_dummy)
     {
-        Java_org_ebookdroid_droids_djvu_codec_DjvuContext_handleMessage(jenv, cls, contextHandle);
+        waitAndHandleMessages(jenv, contextHandle);
     }
 
     if (r == miniexp_nil || !miniexp_consp(r))
@@ -492,7 +465,9 @@ extern "C" jint Java_org_ebookdroid_droids_djvu_codec_DjvuDocument_getPageInfo(J
     jfieldID fid;
 
     while ((r = ddjvu_document_get_pageinfo((ddjvu_document_t*) docHandle, pageNumber, &info)) < DDJVU_JOB_OK)
-        Java_org_ebookdroid_droids_djvu_codec_DjvuContext_handleMessage(env, cls, contextHandle);
+    {
+        waitAndHandleMessages(env, contextHandle);
+    }
 
     CodecPageInfoHelper h(env);
     if (!h.valid)
@@ -534,7 +509,7 @@ extern "C" jint Java_org_ebookdroid_droids_djvu_codec_DjvuPage_getHeight(JNIEnv 
     return ddjvu_page_get_height((ddjvu_page_t*) pageHangle);
 }
 
-extern "C" jboolean Java_org_ebookdroid_droids_djvu_codec_DjvuPage_renderPage(JNIEnv *env, jclass cls, jlong pageHangle,
+extern "C" jboolean Java_org_ebookdroid_droids_djvu_codec_DjvuPage_renderPage(JNIEnv *env, jclass cls, jlong pageHangle, jlong contextHandle,
                                                                             jint targetWidth, jint targetHeight,
                                                                             jfloat pageSliceX, jfloat pageSliceY,
                                                                             jfloat pageSliceWidth,
@@ -560,6 +535,12 @@ extern "C" jboolean Java_org_ebookdroid_droids_djvu_codec_DjvuPage_renderPage(JN
     ddjvu_format_set_y_direction(pixelFormat, TRUE);
 
     char *pBuffer = (char *) env->GetPrimitiveArrayCritical(buffer, 0);
+
+    while (!ddjvu_page_decoding_done(page))
+    {
+        waitAndHandleMessages(env, contextHandle);
+    }
+
     jboolean result = ddjvu_page_render(page, (ddjvu_render_mode_t) rendermode, &pageRect, &targetRect, pixelFormat,
         targetWidth * 4, pBuffer);
     env->ReleasePrimitiveArrayCritical(buffer, pBuffer, 0);
@@ -571,15 +552,13 @@ extern "C" jboolean Java_org_ebookdroid_droids_djvu_codec_DjvuPage_renderPage(JN
 /*JNI BITMAP API*/
 
 extern "C" jboolean Java_org_ebookdroid_droids_djvu_codec_DjvuPage_renderPageBitmap(JNIEnv *env, jclass cls,
-                                                                                  jlong pageHangle, jint targetWidth,
+                                                                                  jlong pageHangle, jlong contextHandle, jint targetWidth,
                                                                                   jint targetHeight, jfloat pageSliceX,
                                                                                   jfloat pageSliceY,
                                                                                   jfloat pageSliceWidth,
                                                                                   jfloat pageSliceHeight,
                                                                                   jobject bitmap, jint rendermode)
 {
-//#ifdef USE_JNI_BITMAP_API
-
     DEBUG_WRITE("Rendering page bitmap");
 
     AndroidBitmapInfo info;
@@ -594,10 +573,6 @@ extern "C" jboolean Java_org_ebookdroid_droids_djvu_codec_DjvuPage_renderPageBit
     }
 
     DEBUG_WRITE("Checking format");
-//    if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
-//    	DEBUG_WRITE("Bitmap format is not RGBA_8888 !");
-//            return 0;
-//    }
     if (info.format != ANDROID_BITMAP_FORMAT_RGB_565)
     {
         DEBUG_WRITE("Bitmap format is not RGB_565 !");
@@ -624,13 +599,15 @@ extern "C" jboolean Java_org_ebookdroid_droids_djvu_codec_DjvuPage_renderPageBit
     targetRect.h = targetHeight;
     unsigned int masks[] = { 0xF800, 0x07E0, 0x001F };
     ddjvu_format_t* pixelFormat = ddjvu_format_create(DDJVU_FORMAT_RGBMASK16, 3, masks);
-//    unsigned int masks[] = {0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000};    
-//    ddjvu_format_t* pixelFormat = ddjvu_format_create(DDJVU_FORMAT_RGBMASK32, 4, masks);
 
     ddjvu_format_set_row_order(pixelFormat, TRUE);
     ddjvu_format_set_y_direction(pixelFormat, TRUE);
 
-//    jboolean result = ddjvu_page_render(page, DDJVU_RENDER_COLOR, &pageRect, &targetRect, pixelFormat, targetWidth * 4, (char*)pixels);
+    while (!ddjvu_page_decoding_done(page))
+    {
+        waitAndHandleMessages(env, contextHandle);
+    }
+
     jboolean result = ddjvu_page_render(page, (ddjvu_render_mode_t) rendermode, &pageRect, &targetRect, pixelFormat,
         targetWidth * 2, (char*) pixels);
 
@@ -639,10 +616,6 @@ extern "C" jboolean Java_org_ebookdroid_droids_djvu_codec_DjvuPage_renderPageBit
     NativeBitmap_unlockPixels(env, bitmap);
 
     return result;
-//#else
-//    DEBUG_WRITE("Rendering page bitmap not implemented");
-//	return 0;
-//#endif
 }
 
 extern "C" void Java_org_ebookdroid_droids_djvu_codec_DjvuPage_free(JNIEnv *env, jclass cls, jlong pageHangle)

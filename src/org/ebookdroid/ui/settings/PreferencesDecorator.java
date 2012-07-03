@@ -30,7 +30,8 @@ import org.emdev.utils.enums.EnumUtils;
  * @author whippet
  *
  */
-public class PreferencesDecorator implements IPreferenceContainer, AppPreferences, BookPreferences, LibPreferences, OpdsPreferences {
+public class PreferencesDecorator implements IPreferenceContainer, AppPreferences, BookPreferences, LibPreferences,
+        OpdsPreferences {
 
     private final Map<String, CharSequence> summaries = new HashMap<String, CharSequence>();
 
@@ -78,8 +79,8 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
     }
 
     public void decorateMemorySettings() {
-        decoratePreferences(PAGES_IN_MEMORY.key, VIEW_TYPE.key, DECODE_THREAD_PRIORITY.key, DRAW_THREAD_PRIORITY.key,
-                BITMAP_SIZE.key, HEAP_PREALLOCATE.key);
+        decoratePreferences(PAGES_IN_MEMORY.key, VIEW_TYPE.key, DECODING_THREADS.key, DECODE_THREAD_PRIORITY.key,
+                DRAW_THREAD_PRIORITY.key, BITMAP_SIZE.key, HEAP_PREALLOCATE.key);
     }
 
     public void decorateRenderSettings() {

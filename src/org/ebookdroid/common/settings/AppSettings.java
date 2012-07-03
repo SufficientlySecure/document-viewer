@@ -73,6 +73,8 @@ public class AppSettings implements AppPreferences, BookPreferences {
 
     public final DocumentViewType viewType;
 
+    public final int decodingThreads;
+
     public final int decodingThreadPriority;
 
     public final int drawThreadPriority;
@@ -158,6 +160,7 @@ public class AppSettings implements AppPreferences, BookPreferences {
         /* =============== Performance settings =============== */
         pagesInMemory = PAGES_IN_MEMORY.getPreferenceValue(prefs);
         viewType = VIEW_TYPE.getPreferenceValue(prefs);
+        decodingThreads = DECODING_THREADS.getPreferenceValue(prefs);
         decodingThreadPriority = DECODE_THREAD_PRIORITY.getPreferenceValue(prefs);
         drawThreadPriority = DRAW_THREAD_PRIORITY.getPreferenceValue(prefs);
         useNativeGraphics = USE_NATIVE_GRAPHICS.getPreferenceValue(prefs);

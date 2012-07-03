@@ -3,10 +3,8 @@ package org.ebookdroid.droids.cbx.codec;
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.BitmapRef;
 import org.ebookdroid.common.bitmaps.RawBitmap;
-import org.ebookdroid.core.codec.CodecPage;
+import org.ebookdroid.core.codec.AbstractCodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
-import org.ebookdroid.core.codec.PageLink;
-import org.ebookdroid.core.codec.PageTextBox;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,12 +18,10 @@ import android.util.FloatMath;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.List;
 
 import org.emdev.utils.archives.ArchiveEntry;
 
-public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage {
+public class CbxPage<ArchiveEntryType extends ArchiveEntry> extends AbstractCodecPage {
 
     private static final Paint PAINT = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
 
@@ -101,21 +97,6 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> implements CodecPage
             storedBitmap.recycle();
             storedBitmap = null;
         }
-    }
-
-    @Override
-    public List<PageLink> getPageLinks() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public List<PageTextBox> getPageText() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public List<? extends RectF> searchText(String pattern) {
-        return Collections.emptyList();
     }
 
     @Override

@@ -93,24 +93,30 @@ public class BitmapManager {
             final Bitmap bmp = ref.bitmap;
 
             if (bmp != null && bmp.getConfig() == config && ref.width == width && ref.height >= height) {
-                it.remove();
+                if (ref.used.compareAndSet(false, true)) {
+                    it.remove();
 
-                ref.gen = generation.get();
-                used.put(ref.id, ref);
+                    ref.gen = generation.get();
+                    used.put(ref.id, ref);
 
-                reused.incrementAndGet();
-                memoryPooled.addAndGet(-ref.size);
-                memoryUsed.addAndGet(ref.size);
+                    reused.incrementAndGet();
+                    memoryPooled.addAndGet(-ref.size);
+                    memoryUsed.addAndGet(ref.size);
 
-                if (LCTX.isDebugEnabled()) {
-                    LCTX.d("Reuse bitmap: [" + ref.id + ", " + ref.name + " => " + name + ", " + width + ", " + height
-                            + "], created=" + created + ", reused=" + reused + ", memoryUsed=" + used.size() + "/"
-                            + (memoryUsed.get() / 1024) + "KB" + ", memoryInPool=" + pool.size() + "/"
-                            + (memoryPooled.get() / 1024) + "KB");
+                    if (LCTX.isDebugEnabled()) {
+                        LCTX.d("Reuse bitmap: [" + ref.id + ", " + ref.name + " => " + name + ", " + width + ", "
+                                + height + "], created=" + created + ", reused=" + reused + ", memoryUsed="
+                                + used.size() + "/" + (memoryUsed.get() / 1024) + "KB" + ", memoryInPool="
+                                + pool.size() + "/" + (memoryPooled.get() / 1024) + "KB");
+                    }
+                    bmp.eraseColor(Color.CYAN);
+                    ref.name = name;
+                    return ref;
+                } else {
+                    if (LCTX.isDebugEnabled()) {
+                        LCTX.d("Attempt to re-use used bitmap: " + ref);
+                    }
                 }
-                bmp.eraseColor(Color.CYAN);
-                ref.name = name;
-                return ref;
             }
         }
 
@@ -229,11 +235,16 @@ public class BitmapManager {
 
     static void releaseImpl(final BitmapRef ref) {
         assert ref != null;
-
-        if (null != used.remove(ref.id)) {
-            memoryUsed.addAndGet(-ref.size);
+        if (ref.used.compareAndSet(true, false)) {
+            if (null != used.remove(ref.id)) {
+                memoryUsed.addAndGet(-ref.size);
+            } else {
+                LCTX.e("The bitmap " + ref + " not found in used ones");
+            }
         } else {
-            LCTX.e("The bitmap " + ref + " not found in used ones");
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("Attempt to release unused bitmap");
+            }
         }
 
         pool.add(ref);

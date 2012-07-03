@@ -35,6 +35,7 @@ struct renderdocument_s
 typedef struct renderpage_s renderpage_t;
 struct renderpage_s
 {
+    fz_context *ctx;
     fz_page *page;
     int number;
     fz_display_list* pageList;
@@ -359,58 +360,58 @@ JNIEXPORT jlong JNICALL
 Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_open(JNIEnv *env, jclass clazz, jlong dochandle, jint pageno)
 {
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
-    renderpage_t *page;
-    fz_device *dev;
+    renderpage_t *page = NULL;
+    fz_device *dev = NULL;
 
-    jclass cls;
-    jfieldID fid;
+    DEBUG("MuPdfPage_open(%p, %d): start", doc, pageno);
 
-    page = malloc(sizeof(renderpage_t));
+    fz_context* ctx = fz_clone_context(doc->ctx);
+    if (!ctx)
+    {
+        mupdf_throw_exception(env, "Context cloning failed");
+        return (jlong) (long) NULL;
+    }
+
+    page = fz_malloc_no_throw(ctx, sizeof(renderpage_t));
+    DEBUG("MuPdfPage_open(%p, %d): page=%p", doc, pageno, page);
+
     if (!page)
     {
         mupdf_throw_exception(env, "Out of Memory");
         return (jlong) (long) NULL;
     }
+
+    page->ctx = ctx;
     page->page = NULL;
     page->pageList = NULL;
 
-    fz_try(doc->ctx)
+    fz_try(ctx)
     {
+        page->pageList = fz_new_display_list(ctx);
+        dev = fz_new_list_device(ctx, page->pageList);
         page->page = fz_load_page(doc->document, pageno - 1);
-    }
-    fz_catch(doc->ctx)
-    {
-        //fz_throw(ctx, "cannot load page tree: %s", filename);
-        free(page);
-        page = NULL;
-        mupdf_throw_exception(env, "error loading page");
-        goto cleanup;
-
-    }
-
-    fz_try(doc->ctx)
-    {
-        page->pageList = fz_new_display_list(doc->ctx);
-        dev = fz_new_list_device(doc->ctx, page->pageList);
         fz_run_page(doc->document, page->page, dev, fz_identity, NULL);
     }
-    fz_catch(doc->ctx)
+    fz_always(ctx)
     {
         fz_free_device(dev);
-        fz_free_display_list(doc->ctx, page->pageList);
-        fz_free_page(doc->document, page->page);
-//	fz_throw(ctx, "cannot draw page %d",pageno);
-        free(page);
-        page = NULL;
-        mupdf_throw_exception(env, "error loading page");
-        goto cleanup;
     }
-    fz_free_device(dev);
+    fz_catch(ctx)
+    {
+        fz_free_device(dev);
+        fz_free_display_list(ctx, page->pageList);
+        fz_free_page(doc->document, page->page);
 
-    cleanup:
-    /* nothing yet */
+        fz_free(ctx, page);
+        fz_free_context(ctx);
 
-    // DEBUG("PdfPage.nativeOpenPage(): return handle = %p", page);
+        page = NULL;
+        ctx = NULL;
+        mupdf_throw_exception(env, "error loading page");
+    }
+
+    DEBUG("MuPdfPage_open(%p, %d): finish: %p", doc, pageno, page);
+
     return (jlong) (long) page;
 }
 
@@ -419,16 +420,32 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_free(JNIEnv *env, jclass clazz,
 {
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
     renderpage_t *page = (renderpage_t*) (long) handle;
-    // DEBUG("PdfPage_free(%p)", page);
+    DEBUG("MuPdfPage_free(%p): start", page);
 
-    if (page)
+    if (!page || !page->ctx)
     {
-        if (page->page)
-            fz_free_page(doc->document, page->page);
-        if (page->pageList)
-            fz_free_display_list(doc->ctx, page->pageList);
-        free(page);
+        DEBUG("No page to free");
+        return;
     }
+
+    fz_context *ctx = page->ctx;
+
+    if (page->pageList)
+    {
+        fz_free_display_list(ctx, page->pageList);
+    }
+
+    if (page->page)
+    {
+        fz_free_page(doc->document, page->page);
+    }
+
+    fz_free(ctx, page);
+    fz_free_context(ctx);
+    page = NULL;
+    ctx = NULL;
+
+    DEBUG("MuPdfPage_free(%p): finish", page);
 }
 
 JNIEXPORT void JNICALL
@@ -488,27 +505,29 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPage(JNIEnv *env, jobject
 
     buffer = (*env)->GetPrimitiveArrayCritical(env, bufferarray, 0);
 
-    fz_try(doc->ctx)
+    fz_context* ctx = page->ctx;
+
+    fz_try(ctx)
     {
-	pixmap = fz_new_pixmap_with_data(doc->ctx, fz_device_bgr, viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0,
-    	    (unsigned char*) buffer);
+       pixmap = fz_new_pixmap_with_data(ctx, fz_device_bgr, viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0, (unsigned char*) buffer);
 
-	fz_clear_pixmap_with_value(doc->ctx, pixmap, 0xff);
+       fz_clear_pixmap_with_value(ctx, pixmap, 0xff);
 
-	dev = fz_new_draw_device(doc->ctx, pixmap);
-	fz_run_display_list(page->pageList, dev, ctm, viewbox, NULL);
-	fz_free_device(dev);
+       dev = fz_new_draw_device(ctx, pixmap);
+       fz_run_display_list(page->pageList, dev, ctm, viewbox, NULL);
 
-	fz_drop_pixmap(doc->ctx, pixmap);
+       fz_drop_pixmap(ctx, pixmap);
+    } 
+    fz_always(ctx)
+    {
+       fz_free_device(dev);
     }
-    fz_catch(doc->ctx)
+    fz_catch(ctx)
     {
         DEBUG("Render failed");
     }
-    
+
     (*env)->ReleasePrimitiveArrayCritical(env, bufferarray, buffer, 0);
-
-
 }
 
 /*JNI BITMAP API*/
@@ -519,7 +538,9 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPageBitmap(JNIEnv *env, j
 {
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
     renderpage_t *page = (renderpage_t*) (long) pagehandle;
-    // DEBUG("PdfView(%p).renderPageBitmap(%p, %p)", this, doc, page);
+
+    DEBUG("MuPdfPage_renderPageBitmap(%p, %p): start", doc, page);
+
     fz_matrix ctm;
     fz_bbox viewbox;
     fz_pixmap *pixmap;
@@ -571,25 +592,35 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPageBitmap(JNIEnv *env, j
     viewbox.y1 = viewboxarr[3];
     (*env)->ReleasePrimitiveArrayCritical(env, viewboxarray, viewboxarr, 0);
 
-    fz_try(doc->ctx)
+    fz_context* ctx = page->ctx;
+    if (!ctx)
     {
-
-	pixmap = fz_new_pixmap_with_data(doc->ctx, fz_device_rgb, viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0, pixels);
-
-	fz_clear_pixmap_with_value(doc->ctx, pixmap, 0xff);
-
-	dev = fz_new_draw_device(doc->ctx, pixmap);
-	fz_run_display_list(page->pageList, dev, ctm, viewbox, NULL);
-	fz_free_device(dev);
-
-	fz_drop_pixmap(doc->ctx, pixmap);
+        ERROR("No page context");
+        return JNI_FALSE;
     }
-    fz_catch(doc->ctx)
+    fz_try(ctx)
+    {
+         pixmap = fz_new_pixmap_with_data(ctx, fz_device_rgb, viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0, pixels);
+
+         fz_clear_pixmap_with_value(ctx, pixmap, 0xff);
+
+         dev = fz_new_draw_device(ctx, pixmap);
+
+         fz_run_display_list(page->pageList, dev, ctm, viewbox, NULL);
+    }
+    fz_always(ctx)
+    {
+       fz_free_device(dev);
+       fz_drop_pixmap(ctx, pixmap);
+    }
+    fz_catch(ctx)
     {
         DEBUG("Render failed");
     }
 
     NativeBitmap_unlockPixels(env, bitmap);
+
+    DEBUG("MuPdfPage_renderPageBitmap(%p, %p): finish", doc, page);
 
     return JNI_TRUE;
 }

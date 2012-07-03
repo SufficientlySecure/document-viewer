@@ -2,6 +2,7 @@ package org.ebookdroid.common.bitmaps;
 
 import android.graphics.Bitmap;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.emdev.utils.android.VMRuntimeHack;
@@ -14,6 +15,9 @@ public class BitmapRef {
     public final int size;
     public final int width;
     public final int height;
+
+    final AtomicBoolean used = new AtomicBoolean(true);
+
     long gen;
     String name;
     Bitmap bitmap;

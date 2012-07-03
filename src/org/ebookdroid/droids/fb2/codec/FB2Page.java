@@ -2,10 +2,8 @@ package org.ebookdroid.droids.fb2.codec;
 
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.BitmapRef;
-import org.ebookdroid.core.codec.CodecPage;
+import org.ebookdroid.core.codec.AbstractCodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
-import org.ebookdroid.core.codec.PageLink;
-import org.ebookdroid.core.codec.PageTextBox;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -16,7 +14,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.emdev.utils.MatrixUtils;
@@ -28,7 +25,7 @@ import org.emdev.utils.textmarkup.line.LineFixedWhiteSpace;
 import org.emdev.utils.textmarkup.line.LineWhiteSpace;
 import org.emdev.utils.textmarkup.line.TextElement;
 
-public class FB2Page implements CodecPage {
+public class FB2Page extends AbstractCodecPage {
 
     public static final int PAGE_WIDTH = 800;
 
@@ -56,16 +53,6 @@ public class FB2Page implements CodecPage {
     @Override
     public int getWidth() {
         return PAGE_WIDTH;
-    }
-
-    @Override
-    public List<PageLink> getPageLinks() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public List<PageTextBox> getPageText() {
-        return Collections.emptyList();
     }
 
     @Override

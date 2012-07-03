@@ -3,7 +3,7 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE    := djvu
-LOCAL_CFLAGS    := -I$(LOCAL_PATH)/../jpeg
+LOCAL_CFLAGS    := -I$(LOCAL_PATH)/../jpeg -fexceptions
 
 ifneq ($(TARGET_ARCH_ABI),x86)
 ifneq ($(TARGET_ARCH_ABI),mips)

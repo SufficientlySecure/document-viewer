@@ -164,6 +164,14 @@
                 android:summary="@string/pref_docviewtype_summary"
                 android:title="@string/pref_docviewtype_title" />
 
+            <org.emdev.ui.preference.SeekBarPreference
+                android:defaultValue="@string/pref_decoding_threads_defvalue"
+                android:key="@string/pref_decoding_threads_id"
+                ebookdroid:minValue="@string/pref_decoding_threads_minvalue"
+                ebookdroid:maxValue="@string/pref_decoding_threads_maxvalue"
+                android:summary="@string/pref_decoding_threads_summary"
+                android:title="@string/pref_decoding_threads_title" />
+
             <ListPreference
                 android:defaultValue="@string/pref_thread_priority_normal"
                 android:entries="@array/pref_thread_priority_entries"

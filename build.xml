@@ -81,6 +81,8 @@
 		<copy file="unrars/unrar.${unrar.arch}" tofile="assets/unrar/unrar" />
 
 		<echo>${mk}</echo>
+	    <loadfile property="mk.content" srcfile="${mk}"></loadfile>
+		<echo>${mk.content}</echo>
 		<exec executable="${ndk.dir}/ndk-build" failonerror="true">
 			<arg value="NDK_DEBUG=0" />
 			<arg value="NDK_APPLICATION_MK=${mk}" />

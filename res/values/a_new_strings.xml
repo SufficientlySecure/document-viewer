@@ -89,4 +89,7 @@
 	<string name="pref_heappreallocate_title">Heap preallocation</string>
 	<string name="pref_heappreallocate_summary">Size in megabytes of heap preallocation at application startup</string>
 
+    <string name="pref_decoding_threads_title">"Number of decoding threads"</string>
+    <string name="pref_decoding_threads_summary">"Number of decoding threads"</string>
+
 </resources>

@@ -4,7 +4,7 @@ import org.ebookdroid.EBookDroidLibraryLoader;
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.BitmapRef;
 import org.ebookdroid.common.settings.AppSettings;
-import org.ebookdroid.core.codec.CodecPage;
+import org.ebookdroid.core.codec.AbstractCodecPage;
 import org.ebookdroid.core.codec.PageLink;
 import org.ebookdroid.core.codec.PageTextBox;
 
@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.emdev.utils.LengthUtils;
 
-public class DjvuPage implements CodecPage {
+public class DjvuPage extends AbstractCodecPage {
 
     private final long contextHandle;
     private final long docHandle;
@@ -52,13 +52,13 @@ public class DjvuPage implements CodecPage {
         if (width > 0 && height > 0) {
             bmp = BitmapManager.getBitmap("Djvu page", width, height, Bitmap.Config.RGB_565);
             if (EBookDroidLibraryLoader.nativeGraphicsAvailable && AppSettings.current().useNativeGraphics) {
-                if (renderPageBitmap(pageHandle, width, height, pageSliceBounds.left, pageSliceBounds.top,
+                if (renderPageBitmap(pageHandle, contextHandle, width, height, pageSliceBounds.left, pageSliceBounds.top,
                         pageSliceBounds.width(), pageSliceBounds.height(), bmp.getBitmap(), renderMode)) {
                     return bmp;
                 }
             } else {
                 final int[] buffer = new int[width * height];
-                renderPage(pageHandle, width, height, pageSliceBounds.left, pageSliceBounds.top,
+                renderPage(pageHandle, contextHandle, width, height, pageSliceBounds.left, pageSliceBounds.top,
                         pageSliceBounds.width(), pageSliceBounds.height(), buffer, renderMode);
                 bmp.getBitmap().setPixels(buffer, 0, width, 0, 0, width, height);
                 return bmp;
@@ -170,10 +170,10 @@ public class DjvuPage implements CodecPage {
 
     private static native boolean isDecodingDone(long pageHandle);
 
-    private static native boolean renderPage(long pageHandle, int targetWidth, int targetHeight, float pageSliceX,
+    private static native boolean renderPage(long pageHandle, long contextHandle, int targetWidth, int targetHeight, float pageSliceX,
             float pageSliceY, float pageSliceWidth, float pageSliceHeight, int[] buffer, int renderMode);
 
-    private static native boolean renderPageBitmap(long pageHandle, int targetWidth, int targetHeight,
+    private static native boolean renderPageBitmap(long pageHandle, long contextHandle, int targetWidth, int targetHeight,
             float pageSliceX, float pageSliceY, float pageSliceWidth, float pageSliceHeight, Bitmap bitmap,
             int renderMode);
 

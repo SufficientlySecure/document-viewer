@@ -471,8 +471,10 @@ GThread::create(void (*entry)(void*), void *arg)
 void 
 GThread::terminate()
 {
+#ifndef __ANDROID__
   if (xentry || xarg)
     pthread_cancel(hthr);
+#endif
 }
 
 int

@@ -45,7 +45,7 @@
 #define HAVE_DLFCN_H 1
 
 /* define if the compiler supports exceptions */
-//#define HAVE_EXCEPTIONS 1
+#define HAVE_EXCEPTIONS 1
 
 /* Define to 1 if you have the `fork' function. */
 #define HAVE_FORK 1

@@ -92,6 +92,9 @@ public interface AppPreferences {
     EnumPreferenceDefinition<DocumentViewType> VIEW_TYPE = new EnumPreferenceDefinition<DocumentViewType>(
             DocumentViewType.class, pref_docviewtype_id, pref_docviewtype_surface);
 
+    IntegerPreferenceDefinition DECODING_THREADS = new IntegerPreferenceDefinition(pref_decoding_threads_id,
+            pref_decoding_threads_defvalue, pref_decoding_threads_minvalue, pref_decoding_threads_maxvalue);
+
     IntegerPreferenceDefinition DECODE_THREAD_PRIORITY = new IntegerPreferenceDefinition(pref_decodethread_priority_id,
             pref_thread_priority_normal, pref_thread_priority_lowest, pref_thread_priority_highest);
 

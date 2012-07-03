@@ -15,7 +15,6 @@ import android.util.FloatMath;
 
 import java.util.List;
 
-import org.emdev.utils.LengthUtils;
 import org.emdev.utils.MathUtils;
 import org.emdev.utils.MatrixUtils;
 
@@ -40,10 +39,6 @@ public class Page {
 
     List<PageLink> links;
 
-    String pattern;
-    Integer currrentHighlight;
-    List<? extends RectF> highlights;
-
     public Page(final IActivityController base, final PageIndex index, final PageType pt, final CodecPageInfo cpi) {
         this.base = base;
         this.index = index;
@@ -59,43 +54,6 @@ public class Page {
     public void recycle(final List<Bitmaps> bitmapsToRecycle) {
         recycled = true;
         nodes.recycleAll(bitmapsToRecycle, true);
-    }
-
-    public boolean areHighlightsActual(String pattern) {
-        return this.pattern != null && this.pattern.equals(pattern);
-    }
-
-    public RectF getNextHighlight() {
-        if (currrentHighlight == null) {
-            currrentHighlight = Integer.valueOf(-1);
-        }
-        int index = currrentHighlight.intValue() + 1;
-        currrentHighlight = Integer.valueOf(index);
-        return 0 <= index && index < LengthUtils.length(highlights) ? highlights.get(index) : null;
-    }
-
-    public RectF getPrevHighlight() {
-        if (currrentHighlight == null) {
-            currrentHighlight = LengthUtils.length(highlights);
-        }
-        int index = currrentHighlight.intValue() - 1;
-        currrentHighlight = Integer.valueOf(index);
-        return 0 <= index && index < LengthUtils.length(highlights) ? highlights.get(index) : null;
-    }
-
-    public void setHighlights(String pattern, List<? extends RectF> regions) {
-        this.pattern = pattern;
-        this.highlights = regions;
-        this.currrentHighlight = null;
-    }
-
-    public void clearHighlights() {
-        this.pattern = null;
-        this.currrentHighlight = null;
-        if (highlights != null) {
-            highlights.clear();
-            highlights = null;
-        }
     }
 
     public float getAspectRatio() {

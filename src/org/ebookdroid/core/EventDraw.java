@@ -5,6 +5,8 @@ import org.ebookdroid.R;
 import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.core.codec.PageLink;
+import org.ebookdroid.core.models.SearchModel;
+import org.ebookdroid.core.models.SearchModel.Matches;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -12,6 +14,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.text.TextPaint;
 
+import java.util.List;
 import java.util.Queue;
 
 import org.emdev.utils.LengthUtils;
@@ -169,16 +172,24 @@ public class EventDraw implements IEvent {
     }
 
     private void drawHighlights(final Page page) {
-        if (LengthUtils.isEmpty(page.highlights)) {
+        final SearchModel sm = viewState.ctrl.getBase().getSearchModel();
+        final Matches matches = sm.getMatches(page);
+        final List<? extends RectF> mm = matches != null ? matches.getMatches() : null;
+        if (LengthUtils.isEmpty(mm)) {
             return;
         }
+
+        final AppSettings app = AppSettings.current();
         final Paint p = new Paint();
-        for (int i = 0; i < page.highlights.size(); i++) {
-            final boolean current = page.currrentHighlight != null && i == page.currrentHighlight.intValue();
-            final RectF link = page.highlights.get(i);
+        final Page cp = sm.getCurrentPage();
+        final int cmi = sm.getCurrentMatchIndex();
+
+        for (int i = 0; i < mm.size(); i++) {
+            final boolean current = page == cp && i == cmi;
+            final RectF link = mm.get(i);
             final RectF rect = page.getPageRegion(pageBounds, new RectF(link));
             rect.offset(-viewState.viewBase.x, -viewState.viewBase.y);
-            p.setColor(current ? AppSettings.current().currentSearchHighlightColor : AppSettings.current().searchHighlightColor);
+            p.setColor(current ? app.currentSearchHighlightColor : app.searchHighlightColor);
             canvas.drawRect(rect, p);
         }
     }

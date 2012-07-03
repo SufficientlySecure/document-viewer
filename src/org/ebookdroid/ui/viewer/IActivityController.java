@@ -3,6 +3,7 @@ package org.ebookdroid.ui.viewer;
 import org.ebookdroid.core.DecodeService;
 import org.ebookdroid.core.models.DecodingProgressModel;
 import org.ebookdroid.core.models.DocumentModel;
+import org.ebookdroid.core.models.SearchModel;
 import org.ebookdroid.core.models.ZoomModel;
 
 import android.app.Activity;
@@ -20,6 +21,8 @@ public interface IActivityController extends IActionController<ViewerActivity> {
     DecodeService getDecodeService();
 
     DocumentModel getDocumentModel();
+
+    SearchModel getSearchModel();
 
     IView getView();
 

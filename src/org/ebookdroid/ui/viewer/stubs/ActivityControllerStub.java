@@ -4,6 +4,7 @@ import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.core.DecodeService;
 import org.ebookdroid.core.models.DecodingProgressModel;
 import org.ebookdroid.core.models.DocumentModel;
+import org.ebookdroid.core.models.SearchModel;
 import org.ebookdroid.core.models.ZoomModel;
 import org.ebookdroid.ui.viewer.IActivityController;
 import org.ebookdroid.ui.viewer.IView;
@@ -23,6 +24,8 @@ public class ActivityControllerStub extends ActionController<ViewerActivity> imp
     public static final DocumentModel DM_STUB = new DocumentModel(null);
 
     public static final ZoomModel ZM_STUB = new ZoomModel();
+
+    private SearchModel SEARCH_STUB = new SearchModel(this);
 
     private ActivityControllerStub() {
         super(null, null);
@@ -75,5 +78,10 @@ public class ActivityControllerStub extends ActionController<ViewerActivity> imp
 
     @Override
     public void jumpToPage(final int viewIndex, final float offsetX, final float offsetY, final boolean addToHistory) {
+    }
+
+    @Override
+    public SearchModel getSearchModel() {
+        return SEARCH_STUB;
     }
 }

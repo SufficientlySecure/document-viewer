@@ -25,6 +25,7 @@ import org.ebookdroid.core.events.CurrentPageListener;
 import org.ebookdroid.core.events.DecodingProgressListener;
 import org.ebookdroid.core.models.DecodingProgressModel;
 import org.ebookdroid.core.models.DocumentModel;
+import org.ebookdroid.core.models.SearchModel;
 import org.ebookdroid.core.models.ZoomModel;
 import org.ebookdroid.droids.mupdf.codec.exceptions.MuPdfPasswordException;
 import org.ebookdroid.ui.settings.SettingsUI;
@@ -56,8 +57,6 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -118,6 +117,8 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
     private DecodingProgressModel progressModel;
 
     private DocumentModel documentModel;
+
+    private SearchModel searchModel;
 
     private String bookTitle;
 
@@ -184,6 +185,8 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
         if (++loadingCount == 1) {
             documentModel = ActivityControllerStub.DM_STUB;
+            searchModel = new SearchModel(this);
+
             if (intent == null) {
                 showErrorDlg("Bad intent or scheme:\n" + intent);
                 return;
@@ -564,6 +567,11 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
     }
 
     @Override
+    public SearchModel getSearchModel() {
+        return searchModel;
+    }
+
+    @Override
     public IViewController getDocumentController() {
         return ctrl.get();
     }
@@ -844,10 +852,9 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         }
     }
 
-    final class SearchTask extends AsyncTask<String, String, RectF> implements DecodeService.SearchCallback,
+    final class SearchTask extends AsyncTask<String, String, RectF> implements SearchModel.ProgressCallback,
             OnCancelListener {
 
-        private CountDownLatch sync;
         private ProgressDialog progressDialog;
         private final AtomicBoolean continueFlag = new AtomicBoolean(true);
         private String pattern;
@@ -865,77 +872,28 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         }
 
         @Override
+        public void searchStarted(int pageIndex) {
+            publishProgress("Searching on page " + (pageIndex + 1) + "...");
+        }
+
+        @Override
+        public void searchFinished(int pageIndex) {
+        }
+
+        @Override
         protected RectF doInBackground(final String... params) {
             try {
                 final int length = LengthUtils.length(params);
 
                 pattern = length > 0 ? params[0] : null;
-                final String oldPattern = length >= 2 ? params[1] : null;
                 final boolean forward = length >= 3 ? Boolean.parseBoolean(params[2]) : true;
 
-                if (LengthUtils.isEmpty(pattern) || !pattern.equals(oldPattern)) {
-                    for (final Page page : documentModel.getPages()) {
-                        page.clearHighlights();
-                    }
-                    if (LengthUtils.isEmpty(pattern)) {
-                        return null;
-                    }
-                }
+                searchModel.setPattern(pattern);
 
-                final int pageCount = documentModel.getPageCount();
-                final int currentIndex = documentModel.getCurrentViewPageIndex();
-                Page p = documentModel.getPageObject(currentIndex);
+                RectF current = forward ? searchModel.moveToNext(this) : searchModel.moveToPrev(this);
+                targetPage = searchModel.getCurrentPage();
+                return current;
 
-                // Set default values for search direction and range
-                final int direction = forward ? +1 : -1;
-                final int startIndex;
-                final int endIndex;
-
-                // Check if current page contains actual search results
-                if (p.areHighlightsActual(pattern)) {
-                    // Try to find next/prev inclusion
-                    final RectF next = forward ? p.getNextHighlight() : p.getPrevHighlight();
-                    if (next != null) {
-                        // Use the current page as search result page
-                        targetPage = p;
-                        return next;
-                    }
-                    // Start search from next/prev page
-                    startIndex = forward ? currentIndex + 1 : currentIndex - 1;
-                    endIndex = forward ? pageCount : -1;
-                } else {
-                    // Try to search starting from the current page
-                    startIndex = currentIndex;
-                    endIndex = forward ? pageCount : -1;
-                }
-
-                for (int index = startIndex; (forward && index < endIndex || index > endIndex) && continueFlag.get(); index += direction) {
-                    p = documentModel.getPageObject(index);
-                    if (p.areHighlightsActual(pattern)) {
-                        final RectF next = forward ? p.getNextHighlight() : p.getPrevHighlight();
-                        if (next != null) {
-                            targetPage = p;
-                            return next;
-                        }
-                    }
-                    publishProgress("Searching on page " + (index + 1) + "...");
-                    sync = new CountDownLatch(1);
-                    documentModel.getDecodeService().searchText(p, pattern, this);
-                    while (continueFlag.get()) {
-                        try {
-                            if (sync.await(250, TimeUnit.MILLISECONDS)) {
-                                break;
-                            }
-                        } catch (final InterruptedException ex) {
-                            Thread.interrupted();
-                        }
-                    }
-                    final RectF next = forward ? p.getNextHighlight() : p.getPrevHighlight();
-                    if (next != null) {
-                        targetPage = p;
-                        return next;
-                    }
-                }
             } catch (final Throwable th) {
                 th.printStackTrace();
             }
@@ -978,12 +936,6 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
             } else {
                 progressDialog.setMessage(last);
             }
-        }
-
-        @Override
-        public void searchComplete(final Page page, final List<? extends RectF> regions) {
-            page.setHighlights(pattern, regions);
-            sync.countDown();
         }
     }
 }

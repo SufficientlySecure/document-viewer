@@ -125,6 +125,10 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
         }
         super.onDestroy();
         getController().onDestroy();
+
+        if (isFinishing()) {
+            System.exit(0);
+        }
     }
 
     @Override

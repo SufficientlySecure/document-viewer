@@ -8,7 +8,6 @@ import org.ebookdroid.common.touch.TouchManagerView;
 import org.ebookdroid.ui.viewer.dialogs.GoToPageDialog;
 import org.ebookdroid.ui.viewer.views.PageViewZoomControls;
 import org.ebookdroid.ui.viewer.views.SearchControls;
-import org.ebookdroid.ui.viewer.views.ViewEffects;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -27,8 +26,6 @@ import android.widget.Toast;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.emdev.ui.AbstractActionActivity;
-import org.emdev.ui.actions.ActionEx;
-import org.emdev.ui.actions.ActionMethod;
 import org.emdev.ui.actions.ActionMethodDef;
 import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.uimanager.IUIManager;
@@ -38,8 +35,8 @@ import org.emdev.utils.LengthUtils;
 @ActionTarget(
 // action list
 actions = {
-// start
-@ActionMethodDef(id = R.id.mainmenu_about, method = "showAbout")
+        // start
+        @ActionMethodDef(id = R.id.mainmenu_about, method = "showAbout")
 // finish
 })
 public class ViewerActivity extends AbstractActionActivity<ViewerActivity, ViewerActivityController> {
@@ -158,8 +155,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     public void onWindowFocusChanged(boolean hasFocus) {
         if (hasFocus && this.view != null) {
-            IUIManager.instance.setFullScreenMode(this, this.view.getView(),
-                    AppSettings.current().fullScreen);
+            IUIManager.instance.setFullScreenMode(this, this.view.getView(), AppSettings.current().fullScreen);
         }
     }
 
@@ -319,12 +315,6 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
                 return new GoToPageDialog(getController());
         }
         return null;
-    }
-
-    @ActionMethod(ids = { R.id.mainmenu_zoom, R.id.actions_toggleTouchManagerView })
-    public void toggleControls(final ActionEx action) {
-        final View view = action.getParameter("view");
-        ViewEffects.toggleControls(view);
     }
 
     @Override

@@ -79,24 +79,24 @@ import org.emdev.utils.filesystem.PathFromUri;
 // action list
 actions = {
         // start
-        @ActionMethodDef(id = R.id.actions_addBookmark, method = "addBookmark"),
-        @ActionMethodDef(id = R.id.mainmenu_close, method = "closeActivity"),
-        @ActionMethodDef(id = R.id.actions_gotoOutlineItem, method = "gotoOutlineItem"),
         @ActionMethodDef(id = R.id.actions_redecodingWithPassword, method = "redecodingWithPassword"),
-        @ActionMethodDef(id = R.id.mainmenu_settings, method = "showAppSettings"),
-        @ActionMethodDef(id = R.id.mainmenu_bookmark, method = "showBookmarkDialog"),
-        @ActionMethodDef(id = R.id.mainmenu_booksettings, method = "showBookSettings"),
-        @ActionMethodDef(id = R.id.mainmenu_goto_page, method = "showDialog"),
-        @ActionMethodDef(id = R.id.mainmenu_outline, method = "showOutline"),
-        @ActionMethodDef(id = R.id.mainmenu_nightmode, method = "toggleNightMode"),
-        @ActionMethodDef(id = R.id.mainmenu_zoom, method = "toggleControls"),
-        @ActionMethodDef(id = R.id.mainmenu_thumbnail, method = "setCurrentPageAsThumbnail"),
-        @ActionMethodDef(id = R.id.actions_toggleTouchManagerView, method = "toggleControls"),
         @ActionMethodDef(id = R.id.actions_openOptionsMenu, method = "openOptionsMenu"),
-        @ActionMethodDef(id = R.id.actions_keyBindings, method = "showKeyBindingsDialog"),
-        @ActionMethodDef(id = R.id.mainmenu_search, method = "toggleControls"),
+        @ActionMethodDef(id = R.id.actions_gotoOutlineItem, method = "gotoOutlineItem"),
+        @ActionMethodDef(id = R.id.mainmenu_outline, method = "showOutline"),
         @ActionMethodDef(id = R.id.actions_doSearch, method = "doSearch"),
-        @ActionMethodDef(id = R.id.actions_doSearchBack, method = "doSearch")
+        @ActionMethodDef(id = R.id.actions_doSearchBack, method = "doSearch"),
+        @ActionMethodDef(id = R.id.mainmenu_goto_page, method = "showDialog"),
+        @ActionMethodDef(id = R.id.mainmenu_booksettings, method = "showBookSettings"),
+        @ActionMethodDef(id = R.id.mainmenu_settings, method = "showAppSettings"),
+        @ActionMethodDef(id = R.id.mainmenu_nightmode, method = "toggleNightMode"),
+        @ActionMethodDef(id = R.id.mainmenu_thumbnail, method = "setCurrentPageAsThumbnail"),
+        @ActionMethodDef(id = R.id.mainmenu_bookmark, method = "showBookmarkDialog"),
+        @ActionMethodDef(id = R.id.actions_addBookmark, method = "addBookmark"),
+        @ActionMethodDef(id = R.id.actions_keyBindings, method = "showKeyBindingsDialog"),
+        @ActionMethodDef(id = R.id.mainmenu_zoom, method = "toggleControls"),
+        @ActionMethodDef(id = R.id.actions_toggleTouchManagerView, method = "toggleControls"),
+        @ActionMethodDef(id = R.id.mainmenu_search, method = "toggleControls"),
+        @ActionMethodDef(id = R.id.mainmenu_close, method = "closeActivity")
 // finish
 })
 public class ViewerActivityController extends ActionController<ViewerActivity> implements IActivityController,

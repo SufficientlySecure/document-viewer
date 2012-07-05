@@ -57,16 +57,28 @@ import org.emdev.utils.filesystem.FileExtensionFilter;
 actions = {
         // start
         @ActionMethodDef(id = R.id.recentmenu_cleanrecent, method = "showClearRecentDialog"),
-        @ActionMethodDef(id = R.id.recent_showbrowser, method = "goFileBrowser"),
-        @ActionMethodDef(id = R.id.recent_showlibrary, method = "goLibrary"),
-        @ActionMethodDef(id = R.id.mainmenu_settings, method = "showSettings"),
         @ActionMethodDef(id = R.id.actions_clearRecent, method = "doClearRecent"),
+        @ActionMethodDef(id = R.id.bookmenu_removefromrecent, method = "removeBookFromRecents"),
+        @ActionMethodDef(id = R.id.bookmenu_cleardata, method = "removeCachedBookFiles"),
+        @ActionMethodDef(id = R.id.bookmenu_deletesettings, method = "removeBookSettings"),
+        @ActionMethodDef(id = R.id.recentmenu_searchBook, method = "showSearchDlg"),
+        @ActionMethodDef(id = R.id.actions_searchBook, method = "searchBook"),
+        @ActionMethodDef(id = R.id.mainmenu_settings, method = "showSettings"),
+        @ActionMethodDef(id = R.id.bookmenu_copy, method = "copyBook"),
+        @ActionMethodDef(id = R.id.bookmenu_move, method = "copyBook"),
+        @ActionMethodDef(id = R.id.actions_doCopyBook, method = "doCopyBook"),
+        @ActionMethodDef(id = R.id.actions_doMoveBook, method = "doMoveBook"),
+        @ActionMethodDef(id = R.id.bookmenu_rename, method = "renameBook"),
+        @ActionMethodDef(id = R.id.actions_doRenameBook, method = "doRenameBook"),
+        @ActionMethodDef(id = R.id.bookmenu_delete, method = "deleteBook"),
+        @ActionMethodDef(id = R.id.actions_doDeleteBook, method = "doDeleteBook"),
+        @ActionMethodDef(id = R.id.bookmenu_open, method = "openBook"),
         @ActionMethodDef(id = R.id.ShelfCaption, method = "showSelectShelfDlg"),
         @ActionMethodDef(id = R.id.actions_selectShelf, method = "selectShelf"),
         @ActionMethodDef(id = R.id.ShelfLeftButton, method = "selectPrevShelf"),
         @ActionMethodDef(id = R.id.ShelfRightButton, method = "selectNextShelf"),
-        @ActionMethodDef(id = R.id.recentmenu_searchBook, method = "showSearchDlg"),
-        @ActionMethodDef(id = R.id.actions_searchBook, method = "searchBook"),
+        @ActionMethodDef(id = R.id.recent_showbrowser, method = "goFileBrowser"),
+        @ActionMethodDef(id = R.id.recent_showlibrary, method = "goLibrary"),
         @ActionMethodDef(id = R.id.mainmenu_opds, method = "goOPDSBrowser")
 // finish
 })
@@ -233,7 +245,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         }
     }
 
-    @ActionMethod(ids = R.id.bookmenu_cleardata)
+    @ActionMethod(ids = R.id.bookmenu_deletesettings)
     public void removeBookSettings(final ActionEx action) {
         final BookNode book = action.getParameter(AbstractActionActivity.MENU_ITEM_SOURCE);
         if (book != null) {

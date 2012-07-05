@@ -68,7 +68,20 @@ actions = {
         @ActionMethodDef(id = R.id.mainmenu_settings, method = "showSettings"),
         @ActionMethodDef(id = R.id.mainmenu_about, method = "showAbout"),
         @ActionMethodDef(id = R.id.browserrecent, method = "goRecent"),
-        @ActionMethodDef(id = R.id.mainmenu_opds, method = "goOPDSBrowser")
+        @ActionMethodDef(id = R.id.mainmenu_opds, method = "goOPDSBrowser"),
+        @ActionMethodDef(id = R.id.bookmenu_open, method = "openBook"),
+        @ActionMethodDef(id = R.id.bookmenu_removefromrecent, method = "removeBookFromRecents"),
+        @ActionMethodDef(id = R.id.bookmenu_cleardata, method = "removeCachedBookFiles"),
+        @ActionMethodDef(id = R.id.bookmenu_deletesettings, method = "removeBookSettings"),
+        @ActionMethodDef(id = R.id.bookmenu_copy, method = "copyBook"),
+        @ActionMethodDef(id = R.id.bookmenu_move, method = "copyBook"),
+        @ActionMethodDef(id = R.id.actions_doCopyBook, method = "doCopyBook"),
+        @ActionMethodDef(id = R.id.actions_doMoveBook, method = "doMoveBook"),
+        @ActionMethodDef(id = R.id.bookmenu_rename, method = "renameBook"),
+        @ActionMethodDef(id = R.id.actions_doRenameBook, method = "doRenameBook"),
+        @ActionMethodDef(id = R.id.bookmenu_delete, method = "deleteBook"),
+        @ActionMethodDef(id = R.id.actions_doDeleteBook, method = "doDeleteBook")
+
 // finish
 })
 public class BrowserActivity extends AbstractActionActivity<BrowserActivity, ActionController<BrowserActivity>>
@@ -291,7 +304,7 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
         }
     }
 
-    @ActionMethod(ids = R.id.bookmenu_cleardata)
+    @ActionMethod(ids = R.id.bookmenu_deletesettings)
     public void removeBookSettings(final ActionEx action) {
         final File file = action.getParameter(AbstractActionActivity.MENU_ITEM_SOURCE);
         if (file != null) {

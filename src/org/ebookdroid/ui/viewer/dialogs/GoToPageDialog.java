@@ -41,14 +41,14 @@ import org.emdev.utils.LayoutUtils;
 // action
 actions = {
         // start
-        @ActionMethodDef(id = R.id.actions_addBookmark, method = "addBookmark"),
-        @ActionMethodDef(id = R.id.actions_deleteAllBookmarks, method = "deleteAllBookmarks"),
         @ActionMethodDef(id = R.id.actions_gotoPage, method = "goToPageAndDismiss"),
+        @ActionMethodDef(id = R.id.actions_setBookmarkedPage, method = "updateControls"),
+        @ActionMethodDef(id = R.id.actions_showDeleteBookmarkDlg, method = "showDeleteBookmarkDlg"),
         @ActionMethodDef(id = R.id.actions_removeBookmark, method = "removeBookmark"),
         @ActionMethodDef(id = R.id.mainmenu_bookmark, method = "showAddBookmarkDlg"),
+        @ActionMethodDef(id = R.id.actions_addBookmark, method = "addBookmark"),
         @ActionMethodDef(id = R.id.actions_showDeleteAllBookmarksDlg, method = "showDeleteAllBookmarksDlg"),
-        @ActionMethodDef(id = R.id.actions_showDeleteBookmarkDlg, method = "showDeleteBookmarkDlg"),
-        @ActionMethodDef(id = R.id.actions_setBookmarkedPage, method = "updateControls")
+        @ActionMethodDef(id = R.id.actions_deleteAllBookmarks, method = "deleteAllBookmarks")
 // finish
 })
 public class GoToPageDialog extends Dialog {

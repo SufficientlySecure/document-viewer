@@ -21,11 +21,21 @@ import org.emdev.ui.actions.ActionController;
 import org.emdev.ui.actions.ActionDialogBuilder;
 import org.emdev.ui.actions.ActionEx;
 import org.emdev.ui.actions.ActionMethod;
+import org.emdev.ui.actions.ActionMethodDef;
+import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.actions.IActionController;
 import org.emdev.ui.actions.params.AbstractActionParameter;
 import org.emdev.utils.LayoutUtils;
 import org.emdev.utils.filesystem.DirectoryFilter;
 
+@ActionTarget(
+// action list
+actions = {
+        // actions
+        @ActionMethodDef(id = R.id.browserhome, method = "goHome"),
+        @ActionMethodDef(id = R.id.browserupfolder, method = "goUp")
+// no more
+})
 public class FolderDlg implements AdapterView.OnItemClickListener {
 
     public static final String SELECTED_FOLDER = "selected";

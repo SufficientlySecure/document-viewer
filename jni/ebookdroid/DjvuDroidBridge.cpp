@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <DjvuDroidTrace.h>
 #include <ddjvuapi.h>
+#include <DjVuDocument.h>
 #include <miniexp.h>
 
 /*JNI BITMAP API */
@@ -488,9 +489,17 @@ extern "C" void Java_org_ebookdroid_droids_djvu_codec_DjvuDocument_free(JNIEnv *
     ddjvu_document_release((ddjvu_document_t*) docHandle);
 }
 
-extern "C" jint Java_org_ebookdroid_droids_djvu_codec_DjvuDocument_getPageCount(JNIEnv *env, jclass cls, jlong docHandle)
+extern "C" jint Java_org_ebookdroid_droids_djvu_codec_DjvuDocument_getPageCount(JNIEnv *env, jclass cls,
+                                                                                jlong contextHandle, jlong docHandle)
 {
-    return ddjvu_document_get_pagenum(HANDLE_TO_DOC(docHandle));
+    int pages = ddjvu_document_get_pagenum(HANDLE_TO_DOC(docHandle));
+    while(pages == -1)
+    {
+        DEBUG_PRINT("DjvuDocument_getPageCount(%d): wait for document opening", docHandle);
+        waitAndHandleMessages(env, contextHandle);
+        pages = ddjvu_document_get_pagenum(HANDLE_TO_DOC(docHandle));
+    }
+    return pages;
 }
 
 extern "C" jboolean Java_org_ebookdroid_droids_djvu_codec_DjvuPage_isDecodingDone(JNIEnv *env, jclass cls,

@@ -11,6 +11,7 @@ import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.listeners.ILibSettingsChangeListener;
 import org.ebookdroid.ui.library.adapters.BookNode;
+import org.ebookdroid.ui.library.adapters.BookShelfAdapter;
 import org.ebookdroid.ui.library.adapters.BooksAdapter;
 import org.ebookdroid.ui.library.adapters.LibraryAdapter;
 import org.ebookdroid.ui.library.adapters.RecentAdapter;
@@ -73,6 +74,8 @@ actions = {
         @ActionMethodDef(id = R.id.bookmenu_delete, method = "deleteBook"),
         @ActionMethodDef(id = R.id.actions_doDeleteBook, method = "doDeleteBook"),
         @ActionMethodDef(id = R.id.bookmenu_open, method = "openBook"),
+        @ActionMethodDef(id = R.id.bookmenu_openbookshelf, method = "openBookShelf"),
+        @ActionMethodDef(id = R.id.bookmenu_openbookfolder, method = "openBookFolder"),
         @ActionMethodDef(id = R.id.ShelfCaption, method = "showSelectShelfDlg"),
         @ActionMethodDef(id = R.id.actions_selectShelf, method = "selectShelf"),
         @ActionMethodDef(id = R.id.ShelfLeftButton, method = "selectPrevShelf"),
@@ -413,7 +416,24 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         }
     }
 
-    @Override
+    @ActionMethod(ids = R.id.bookmenu_openbookshelf)
+    public void openBookShelf(final ActionEx action) {
+        final BookNode book = action.getParameter(AbstractActionActivity.MENU_ITEM_SOURCE);
+        BookShelfAdapter bookShelf = getBookShelf(book);
+        if (bookShelf != null) {
+            int pos = bookshelfAdapter.getShelfPosition(bookShelf);
+            getManagedComponent().showBookshelf(pos);
+        }
+    }
+
+    @ActionMethod(ids = R.id.bookmenu_openbookfolder)
+    public void openBookFolder(final ActionEx action) {
+        final BookNode book = action.getParameter(AbstractActionActivity.MENU_ITEM_SOURCE);
+        final Intent myIntent = new Intent(getManagedComponent(), BrowserActivity.class);
+        myIntent.setData(Uri.fromFile(new File(book.path).getParentFile().getAbsoluteFile()));
+        getManagedComponent().startActivity(myIntent);
+    }
+
     public void showDocument(final Uri uri) {
         libraryAdapter.stopScan();
         bookshelfAdapter.stopScan();
@@ -536,5 +556,10 @@ public class RecentActivityController extends ActionController<RecentActivity> i
                 recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), filter);
             }
         }
+    }
+
+    public BookShelfAdapter getBookShelf(final BookNode node) {
+        final String parent = new File(node.path).getParentFile().getAbsolutePath();
+        return bookshelfAdapter.getShelf(parent);
     }
 }

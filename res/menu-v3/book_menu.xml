@@ -5,6 +5,12 @@
         android:id="@+id/bookmenu_open"
         android:title="Open book"/>
     <item
+        android:id="@+id/bookmenu_openbookshelf"
+        android:title="Open book shelf"/>
+    <item
+        android:id="@+id/bookmenu_openbookfolder"
+        android:title="Open book folder"/>
+    <item
         android:id="@+id/bookmenu_settings"
         android:title="Show book settings"/>
     <item

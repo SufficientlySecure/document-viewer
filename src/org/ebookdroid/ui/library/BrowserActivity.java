@@ -58,6 +58,7 @@ import org.emdev.utils.LayoutUtils;
 import org.emdev.utils.android.AndroidVersion;
 import org.emdev.utils.filesystem.CompositeFilter;
 import org.emdev.utils.filesystem.DirectoryFilter;
+import org.emdev.utils.filesystem.PathFromUri;
 
 @ActionTarget(
 // action list
@@ -127,7 +128,10 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
 
         goHome(null);
 
-        if (savedInstanceState != null) {
+        Uri data = getIntent().getData();
+        if (data != null) {
+            setCurrentDir(new File(PathFromUri.retrieve(getContentResolver(), data)));
+        } else if (savedInstanceState != null) {
             final String absolutePath = savedInstanceState.getString(CURRENT_DIRECTORY);
             if (absolutePath != null) {
                 setCurrentDir(new File(absolutePath));
@@ -182,8 +186,6 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
     public void showDocument(final Uri uri) {
         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         intent.setClass(this, ViewerActivity.class);
-//        intent.putExtra("persistent", "false");
-//        intent.putExtra("nightMode", "true");
         startActivity(intent);
     }
 
@@ -272,6 +274,8 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
                 inflater.inflate(R.menu.book_menu, menu);
                 menu.setHeaderTitle(path);
                 menu.findItem(R.id.bookmenu_recentgroup).setVisible(bs != null);
+                menu.findItem(R.id.bookmenu_openbookshelf).setVisible(false);
+                menu.findItem(R.id.bookmenu_openbookfolder).setVisible(false);
             }
         }
 

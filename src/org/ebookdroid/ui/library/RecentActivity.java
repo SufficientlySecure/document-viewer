@@ -124,6 +124,10 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
             LCTX.d("onDestroy(): " + isFinishing());
         }
         super.onDestroy();
+        if (!isTaskRoot()) {
+            LCTX.d("onDestroy(): close duplicated activity");
+            return;
+        }
         getController().onDestroy();
 
         if (isFinishing()) {
@@ -168,7 +172,7 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
 
             menu.setHeaderTitle(node.path);
             menu.findItem(R.id.bookmenu_recentgroup).setVisible(node.settings != null);
-
+            menu.findItem(R.id.bookmenu_openbookshelf).setVisible(getController().getBookShelf(node) != null);
         } else if (source instanceof BookShelfAdapter) {
             BookShelfAdapter a = (BookShelfAdapter) source;
 

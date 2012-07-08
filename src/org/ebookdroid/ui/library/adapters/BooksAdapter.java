@@ -116,6 +116,15 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
         // TODO Auto-generated method stub
     }
 
+    public synchronized BookShelfAdapter getShelf(final String path) {
+        return folders.get(path);
+    }
+
+    public synchronized int getShelfPosition(final BookShelfAdapter shelf) {
+        checkServiceAdapters();
+        return data.indexOfValue(shelf);
+    }
+
     public synchronized BookShelfAdapter getList(final int index) {
         return data.valueAt(index);
     }

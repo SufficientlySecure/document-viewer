@@ -84,7 +84,7 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
         libraryButton = (ImageView) findViewById(R.id.recent_showlibrary);
         viewflipper = (ViewFlipper) findViewById(R.id.recentflip);
 
-        RecentActivityController c = restoreController();
+        final RecentActivityController c = restoreController();
         if (c != null) {
             c.onRestore(this);
         } else {
@@ -158,9 +158,9 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
             final int group = ExpandableListView.getPackedPositionGroup(pp);
             final int child = ExpandableListView.getPackedPositionChild(pp);
             if (child >= 0) {
-                source = ((ExpandableListAdapter) adapter).getChild(group, child);
+                source = adapter.getChild(group, child);
             } else {
-                source = ((ExpandableListAdapter) adapter).getGroup(group);
+                source = adapter.getGroup(group);
             }
         }
 
@@ -172,9 +172,12 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
 
             menu.setHeaderTitle(node.path);
             menu.findItem(R.id.bookmenu_recentgroup).setVisible(node.settings != null);
-            menu.findItem(R.id.bookmenu_openbookshelf).setVisible(getController().getBookShelf(node) != null);
+
+            final BookShelfAdapter bookShelf = getController().getBookShelf(node);
+            final BookShelfAdapter current = getController().getBookShelf(bookcaseView.getCurrentList());
+            menu.findItem(R.id.bookmenu_openbookshelf).setVisible(bookShelf != null && bookShelf != current);
         } else if (source instanceof BookShelfAdapter) {
-            BookShelfAdapter a = (BookShelfAdapter) source;
+            final BookShelfAdapter a = (BookShelfAdapter) source;
 
             final MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.library_menu, menu);

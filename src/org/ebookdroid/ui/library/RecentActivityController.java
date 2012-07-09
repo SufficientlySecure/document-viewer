@@ -562,4 +562,8 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         final String parent = new File(node.path).getParentFile().getAbsolutePath();
         return bookshelfAdapter.getShelf(parent);
     }
+
+    public BookShelfAdapter getBookShelf(int index) {
+        return bookshelfAdapter.getList(index);
+    }
 }

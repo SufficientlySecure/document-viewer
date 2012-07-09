@@ -2,6 +2,7 @@ package org.ebookdroid.ui.library.views;
 
 import org.ebookdroid.R;
 import org.ebookdroid.ui.library.IBrowserActivity;
+import org.ebookdroid.ui.library.adapters.BookShelfAdapter;
 import org.ebookdroid.ui.library.adapters.BooksAdapter;
 
 import android.database.DataSetObserver;
@@ -56,7 +57,11 @@ public class BookcaseView extends LinearLayout {
         shelfCaption.setText(BookcaseView.this.adapter.getListName(0));
     }
 
-    public void setCurrentList(Integer item) {
+    public int getCurrentList() {
+        return shelves.getCurrentItem();
+    }
+
+    public void setCurrentList(int item) {
         shelves.setCurrentItem(item);
         shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentItem()));
     }
@@ -78,4 +83,5 @@ public class BookcaseView extends LinearLayout {
         shelves.setCurrentItem(shelf);
         shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentItem()));
     }
+
 }

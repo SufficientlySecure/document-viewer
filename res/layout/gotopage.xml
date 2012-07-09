@@ -8,7 +8,6 @@
 	android:orientation="vertical"
 	android:layout_gravity="center">
 	<LinearLayout
-		xmlns:android="http://schemas.android.com/apk/res/android"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal"
@@ -39,15 +38,42 @@
 			android:layout_marginTop="4dip"
 			android:layout_marginBottom="2dip" />
 	</LinearLayout>
-	<SeekBar
-		android:id="@+id/seekbar"
+	<RelativeLayout
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:gravity="bottom"
-		android:layout_marginLeft="4dip"
-		android:layout_marginRight="4dip"
-		android:layout_marginTop="2dip"
-		android:layout_marginBottom="2dip" />
+		android:orientation="horizontal"
+		android:gravity="top"
+		android:layout_gravity="center"
+		android:baselineAligned="true">
+		<LinearLayout
+			android:id="@+id/seekbar_minus"
+			android:layout_width="48.0px"
+			android:layout_height="48.0px"
+			android:layout_marginTop="10dp"
+			android:layout_marginRight="10dp"
+			android:layout_alignParentLeft="true"
+			android:background="@drawable/seekbar_pref_minus" />
+		<LinearLayout
+			android:id="@+id/seekbar_plus"
+			android:layout_width="48.0px"
+			android:layout_height="48.0px"
+			android:layout_marginTop="10dp"
+			android:layout_marginLeft="10dp"
+			android:layout_alignParentRight="true"
+			android:background="@drawable/seekbar_pref_plus" />
+		<SeekBar
+			android:id="@+id/seekbar"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:gravity="bottom"
+			android:layout_marginLeft="4dip"
+			android:layout_marginRight="4dip"
+			android:layout_marginTop="8dip"
+			android:layout_marginBottom="4dip" 
+			android:layout_toLeftOf="@id/seekbar_plus"
+			android:layout_toRightOf="@id/seekbar_minus"
+			/>
+	</RelativeLayout>
 	<Button
 		android:layout_gravity="center"
 		android:layout_width="fill_parent"

@@ -13,6 +13,7 @@ import org.ebookdroid.ui.viewer.IActivityController;
 import android.app.Dialog;
 import android.content.Context;
 import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,8 @@ import org.emdev.ui.actions.DialogController;
 import org.emdev.ui.actions.IActionController;
 import org.emdev.ui.actions.params.Constant;
 import org.emdev.ui.actions.params.EditableValue;
+import org.emdev.ui.widget.IViewContainer;
+import org.emdev.ui.widget.SeekBarIncrementHandler;
 import org.emdev.utils.LayoutUtils;
 
 @ActionTarget(
@@ -54,6 +57,7 @@ actions = {
 public class GoToPageDialog extends Dialog {
 
     final IActivityController base;
+    final SeekBarIncrementHandler handler;
     BookmarkAdapter adapter;
     Bookmark current;
     DialogController<GoToPageDialog> actions;
@@ -62,6 +66,7 @@ public class GoToPageDialog extends Dialog {
         super(base.getContext());
         this.base = base;
         this.actions = new DialogController<GoToPageDialog>(this);
+        this.handler = new SeekBarIncrementHandler();
 
         setTitle(R.string.dialog_title_goto_page);
         setContentView(R.layout.gotopage);
@@ -70,7 +75,8 @@ public class GoToPageDialog extends Dialog {
         final SeekBar seekbar = (SeekBar) findViewById(R.id.seekbar);
         final EditText editText = (EditText) findViewById(R.id.pageNumberTextEdit);
 
-        actions.connectViewToActions(R.id.bookmarkHeader, R.id.mainmenu_bookmark, R.id.actions_showDeleteAllBookmarksDlg);
+        actions.connectViewToActions(R.id.bookmarkHeader, R.id.mainmenu_bookmark,
+                R.id.actions_showDeleteAllBookmarksDlg);
         actions.connectViewToAction(button, R.id.actions_gotoPage);
         actions.connectEditorToAction(editText, R.id.actions_gotoPage);
 
@@ -86,11 +92,11 @@ public class GoToPageDialog extends Dialog {
 
             @Override
             public void onProgressChanged(final SeekBar seekBar, final int progress, final boolean fromUser) {
-                if (fromUser) {
-                    updateControls(progress, false);
-                }
+                updateControls(progress, false);
             }
         });
+
+        handler.init(new IViewContainer.DialogBridge(this), seekbar, R.id.seekbar_minus, R.id.seekbar_plus);
     }
 
     @Override
@@ -225,7 +231,8 @@ public class GoToPageDialog extends Dialog {
         if (current != null) {
             final Page actualPage = current.page.getActualPage(base.getDocumentModel(), adapter.bookSettings);
             if (actualPage != null) {
-                base.jumpToPage(actualPage.index.viewIndex, current.offsetX, current.offsetY, AppSettings.current().storeGotoHistory);
+                base.jumpToPage(actualPage.index.viewIndex, current.offsetX, current.offsetY,
+                        AppSettings.current().storeGotoHistory);
             }
             return;
         }

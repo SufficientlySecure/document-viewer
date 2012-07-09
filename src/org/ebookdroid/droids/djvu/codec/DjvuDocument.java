@@ -30,7 +30,7 @@ public class DjvuDocument extends AbstractCodecDocument {
 
     @Override
     public int getPageCount() {
-        return getPageCount(context.getContextHandle(), documentHandle);
+        return getPageCount(documentHandle);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class DjvuDocument extends AbstractCodecDocument {
 
     private native static long getPage(long docHandle, int pageNumber);
 
-    private native static int getPageCount(long contextHandle, long docHandle);
+    private native static int getPageCount(long docHandle);
 
     private native static void free(long pageHandle);
     

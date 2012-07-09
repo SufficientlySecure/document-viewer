@@ -24,6 +24,7 @@ public class PageCacheFile extends File {
 
     public CodecPageInfo[] load() {
         try {
+            LCTX.d("Loading pages cache...");
             final DataInputStream in = new DataInputStream(new FileInputStream(this));
             try {
                 final int pages = in.readInt();
@@ -35,6 +36,7 @@ public class PageCacheFile extends File {
                         return null;
                     }
                 }
+                LCTX.d("Loading pages cache finished");
                 return infos;
             } catch (final EOFException ex) {
                 LCTX.e("Loading pages cache failed: " + ex.getMessage());
@@ -54,6 +56,7 @@ public class PageCacheFile extends File {
 
     public void save(final CodecPageInfo[] infos) {
         try {
+            LCTX.d("Saving pages cache...");
             final DataOutputStream out = new DataOutputStream(new FileOutputStream(this));
             try {
                 out.writeInt(infos.length);
@@ -66,6 +69,7 @@ public class PageCacheFile extends File {
                         out.writeInt(-1);
                     }
                 }
+                LCTX.d("Saving pages cache finished");
             } catch (final IOException ex) {
                 LCTX.e("Saving pages cache failed: " + ex.getMessage());
             } finally {

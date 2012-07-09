@@ -9,7 +9,6 @@
 #include <stdlib.h>
 #include <DjvuDroidTrace.h>
 #include <ddjvuapi.h>
-#include <DjVuDocument.h>
 #include <miniexp.h>
 
 /*JNI BITMAP API */
@@ -317,11 +316,18 @@ extern "C" jlong Java_org_ebookdroid_droids_djvu_codec_DjvuDocument_open(JNIEnv 
     const char* fileNameString = env->GetStringUTFChars(fileName, NULL);
     DEBUG_PRINT("Opening document: %s", fileNameString);
 
-    jlong docHandle = (jlong) ddjvu_document_create_by_filename((ddjvu_context_t*) (contextHandle), fileNameString, FALSE);
+    ddjvu_document_t* doc = ddjvu_document_create_by_filename((ddjvu_context_t*) (contextHandle), fileNameString, FALSE);
     env->ReleaseStringUTFChars(fileName, fileNameString);
-    if (!docHandle)
+    if (!doc)
         ThrowError(env, "DJVU file not found or corrupted.");
-    return docHandle;
+
+    ddjvu_fileinfo_t info;
+    while(ddjvu_document_get_fileinfo(doc, 0, &info) < DDJVU_JOB_OK)
+    {
+        waitAndHandleMessages(env, contextHandle);
+    }
+
+    return (jlong) doc;
 }
 
 extern "C" jlong Java_org_ebookdroid_droids_djvu_codec_DjvuDocument_getPage(JNIEnv *env, jclass cls, jlong docHandle,
@@ -489,17 +495,9 @@ extern "C" void Java_org_ebookdroid_droids_djvu_codec_DjvuDocument_free(JNIEnv *
     ddjvu_document_release((ddjvu_document_t*) docHandle);
 }
 
-extern "C" jint Java_org_ebookdroid_droids_djvu_codec_DjvuDocument_getPageCount(JNIEnv *env, jclass cls,
-                                                                                jlong contextHandle, jlong docHandle)
+extern "C" jint Java_org_ebookdroid_droids_djvu_codec_DjvuDocument_getPageCount(JNIEnv *env, jclass cls, jlong docHandle)
 {
-    int pages = ddjvu_document_get_pagenum(HANDLE_TO_DOC(docHandle));
-    while(pages == -1)
-    {
-        DEBUG_PRINT("DjvuDocument_getPageCount(%d): wait for document opening", docHandle);
-        waitAndHandleMessages(env, contextHandle);
-        pages = ddjvu_document_get_pagenum(HANDLE_TO_DOC(docHandle));
-    }
-    return pages;
+    return ddjvu_document_get_pagenum(HANDLE_TO_DOC(docHandle));
 }
 
 extern "C" jboolean Java_org_ebookdroid_droids_djvu_codec_DjvuPage_isDecodingDone(JNIEnv *env, jclass cls,

@@ -243,6 +243,7 @@ public class DocumentModel extends ListenerProxy {
             }
         }
 
+        LCTX.d("Retrieving pages from document...");
         final CodecPageInfo[] infos = new CodecPageInfo[getDecodeService().getPageCount()];
         final CodecPageInfo unified = decodeService.getUnifiedPageInfo();
         for (int i = 0; i < infos.length; i++) {

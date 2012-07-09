@@ -1169,7 +1169,7 @@ ddjvu_document_get_pagenum(ddjvu_document_t *document)
       ERROR1(document,ex);
     }
   G_ENDCATCH;
-  return -1;
+  return 1;
 }
 
 

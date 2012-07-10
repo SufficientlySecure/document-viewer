@@ -18,6 +18,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -32,6 +33,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.emdev.ui.AbstractActionActivity;
 import org.emdev.ui.actions.ActionMethodDef;
 import org.emdev.ui.actions.ActionTarget;
+import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.utils.android.AndroidVersion;
 
 @ActionTarget(
@@ -81,8 +83,14 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
             return;
         }
 
-        setContentView(R.layout.recent);
-        libraryButton = (ImageView) findViewById(R.id.recent_showlibrary);
+        if (AndroidVersion.lessThan3x) {
+            setContentView(R.layout.recent);
+            libraryButton = (ImageView) findViewById(R.id.recent_showlibrary);
+        } else {
+            IUIManager.instance.setTitleVisible(this, true);
+            setContentView(R.layout.recent_modern);
+        }
+
         viewflipper = (ViewFlipper) findViewById(R.id.recentflip);
 
         final RecentActivityController c = restoreController();
@@ -150,8 +158,10 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
      */
     @Override
     public boolean onMenuOpened(final int featureId, final Menu menu) {
-        menu.findItem(R.id.recentmenu_restoresettings)
-                .setVisible(null != BackupManager.getAvailableBackups().get(null));
+        final MenuItem rsmi = menu != null ? menu.findItem(R.id.recentmenu_restoresettings) : null;
+        if (rsmi != null) {
+            rsmi.setVisible(null != BackupManager.getAvailableBackups().get(null));
+        }
         return super.onMenuOpened(featureId, menu);
     }
 
@@ -204,7 +214,7 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
     @Override
     public boolean onKeyDown(final int keyCode, final KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            finish();
+            getController().getOrCreateAction(R.id.mainmenu_close).run();
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -213,10 +223,14 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
     void changeLibraryView(final int view) {
         if (view == VIEW_LIBRARY) {
             viewflipper.setDisplayedChild(VIEW_LIBRARY);
-            libraryButton.setImageResource(R.drawable.actionbar_recent);
+            if (libraryButton != null) {
+                libraryButton.setImageResource(R.drawable.actionbar_recent);
+            }
         } else {
             viewflipper.setDisplayedChild(VIEW_RECENT);
-            libraryButton.setImageResource(R.drawable.actionbar_library);
+            if (libraryButton != null) {
+                libraryButton.setImageResource(R.drawable.actionbar_library);
+            }
         }
     }
 
@@ -249,7 +263,9 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
         viewflipper.removeAllViews();
         viewflipper.addView(bookcaseView, 0);
 
-        libraryButton.setImageResource(R.drawable.actionbar_shelf);
+        if (libraryButton != null) {
+            libraryButton.setImageResource(R.drawable.actionbar_shelf);
+        }
     }
 
     void showLibrary(final LibraryAdapter libraryAdapter, final RecentAdapter recentAdapter) {
@@ -266,6 +282,8 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
         viewflipper.addView(recentBooksView, VIEW_RECENT);
         viewflipper.addView(libraryView, VIEW_LIBRARY);
 
-        libraryButton.setImageResource(R.drawable.actionbar_library);
+        if (libraryButton != null) {
+            libraryButton.setImageResource(R.drawable.actionbar_library);
+        }
     }
 }

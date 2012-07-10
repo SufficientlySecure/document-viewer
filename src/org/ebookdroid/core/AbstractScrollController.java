@@ -24,8 +24,8 @@ public abstract class AbstractScrollController extends AbstractViewController {
         if (dragBitmap == null) {
             dragBitmap = BitmapFactory.decodeResource(base.getContext().getResources(), R.drawable.drag);
         }
-        IUIManager.instance.setHardwareAccelerationEnabled(AppSettings.current().hwaEnabled);
-        IUIManager.instance.setHardwareAccelerationMode(getView().getView(), true);
+        IUIManager.instance.setHardwareAccelerationEnabled(base.getActivity(), AppSettings.current().hwaEnabled);
+        IUIManager.instance.setHardwareAccelerationMode(base.getActivity(), getView().getView(), true);
     }
 
     /**

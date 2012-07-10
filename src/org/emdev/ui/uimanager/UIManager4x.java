@@ -2,25 +2,37 @@ package org.emdev.ui.uimanager;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.res.Configuration;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @TargetApi(14)
 public class UIManager4x implements IUIManager {
 
     private static final int FLAG_FULLSCREEN = WindowManager.LayoutParams.FLAG_FULLSCREEN;
 
-    private boolean hwaEnabled = false;
+    private static final Map<ComponentName, Data> data = new HashMap<ComponentName, Data>() {
 
-    private boolean titleVisible;
+        @Override
+        public Data get(final Object key) {
+            Data existing = super.get(key);
+            if (existing == null) {
+                existing = new Data();
+                put((ComponentName) key, existing);
+            }
+            return existing;
+        }
 
-    private boolean statusBarHidden = false;
+    };
 
     @Override
     public void setTitleVisible(final Activity activity, final boolean visible) {
-        this.titleVisible = visible;
+        data.get(activity.getComponentName()).titleVisible = visible;
         try {
             final Window window = activity.getWindow();
             if (!visible) {
@@ -40,7 +52,7 @@ public class UIManager4x implements IUIManager {
 
     @Override
     public void setFullScreenMode(final Activity activity, final View view, final boolean fullScreen) {
-        this.statusBarHidden = fullScreen;
+        data.get(activity.getComponentName()).statusBarHidden = fullScreen;
         if (!isTabletUi(activity)) {
             final Window w = activity.getWindow();
             if (fullScreen) {
@@ -60,20 +72,20 @@ public class UIManager4x implements IUIManager {
     }
 
     @Override
-    public void setHardwareAccelerationEnabled(final boolean enabled) {
-        this.hwaEnabled = enabled;
+    public void setHardwareAccelerationEnabled(final Activity activity, final boolean enabled) {
+        data.get(activity.getComponentName()).hwaEnabled = enabled;
     }
 
     @Override
-    public void setHardwareAccelerationMode(final View view, final boolean accelerated) {
-        if (this.hwaEnabled && view != null) {
+    public void setHardwareAccelerationMode(final Activity activity, final View view, final boolean accelerated) {
+        if (data.get(activity.getComponentName()).hwaEnabled && view != null) {
             view.setLayerType(accelerated ? View.LAYER_TYPE_HARDWARE : View.LAYER_TYPE_SOFTWARE, null);
         }
     }
 
     @Override
     public void openOptionsMenu(final Activity activity, final View view) {
-        if (titleVisible) {
+        if (data.get(activity.getComponentName()).titleVisible) {
             activity.openOptionsMenu();
         } else {
             view.showContextMenu();
@@ -83,7 +95,7 @@ public class UIManager4x implements IUIManager {
     @Override
     public void onMenuOpened(final Activity activity) {
         if (!isTabletUi(activity)) {
-            if (statusBarHidden) {
+            if (data.get(activity.getComponentName()).statusBarHidden) {
                 activity.getWindow().clearFlags(FLAG_FULLSCREEN);
             }
         }
@@ -92,7 +104,7 @@ public class UIManager4x implements IUIManager {
     @Override
     public void onMenuClosed(final Activity activity) {
         if (!isTabletUi(activity)) {
-            if (statusBarHidden) {
+            if (data.get(activity.getComponentName()).statusBarHidden) {
                 activity.getWindow().setFlags(FLAG_FULLSCREEN, FLAG_FULLSCREEN);
             }
         }
@@ -113,5 +125,11 @@ public class UIManager4x implements IUIManager {
     private boolean isTabletUi(final Activity activity) {
         final Configuration c = activity.getResources().getConfiguration();
         return 0 != (Configuration.SCREENLAYOUT_SIZE_XLARGE & c.screenLayout);
+    }
+
+    private static class Data {
+        boolean hwaEnabled = false;
+        boolean titleVisible;
+        boolean statusBarHidden = false;
     }
 }

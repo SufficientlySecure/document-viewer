@@ -24,9 +24,9 @@ public interface IUIManager {
 
     void setTitleVisible(Activity activity, boolean visible);
 
-    void setHardwareAccelerationEnabled(boolean enabled);
+    void setHardwareAccelerationEnabled(Activity activity, boolean enabled);
 
-    void setHardwareAccelerationMode(View view, boolean accelerated);
+    void setHardwareAccelerationMode(Activity activity, View view, boolean accelerated);
 
     void openOptionsMenu(final Activity activity, final View view);
 

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/recentmenu_searchBook"
+        android:alphabeticShortcut="s"
+        android:icon="@drawable/zoomfit"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_searchbook"/>
+    <item
+        android:id="@+id/recent_showlibrary"
+        android:alphabeticShortcut="l"
+        android:icon="@drawable/actionbar_library"
+        android:showAsAction="ifRoom"
+        android:title="Show library"/>
+    <item
+        android:id="@+id/recent_showbrowser"
+        android:alphabeticShortcut="l"
+        android:icon="@drawable/actionbar_open"
+        android:showAsAction="ifRoom"
+        android:title="Show files"/>
+    <item
+        android:id="@+id/mainmenu_opds"
+        android:alphabeticShortcut="o"
+        android:icon="@drawable/opds"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_opds"/>
+    <item
+        android:id="@+id/mainmenu_settings"
+        android:alphabeticShortcut="t"
+        android:icon="@drawable/settings"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_settings"/>
+    <item
+        android:id="@+id/recentmenu_cleanrecent"
+        android:alphabeticShortcut="n"
+        android:icon="@drawable/clear"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_cleanrecent"/>
+    <item
+        android:id="@+id/recentmenu_backupsettings"
+        android:alphabeticShortcut="b"
+        android:showAsAction="ifRoom"
+        android:title="Backup settings"/>
+    <item
+        android:id="@+id/recentmenu_restoresettings"
+        android:alphabeticShortcut="r"
+        android:showAsAction="ifRoom"
+        android:title="Restore settings"/>
+    <item
+        android:id="@+id/mainmenu_about"
+        android:icon="@drawable/about"
+        android:title="@string/menu_about"/>
+    <item
+        android:id="@+id/mainmenu_close"
+        android:alphabeticShortcut="c"
+        android:title="@string/menu_close"
+        android:icon="@drawable/close" />
+    
+</menu>

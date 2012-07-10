@@ -1,15 +1,31 @@
 package org.emdev.ui.uimanager;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class UIManager1x implements IUIManager {
 
     private static final int FLAG_FULLSCREEN = WindowManager.LayoutParams.FLAG_FULLSCREEN;
 
-    private boolean fullScreen = false;
+    private static final Map<ComponentName, Data> data = new HashMap<ComponentName, Data>() {
+
+        @Override
+        public Data get(Object key) {
+            Data existing = super.get(key);
+            if (existing == null) {
+                existing = new Data();
+                put((ComponentName) key, existing);
+            }
+            return existing;
+        }
+
+    };
 
     @Override
     public void setTitleVisible(Activity activity, boolean visible) {
@@ -30,7 +46,7 @@ public class UIManager1x implements IUIManager {
 
     @Override
     public void setFullScreenMode(final Activity activity, final View view, final boolean fullScreen) {
-        this.fullScreen = fullScreen;
+        data.get(activity.getComponentName()).fullScreen = fullScreen;
         Window w = activity.getWindow();
         if (fullScreen) {
             w.setFlags(FLAG_FULLSCREEN, FLAG_FULLSCREEN);
@@ -40,11 +56,11 @@ public class UIManager1x implements IUIManager {
     }
 
     @Override
-    public void setHardwareAccelerationEnabled(final boolean enabled) {
+    public void setHardwareAccelerationEnabled(final Activity activity, final boolean enabled) {
     }
 
     @Override
-    public void setHardwareAccelerationMode(final View view, final boolean accelerated) {
+    public void setHardwareAccelerationMode(final Activity activity, final View view, final boolean accelerated) {
     }
 
     @Override
@@ -54,14 +70,14 @@ public class UIManager1x implements IUIManager {
 
     @Override
     public void onMenuOpened(final Activity activity) {
-        if (fullScreen) {
+        if (data.get(activity.getComponentName()).fullScreen) {
             activity.getWindow().clearFlags(FLAG_FULLSCREEN);
         }
     }
 
     @Override
     public void onMenuClosed(final Activity activity) {
-        if (fullScreen) {
+        if (data.get(activity.getComponentName()).fullScreen) {
             activity.getWindow().setFlags(FLAG_FULLSCREEN, FLAG_FULLSCREEN);
         }
     }
@@ -76,5 +92,9 @@ public class UIManager1x implements IUIManager {
 
     @Override
     public void onDestroy(final Activity activity) {
+    }
+
+    private static class Data {
+        boolean fullScreen = false;
     }
 }

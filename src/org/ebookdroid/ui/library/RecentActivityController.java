@@ -32,6 +32,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.text.Editable;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -86,7 +87,8 @@ actions = {
         @ActionMethodDef(id = R.id.recent_showlibrary, method = "goLibrary"),
         @ActionMethodDef(id = R.id.mainmenu_opds, method = "goOPDSBrowser"),
         @ActionMethodDef(id = R.id.recentmenu_backupsettings, method = "backupSettings"),
-        @ActionMethodDef(id = R.id.recentmenu_restoresettings, method = "restoreSettings")
+        @ActionMethodDef(id = R.id.recentmenu_restoresettings, method = "restoreSettings"),
+        @ActionMethodDef(id = R.id.mainmenu_close, method = "close")
 // finish
 })
 public class RecentActivityController extends ActionController<RecentActivity> implements IBrowserActivity,
@@ -508,13 +510,33 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         BackupManager.restore();
     }
 
+    @ActionMethod(ids = R.id.mainmenu_close)
+    public void close(ActionEx action) {
+        getManagedComponent().finish();
+    }
+
     @Override
     public void showProgress(final boolean show) {
-        final ProgressBar progress = (ProgressBar) getManagedComponent().findViewById(R.id.recentprogress);
-        if (show) {
-            progress.setVisibility(View.VISIBLE);
+        final RecentActivity activity = getManagedComponent();
+        final ProgressBar progress = (ProgressBar) activity.findViewById(R.id.recentprogress);
+        if (progress != null) {
+            if (show) {
+                progress.setVisibility(View.VISIBLE);
+            } else {
+                progress.setVisibility(View.GONE);
+            }
         } else {
-            progress.setVisibility(View.GONE);
+            activity.runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        activity.setProgressBarIndeterminateVisibility(show);
+                        activity.getWindow().setFeatureInt(Window.FEATURE_INDETERMINATE_PROGRESS, !show ? 10000 : 1);
+                    } catch (final Throwable e) {
+                    }
+                }
+            });
         }
     }
 

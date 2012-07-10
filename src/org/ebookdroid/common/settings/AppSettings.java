@@ -1,8 +1,11 @@
 package org.ebookdroid.common.settings;
 
+import org.ebookdroid.common.backup.BackupManager;
+import org.ebookdroid.common.backup.IBackupAgent;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.definitions.AppPreferences;
 import org.ebookdroid.common.settings.definitions.BookPreferences;
+import org.ebookdroid.common.settings.definitions.PreferenceDefinitionHelper;
 import org.ebookdroid.common.settings.listeners.IAppSettingsChangeListener;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.DocumentViewType;
@@ -15,7 +18,11 @@ import org.ebookdroid.core.curl.PageAnimationType;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-public class AppSettings implements AppPreferences, BookPreferences {
+import org.json.JSONObject;
+
+public class AppSettings implements AppPreferences, BookPreferences, IBackupAgent {
+
+    public static final String BACKUP_KEY = "app-settings";
 
     private static AppSettings current;
 
@@ -142,6 +149,7 @@ public class AppSettings implements AppPreferences, BookPreferences {
     public final boolean fb2HyphenEnabled;
 
     private AppSettings() {
+        BackupManager.addAgent(this);
         final SharedPreferences prefs = SettingsManager.prefs;
         /* =============== UI settings =============== */
         loadRecent = LOAD_RECENT.getPreferenceValue(prefs);
@@ -241,9 +249,7 @@ public class AppSettings implements AppPreferences, BookPreferences {
             final Editor edit = SettingsManager.prefs.edit();
             AppPreferences.TAP_PROFILES.setPreferenceValue(edit, profiles);
             edit.commit();
-            final AppSettings oldSettings = current;
-            current = new AppSettings();
-            applyAppSettingsChanges(oldSettings, current);
+            onSettingsChanged();
         } finally {
             SettingsManager.lock.writeLock().unlock();
         }
@@ -255,9 +261,7 @@ public class AppSettings implements AppPreferences, BookPreferences {
             final Editor edit = SettingsManager.prefs.edit();
             AppPreferences.KEY_BINDINGS.setPreferenceValue(edit, json);
             edit.commit();
-            final AppSettings oldSettings = current;
-            current = new AppSettings();
-            applyAppSettingsChanges(oldSettings, current);
+            onSettingsChanged();
         } finally {
             SettingsManager.lock.writeLock().unlock();
         }
@@ -321,6 +325,22 @@ public class AppSettings implements AppPreferences, BookPreferences {
         final IAppSettingsChangeListener l = SettingsManager.listeners.getListener();
         l.onAppSettingsChanged(oldSettings, newSettings, diff);
         return diff;
+    }
+
+    @Override
+    public String key() {
+        return BACKUP_KEY;
+    }
+
+    @Override
+    public JSONObject backup() {
+        return PreferenceDefinitionHelper.backup(BACKUP_KEY, SettingsManager.prefs, AppPreferences.class);
+    }
+
+    @Override
+    public void restore(final JSONObject backup) {
+        PreferenceDefinitionHelper.restore(BACKUP_KEY, SettingsManager.prefs, AppPreferences.class, backup);
+        onSettingsChanged();
     }
 
     public static class Diff {

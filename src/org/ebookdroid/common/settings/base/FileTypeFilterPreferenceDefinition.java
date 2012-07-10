@@ -5,40 +5,27 @@ import org.ebookdroid.CodecType;
 import android.content.SharedPreferences;
 
 import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Set;
 
 import org.emdev.utils.filesystem.FileExtensionFilter;
+import org.json.JSONObject;
 
-public class FileTypeFilterPreferenceDefinition {
+public class FileTypeFilterPreferenceDefinition extends JsonObjectPreferenceDefinition {
 
-    public final String prefix;
-    public final Map<String, String> keys;
-
-    public FileTypeFilterPreferenceDefinition(final String prefix) {
-        this.prefix = prefix;
-        Set<String> allExtensions = CodecType.getAllExtensions();
-        keys = new LinkedHashMap<String, String>();
-        for (final String ext : allExtensions) {
-            keys.put(ext, prefix + ext);
-        }
+    public FileTypeFilterPreferenceDefinition(final int keyRes) {
+        super(keyRes);
     }
 
-    public FileExtensionFilter getPreferenceValue(final SharedPreferences prefs) {
+    public FileExtensionFilter getFilter(final SharedPreferences prefs) {
+        final JSONObject obj = getPreferenceValue(prefs);
         final Set<String> res = new HashSet<String>();
-        for (Map.Entry<String, String> entry : keys.entrySet()) {
-            final String ext = entry.getKey();
-            final String key = entry.getValue();
 
-            if (!prefs.contains(key)) {
-                prefs.edit().putBoolean(key, true).commit();
-            }
-
-            if (prefs.getBoolean(key, true)) {
-                res.add(ext);
+        for (final String ex : CodecType.getAllExtensions()) {
+            if (!obj.has(ex) || obj.optBoolean(ex)) {
+                res.add(ex);
             }
         }
+
         return new FileExtensionFilter(res);
     }
 }

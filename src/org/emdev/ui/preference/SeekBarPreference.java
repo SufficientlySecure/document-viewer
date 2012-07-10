@@ -18,13 +18,6 @@ import org.emdev.utils.WidgetUtils;
 
 public final class SeekBarPreference extends DialogPreference implements OnSeekBarChangeListener {
 
-    private static final String EBOOKDROID_NS = "http://ebookdroid.org";
-    private static final String ANDROID_NS = "http://schemas.android.com/apk/res/android";
-
-    private static final String ATTR_MIN_VALUE = "minValue";
-    private static final String ATTR_MAX_VALUE = "maxValue";
-    private static final String ATTR_DEFAULT_VALUE = "defaultValue";
-
     private static final int DEFAULT_MIN_VALUE = 0;
     private static final int DEFAULT_MAX_VALUE = 100;
     private static final int DEFAULT_DEFAULT_VALUE = 50;
@@ -42,10 +35,13 @@ public final class SeekBarPreference extends DialogPreference implements OnSeekB
     public SeekBarPreference(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         handler = new SeekBarIncrementHandler();
-        minValue = WidgetUtils.getIntAttribute(context, attrs, EBOOKDROID_NS, ATTR_MIN_VALUE, DEFAULT_MIN_VALUE);
-        maxValue = WidgetUtils.getIntAttribute(context, attrs, EBOOKDROID_NS, ATTR_MAX_VALUE, DEFAULT_MAX_VALUE);
-        defaultValue = WidgetUtils.getIntAttribute(context, attrs, ANDROID_NS, ATTR_DEFAULT_VALUE,
-                DEFAULT_DEFAULT_VALUE);
+
+        minValue = WidgetUtils.getIntAttribute(context, attrs, WidgetUtils.EBOOKDROID_NS, WidgetUtils.ATTR_MIN_VALUE,
+                DEFAULT_MIN_VALUE);
+        maxValue = WidgetUtils.getIntAttribute(context, attrs, WidgetUtils.EBOOKDROID_NS, WidgetUtils.ATTR_MAX_VALUE,
+                DEFAULT_MAX_VALUE);
+        defaultValue = WidgetUtils.getIntAttribute(context, attrs, WidgetUtils.ANDROID_NS,
+                WidgetUtils.ATTR_DEFAULT_VALUE, DEFAULT_DEFAULT_VALUE);
     }
 
     public int getValue() {

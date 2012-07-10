@@ -10,6 +10,12 @@ import org.ebookdroid.core.events.CurrentPageListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.emdev.utils.LengthUtils;
+import org.emdev.utils.enums.EnumUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class BookSettings implements CurrentPageListener {
 
     public boolean persistent;
@@ -46,7 +52,7 @@ public class BookSettings implements CurrentPageListener {
 
     public boolean autoLevels;
 
-    public BookSettings(BookSettings current) {
+    public BookSettings(final BookSettings current) {
         this.persistent = current.persistent;
         this.fileName = current.fileName;
         this.lastUpdated = current.lastUpdated;
@@ -67,7 +73,7 @@ public class BookSettings implements CurrentPageListener {
         this.autoLevels = current.autoLevels;
     }
 
-    public BookSettings(String fileName, BookSettings current) {
+    public BookSettings(final String fileName, final BookSettings current) {
         this.persistent = true;
         this.fileName = fileName;
         this.lastUpdated = current.lastUpdated;
@@ -95,8 +101,65 @@ public class BookSettings implements CurrentPageListener {
         this.currentPage = PageIndex.FIRST;
     }
 
+    BookSettings(final JSONObject object) throws JSONException {
+        this.persistent = true;
+        this.fileName = object.getString("fileName");
+        this.lastUpdated = object.getLong("lastUpdated");
+
+        this.currentPage = new PageIndex(object.getJSONObject("currentPage"));
+        this.zoom = object.getInt("zoom");
+        this.splitPages = object.getBoolean("splitPages");
+        this.viewMode = EnumUtils.getByName(DocumentViewMode.class, object.getString("viewMode"),
+                DocumentViewMode.VERTICALL_SCROLL);
+        this.pageAlign = EnumUtils.getByName(PageAlign.class, object.getString("pageAlign"), PageAlign.AUTO);
+        this.animationType = EnumUtils.getByName(PageAnimationType.class, object.getString("animationType"),
+                PageAnimationType.NONE);
+        this.cropPages = object.getBoolean("cropPages");
+        this.offsetX = (float) object.getDouble("offsetX");
+        this.offsetY = (float) object.getDouble("offsetY");
+        this.nightMode = object.getBoolean("nightMode");
+        this.contrast = object.getInt("contrast");
+        this.exposure = object.getInt("exposure");
+        this.autoLevels = object.getBoolean("autoLevels");
+
+        final JSONArray bookmarks = object.optJSONArray("bookmarks");
+        if (LengthUtils.isNotEmpty(bookmarks)) {
+            for (int i = 0, n = bookmarks.length(); i < n; i++) {
+                final JSONObject obj = bookmarks.getJSONObject(i);
+                this.bookmarks.add(new Bookmark(obj));
+            }
+        }
+    }
+
+    JSONObject toJSON() throws JSONException {
+        final JSONObject obj = new JSONObject();
+        obj.put("fileName", fileName);
+        obj.put("lastUpdated", lastUpdated);
+        obj.put("currentPage", currentPage != null ? currentPage.toJSON() : null);
+        obj.put("zoom", zoom);
+        obj.put("splitPages", splitPages);
+        obj.put("viewMode", viewMode != null ? viewMode.name() : null);
+        obj.put("pageAlign", pageAlign != null ? pageAlign.name() : null);
+        obj.put("animationType", animationType != null ? animationType.name() : null);
+        obj.put("cropPages", cropPages);
+        obj.put("offsetX", offsetX);
+        obj.put("offsetY", offsetY);
+        obj.put("nightMode", nightMode);
+        obj.put("contrast", contrast);
+        obj.put("exposure", exposure);
+        obj.put("autoLevels", autoLevels);
+
+        final JSONArray bookmarks = new JSONArray();
+        obj.put("bookmarks", bookmarks);
+        for (final Bookmark b : this.bookmarks) {
+            bookmarks.put(b.toJSON());
+        }
+
+        return obj;
+    }
+
     @Override
-    public void currentPageChanged(PageIndex oldIndex, PageIndex newIndex) {
+    public void currentPageChanged(final PageIndex oldIndex, final PageIndex newIndex) {
         this.currentPage = newIndex;
     }
 
@@ -108,7 +171,7 @@ public class BookSettings implements CurrentPageListener {
         return zoom / 100.0f;
     }
 
-    public void setZoom(float zoom) {
+    public void setZoom(final float zoom) {
         this.zoom = Math.round(zoom * 100);
     }
 
@@ -129,7 +192,7 @@ public class BookSettings implements CurrentPageListener {
         private short mask;
         private final boolean firstTime;
 
-        public Diff(BookSettings olds, BookSettings news) {
+        public Diff(final BookSettings olds, final BookSettings news) {
             firstTime = olds == null;
             if (firstTime) {
                 mask = (short) 0xFFFF;

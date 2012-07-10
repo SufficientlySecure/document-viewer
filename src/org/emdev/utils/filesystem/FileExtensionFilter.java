@@ -1,6 +1,5 @@
 package org.emdev.utils.filesystem;
 
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
@@ -64,6 +63,14 @@ public class FileExtensionFilter implements FileFilter, FilenameFilter {
         return name != null && name.toLowerCase().endsWith("." + ext);
     }
 
+    public String[] list(File folder) {
+        return folder.list(this);
+    }
+
+    public File[] listFiles(File folder) {
+        return folder.listFiles((FilenameFilter) this);
+    }
+
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
@@ -79,5 +86,9 @@ public class FileExtensionFilter implements FileFilter, FilenameFilter {
     @Override
     public int hashCode() {
         return this.extensions.hashCode();
+    }
+
+    public String toString() {
+        return this.getClass().getSimpleName() + extensions;
     }
 }

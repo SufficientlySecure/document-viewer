@@ -1,14 +1,26 @@
 package org.ebookdroid.common.settings.books;
 
+import org.ebookdroid.common.backup.BackupManager;
+import org.ebookdroid.common.backup.IBackupAgent;
+import org.ebookdroid.common.settings.SettingsManager;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter {
+import org.emdev.utils.LengthUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter, IBackupAgent {
+
+    public static final String BACKUP_KEY = "recent-books";
 
     public static final int DB_VERSION = 6;
 
@@ -25,6 +37,7 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter {
         } catch (final Exception ex) {
             LCTX.e("Unexpected DB error: ", ex);
         }
+        BackupManager.addAgent(this);
     }
 
     @Override
@@ -175,4 +188,46 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter {
         return adapter.deleteBookmarks(book, bookmarks);
     }
 
+    @Override
+    public String key() {
+        return BACKUP_KEY;
+    }
+
+    @Override
+    public JSONObject backup() {
+        final JSONObject root = new JSONObject();
+        try {
+            final JSONArray books = new JSONArray();
+            root.put("books", books);
+            final Map<String, BookSettings> m = getBookSettings(true);
+            for (final BookSettings bs : m.values()) {
+                final JSONObject obj = bs.toJSON();
+                books.put(obj);
+            }
+        } catch (final JSONException ex) {
+            SettingsManager.LCTX.e("Error on recent book backup: " + ex.getMessage());
+        }
+        return root;
+    }
+
+    @Override
+    public void restore(final JSONObject backup) {
+        try {
+            final List<BookSettings> list = new ArrayList<BookSettings>();
+            final JSONArray books = backup.getJSONArray("books");
+            if (LengthUtils.isNotEmpty(books)) {
+                for (int i = 0, n = books.length(); i < n; i++) {
+                    final JSONObject obj = books.getJSONObject(i);
+                    list.add(new BookSettings(obj));
+                }
+            }
+
+            if (deleteAll()) {
+                storeBookSettings(list);
+            }
+            SettingsManager.onRecentBooksChanged();
+        } catch (final JSONException ex) {
+            SettingsManager.LCTX.e("Error on recent book restoring: " + ex.getMessage());
+        }
+    }
 }

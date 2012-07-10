@@ -3,6 +3,8 @@ package org.emdev.utils;
 import java.util.Collection;
 import java.util.Map;
 
+import org.json.JSONArray;
+
 public final class LengthUtils {
 
   /** Empty string singleton. */
@@ -92,6 +94,17 @@ public final class LengthUtils {
    * @return <code>true</code> if the given reference is <code>null</code> or array is empty
    */
   public static boolean isEmpty(final Object[] array) {
+    return length(array) == 0;
+  }
+
+  /**
+   * Checks if the given array is empty.
+   *
+   * @param array
+   *          array to check
+   * @return <code>true</code> if the given reference is <code>null</code> or array is empty
+   */
+  public static boolean isEmpty(final JSONArray array) {
     return length(array) == 0;
   }
 
@@ -283,6 +296,17 @@ public final class LengthUtils {
   }
 
   /**
+   * Checks if the given array is not empty.
+   *
+   * @param array
+   *          array to check
+   * @return <code>true</code> if the given reference is not <code>null</code> and array is not empty
+   */
+  public static boolean isNotEmpty(final JSONArray array) {
+    return length(array) > 0;
+  }
+
+  /**
    * Checks if the given collection is not empty.
    *
    * @param c
@@ -324,6 +348,17 @@ public final class LengthUtils {
    */
   public static int length(final Object[] arr) {
     return arr != null ? arr.length : 0;
+  }
+
+  /**
+   * Safely calculates an array length.
+   *
+   * @param arr
+   *          array
+   * @return real array length or <code>0</code> if reference is <code>null</code>
+   */
+  public static int length(final JSONArray arr) {
+    return arr != null ? arr.length() : 0;
   }
 
   /**

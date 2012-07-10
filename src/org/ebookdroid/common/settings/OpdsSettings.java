@@ -1,14 +1,20 @@
 package org.ebookdroid.common.settings;
 
+import org.ebookdroid.common.backup.BackupManager;
+import org.ebookdroid.common.backup.IBackupAgent;
 import org.ebookdroid.common.settings.definitions.OpdsPreferences;
+import org.ebookdroid.common.settings.definitions.PreferenceDefinitionHelper;
 import org.ebookdroid.common.settings.listeners.IOpdsSettingsChangeListener;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
-public class OpdsSettings implements OpdsPreferences {
+public class OpdsSettings implements OpdsPreferences, IBackupAgent {
+
+    public static final String BACKUP_KEY = "opds-settings";
 
     private static OpdsSettings current;
 
@@ -22,6 +28,7 @@ public class OpdsSettings implements OpdsPreferences {
     public final boolean deleteArchives;
 
     private OpdsSettings() {
+        BackupManager.addAgent(this);
         SharedPreferences prefs = SettingsManager.prefs;
         /* =============== OPDS settings =============== */
         opdsCatalogs = OPDS_CATALOGS.getPreferenceValue(prefs);
@@ -75,6 +82,22 @@ public class OpdsSettings implements OpdsPreferences {
         final IOpdsSettingsChangeListener l = SettingsManager.listeners.getListener();
         l.onOpdsSettingsChanged(oldSettings, newSettings, diff);
         return diff;
+    }
+
+    @Override
+    public String key() {
+        return BACKUP_KEY;
+    }
+
+    @Override
+    public JSONObject backup() {
+        return PreferenceDefinitionHelper.backup(BACKUP_KEY, SettingsManager.prefs, OpdsPreferences.class);
+    }
+
+    @Override
+    public void restore(final JSONObject backup) {
+        PreferenceDefinitionHelper.restore(BACKUP_KEY, SettingsManager.prefs, OpdsPreferences.class, backup);
+        onSettingsChanged();
     }
 
     public static class Diff {

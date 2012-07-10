@@ -19,4 +19,17 @@ public final class EnumUtils {
         }
         return defValue;
     }
+    
+    public static <E extends Enum<E>> E getByName(final Class<E> enumClass, final String resValue, final E defValue) {
+
+        if (LengthUtils.isNotEmpty(resValue)) {
+            for (final E item : enumClass.getEnumConstants()) {
+                if (item.name().equalsIgnoreCase(resValue)) {
+                    return item;
+                }
+            }
+        }
+        return defValue;
+    }
+    
 }

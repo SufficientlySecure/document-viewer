@@ -344,7 +344,7 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
 
     @Override
     public synchronized void onFileAdded(final File parent, final File f) {
-        if (f != null) {
+        if (f != null && LibSettings.current().allowedFileTypes.accept(f)) {
             final String dir = parent.getAbsolutePath();
             BookShelfAdapter a = folders.get(dir);
             final BookShelfAdapter search = getService(SEARCH_INDEX);

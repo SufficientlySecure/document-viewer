@@ -54,6 +54,14 @@ public class LogContext {
         Log.i(tag, msg, th);
     }
 
+    public void w(final String msg) {
+        Log.w(tag, msg);
+    }
+
+    public void w(final String msg, final Throwable th) {
+        Log.w(tag, msg, th);
+    }
+
     public void e(final String msg) {
         Log.e(tag, msg);
     }

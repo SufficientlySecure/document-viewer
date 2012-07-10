@@ -1,11 +1,13 @@
 package org.ebookdroid.common.settings;
 
+import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.books.DBSettingsManager;
 import org.ebookdroid.common.settings.listeners.IAppSettingsChangeListener;
 import org.ebookdroid.common.settings.listeners.IBookSettingsChangeListener;
 import org.ebookdroid.common.settings.listeners.ILibSettingsChangeListener;
 import org.ebookdroid.common.settings.listeners.IOpdsSettingsChangeListener;
+import org.ebookdroid.common.settings.listeners.IRecentBooksChangedListener;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.core.curl.PageAnimationType;
@@ -25,20 +27,22 @@ import org.emdev.utils.listeners.ListenerProxy;
 
 public class SettingsManager {
 
+    public static final LogContext LCTX = LogContext.ROOT.lctx("SettingsManager");
+
     static Context ctx;
 
     static SharedPreferences prefs;
 
-    private static DBSettingsManager db;
-
     static final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+
+    private static DBSettingsManager db;
 
     private static final Map<String, BookSettings> bookSettings = new HashMap<String, BookSettings>();
 
     private static BookSettings current;
 
     static ListenerProxy listeners = new ListenerProxy(IAppSettingsChangeListener.class,
-            ILibSettingsChangeListener.class, IOpdsSettingsChangeListener.class, IBookSettingsChangeListener.class);
+            ILibSettingsChangeListener.class, IOpdsSettingsChangeListener.class, IBookSettingsChangeListener.class, IRecentBooksChangedListener.class);
 
     public static void init(final Context context) {
         if (ctx == null) {
@@ -388,5 +392,10 @@ public class SettingsManager {
 
     public static void removeListener(final Object l) {
         listeners.removeListener(l);
+    }
+
+    public static void onRecentBooksChanged() {
+        final IRecentBooksChangedListener l = listeners.getListener();
+        l.onRecentBooksChanged();
     }
 }

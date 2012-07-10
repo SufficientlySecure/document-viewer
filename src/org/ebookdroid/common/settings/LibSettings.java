@@ -1,6 +1,9 @@
 package org.ebookdroid.common.settings;
 
+import org.ebookdroid.common.backup.BackupManager;
+import org.ebookdroid.common.backup.IBackupAgent;
 import org.ebookdroid.common.settings.definitions.LibPreferences;
+import org.ebookdroid.common.settings.definitions.PreferenceDefinitionHelper;
 import org.ebookdroid.common.settings.listeners.ILibSettingsChangeListener;
 
 import android.content.SharedPreferences;
@@ -11,8 +14,11 @@ import java.util.Set;
 
 import org.emdev.utils.android.AndroidVersion;
 import org.emdev.utils.filesystem.FileExtensionFilter;
+import org.json.JSONObject;
 
-public class LibSettings implements LibPreferences {
+public class LibSettings implements LibPreferences, IBackupAgent {
+
+    public static final String BACKUP_KEY = "lib-settings";
 
     private static LibSettings current;
 
@@ -27,12 +33,13 @@ public class LibSettings implements LibPreferences {
     public final FileExtensionFilter allowedFileTypes;
 
     private LibSettings() {
-        SharedPreferences prefs = SettingsManager.prefs;
+        BackupManager.addAgent(this);
+        final SharedPreferences prefs = SettingsManager.prefs;
         /* =============== Browser settings =============== */
         useBookcase = USE_BOOK_CASE.getPreferenceValue(prefs);
         autoScanDirs = AUTO_SCAN_DIRS.getPreferenceValue(prefs);
         searchBookQuery = SEARCH_BOOK_QUERY.getPreferenceValue(prefs);
-        allowedFileTypes = FILE_TYPE_FILTER.getPreferenceValue(prefs);
+        allowedFileTypes = FILE_TYPE_FILTER.getFilter(prefs);
     }
 
     /* =============== Browser settings =============== */
@@ -55,7 +62,7 @@ public class LibSettings implements LibPreferences {
             SettingsManager.lock.readLock().unlock();
         }
     }
-    
+
     public static void changeAutoScanDirs(final String dir, final boolean add) {
         SettingsManager.lock.writeLock().lock();
         try {
@@ -98,6 +105,22 @@ public class LibSettings implements LibPreferences {
         final ILibSettingsChangeListener l = SettingsManager.listeners.getListener();
         l.onLibSettingsChanged(oldSettings, newSettings, diff);
         return diff;
+    }
+
+    @Override
+    public String key() {
+        return BACKUP_KEY;
+    }
+
+    @Override
+    public JSONObject backup() {
+        return PreferenceDefinitionHelper.backup(BACKUP_KEY, SettingsManager.prefs, LibPreferences.class);
+    }
+
+    @Override
+    public void restore(final JSONObject backup) {
+        PreferenceDefinitionHelper.restore(BACKUP_KEY, SettingsManager.prefs, LibPreferences.class, backup);
+        onSettingsChanged();
     }
 
     public static class Diff {

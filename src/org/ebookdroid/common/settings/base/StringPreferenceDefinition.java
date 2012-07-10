@@ -5,7 +5,10 @@ import org.ebookdroid.EBookDroidApp;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-public class StringPreferenceDefinition extends BasePreferenceDefinition {
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class StringPreferenceDefinition extends BasePreferenceDefinition<String> {
 
     private final String defValue;
 
@@ -14,6 +17,7 @@ public class StringPreferenceDefinition extends BasePreferenceDefinition {
         defValue = defValRef != 0 ? EBookDroidApp.context.getString(defValRef) : "";
     }
 
+    @Override
     public String getPreferenceValue(final SharedPreferences prefs) {
         return getPreferenceValue(prefs, defValue);
     }
@@ -29,4 +33,9 @@ public class StringPreferenceDefinition extends BasePreferenceDefinition {
         edit.putString(key, value);
     }
 
+    @Override
+    public void restore(final JSONObject root, final Editor edit) throws JSONException {
+        final String value = root.optString(key);
+        setPreferenceValue(edit, value != null ? value : defValue);
+    }
 }

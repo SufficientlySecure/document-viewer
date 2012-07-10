@@ -2,6 +2,7 @@ package org.ebookdroid.ui.library;
 
 import org.ebookdroid.CodecType;
 import org.ebookdroid.R;
+import org.ebookdroid.common.backup.BackupManager;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.cache.ThumbnailFile;
 import org.ebookdroid.common.log.LogContext;
@@ -10,6 +11,7 @@ import org.ebookdroid.common.settings.LibSettings;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.listeners.ILibSettingsChangeListener;
+import org.ebookdroid.common.settings.listeners.IRecentBooksChangedListener;
 import org.ebookdroid.ui.library.adapters.BookNode;
 import org.ebookdroid.ui.library.adapters.BookShelfAdapter;
 import org.ebookdroid.ui.library.adapters.BooksAdapter;
@@ -82,11 +84,13 @@ actions = {
         @ActionMethodDef(id = R.id.ShelfRightButton, method = "selectNextShelf"),
         @ActionMethodDef(id = R.id.recent_showbrowser, method = "goFileBrowser"),
         @ActionMethodDef(id = R.id.recent_showlibrary, method = "goLibrary"),
-        @ActionMethodDef(id = R.id.mainmenu_opds, method = "goOPDSBrowser")
+        @ActionMethodDef(id = R.id.mainmenu_opds, method = "goOPDSBrowser"),
+        @ActionMethodDef(id = R.id.recentmenu_backupsettings, method = "backupSettings"),
+        @ActionMethodDef(id = R.id.recentmenu_restoresettings, method = "restoreSettings")
 // finish
 })
 public class RecentActivityController extends ActionController<RecentActivity> implements IBrowserActivity,
-        ILibSettingsChangeListener {
+        ILibSettingsChangeListener, IRecentBooksChangedListener {
 
     public final LogContext LCTX;
 
@@ -494,6 +498,16 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         getManagedComponent().startActivity(myIntent);
     }
 
+    @ActionMethod(ids = R.id.recentmenu_backupsettings)
+    public void backupSettings(ActionEx action) {
+        BackupManager.backup();
+    }
+
+    @ActionMethod(ids = R.id.recentmenu_restoresettings)
+    public void restoreSettings(ActionEx action) {
+        BackupManager.restore();
+    }
+
     @Override
     public void showProgress(final boolean show) {
         final ProgressBar progress = (ProgressBar) getManagedComponent().findViewById(R.id.recentprogress);
@@ -544,6 +558,12 @@ public class RecentActivityController extends ActionController<RecentActivity> i
                 libraryAdapter.startScan();
             }
         }
+    }
+
+    @Override
+    public void onRecentBooksChanged() {
+        final FileExtensionFilter filter = LibSettings.current().allowedFileTypes;
+        recentAdapter.setBooks(SettingsManager.getAllBooksSettings().values(), filter);
     }
 
     public void changeLibraryView(final int view) {

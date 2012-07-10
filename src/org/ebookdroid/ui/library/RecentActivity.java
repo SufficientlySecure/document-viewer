@@ -1,6 +1,7 @@
 package org.ebookdroid.ui.library;
 
 import org.ebookdroid.R;
+import org.ebookdroid.common.backup.BackupManager;
 import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.ui.library.adapters.BookNode;
 import org.ebookdroid.ui.library.adapters.BookShelfAdapter;
@@ -140,6 +141,18 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.recentmenu, menu);
         return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see android.app.Activity#onMenuOpened(int, android.view.Menu)
+     */
+    @Override
+    public boolean onMenuOpened(final int featureId, final Menu menu) {
+        menu.findItem(R.id.recentmenu_restoresettings)
+                .setVisible(null != BackupManager.getAvailableBackups().get(null));
+        return super.onMenuOpened(featureId, menu);
     }
 
     @Override

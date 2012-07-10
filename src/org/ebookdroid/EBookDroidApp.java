@@ -16,6 +16,8 @@ import android.os.Build;
 import android.os.Environment;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.util.Properties;
 
 import org.emdev.utils.FileUtils;
 import org.emdev.utils.android.AndroidVersion;
@@ -32,6 +34,10 @@ public class EBookDroidApp extends Application {
     public static String APP_PACKAGE;
 
     public static File EXT_STORAGE;
+
+    public static File APP_STORAGE;
+
+    public static Properties BUILD_PROPS;
 
     /**
      * {@inheritDoc}
@@ -54,6 +60,11 @@ public class EBookDroidApp extends Application {
 
     protected void init() {
         context = getApplicationContext();
+        BUILD_PROPS = new Properties();
+        try {
+            BUILD_PROPS.load(new FileInputStream("/system/build.prop"));
+        } catch (Throwable th) {
+        }
 
         final PackageManager pm = getPackageManager();
         try {
@@ -61,31 +72,30 @@ public class EBookDroidApp extends Application {
             APP_VERSION = pi.versionName;
             APP_PACKAGE = pi.packageName;
             EXT_STORAGE = Environment.getExternalStorageDirectory();
+            APP_STORAGE = getAppStorage();
 
             LCTX.i(getString(pi.applicationInfo.labelRes) + " (" + APP_PACKAGE + ")" + " v" + APP_VERSION + "("
                     + pi.versionCode + ")");
 
             LCTX.i("Root             dir: " + Environment.getRootDirectory());
             LCTX.i("Data             dir: " + Environment.getDataDirectory());
-            LCTX.i("External storage dir: " + Environment.getExternalStorageDirectory());
+            LCTX.i("External storage dir: " + EXT_STORAGE);
+            LCTX.i("App      storage dir: " + APP_STORAGE);
             LCTX.i("Files            dir: " + FileUtils.getAbsolutePath(getFilesDir()));
             LCTX.i("Cache            dir: " + FileUtils.getAbsolutePath(getCacheDir()));
-            // LCTX.i("External cache   dir: " + getExternalCacheDir().getAbsolutePath());
 
             LCTX.i("VERSION     : " + AndroidVersion.VERSION);
             LCTX.i("BOARD       : " + Build.BOARD);
             LCTX.i("BRAND       : " + Build.BRAND);
-            // LCTX.i("CPU_ABI     : " + Build.CPU_ABI);
-            // LCTX.i("CPU_ABI2    : " + Build.CPU_ABI2);
+            LCTX.i("CPU_ABI     : " + BUILD_PROPS.getProperty("ro.product.cpu.abi"));
+            LCTX.i("CPU_ABI2    : " + BUILD_PROPS.getProperty("ro.product.cpu.abi2"));
             LCTX.i("DEVICE      : " + Build.DEVICE);
             LCTX.i("DISPLAY     : " + Build.DISPLAY);
             LCTX.i("FINGERPRINT : " + Build.FINGERPRINT);
-            // LCTX.i("HARDWARE    : " + Build.HARDWARE);
             LCTX.i("ID          : " + Build.ID);
-            // LCTX.i("MANUFACTURER: " + Build.MANUFACTURER);
+            LCTX.i("MANUFACTURER: " + BUILD_PROPS.getProperty("ro.product.manufacturer"));
             LCTX.i("MODEL       : " + Build.MODEL);
             LCTX.i("PRODUCT     : " + Build.PRODUCT);
-
         } catch (final NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -100,5 +110,19 @@ public class EBookDroidApp extends Application {
     public void onLowMemory() {
         super.onLowMemory();
         BitmapManager.clear("on Low Memory: ");
+    }
+
+    private File getAppStorage() {
+        File dir = EXT_STORAGE;
+        if (dir != null) {
+            File appDir = new File(dir, "." + EBookDroidApp.APP_PACKAGE);
+            if (appDir.isDirectory() || appDir.mkdir()) {
+                dir = appDir;
+            }
+        } else {
+            dir = context.getFilesDir();
+        }
+        dir.mkdirs();
+        return dir.getAbsoluteFile();
     }
 }

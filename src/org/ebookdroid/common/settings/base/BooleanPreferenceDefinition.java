@@ -5,7 +5,9 @@ import org.ebookdroid.EBookDroidApp;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-public class BooleanPreferenceDefinition extends BasePreferenceDefinition {
+import org.json.JSONObject;
+
+public class BooleanPreferenceDefinition extends BasePreferenceDefinition<Boolean> {
 
     private final Boolean defValue;
 
@@ -14,11 +16,12 @@ public class BooleanPreferenceDefinition extends BasePreferenceDefinition {
         defValue = Boolean.parseBoolean(EBookDroidApp.context.getString(defValRef));
     }
 
-    public boolean getPreferenceValue(final SharedPreferences prefs) {
+    @Override
+    public Boolean getPreferenceValue(final SharedPreferences prefs) {
         return getPreferenceValue(prefs, defValue);
     }
 
-    public boolean getPreferenceValue(final SharedPreferences prefs, boolean defValue) {
+    public boolean getPreferenceValue(final SharedPreferences prefs, final boolean defValue) {
         if (!prefs.contains(key)) {
             prefs.edit().putBoolean(key, defValue).commit();
         }
@@ -29,4 +32,9 @@ public class BooleanPreferenceDefinition extends BasePreferenceDefinition {
         edit.putBoolean(key, value);
     }
 
+    @Override
+    public void restore(final JSONObject root, final Editor edit) {
+        final String value = root.optString(key);
+        setPreferenceValue(edit, value != null ? Boolean.parseBoolean(value) : defValue);
+    }
 }

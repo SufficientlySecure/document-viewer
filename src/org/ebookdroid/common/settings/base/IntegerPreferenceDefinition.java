@@ -7,8 +7,10 @@ import android.content.SharedPreferences.Editor;
 
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.MathUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class IntegerPreferenceDefinition extends BasePreferenceDefinition {
+public class IntegerPreferenceDefinition extends BasePreferenceDefinition<Integer> {
 
     public final int defValue;
 
@@ -18,19 +20,20 @@ public class IntegerPreferenceDefinition extends BasePreferenceDefinition {
 
     public IntegerPreferenceDefinition(final int keyRes, final int defValRef) {
         super(keyRes);
-        defValue = (int)(Long.decode(EBookDroidApp.context.getString(defValRef)) & 0xFFFFFFFF);
+        defValue = (int) (Long.decode(EBookDroidApp.context.getString(defValRef)) & 0xFFFFFFFF);
         minValue = Integer.MIN_VALUE;
         maxValue = Integer.MAX_VALUE;
     }
 
     public IntegerPreferenceDefinition(final int keyRes, final int defValRef, final int minValRef, final int maxValRef) {
         super(keyRes);
-        defValue = (int)(Long.decode(EBookDroidApp.context.getString(defValRef)) & 0xFFFFFFFF);
-        minValue = (int)(Long.decode(EBookDroidApp.context.getString(minValRef)) & 0xFFFFFFFF);
-        maxValue = (int)(Long.decode(EBookDroidApp.context.getString(maxValRef)) & 0xFFFFFFFF);
+        defValue = (int) (Long.decode(EBookDroidApp.context.getString(defValRef)) & 0xFFFFFFFF);
+        minValue = (int) (Long.decode(EBookDroidApp.context.getString(minValRef)) & 0xFFFFFFFF);
+        maxValue = (int) (Long.decode(EBookDroidApp.context.getString(maxValRef)) & 0xFFFFFFFF);
     }
 
-    public int getPreferenceValue(final SharedPreferences prefs) {
+    @Override
+    public Integer getPreferenceValue(final SharedPreferences prefs) {
         return getPreferenceValue(prefs, defValue);
     }
 
@@ -52,5 +55,11 @@ public class IntegerPreferenceDefinition extends BasePreferenceDefinition {
 
     public void setPreferenceValue(final Editor edit, final int value) {
         edit.putString(key, Integer.toString(value));
+    }
+
+    @Override
+    public void restore(final JSONObject root, final Editor edit) throws JSONException {
+        final String value = root.optString(key);
+        setPreferenceValue(edit, value != null ? Integer.valueOf(value) : defValue);
     }
 }

@@ -164,6 +164,7 @@ public class ThumbnailFile extends File {
         @Override
         protected void onPostExecute(final Bitmap result) {
             ref.set(result);
+            task.compareAndSet(this, null);
             listener.onImageLoaded(result);
         }
     }

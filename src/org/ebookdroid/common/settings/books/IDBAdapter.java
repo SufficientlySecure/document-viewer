@@ -22,7 +22,7 @@ interface IDBAdapter {
 
     boolean storeBookSettings(final BookSettings bs);
 
-    boolean storeBookSettings(final Collection<BookSettings> bs);
+    boolean restoreBookSettings(Collection<BookSettings> c);
 
     boolean clearRecent();
 
@@ -38,4 +38,5 @@ interface IDBAdapter {
 
     boolean removeBookFromRecents(BookSettings bs);
 
+    
 }

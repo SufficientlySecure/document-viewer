@@ -101,7 +101,7 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter, I
         oldAdapter.deleteAll();
         oldAdapter.onDestroy(db);
         newAdapter.onCreate(db);
-        newAdapter.storeBookSettings(bookSettings.values());
+        newAdapter.restoreBookSettings(bookSettings.values());
     }
 
     /**
@@ -149,8 +149,8 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter, I
     }
 
     @Override
-    public boolean storeBookSettings(final Collection<BookSettings> bs) {
-        return adapter.storeBookSettings(bs);
+    public boolean restoreBookSettings(Collection<BookSettings> c) {
+        return adapter.restoreBookSettings(c);
     }
 
     @Override
@@ -223,7 +223,7 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter, I
             }
 
             if (deleteAll()) {
-                storeBookSettings(list);
+                restoreBookSettings(list);
             }
             SettingsManager.onRecentBooksChanged();
         } catch (final JSONException ex) {

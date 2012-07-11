@@ -78,8 +78,6 @@ class DBAdapterV6 extends DBAdapterV5 {
 
     @Override
     protected void storeBookSettings(final BookSettings bs, final SQLiteDatabase db) {
-        bs.lastUpdated = System.currentTimeMillis();
-
         final Object[] args = new Object[] {
                 // File name
                 bs.fileName,

@@ -137,12 +137,13 @@ class DBAdapterV1 implements IDBAdapter {
     }
 
     @Override
-    public boolean storeBookSettings(final BookSettings bs) {
+    public final boolean storeBookSettings(final BookSettings bs) {
         try {
             final SQLiteDatabase db = manager.getWritableDatabase();
             try {
                 db.beginTransaction();
 
+                bs.lastUpdated = System.currentTimeMillis();
                 storeBookSettings(bs, db);
 
                 db.setTransactionSuccessful();
@@ -158,7 +159,7 @@ class DBAdapterV1 implements IDBAdapter {
     }
 
     @Override
-    public boolean storeBookSettings(final Collection<BookSettings> c) {
+    public final boolean restoreBookSettings(final Collection<BookSettings> c) {
         try {
             final SQLiteDatabase db = manager.getWritableDatabase();
             try {
@@ -295,8 +296,6 @@ class DBAdapterV1 implements IDBAdapter {
     }
 
     protected void storeBookSettings(final BookSettings bs, final SQLiteDatabase db) {
-        bs.lastUpdated = System.currentTimeMillis();
-
         final Object[] args = new Object[] {
                 // File name
                 bs.fileName,

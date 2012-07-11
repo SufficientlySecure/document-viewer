@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.os.AsyncTask;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,6 +37,33 @@ public class ThumbnailFile extends File {
         return ref != null && !ref.isRecycled() ? ref : null;
     }
 
+
+    public Bitmap getImageAsync(final ImageLoadingListener l) {
+        if (ref != null && !ref.isRecycled()) {
+            return ref;
+        }
+
+        new AsyncTask<Void, Void, Bitmap>() {
+
+            @Override
+            protected Bitmap doInBackground(final Void... params) {
+                try {
+                    return load(false);
+                } catch (final OutOfMemoryError ex) {
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(final Bitmap result) {
+                ref = result;
+                l.onImageLoaded(ref);
+            }
+        }.execute();
+
+        return null;
+    }
+
     public Bitmap getRawImage() {
         if (ref == null) {
             try {
@@ -55,9 +83,9 @@ public class ThumbnailFile extends File {
         }
     }
 
-    private Bitmap load(boolean raw) {
+    private Bitmap load(final boolean raw) {
         if (this.exists()) {
-            Bitmap stored = BitmapFactory.decodeFile(this.getPath());
+            final Bitmap stored = BitmapFactory.decodeFile(this.getPath());
             if (stored != null) {
                 return raw ? stored : paint(stored);
             }
@@ -110,13 +138,18 @@ public class ThumbnailFile extends File {
 
     private static Bitmap getDefaultThumbnail() {
         if (defaultImage == null) {
-            Bitmap empty = Bitmap.createBitmap(160, 200, Bitmap.Config.ARGB_8888);
+            final Bitmap empty = Bitmap.createBitmap(160, 200, Bitmap.Config.ARGB_8888);
             if (empty != null) {
                 empty.eraseColor(Color.WHITE);
                 defaultImage = paint(empty);
             }
         }
         return defaultImage;
+    }
+
+    public static interface ImageLoadingListener {
+
+        void onImageLoaded(Bitmap image);
     }
 
 }

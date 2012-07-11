@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<org.ebookdroid.ui.library.views.BookcaseView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/Bookcase"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:id="@+id/BookcaseCaption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shelf_caption1"
+        android:orientation="horizontal" >
+        >
+
+        <ImageButton
+            android:id="@+id/ShelfLeftButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/content_description_left"
+            android:onClick="onButtonClick"
+            android:src="@drawable/arrowleft" />
+
+        <ImageButton
+            android:id="@+id/ShelfRightButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/content_description_right"
+            android:onClick="onButtonClick"
+            android:src="@drawable/arrowright" />
+
+        <TextView
+            android:id="@+id/ShelfCaption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
+            android:layout_toLeftOf="@id/ShelfRightButton"
+            android:layout_toRightOf="@id/ShelfLeftButton"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:onClick="onButtonClick"
+            android:shadowColor="#DD000000"
+            android:shadowDx="2"
+            android:shadowDy="-2"
+            android:shadowRadius="1.5"
+            android:singleLine="true"
+            android:text="Recent books"
+            android:textColor="#DDD"
+            android:textSize="40dp" />
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/Shelves"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/BookcaseCaption"
+        android:layout_gravity="fill" />
+
+</org.ebookdroid.ui.library.views.BookcaseView>

@@ -1,42 +1,39 @@
 package org.ebookdroid.ui.library.views;
 
 import org.ebookdroid.R;
-import org.ebookdroid.ui.library.IBrowserActivity;
-import org.ebookdroid.ui.library.adapters.BookShelfAdapter;
 import org.ebookdroid.ui.library.adapters.BooksAdapter;
 
+import android.content.Context;
 import android.database.DataSetObserver;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
-import android.widget.LinearLayout;
+import android.util.AttributeSet;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import org.emdev.utils.LayoutUtils;
+public class BookcaseView extends RelativeLayout {
 
-public class BookcaseView extends LinearLayout {
-
-    private final TextView shelfCaption;
-    private final BooksAdapter adapter;
-
+    private TextView shelfCaption;
     private ViewPager shelves;
+    private BooksAdapter adapter;
 
-    public BookcaseView(IBrowserActivity base, BooksAdapter adapter) {
-        super(base.getContext());
+    public BookcaseView(final Context context) {
+        super(context);
+    }
 
+    public BookcaseView(final Context context, final AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public BookcaseView(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
+    }
+
+    public void init(final BooksAdapter adapter) {
         this.adapter = adapter;
-
-        setOrientation(VERTICAL);
-
-        LinearLayout ll = (LinearLayout) LayoutInflater.from(base.getContext()).inflate(R.layout.bookshelf_caption,
-                null);
-        addView(ll);
-
-        shelfCaption = (TextView) ll.findViewById(R.id.ShelfCaption);
-        shelves = new ViewPager(getContext());
+        this.shelfCaption = (TextView) findViewById(R.id.ShelfCaption);
+        this.shelves = (ViewPager) findViewById(R.id.Shelves);
 
         shelves.setAdapter(adapter);
-        LayoutUtils.fillInParent(this, shelves);
-        addView(shelves);
 
         adapter.registerDataSetObserver(new DataSetObserver() {
 
@@ -49,7 +46,8 @@ public class BookcaseView extends LinearLayout {
 
         shelves.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 
-            public void onPageSelected(int arg0) {
+            @Override
+            public void onPageSelected(final int arg0) {
                 shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentItem()));
             }
         });
@@ -61,7 +59,7 @@ public class BookcaseView extends LinearLayout {
         return shelves.getCurrentItem();
     }
 
-    public void setCurrentList(int item) {
+    public void setCurrentList(final int item) {
         shelves.setCurrentItem(item);
         shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentItem()));
     }

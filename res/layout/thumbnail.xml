@@ -1,8 +1,7 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/linearLayout1"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/thumbnailView"
     android:layout_width="160dip"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:layout_height="fill_parent" >
 
     <TextView
         android:id="@+id/thumbnailText"
@@ -13,30 +12,28 @@
         android:paddingLeft="1dip"
         android:paddingRight="1dip"
         android:paddingTop="0dip"
-        android:textColor ="#DDD"
         android:shadowColor="#DD000000"
         android:shadowDx="2"
         android:shadowDy="2"
         android:shadowRadius="1.5"
-         />
+        android:textColor="#DDD" />
 
     <ImageView
         android:id="@+id/thumbnailImage"
         android:layout_width="134dip"
         android:layout_height="134dip"
-        android:contentDescription="@string/content_description_thumb"
+        android:layout_below="@id/thumbnailText"
         android:layout_gravity="bottom|center_horizontal"
+        android:contentDescription="@string/content_description_thumb"
         android:gravity="center"
         android:paddingLeft="13dip"
-        android:paddingRight="13dip" 
-        android:scaleType="fitEnd">
+        android:paddingRight="13dip"
+        android:scaleType="fitEnd" >
     </ImageView>
 
-    <TextView
-        android:id="@+id/thumbnailPadding"
+    <RelativeLayout
         android:layout_width="160dip"
         android:layout_height="10dip"
-        android:gravity="center"
-        android:text="" />
+        android:layout_below="@id/thumbnailImage" />
 
-</LinearLayout>
+</RelativeLayout>

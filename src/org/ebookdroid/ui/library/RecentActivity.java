@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -52,11 +53,11 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
     public static final int VIEW_RECENT = 0;
     public static final int VIEW_LIBRARY = 1;
 
-    private ViewFlipper viewflipper;
-    private ImageView libraryButton;
-    private BookcaseView bookcaseView;
-    private RecentBooksView recentBooksView;
-    private LibraryView libraryView;
+    ViewFlipper viewflipper;
+    ImageView libraryButton;
+    BookcaseView bookcaseView;
+    RecentBooksView recentBooksView;
+    LibraryView libraryView;
 
     public RecentActivity() {
         super();
@@ -257,10 +258,11 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
     }
 
     void showBookcase(final BooksAdapter bookshelfAdapter, final RecentAdapter recentAdapter) {
-        if (bookcaseView == null) {
-            bookcaseView = new BookcaseView(getController(), bookshelfAdapter);
-        }
         viewflipper.removeAllViews();
+        if (bookcaseView == null) {
+            bookcaseView = (BookcaseView) LayoutInflater.from(this).inflate(R.layout.bookcase_view, viewflipper, false);
+            bookcaseView.init(bookshelfAdapter);
+        }
         viewflipper.addView(bookcaseView, 0);
 
         if (libraryButton != null) {

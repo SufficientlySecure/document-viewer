@@ -109,6 +109,8 @@ public class RecentActivityController extends ActionController<RecentActivity> i
 
     private boolean firstResume = true;
 
+    private final ThumbnailFile def = CacheManager.getThumbnailFile(".");
+
     public RecentActivityController(final RecentActivity activity) {
         super(activity);
         LCTX = LogContext.ROOT.lctx(this.getClass().getSimpleName(), true).lctx("" + SEQ.getAndIncrement());
@@ -425,9 +427,9 @@ public class RecentActivityController extends ActionController<RecentActivity> i
     @ActionMethod(ids = R.id.bookmenu_openbookshelf)
     public void openBookShelf(final ActionEx action) {
         final BookNode book = action.getParameter(AbstractActionActivity.MENU_ITEM_SOURCE);
-        BookShelfAdapter bookShelf = getBookShelf(book);
+        final BookShelfAdapter bookShelf = getBookShelf(book);
         if (bookShelf != null) {
-            int pos = bookshelfAdapter.getShelfPosition(bookShelf);
+            final int pos = bookshelfAdapter.getShelfPosition(bookShelf);
             getManagedComponent().showBookshelf(pos);
         }
     }
@@ -440,6 +442,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         getManagedComponent().startActivity(myIntent);
     }
 
+    @Override
     public void showDocument(final Uri uri) {
         libraryAdapter.stopScan();
         bookshelfAdapter.stopScan();
@@ -501,17 +504,17 @@ public class RecentActivityController extends ActionController<RecentActivity> i
     }
 
     @ActionMethod(ids = R.id.recentmenu_backupsettings)
-    public void backupSettings(ActionEx action) {
+    public void backupSettings(final ActionEx action) {
         BackupManager.backup();
     }
 
     @ActionMethod(ids = R.id.recentmenu_restoresettings)
-    public void restoreSettings(ActionEx action) {
+    public void restoreSettings(final ActionEx action) {
         BackupManager.restore();
     }
 
     @ActionMethod(ids = R.id.mainmenu_close)
-    public void close(ActionEx action) {
+    public void close(final ActionEx action) {
         getManagedComponent().finish();
     }
 
@@ -543,10 +546,17 @@ public class RecentActivityController extends ActionController<RecentActivity> i
     @Override
     public void loadThumbnail(final String path, final ImageView imageView, final int defaultResID) {
         final ThumbnailFile tf = CacheManager.getThumbnailFile(path);
-        final Bitmap bmp = tf.getImage();
-        if (bmp != null) {
-            imageView.setImageBitmap(bmp);
-        }
+        final Bitmap bmp = tf.getImageAsync(new ThumbnailFile.ImageLoadingListener() {
+
+            @Override
+            public void onImageLoaded(final Bitmap image) {
+                if (image != null) {
+                    bookshelfAdapter.getList(getManagedComponent().bookcaseView.getCurrentList())
+                            .notifyDataSetInvalidated();
+                }
+            }
+        });
+        imageView.setImageBitmap(bmp != null ? bmp : def.getImage());
     }
 
     @Override
@@ -605,7 +615,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         return bookshelfAdapter.getShelf(parent);
     }
 
-    public BookShelfAdapter getBookShelf(int index) {
+    public BookShelfAdapter getBookShelf(final int index) {
         return bookshelfAdapter.getList(index);
     }
 }

@@ -21,7 +21,6 @@ import org.ebookdroid.ui.library.dialogs.FolderDlg;
 import org.ebookdroid.ui.library.tasks.CopyBookTask;
 import org.ebookdroid.ui.library.tasks.MoveBookTask;
 import org.ebookdroid.ui.library.tasks.RenameBookTask;
-import org.ebookdroid.ui.library.views.BookcaseView;
 import org.ebookdroid.ui.opds.OPDSActivity;
 import org.ebookdroid.ui.settings.SettingsUI;
 import org.ebookdroid.ui.viewer.ViewerActivity;
@@ -93,7 +92,7 @@ actions = {
 // finish
 })
 public class RecentActivityController extends ActionController<RecentActivity> implements IBrowserActivity,
-        ILibSettingsChangeListener, IRecentBooksChangedListener, ThumbnailFile.ImageLoadingListener {
+        ILibSettingsChangeListener, IRecentBooksChangedListener {
 
     public final LogContext LCTX;
 
@@ -547,16 +546,19 @@ public class RecentActivityController extends ActionController<RecentActivity> i
     @Override
     public void loadThumbnail(final String path, final ImageView imageView, final int defaultResID) {
         final ThumbnailFile tf = CacheManager.getThumbnailFile(path);
-        // final Bitmap bmp = tf.getImage();
-        final Bitmap bmp = tf.getImageAsync(this);
+        final Bitmap bmp = tf.getImageAsync(new ThumbnailFile.ImageLoadingListener() {
+
+            @Override
+            public void onImageLoaded(final Bitmap image) {
+                if (image != null) {
+                    imageView.setImageBitmap(image);
+                    imageView.postInvalidate();
+                }
+            }
+        });
+
         imageView.setImageBitmap(bmp != null ? bmp : def.getImage());
         imageView.setTag(tf);
-    }
-
-    @Override
-    public void onImageLoaded(final Bitmap image) {
-        final BookcaseView view = getManagedComponent().bookcaseView;
-        bookshelfAdapter.getList(view.getCurrentList()).notifyDataSetInvalidated();
     }
 
     @Override

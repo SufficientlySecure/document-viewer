@@ -17,7 +17,7 @@
         <item>actions_openOptionsMenu</item>
         <item>actions_verticalConfigScrollUp</item>
         <item>actions_verticalConfigScrollDown</item>
-        <item>mainmenu_opds</item>
+        <item>actions_quickZoom</item>
         </string-array>
 
     <string-array name="list_actions_labels" translatable="false">
@@ -36,7 +36,7 @@
         <item>@string/menu_show_options_menu</item>
         <item>Scroll Up</item>
         <item>Scroll Down</item>
-        <item>@string/menu_opds</item>
-    </string-array>
+        <item>Quick zoom</item>
+        </string-array>
 
 </resources>

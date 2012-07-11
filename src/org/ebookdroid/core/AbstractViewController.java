@@ -47,7 +47,8 @@ import org.emdev.utils.LengthUtils;
 actions = {
         // actions
         @ActionMethodDef(id = R.id.actions_verticalConfigScrollUp, method = "verticalConfigScroll"),
-        @ActionMethodDef(id = R.id.actions_verticalConfigScrollDown, method = "verticalConfigScroll")
+        @ActionMethodDef(id = R.id.actions_verticalConfigScrollDown, method = "verticalConfigScroll"),
+        @ActionMethodDef(id = R.id.actions_quickZoom, method = "quickZoom")
 // no more
 })
 public abstract class AbstractViewController extends AbstractComponentController<IView> implements IViewController {
@@ -67,6 +68,8 @@ public abstract class AbstractViewController extends AbstractComponentController
     protected boolean isShown = false;
 
     protected final AtomicBoolean inZoom = new AtomicBoolean();
+
+    protected final AtomicBoolean inQuickZoom = new AtomicBoolean();
 
     protected final PageIndex pageToGo;
 
@@ -202,12 +205,27 @@ public abstract class AbstractViewController extends AbstractComponentController
         }
 
         inZoom.set(!committed);
-
         EventPool.newEventZoom(this, oldZoom, newZoom, committed).process();
 
         if (committed) {
             base.getManagedComponent().zoomChanged(newZoom);
+        } else {
+            inQuickZoom.set(false);
         }
+    }
+
+    @ActionMethod(ids = R.id.actions_quickZoom)
+    public final void quickZoom(final ActionEx action) {
+        if (inZoom.get()) {
+            return;
+        }
+        float zoomFactor = 2.0f;
+        if (inQuickZoom.compareAndSet(true, false)) {
+            zoomFactor = 1.0f / zoomFactor;
+        } else {
+            inQuickZoom.set(true);
+        }
+        base.getZoomModel().scaleAndCommitZoom(zoomFactor);
     }
 
     /**
@@ -477,7 +495,7 @@ public abstract class AbstractViewController extends AbstractComponentController
      * @see org.ebookdroid.ui.viewer.IViewController#goToLink(int, android.graphics.RectF)
      */
     @Override
-    public void goToLink(final int pageDocIndex, final RectF targetRect, boolean addToHistory) {
+    public void goToLink(final int pageDocIndex, final RectF targetRect, final boolean addToHistory) {
         if (pageDocIndex >= 0) {
             Page target = model.getPageByDocIndex(pageDocIndex);
             float offsetX = 0;

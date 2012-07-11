@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.emdev.ui.progress.IProgressIndicator;
 import org.emdev.utils.CompareUtils;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.listeners.ListenerProxy;
@@ -107,7 +108,7 @@ public class DocumentModel extends ListenerProxy {
     }
 
     public Page getPageByDocIndex(final int docIndex) {
-        for(Page page  : pages) {
+        for (Page page : pages) {
             if (page.index.docIndex == docIndex) {
                 return page;
             }
@@ -165,7 +166,7 @@ public class DocumentModel extends ListenerProxy {
         }
     }
 
-    public void initPages(final IActivityController base, final IActivityController.IBookLoadTask task) {
+    public void initPages(final IActivityController base, final IProgressIndicator task) {
         recyclePages();
 
         final BookSettings bs = SettingsManager.getBookSettings();
@@ -233,7 +234,7 @@ public class DocumentModel extends ListenerProxy {
     }
 
     private CodecPageInfo[] retrievePagesInfo(final IActivityController base, final BookSettings bs,
-            final IActivityController.IBookLoadTask task) {
+            final IProgressIndicator task) {
         final PageCacheFile pagesFile = CacheManager.getPageFile(bs.fileName);
 
         if (decodeService.isPageSizeCacheable() && pagesFile.exists()) {

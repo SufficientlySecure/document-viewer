@@ -18,7 +18,6 @@ import org.ebookdroid.common.touch.TouchManager.Touch;
 import org.ebookdroid.core.codec.PageLink;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.ui.viewer.IActivityController;
-import org.ebookdroid.ui.viewer.IActivityController.IBookLoadTask;
 import org.ebookdroid.ui.viewer.IView;
 import org.ebookdroid.ui.viewer.IViewController;
 
@@ -40,6 +39,7 @@ import org.emdev.ui.actions.ActionMethod;
 import org.emdev.ui.actions.ActionMethodDef;
 import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.actions.params.Constant;
+import org.emdev.ui.progress.IProgressIndicator;
 import org.emdev.utils.LengthUtils;
 
 @ActionTarget(
@@ -134,7 +134,7 @@ public abstract class AbstractViewController extends AbstractComponentController
      * @see org.ebookdroid.ui.viewer.IViewController#init(org.ebookdroid.ui.viewer.IActivityController.IBookLoadTask)
      */
     @Override
-    public final void init(final IBookLoadTask task) {
+    public final void init(final IProgressIndicator task) {
         if (!isInitialized) {
             try {
                 model.initPages(base, task);

@@ -5,16 +5,17 @@ import org.ebookdroid.core.EventDraw;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.ViewState;
 import org.ebookdroid.core.events.ZoomListener;
-import org.ebookdroid.ui.viewer.IActivityController.IBookLoadTask;
 
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import org.emdev.ui.progress.IProgressIndicator;
+
 public interface IViewController extends ZoomListener {
 
-    void init(IBookLoadTask bookLoadTask);
+    void init(IProgressIndicator bookLoadTask);
 
     void show();
 

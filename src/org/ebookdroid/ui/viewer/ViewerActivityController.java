@@ -70,6 +70,8 @@ import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.actions.IActionController;
 import org.emdev.ui.actions.params.Constant;
 import org.emdev.ui.actions.params.EditableValue;
+import org.emdev.ui.progress.IProgressIndicator;
+import org.emdev.ui.tasks.BaseAsyncTask;
 import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.StringUtils;
@@ -738,13 +740,13 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         currentPageChanged(PageIndex.NULL, documentModel.getCurrentIndex());
     }
 
-    final class BookLoadTask extends AsyncTask<String, String, Throwable> implements IBookLoadTask, Runnable {
+    final class BookLoadTask extends BaseAsyncTask<String, Throwable> implements IProgressIndicator, Runnable {
 
         private String m_fileName;
         private final String m_password;
-        private ProgressDialog progressDialog;
 
         public BookLoadTask(final String fileName, final String password) {
+            super(getManagedComponent(), R.string.msg_loading, false);
             m_fileName = fileName;
             m_password = password;
         }
@@ -752,19 +754,6 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         @Override
         public void run() {
             execute(" ");
-        }
-
-        @Override
-        protected void onPreExecute() {
-            final ViewerActivity activity = getManagedComponent();
-            LCTX.d("BookLoadTask.onPreExecute(" + activity.LCTX + "): start");
-            try {
-                onProgressUpdate(activity.getString(R.string.msg_loading));
-            } catch (final Throwable th) {
-                LCTX.e("BookLoadTask.onPreExecute(): Unexpected error", th);
-            } finally {
-                LCTX.d("BookLoadTask.onPreExecute(): finish");
-            }
         }
 
         @Override
@@ -809,18 +798,11 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                     }
                 }
 
-                try {
-                    if (progressDialog != null) {
-                        progressDialog.dismiss();
-                        progressDialog = null;
-                    }
-                } catch (final Throwable th) {
-                }
+                super.onPostExecute(result);
 
                 if (result instanceof MuPdfPasswordException) {
                     MuPdfPasswordException pex = (MuPdfPasswordException) result;
-                    askPassword(m_fileName, pex.isWrongPasswordEntered() ? "Wrong password given..."
-                            : "Enter password...");
+                    askPassword(m_fileName, pex.isWrongPasswordEntered() ? "Wrong password given..." : "Enter password...");
                 } else if (result != null) {
                     final String msg = result.getMessage();
                     EmergencyHandler.onUnexpectedError(result);
@@ -837,18 +819,6 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         @Override
         public void setProgressDialogMessage(final int resourceID, final Object... args) {
             publishProgress(getManagedComponent().getString(resourceID, args));
-        }
-
-        @Override
-        protected void onProgressUpdate(final String... values) {
-            if (LengthUtils.isEmpty(values)) {
-                return;
-            }
-            if (progressDialog == null || !progressDialog.isShowing()) {
-                progressDialog = ProgressDialog.show(getManagedComponent(), "", values[0], true);
-            } else {
-                progressDialog.setMessage(values[0]);
-            }
         }
     }
 

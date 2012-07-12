@@ -1,5 +1,6 @@
 package org.ebookdroid.ui.library.adapters;
 
+import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
 import org.ebookdroid.common.settings.SettingsManager;
 
@@ -86,7 +87,7 @@ public class LibraryAdapter extends BaseExpandableListAdapter {
 
         holder.name.setText(curr.name);
         holder.image.setImageResource(R.drawable.folderopen);
-        holder.info.setText("Books: " + curr.getCount());
+        holder.info.setText(EBookDroidApp.context.getString(R.string.folder_books_count, curr.getCount()));
         holder.fileSize.setText("");
 
         return holder.getView();

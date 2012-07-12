@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_scroll_category">"Нажатия и прокрутка"</string>
+    <string name="pref_scroll_category_summary">"Настройки прокрутки"</string>
+    <string name="pref_tapsenabled_title">"Разрешить нажатия"</string>
+    <string name="pref_tapsenabled_summary">"Используйте \'Настройку нажати\' для задания регионов и действий"</string>
+    <string name="pref_scroll_title">"Высота прокрутки"</string>
+    <string name="pref_scroll_summary">"Установите высоту прокрутки"</string>
+    <string name="pref_touchdelay_title">"Задержка обработки касаний"</string>
+    <string name="pref_touchdelay_summary">"Задержка обработки касаний (в миллисекундах)"</string>
+    <string name="pref_animate_scrolling_title">"Анимировать прокрутку"</string>
+    <string name="pref_animate_scrolling_summary">"Анимировать прокрутку в режиме рулона"</string>
+
+</resources>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string translatable="false" name="pref_opds_catalogs_id">opds-catalogs</string>
+
+    <string translatable="false" name="pref_opds_downloaddir_id">opds-download-dir</string>
+    <string translatable="false" name="pref_opds_downloaddir_defvalue">/sdcard/Download</string>
+
+    <string translatable="false" name="pref_opds_filterbooktypes_id">opds-filter-book-types</string>
+    <string translatable="false" name="pref_opds_filterbooktypes_defvalue">true</string>
+
+    <string translatable="false" name="pref_opds_downloadarchives_id">opds-download-archives</string>
+    <string translatable="false" name="pref_opds_downloadarchives_defvalue">true</string>
+
+    <string translatable="false" name="pref_opds_unpackarchives_id">opds-unpack-archives</string>
+    <string translatable="false" name="pref_opds_unpackarchives_defvalue">true</string>
+
+    <string translatable="false" name="pref_opds_deletearchives_id">opds-delete-archives</string>
+    <string translatable="false" name="pref_opds_deletearchives_defvalue">true</string>
+
+</resources>

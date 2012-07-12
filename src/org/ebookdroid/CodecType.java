@@ -36,13 +36,13 @@ public enum CodecType {
     static {
         extensionToActivity = new HashMap<String, CodecType>();
         for (final CodecType a : values()) {
-            for (final String ext : a.getExtensions()) {
+            for (final String ext : a.extensions) {
                 extensionToActivity.put(ext.toLowerCase(), a);
             }
         }
         mimeTypesToActivity = new HashMap<String, CodecType>();
         for (final CodecType a : values()) {
-            for (final String type : a.getMimeTypes()) {
+            for (final String type : a.mimeTypes) {
                 mimeTypesToActivity.put(type.toLowerCase(), a);
             }
         }

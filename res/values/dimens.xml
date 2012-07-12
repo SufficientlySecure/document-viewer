@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<resources>
-  <dimen name="actionbar_height">52dip</dimen>
-  <dimen name="actionbar_separator_height">44dip</dimen>
-  <dimen name="actionbar_separator_width">4dip</dimen>
-</resources>

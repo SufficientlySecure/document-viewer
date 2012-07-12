@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+<!--<string name="pref_opds_category">"OPDS Settings"</string>-->
+<!--<string name="pref_opds_category_summary">"OPDS Browser settings"</string>-->
+<!--<string name="pref_opds_downloaddir_title">"Download folder"</string>-->
+<!--<string name="pref_opds_downloaddir_summary">"Download to"</string>-->
+<!--<string name="pref_opds_filterbooktypes_title">"Filter book types"</string>-->
+<!--<string name="pref_opds_filterbooktypes_summary">"Filter out not supported book types"</string>-->
+<!--<string name="pref_opds_downloadarchives_title">"Download zipped books"</string>-->
+<!--<string name="pref_opds_downloadarchives_summary">"Download zipped books"</string>-->
+<!--<string name="pref_opds_unpackarchives_title">"Unpack zipped books"</string>-->
+<!--<string name="pref_opds_unpackarchives_summary">"Unpack zipped books after downloading"</string>-->
+<!--<string name="pref_opds_deletearchives_title">"Delete zipped books"</string>-->
+<!--<string name="pref_opds_deletearchives_summary">"Delete zipped books after unpacking"</string>-->
+
+</resources>

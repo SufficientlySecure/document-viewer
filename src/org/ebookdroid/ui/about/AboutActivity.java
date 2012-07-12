@@ -44,14 +44,13 @@ public class AboutActivity extends Activity {
 
         LayoutUtils.maximizeWindow(getWindow());
 
-        String name = "EBookDroid";
+        String name = getResources().getString(R.string.app_name);
         String version = "";
         try {
             final PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             version = packageInfo.versionName;
             name = getResources().getString(packageInfo.applicationInfo.labelRes);
         } catch (final NameNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

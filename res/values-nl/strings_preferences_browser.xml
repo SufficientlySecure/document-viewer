@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_browser_category">"Bestanden te zien"</string>
+    <string name="pref_browser_category_summary">"Browser instellingen en ondersteunde bestandstypen"</string>
+    <string name="pref_usebookcase_title">"Gebruik boekenkast regime"</string>
+    <string name="pref_usebookcase_summary">"Gebruik een boekenkast regime met boekomslagen als lijst"</string>
+    <string name="pref_brautoscandir_title">"Adresboekdirectory te scannen"</string>
+    <string name="pref_brautoscandir_summary">"Adresboekdirectory automatisch te  scannen"</string>
+    <string name="pref_brbrfiletypesscreen_title">"Bestanden categorie"</string>
+    <string name="pref_brbrfiletypesscreen_summary">"Bestanden categorie voor het vertonen"</string>
+<!--<string name="pref_brfiletypedjvu_title">".djvu"</string>-->
+    <string name="pref_brfiletypedjvu_summary">"Vertoon DjVu-bestanden"</string>
+    <string name="pref_brfiletypedjv_title">".DJV"</string>
+    <string name="pref_brfiletypedjv_summary">"Vertoon DjVu-bestanden"</string>
+<!--<string name="pref_brfiletypepdf_title">".pdf"</string>-->
+    <string name="pref_brfiletypepdf_summary">"Vertoon PDF-bestanden"</string>
+    <string name="pref_brfiletypexps_title">".XPS"</string>
+    <string name="pref_brfiletypexps_summary">"Vertoon XPS-bestanden"</string>
+<!--<string name="pref_brfiletypeoxps_title">".oxps"</string>-->
+    <string name="pref_brfiletypeoxps_summary">"Vertoon OXPS-bestanden"</string>
+<!--<string name="pref_brfiletypecbz_title">".cbz"</string>-->
+    <string name="pref_brfiletypecbz_summary">"Vertoon CBZ-bestanden"</string>
+<!--<string name="pref_brfiletypecbr_title">".cbr"</string>-->
+    <string name="pref_brfiletypecbr_summary">"Vertoon CBR-bestanden"</string>
+<!--<string name="pref_brfiletypefb2_title">".fb2"</string>-->
+    <string name="pref_brfiletypefb2_summary">"Vertoon FB2-bestanden"</string>
+<!--<string name="pref_brfiletypefb2.zip_title">".fb2.zip"</string>-->
+    <string name="pref_brfiletypefb2.zip_summary">"Vertoon FB2.ZIP-bestanden"</string>
+
+</resources>

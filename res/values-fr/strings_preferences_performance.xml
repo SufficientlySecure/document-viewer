@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+<!--<string name="pref_performance_category">"Performance settings"</string>-->
+<!--<string name="pref_performance_category_summary">"Performance settings"</string>-->
+    <string name="pref_pagesinmemory_title">"Pages en mémoire"</string>
+    <string name="pref_pagesinmemory_summary">"Nombre de pages conservées en mémoire"</string>
+<!--<string name="pref_lowlevel_category">"Low level application preferences (Applied after document reload)"</string>-->
+<!--<string name="pref_lowlevel_category_summary">"Low level application preferences (Applied after document reload)"</string>-->
+<!--<string name="pref_docviewtype_title">"Document viewer implementation"</string>-->
+<!--<string name="pref_docviewtype_summary">"Defines viewer class"</string>-->
+<!--<string name="list_docviewtype_base">"Based on android.view.View"</string>-->
+<!--<string name="list_docviewtype_surface">"Based on android.view.SurfaceView"</string>-->
+<!--<string name="pref_decoding_threads_title">"Number of decoding threads"</string>-->
+<!--<string name="pref_decoding_threads_summary">"Number of decoding threads"</string>-->
+<!--<string name="pref_decodethread_priority_title">"Decode thread priority"</string>-->
+<!--<string name="pref_decodethread_priority_summary">"Defines decode thread priority"</string>-->
+<!--<string name="pref_drawthread_priority_title">"Surface draw thread priority"</string>-->
+<!--<string name="pref_drawthread_priority_summary">"Defines surface draw thread priority"</string>-->
+<!--<string name="list_thread_priority_lowest">"Lowest"</string>-->
+<!--<string name="list_thread_priority_lower">"Lower"</string>-->
+<!--<string name="list_thread_priority_normal">"Normal"</string>-->
+<!--<string name="list_thread_priority_higher">"Higher"</string>-->
+<!--<string name="list_thread_priority_highest">"Highest"</string>-->
+<!--<string name="pref_usenativegraphics_title">"Use native graphics"</string>-->
+<!--<string name="pref_usenativegraphics_summary">"Use Android 2+ native graphics library"</string>-->
+<!--<string name="pref_hwa_enabled_title">"Hardware acceleration enabled"</string>-->
+<!--<string name="pref_hwa_enabled_summary">"Set if Hardware acceleration can be set by viewer"</string>-->
+<!--<string name="pref_bitmapsize_title">"Texture bitmap size"</string>-->
+<!--<string name="pref_bitmapsize_summary">"Defines size of texture parts"</string>-->
+<!--<string name="list_bitmapsize_64">"64 * 64"</string>-->
+<!--<string name="list_bitmapsize_128">"128 * 128"</string>-->
+<!--<string name="list_bitmapsize_256">"256 * 256"</string>-->
+<!--<string name="list_bitmapsize_512">"512 * 512"</string>-->
+<!--<string name="list_bitmapsize_1024">"1024 * 1024"</string>-->
+<!--<string name="pref_bitmapfilering_enabled_title">"Texture filtering"</string>-->
+<!--<string name="pref_bitmapfilering_enabled_summary">"Enable bilinear texture filtering"</string>-->
+<!--<string name="pref_texturereuse_title">"Reuse texture bitmaps"</string>-->
+<!--<string name="pref_texturereuse_summary">"Reuse existing texture bitmaps when page part is decoded again"</string>-->
+<!--<string name="pref_bitmaphack_title">"Bitmap allocation hack"</string>-->
+<!--<string name="pref_bitmaphack_summary">"Use bitmap allocation tracking hack"</string>-->
+<!--<string name="pref_earlyrecycling_title">"Early bitmap recycling"</string>-->
+<!--<string name="pref_earlyrecycling_summary">"Bitmaps are manually recycled when they are removed from pool"</string>-->
+<!--<string name="pref_reloadduringzoom_title">"Reload page during zoom"</string>-->
+<!--<string name="pref_reloadduringzoom_summary">"Reload page during zoom if zoom changed more than 20%"</string>-->
+<!--<string name="pref_heappreallocate_title">"Heap preallocation"</string>-->
+<!--<string name="pref_heappreallocate_summary">"Size in megabytes of heap preallocation at application startup"</string>-->
+<!--<string name="pref_pdfstoragesize_title">"MuPDF internal storage size"</string>-->
+<!--<string name="pref_pdfstoragesize_summary">"Size in megabytes of MuPDF internal storage"</string>-->
+
+</resources>

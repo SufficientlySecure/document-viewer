@@ -38,12 +38,13 @@ public class DocumentModel extends ListenerProxy {
 
     protected static final LogContext LCTX = LogContext.ROOT.lctx("DocModel");
 
+    public final DecodeService decodeService;
+
     protected PageIndex currentIndex = PageIndex.FIRST;
 
     private static final Page[] EMPTY_PAGES = {};
 
     private final CodecContext context;
-    private final DecodeService decodeService;
 
     private Page[] pages = EMPTY_PAGES;
 
@@ -64,10 +65,6 @@ public class DocumentModel extends ListenerProxy {
 
     public void open(String fileName, String password) {
         decodeService.open(fileName, password);
-    }
-
-    public DecodeService getDecodeService() {
-        return decodeService;
     }
 
     public Page[] getPages() {
@@ -245,13 +242,13 @@ public class DocumentModel extends ListenerProxy {
         }
 
         LCTX.d("Retrieving pages from document...");
-        final CodecPageInfo[] infos = new CodecPageInfo[getDecodeService().getPageCount()];
+        final CodecPageInfo[] infos = new CodecPageInfo[decodeService.getPageCount()];
         final CodecPageInfo unified = decodeService.getUnifiedPageInfo();
         for (int i = 0; i < infos.length; i++) {
             if (task != null) {
                 task.setProgressDialogMessage(R.string.msg_getting_page_size, (i + 1), infos.length);
             }
-            infos[i] = unified != null ? unified : getDecodeService().getPageInfo(i);
+            infos[i] = unified != null ? unified : decodeService.getPageInfo(i);
         }
 
         if (decodeService.isPageSizeCacheable()) {

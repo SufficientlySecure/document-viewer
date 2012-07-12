@@ -52,7 +52,7 @@ public class Line {
         int h = height;
         for (int i = 0, n = Math.min(2, LengthUtils.length(footnotes)); i < n; i++) {
             final Line line = footnotes.get(i);
-            h += line.getHeight();
+            h += line.height;
         }
         return h;
     }

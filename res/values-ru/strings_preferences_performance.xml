@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_performance_category">"Настроки производительности"</string>
+    <string name="pref_performance_category_summary">"Настроки производительности"</string>
+    <string name="pref_pagesinmemory_title">"Страниц в памяти"</string>
+    <string name="pref_pagesinmemory_summary">"Число страниц, хранящихся в памяти"</string>
+    <string name="pref_lowlevel_category">"Тонкие настройки приложения (Требуется переоткрытие документа)"</string>
+    <string name="pref_lowlevel_category_summary">"Тонкие настройки приложения (Требуется переоткрытие документа)"</string>
+    <string name="pref_docviewtype_title">"Технология отображения"</string>
+    <string name="pref_docviewtype_summary">"Задает базовый класс"</string>
+    <string name="list_docviewtype_base">"Основан на android.view.View"</string>
+    <string name="list_docviewtype_surface">"Основан на android.view.SurfaceView"</string>
+<!--<string name="pref_decoding_threads_title">"Number of decoding threads"</string>-->
+<!--<string name="pref_decoding_threads_summary">"Number of decoding threads"</string>-->
+    <string name="pref_decodethread_priority_title">"Приоритет потока декодирования"</string>
+    <string name="pref_decodethread_priority_summary">"Приоритет потока декодирования"</string>
+    <string name="pref_drawthread_priority_title">"Приоритет потока отрисовки"</string>
+    <string name="pref_drawthread_priority_summary">"Приоритет потока отрисовки"</string>
+    <string name="list_thread_priority_lowest">"Самый низкий"</string>
+    <string name="list_thread_priority_lower">"Низкий"</string>
+    <string name="list_thread_priority_normal">"Нормальный"</string>
+    <string name="list_thread_priority_higher">"Высокий"</string>
+    <string name="list_thread_priority_highest">"Самый высокий"</string>
+<!--<string name="pref_usenativegraphics_title">"Use native graphics"</string>-->
+<!--<string name="pref_usenativegraphics_summary">"Use Android 2+ native graphics library"</string>-->
+    <string name="pref_hwa_enabled_title">"Использование аппаратного ускорения"</string>
+    <string name="pref_hwa_enabled_summary">"Разрешить использовать по необходимости аппаратное ускорение"</string>
+    <string name="pref_bitmapsize_title">"Размер текстуры"</string>
+    <string name="pref_bitmapsize_summary">"Задает размер текстуры"</string>
+<!--<string name="list_bitmapsize_64">"64 * 64"</string>-->
+<!--<string name="list_bitmapsize_128">"128 * 128"</string>-->
+<!--<string name="list_bitmapsize_256">"256 * 256"</string>-->
+<!--<string name="list_bitmapsize_512">"512 * 512"</string>-->
+<!--<string name="list_bitmapsize_1024">"1024 * 1024"</string>-->
+    <string name="pref_bitmapfilering_enabled_title">"Фильтрация текстур"</string>
+    <string name="pref_bitmapfilering_enabled_summary">"Включить би-линейную фильтрацию текстур"</string>
+    <string name="pref_texturereuse_title">"Повторное использование текстур"</string>
+    <string name="pref_texturereuse_summary">"Повторное использование уже выделенных текстур"</string>
+<!--<string name="pref_bitmaphack_title">"Bitmap allocation hack"</string>-->
+<!--<string name="pref_bitmaphack_summary">"Use bitmap allocation tracking hack"</string>-->
+    <string name="pref_earlyrecycling_title">"Раннее освобождение битмапов"</string>
+    <string name="pref_earlyrecycling_summary">"Принудительное освобождение текстурной памяти"</string>
+    <string name="pref_reloadduringzoom_title">"Повторное декодирование во время зума"</string>
+    <string name="pref_reloadduringzoom_summary">"Заново передекодировать страницу если масштаб изменился более чем на 20%"</string>
+<!--<string name="pref_heappreallocate_title">"Heap preallocation"</string>-->
+<!--<string name="pref_heappreallocate_summary">"Size in megabytes of heap preallocation at application startup"</string>-->
+<!--<string name="pref_pdfstoragesize_title">"MuPDF internal storage size"</string>-->
+<!--<string name="pref_pdfstoragesize_summary">"Size in megabytes of MuPDF internal storage"</string>-->
+
+</resources>

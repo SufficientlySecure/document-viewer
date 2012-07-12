@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_render_category">Rendering</string>
+    <string name="pref_render_category_summary">Rendering settings</string>
+
+    <string name="pref_book_category">Book settings</string>
+    <string name="pref_book_category_summary">Current book settings</string>
+
+    <string name="pref_splitpages_title">Split pages</string>
+    <string name="pref_splitpages_summary">Split landscape pages into two portrait</string>
+
+    <string name="pref_croppages_title">Crop pages</string>
+    <string name="pref_croppages_summary">Crop margins of pages (experimantal)</string>
+
+    <string name="pref_viewmode_title">Page view mode</string>
+    <string name="pref_viewmode_summary">Page view mode</string>
+
+    <string name="list_viewmode_vertical_scroll">Vertical scroll</string>
+    <string name="list_viewmode_horizontal_scroll">Horizontal scroll</string>
+    <string name="list_viewmode_single_page">Single page</string>
+
+    <string name="pref_singlepage_category">Single page settings</string>
+    <string name="pref_singlepage_category_summary">Settings actual for single page mode</string>
+
+    <string name="pref_align_title">Page align mode</string>
+    <string name="pref_align_summary">How to align pages</string>
+
+    <string name="list_align_by_width">By width</string>
+    <string name="list_align_by_height">By height</string>
+    <string name="list_align_auto">Automatic</string>
+
+    <string name="pref_animationtype_title">Animation type</string>
+    <string name="pref_animationtype_summary">Select type of transition animation</string>
+
+    <string name="list_animation_none">None</string>
+    <string name="list_animation_curler_simple">Simple curler</string>
+    <string name="list_animation_curler_dynamic">Dynamic curler</string>
+    <string name="list_animation_curler_natural">Natural curler</string>
+    <string name="list_animation_slider">Slider</string>
+    <string name="list_animation_fader">Fade in</string>
+    <string name="list_animation_squeezer">Squeeze</string>
+
+    <string name="pref_postprocessing_category" >Post&#8211;processing effects</string>
+    <string name="pref_postprocessing_summary">Post&#8211;processing effects</string>
+
+    <string name="pref_nightmode_title">Night mode</string>
+    <string name="pref_nightmode_summary">Use white symbols on black background</string>
+
+    <string name="pref_contrast_title">Contrast</string>
+    <string name="pref_contrast_summary">Contrast correction level (0 &#8211; 1000, 100 by default)</string>
+
+    <string name="pref_exposure_title">Exposure</string>
+    <string name="pref_exposure_summary">Exposure correction level (0 &#8211; 200, 100 by default)</string>
+
+    <string name="pref_autolevels_title">Auto levels</string>
+    <string name="pref_autolevels_summary">Use auto levels correction</string>
+
+    <string name="pref_brfiletypespecific_title">Format specific</string>
+    <string name="pref_brfiletypespecific_summary">Settings for each individual file format</string>
+
+    <string name="pref_brfiletypespecificdjvu_title">DJVU</string>
+    <string name="pref_brfiletypespecificdjvu_summary">DJVU format specific settings</string>
+
+    <string name="pref_djvu_rendering_mode_title">Rendering mode</string>
+    <string name="pref_djvu_rendering_mode_summary">Page rendering mode</string>
+
+    <string name="list_djvu_rendering_mode_0">Color</string>
+    <string name="list_djvu_rendering_mode_1">Black</string>
+    <string name="list_djvu_rendering_mode_2">Color only</string>
+    <string name="list_djvu_rendering_mode_3">Mask only</string>
+    <string name="list_djvu_rendering_mode_4">Background only</string>
+    <string name="list_djvu_rendering_mode_5">Foreground only</string>
+
+    <string name="pref_brfiletypespecificpdf_title">PDF</string>
+    <string name="pref_brfiletypespecificpdf_summary">PDF format specific settings</string>
+
+    <string name="pref_customdpi_title">Use custom DPI</string>
+    <string name="pref_customdpi_summary">Define custom DPI values below</string>
+
+    <string name="pref_xdpi_title">X DPI</string>
+    <string name="pref_xdpi_summary">X DPI</string>
+
+    <string name="pref_ydpi_title">Y DPI</string>
+    <string name="pref_ydpi_summary">Y DPI</string>
+
+    <string name="pref_brfiletypespecificfb2_title">FB2</string>
+    <string name="pref_brfiletypespecificfb2_summary">FB2 format specific settings</string>
+
+    <string name="pref_fontsize_title">Font size</string>
+    <string name="pref_fontsize_summary">Base font size</string>
+
+    <string name="list_fontsize_tiny">Tiny</string>
+    <string name="list_fontsize_small">Small</string>
+    <string name="list_fontsize_normal">Normal</string>
+    <string name="list_fontsize_large">Large</string>
+    <string name="list_fontsize_huge">Huge</string>
+
+    <string name="pref_fb2hyphen_title">Enable Hyphenation</string>
+    <string name="pref_fb2hyphen_summary">Experimental Hyphenation implementation</string>
+    
+</resources>

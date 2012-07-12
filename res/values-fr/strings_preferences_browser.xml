@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_browser_category">"Visionnage des fichiers"</string>
+    <string name="pref_browser_category_summary">"Paramètre du navigateur et types supportés de fichiers"</string>
+    <string name="pref_usebookcase_title">"Utiliser l’armoire"</string>
+    <string name="pref_usebookcase_summary">"Utiliser l’armoire avec les couvertures à la place des listes"</string>
+    <string name="pref_brautoscandir_title">"Catalogue pour numérisation"</string>
+    <string name="pref_brautoscandir_summary">"Catalogue pour numérisation automatique"</string>
+    <string name="pref_brbrfiletypesscreen_title">"Types de fichiers"</string>
+    <string name="pref_brbrfiletypesscreen_summary">"types de fichiers pour affichage"</string>
+<!--<string name="pref_brfiletypedjvu_title">".djvu"</string>-->
+    <string name="pref_brfiletypedjvu_summary">"Montrer les fichiers DjVu"</string>
+<!--<string name="pref_brfiletypedjv_title">".djv"</string>-->
+    <string name="pref_brfiletypedjv_summary">"Montrer les fichiers DjVu"</string>
+<!--<string name="pref_brfiletypepdf_title">".pdf"</string>-->
+    <string name="pref_brfiletypepdf_summary">"Montrer les fichiers PDF"</string>
+<!--<string name="pref_brfiletypexps_title">".xps"</string>-->
+    <string name="pref_brfiletypexps_summary">"Montrer les fichiers XPS"</string>
+<!--<string name="pref_brfiletypeoxps_title">".oxps"</string>-->
+    <string name="pref_brfiletypeoxps_summary">"Montrer les fichiers OXPS"</string>
+<!--<string name="pref_brfiletypecbz_title">".cbz"</string>-->
+    <string name="pref_brfiletypecbz_summary">"Montrer les fichiers CBZ"</string>
+<!--<string name="pref_brfiletypecbr_title">".cbr"</string>-->
+    <string name="pref_brfiletypecbr_summary">"Montrer les fichiers CBR"</string>
+<!--<string name="pref_brfiletypefb2_title">".fb2"</string>-->
+    <string name="pref_brfiletypefb2_summary">"Montrer les fichiers FB2"</string>
+<!--<string name="pref_brfiletypefb2.zip_title">".fb2.zip"</string>-->
+    <string name="pref_brfiletypefb2.zip_summary">"Montrer les fichiers FB2.ZIP"</string>
+
+</resources>

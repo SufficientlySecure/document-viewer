@@ -311,12 +311,12 @@ public class RecentActivityController extends ActionController<RecentActivity> i
             return;
         }
         final boolean isCopy = action.id == R.id.bookmenu_copy;
-        final String title = isCopy ? "Copy book to..." : "Move book to...";
+        final int titleId = isCopy ? R.string.copy_book_to_dlg_title : R.string.move_book_to_dlg_title;
         final int id = isCopy ? R.id.actions_doCopyBook : R.id.actions_doMoveBook;
         getOrCreateAction(id).putValue("source", book);
 
         final FolderDlg dlg = new FolderDlg(this);
-        dlg.show(new File(book.path), title, id);
+        dlg.show(new File(book.path), titleId, id);
     }
 
     @ActionMethod(ids = R.id.actions_doCopyBook)

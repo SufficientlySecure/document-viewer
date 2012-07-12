@@ -183,10 +183,9 @@ public class ActionEx implements Runnable, View.OnClickListener, View.OnLongClic
                 LCTX.d("Action  " + name + ": disabled");
                 return;
             }
-            final ActionControllerMethod method = getMethod();
             setParameters();
             LCTX.d("Execute action: " + name + ": " + m_values);
-            method.invoke(this);
+            m_method.invoke(this);
         } catch (final InvocationTargetException ex) {
             LCTX.e("Action " + name + " failed on execution: ", ex.getCause());
         } catch (final Throwable th) {

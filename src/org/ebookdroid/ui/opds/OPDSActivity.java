@@ -341,11 +341,13 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, ActionCon
             return;
         }
 
+        final String rawType = getResources().getString(R.string.opds_downloading_dlg_raw_type);
+
         if (link != null || book.downloads.size() == 1) {
             final Link target = link != null ? link : book.downloads.get(0);
             final ActionDialogBuilder builder = new ActionDialogBuilder(this, getController());
-            builder.setTitle("Downloading book as");
-            builder.setMessage(LengthUtils.safeString(target.type, "Raw type"));
+            builder.setTitle(R.string.opds_downloading_dlg_title);
+            builder.setMessage(LengthUtils.safeString(target.type, rawType));
             builder.setPositiveButton(R.id.actions_downloadBook, new Constant("book", book), new Constant(
                     IActionController.DIALOG_ITEM_PROPERTY, 0));
             builder.setNegativeButton();
@@ -355,12 +357,12 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, ActionCon
 
         final List<String> itemList = new ArrayList<String>();
         for (final Link l : book.downloads) {
-            itemList.add(LengthUtils.safeString(l.type, "Raw type"));
+            itemList.add(LengthUtils.safeString(l.type, rawType));
         }
         final String[] items = itemList.toArray(new String[itemList.size()]);
 
         final ActionDialogBuilder builder = new ActionDialogBuilder(this, getController());
-        builder.setTitle("Select type of book to download");
+        builder.setTitle(R.string.opds_downloading_type_dlg_title);
         builder.setItems(items, this.getController().getOrCreateAction(R.id.actions_downloadBook)
                 .putValue("book", book));
         builder.show();

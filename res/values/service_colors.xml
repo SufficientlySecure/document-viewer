@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+
+    <color name="actionbar_white">#FFFFFFFF</color>
+    <color name="actionbar_black">#FF000000</color>
+    <color name="outline_background">#BB000000</color>
+    <color name="list_item_color_android2">#FF000000</color>
+
+</resources>

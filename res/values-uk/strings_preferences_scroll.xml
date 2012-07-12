@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_scroll_category">"Натискання и прокрутка"</string>
+    <string name="pref_scroll_category_summary">"Налаштування прокрутки"</string>
+<!--<string name="pref_tapsenabled_title">"Enable taps"</string>-->
+<!--<string name="pref_tapsenabled_summary">"Use Tap Configuration to define tap regions and actions"</string>-->
+    <string name="pref_scroll_title">"Висота прокрутки"</string>
+    <string name="pref_scroll_summary">"Встановіть висоту прокрутки"</string>
+<!--<string name="pref_touchdelay_title">"Touch processing delay"</string>-->
+<!--<string name="pref_touchdelay_summary">"Touch processing delay (in milliseconds)"</string>-->
+<!--<string name="pref_animate_scrolling_title">"Animate scrolling"</string>-->
+<!--<string name="pref_animate_scrolling_summary">"Animate scrolling in scroll modes"</string>-->
+
+</resources>

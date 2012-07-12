@@ -108,28 +108,28 @@ public final class RawBitmap {
     }
 
     public static BitmapRef scaleHq4x(RawBitmap src) {
-        RawBitmap dest = new RawBitmap(src.getWidth() * 4, src.getHeight() * 4, src.hasAlpha());
+        RawBitmap dest = new RawBitmap(src.width * 4, src.height * 4, src.hasAlpha);
         src.fillAlpha(0x00);
 
-        nativeHq4x(src.getPixels(), dest.getPixels(), src.getWidth(), src.getHeight());
+        nativeHq4x(src.pixels, dest.pixels, src.width, src.height);
         dest.fillAlpha(0xFF);
         return dest.toBitmap();
     }
 
     public static BitmapRef scaleHq3x(RawBitmap src) {
-        RawBitmap dest = new RawBitmap(src.getWidth() * 3, src.getHeight() * 3, src.hasAlpha());
+        RawBitmap dest = new RawBitmap(src.width * 3, src.height * 3, src.hasAlpha);
         src.fillAlpha(0x00);
 
-        nativeHq3x(src.getPixels(), dest.getPixels(), src.getWidth(), src.getHeight());
+        nativeHq3x(src.pixels, dest.pixels, src.width, src.height);
         dest.fillAlpha(0xFF);
         return dest.toBitmap();
     }
 
     public static BitmapRef scaleHq2x(RawBitmap src) {
-        RawBitmap dest = new RawBitmap(src.getWidth() * 2, src.getHeight() * 2, src.hasAlpha());
+        RawBitmap dest = new RawBitmap(src.width * 2, src.height * 2, src.hasAlpha);
         src.fillAlpha(0x00);
 
-        nativeHq2x(src.getPixels(), dest.getPixels(), src.getWidth(), src.getHeight());
+        nativeHq2x(src.pixels, dest.pixels, src.width, src.height);
         dest.fillAlpha(0xFF);
         return dest.toBitmap();
     }

@@ -151,7 +151,7 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
     public ActionEx createAction(final int id, final IActionParameter... parameters) {
         final ActionEx result = new ActionEx(this, id);
 
-        result.putValue(MANAGED_COMPONENT_PROPERTY, getManagedComponent());
+        result.putValue(MANAGED_COMPONENT_PROPERTY, m_managedComponent);
         result.putValue(COMPONENT_CONTROLLER_PROPERTY, this);
 
         for (final IActionParameter actionParameter : parameters) {

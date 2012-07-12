@@ -289,8 +289,8 @@ public final class BaseView extends View implements IView {
      */
     @Override
     public float getScrollScaleRatio() {
-        final Page page = getBase().getDocumentModel().getCurrentPageObject();
-        final float zoom = getBase().getZoomModel().getZoom();
+        final Page page = base.getDocumentModel().getCurrentPageObject();
+        final float zoom = base.getZoomModel().getZoom();
 
         if (page == null || page.getBounds(zoom) == null) {
             return 0;

@@ -190,17 +190,17 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
             searchModel = new SearchModel(this);
 
             if (intent == null) {
-                showErrorDlg("Bad intent or scheme:\n" + intent);
+                showErrorDlg(R.string.msg_bad_intent, intent);
                 return;
             }
             final String scheme = intent.getScheme();
             if (LengthUtils.isEmpty(scheme)) {
-                showErrorDlg("Bad intent or scheme:\n" + intent);
+                showErrorDlg(R.string.msg_bad_intent, intent);
                 return;
             }
             final Uri data = intent.getData();
             if (data == null) {
-                showErrorDlg("No intent data:\n" + intent);
+                showErrorDlg(R.string.msg_no_intent_data, intent);
                 return;
             }
             if (scheme.equals("content")) {
@@ -236,7 +236,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
             LCTX.i("Book codec type: " + codecType);
             LCTX.i("Book title: " + bookTitle);
             if (codecType == null) {
-                showErrorDlg("Unknown intent data type:\n" + data);
+                showErrorDlg(R.string.msg_unknown_intent_data_type, data);
                 return;
             }
 
@@ -330,21 +330,24 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         getDocumentController().onDestroy();
     }
 
-    public void askPassword(final String fileName, final String promt) {
+    public void askPassword(final String fileName, final int promtId) {
         final EditText input = new EditText(getManagedComponent());
         input.setSingleLine(true);
         input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
         final ActionDialogBuilder builder = new ActionDialogBuilder(getManagedComponent(), this);
-        builder.setTitle(fileName).setMessage(promt).setView(input);
+        builder.setTitle(fileName).setMessage(promtId).setView(input);
         builder.setPositiveButton(R.id.actions_redecodingWithPassword, new EditableValue("input", input), new Constant(
                 "fileName", fileName));
         builder.setNegativeButton(R.id.mainmenu_close).show();
     }
 
-    public void showErrorDlg(final String msg) {
+    public void showErrorDlg(final int msgId, final Object... args) {
         final ActionDialogBuilder builder = new ActionDialogBuilder(getManagedComponent(), this);
-        builder.setTitle("Application error").setMessage(LengthUtils.safeString(msg, "Unexpected error occured!"));
+
+        builder.setTitle(R.string.error_dlg_title);
+        builder.setMessage(msgId, args);
+
         builder.setPositiveButton(R.string.error_close, R.id.mainmenu_close);
         builder.show();
     }
@@ -420,11 +423,12 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         }
 
         if (link.targetPage != -1) {
-            final int pageCount = documentModel.getDecodeService().getPageCount();
+            final int pageCount = documentModel.decodeService.getPageCount();
             if (link.targetPage < 1 || link.targetPage > pageCount) {
                 getManagedComponent().showToastText(2000, R.string.error_page_out_of_rande, pageCount);
             } else {
-                getDocumentController().goToLink(link.targetPage - 1, link.targetRect, AppSettings.current().storeOutlineGotoHistory);
+                getDocumentController().goToLink(link.targetPage - 1, link.targetRect,
+                        AppSettings.current().storeOutlineGotoHistory);
             }
             return;
         }
@@ -451,7 +455,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     @ActionMethod(ids = R.id.mainmenu_outline)
     public void showOutline(final ActionEx action) {
-        final List<OutlineLink> outline = documentModel.getDecodeService().getOutline();
+        final List<OutlineLink> outline = documentModel.decodeService.getOutline();
         if ((outline != null) && (outline.size() > 0)) {
             final OutlineDialog dlg = new OutlineDialog(this, outline);
             dlg.show();
@@ -520,11 +524,11 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         final Editable value = action.getParameter("input");
         final String name = value.toString();
         final BookSettings bs = SettingsManager.getBookSettings();
-        final Page page = getDocumentModel().getCurrentPageObject();
+        final Page page = documentModel.getCurrentPageObject();
         if (page != null) {
             final ViewState state = new ViewState(getDocumentController());
             final PointF pos = state.getPositionOnPage(page);
-            bs.bookmarks.add(new Bookmark(name, getDocumentModel().getCurrentIndex(), pos.x, pos.y));
+            bs.bookmarks.add(new Bookmark(name, documentModel.getCurrentIndex(), pos.x, pos.y));
             SettingsManager.storeBookSettings();
         }
     }
@@ -550,7 +554,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     @Override
     public DecodeService getDecodeService() {
-        return documentModel != null ? documentModel.getDecodeService() : null;
+        return documentModel != null ? documentModel.decodeService : null;
     }
 
     /**
@@ -768,7 +772,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                 documentModel.open(m_fileName, m_password);
                 getDocumentController().init(this);
                 return null;
-            } catch (MuPdfPasswordException pex) {
+            } catch (final MuPdfPasswordException pex) {
                 LCTX.i(pex.getMessage());
                 return pex;
             } catch (final Exception e) {
@@ -801,12 +805,16 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                 super.onPostExecute(result);
 
                 if (result instanceof MuPdfPasswordException) {
-                    MuPdfPasswordException pex = (MuPdfPasswordException) result;
-                    askPassword(m_fileName, pex.isWrongPasswordEntered() ? "Wrong password given..." : "Enter password...");
+                    final MuPdfPasswordException pex = (MuPdfPasswordException) result;
+                    final int promptId = pex.isWrongPasswordEntered() ? R.string.msg_wrong_password
+                            : R.string.msg_password_required;
+
+                    askPassword(m_fileName, promptId);
+
                 } else if (result != null) {
                     final String msg = result.getMessage();
                     EmergencyHandler.onUnexpectedError(result);
-                    showErrorDlg(msg);
+                    showErrorDlg(R.string.msg_unexpected_error, msg);
                 }
             } catch (final Throwable th) {
                 LCTX.e("BookLoadTask.onPostExecute(): Unexpected error", th);
@@ -831,23 +839,18 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         private Page targetPage = null;
 
         @Override
-        protected void onPreExecute() {
-            // onProgressUpdate("Searching...");
-        }
-
-        @Override
         public void onCancel(final DialogInterface dialog) {
-            documentModel.getDecodeService().stopSearch(pattern);
+            documentModel.decodeService.stopSearch(pattern);
             continueFlag.set(false);
         }
 
         @Override
-        public void searchStarted(int pageIndex) {
-            publishProgress("Searching on page " + (pageIndex + 1) + "...");
+        public void searchStarted(final int pageIndex) {
+            publishProgress(getManagedComponent().getResources().getString(R.string.msg_search_text_on_page, pageIndex + 1));
         }
 
         @Override
-        public void searchFinished(int pageIndex) {
+        public void searchFinished(final int pageIndex) {
         }
 
         @Override
@@ -860,7 +863,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
                 searchModel.setPattern(pattern);
 
-                RectF current = forward ? searchModel.moveToNext(this) : searchModel.moveToPrev(this);
+                final RectF current = forward ? searchModel.moveToNext(this) : searchModel.moveToPrev(this);
                 targetPage = searchModel.getCurrentPage();
                 return current;
 
@@ -884,9 +887,10 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                 final int controlsHeight = 3 + sc.getActualHeight();
                 final float pageHeight = targetPage.getBounds(getZoomModel().getZoom()).height();
                 newRect.offset(0, -(controlsHeight / pageHeight));
-                getDocumentController().goToLink(targetPage.index.docIndex, newRect, AppSettings.current().storeSearchGotoHistory);
+                getDocumentController().goToLink(targetPage.index.docIndex, newRect,
+                        AppSettings.current().storeSearchGotoHistory);
             } else {
-                Toast.makeText(getManagedComponent(), "Text not found", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getManagedComponent(), R.string.msg_no_text_found, Toast.LENGTH_LONG).show();
             }
             getDocumentController().redrawView();
         }

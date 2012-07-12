@@ -22,7 +22,7 @@
             android:id="@+id/opdsaddfeed"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Add new feed" />
+            android:text="@string/opds_add_new_feed" />
     </LinearLayout>
 
 </LinearLayout>

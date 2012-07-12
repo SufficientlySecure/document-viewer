@@ -59,7 +59,7 @@ public class FolderDlg implements AdapterView.OnItemClickListener {
         this.controller = new ActionController<FolderDlg>(controller, this);
     }
 
-    public void show(final File file, String title, final int okActionId) {
+    public void show(final File file, int titleId, final int okActionId) {
         final View view = LayoutInflater.from(context).inflate(R.layout.folder_dialog, null);
 
         adapter = new BrowserAdapter(filter);
@@ -78,7 +78,7 @@ public class FolderDlg implements AdapterView.OnItemClickListener {
 
         final ActionDialogBuilder builder = new ActionDialogBuilder(context, controller);
 
-        builder.setTitle(title);
+        builder.setTitle(titleId);
         builder.setView(view);
         builder.setPositiveButton(android.R.string.ok, okActionId, new SelectedFolder());
         builder.setNegativeButton();

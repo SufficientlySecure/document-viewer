@@ -10,6 +10,7 @@ import org.ebookdroid.opds.model.BookDownloadLink;
 import org.ebookdroid.opds.model.Feed;
 import org.ebookdroid.opds.model.Link;
 
+import android.annotation.TargetApi;
 import android.net.http.AndroidHttpClient;
 import android.webkit.URLUtil;
 
@@ -36,6 +37,7 @@ import org.emdev.utils.LengthUtils;
 import org.emdev.utils.archives.zip.ZipArchive;
 import org.emdev.utils.archives.zip.ZipArchiveEntry;
 
+@TargetApi(8)
 public class OPDSClient {
 
     private static final LogContext LCTX = LogContext.ROOT.lctx("OPDS");

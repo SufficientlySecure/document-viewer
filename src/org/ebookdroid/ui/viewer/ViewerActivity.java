@@ -198,7 +198,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
         if (pageNumberToast != null) {
             pageNumberToast.setText(pageText);
         } else {
-            pageNumberToast = Toast.makeText(this, pageText, 0);
+            pageNumberToast = Toast.makeText(this, pageText, Toast.LENGTH_SHORT);
         }
 
         pageNumberToast.setGravity(app.pageNumberToastPosition.position, 0, 0);
@@ -221,7 +221,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
         if (zoomToast != null) {
             zoomToast.setText(zoomText);
         } else {
-            zoomToast = Toast.makeText(this, zoomText, 0);
+            zoomToast = Toast.makeText(this, zoomText, Toast.LENGTH_SHORT);
         }
 
         zoomToast.setGravity(app.zoomToastPosition.position, 0, 0);

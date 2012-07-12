@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.emdev.utils.LengthUtils;
+import org.emdev.utils.collections.SparseArrayEx;
 
 public class ActionEx implements Runnable, View.OnClickListener, View.OnLongClickListener,
         AdapterView.OnItemClickListener, DialogInterface.OnClickListener, OnMultiChoiceClickListener,
@@ -28,6 +29,10 @@ public class ActionEx implements Runnable, View.OnClickListener, View.OnLongClic
     private static final LogContext LCTX = LogContext.ROOT.lctx("Actions");
 
     private static final String SHORT_DESCRIPTION = "ShortDescription";
+
+    private static SparseArrayEx<String> s_names;
+
+    private static Map<String, Integer> s_ids;
 
     public final int id;
 
@@ -252,10 +257,6 @@ public class ActionEx implements Runnable, View.OnClickListener, View.OnLongClic
         }
     }
 
-    private static Map<Integer, String> s_names;
-
-    private static Map<String, Integer> s_ids;
-
     public static String getActionName(final int id) {
         if (s_names == null) {
             fillMapping();
@@ -271,7 +272,7 @@ public class ActionEx implements Runnable, View.OnClickListener, View.OnLongClic
     }
 
     private static void fillMapping() {
-        s_names = new HashMap<Integer, String>();
+        s_names = new SparseArrayEx<String>();
         s_ids = new HashMap<String, Integer>();
 
         for (final Field f : R.id.class.getFields()) {

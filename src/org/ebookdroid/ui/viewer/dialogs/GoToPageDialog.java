@@ -244,8 +244,8 @@ public class GoToPageDialog extends Dialog {
         }
         final int pageCount = base.getDocumentModel().getPageCount();
         if (pageNumber < 1 || pageNumber > pageCount) {
-            Toast.makeText(getContext(), base.getContext().getString(R.string.bookmark_invalid_page) + pageCount, 2000)
-                    .show();
+            final String msg = base.getContext().getString(R.string.bookmark_invalid_page) + pageCount;
+            Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
             return;
         }
         base.jumpToPage(pageNumber - 1, 0, 0, AppSettings.current().storeGotoHistory);

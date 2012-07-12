@@ -886,7 +886,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                 newRect.offset(0, -(controlsHeight / pageHeight));
                 getDocumentController().goToLink(targetPage.index.docIndex, newRect, AppSettings.current().storeSearchGotoHistory);
             } else {
-                Toast.makeText(getManagedComponent(), "Text not found", 0).show();
+                Toast.makeText(getManagedComponent(), "Text not found", Toast.LENGTH_SHORT).show();
             }
             getDocumentController().redrawView();
         }

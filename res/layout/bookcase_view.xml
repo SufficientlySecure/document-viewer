@@ -10,7 +10,6 @@
         android:layout_height="wrap_content"
         android:background="@drawable/shelf_caption1"
         android:orientation="horizontal" >
-        >
 
         <ImageButton
             android:id="@+id/ShelfLeftButton"

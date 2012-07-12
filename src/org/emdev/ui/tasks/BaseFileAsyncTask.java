@@ -49,7 +49,8 @@ public abstract class BaseFileAsyncTask<Params> extends BaseAsyncTask<Params, Fi
     }
 
     protected void processTargetFile(final File target) {
-        Toast.makeText(context, context.getResources().getString(resultStringId, target.getAbsolutePath()), 0).show();
+        final String msg = context.getResources().getString(resultStringId, target.getAbsolutePath());
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
     }
 
     protected void processError(final Throwable error) {

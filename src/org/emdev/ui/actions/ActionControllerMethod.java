@@ -7,16 +7,16 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.android.AndroidVersion;
+import org.emdev.utils.collections.SparseArrayEx;
 
 public class ActionControllerMethod {
 
     private static final LogContext LCTX = LogContext.ROOT.lctx("Actions");
 
-    private static HashMap<Class<?>, Map<Integer, Method>> s_methods = new HashMap<Class<?>, Map<Integer, Method>>();
+    private static HashMap<Class<?>, SparseArrayEx<Method>> s_methods = new HashMap<Class<?>, SparseArrayEx<Method>>();
 
     private final IActionController<?> m_controller;
 
@@ -119,7 +119,7 @@ public class ActionControllerMethod {
     private static synchronized Method getMethod(final Object target, final int actionId) {
         Class<? extends Object> clazz = target.getClass();
 
-        Map<Integer, Method> methods = s_methods.get(clazz);
+        SparseArrayEx<Method> methods = s_methods.get(clazz);
         if (methods == null) {
             methods = getActionMethods(clazz);
             s_methods.put(clazz, methods);
@@ -135,8 +135,8 @@ public class ActionControllerMethod {
      * 
      * @return the map of action methods method
      */
-    private static Map<Integer, Method> getActionMethods(final Class<?> clazz) {
-        final Map<Integer, Method> result = new HashMap<Integer, Method>();
+    private static SparseArrayEx<Method> getActionMethods(final Class<?> clazz) {
+        final SparseArrayEx<Method> result = new SparseArrayEx<Method>();
 
         if (AndroidVersion.VERSION < 8) {
             getActionsMethodsFromClassAnnotation(clazz, result);
@@ -146,7 +146,7 @@ public class ActionControllerMethod {
         return result;
     }
 
-    private static void getActionsMethodsFromClassAnnotation(final Class<?> clazz, final Map<Integer, Method> result) {
+    private static void getActionsMethodsFromClassAnnotation(final Class<?> clazz, final SparseArrayEx<Method> result) {
         if (clazz.isAnnotationPresent(ActionTarget.class)) {
             ActionTarget a = clazz.getAnnotation(ActionTarget.class);
             for(ActionMethodDef def : a.actions()) {
@@ -160,7 +160,7 @@ public class ActionControllerMethod {
         }
     }
 
-    private static void getActionMethodsFromMethodAnnotations(final Class<?> clazz, final Map<Integer, Method> result) {
+    private static void getActionMethodsFromMethodAnnotations(final Class<?> clazz, final SparseArrayEx<Method> result) {
         final Method[] methods = clazz.getMethods();
         for (final Method method : methods) {
             final int modifiers = method.getModifiers();

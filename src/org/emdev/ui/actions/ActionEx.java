@@ -5,6 +5,7 @@ import org.ebookdroid.common.log.LogContext;
 
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
+import android.util.SparseBooleanArray;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -215,15 +216,15 @@ public class ActionEx implements Runnable, View.OnClickListener, View.OnLongClic
     }
 
     public boolean isDialogItemSelected(final int which) {
-        final Map<Integer, Boolean> map = this.getParameter(IActionController.DIALOG_SELECTED_ITEMS_PROPERTY);
-        return map != null ? map.get(which) == Boolean.TRUE : false;
+        final SparseBooleanArray map = this.getParameter(IActionController.DIALOG_SELECTED_ITEMS_PROPERTY);
+        return map != null ? map.get(which) : false;
     }
 
     @Override
     public void onClick(final DialogInterface dialog, final int which, final boolean isChecked) {
-        Map<Integer, Boolean> map = this.getParameter(IActionController.DIALOG_SELECTED_ITEMS_PROPERTY);
+        SparseBooleanArray map = this.getParameter(IActionController.DIALOG_SELECTED_ITEMS_PROPERTY);
         if (map == null) {
-            map = new HashMap<Integer, Boolean>();
+            map = new SparseBooleanArray();
             this.putValue(IActionController.DIALOG_SELECTED_ITEMS_PROPERTY, map);
         }
         map.put(which, isChecked);

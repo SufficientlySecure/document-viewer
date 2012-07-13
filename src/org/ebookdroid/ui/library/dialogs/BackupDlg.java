@@ -83,7 +83,9 @@ public class BackupDlg extends Dialog implements TextWatcher, ListView.OnItemLon
         adapter.setNotifyOnChange(false);
         try {
             adapter.clear();
-            adapter.addAll(BackupManager.getAvailableBackups());
+            for (final BackupInfo info : BackupManager.getAvailableBackups()) {
+                adapter.add(info);
+            }
         } finally {
             adapter.setNotifyOnChange(true);
             adapter.notifyDataSetChanged();
@@ -91,9 +93,10 @@ public class BackupDlg extends Dialog implements TextWatcher, ListView.OnItemLon
     }
 
     private void updateControls(final String newBackupName) {
+        final int checked = backupsList.getCheckedItemPositions().size();
         backupButton.setEnabled(LengthUtils.isNotEmpty(newBackupName));
-        restoreButton.setEnabled(1 == backupsList.getCheckedItemCount());
-        removeButton.setEnabled(0 < backupsList.getCheckedItemCount());
+        restoreButton.setEnabled(1 == checked);
+        removeButton.setEnabled(0 < checked);
     }
 
     @ActionMethod(ids = R.id.backupButton)
@@ -122,7 +125,7 @@ public class BackupDlg extends Dialog implements TextWatcher, ListView.OnItemLon
             for (int i = 0, n = checked.size(); i < n; i++) {
                 final int pos = checked.keyAt(i);
                 final boolean state = checked.valueAt(i);
-                if (pos >=0 && pos < adapter.getCount() && state) {
+                if (pos >= 0 && pos < adapter.getCount() && state) {
                     final BackupInfo backup = adapter.getItem(pos);
                     BackupManager.remove(backup);
                 }
@@ -157,7 +160,7 @@ public class BackupDlg extends Dialog implements TextWatcher, ListView.OnItemLon
 
     private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    private BackupInfoAdapter adapter;
+    private final BackupInfoAdapter adapter;
 
     private static class BackupInfoAdapter extends ArrayAdapter<BackupInfo> {
 

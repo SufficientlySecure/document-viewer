@@ -39,25 +39,25 @@ public enum RotationType implements ResourceConstant {
     */
     NOSENSOR(R.string.pref_rotation_nosensor, ActivityInfo.SCREEN_ORIENTATION_NOSENSOR, 3),
     /**
-    *
+    * Not compatible with of versions
     */
-    SENSOR_LANDSCAPE(R.string.pref_rotation_sensor_landscape, ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE, 10),
+    SENSOR_LANDSCAPE(R.string.pref_rotation_sensor_landscape, 6 /* ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE */, 10),
     /**
     *
     */
-    SENSOR_PORTRAIT(R.string.pref_rotation_sensor_portrait, ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT, 10),
+    SENSOR_PORTRAIT(R.string.pref_rotation_sensor_portrait, 7 /* ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT */, 10),
     /**
     *
     */
-    REVERSE_LANDSCAPE(R.string.pref_rotation_reverse_landscape, ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE, 10),
+    REVERSE_LANDSCAPE(R.string.pref_rotation_reverse_landscape, 8 /* ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE */, 10),
     /**
     *
     */
-    REVERSE_PORTRAIT(R.string.pref_rotation_reverse_portrait, ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT, 10),
+    REVERSE_PORTRAIT(R.string.pref_rotation_reverse_portrait, 9 /* ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT */, 10),
     /**
     *
     */
-    FULL_SENSOR(R.string.pref_rotation_full_sensor, ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR, 10);
+    FULL_SENSOR(R.string.pref_rotation_full_sensor, 10 /* ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR */, 10);
 
     private final String resValue;
 

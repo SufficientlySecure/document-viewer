@@ -17,6 +17,7 @@ import org.ebookdroid.ui.library.adapters.BookShelfAdapter;
 import org.ebookdroid.ui.library.adapters.BooksAdapter;
 import org.ebookdroid.ui.library.adapters.LibraryAdapter;
 import org.ebookdroid.ui.library.adapters.RecentAdapter;
+import org.ebookdroid.ui.library.dialogs.BackupDlg;
 import org.ebookdroid.ui.library.dialogs.FolderDlg;
 import org.ebookdroid.ui.library.tasks.CopyBookTask;
 import org.ebookdroid.ui.library.tasks.MoveBookTask;
@@ -87,7 +88,6 @@ actions = {
         @ActionMethodDef(id = R.id.recent_showlibrary, method = "goLibrary"),
         @ActionMethodDef(id = R.id.mainmenu_opds, method = "goOPDSBrowser"),
         @ActionMethodDef(id = R.id.recentmenu_backupsettings, method = "backupSettings"),
-        @ActionMethodDef(id = R.id.recentmenu_restoresettings, method = "restoreSettings"),
         @ActionMethodDef(id = R.id.mainmenu_close, method = "close")
 // finish
 })
@@ -195,9 +195,12 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         }
     }
 
-    protected void onDestroy() {
+    protected void onDestroy(boolean finishing) {
         if (LCTX.isDebugEnabled()) {
             LCTX.d("onDestroy()");
+        }
+        if (finishing && AppSettings.current().backupOnExit) {
+            BackupManager.backup();
         }
     }
 
@@ -505,12 +508,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
 
     @ActionMethod(ids = R.id.recentmenu_backupsettings)
     public void backupSettings(final ActionEx action) {
-        BackupManager.backup();
-    }
-
-    @ActionMethod(ids = R.id.recentmenu_restoresettings)
-    public void restoreSettings(final ActionEx action) {
-        BackupManager.restore();
+        new BackupDlg(m_managedComponent).show();
     }
 
     @ActionMethod(ids = R.id.mainmenu_close)

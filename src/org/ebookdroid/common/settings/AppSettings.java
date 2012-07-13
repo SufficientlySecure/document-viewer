@@ -148,6 +148,14 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     public final boolean fb2HyphenEnabled;
 
+    /* =============== Backup settings =============== */
+
+    public final boolean backupOnExit;
+
+    public final boolean backupOnBookClose;
+
+    /* =============================================== */
+
     private AppSettings() {
         BackupManager.addAgent(this);
         final SharedPreferences prefs = SettingsManager.prefs;
@@ -212,6 +220,9 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         yDpi = PDF_CUSTOM_YDPI.getPreferenceValue(prefs);
         fontSize = FB2_FONT_SIZE.getPreferenceValue(prefs);
         fb2HyphenEnabled = FB2_HYPHEN.getPreferenceValue(prefs);
+        /* =============== Backup settings =============== */
+        backupOnExit = BACKUP_ON_EXIT.getPreferenceValue(prefs);
+        backupOnBookClose = BACKUP_ON_BOOK_CLOSE.getPreferenceValue(prefs);
     }
 
     /* =============== UI settings =============== */

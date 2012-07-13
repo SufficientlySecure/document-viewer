@@ -167,7 +167,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
         getController().beforeDestroy();
         super.onDestroy();
-        getController().afterDestroy();
+        getController().afterDestroy(isFinishing());
     }
 
     protected IView createView() {

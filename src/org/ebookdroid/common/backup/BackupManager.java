@@ -1,19 +1,24 @@
 package org.ebookdroid.common.backup;
 
 import org.ebookdroid.EBookDroidApp;
+import org.ebookdroid.common.backup.BackupInfo.Type;
 import org.ebookdroid.common.log.LogContext;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.emdev.utils.LengthUtils;
+import org.emdev.utils.filesystem.CompositeFilter;
 import org.emdev.utils.filesystem.FileExtensionFilter;
+import org.emdev.utils.filesystem.FilePrefixFilter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,34 +29,46 @@ public class BackupManager {
 
     static File BACKUP_FOLDER = new File(EBookDroidApp.APP_STORAGE, "backups");
 
+    private static final FileExtensionFilter BACKUP_FILTER = new FileExtensionFilter("jso");
+
+    private static final CompositeFilter AUTO_BACKUP_FILTER = new CompositeFilter(true, new FilePrefixFilter(
+            Type.AUTO.name() + "."), BACKUP_FILTER);
+
     private static final Map<String, IBackupAgent> agents = new TreeMap<String, IBackupAgent>();
 
     public static void addAgent(final IBackupAgent agent) {
         agents.put(agent.key(), agent);
     }
 
-    public static Map<String, BackupInfo> getAvailableBackups() {
-        final Map<String, BackupInfo> backups = new LinkedHashMap<String, BackupInfo>();
+    public static Collection<BackupInfo> getAvailableBackups() {
+        final Set<BackupInfo> backups = new TreeSet<BackupInfo>();
 
         BACKUP_FOLDER.mkdirs();
-        final File[] list = new FileExtensionFilter("jso").listFiles(BACKUP_FOLDER);
+        final File[] list = BACKUP_FILTER.listFiles(BACKUP_FOLDER);
         for (final File f : list) {
             try {
-                final BackupInfo info = new BackupInfo(f);
-                if (info.type == BackupInfo.Type.AUTO) {
-                    backups.put(null, info);
-                } else {
-                    backups.put(info.name, info);
-                }
+                backups.add(new BackupInfo(f));
             } catch (final Exception ex) {
             }
         }
         return backups;
     }
 
-    public static boolean backup() {
+    public static BackupInfo getAutoBackup() {
+        BACKUP_FOLDER.mkdirs();
 
-        BackupInfo auto = getAvailableBackups().get(null);
+        final File[] list = BACKUP_FOLDER.listFiles(AUTO_BACKUP_FILTER);
+        if (LengthUtils.isNotEmpty(list)) {
+            try {
+                return new BackupInfo(list[0]);
+            } catch (final Exception ex) {
+            }
+        }
+        return null;
+    }
+
+    public static boolean backup() {
+        BackupInfo auto = getAutoBackup();
         if (auto == null) {
             auto = new BackupInfo();
         }
@@ -66,7 +83,7 @@ public class BackupManager {
     }
 
     public static boolean restore() {
-        final BackupInfo auto = getAvailableBackups().get(null);
+        final BackupInfo auto = getAutoBackup();
         if (auto != null) {
             return restoreImpl(auto);
         }
@@ -76,6 +93,14 @@ public class BackupManager {
     public static boolean restore(final BackupInfo backup) {
         if (backup.type == BackupInfo.Type.USER) {
             return restoreImpl(backup);
+        }
+        return false;
+    }
+
+    public static boolean remove(final BackupInfo backup) {
+        if (backup.type == BackupInfo.Type.USER) {
+            final File file = new File(BACKUP_FOLDER, backup.getFileName());
+            return file.delete();
         }
         return false;
     }

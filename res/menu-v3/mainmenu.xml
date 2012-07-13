@@ -12,7 +12,7 @@
 	<item
 		android:id="@+id/mainmenu_search"
 		android:alphabeticShortcut="r"
-		android:title="Search" />
+		android:title="@string/menu_searchtext" />
 	<item
 		android:id="@+id/mainmenu_outline"
 		android:alphabeticShortcut="o"

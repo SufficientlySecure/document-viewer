@@ -1,7 +1,6 @@
 package org.ebookdroid.ui.library;
 
 import org.ebookdroid.R;
-import org.ebookdroid.common.backup.BackupManager;
 import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.ui.library.adapters.BookNode;
 import org.ebookdroid.ui.library.adapters.BookShelfAdapter;
@@ -19,7 +18,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -140,7 +138,7 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
             LCTX.d("onDestroy(): close duplicated activity");
             return;
         }
-        getController().onDestroy();
+        getController().onDestroy(isFinishing());
 
         if (isFinishing()) {
             System.exit(0);
@@ -152,20 +150,6 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.recentmenu, menu);
         return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see android.app.Activity#onMenuOpened(int, android.view.Menu)
-     */
-    @Override
-    public boolean onMenuOpened(final int featureId, final Menu menu) {
-        final MenuItem rsmi = menu != null ? menu.findItem(R.id.recentmenu_restoresettings) : null;
-        if (rsmi != null) {
-            rsmi.setVisible(null != BackupManager.getAvailableBackups().get(null));
-        }
-        return super.onMenuOpened(featureId, menu);
     }
 
     @Override

@@ -2,6 +2,7 @@ package org.ebookdroid.ui.viewer;
 
 import org.ebookdroid.CodecType;
 import org.ebookdroid.R;
+import org.ebookdroid.common.backup.BackupManager;
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.keysbinding.KeyBindingsDialog;
@@ -323,11 +324,14 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         }
     }
 
-    public void afterDestroy() {
+    public void afterDestroy(boolean finishing) {
         if (LCTX.isDebugEnabled()) {
             LCTX.d("afterDestroy()");
         }
         getDocumentController().onDestroy();
+        if(finishing && AppSettings.current().backupOnBookClose) {
+            BackupManager.backup();
+        }
     }
 
     public void askPassword(final String fileName, final int promtId) {

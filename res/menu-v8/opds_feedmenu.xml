@@ -4,29 +4,37 @@
     <item
         android:id="@+id/opdsgoto"
         android:alphabeticShortcut="g"
-        android:title="Open"/>
+        android:title="@string/opdsgoto"/>
     <item
         android:id="@+id/opdsupfolder"
         android:alphabeticShortcut="u"
-        android:title="Up"/>
+        android:title="@string/opdsupfolder"/>
     <item
         android:id="@+id/opdsrefreshfolder"
         android:alphabeticShortcut="r"
-        android:title="Refresh"/>
+        android:title="@string/opdsrefreshfolder"/>
     <item
         android:id="@+id/opdsprevfolder"
         android:alphabeticShortcut="p"
-        android:title="Prev section"/>
+        android:title="@string/opdsprevfolder"/>
     <item
         android:id="@+id/opdsnextfolder"
         android:alphabeticShortcut="n"
-        android:title="Next section"/>
+        android:title="@string/opdsnextfolder"/>
     <item
         android:id="@+id/opds_feed_add"
         android:alphabeticShortcut="a"
-        android:title="Add"/>
+        android:title="@string/opds_feed_add"/>
+    <item
+        android:id="@+id/opds_feed_edit"
+        android:alphabeticShortcut="e"
+        android:title="@string/opds_feed_edit"/>
+    <item
+        android:id="@+id/opds_feed_delete"
+        android:alphabeticShortcut="d"
+        android:title="@string/opds_feed_delete"/>
     <item
         android:id="@+id/opdsclose"
         android:alphabeticShortcut="c"
-        android:title="Close"/>
+        android:title="@string/opdsclose"/>
 </menu>

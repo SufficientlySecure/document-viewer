@@ -3,22 +3,6 @@
 
     <string name="app_name">EBookDroid</string>
     
-    <string name="menu_close">Close</string>
-    <string name="menu_goto_page">Go to page</string>
-    <string name="menu_outline">Outline</string>
-    <string name="menu_zoom">Zoom</string>
-    <string name="menu_nightmode">Day/Night</string>
-    <string name="menu_settings">All Settings</string>
-    <string name="menu_booksettings">Book Settings</string>
-    <string name="menu_cleanrecent">Clear Data</string>
-    <string name="menu_add_bookmark">Add bookmark</string>
-    <string name="menu_thumbnail">Set as thumbnail</string>
-    <string name="menu_about">About</string>
-    <string name="menu_tap_configuration">Tap configuration</string>
-    <string name="menu_key_bindings">Key bindings</string>
-    <string name="menu_searchbook">Search</string>
-    <string name="menu_show_options_menu">Show options menu</string>
-
     <string name="confirmclose_title">Closing viewer&#8230;</string>
     <string name="confirmclose_msg">Do you really want to leave viewer?</string>
 
@@ -39,6 +23,11 @@
     <string name="button_goto_page">Go to page</string>
     <string name="text_page">Page</string>
     <string name="error_close">Close</string>
+
+    <string name="dialog_backup_name_hint">Enter new backup name&#8230;</string>
+    <string name="dialog_backup_backup">Backup&#8230;</string>
+    <string name="dialog_backup_restore">Restore&#8230;</string>
+    <string name="dialog_backup_remove">Remove&#8230;</string>
 
     <string name="add_bookmark_name">Enter bookmark description</string>
     <string name="bookmark_start">Start</string>

@@ -3,47 +3,47 @@
 
     <item
         android:id="@+id/bookmenu_open"
-        android:title="Open book"/>
+        android:title="@string/bookmenu_open"/>
     <item
         android:id="@+id/bookmenu_openbookshelf"
-        android:title="Open book shelf"/>
+        android:title="@string/bookmenu_openbookshelf"/>
     <item
         android:id="@+id/bookmenu_openbookfolder"
-        android:title="Open book folder"/>
+        android:title="@string/bookmenu_openbookfolder"/>
     <item
         android:id="@+id/bookmenu_settings"
-        android:title="Show book settings"/>
+        android:title="@string/bookmenu_settings"/>
     <item
         android:id="@+id/bookmenu_recentgroup"
-        android:title="Clear recent data...">
+        android:title="@string/bookmenu_recentgroup">
         <menu>
             <item
                 android:id="@+id/bookmenu_removefromrecent"
-                android:title="Exclude from recents"/>
+                android:title="@string/bookmenu_removefromrecent"/>
             <item
                 android:id="@+id/bookmenu_cleardata"
-                android:title="Clear cached data"/>
+                android:title="@string/bookmenu_cleardata"/>
             <item
                 android:id="@+id/bookmenu_deletesettings"
-                android:title="Delete settings"/>
+                android:title="@string/bookmenu_deletesettings"/>
         </menu>
     </item>
     <item
         android:id="@+id/bookmenu_filegroup"
-        android:title="File operations...">
+        android:title="@string/bookmenu_filegroup">
         <menu>
             <item
                 android:id="@+id/bookmenu_copy"
-                android:title="Copy book to..."/>
+                android:title="@string/bookmenu_copy"/>
             <item
                 android:id="@+id/bookmenu_rename"
-                android:title="Rename book..."/>
+                android:title="@string/bookmenu_rename"/>
             <item
                 android:id="@+id/bookmenu_move"
-                android:title="Move book to..."/>
+                android:title="@string/bookmenu_move"/>
             <item
                 android:id="@+id/bookmenu_delete"
-                android:title="Delete book"/>
+                android:title="@string/bookmenu_delete"/>
         </menu>
     </item>
 

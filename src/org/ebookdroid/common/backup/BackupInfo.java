@@ -9,12 +9,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.emdev.utils.CompareUtils;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.enums.EnumUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class BackupInfo {
+public class BackupInfo implements Comparable<BackupInfo> {
 
     private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyyMMdd.HHmmss");
 
@@ -62,6 +63,53 @@ public class BackupInfo {
         root.put("name", LengthUtils.safeString(name, "auto"));
         root.put("timestamp", SDF.format(timestamp));
         return root;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder buf = new StringBuilder(this.getClass().getSimpleName());
+        buf.append("[");
+        buf.append("timestamp").append("=").append(timestamp != null ? SDF.format(timestamp) : null);
+        buf.append(", ");
+        buf.append("name").append("=").append(name);
+        buf.append("]");
+        return buf.toString();
+    }
+
+    @Override
+    public int compareTo(final BackupInfo that) {
+        if (that == null) {
+            return 1;
+        }
+        int res = CompareUtils.compare(this.type, that.type);
+        if (res == 0) {
+            res = CompareUtils.compare(this.timestamp, that.timestamp);
+        }
+        if (res == 0) {
+            res = CompareUtils.compare(this.name, that.name);
+        }
+        return res;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof BackupInfo) {
+            return 0 == compareTo((BackupInfo) obj);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((timestamp == null) ? 0 : timestamp.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        return result;
     }
 
     public static String getFileName(final Type type, final Date timestamp) {

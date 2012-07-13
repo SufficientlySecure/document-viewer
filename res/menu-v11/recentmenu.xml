@@ -41,12 +41,7 @@
         android:id="@+id/recentmenu_backupsettings"
         android:alphabeticShortcut="b"
         android:showAsAction="ifRoom"
-        android:title="Backup settings"/>
-    <item
-        android:id="@+id/recentmenu_restoresettings"
-        android:alphabeticShortcut="r"
-        android:showAsAction="ifRoom"
-        android:title="Restore settings"/>
+        android:title="@string/menu_backupsettings"/>
     <item
         android:id="@+id/mainmenu_about"
         android:icon="@drawable/about"

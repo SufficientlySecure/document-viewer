@@ -81,6 +81,30 @@ public final class CompareUtils {
   }
 
   /**
+   * Compares two object.
+   *
+   * @param t1
+   *          first object
+   * @param t2
+   *          second object
+   * @return on of the following values:
+   *         <ul>
+   *         <li><code>-1</code> if the first value is less than the second one</li>
+   *         <li><code>0</code> if both values are equal</li>
+   *         <li><code>1</code> if the first value is greater than the second one</li>
+   *         </ul>
+   */
+  public static <T extends Comparable<T>> int compare(final T t1, final T t2) {
+    if (t1 == null) {
+      return t2 == null ? 0 : -1;
+    }
+    if (t2 == null) {
+        return 1;
+    }
+    return t1.compareTo(t2);
+  }
+
+/**
    * Compares two objects.
    *
    * @param o1

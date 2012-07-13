@@ -188,4 +188,13 @@ public interface AppPreferences {
             pref_fontsize_id, pref_fontsize_normal);
 
     BooleanPreferenceDefinition FB2_HYPHEN = new BooleanPreferenceDefinition(pref_fb2hyphen_id, pref_fb2hyphen_defvalue);
+
+    /* =============== Backup settings =============== */
+
+    BooleanPreferenceDefinition BACKUP_ON_EXIT = new BooleanPreferenceDefinition(pref_backuponexit_id,
+            pref_backuponexit_defvalue);
+
+    BooleanPreferenceDefinition BACKUP_ON_BOOK_CLOSE = new BooleanPreferenceDefinition(pref_backuponbookclose_id,
+            pref_backuponbookclose_defvalue);
+
 }

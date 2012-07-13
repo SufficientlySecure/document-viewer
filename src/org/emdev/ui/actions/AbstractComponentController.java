@@ -3,13 +3,15 @@ package org.emdev.ui.actions;
 import org.ebookdroid.R;
 import org.ebookdroid.common.log.LogContext;
 
+import android.view.View;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * This class defines base features for action controller.
- *
+ * 
  * @param <ManagedComponent>
  *            manager GUI component class
  */
@@ -171,4 +173,11 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
     @ActionMethod(ids = R.id.actions_no_action)
     public void noAction(final ActionEx action) {
     }
+
+    public final ActionEx setActionForView(final View view) {
+        final ActionEx action = getOrCreateAction(view.getId());
+        view.setOnClickListener(action);
+        return action;
+    }
+
 }

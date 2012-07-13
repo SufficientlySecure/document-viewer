@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <Button
+        android:id="@+id/backupButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="8dip"
+        android:text="@string/dialog_backup_backup" />
+
+    <Button
+        android:id="@+id/restoreBackupButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/backupButton"
+        android:layout_margin="8dip"
+        android:text="@string/dialog_backup_restore" />
+
+    <Button
+        android:id="@+id/removeBackupButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/restoreBackupButton"
+        android:layout_margin="8dip"
+        android:text="@string/dialog_backup_remove" />
+
+    <EditText
+        android:id="@+id/newBackupNameEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="8dip"
+        android:layout_toLeftOf="@id/backupButton"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:hint="@string/dialog_backup_name_hint"
+        android:lines="1" />
+
+    <ListView
+        android:id="@+id/backupsList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/newBackupNameEdit"
+        android:layout_toLeftOf="@id/restoreBackupButton"
+        android:clickable="true"
+        android:choiceMode="multipleChoice"
+        android:layout_margin="8dip"
+        android:overScrollMode="ifContentScrolls" />
+
+</RelativeLayout>

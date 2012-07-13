@@ -17,7 +17,7 @@
 	<item
 		android:id="@+id/mainmenu_search"
 		android:alphabeticShortcut="r"
-		android:title="Search"
+		android:title="@string/menu_searchtext"
 		android:icon="@drawable/zoomfit"
 		android:showAsAction="ifRoom" />
 		<item

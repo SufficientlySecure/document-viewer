@@ -650,4 +650,23 @@
 
     </PreferenceScreen>
 
+    <PreferenceScreen
+        android:key="backup_prefs"
+        android:summary="@string/pref_backup_category_summary"
+        android:title="@string/pref_backup_category" >
+
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_backuponexit_defvalue"
+            android:key="@string/pref_backuponexit_id"
+            android:summary="@string/pref_backuponexit_summary"
+            android:title="@string/pref_backuponexit_title" />
+
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_backuponbookclose_defvalue"
+            android:key="@string/pref_backuponbookclose_id"
+            android:summary="@string/pref_backuponbookclose_summary"
+            android:title="@string/pref_backuponbookclose_title" />
+
+    </PreferenceScreen>
+
 </PreferenceScreen>

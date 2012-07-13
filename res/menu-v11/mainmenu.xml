@@ -1,69 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
-	xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-	<item
-		android:id="@+id/mainmenu_goto_page"
-		android:alphabeticShortcut="g"
-		android:title="@string/menu_goto_page"
-		android:icon="@drawable/gotopage"
-		android:showAsAction="ifRoom" />
-	<item
-		android:id="@+id/mainmenu_search"
-		android:alphabeticShortcut="r"
-		android:title="Search"
-		android:icon="@drawable/zoomfit"
-		android:showAsAction="ifRoom" />
-	<item
-		android:id="@+id/mainmenu_bookmark"
-		android:alphabeticShortcut="b"
-		android:title="@string/menu_add_bookmark"
-		android:icon="@drawable/bookmark"
-		android:showAsAction="ifRoom" />
-	<item
-		android:id="@+id/mainmenu_nightmode"
-		android:alphabeticShortcut="n"
-		android:title="@string/menu_nightmode"
-		android:icon="@drawable/daynight"
-		android:showAsAction="ifRoom" />
-	<item
-		android:id="@+id/mainmenu_booksettings"
-		android:alphabeticShortcut="t"
-		android:title="@string/menu_booksettings"
-		android:icon="@drawable/settings"
-		android:showAsAction="ifRoom" />
-	<item
-		android:id="@+id/mainmenu_settings"
-		android:alphabeticShortcut="s"
-		android:title="@string/menu_settings"
-		android:icon="@drawable/settings" />
-	<item
-		android:id="@+id/mainmenu_zoom"
-		android:alphabeticShortcut="z"
-		android:title="@string/menu_zoom"
-		android:icon="@drawable/zoomfit" />
-	<item
-		android:id="@+id/mainmenu_outline"
-		android:alphabeticShortcut="o"
-		android:title="@string/menu_outline"
-		android:icon="@drawable/outline" />
-	<item
-		android:id="@+id/mainmenu_thumbnail"
-		android:title="@string/menu_thumbnail" />
-	<item
-		android:id="@+id/actions_toggleTouchManagerView"
-		android:title="Tap configuration" />
-	<item
-		android:id="@+id/actions_keyBindings"
-		android:title="Key bindings" />
-	<item
-		android:id="@+id/mainmenu_about"
-		android:title="@string/menu_about"
-		android:icon="@drawable/about"/>
-	<item
-		android:id="@+id/mainmenu_close"
-		android:alphabeticShortcut="e"
-		android:title="@string/menu_close"
-		android:icon="@drawable/close" />
+    <item
+        android:id="@+id/mainmenu_goto_page"
+        android:alphabeticShortcut="g"
+        android:icon="@drawable/gotopage"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_goto_page"/>
+    <item
+        android:id="@+id/mainmenu_search"
+        android:alphabeticShortcut="r"
+        android:icon="@drawable/zoomfit"
+        android:showAsAction="ifRoom"
+        android:title="Search"/>
+    <item
+        android:id="@+id/mainmenu_bookmark"
+        android:alphabeticShortcut="b"
+        android:icon="@drawable/bookmark"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_add_bookmark"/>
+    <item
+        android:id="@+id/mainmenu_nightmode"
+        android:alphabeticShortcut="n"
+        android:icon="@drawable/daynight"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_nightmode"/>
+    <item
+        android:id="@+id/mainmenu_booksettings"
+        android:alphabeticShortcut="t"
+        android:icon="@drawable/settings"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_booksettings"/>
+    <item
+        android:id="@+id/mainmenu_settings"
+        android:alphabeticShortcut="s"
+        android:icon="@drawable/settings"
+        android:title="@string/menu_settings"/>
+    <item
+        android:id="@+id/mainmenu_zoom"
+        android:alphabeticShortcut="z"
+        android:icon="@drawable/zoomfit"
+        android:title="@string/menu_zoom"/>
+    <item
+        android:id="@+id/mainmenu_outline"
+        android:alphabeticShortcut="o"
+        android:icon="@drawable/outline"
+        android:title="@string/menu_outline"/>
+    <item
+        android:id="@+id/mainmenu_thumbnail"
+        android:title="@string/menu_thumbnail"/>
+    <item
+        android:id="@+id/actions_toggleTouchManagerView"
+        android:title="@string/menu_tap_configuration"/>
+    <item
+        android:id="@+id/actions_keyBindings"
+        android:title="@string/menu_key_bindings"/>
+    <item
+        android:id="@+id/mainmenu_about"
+        android:icon="@drawable/about"
+        android:title="@string/menu_about"/>
+    <item
+        android:id="@+id/mainmenu_close"
+        android:alphabeticShortcut="e"
+        android:icon="@drawable/close"
+        android:title="@string/menu_close"/>
 
 </menu>

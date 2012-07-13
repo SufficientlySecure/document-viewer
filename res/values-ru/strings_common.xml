@@ -17,10 +17,10 @@
     <string name="button_goto_page">"Перейти"</string>
     <string name="text_page">"Страница"</string>
     <string name="error_close">"Закрыть"</string>
-<!--<string name="dialog_backup_name_hint">"Enter new backup name…"</string>-->
-<!--<string name="dialog_backup_backup">"Backup…"</string>-->
-<!--<string name="dialog_backup_restore">"Restore…"</string>-->
-<!--<string name="dialog_backup_remove">"Remove…"</string>-->
+    <string name="dialog_backup_name_hint">"Ведите имя записи…"</string>
+    <string name="dialog_backup_backup">"Сохранить…"</string>
+    <string name="dialog_backup_restore">"Восстановить…"</string>
+    <string name="dialog_backup_remove">"Удалить…"</string>
     <string name="add_bookmark_name">"Введите описание закладки"</string>
     <string name="bookmark_start">"Начало"</string>
     <string name="bookmark_end">"Конец"</string>

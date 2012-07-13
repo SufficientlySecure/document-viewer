@@ -17,6 +17,6 @@
     <string name="menu_searchbook">"Поиск"</string>
     <string name="menu_searchtext">"Поиск"</string>
     <string name="menu_show_options_menu">"Показать меню"</string>
-<!--<string name="menu_backupsettings">"Backup & Restore settings"</string>-->
+    <string name="menu_backupsettings">"Сохранение и восстановление"</string>
 
 </resources>

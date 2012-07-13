@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-<!--<string name="bookmenu_open">"Open book"</string>-->
-<!--<string name="bookmenu_openbookshelf">"Show book shelf"</string>-->
-<!--<string name="bookmenu_openbookfolder">"Show book folder"</string>-->
-<!--<string name="bookmenu_settings">"Show book settings"</string>-->
-<!--<string name="bookmenu_recentgroup">"Clear recent data..."</string>-->
-<!--<string name="bookmenu_removefromrecent">"Exclude from recents"</string>-->
-<!--<string name="bookmenu_cleardata">"Clear cached data"</string>-->
-<!--<string name="bookmenu_deletesettings">"Remove book settings"</string>-->
-<!--<string name="bookmenu_filegroup">"File operations..."</string>-->
-<!--<string name="bookmenu_copy">"Copy book to..."</string>-->
-<!--<string name="bookmenu_rename">"Rename book..."</string>-->
-<!--<string name="bookmenu_move">"Move book to..."</string>-->
-<!--<string name="bookmenu_delete">"Delete book"</string>-->
+    <string name="bookmenu_open">"Открыть книгу"</string>
+    <string name="bookmenu_openbookshelf">"Показать полку книги"</string>
+    <string name="bookmenu_openbookfolder">"Показать папку книги"</string>
+    <string name="bookmenu_settings">"Показать настройки книги"</string>
+    <string name="bookmenu_recentgroup">"Удалить данные…"</string>
+    <string name="bookmenu_removefromrecent">"Исключить из последних"</string>
+    <string name="bookmenu_cleardata">"Очистить кешированные данные"</string>
+    <string name="bookmenu_deletesettings">"Удалить настройки книги"</string>
+    <string name="bookmenu_filegroup">"Файловые операции…"</string>
+    <string name="bookmenu_copy">"Скопировать книгу в…"</string>
+    <string name="bookmenu_rename">"Переименовать книгу…"</string>
+    <string name="bookmenu_move">"Переместить книгу в…"</string>
+    <string name="bookmenu_delete">"Удалить книгу"</string>
 
 </resources>

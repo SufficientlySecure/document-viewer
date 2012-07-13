@@ -2,21 +2,6 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
 <!--<string name="app_name">"EBookDroid"</string>-->
-    <string name="menu_close">"Fermer"</string>
-    <string name="menu_goto_page">"Page"</string>
-    <string name="menu_outline">"Sommaire"</string>
-<!--<string name="menu_zoom">"Zoom"</string>-->
-    <string name="menu_nightmode">"Jour/Nuit"</string>
-    <string name="menu_settings">"Tous les paramètres"</string>
-    <string name="menu_booksettings">"Paramètres du livre"</string>
-    <string name="menu_cleanrecent">"Effacer  les données"</string>
-    <string name="menu_add_bookmark">"Ajouter un signet"</string>
-    <string name="menu_thumbnail">"Mettre une couverture"</string>
-<!--<string name="menu_about">"About"</string>-->
-<!--<string name="menu_tap_configuration">"Tap configuration"</string>-->
-<!--<string name="menu_key_bindings">"Key bindings"</string>-->
-<!--<string name="menu_searchbook">"Search"</string>-->
-<!--<string name="menu_show_options_menu">"Show options menu"</string>-->
 <!--<string name="confirmclose_title">"Closing viewer…"</string>-->
 <!--<string name="confirmclose_msg">"Do you really want to leave viewer?"</string>-->
 <!--<string name="error_dlg_title">"Application error"</string>-->
@@ -32,6 +17,10 @@
     <string name="button_goto_page">"Aller"</string>
 <!--<string name="text_page">"Page"</string>-->
     <string name="error_close">"Fermer"</string>
+<!--<string name="dialog_backup_name_hint">"Enter new backup name…"</string>-->
+<!--<string name="dialog_backup_backup">"Backup…"</string>-->
+<!--<string name="dialog_backup_restore">"Restore…"</string>-->
+<!--<string name="dialog_backup_remove">"Remove…"</string>-->
     <string name="add_bookmark_name">"Entrez la description du signet"</string>
     <string name="bookmark_start">"Début"</string>
     <string name="bookmark_end">"Fin"</string>

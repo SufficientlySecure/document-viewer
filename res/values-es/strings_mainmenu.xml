@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="menu_close">"Cerrar"</string>
+    <string name="menu_goto_page">"Ir a Página"</string>
+    <string name="menu_outline">"Sumario"</string>
+    <string name="menu_zoom">"Ampliar"</string>
+    <string name="menu_nightmode">"Día/Noche"</string>
+    <string name="menu_settings">"Todos los ajustes"</string>
+    <string name="menu_booksettings">"Configuración del libro"</string>
+    <string name="menu_cleanrecent">"Borrar los datos"</string>
+    <string name="menu_add_bookmark">"Añadir marcador"</string>
+    <string name="menu_thumbnail">"Colocar como miniatura"</string>
+    <string name="menu_about">"Acerca de"</string>
+    <string name="menu_tap_configuration">"Configurar toque"</string>
+    <string name="menu_key_bindings">"Atajos de teclado"</string>
+    <string name="menu_searchbook">"Buscar"</string>
+    <string name="menu_searchtext">"Buscar"</string>
+<!--<string name="menu_show_options_menu">"Show options menu"</string>-->
+<!--<string name="menu_backupsettings">"Backup & Restore settings"</string>-->
+
+</resources>

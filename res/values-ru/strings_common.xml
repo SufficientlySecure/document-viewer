@@ -2,21 +2,6 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
 <!--<string name="app_name">"EBookDroid"</string>-->
-    <string name="menu_close">"Закрыть"</string>
-    <string name="menu_goto_page">"Страница"</string>
-    <string name="menu_outline">"Оглавление"</string>
-    <string name="menu_zoom">"Увеличение"</string>
-    <string name="menu_nightmode">"День/Ночь"</string>
-    <string name="menu_settings">"Все настройки"</string>
-    <string name="menu_booksettings">"Настройки книги"</string>
-    <string name="menu_cleanrecent">"Очистить данные"</string>
-    <string name="menu_add_bookmark">"Добавить закладку"</string>
-    <string name="menu_thumbnail">"Поставить обложкой"</string>
-    <string name="menu_about">"О программе"</string>
-    <string name="menu_tap_configuration">"Настройка нажатий"</string>
-    <string name="menu_key_bindings">"Настройка клавиш"</string>
-    <string name="menu_searchbook">"Поиск"</string>
-    <string name="menu_show_options_menu">"Показать меню"</string>
     <string name="confirmclose_title">"Закрытие книги…"</string>
     <string name="confirmclose_msg">"Вы действительно хотите закрыть книгу?"</string>
 <!--<string name="error_dlg_title">"Application error"</string>-->
@@ -32,6 +17,10 @@
     <string name="button_goto_page">"Перейти"</string>
     <string name="text_page">"Страница"</string>
     <string name="error_close">"Закрыть"</string>
+<!--<string name="dialog_backup_name_hint">"Enter new backup name…"</string>-->
+<!--<string name="dialog_backup_backup">"Backup…"</string>-->
+<!--<string name="dialog_backup_restore">"Restore…"</string>-->
+<!--<string name="dialog_backup_remove">"Remove…"</string>-->
     <string name="add_bookmark_name">"Введите описание закладки"</string>
     <string name="bookmark_start">"Начало"</string>
     <string name="bookmark_end">"Конец"</string>

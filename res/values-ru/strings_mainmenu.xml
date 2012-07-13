@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="menu_close">"Закрыть"</string>
+    <string name="menu_goto_page">"Страница"</string>
+    <string name="menu_outline">"Оглавление"</string>
+    <string name="menu_zoom">"Увеличение"</string>
+    <string name="menu_nightmode">"День/Ночь"</string>
+    <string name="menu_settings">"Все настройки"</string>
+    <string name="menu_booksettings">"Настройки книги"</string>
+    <string name="menu_cleanrecent">"Очистить данные"</string>
+    <string name="menu_add_bookmark">"Добавить закладку"</string>
+    <string name="menu_thumbnail">"Поставить обложкой"</string>
+    <string name="menu_about">"О программе"</string>
+    <string name="menu_tap_configuration">"Настройка нажатий"</string>
+    <string name="menu_key_bindings">"Настройка клавиш"</string>
+    <string name="menu_searchbook">"Поиск"</string>
+    <string name="menu_searchtext">"Поиск"</string>
+    <string name="menu_show_options_menu">"Показать меню"</string>
+<!--<string name="menu_backupsettings">"Backup & Restore settings"</string>-->
+
+</resources>

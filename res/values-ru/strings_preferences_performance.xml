@@ -37,7 +37,7 @@
     <string name="pref_bitmapfilering_enabled_summary">"Включить би-линейную фильтрацию текстур"</string>
     <string name="pref_texturereuse_title">"Повторное использование текстур"</string>
     <string name="pref_texturereuse_summary">"Повторное использование уже выделенных текстур"</string>
-    <string name="pref_bitmaphack_title">"Bitmap allocation hack"</string>
+<!--<string name="pref_bitmaphack_title">"Bitmap allocation hack"</string>-->
     <string name="pref_bitmaphack_summary">"Использовать bitmap allocation tracking hack (Android 2.x)"</string>
     <string name="pref_earlyrecycling_title">"Раннее освобождение битмапов"</string>
     <string name="pref_earlyrecycling_summary">"Принудительное освобождение текстурной памяти"</string>

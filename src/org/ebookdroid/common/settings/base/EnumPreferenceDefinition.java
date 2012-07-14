@@ -43,6 +43,6 @@ public class EnumPreferenceDefinition<E extends Enum<E> & ResourceConstant> exte
     @Override
     public void restore(final JSONObject root, final Editor edit) {
         final String value = root.optString(key);
-        setPreferenceValue(edit, EnumUtils.getByResValue(enumClass, value, defValue));
+        setPreferenceValue(edit, EnumUtils.getByName(enumClass, value, defValue));
     }
 }

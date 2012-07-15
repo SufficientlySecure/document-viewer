@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-<!--<string name="bookmenu_open">"Open book"</string>-->
-<!--<string name="bookmenu_openbookshelf">"Show book shelf"</string>-->
-<!--<string name="bookmenu_openbookfolder">"Show book folder"</string>-->
-<!--<string name="bookmenu_settings">"Show book settings"</string>-->
-<!--<string name="bookmenu_recentgroup">"Clear recent data..."</string>-->
-<!--<string name="bookmenu_removefromrecent">"Exclude from recents"</string>-->
-<!--<string name="bookmenu_cleardata">"Clear cached data"</string>-->
-<!--<string name="bookmenu_deletesettings">"Remove book settings"</string>-->
-<!--<string name="bookmenu_filegroup">"File operations..."</string>-->
-<!--<string name="bookmenu_copy">"Copy book to..."</string>-->
-<!--<string name="bookmenu_rename">"Rename book..."</string>-->
-<!--<string name="bookmenu_move">"Move book to..."</string>-->
-<!--<string name="bookmenu_delete">"Delete book"</string>-->
+<string name="bookmenu_open">"Abrir libro"</string>-->
+<string name="bookmenu_openbookshelf">"Mostrar estantería"</string>
+<string name="bookmenu_openbookfolder">"Mostrar carpeta de libro"</string>
+<string name="bookmenu_settings">"Mostrar configuraciones de libro"</string>
+<string name="bookmenu_recentgroup">"Limpiar historial reciente..."</string>
+<string name="bookmenu_removefromrecent">"Excluir de recientes"</string>
+<string name="bookmenu_cleardata">"Limpiar datos de caché"</string>
+<string name="bookmenu_deletesettings">"Eliminar configuraciones de libro"</string>
+<string name="bookmenu_filegroup">"Operaciones con archivo"</string>
+<string name="bookmenu_copy">"Copiar libro a..."</string>
+<string name="bookmenu_rename">"Renombrar libro..."</string>
+<string name="bookmenu_move">"Mover libro a..."</string>
+<string name="bookmenu_delete">"Eliminar libro"</string>
 
 </resources>

@@ -556,10 +556,10 @@ pdf_flush_text(pdf_csi *csi)
 {
 	pdf_gstate *gstate = csi->gstate + csi->gtop;
 	fz_text *text;
-	int dofill = 0;
-	int dostroke = 0;
-	int doclip = 0;
-	int doinvisible = 0;
+	int dofill;
+	int dostroke;
+	int doclip;
+	int doinvisible;
 	fz_context *ctx = csi->dev->ctx;
 
 	if (!csi->text)
@@ -589,14 +589,6 @@ pdf_flush_text(pdf_csi *csi)
 
 		if (doinvisible)
 			fz_ignore_text(csi->dev, text, gstate->ctm);
-
-		if (doclip)
-		{
-			if (csi->accumulate < 2)
-				gstate->clip_depth++;
-			fz_clip_text(csi->dev, text, gstate->ctm, csi->accumulate);
-			csi->accumulate = 2;
-		}
 
 		if (dofill)
 		{
@@ -654,6 +646,14 @@ pdf_flush_text(pdf_csi *csi)
 				}
 				break;
 			}
+		}
+
+		if (doclip)
+		{
+			if (csi->accumulate < 2)
+				gstate->clip_depth++;
+			fz_clip_text(csi->dev, text, gstate->ctm, csi->accumulate);
+			csi->accumulate = 2;
 		}
 
 		pdf_end_group(csi);
@@ -1521,10 +1521,10 @@ pdf_run_extgstate(pdf_csi *csi, pdf_obj *rdb, pdf_obj *extgstate)
 		}
 
 		else if (!strcmp(s, "CA"))
-			gstate->stroke.alpha = pdf_to_real(val);
+			gstate->stroke.alpha = fz_clamp(pdf_to_real(val), 0, 1);
 
 		else if (!strcmp(s, "ca"))
-			gstate->fill.alpha = pdf_to_real(val);
+			gstate->fill.alpha = fz_clamp(pdf_to_real(val), 0, 1);
 
 		else if (!strcmp(s, "BM"))
 		{
@@ -2697,7 +2697,7 @@ static void
 pdf_run_contents_stream(pdf_csi *csi, pdf_obj *rdb, fz_stream *file)
 {
 	fz_context *ctx = csi->dev->ctx;
-	pdf_lexbuf_large *buf;
+	pdf_lexbuf *buf;
 	int save_in_text;
 
 	fz_var(buf);
@@ -2706,18 +2706,19 @@ pdf_run_contents_stream(pdf_csi *csi, pdf_obj *rdb, fz_stream *file)
 		return;
 
 	buf = fz_malloc(ctx, sizeof(*buf)); /* we must be re-entrant for type3 fonts */
-	buf->base.size = PDF_LEXBUF_LARGE;
+	pdf_lexbuf_init(ctx, buf, PDF_LEXBUF_SMALL);
 	save_in_text = csi->in_text;
 	csi->in_text = 0;
 	fz_try(ctx)
 	{
-		pdf_run_stream(csi, rdb, file, &buf->base);
+		pdf_run_stream(csi, rdb, file, buf);
 	}
 	fz_catch(ctx)
 	{
 		fz_warn(ctx, "Content stream parsing error - rendering truncated");
 	}
 	csi->in_text = save_in_text;
+	pdf_lexbuf_fin(buf);
 	fz_free(ctx, buf);
 }
 

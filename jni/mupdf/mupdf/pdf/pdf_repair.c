@@ -151,7 +151,7 @@ pdf_repair_obj_stm(pdf_document *xref, int num, int gen)
 
 	fz_var(stm);
 
-	buf.size = PDF_LEXBUF_SMALL;
+	pdf_lexbuf_init(ctx, &buf, PDF_LEXBUF_SMALL);
 
 	fz_try(ctx)
 	{
@@ -188,6 +188,7 @@ pdf_repair_obj_stm(pdf_document *xref, int num, int gen)
 	fz_always(ctx)
 	{
 		fz_close(stm);
+		pdf_lexbuf_fin(&buf);
 	}
 	fz_catch(ctx)
 	{
@@ -236,7 +237,7 @@ pdf_repair_xref(pdf_document *xref, pdf_lexbuf *buf)
 		list = fz_malloc_array(ctx, listcap, sizeof(struct entry));
 
 		/* look for '%PDF' version marker within first kilobyte of file */
-		n = fz_read(xref->file, (unsigned char *)buf->scratch, MIN(buf->size, 1024));
+		n = fz_read(xref->file, (unsigned char *)buf->scratch, fz_mini(buf->size, 1024));
 		if (n < 0)
 			fz_throw(ctx, "cannot read from file");
 

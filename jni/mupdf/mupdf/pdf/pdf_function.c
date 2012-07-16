@@ -117,6 +117,7 @@ struct ps_stack_s
 	int sp;
 };
 
+#ifndef NDEBUG
 void
 pdf_debug_ps_stack(ps_stack *st)
 {
@@ -147,6 +148,7 @@ pdf_debug_ps_stack(ps_stack *st)
 	printf("\n");
 
 }
+#endif
 
 static void
 ps_init_stack(ps_stack *st)
@@ -209,7 +211,7 @@ ps_push_real(ps_stack *st, float n)
 			 * cause a divide by 0. Same reason as in fz_atof. */
 			n = 1.0;
 		}
-		st->stack[st->sp].u.f = CLAMP(n, -FLT_MAX, FLT_MAX);
+		st->stack[st->sp].u.f = fz_clamp(n, -FLT_MAX, FLT_MAX);
 		st->sp++;
 	}
 }
@@ -699,20 +701,16 @@ resize_code(fz_context *ctx, pdf_function *func, int newsize)
 }
 
 static void
-parse_code(pdf_function *func, fz_stream *stream, int *codeptr)
+parse_code(pdf_function *func, fz_stream *stream, int *codeptr, pdf_lexbuf *buf)
 {
-	pdf_lexbuf buf;
 	int tok;
 	int opptr, elseptr, ifptr;
 	int a, b, mid, cmp;
 	fz_context *ctx = stream->ctx;
 
-	buf.size = PDF_LEXBUF_SMALL;
-	memset(buf.scratch, 0, sizeof(buf.scratch));
-
 	while (1)
 	{
-		tok = pdf_lex(stream, &buf);
+		tok = pdf_lex(stream, buf);
 		/* RJW: "calculator function lexical error" */
 
 		switch(tok)
@@ -723,7 +721,7 @@ parse_code(pdf_function *func, fz_stream *stream, int *codeptr)
 		case PDF_TOK_INT:
 			resize_code(ctx, func, *codeptr);
 			func->u.p.code[*codeptr].type = PS_INT;
-			func->u.p.code[*codeptr].u.i = buf.i;
+			func->u.p.code[*codeptr].u.i = buf->i;
 			++*codeptr;
 			break;
 
@@ -744,7 +742,7 @@ parse_code(pdf_function *func, fz_stream *stream, int *codeptr)
 		case PDF_TOK_REAL:
 			resize_code(ctx, func, *codeptr);
 			func->u.p.code[*codeptr].type = PS_REAL;
-			func->u.p.code[*codeptr].u.f = buf.f;
+			func->u.p.code[*codeptr].u.f = buf->f;
 			++*codeptr;
 			break;
 
@@ -755,19 +753,19 @@ parse_code(pdf_function *func, fz_stream *stream, int *codeptr)
 			resize_code(ctx, func, *codeptr);
 
 			ifptr = *codeptr;
-			parse_code(func, stream, codeptr);
+			parse_code(func, stream, codeptr, buf);
 			/* RJW: "error in 'if' branch" */
 
-			tok = pdf_lex(stream, &buf);
+			tok = pdf_lex(stream, buf);
 			/* RJW: "calculator function syntax error" */
 
 			if (tok == PDF_TOK_OPEN_BRACE)
 			{
 				elseptr = *codeptr;
-				parse_code(func, stream, codeptr);
+				parse_code(func, stream, codeptr, buf);
 				/* RJW: "error in 'else' branch" */
 
-				tok = pdf_lex(stream, &buf);
+				tok = pdf_lex(stream, buf);
 				/* RJW: "calculator function syntax error" */
 			}
 			else
@@ -778,7 +776,7 @@ parse_code(pdf_function *func, fz_stream *stream, int *codeptr)
 			if (tok != PDF_TOK_KEYWORD)
 				fz_throw(ctx, "missing keyword in 'if-else' context");
 
-			if (!strcmp(buf.scratch, "if"))
+			if (!strcmp(buf->scratch, "if"))
 			{
 				if (elseptr >= 0)
 					fz_throw(ctx, "too many branches for 'if'");
@@ -789,7 +787,7 @@ parse_code(pdf_function *func, fz_stream *stream, int *codeptr)
 				func->u.p.code[opptr+3].type = PS_BLOCK;
 				func->u.p.code[opptr+3].u.block = *codeptr;
 			}
-			else if (!strcmp(buf.scratch, "ifelse"))
+			else if (!strcmp(buf->scratch, "ifelse"))
 			{
 				if (elseptr < 0)
 					fz_throw(ctx, "not enough branches for 'ifelse'");
@@ -804,7 +802,7 @@ parse_code(pdf_function *func, fz_stream *stream, int *codeptr)
 			}
 			else
 			{
-				fz_throw(ctx, "unknown keyword in 'if-else' context: '%s'", buf.scratch);
+				fz_throw(ctx, "unknown keyword in 'if-else' context: '%s'", buf->scratch);
 			}
 			break;
 
@@ -822,7 +820,7 @@ parse_code(pdf_function *func, fz_stream *stream, int *codeptr)
 			while (b - a > 1)
 			{
 				mid = (a + b) / 2;
-				cmp = strcmp(buf.scratch, ps_op_names[mid]);
+				cmp = strcmp(buf->scratch, ps_op_names[mid]);
 				if (cmp > 0)
 					a = mid;
 				else if (cmp < 0)
@@ -831,7 +829,7 @@ parse_code(pdf_function *func, fz_stream *stream, int *codeptr)
 					a = b = mid;
 			}
 			if (cmp != 0)
-				fz_throw(ctx, "unknown operator: '%s'", buf.scratch);
+				fz_throw(ctx, "unknown operator: '%s'", buf->scratch);
 
 			resize_code(ctx, func, *codeptr);
 			func->u.p.code[*codeptr].type = PS_OPERATOR;
@@ -855,7 +853,7 @@ load_postscript_func(pdf_function *func, pdf_document *xref, pdf_obj *dict, int 
 	fz_context *ctx = xref->ctx;
 	int locked = 0;
 
-	buf.size = PDF_LEXBUF_SMALL;
+	pdf_lexbuf_init(ctx, &buf, PDF_LEXBUF_SMALL);
 
 	fz_var(stream);
 	fz_var(locked);
@@ -875,11 +873,12 @@ load_postscript_func(pdf_function *func, pdf_document *xref, pdf_obj *dict, int 
 		func->u.p.cap = 0;
 
 		codeptr = 0;
-		parse_code(func, stream, &codeptr);
+		parse_code(func, stream, &codeptr, &buf);
 	}
 	fz_always(ctx)
 	{
 		fz_close(stream);
+		pdf_lexbuf_fin(&buf);
 	}
 	fz_catch(ctx)
 	{
@@ -900,7 +899,7 @@ eval_postscript_func(fz_context *ctx, pdf_function *func, float *in, float *out)
 
 	for (i = 0; i < func->m; i++)
 	{
-		x = CLAMP(in[i], func->domain[i][0], func->domain[i][1]);
+		x = fz_clamp(in[i], func->domain[i][0], func->domain[i][1]);
 		ps_push_real(&st, x);
 	}
 
@@ -909,7 +908,7 @@ eval_postscript_func(fz_context *ctx, pdf_function *func, float *in, float *out)
 	for (i = func->n - 1; i >= 0; i--)
 	{
 		x = ps_pop_real(&st);
-		out[i] = CLAMP(x, func->range[i][0], func->range[i][1]);
+		out[i] = fz_clamp(x, func->range[i][0], func->range[i][1]);
 	}
 }
 
@@ -1071,10 +1070,10 @@ eval_sample_func(fz_context *ctx, pdf_function *func, float *in, float *out)
 	/* encode input coordinates */
 	for (i = 0; i < func->m; i++)
 	{
-		x = CLAMP(in[i], func->domain[i][0], func->domain[i][1]);
+		x = fz_clamp(in[i], func->domain[i][0], func->domain[i][1]);
 		x = lerp(x, func->domain[i][0], func->domain[i][1],
 			func->u.sa.encode[i][0], func->u.sa.encode[i][1]);
-		x = CLAMP(x, 0, func->u.sa.size[i] - 1);
+		x = fz_clamp(x, 0, func->u.sa.size[i] - 1);
 		e0[i] = floorf(x);
 		e1[i] = ceilf(x);
 		efrac[i] = x - floorf(x);
@@ -1094,7 +1093,7 @@ eval_sample_func(fz_context *ctx, pdf_function *func, float *in, float *out)
 			float ab = a + (b - a) * efrac[0];
 
 			out[i] = lerp(ab, 0, 1, func->u.sa.decode[i][0], func->u.sa.decode[i][1]);
-			out[i] = CLAMP(out[i], func->range[i][0], func->range[i][1]);
+			out[i] = fz_clamp(out[i], func->range[i][0], func->range[i][1]);
 		}
 
 		else if (func->m == 2)
@@ -1112,14 +1111,14 @@ eval_sample_func(fz_context *ctx, pdf_function *func, float *in, float *out)
 			float abcd = ab + (cd - ab) * efrac[1];
 
 			out[i] = lerp(abcd, 0, 1, func->u.sa.decode[i][0], func->u.sa.decode[i][1]);
-			out[i] = CLAMP(out[i], func->range[i][0], func->range[i][1]);
+			out[i] = fz_clamp(out[i], func->range[i][0], func->range[i][1]);
 		}
 
 		else
 		{
 			float x = interpolate_sample(func, scale, e0, e1, efrac, func->m - 1, i);
 			out[i] = lerp(x, 0, 1, func->u.sa.decode[i][0], func->u.sa.decode[i][1]);
-			out[i] = CLAMP(out[i], func->range[i][0], func->range[i][1]);
+			out[i] = fz_clamp(out[i], func->range[i][0], func->range[i][1]);
 		}
 	}
 }
@@ -1180,7 +1179,7 @@ eval_exponential_func(fz_context *ctx, pdf_function *func, float in, float *out)
 	float tmp;
 	int i;
 
-	x = CLAMP(x, func->domain[0][0], func->domain[0][1]);
+	x = fz_clamp(x, func->domain[0][0], func->domain[0][1]);
 
 	/* constraint */
 	if ((func->u.e.n != (int)func->u.e.n && x < 0) || (func->u.e.n < 0 && x == 0))
@@ -1194,7 +1193,7 @@ eval_exponential_func(fz_context *ctx, pdf_function *func, float in, float *out)
 	{
 		out[i] = func->u.e.c0[i] + tmp * (func->u.e.c1[i] - func->u.e.c0[i]);
 		if (func->has_range)
-			out[i] = CLAMP(out[i], func->range[i][0], func->range[i][1]);
+			out[i] = fz_clamp(out[i], func->range[i][0], func->range[i][1]);
 	}
 }
 
@@ -1290,7 +1289,7 @@ eval_stitching_func(fz_context *ctx, pdf_function *func, float in, float *out)
 	float *bounds = func->u.st.bounds;
 	int i;
 
-	in = CLAMP(in, func->domain[0][0], func->domain[0][1]);
+	in = fz_clamp(in, func->domain[0][0], func->domain[0][1]);
 
 	for (i = 0; i < k - 1; i++)
 	{
@@ -1498,6 +1497,7 @@ pdf_eval_function(fz_context *ctx, pdf_function *func, float *in, int inlen, flo
  * Debugging prints
  */
 
+#ifndef NDEBUG
 static void
 pdf_debug_indent(char *prefix, int level, char *suffix)
 {
@@ -1713,3 +1713,4 @@ pdf_debug_function(pdf_function *func)
 {
 	pdf_debug_function_imp(func, 0);
 }
+#endif

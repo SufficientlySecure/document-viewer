@@ -558,9 +558,10 @@ pdf_array_insert(pdf_obj *obj, pdf_obj *item)
 int
 pdf_array_contains(pdf_obj *arr, pdf_obj *obj)
 {
-	int i;
+	int i, len;
 
-	for (i = 0; i < pdf_array_len(arr); i++)
+	len = pdf_array_len(arr);
+	for (i = 0; i < len; i++)
 		if (!pdf_objcmp(pdf_array_get(arr, i), obj))
 			return 1;
 
@@ -1451,6 +1452,7 @@ pdf_fprint_obj(FILE *fp, pdf_obj *obj, int tight)
 	return n;
 }
 
+#ifndef NDEBUG
 void
 pdf_print_obj(pdf_obj *obj)
 {
@@ -1462,3 +1464,4 @@ pdf_print_ref(pdf_obj *ref)
 {
 	pdf_print_obj(pdf_resolve_indirect(ref));
 }
+#endif

@@ -138,7 +138,7 @@ static void
 fz_resize_hash(fz_context *ctx, fz_hash_table *table, int newsize)
 {
 	fz_hash_entry *oldents = table->ents;
-	fz_hash_entry *newents = table->ents;
+	fz_hash_entry *newents;
 	int oldsize = table->size;
 	int oldload = table->load;
 	int i;
@@ -267,6 +267,7 @@ fz_hash_remove(fz_context *ctx, fz_hash_table *table, void *key)
 	}
 }
 
+#ifndef NDEBUG
 void
 fz_print_hash(fz_context *ctx, FILE *out, fz_hash_table *table)
 {
@@ -287,3 +288,4 @@ fz_print_hash(fz_context *ctx, FILE *out, fz_hash_table *table)
 		}
 	}
 }
+#endif

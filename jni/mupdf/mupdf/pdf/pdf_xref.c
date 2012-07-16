@@ -36,7 +36,7 @@ pdf_read_start_xref(pdf_document *xref)
 
 	xref->file_size = fz_tell(xref->file);
 
-	t = MAX(0, xref->file_size - (int)sizeof buf);
+	t = fz_maxi(0, xref->file_size - (int)sizeof buf);
 	fz_seek(xref->file, t, 0);
 
 	n = fz_read(xref->file, buf, sizeof buf);
@@ -835,9 +835,12 @@ pdf_close_document(pdf_document *xref)
 
 	fz_empty_store(ctx);
 
+	pdf_lexbuf_fin(&xref->lexbuf.base);
+
 	fz_free(ctx, xref);
 }
 
+#ifndef NDEBUG
 void
 pdf_print_xref(pdf_document *xref)
 {
@@ -853,6 +856,7 @@ pdf_print_xref(pdf_document *xref)
 			xref->table[i].stm_buf);
 	}
 }
+#endif
 
 /*
  * compressed object streams
@@ -1305,7 +1309,7 @@ pdf_new_document(fz_stream *file)
 	doc->super.free_page = pdf_free_page_shim;
 	doc->super.meta = pdf_meta_shim;
 
-	doc->lexbuf.base.size = PDF_LEXBUF_LARGE;
+	pdf_lexbuf_init(ctx, &doc->lexbuf.base, PDF_LEXBUF_LARGE);
 	doc->file = fz_keep_stream(file);
 	doc->ctx = ctx;
 

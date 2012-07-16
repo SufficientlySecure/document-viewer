@@ -16,7 +16,7 @@
     
     <string name="msg_unexpected_error">"Unexpected error occured:\n%s</string>
 
-    <string name="msg_search_text_on_page">"Searching on page %i&#8230;"</string>
+    <string name="msg_search_text_on_page">"Searching on page %1$d&#8230;"</string>
     <string name="msg_no_text_found">"Text not found"</string>
 
     <string name="dialog_title_goto_page">Go to page</string>
@@ -110,7 +110,7 @@
     <string name="outline_title">Outline</string>
     <string name="outline_missed">Document without Outline</string>
     
-    <string name="error_page_out_of_rande">Page number out of range. Valid range: 1-%i</string>
+    <string name="error_page_out_of_rande">Page number out of range. Valid range: 1-%1$d</string>
     
     <string name="msg_loading">Loading&#8230; Please wait</string>
     <string name="msg_getting_page_size">Getting page size %1$d/%2$d</string>
@@ -126,7 +126,7 @@
     <string name="search_results_title">Search results</string>
     <string name="search_book_dlg_title">Search&#8230;</string>
 
-    <string name="folder_books_count" >"Books: %i"</string>
+    <string name="folder_books_count" >"Books: %1$d"</string>
     <string name="copy_book_to_dlg_title" >"Copy book to&#8230;"</string>
     <string name="move_book_to_dlg_title" >"Move book to&#8230;"</string>
 

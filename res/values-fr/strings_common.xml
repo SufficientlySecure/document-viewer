@@ -11,7 +11,7 @@
 <!--<string name="msg_wrong_password">"Wrong password given…"</string>-->
     <string name="msg_password_required">""Entrer le mot de passe"…"</string>
 <!--<string name="msg_unexpected_error">""Unexpected error occured:\n%s"</string>-->
-<!--<string name="msg_search_text_on_page">"Searching on page %i…"</string>-->
+<!--<string name="msg_search_text_on_page">"Searching on page %1$d…"</string>-->
 <!--<string name="msg_no_text_found">"Text not found"</string>-->
     <string name="dialog_title_goto_page">"Page"</string>
     <string name="button_goto_page">"Aller"</string>
@@ -84,7 +84,7 @@
 <!--<string name="content_description_recent">"Recent"</string>-->
     <string name="outline_title">"Titre"</string>
     <string name="outline_missed">"Pas de titre"</string>
-    <string name="error_page_out_of_rande">"Numéro de pagе incorrect. Gamme autorisée : 1-%i"</string>
+    <string name="error_page_out_of_rande">"Numéro de pagе incorrect. Gamme autorisée : 1-%1$d"</string>
     <string name="msg_loading">"Chargement en cours… veuillez attendre"</string>
 <!--<string name="msg_getting_page_size">"Getting page size %1$d/%2$d"</string>-->
 <!--<string name="tap_zones_single_tap">"Single Tap"</string>-->
@@ -96,7 +96,7 @@
 <!--<string name="tap_zones_clear">"Clear"</string>-->
 <!--<string name="search_results_title">"Search results"</string>-->
 <!--<string name="search_book_dlg_title">"Search…"</string>-->
-<!--<string name="folder_books_count">"Books: %i"</string>-->
+<!--<string name="folder_books_count">"Books: %1$d"</string>-->
 <!--<string name="copy_book_to_dlg_title">"Copy book to…"</string>-->
 <!--<string name="move_book_to_dlg_title">"Move book to…"</string>-->
 <!--<string name="opds_downloading_type_dlg_title">"Select type of book to download"</string>-->

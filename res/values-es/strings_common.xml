@@ -11,7 +11,7 @@
     <string name="msg_wrong_password">"Contraseña incorrecta…"</string>
     <string name="msg_password_required">"Introduzca la contraseña…"</string>
     <string name="msg_unexpected_error">"Sucedió un error inesperado:\n%s"</string>
-    <string name="msg_search_text_on_page">"Buscando en la página %i…"</string>
+    <string name="msg_search_text_on_page">"Buscando en la página %1$d…"</string>
     <string name="msg_no_text_found">"Texto no encontrado"</string>
     <string name="dialog_title_goto_page">"Ir a Página"</string>
     <string name="button_goto_page">"Ir a Página"</string>
@@ -84,7 +84,7 @@
     <string name="content_description_recent">"Reciente"</string>
     <string name="outline_title">"Índice"</string>
     <string name="outline_missed">"No existe índice"</string>
-    <string name="error_page_out_of_rande">"Número de página inválido. Rango: 1-%i"</string>
+    <string name="error_page_out_of_rande">"Número de página inválido. Rango: 1-%1$d"</string>
     <string name="msg_loading">"Cargando… Espere por favor"</string>
     <string name="msg_getting_page_size">"Obteniendo tamaño de página %1$d/%2$d"</string>
     <string name="tap_zones_single_tap">"Toque simple"</string>
@@ -96,7 +96,7 @@
     <string name="tap_zones_clear">"Limpiar"</string>
     <string name="search_results_title">"Resultado de la búsqueda"</string>
     <string name="search_book_dlg_title">"Buscar…"</string>
-    <string name="folder_books_count">"Libros: %i"</string>
+    <string name="folder_books_count">"Libros: %1$d"</string>
     <string name="copy_book_to_dlg_title">"Copiar libro a…"</string>
     <string name="move_book_to_dlg_title">"Mover libro a…"</string>
     <string name="opds_downloading_type_dlg_title">"Selecciona el tipo de libro para descargar"</string>

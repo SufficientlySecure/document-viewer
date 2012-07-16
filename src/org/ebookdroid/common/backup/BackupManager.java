@@ -91,18 +91,12 @@ public class BackupManager {
     }
 
     public static boolean restore(final BackupInfo backup) {
-        if (backup.type == BackupInfo.Type.USER) {
-            return restoreImpl(backup);
-        }
-        return false;
+        return restoreImpl(backup);
     }
 
     public static boolean remove(final BackupInfo backup) {
-        if (backup.type == BackupInfo.Type.USER) {
-            final File file = new File(BACKUP_FOLDER, backup.getFileName());
-            return file.delete();
-        }
-        return false;
+        final File file = new File(BACKUP_FOLDER, backup.getFileName());
+        return file.delete();
     }
 
     static boolean backupImpl(final BackupInfo backup) {

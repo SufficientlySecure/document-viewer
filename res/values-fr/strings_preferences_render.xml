@@ -71,5 +71,7 @@
 <!--<string name="list_fontsize_huge">"Huge"</string>-->
 <!--<string name="pref_fb2hyphen_title">"Enable Hyphenation"</string>-->
 <!--<string name="pref_fb2hyphen_summary">"Experimental Hyphenation implementation"</string>-->
+<!--<string name="pref_fb2cacheimages_title">"Cache images on disk"</string>-->
+<!--<string name="pref_fb2cacheimages_summary">"Temporary store document images on disk to reduce memory usage"</string>-->
 
 </resources>

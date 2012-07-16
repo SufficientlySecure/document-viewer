@@ -5,6 +5,7 @@ import org.ebookdroid.common.log.LogContext;
 import android.content.Context;
 import android.net.Uri;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -60,6 +61,16 @@ public class CacheManager {
         return tempfile;
     }
 
+    public static File createTempFile(final byte[] source, final String suffix) throws IOException {
+        final File cacheDir = s_context.getFilesDir();
+        final File tempfile = File.createTempFile("ebookdroid", suffix, cacheDir);
+        tempfile.deleteOnExit();
+
+        FileUtils.copy(new ByteArrayInputStream(source), new FileOutputStream(tempfile), source.length, null);
+
+        return tempfile;
+    }
+    
     public static File createTempFile(final Uri uri) throws IOException {
         final File cacheDir = s_context.getFilesDir();
         final File tempfile = File.createTempFile("ebookdroid", "content", cacheDir);

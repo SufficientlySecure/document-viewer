@@ -435,7 +435,13 @@
                         android:summary="@string/pref_fb2hyphen_summary"
                         android:title="@string/pref_fb2hyphen_title" />
 
-                </PreferenceCategory>
+                    <CheckBoxPreference
+                        android:defaultValue="@string/pref_fb2cacheimages_defvalue"
+                        android:key="@string/pref_fb2cacheimages_id"
+                        android:summary="@string/pref_fb2cacheimages_summary"
+                        android:title="@string/pref_fb2cacheimages_title" />
+
+                    </PreferenceCategory>
 
             </PreferenceScreen>
 

@@ -147,7 +147,9 @@ public final class FileUtils {
             while (in.read(buf) > 0) {
                 buf.flip();
                 read += buf.remaining();
-                progress.progress(read);
+                if (progress != null) {
+                    progress.progress(read);
+                }
                 out.write(buf);
                 buf.flip();
             }

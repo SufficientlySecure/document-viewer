@@ -3,8 +3,9 @@ package org.ebookdroid.droids.fb2.codec;
 import static org.ebookdroid.droids.fb2.codec.FB2Page.MARGIN_X;
 import static org.ebookdroid.droids.fb2.codec.FB2Page.PAGE_WIDTH;
 
+import org.ebookdroid.common.settings.AppSettings;
+
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,9 +14,12 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.emdev.utils.LengthUtils;
-import org.emdev.utils.textmarkup.MarkupEndDocument;
 import org.emdev.utils.textmarkup.JustificationMode;
 import org.emdev.utils.textmarkup.MarkupElement;
+import org.emdev.utils.textmarkup.MarkupEndDocument;
+import org.emdev.utils.textmarkup.image.DiskImageData;
+import org.emdev.utils.textmarkup.image.IImageData;
+import org.emdev.utils.textmarkup.image.MemoryImageData;
 import org.emdev.utils.textmarkup.line.Image;
 import org.emdev.utils.textmarkup.line.Line;
 
@@ -32,7 +36,7 @@ public class ParsedContent {
 
     public void clear() {
         docMarkup.clear();
-        for (Entry<String, ArrayList<MarkupElement>> entry : streams.entrySet()) {
+        for (final Entry<String, ArrayList<MarkupElement>> entry : streams.entrySet()) {
             final ArrayList<MarkupElement> value = entry.getValue();
             if (value != null) {
                 value.clear();
@@ -40,7 +44,7 @@ public class ParsedContent {
         }
     }
 
-    public ArrayList<MarkupElement> getMarkupStream(String streamName) {
+    public ArrayList<MarkupElement> getMarkupStream(final String streamName) {
         if (streamName == null) {
             return docMarkup;
         }
@@ -54,8 +58,12 @@ public class ParsedContent {
 
     public void addImage(final String tmpBinaryName, final String encoded) {
         if (tmpBinaryName != null && encoded != null) {
-            images.put("I" + tmpBinaryName, new Image(encoded, true));
-            images.put("O" + tmpBinaryName, new Image(encoded, false));
+            IImageData data = new MemoryImageData(encoded);
+            if (AppSettings.current().fb2CacheImagesOnDisk) {
+                data = new DiskImageData((MemoryImageData) data);
+            }
+            images.put("I" + tmpBinaryName, new Image(data, true));
+            images.put("O" + tmpBinaryName, new Image(data, false));
         }
     }
 
@@ -88,10 +96,10 @@ public class ParsedContent {
         return note;
     }
 
-    ArrayList<Line> createLines(List<MarkupElement> markup, int maxLineWidth, JustificationMode jm) {
-        ArrayList<Line> lines = new ArrayList<Line>();
+    ArrayList<Line> createLines(final List<MarkupElement> markup, final int maxLineWidth, final JustificationMode jm) {
+        final ArrayList<Line> lines = new ArrayList<Line>();
         if (LengthUtils.isNotEmpty(markup)) {
-            LineCreationParams params = new LineCreationParams();
+            final LineCreationParams params = new LineCreationParams();
             params.jm = jm;
             params.maxLineWidth = maxLineWidth;
             params.content = this;
@@ -105,8 +113,8 @@ public class ParsedContent {
         return lines;
     }
 
-    public List<Line> getStreamLines(String streamName, int maxWidth, JustificationMode jm) {
-        ArrayList<MarkupElement> stream = getMarkupStream(streamName);
+    public List<Line> getStreamLines(final String streamName, final int maxWidth, final JustificationMode jm) {
+        final ArrayList<MarkupElement> stream = getMarkupStream(streamName);
         if (stream != null) {
             return createLines(stream, maxWidth, jm);
         }
@@ -120,11 +128,9 @@ public class ParsedContent {
     public Bitmap getCoverImage() {
         final Image image = getImage(cover, false);
         if (image != null) {
-            final byte[] data = image.getData();
-            return BitmapFactory.decodeByteArray(data, 0, data.length);
+            return image.data.getBitmap();
         }
         return null;
     }
-
 
 }

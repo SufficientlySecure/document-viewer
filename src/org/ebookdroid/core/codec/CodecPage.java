@@ -23,10 +23,4 @@ public interface CodecPage {
     void recycle();
 
     boolean isRecycled();
-
-    void lock();
-
-    boolean locked();
-
-    void unlock();
 }

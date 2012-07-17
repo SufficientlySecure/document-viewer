@@ -4,25 +4,25 @@ import android.graphics.RectF;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class AbstractCodecPage implements CodecPage {
 
-    private final AtomicBoolean lock = new AtomicBoolean();
+    private final AtomicLong lock = new AtomicLong();
 
     @Override
     public final void lock() {
-        lock.set(true);
+        lock.incrementAndGet();
     }
 
     @Override
     public final boolean locked() {
-        return lock.get();
+        return lock.get() > 0;
     }
 
     @Override
     public final void unlock() {
-        lock.set(false);
+        lock.decrementAndGet();
     }
 
     @Override

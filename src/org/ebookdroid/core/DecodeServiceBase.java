@@ -181,7 +181,6 @@ public class DecodeServiceBase implements DecodeService {
 
         try {
             vuPage = getPage(task.pageNumber);
-            vuPage.lock();
             if (executor.isTaskDead(task)) {
                 if (LCTX.isDebugEnabled()) {
                     LCTX.d(Thread.currentThread().getName() + ": Task " + task.id + ": Abort dead decode task for " + task.node);
@@ -365,6 +364,7 @@ public class DecodeServiceBase implements DecodeService {
             pages.put(pageIndex, null);
             page = document.getPage(pageIndex);
         }
+        page.lock();
         pages.put(pageIndex, new SoftReference<CodecPage>(page));
         return page;
     }

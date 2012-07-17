@@ -197,7 +197,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
 
     protected void onDestroy(boolean finishing) {
         if (LCTX.isDebugEnabled()) {
-            LCTX.d("onDestroy()");
+            LCTX.d("onDestroy(): " + finishing);
         }
         if (finishing && AppSettings.current().backupOnExit) {
             BackupManager.backup();

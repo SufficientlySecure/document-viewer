@@ -84,6 +84,21 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
         this.currentFeed = null;
     }
 
+    protected void store() {
+        final JSONArray catalogs = new JSONArray();
+        for (final Feed feed : rootFeeds) {
+            try {
+                final JSONObject newCatalog = new JSONObject();
+                newCatalog.put("alias", feed.title);
+                newCatalog.put("url", feed.link.uri);
+                catalogs.put(newCatalog);
+            } catch (final JSONException ex) {
+                ex.printStackTrace();
+            }
+        }
+        OpdsSettings.changeOpdsCatalogs(catalogs);
+    }
+
     @Override
     protected void finalize() {
         close();
@@ -98,20 +113,44 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
     }
 
     public void addFeeds(final Feed... feeds) {
-        final JSONArray catalogs = OpdsSettings.current().opdsCatalogs;
         for (final Feed feed : feeds) {
             rootFeeds.add(feed);
-            try {
-                final JSONObject newCatalog = new JSONObject();
-                newCatalog.put("alias", feed.title);
-                newCatalog.put("url", feed.link.uri);
-                catalogs.put(newCatalog);
-            } catch (final JSONException ex) {
-                ex.printStackTrace();
+        }
+        store();
+        if (currentFeed == null) {
+            notifyDataSetChanged();
+        }
+    }
+
+    public void editFeed(final Feed feed, final String alias, final String url) {
+        if (feed.id.equals(url)) {
+            feed.title = alias;
+            store();
+            if (currentFeed == null) {
+                notifyDataSetInvalidated();
+            }
+            return;
+        }
+        final Feed newFeed = new Feed(alias, url);
+        final int index = rootFeeds.indexOf(feed);
+        if (index == -1) {
+            rootFeeds.add(newFeed);
+        } else {
+            rootFeeds.set(index, newFeed);
+        }
+        store();
+        if (currentFeed == null) {
+            if (index == -1) {
+                notifyDataSetChanged();
+            } else {
+                notifyDataSetInvalidated();
             }
         }
-        OpdsSettings.changeOpdsCatalogs(catalogs);
-        if (currentFeed == null) {
+    }
+
+    public void removeFeed(final Feed feed) {
+        if (rootFeeds.remove(feed)) {
+            store();
             notifyDataSetChanged();
         }
     }
@@ -404,7 +443,7 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
             if (LengthUtils.isEmpty(params)) {
                 return null;
             }
-            for (Feed feed : params) {
+            for (final Feed feed : params) {
                 if (feed == null) {
                     continue;
                 }
@@ -463,7 +502,7 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
             try {
                 final File file = client.download(link, this);
                 return new FileTaskResult(file);
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 return new FileTaskResult(ex);
             }
         }

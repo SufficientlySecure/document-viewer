@@ -13,6 +13,7 @@ import android.view.View;
 import org.emdev.ui.actions.ActionController;
 import org.emdev.ui.actions.ActionEx;
 import org.emdev.ui.actions.ActionMethod;
+import org.emdev.ui.actions.IActionParameter;
 
 public abstract class AbstractActionActivity<A extends Activity, C extends ActionController<A>> extends Activity {
 
@@ -70,6 +71,22 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Actio
             } else {
                 final int itemId = item.getItemId();
                 getController().getOrCreateAction(itemId).putValue(MENU_ITEM_SOURCE, source);
+            }
+        }
+    }
+
+    protected void setMenuParameters(final Menu menu, final IActionParameter... parameters) {
+        for (int i = 0, n = menu.size(); i < n; i++) {
+            final MenuItem item = menu.getItem(i);
+            SubMenu subMenu = item.getSubMenu();
+            if (subMenu != null) {
+                setMenuParameters(subMenu, parameters);
+            } else {
+                final int itemId = item.getItemId();
+                ActionEx action = getController().getOrCreateAction(itemId);
+                for (IActionParameter p : parameters) {
+                    action.addParameter(p);
+                }
             }
         }
     }

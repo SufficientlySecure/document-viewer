@@ -19,6 +19,8 @@
 
    <item android:id="@+id/actions_downloadBook" />
    <item android:id="@+id/actions_addFeed" />
+   <item android:id="@+id/actions_editFeed" />
+   <item android:id="@+id/actions_deleteFeed" />
 
    <item android:id="@+id/actions_doCopyBook" />
    <item android:id="@+id/actions_doMoveBook" />

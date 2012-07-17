@@ -73,10 +73,16 @@
     <string name="opds_add_new_feed">Add new feed</string>
     <string name="opds_addfeed_title">"Adding new catalog"</string>
     <string name="opds_addfeed_msg">"Enter alias and URL for the catalog"</string>
+    <string name="opds_addfeed_ok">"Add"</string>
     <string name="opds_addfeed_alias">"Alias:"</string>
     <string name="opds_addfeed_url">"URL:"</string>
-    <string name="opds_addfeed_ok">"Add"</string>
-    
+    <string name="opds_editfeed_title">"Edit catalog"</string>
+    <string name="opds_editfeed_msg">"Enter alias and URL for the catalog"</string>
+    <string name="opds_editfeed_ok">"Save"</string>
+    <string name="opds_deletefeed_title">"Delete catalog"</string>
+    <string name="opds_deletefeed_msg">"Do you really want to delete the catalog?"</string>
+    <string name="opds_deletefeed_ok">"Delete"</string>
+
     <string name="book_copy_start" formatted="false">"Copying book&#8230;"</string>
     <string name="book_copy_progress" formatted="false">"Copying book: %s/%s&#8230;"</string>
     <string name="book_copy_complete" formatted="false">"Book copying complete: %s"</string>

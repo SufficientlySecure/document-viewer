@@ -102,38 +102,44 @@ public class OPDSActivityController extends ActionController<OPDSActivity> imple
         }
     }
 
+    @Override
+    public void feedLoaded(final Feed feed) {
+        getManagedComponent().onFeedLoaded(feed);
+    }
+
+    @Override
+    public boolean onGroupClick(final ExpandableListView parent, final View v, final int groupPosition, final long id) {
+        if (adapter.getChildrenCount(groupPosition) > 0) {
+            return false;
+        }
+        final Entry group = adapter.getGroup(groupPosition);
+        if (group instanceof Feed) {
+            setCurrentFeed((Feed) group);
+            return true;
+        } else if (group instanceof Book) {
+            showDownloadDlg((Book) group, null);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onChildClick(final ExpandableListView parent, final View v, final int groupPosition,
+            final int childPosition, final long id) {
+        final Entry group = adapter.getGroup(groupPosition);
+        final Object child = adapter.getChild(groupPosition, childPosition);
+        if (child instanceof Feed) {
+            setCurrentFeed((Feed) child);
+        } else if (child instanceof Link) {
+            showDownloadDlg((Book) group, (Link) child);
+        }
+
+        return true;
+    }
+
     public void setCurrentFeed(final Feed feed) {
         adapter.setCurrentFeed(feed);
         getManagedComponent().onCurrrentFeedChanged(feed);
-    }
-
-    @ActionMethod(ids = { R.id.opdsaddfeed, R.id.opds_feed_add })
-    public void showAddFeedDlg(final ActionEx action) {
-
-        final View childView = LayoutInflater.from(getManagedComponent()).inflate(R.layout.alias_url, null);
-
-        final ActionDialogBuilder builder = new ActionDialogBuilder(getManagedComponent(), this);
-        builder.setTitle(R.string.opds_addfeed_title);
-        builder.setMessage(R.string.opds_addfeed_msg);
-        builder.setView(childView);
-
-        final EditText aliasEdit = (EditText) childView.findViewById(R.id.editAlias);
-        final EditText urlEdit = (EditText) childView.findViewById(R.id.editURL);
-
-        builder.setPositiveButton(R.string.opds_addfeed_ok, R.id.actions_addFeed,
-                new EditableValue("alias", aliasEdit), new EditableValue("url", urlEdit));
-        builder.setNegativeButton();
-        builder.show();
-    }
-
-    @ActionMethod(ids = R.id.actions_addFeed)
-    public void addFeed(final ActionEx action) {
-        final String alias = LengthUtils.toString(action.getParameter("alias"));
-        final String url = LengthUtils.toString(action.getParameter("url"));
-
-        if (LengthUtils.isAllNotEmpty(alias, url)) {
-            adapter.addFeed(alias, url);
-        }
     }
 
     @ActionMethod(ids = R.id.opdsclose)
@@ -185,39 +191,84 @@ public class OPDSActivityController extends ActionController<OPDSActivity> imple
         }
     }
 
-    @Override
-    public void feedLoaded(final Feed feed) {
-        getManagedComponent().onFeedLoaded(feed);
+    @ActionMethod(ids = { R.id.opdsaddfeed, R.id.opds_feed_add })
+    public void showAddFeedDlg(final ActionEx action) {
+
+        final View childView = LayoutInflater.from(getManagedComponent()).inflate(R.layout.alias_url, null);
+
+        final ActionDialogBuilder builder = new ActionDialogBuilder(getManagedComponent(), this);
+        builder.setTitle(R.string.opds_addfeed_title);
+        builder.setMessage(R.string.opds_addfeed_msg);
+        builder.setView(childView);
+
+        final EditText aliasEdit = (EditText) childView.findViewById(R.id.editAlias);
+        final EditText urlEdit = (EditText) childView.findViewById(R.id.editURL);
+
+        builder.setPositiveButton(R.string.opds_addfeed_ok, R.id.actions_addFeed,
+                new EditableValue("alias", aliasEdit), new EditableValue("url", urlEdit));
+        builder.setNegativeButton();
+        builder.show();
     }
 
-    @Override
-    public boolean onGroupClick(final ExpandableListView parent, final View v, final int groupPosition, final long id) {
-        if (adapter.getChildrenCount(groupPosition) > 0) {
-            return false;
+    @ActionMethod(ids = R.id.actions_addFeed)
+    public void addFeed(final ActionEx action) {
+        final String alias = LengthUtils.toString(action.getParameter("alias"));
+        final String url = LengthUtils.toString(action.getParameter("url"));
+
+        if (LengthUtils.isAllNotEmpty(alias, url)) {
+            adapter.addFeed(alias, url);
         }
-        final Entry group = adapter.getGroup(groupPosition);
-        if (group instanceof Feed) {
-            setCurrentFeed((Feed) group);
-            return true;
-        } else if (group instanceof Book) {
-            showDownloadDlg((Book) group, null);
-            return true;
-        }
-        return false;
     }
 
-    @Override
-    public boolean onChildClick(final ExpandableListView parent, final View v, final int groupPosition,
-            final int childPosition, final long id) {
-        final Entry group = adapter.getGroup(groupPosition);
-        final Object child = adapter.getChild(groupPosition, childPosition);
-        if (child instanceof Feed) {
-            setCurrentFeed((Feed) child);
-        } else if (child instanceof Link) {
-            showDownloadDlg((Book) group, (Link) child);
-        }
+    @ActionMethod(ids = { R.id.opds_feed_edit })
+    public void showEditFeedDlg(final ActionEx action) {
+        final Feed feed = action.getParameter("feed");
 
-        return true;
+        final View childView = LayoutInflater.from(getManagedComponent()).inflate(R.layout.alias_url, null);
+
+        final ActionDialogBuilder builder = new ActionDialogBuilder(getManagedComponent(), this);
+        builder.setTitle(R.string.opds_editfeed_title);
+        builder.setMessage(R.string.opds_editfeed_msg);
+        builder.setView(childView);
+
+        final EditText aliasEdit = (EditText) childView.findViewById(R.id.editAlias);
+        final EditText urlEdit = (EditText) childView.findViewById(R.id.editURL);
+
+        aliasEdit.setText(feed.title);
+        urlEdit.setText(feed.id);
+
+        builder.setPositiveButton(R.string.opds_editfeed_ok, R.id.actions_editFeed, new EditableValue("alias",
+                aliasEdit), new EditableValue("url", urlEdit), new Constant("feed", feed));
+        builder.setNegativeButton();
+        builder.show();
+    }
+
+    @ActionMethod(ids = R.id.actions_editFeed)
+    public void editFeed(final ActionEx action) {
+        final Feed feed = action.getParameter("feed");
+        final String alias = LengthUtils.toString(action.getParameter("alias"));
+        final String url = LengthUtils.toString(action.getParameter("url"));
+
+        if (LengthUtils.isAllNotEmpty(alias, url)) {
+            adapter.editFeed(feed, alias, url);
+        }
+    }
+
+    @ActionMethod(ids = { R.id.opds_feed_delete })
+    public void showDeleteFeedDlg(final ActionEx action) {
+        final Feed feed = action.getParameter("feed");
+        final ActionDialogBuilder builder = new ActionDialogBuilder(getManagedComponent(), this);
+        builder.setTitle(R.string.opds_deletefeed_title);
+        builder.setMessage(R.string.opds_deletefeed_msg);
+        builder.setPositiveButton(R.string.opds_deletefeed_ok, R.id.actions_deleteFeed, new Constant("feed", feed));
+        builder.setNegativeButton();
+        builder.show();
+    }
+
+    @ActionMethod(ids = R.id.actions_deleteFeed)
+    public void deleteFeed(final ActionEx action) {
+        final Feed feed = action.getParameter("feed");
+        adapter.removeFeed(feed);
     }
 
     @ActionMethod(ids = R.id.opds_book_download)

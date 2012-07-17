@@ -21,6 +21,7 @@ import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.emdev.ui.AbstractActionActivity;
+import org.emdev.ui.actions.params.Constant;
 
 public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActivityController> {
 
@@ -169,7 +170,7 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActiv
         menu.setHeaderTitle(getFeedTitle(feed));
         updateNavigation(menu, feed.parent);
 
-        getController().getOrCreateAction(R.id.opdsgoto).putValue("feed", feed);
+        setMenuParameters(menu, new Constant("feed", feed));
     }
 
     protected void onCreateFacetContextMenu(final ContextMenu menu, final Feed feed, final Feed facet) {
@@ -179,7 +180,7 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActiv
         menu.setHeaderTitle(getFeedTitle(facet));
         updateNavigation(menu, feed.parent);
 
-        getController().getOrCreateAction(R.id.opdsgoto).putValue("feed", facet);
+        setMenuParameters(menu, new Constant("feed", facet));
     }
 
     protected void onCreateBookContextMenu(final ContextMenu menu, final Book book) {
@@ -187,7 +188,7 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActiv
         inflater.inflate(R.menu.opds_bookmenu, menu);
 
         menu.setHeaderTitle(book.title);
-        getController().getOrCreateAction(R.id.opds_book_download).putValue("book", book).putValue("link", null);
+        setMenuParameters(menu, new Constant("book", book));
     }
 
     protected void onCreateLinkContextMenu(final ContextMenu menu, final Book book, final Link link) {
@@ -195,7 +196,7 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActiv
         inflater.inflate(R.menu.opds_bookmenu, menu);
 
         menu.setHeaderTitle(book.title);
-        getController().getOrCreateAction(R.id.opds_book_download).putValue("book", book).putValue("link", null);
+        setMenuParameters(menu, new Constant("book", book), new Constant("link", link));
     }
 
     protected void updateNavigation(final Menu menu, final Feed feed) {

@@ -55,9 +55,15 @@
     <string name="opds_add_new_feed">"Новый фид"</string>
     <string name="opds_addfeed_title">"Новый каталог"</string>
     <string name="opds_addfeed_msg">"Введите имя и URL каталога"</string>
+    <string name="opds_addfeed_ok">"Добавить"</string>
     <string name="opds_addfeed_alias">"Имя:"</string>
 <!--<string name="opds_addfeed_url">"URL:"</string>-->
-    <string name="opds_addfeed_ok">"Добавить"</string>
+    <string name="opds_editfeed_title">"Изменить каталог"</string>
+    <string name="opds_editfeed_msg">"Введите имя и URL каталога"</string>
+    <string name="opds_editfeed_ok">"Изменить"</string>
+    <string name="opds_deletefeed_title">"Удалить каталог"</string>
+    <string name="opds_deletefeed_msg">"Вы действительно хотите удалить каталог?"</string>
+    <string name="opds_deletefeed_ok">"Удалить"</string>
     <string name="book_copy_start">"Копирование книги…"</string>
     <string name="book_copy_progress">"Копирование книги: %1$s/%2$s…"</string>
     <string name="book_copy_complete">"Копирование книги завершено: %s"</string>

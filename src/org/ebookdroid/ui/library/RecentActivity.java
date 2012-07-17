@@ -184,8 +184,8 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
             menu.findItem(R.id.bookmenu_recentgroup).setVisible(node.settings != null);
 
             final BookShelfAdapter bookShelf = getController().getBookShelf(node);
-            final BookShelfAdapter current = getController().getBookShelf(bookcaseView.getCurrentList());
-            menu.findItem(R.id.bookmenu_openbookshelf).setVisible(bookShelf != null && bookShelf != current);
+            final BookShelfAdapter current = bookcaseView != null ? getController().getBookShelf(bookcaseView.getCurrentList()) : null;
+            menu.findItem(R.id.bookmenu_openbookshelf).setVisible(bookShelf != null && current != null && bookShelf != current);
         } else if (source instanceof BookShelfAdapter) {
             final BookShelfAdapter a = (BookShelfAdapter) source;
 

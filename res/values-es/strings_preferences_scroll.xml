@@ -9,7 +9,7 @@
     <string name="pref_scroll_summary">"Ajuste la longitud del desplazamiento"</string>
     <string name="pref_touchdelay_title">"Demora al procesar toque"</string>
     <string name="pref_touchdelay_summary">"Demora al procesar toque (en milisegundos)"</string>
-<!--<string name="pref_animate_scrolling_title">"Animate scrolling"</string>-->
-<!--<string name="pref_animate_scrolling_summary">"Animate scrolling in scroll modes"</string>-->
+    <string name="pref_animate_scrolling_title">"Animar desplazamiento"</string>
+    <string name="pref_animate_scrolling_summary">"Animar desplazamiento durante los modos de desplazamiento"</string>
 
 </resources>

@@ -16,7 +16,7 @@
     <string name="menu_key_bindings">"Atajos de teclado"</string>
     <string name="menu_searchbook">"Buscar"</string>
     <string name="menu_searchtext">"Buscar"</string>
-<!--<string name="menu_show_options_menu">"Show options menu"</string>-->
-<!--<string name="menu_backupsettings">"Backup & Restore settings"</string>-->
+    <string name="menu_show_options_menu">"Mostrar menú de opciones"</string>
+    <string name="menu_backupsettings">"Configuración de Copias de seguridad y Respaldo"</string>
 
 </resources>

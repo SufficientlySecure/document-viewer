@@ -80,6 +80,11 @@ public abstract class AbstractCodecContext implements CodecContext {
         return true;
     }
 
+    @Override
+    public boolean isParallelPageAccessAvailable() {
+        return true;
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -112,7 +117,7 @@ public abstract class AbstractCodecContext implements CodecContext {
     private static int getDensityDPI() {
         if (densityDPI == null) {
             try {
-                Field f = ViewerActivity.DM.getClass().getDeclaredField("densityDpi");
+                final Field f = ViewerActivity.DM.getClass().getDeclaredField("densityDpi");
                 densityDPI = ((Integer) f.get(ViewerActivity.DM));
             } catch (final Throwable ex) {
                 densityDPI = Integer.valueOf(120);

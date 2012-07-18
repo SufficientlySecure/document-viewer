@@ -32,5 +32,7 @@ public interface CodecContext {
 
     boolean isPageSizeCacheable();
 
+    boolean isParallelPageAccessAvailable();
+
     Bitmap.Config getBitmapConfig();
 }

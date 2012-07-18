@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 
 public class MuPdfContext extends AbstractCodecContext {
 
-
     public static final Bitmap.Config BITMAP_CFG = Bitmap.Config.RGB_565;
 
     public static final Bitmap.Config NATIVE_BITMAP_CFG = Bitmap.Config.ARGB_8888;
@@ -23,12 +22,16 @@ public class MuPdfContext extends AbstractCodecContext {
         return EBookDroidLibraryLoader.nativeGraphicsAvailable && AppSettings.current().useNativeGraphics ? NATIVE_BITMAP_CFG : BITMAP_CFG;
     }
 
-
     @Override
     public CodecDocument openDocument(String fileName, String password) {
         return null;
     }
-    
+
+    @Override
+    public boolean isParallelPageAccessAvailable() {
+        return false;
+    }
+
     private static native boolean isNativeGraphicsAvailable();
 
 }

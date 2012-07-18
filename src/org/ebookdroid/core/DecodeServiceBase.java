@@ -189,7 +189,7 @@ public class DecodeServiceBase implements DecodeService {
         RectF croppedPageBounds = null;
 
         try {
-            holder = getPageHolder(task.pageNumber);
+            holder = getPageHolder(task.id, task.pageNumber);
             vuPage = holder.getPage(task.id);
             if (executor.isTaskDead(task)) {
                 if (LCTX.isDebugEnabled()) {
@@ -358,12 +358,12 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     CodecPage getPage(final int pageIndex) {
-        return getPageHolder(pageIndex).getPage(-2);
+        return getPageHolder(-2, pageIndex).getPage(-2);
     }
 
-    private synchronized CodecPageHolder getPageHolder(final int pageIndex) {
+    private synchronized CodecPageHolder getPageHolder(final long taskId, final int pageIndex) {
         if (LCTX.isDebugEnabled()) {
-            LCTX.d(Thread.currentThread().getName() + ": Codec pages in cache: " + pages.size());
+            LCTX.d(Thread.currentThread().getName() + "Task " + taskId + ": Codec pages in cache: " + pages.size());
         }
         for (final Iterator<Map.Entry<Integer, CodecPageHolder>> i = pages.entrySet().iterator(); i.hasNext();) {
             final Map.Entry<Integer, CodecPageHolder> entry = i.next();
@@ -371,7 +371,7 @@ public class DecodeServiceBase implements DecodeService {
             final CodecPageHolder ref = entry.getValue();
             if (ref.isInvalid(-1)) {
                 if (LCTX.isDebugEnabled()) {
-                    LCTX.d(Thread.currentThread().getName() + ": Remove auto-recycled codec page reference: " + index);
+                    LCTX.d(Thread.currentThread().getName() + "Task " + taskId + ": Remove auto-recycled codec page reference: " + index);
                 }
                 i.remove();
             }
@@ -381,6 +381,11 @@ public class DecodeServiceBase implements DecodeService {
         if (holder == null) {
             holder = new CodecPageHolder(document, pageIndex);
             pages.put(pageIndex, holder);
+        }
+
+        // Preventing problem inside the MuPDF
+        if (!codecContext.isParallelPageAccessAvailable()) {
+            holder.getPage(taskId);
         }
         return holder;
     }

@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package afzkl.development.mColorPicker;
+package org.afzkl.colorpicker;
 
 import org.ebookdroid.R;
 
-import afzkl.development.mColorPicker.views.ColorPanelView;
-import afzkl.development.mColorPicker.views.ColorPickerView;
-import afzkl.development.mColorPicker.views.ColorPickerView.OnColorChangedListener;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+
+import org.afzkl.colorpicker.views.ColorPanelView;
+import org.afzkl.colorpicker.views.ColorPickerView;
+import org.afzkl.colorpicker.views.ColorPickerView.OnColorChangedListener;
 
 public class ColorPickerDialog extends AlertDialog implements
 		ColorPickerView.OnColorChangedListener {

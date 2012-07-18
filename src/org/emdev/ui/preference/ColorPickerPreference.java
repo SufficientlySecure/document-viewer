@@ -18,9 +18,6 @@ package org.emdev.ui.preference;
 
 import org.ebookdroid.R;
 
-import afzkl.development.mColorPicker.views.ColorPanelView;
-import afzkl.development.mColorPicker.views.ColorPickerView;
-import afzkl.development.mColorPicker.views.ColorPickerView.OnColorChangedListener;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -31,6 +28,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import org.afzkl.colorpicker.views.ColorPanelView;
+import org.afzkl.colorpicker.views.ColorPickerView;
+import org.afzkl.colorpicker.views.ColorPickerView.OnColorChangedListener;
 import org.emdev.utils.LengthUtils;
 
 public class ColorPickerPreference extends DialogPreference implements ColorPickerView.OnColorChangedListener {

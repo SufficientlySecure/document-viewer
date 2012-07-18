@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package afzkl.development.mColorPicker.drawables;
+package org.afzkl.colorpicker.drawables;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

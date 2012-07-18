@@ -15,9 +15,8 @@
  */
 
 
-package afzkl.development.mColorPicker.views;
+package org.afzkl.colorpicker.views;
 
-import afzkl.development.mColorPicker.drawables.AlphaPatternDrawable;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -34,6 +33,8 @@ import android.graphics.Shader.TileMode;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import org.afzkl.colorpicker.drawables.AlphaPatternDrawable;
 
 /**
  * Displays a color picker to the user and allow them

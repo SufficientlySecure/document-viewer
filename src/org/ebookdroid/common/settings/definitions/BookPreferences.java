@@ -24,13 +24,14 @@ import static org.ebookdroid.R.string.pref_nightmode_defvalue;
 import static org.ebookdroid.R.string.pref_splitpages_defvalue;
 import static org.ebookdroid.R.string.pref_viewmode_vertical_scroll;
 
-import org.ebookdroid.common.settings.base.BooleanPreferenceDefinition;
-import org.ebookdroid.common.settings.base.EnumPreferenceDefinition;
-import org.ebookdroid.common.settings.base.IntegerPreferenceDefinition;
-import org.ebookdroid.common.settings.base.StringPreferenceDefinition;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.core.curl.PageAnimationType;
+
+import org.emdev.common.settings.base.BooleanPreferenceDefinition;
+import org.emdev.common.settings.base.EnumPreferenceDefinition;
+import org.emdev.common.settings.base.IntegerPreferenceDefinition;
+import org.emdev.common.settings.base.StringPreferenceDefinition;
 
 public interface BookPreferences {
 

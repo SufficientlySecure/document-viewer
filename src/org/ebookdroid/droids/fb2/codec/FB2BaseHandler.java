@@ -2,9 +2,9 @@ package org.ebookdroid.droids.fb2.codec;
 
 import java.util.LinkedList;
 
-import org.emdev.utils.textmarkup.FontStyle;
-import org.emdev.utils.textmarkup.JustificationMode;
-import org.emdev.utils.textmarkup.RenderingStyle;
+import org.emdev.common.textmarkup.FontStyle;
+import org.emdev.common.textmarkup.JustificationMode;
+import org.emdev.common.textmarkup.RenderingStyle;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class FB2BaseHandler extends DefaultHandler {

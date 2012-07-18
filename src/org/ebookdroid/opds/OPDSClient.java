@@ -4,7 +4,6 @@ import org.ebookdroid.CodecType;
 import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
 import org.ebookdroid.common.cache.CacheManager;
-import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.common.settings.OpdsSettings;
 import org.ebookdroid.opds.model.BookDownloadLink;
 import org.ebookdroid.opds.model.Feed;
@@ -31,16 +30,18 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
+import org.emdev.common.archives.zip.ZipArchive;
+import org.emdev.common.archives.zip.ZipArchiveEntry;
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.ui.progress.IProgressIndicator;
 import org.emdev.ui.progress.UIFileCopying;
 import org.emdev.utils.LengthUtils;
-import org.emdev.utils.archives.zip.ZipArchive;
-import org.emdev.utils.archives.zip.ZipArchiveEntry;
 
 @TargetApi(8)
 public class OPDSClient {
 
-    private static final LogContext LCTX = LogContext.ROOT.lctx("OPDS");
+    private static final LogContext LCTX = LogManager.root().lctx("OPDS");
 
     private final AndroidHttpClient client;
     private final IEntryBuilder builder;

@@ -1,15 +1,17 @@
 package org.ebookdroid.core;
 
-import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.ui.viewer.IView;
 
 import android.graphics.PointF;
 import android.graphics.RectF;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
+
 public class EventGotoPage implements IEvent {
 
-    public static final LogContext LCTX = LogContext.ROOT.lctx("EventGotoPage");
+    public static final LogContext LCTX = LogManager.root().lctx("EventGotoPage");
 
     protected final boolean centerPage;
 

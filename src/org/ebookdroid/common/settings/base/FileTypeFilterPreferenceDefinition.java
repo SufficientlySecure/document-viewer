@@ -7,7 +7,8 @@ import android.content.SharedPreferences;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.emdev.utils.filesystem.FileExtensionFilter;
+import org.emdev.common.filesystem.FileExtensionFilter;
+import org.emdev.common.settings.base.JsonObjectPreferenceDefinition;
 import org.json.JSONObject;
 
 public class FileTypeFilterPreferenceDefinition extends JsonObjectPreferenceDefinition {

@@ -1,7 +1,6 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.common.bitmaps.Bitmaps;
-import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.PageType;
@@ -15,12 +14,14 @@ import android.util.FloatMath;
 
 import java.util.List;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.utils.MathUtils;
 import org.emdev.utils.MatrixUtils;
 
 public class Page {
 
-    static final LogContext LCTX = LogContext.ROOT.lctx("Page", false);
+    static final LogContext LCTX = LogManager.root().lctx("Page", false);
 
     public final PageIndex index;
     public final PageType type;

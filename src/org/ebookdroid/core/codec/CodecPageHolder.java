@@ -1,15 +1,17 @@
 package org.ebookdroid.core.codec;
 
-import org.ebookdroid.common.log.LogContext;
 
 import java.lang.ref.SoftReference;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
+
 public class CodecPageHolder {
 
-    public static final LogContext LCTX = LogContext.ROOT.lctx("Decoding", false);
+    public static final LogContext LCTX = LogManager.root().lctx("Decoding", false);
 
     private final GetPageOp OP_GET_PAGE_OP = new GetPageOp();
 

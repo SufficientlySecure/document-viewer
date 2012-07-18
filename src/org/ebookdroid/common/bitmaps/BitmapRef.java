@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.emdev.utils.android.VMRuntimeHack;
+import org.emdev.common.android.VMRuntimeHack;
 
 public class BitmapRef {
 

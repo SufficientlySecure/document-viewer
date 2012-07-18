@@ -17,6 +17,7 @@ import android.widget.TextView;
 import java.io.File;
 import java.io.FileFilter;
 
+import org.emdev.common.filesystem.DirectoryFilter;
 import org.emdev.ui.actions.ActionController;
 import org.emdev.ui.actions.ActionDialogBuilder;
 import org.emdev.ui.actions.ActionEx;
@@ -26,7 +27,6 @@ import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.actions.IActionController;
 import org.emdev.ui.actions.params.AbstractActionParameter;
 import org.emdev.utils.LayoutUtils;
-import org.emdev.utils.filesystem.DirectoryFilter;
 
 @ActionTarget(
 // action list

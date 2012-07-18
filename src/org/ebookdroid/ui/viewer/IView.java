@@ -1,6 +1,5 @@
 package org.ebookdroid.ui.viewer;
 
-import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.core.ViewState;
 
 import android.graphics.PointF;
@@ -9,9 +8,12 @@ import android.graphics.RectF;
 import android.view.View;
 import android.widget.Scroller;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
+
 public interface IView {
 
-    LogContext LCTX = LogContext.ROOT.lctx("View");
+    LogContext LCTX = LogManager.root().lctx("View");
 
     View getView();
 

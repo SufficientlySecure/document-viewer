@@ -1,13 +1,14 @@
 package org.ebookdroid.common.keysbinding;
 
 import org.ebookdroid.R;
-import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.common.settings.AppSettings;
 
 import android.view.KeyEvent;
 
 import java.lang.reflect.Field;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.ui.actions.ActionEx;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.collections.SparseArrayEx;
@@ -17,7 +18,7 @@ import org.json.JSONObject;
 
 public class KeyBindingsManager {
 
-    private static final LogContext LCTX = LogContext.ROOT.lctx("Actions");
+    private static final LogContext LCTX = LogManager.root().lctx("Actions");
 
     private static SparseArrayEx<ActionRef> actions = new SparseArrayEx<KeyBindingsManager.ActionRef>();
 

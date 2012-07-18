@@ -1,16 +1,18 @@
 package org.ebookdroid.common.touch;
 
-import org.ebookdroid.common.log.LogContext;
 
 import android.annotation.TargetApi;
 import android.graphics.PointF;
 import android.util.FloatMath;
 import android.view.MotionEvent;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
+
 @TargetApi(5)
 public class MultiTouchGestureDetector implements IGestureDetector {
 
-    protected static final LogContext LCTX = LogContext.ROOT.lctx("Gesture", false);
+    protected static final LogContext LCTX = LogManager.root().lctx("Gesture", false);
 
     private final IMultiTouchListener listener;
     private float twoFingerDistance;

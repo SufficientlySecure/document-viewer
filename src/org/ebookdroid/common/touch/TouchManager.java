@@ -1,7 +1,6 @@
 package org.ebookdroid.common.touch;
 
 import org.ebookdroid.R;
-import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.common.settings.AppSettings;
 
 import android.graphics.Rect;
@@ -15,6 +14,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.ui.actions.ActionEx;
 import org.emdev.utils.LengthUtils;
 import org.json.JSONArray;
@@ -23,7 +24,7 @@ import org.json.JSONObject;
 
 public class TouchManager {
 
-    private static final LogContext LCTX = LogContext.ROOT.lctx("Actions");
+    private static final LogContext LCTX = LogManager.root().lctx("Actions");
 
     public static final String DEFAULT_PROFILE = "DocumentView.Default";
 

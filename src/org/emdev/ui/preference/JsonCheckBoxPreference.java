@@ -1,12 +1,12 @@
 package org.emdev.ui.preference;
 
-import org.ebookdroid.common.settings.base.JsonObjectPreferenceDefinition;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.CheckBoxPreference;
 import android.util.AttributeSet;
 
+import org.emdev.common.settings.base.JsonObjectPreferenceDefinition;
 import org.emdev.utils.WidgetUtils;
 import org.json.JSONException;
 import org.json.JSONObject;

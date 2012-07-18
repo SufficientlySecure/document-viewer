@@ -1,6 +1,5 @@
 package org.emdev.ui.actions;
 
-import org.ebookdroid.common.log.LogContext;
 
 import android.app.Activity;
 
@@ -12,11 +11,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.utils.LengthUtils;
 
 public class EventDispatcher {
 
-    private static final LogContext LCTX = LogContext.ROOT.lctx("Events");
+    private static final LogContext LCTX = LogManager.root().lctx("Events");
 
     private final Activity m_base;
 

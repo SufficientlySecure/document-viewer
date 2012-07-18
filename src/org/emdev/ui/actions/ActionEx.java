@@ -1,7 +1,6 @@
 package org.emdev.ui.actions;
 
 import org.ebookdroid.R;
-import org.ebookdroid.common.log.LogContext;
 
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
@@ -20,6 +19,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.collections.SparseArrayEx;
 
@@ -27,7 +28,7 @@ public class ActionEx implements Runnable, View.OnClickListener, View.OnLongClic
         AdapterView.OnItemClickListener, DialogInterface.OnClickListener, OnMultiChoiceClickListener,
         TextView.OnEditorActionListener {
 
-    private static final LogContext LCTX = LogContext.ROOT.lctx("Actions");
+    private static final LogContext LCTX = LogManager.root().lctx("Actions");
 
     private static final String SHORT_DESCRIPTION = "ShortDescription";
 

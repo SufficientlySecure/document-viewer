@@ -1,11 +1,8 @@
 package org.ebookdroid.common.settings;
 
-import org.ebookdroid.common.backup.BackupManager;
-import org.ebookdroid.common.backup.IBackupAgent;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.definitions.AppPreferences;
 import org.ebookdroid.common.settings.definitions.BookPreferences;
-import org.ebookdroid.common.settings.definitions.PreferenceDefinitionHelper;
 import org.ebookdroid.common.settings.listeners.IAppSettingsChangeListener;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.DocumentViewType;
@@ -18,6 +15,9 @@ import org.ebookdroid.core.curl.PageAnimationType;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+import org.emdev.common.backup.BackupManager;
+import org.emdev.common.backup.IBackupAgent;
+import org.emdev.common.settings.backup.SettingsBackupHelper;
 import org.json.JSONObject;
 
 public class AppSettings implements AppPreferences, BookPreferences, IBackupAgent {
@@ -348,12 +348,12 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     @Override
     public JSONObject backup() {
-        return PreferenceDefinitionHelper.backup(BACKUP_KEY, SettingsManager.prefs, AppPreferences.class);
+        return SettingsBackupHelper.backup(BACKUP_KEY, SettingsManager.prefs, AppPreferences.class);
     }
 
     @Override
     public void restore(final JSONObject backup) {
-        PreferenceDefinitionHelper.restore(BACKUP_KEY, SettingsManager.prefs, AppPreferences.class, backup);
+        SettingsBackupHelper.restore(BACKUP_KEY, SettingsManager.prefs, AppPreferences.class, backup);
         onSettingsChanged();
     }
 

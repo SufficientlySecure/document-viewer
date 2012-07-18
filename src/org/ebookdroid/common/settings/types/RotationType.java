@@ -5,7 +5,7 @@ import org.ebookdroid.R;
 
 import android.content.pm.ActivityInfo;
 
-import org.emdev.utils.android.AndroidVersion;
+import org.emdev.common.android.AndroidVersion;
 import org.emdev.utils.enums.ResourceConstant;
 
 public enum RotationType implements ResourceConstant {

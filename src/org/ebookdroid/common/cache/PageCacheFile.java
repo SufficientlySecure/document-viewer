@@ -1,6 +1,5 @@
 package org.ebookdroid.common.cache;
 
-import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.core.codec.CodecPageInfo;
 
 import java.io.DataInputStream;
@@ -11,6 +10,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import org.emdev.common.log.LogContext;
 
 public class PageCacheFile extends File {
 

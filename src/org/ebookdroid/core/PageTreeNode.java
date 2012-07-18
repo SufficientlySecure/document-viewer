@@ -4,7 +4,6 @@ import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.BitmapRef;
 import org.ebookdroid.common.bitmaps.Bitmaps;
 import org.ebookdroid.common.bitmaps.RawBitmap;
-import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
@@ -25,6 +24,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.emdev.common.log.LogContext;
 import org.emdev.utils.MatrixUtils;
 
 public class PageTreeNode implements DecodeService.DecodeCallback {

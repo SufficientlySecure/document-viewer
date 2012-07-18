@@ -2,13 +2,10 @@ package org.ebookdroid.ui.viewer;
 
 import org.ebookdroid.CodecType;
 import org.ebookdroid.R;
-import org.ebookdroid.common.backup.BackupManager;
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.keysbinding.KeyBindingsDialog;
 import org.ebookdroid.common.keysbinding.KeyBindingsManager;
-import org.ebookdroid.common.log.EmergencyHandler;
-import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
@@ -62,6 +59,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.emdev.common.backup.BackupManager;
+import org.emdev.common.filesystem.PathFromUri;
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.ui.actions.ActionController;
 import org.emdev.ui.actions.ActionDialogBuilder;
 import org.emdev.ui.actions.ActionEx;
@@ -76,7 +77,6 @@ import org.emdev.ui.tasks.BaseAsyncTask;
 import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.StringUtils;
-import org.emdev.utils.filesystem.PathFromUri;
 
 @ActionTarget(
 // action list
@@ -144,7 +144,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
      */
     public ViewerActivityController(final ViewerActivity activity) {
         super(activity);
-        LCTX = LogContext.ROOT.lctx("Controller", true).lctx("" + SEQ.getAndIncrement(), true);
+        LCTX = LogManager.root().lctx("Controller", true).lctx("" + SEQ.getAndIncrement(), true);
         this.intent = activity.getIntent();
         SettingsManager.addListener(this);
 
@@ -817,12 +817,12 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
                 } else if (result != null) {
                     final String msg = result.getMessage();
-                    EmergencyHandler.onUnexpectedError(result);
+                    LogManager.onUnexpectedError(result);
                     showErrorDlg(R.string.msg_unexpected_error, msg);
                 }
             } catch (final Throwable th) {
                 LCTX.e("BookLoadTask.onPostExecute(): Unexpected error", th);
-                EmergencyHandler.onUnexpectedError(result);
+                LogManager.onUnexpectedError(result);
             } finally {
                 LCTX.d("BookLoadTask.onPostExecute(): finish");
             }

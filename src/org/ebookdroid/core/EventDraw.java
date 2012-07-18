@@ -2,7 +2,6 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
-import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.core.codec.PageLink;
 import org.ebookdroid.core.models.SearchModel;
@@ -17,11 +16,13 @@ import android.text.TextPaint;
 import java.util.List;
 import java.util.Queue;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.utils.LengthUtils;
 
 public class EventDraw implements IEvent {
 
-    public final static LogContext LCTX = LogContext.ROOT.lctx("EventDraw", false);
+    public final static LogContext LCTX = LogManager.root().lctx("EventDraw", false);
 
     private final Queue<EventDraw> eventQueue;
 

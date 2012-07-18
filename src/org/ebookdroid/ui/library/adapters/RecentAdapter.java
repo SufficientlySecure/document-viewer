@@ -17,9 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.emdev.common.filesystem.FileExtensionFilter;
 import org.emdev.ui.adapters.BaseViewHolder;
 import org.emdev.utils.FileUtils;
-import org.emdev.utils.filesystem.FileExtensionFilter;
 
 public class RecentAdapter extends BaseAdapter {
 

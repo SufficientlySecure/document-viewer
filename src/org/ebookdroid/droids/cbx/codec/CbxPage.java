@@ -19,7 +19,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.emdev.utils.archives.ArchiveEntry;
+import org.emdev.common.archives.ArchiveEntry;
 
 public class CbxPage<ArchiveEntryType extends ArchiveEntry> extends AbstractCodecPage {
 

@@ -20,11 +20,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.emdev.common.android.AndroidVersion;
 import org.emdev.ui.actions.ActionEx;
 import org.emdev.ui.adapters.ActionsAdapter;
 import org.emdev.utils.LayoutUtils;
 import org.emdev.utils.LengthUtils;
-import org.emdev.utils.android.AndroidVersion;
 
 public class KeyBindingsDialog extends Dialog {
 

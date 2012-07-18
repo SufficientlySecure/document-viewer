@@ -2,8 +2,6 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.BitmapRef;
-import org.ebookdroid.common.log.EmergencyHandler;
-import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.core.codec.CodecContext;
 import org.ebookdroid.core.codec.CodecDocument;
@@ -33,13 +31,15 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.utils.CompareUtils;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.MathUtils;
 
 public class DecodeServiceBase implements DecodeService {
 
-    public static final LogContext LCTX = LogContext.ROOT.lctx("Decoding", false);
+    public static final LogContext LCTX = LogManager.root().lctx("Decoding", false);
 
     static final AtomicLong TASK_ID_SEQ = new AtomicLong();
 
@@ -454,7 +454,7 @@ public class DecodeServiceBase implements DecodeService {
 
             } catch (final Throwable th) {
                 LCTX.e(Thread.currentThread().getName() + ": Decoding service executor failed: " + th.getMessage(), th);
-                EmergencyHandler.onUnexpectedError(th);
+                LogManager.onUnexpectedError(th);
             } finally {
                 BitmapManager.release();
             }

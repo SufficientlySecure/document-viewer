@@ -1,6 +1,5 @@
 package org.ebookdroid.core.models;
 
-import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.core.DecodeService;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.ui.viewer.IActivityController;
@@ -11,12 +10,14 @@ import android.util.SparseArray;
 
 import java.util.List;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.utils.CompareUtils;
 import org.emdev.utils.LengthUtils;
 
 public class SearchModel implements DecodeService.SearchCallback {
 
-    protected static final LogContext LCTX = LogContext.ROOT.lctx("SearchModel");
+    protected static final LogContext LCTX = LogManager.root().lctx("SearchModel");
 
     private final IActivityController base;
     private String pattern;

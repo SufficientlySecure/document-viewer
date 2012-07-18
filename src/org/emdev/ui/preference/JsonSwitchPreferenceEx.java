@@ -1,6 +1,5 @@
 package org.emdev.ui.preference;
 
-import org.ebookdroid.common.settings.base.JsonObjectPreferenceDefinition;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -12,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Checkable;
 import android.widget.CompoundButton;
 
+import org.emdev.common.settings.base.JsonObjectPreferenceDefinition;
 import org.emdev.utils.WidgetUtils;
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -7,7 +7,7 @@ import android.net.Uri;
 
 import java.io.File;
 
-import org.emdev.utils.android.AndroidVersion;
+import org.emdev.common.android.AndroidVersion;
 
 public class SettingsUI {
 

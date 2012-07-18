@@ -1,6 +1,5 @@
 package org.ebookdroid.common.bitmaps;
 
-import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.core.PagePaint;
 
 import android.graphics.Bitmap;
@@ -15,6 +14,7 @@ import android.util.FloatMath;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.emdev.common.log.LogContext;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.MathUtils;
 

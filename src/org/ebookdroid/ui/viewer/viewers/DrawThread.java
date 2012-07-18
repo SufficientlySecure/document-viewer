@@ -1,6 +1,5 @@
 package org.ebookdroid.ui.viewer.viewers;
 
-import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.core.EventPool;
 import org.ebookdroid.core.ViewState;
 
@@ -12,11 +11,13 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.utils.concurrent.Flag;
 
 public class DrawThread extends Thread {
 
-    private static final LogContext LCTX = LogContext.ROOT.lctx("Imaging");
+    private static final LogContext LCTX = LogManager.root().lctx("Imaging");
 
     private final SurfaceHolder surfaceHolder;
 

@@ -2,15 +2,17 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.Bitmaps;
-import org.ebookdroid.common.log.LogContext;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
+
 public abstract class AbstractEvent implements IEvent {
 
-    public final LogContext LCTX = LogContext.ROOT.lctx(getClass().getSimpleName());
+    public final LogContext LCTX = LogManager.root().lctx(getClass().getSimpleName());
 
     protected final List<PageTreeNode> nodesToDecode = new ArrayList<PageTreeNode>();
     protected final List<Bitmaps> bitmapsToRecycle = new ArrayList<Bitmaps>();

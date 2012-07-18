@@ -2,10 +2,6 @@ package org.ebookdroid.common.settings.definitions;
 
 import static org.ebookdroid.R.string.*;
 
-import org.ebookdroid.common.settings.base.BooleanPreferenceDefinition;
-import org.ebookdroid.common.settings.base.EnumPreferenceDefinition;
-import org.ebookdroid.common.settings.base.IntegerPreferenceDefinition;
-import org.ebookdroid.common.settings.base.StringPreferenceDefinition;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.DocumentViewType;
 import org.ebookdroid.common.settings.types.FontSize;
@@ -13,6 +9,11 @@ import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.common.settings.types.RotationType;
 import org.ebookdroid.common.settings.types.ToastPosition;
 import org.ebookdroid.core.curl.PageAnimationType;
+
+import org.emdev.common.settings.base.BooleanPreferenceDefinition;
+import org.emdev.common.settings.base.EnumPreferenceDefinition;
+import org.emdev.common.settings.base.IntegerPreferenceDefinition;
+import org.emdev.common.settings.base.StringPreferenceDefinition;
 
 public interface AppPreferences {
 

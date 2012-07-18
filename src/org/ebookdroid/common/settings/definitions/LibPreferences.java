@@ -8,10 +8,11 @@ import static org.ebookdroid.R.string.pref_usebookcase_id;
 import static org.ebookdroid.R.string.pref_brfiletypes;
 
 
-import org.ebookdroid.common.settings.base.BooleanPreferenceDefinition;
-import org.ebookdroid.common.settings.base.FileListPreferenceDefinition;
 import org.ebookdroid.common.settings.base.FileTypeFilterPreferenceDefinition;
-import org.ebookdroid.common.settings.base.StringPreferenceDefinition;
+
+import org.emdev.common.settings.base.BooleanPreferenceDefinition;
+import org.emdev.common.settings.base.FileListPreferenceDefinition;
+import org.emdev.common.settings.base.StringPreferenceDefinition;
 
 public interface LibPreferences {
 

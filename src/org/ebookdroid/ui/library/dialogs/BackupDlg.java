@@ -1,8 +1,6 @@
 package org.ebookdroid.ui.library.dialogs;
 
 import org.ebookdroid.R;
-import org.ebookdroid.common.backup.BackupInfo;
-import org.ebookdroid.common.backup.BackupManager;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -22,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.emdev.common.backup.BackupInfo;
+import org.emdev.common.backup.BackupManager;
 import org.emdev.ui.actions.ActionController;
 import org.emdev.ui.actions.ActionEx;
 import org.emdev.ui.actions.ActionMethod;

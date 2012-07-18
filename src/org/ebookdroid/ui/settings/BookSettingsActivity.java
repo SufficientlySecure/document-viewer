@@ -10,8 +10,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
-import org.emdev.utils.android.AndroidVersion;
-import org.emdev.utils.filesystem.PathFromUri;
+import org.emdev.common.android.AndroidVersion;
+import org.emdev.common.filesystem.PathFromUri;
 
 public class BookSettingsActivity extends BaseSettingsActivity {
 

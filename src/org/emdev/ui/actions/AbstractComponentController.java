@@ -1,13 +1,15 @@
 package org.emdev.ui.actions;
 
 import org.ebookdroid.R;
-import org.ebookdroid.common.log.LogContext;
 
 import android.view.View;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 
 /**
  * This class defines base features for action controller.
@@ -18,7 +20,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 @ActionTarget(actions = { @ActionMethodDef(id = R.id.actions_no_action, method = "noAction") })
 public abstract class AbstractComponentController<ManagedComponent> implements IActionController<ManagedComponent> {
 
-    protected static final LogContext LCTX = LogContext.ROOT.lctx("Actions");
+    protected static final LogContext LCTX = LogManager.root().lctx("Actions");
 
     protected final Map<Integer, ActionEx> m_actions = new LinkedHashMap<Integer, ActionEx>();
 

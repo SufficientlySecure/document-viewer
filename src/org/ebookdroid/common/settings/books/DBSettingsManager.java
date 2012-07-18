@@ -1,7 +1,5 @@
 package org.ebookdroid.common.settings.books;
 
-import org.ebookdroid.common.backup.BackupManager;
-import org.ebookdroid.common.backup.IBackupAgent;
 import org.ebookdroid.common.settings.SettingsManager;
 
 import android.content.Context;
@@ -13,6 +11,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.emdev.common.backup.BackupManager;
+import org.emdev.common.backup.IBackupAgent;
 import org.emdev.utils.LengthUtils;
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -2,7 +2,7 @@ package org.ebookdroid.common.touch;
 
 import java.lang.reflect.Constructor;
 
-import org.emdev.utils.android.AndroidVersion;
+import org.emdev.common.android.AndroidVersion;
 
 public class MultiTouchGestureDetectorFactory {
 

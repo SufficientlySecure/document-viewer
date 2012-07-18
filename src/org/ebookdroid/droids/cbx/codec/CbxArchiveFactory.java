@@ -4,8 +4,8 @@ package org.ebookdroid.droids.cbx.codec;
 import java.io.File;
 import java.io.IOException;
 
-import org.emdev.utils.archives.ArchiveEntry;
-import org.emdev.utils.archives.ArchiveFile;
+import org.emdev.common.archives.ArchiveEntry;
+import org.emdev.common.archives.ArchiveFile;
 
 public interface CbxArchiveFactory<ArchiveEntryType extends ArchiveEntry> {
 

@@ -1,7 +1,5 @@
 package org.emdev.ui.uimanager;
 
-import org.ebookdroid.EBookDroidApp;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -20,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.emdev.BaseDroidApp;
 
 @TargetApi(11)
 public class UIManager3x implements IUIManager {
@@ -155,7 +155,7 @@ public class UIManager3x implements IUIManager {
     }
 
     protected boolean isSystemUIRunning() {
-        final Context ctx = EBookDroidApp.context;
+        final Context ctx = BaseDroidApp.context;
         final ActivityManager am = (ActivityManager) ctx.getSystemService(Context.ACTIVITY_SERVICE);
         final List<RunningServiceInfo> rsiList = am.getRunningServices(1000);
 

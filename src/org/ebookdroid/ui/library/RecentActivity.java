@@ -1,7 +1,6 @@
 package org.ebookdroid.ui.library;
 
 import org.ebookdroid.R;
-import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.ui.library.adapters.BookNode;
 import org.ebookdroid.ui.library.adapters.BookShelfAdapter;
 import org.ebookdroid.ui.library.adapters.BooksAdapter;
@@ -29,11 +28,13 @@ import android.widget.ViewFlipper;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.emdev.common.android.AndroidVersion;
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.ui.AbstractActionActivity;
 import org.emdev.ui.actions.ActionMethodDef;
 import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.uimanager.IUIManager;
-import org.emdev.utils.android.AndroidVersion;
 
 @ActionTarget(
 // actions
@@ -59,7 +60,7 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
 
     public RecentActivity() {
         super();
-        LCTX = LogContext.ROOT.lctx(this.getClass().getSimpleName(), true).lctx("" + SEQ.getAndIncrement(), true);
+        LCTX = LogManager.root().lctx(this.getClass().getSimpleName(), true).lctx("" + SEQ.getAndIncrement(), true);
     }
 
     @Override

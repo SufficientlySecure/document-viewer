@@ -1,7 +1,6 @@
 package org.ebookdroid.ui.viewer;
 
 import org.ebookdroid.R;
-import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.types.ToastPosition;
 import org.ebookdroid.common.touch.TouchManagerView;
@@ -25,6 +24,8 @@ import android.widget.Toast;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.ui.AbstractActionActivity;
 import org.emdev.ui.actions.ActionMethodDef;
 import org.emdev.ui.actions.ActionTarget;
@@ -70,7 +71,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
      */
     public ViewerActivity() {
         super();
-        LCTX = LogContext.ROOT.lctx(this.getClass().getSimpleName(), true).lctx("" + SEQ.getAndIncrement(), true);
+        LCTX = LogManager.root().lctx(this.getClass().getSimpleName(), true).lctx("" + SEQ.getAndIncrement(), true);
     }
 
     /**

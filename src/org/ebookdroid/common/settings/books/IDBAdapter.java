@@ -1,6 +1,5 @@
 package org.ebookdroid.common.settings.books;
 
-import org.ebookdroid.common.log.LogContext;
 
 import android.database.sqlite.SQLiteDatabase;
 
@@ -8,9 +7,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
+
 interface IDBAdapter {
 
-    LogContext LCTX = LogContext.ROOT.lctx("DBAdapter");
+    LogContext LCTX = LogManager.root().lctx("DBAdapter");
 
     void onCreate(final SQLiteDatabase db);
 

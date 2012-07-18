@@ -1,9 +1,6 @@
 package org.ebookdroid.common.settings;
 
-import org.ebookdroid.common.backup.BackupManager;
-import org.ebookdroid.common.backup.IBackupAgent;
 import org.ebookdroid.common.settings.definitions.LibPreferences;
-import org.ebookdroid.common.settings.definitions.PreferenceDefinitionHelper;
 import org.ebookdroid.common.settings.listeners.ILibSettingsChangeListener;
 
 import android.content.SharedPreferences;
@@ -12,8 +9,11 @@ import android.content.SharedPreferences.Editor;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.emdev.utils.android.AndroidVersion;
-import org.emdev.utils.filesystem.FileExtensionFilter;
+import org.emdev.common.android.AndroidVersion;
+import org.emdev.common.backup.BackupManager;
+import org.emdev.common.backup.IBackupAgent;
+import org.emdev.common.filesystem.FileExtensionFilter;
+import org.emdev.common.settings.backup.SettingsBackupHelper;
 import org.json.JSONObject;
 
 public class LibSettings implements LibPreferences, IBackupAgent {
@@ -114,12 +114,12 @@ public class LibSettings implements LibPreferences, IBackupAgent {
 
     @Override
     public JSONObject backup() {
-        return PreferenceDefinitionHelper.backup(BACKUP_KEY, SettingsManager.prefs, LibPreferences.class);
+        return SettingsBackupHelper.backup(BACKUP_KEY, SettingsManager.prefs, LibPreferences.class);
     }
 
     @Override
     public void restore(final JSONObject backup) {
-        PreferenceDefinitionHelper.restore(BACKUP_KEY, SettingsManager.prefs, LibPreferences.class, backup);
+        SettingsBackupHelper.restore(BACKUP_KEY, SettingsManager.prefs, LibPreferences.class, backup);
         onSettingsChanged();
     }
 

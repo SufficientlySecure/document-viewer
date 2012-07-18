@@ -29,15 +29,15 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.emdev.common.archives.zip.ZipArchive;
+import org.emdev.common.archives.zip.ZipArchiveEntry;
+import org.emdev.common.textmarkup.FontStyle;
+import org.emdev.common.textmarkup.JustificationMode;
+import org.emdev.common.textmarkup.MarkupTitle;
+import org.emdev.common.textmarkup.Words;
+import org.emdev.common.textmarkup.line.HorizontalRule;
+import org.emdev.common.textmarkup.line.Line;
 import org.emdev.utils.LengthUtils;
-import org.emdev.utils.archives.zip.ZipArchive;
-import org.emdev.utils.archives.zip.ZipArchiveEntry;
-import org.emdev.utils.textmarkup.FontStyle;
-import org.emdev.utils.textmarkup.JustificationMode;
-import org.emdev.utils.textmarkup.MarkupTitle;
-import org.emdev.utils.textmarkup.Words;
-import org.emdev.utils.textmarkup.line.HorizontalRule;
-import org.emdev.utils.textmarkup.line.Line;
 import org.xml.sax.InputSource;
 
 public class FB2Document implements CodecDocument {

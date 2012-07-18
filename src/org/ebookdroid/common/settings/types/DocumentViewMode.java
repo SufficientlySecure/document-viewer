@@ -2,7 +2,6 @@ package org.ebookdroid.common.settings.types;
 
 import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
-import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.core.VScrollController;
 import org.ebookdroid.core.HScrollController;
@@ -12,6 +11,8 @@ import org.ebookdroid.ui.viewer.IViewController;
 
 import java.lang.reflect.Constructor;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.utils.enums.ResourceConstant;
 
 public enum DocumentViewMode implements ResourceConstant {
@@ -22,7 +23,7 @@ public enum DocumentViewMode implements ResourceConstant {
 
     SINGLE_PAGE(R.string.pref_viewmode_single_page, null, SinglePageController.class);
 
-    private final LogContext LCTX = LogContext.ROOT.lctx("View");
+    private final LogContext LCTX = LogManager.root().lctx("View");
 
     /** The resource value. */
     private final String resValue;

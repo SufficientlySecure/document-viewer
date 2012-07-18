@@ -13,15 +13,15 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import org.emdev.common.textmarkup.JustificationMode;
+import org.emdev.common.textmarkup.MarkupElement;
+import org.emdev.common.textmarkup.MarkupEndDocument;
+import org.emdev.common.textmarkup.image.DiskImageData;
+import org.emdev.common.textmarkup.image.IImageData;
+import org.emdev.common.textmarkup.image.MemoryImageData;
+import org.emdev.common.textmarkup.line.Image;
+import org.emdev.common.textmarkup.line.Line;
 import org.emdev.utils.LengthUtils;
-import org.emdev.utils.textmarkup.JustificationMode;
-import org.emdev.utils.textmarkup.MarkupElement;
-import org.emdev.utils.textmarkup.MarkupEndDocument;
-import org.emdev.utils.textmarkup.image.DiskImageData;
-import org.emdev.utils.textmarkup.image.IImageData;
-import org.emdev.utils.textmarkup.image.MemoryImageData;
-import org.emdev.utils.textmarkup.line.Image;
-import org.emdev.utils.textmarkup.line.Line;
 
 public class ParsedContent {
 

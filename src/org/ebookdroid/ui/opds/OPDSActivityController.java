@@ -1,7 +1,6 @@
 package org.ebookdroid.ui.opds;
 
 import org.ebookdroid.R;
-import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.opds.model.Book;
 import org.ebookdroid.opds.model.Entry;
 import org.ebookdroid.opds.model.Feed;
@@ -17,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.ui.actions.ActionController;
 import org.emdev.ui.actions.ActionDialogBuilder;
 import org.emdev.ui.actions.ActionEx;
@@ -57,7 +58,7 @@ public class OPDSActivityController extends ActionController<OPDSActivity> imple
 
     public OPDSActivityController(final OPDSActivity activity) {
         super(activity);
-        LCTX = LogContext.ROOT.lctx(this.getClass().getSimpleName(), true).lctx("" + SEQ.getAndIncrement());
+        LCTX = LogManager.root().lctx(this.getClass().getSimpleName(), true).lctx("" + SEQ.getAndIncrement());
     }
 
     public void onCreate() {

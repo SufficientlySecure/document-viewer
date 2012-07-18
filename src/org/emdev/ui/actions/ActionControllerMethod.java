@@ -1,6 +1,5 @@
 package org.emdev.ui.actions;
 
-import org.ebookdroid.common.log.LogContext;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -8,13 +7,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.emdev.common.android.AndroidVersion;
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.utils.LengthUtils;
-import org.emdev.utils.android.AndroidVersion;
 import org.emdev.utils.collections.SparseArrayEx;
 
 public class ActionControllerMethod {
 
-    private static final LogContext LCTX = LogContext.ROOT.lctx("Actions");
+    private static final LogContext LCTX = LogManager.root().lctx("Actions");
 
     private static HashMap<Class<?>, SparseArrayEx<Method>> s_methods = new HashMap<Class<?>, SparseArrayEx<Method>>();
 

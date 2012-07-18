@@ -1,7 +1,6 @@
 package org.ebookdroid.ui.opds;
 
 import org.ebookdroid.R;
-import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.opds.model.Book;
 import org.ebookdroid.opds.model.Entry;
 import org.ebookdroid.opds.model.Feed;
@@ -20,6 +19,8 @@ import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.ui.AbstractActionActivity;
 import org.emdev.ui.actions.params.Constant;
 
@@ -34,7 +35,7 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActiv
     Menu optionsMenu;
 
     public OPDSActivity() {
-        LCTX = LogContext.ROOT.lctx(this.getClass().getSimpleName(), true).lctx("" + SEQ.getAndIncrement(), true);
+        LCTX = LogManager.root().lctx(this.getClass().getSimpleName(), true).lctx("" + SEQ.getAndIncrement(), true);
     }
 
     @Override

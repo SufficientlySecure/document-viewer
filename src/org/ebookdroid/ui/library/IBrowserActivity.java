@@ -7,7 +7,9 @@ import android.widget.ImageView;
 
 import java.io.File;
 
-public interface IBrowserActivity {
+import org.emdev.common.filesystem.FileSystemScanner;
+
+public interface IBrowserActivity extends FileSystemScanner.ProgressListener {
 
     Context getContext();
 
@@ -16,8 +18,6 @@ public interface IBrowserActivity {
     void setCurrentDir(File newDir);
 
     void showDocument(Uri uri);
-
-    void showProgress(final boolean show);
 
     void loadThumbnail(String path, ImageView imageView, int defaultResID);
 }

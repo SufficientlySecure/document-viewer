@@ -1,12 +1,14 @@
 package org.ebookdroid.droids.djvu.codec;
 
 import org.ebookdroid.EBookDroidLibraryLoader;
-import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.core.codec.AbstractCodecContext;
+
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 
 public class DjvuContext extends AbstractCodecContext {
 
-    private static final LogContext LCTX = LogContext.ROOT.lctx("Djvu");
+    private static final LogContext LCTX = LogManager.root().lctx("Djvu");
 
     static {
         EBookDroidLibraryLoader.load();

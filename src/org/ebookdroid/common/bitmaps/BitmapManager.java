@@ -1,7 +1,6 @@
 package org.ebookdroid.common.bitmaps;
 
 import org.ebookdroid.EBookDroidApp;
-import org.ebookdroid.common.log.LogContext;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -20,11 +19,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.utils.LengthUtils;
 
 public class BitmapManager {
 
-    static final LogContext LCTX = LogContext.ROOT.lctx("BitmapManager", false);
+    static final LogContext LCTX = LogManager.root().lctx("BitmapManager", false);
 
     private final static long BITMAP_MEMORY_LIMIT = Runtime.getRuntime().maxMemory() / 2;
 

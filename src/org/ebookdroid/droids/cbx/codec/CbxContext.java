@@ -7,8 +7,8 @@ import org.ebookdroid.core.codec.CodecDocument;
 import java.io.File;
 import java.io.IOException;
 
-import org.emdev.utils.archives.ArchiveEntry;
-import org.emdev.utils.archives.ArchiveFile;
+import org.emdev.common.archives.ArchiveEntry;
+import org.emdev.common.archives.ArchiveFile;
 
 public abstract class CbxContext<ArchiveEntryType extends ArchiveEntry> extends AbstractCodecContext implements
         CbxArchiveFactory<ArchiveEntryType> {

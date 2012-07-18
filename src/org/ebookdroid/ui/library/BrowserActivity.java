@@ -43,6 +43,10 @@ import android.widget.ViewFlipper;
 import java.io.File;
 import java.io.FileFilter;
 
+import org.emdev.common.android.AndroidVersion;
+import org.emdev.common.filesystem.CompositeFilter;
+import org.emdev.common.filesystem.DirectoryFilter;
+import org.emdev.common.filesystem.PathFromUri;
 import org.emdev.ui.AbstractActionActivity;
 import org.emdev.ui.actions.ActionController;
 import org.emdev.ui.actions.ActionDialogBuilder;
@@ -55,10 +59,6 @@ import org.emdev.ui.actions.params.EditableValue;
 import org.emdev.utils.CompareUtils;
 import org.emdev.utils.FileUtils;
 import org.emdev.utils.LayoutUtils;
-import org.emdev.utils.android.AndroidVersion;
-import org.emdev.utils.filesystem.CompositeFilter;
-import org.emdev.utils.filesystem.DirectoryFilter;
-import org.emdev.utils.filesystem.PathFromUri;
 
 @ActionTarget(
 // action list

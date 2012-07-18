@@ -5,9 +5,9 @@ import org.ebookdroid.droids.cbx.codec.CbxContext;
 import java.io.File;
 import java.io.IOException;
 
-import org.emdev.utils.archives.ArchiveFile;
-import org.emdev.utils.archives.zip.ZipArchive;
-import org.emdev.utils.archives.zip.ZipArchiveEntry;
+import org.emdev.common.archives.ArchiveFile;
+import org.emdev.common.archives.zip.ZipArchive;
+import org.emdev.common.archives.zip.ZipArchiveEntry;
 
 public class CbzContext extends CbxContext<ZipArchiveEntry> {
 

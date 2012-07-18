@@ -1,6 +1,5 @@
 package org.ebookdroid.common.settings;
 
-import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.books.DBSettingsManager;
 import org.ebookdroid.common.settings.listeners.IAppSettingsChangeListener;
@@ -22,12 +21,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.listeners.ListenerProxy;
 
 public class SettingsManager {
 
-    public static final LogContext LCTX = LogContext.ROOT.lctx("SettingsManager");
+    public static final LogContext LCTX = LogManager.root().lctx("SettingsManager");
 
     static Context ctx;
 

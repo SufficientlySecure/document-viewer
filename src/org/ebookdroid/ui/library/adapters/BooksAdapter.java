@@ -25,11 +25,11 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.emdev.common.filesystem.FileSystemScanner;
 import org.emdev.ui.adapters.BaseViewHolder;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.StringUtils;
 import org.emdev.utils.collections.SparseArrayEx;
-import org.emdev.utils.filesystem.FileSystemScanner;
 
 public class BooksAdapter extends PagerAdapter implements FileSystemScanner.Listener, Iterable<BookShelfAdapter> {
 
@@ -63,8 +63,11 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
         this.base = base;
         this.recent = adapter;
         this.recent.registerDataSetObserver(updater);
-        this.scanner = new FileSystemScanner(base);
+
+        this.scanner = new FileSystemScanner(base.getActivity());
         this.scanner.addListener(this);
+        this.scanner.addListener(base);
+
         this.searchQuery = LibSettings.current().searchBookQuery;
     }
 

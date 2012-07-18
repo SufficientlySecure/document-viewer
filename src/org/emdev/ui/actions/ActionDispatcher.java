@@ -1,10 +1,12 @@
 package org.emdev.ui.actions;
 
-import org.ebookdroid.common.log.LogContext;
 
 import android.app.Activity;
 
 import java.util.concurrent.ThreadPoolExecutor;
+
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 
 public class ActionDispatcher {
 
@@ -13,7 +15,7 @@ public class ActionDispatcher {
      */
     public static final String PARAMETERS = "Parameters";
 
-    private static final LogContext LCTX = LogContext.ROOT.lctx("Actions");
+    private static final LogContext LCTX = LogManager.root().lctx("Actions");
 
     final Activity m_base;
 

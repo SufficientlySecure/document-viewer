@@ -1,10 +1,11 @@
 package org.ebookdroid;
 
-import org.ebookdroid.common.log.LogContext;
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 
 public class EBookDroidLibraryLoader {
 
-    private static final LogContext LCTX = LogContext.ROOT.lctx("LibraryLoader");
+    private static final LogContext LCTX = LogManager.root().lctx("LibraryLoader");
 
     private static boolean alreadyLoaded = false;
 

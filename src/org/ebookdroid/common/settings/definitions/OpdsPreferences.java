@@ -1,9 +1,10 @@
 package org.ebookdroid.common.settings.definitions;
 
 import org.ebookdroid.R;
-import org.ebookdroid.common.settings.base.BooleanPreferenceDefinition;
-import org.ebookdroid.common.settings.base.JsonArrayPreferenceDefinition;
-import org.ebookdroid.common.settings.base.StringPreferenceDefinition;
+
+import org.emdev.common.settings.base.BooleanPreferenceDefinition;
+import org.emdev.common.settings.base.JsonArrayPreferenceDefinition;
+import org.emdev.common.settings.base.StringPreferenceDefinition;
 
 public interface OpdsPreferences {
 

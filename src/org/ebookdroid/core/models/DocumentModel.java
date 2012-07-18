@@ -8,7 +8,6 @@ import org.ebookdroid.common.bitmaps.Bitmaps;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.cache.PageCacheFile;
 import org.ebookdroid.common.cache.ThumbnailFile;
-import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.PageType;
@@ -29,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.ui.progress.IProgressIndicator;
 import org.emdev.utils.CompareUtils;
 import org.emdev.utils.LengthUtils;
@@ -36,7 +37,7 @@ import org.emdev.utils.listeners.ListenerProxy;
 
 public class DocumentModel extends ListenerProxy {
 
-    protected static final LogContext LCTX = LogContext.ROOT.lctx("DocModel");
+    protected static final LogContext LCTX = LogManager.root().lctx("DocModel");
 
     public final DecodeService decodeService;
 

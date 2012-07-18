@@ -2,7 +2,6 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.R;
 import org.ebookdroid.common.keysbinding.KeyBindingsManager;
-import org.ebookdroid.common.log.LogContext;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
@@ -33,6 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.ui.actions.AbstractComponentController;
 import org.emdev.ui.actions.ActionEx;
 import org.emdev.ui.actions.ActionMethod;
@@ -53,7 +54,7 @@ actions = {
 })
 public abstract class AbstractViewController extends AbstractComponentController<IView> implements IViewController {
 
-    protected static final LogContext LCTX = LogContext.ROOT.lctx("View", false);
+    protected static final LogContext LCTX = LogManager.root().lctx("View", false);
 
     public static final int DOUBLE_TAP_TIME = 500;
 
@@ -519,7 +520,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
     protected class GestureListener extends SimpleOnGestureListener implements IMultiTouchListener {
 
-        protected final LogContext LCTX = LogContext.ROOT.lctx("Gesture", false);
+        protected final LogContext LCTX = LogManager.root().lctx("Gesture", false);
 
         /**
          * {@inheritDoc}

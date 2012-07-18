@@ -16,14 +16,14 @@ import android.graphics.RectF;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.emdev.common.textmarkup.FontStyle;
+import org.emdev.common.textmarkup.JustificationMode;
+import org.emdev.common.textmarkup.line.AbstractLineElement;
+import org.emdev.common.textmarkup.line.Line;
+import org.emdev.common.textmarkup.line.LineFixedWhiteSpace;
+import org.emdev.common.textmarkup.line.LineWhiteSpace;
+import org.emdev.common.textmarkup.line.TextElement;
 import org.emdev.utils.MatrixUtils;
-import org.emdev.utils.textmarkup.FontStyle;
-import org.emdev.utils.textmarkup.JustificationMode;
-import org.emdev.utils.textmarkup.line.AbstractLineElement;
-import org.emdev.utils.textmarkup.line.Line;
-import org.emdev.utils.textmarkup.line.LineFixedWhiteSpace;
-import org.emdev.utils.textmarkup.line.LineWhiteSpace;
-import org.emdev.utils.textmarkup.line.TextElement;
 
 public class FB2Page extends AbstractCodecPage {
 

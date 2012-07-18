@@ -1,6 +1,6 @@
 package org.ebookdroid.droids.fb2.codec;
 
-import org.emdev.utils.textmarkup.JustificationMode;
+import org.emdev.common.textmarkup.JustificationMode;
 
 public class LineCreationParams {
 

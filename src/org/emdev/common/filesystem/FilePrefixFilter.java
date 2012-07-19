@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.emdev.common.archives.ArchiveEntry;
 import org.emdev.utils.LengthUtils;
 
 public class FilePrefixFilter implements FileFilter, FilenameFilter {
@@ -25,10 +24,6 @@ public class FilePrefixFilter implements FileFilter, FilenameFilter {
     @Override
     public final boolean accept(final File file) {
         return acceptImpl(file.getName().toLowerCase());
-    }
-
-    public final boolean accept(final ArchiveEntry archiveEntry) {
-        return acceptImpl(archiveEntry.getName().toLowerCase());
     }
 
     @Override

@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.emdev.common.archives.ArchiveEntry;
+import org.emdev.utils.LengthUtils;
 
 public class FileExtensionFilter implements FileFilter, FilenameFilter {
 
@@ -23,44 +23,35 @@ public class FileExtensionFilter implements FileFilter, FilenameFilter {
 
     @Override
     public final boolean accept(final File file) {
-        for (final String ext : extensions) {
-            if (accept(file.getName(), ext)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public final boolean accept(final ArchiveEntry archiveEntry) {
-        for (final String ext : extensions) {
-            if (accept(archiveEntry.getName(), ext)) {
-                return true;
-            }
-        }
-        return false;
+        return acceptImpl(file.getName().toLowerCase());
     }
 
     @Override
     public boolean accept(final File dir, final String name) {
-        for (final String ext : extensions) {
-            if (accept(name, ext)) {
-                return true;
-            }
-        }
-        return false;
+        return acceptImpl(name.toLowerCase());
     }
 
     public boolean accept(final String name) {
+        if (LengthUtils.isEmpty(name)) {
+            return false;
+        }
+        if (!new File(name).exists()) {
+            return false;
+        }
+        return acceptImpl(name.toLowerCase());
+    }
+
+    protected boolean acceptImpl(final String name) {
         for (final String ext : extensions) {
-            if (accept(name, ext) && new File(name).exists()) {
+            if (acceptImpl(name, ext)) {
                 return true;
             }
         }
         return false;
     }
-
-    public boolean accept(final String name, final String ext) {
-        return name != null && name.toLowerCase().endsWith("." + ext);
+    
+    protected boolean acceptImpl(final String name, final String ext) {
+        return name != null && name.endsWith("." + ext);
     }
 
     public String[] list(File folder) {

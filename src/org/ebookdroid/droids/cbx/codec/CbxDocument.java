@@ -13,8 +13,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.emdev.common.archives.ArchiveEntry;
+import org.emdev.common.archives.ArchiveEntryExtensionFilter;
 import org.emdev.common.archives.ArchiveFile;
-import org.emdev.common.filesystem.FileExtensionFilter;
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
 import org.emdev.utils.StringUtils;
@@ -23,7 +23,7 @@ public class CbxDocument<ArchiveEntryType extends ArchiveEntry> extends Abstract
 
     public static final LogContext LCTX = LogManager.root().lctx("Cbx");
 
-    private static final FileExtensionFilter imageFilter = new FileExtensionFilter("jpg", "jpeg", "png", "gif");
+    private static final ArchiveEntryExtensionFilter imageFilter = new ArchiveEntryExtensionFilter("jpg", "jpeg", "png", "gif");
 
     private final ArchiveFile<ArchiveEntryType> archive;
 

@@ -18,6 +18,7 @@ public class CompositeFilter implements FileFilter {
     public boolean accept(final File file) {
         boolean res = false;
         if (acceptAll) {
+            res = true;
             for (final FileFilter f : fileFilters) {
                 res &= f.accept(file);
                 if (!res) {

@@ -1,6 +1,5 @@
 package org.emdev.common.filesystem;
 
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
@@ -9,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.emdev.common.archives.ArchiveEntry;
+import org.emdev.utils.LengthUtils;
 
 public class FilePrefixFilter implements FileFilter, FilenameFilter {
 
@@ -24,44 +24,38 @@ public class FilePrefixFilter implements FileFilter, FilenameFilter {
 
     @Override
     public final boolean accept(final File file) {
-        for (final String prefix : prefixes) {
-            if (accept(prefix, file.getName())) {
-                return true;
-            }
-        }
-        return false;
+        return acceptImpl(file.getName().toLowerCase());
     }
 
     public final boolean accept(final ArchiveEntry archiveEntry) {
-        for (final String prefix : prefixes) {
-            if (accept(prefix, archiveEntry.getName())) {
-                return true;
-            }
-        }
-        return false;
+        return acceptImpl(archiveEntry.getName().toLowerCase());
     }
 
     @Override
     public boolean accept(final File dir, final String name) {
-        for (final String prefix : prefixes) {
-            if (accept(prefix, name)) {
-                return true;
-            }
-        }
-        return false;
+        return acceptImpl(name.toLowerCase());
     }
 
     public boolean accept(final String name) {
-        for (final String prefix : prefixes) {
-            if (accept(prefix, name) && new File(name).exists()) {
-                return true;
-            }
+        if (LengthUtils.isEmpty(name)) {
+            return false;
         }
-        return false;
+        if (!new File(name).exists()) {
+            return false;
+        }
+        return acceptImpl(name.toLowerCase());
     }
 
-    public boolean accept(final String prefix, final String name) {
-        return name != null && name.toLowerCase().startsWith(prefix);
+    protected boolean acceptImpl(final String name) {
+        boolean res = false;
+        for (final String prefix : prefixes) {
+            res |= acceptImpl(prefix, name);
+        }
+        return res;
+    }
+
+    protected boolean acceptImpl(final String prefix, final String name) {
+        return name != null && name.startsWith(prefix);
     }
 
     @Override
@@ -80,4 +74,10 @@ public class FilePrefixFilter implements FileFilter, FilenameFilter {
     public int hashCode() {
         return this.prefixes.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + prefixes;
+    }
+
 }

@@ -7,5 +7,7 @@
     <string name="pref_backuponexit_summary">"Автоматически сохранять настройки на выходе из программы"</string>
     <string name="pref_backuponbookclose_title">"Сохранять на закрытии"</string>
     <string name="pref_backuponbookclose_summary">"Автоматически сохранять настройки при закрытии книги"</string>
+    <string name="pref_maxnumberofautobackups_title">"Число авто-бэкапов"</string>
+    <string name="pref_maxnumberofautobackups_summary">"Число хранимых авто-бэкапов"</string>
 
 </resources>

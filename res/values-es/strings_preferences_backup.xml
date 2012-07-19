@@ -7,5 +7,7 @@
     <string name="pref_backuponexit_summary">"Se realizará automáticamente una copia de seguridad de las preferencias al salir de la aplicación"</string>
     <string name="pref_backuponbookclose_title">"Crear copia de seguridad al cerrar libro"</string>
     <string name="pref_backuponbookclose_summary">"Se realizará una copia de seguridad de las preferencias al cerrar el libro"</string>
+<!--<string name="pref_maxnumberofautobackups_title">"Number of auto backups"</string>-->
+<!--<string name="pref_maxnumberofautobackups_summary">"Max number of auto backups"</string>-->
 
 </resources>

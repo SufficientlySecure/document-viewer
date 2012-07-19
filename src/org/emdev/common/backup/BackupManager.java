@@ -1,11 +1,15 @@
 package org.emdev.common.backup;
 
+import org.ebookdroid.common.settings.AppSettings;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -31,10 +35,12 @@ public class BackupManager {
 
     private static final FileExtensionFilter BACKUP_FILTER = new FileExtensionFilter("jso");
 
-    private static final CompositeFilter AUTO_BACKUP_FILTER = new CompositeFilter(true, new FilePrefixFilter(
-            Type.AUTO.name() + "."), BACKUP_FILTER);
+    private static final CompositeFilter AUTO_BACKUP_FILTER = new CompositeFilter(true, new FilePrefixFilter(Type.AUTO
+            .name().toLowerCase() + "."), BACKUP_FILTER);
 
     private static final Map<String, IBackupAgent> agents = new TreeMap<String, IBackupAgent>();
+
+    private static int maxNumberOfAutoBackups = 1;
 
     public static void addAgent(final IBackupAgent agent) {
         agents.put(agent.key(), agent);
@@ -54,38 +60,41 @@ public class BackupManager {
         return backups;
     }
 
-    public static BackupInfo getAutoBackup() {
+    public static List<BackupInfo> getAutoBackups() {
+        final Set<BackupInfo> backups = new TreeSet<BackupInfo>();
+
         BACKUP_FOLDER.mkdirs();
 
-        final File[] list = BACKUP_FOLDER.listFiles(AUTO_BACKUP_FILTER);
-        if (LengthUtils.isNotEmpty(list)) {
-            try {
-                return new BackupInfo(list[0]);
-            } catch (final Exception ex) {
+        final File[] files = BACKUP_FOLDER.listFiles(AUTO_BACKUP_FILTER);
+        if (LengthUtils.isNotEmpty(files)) {
+            for (final File f : files) {
+                try {
+                    backups.add(new BackupInfo(f));
+                } catch (final Exception ex) {
+                    f.delete();
+                }
             }
         }
-        return null;
+        return new ArrayList<BackupInfo>(backups);
     }
 
     public static boolean backup() {
-        BackupInfo auto = getAutoBackup();
-        if (auto == null) {
-            auto = new BackupInfo();
+        final List<BackupInfo> old = getAutoBackups();
+        if (backupImpl(new BackupInfo())) {
+            final int count = LengthUtils.length(old);
+            if (count + 1 > maxNumberOfAutoBackups) {
+                for (int i = maxNumberOfAutoBackups - 1; i < count; i++) {
+                    remove(old.get(i));
+                }
+            }
+            return true;
         }
-        return backupImpl(auto);
+        return false;
     }
 
     public static boolean backup(final BackupInfo backup) {
         if (backup.type == BackupInfo.Type.USER) {
             return backupImpl(backup);
-        }
-        return false;
-    }
-
-    public static boolean restore() {
-        final BackupInfo auto = getAutoBackup();
-        if (auto != null) {
-            return restoreImpl(auto);
         }
         return false;
     }
@@ -100,7 +109,6 @@ public class BackupManager {
     }
 
     static boolean backupImpl(final BackupInfo backup) {
-        final Date oldTimestamp = backup.timestamp;
         try {
             backup.timestamp = new Date();
             final String json = buildBackup(backup);
@@ -112,11 +120,7 @@ public class BackupManager {
             writer.write(json);
             writer.close();
 
-            if (backup.type == BackupInfo.Type.AUTO && oldTimestamp != null) {
-                final File old = new File(BACKUP_FOLDER, BackupInfo.getFileName(backup.type, oldTimestamp));
-                old.delete();
-            }
-
+            return true;
         } catch (final Throwable th) {
             LCTX.e("Unexpected error", th);
         }
@@ -169,5 +173,13 @@ public class BackupManager {
         }
 
         return true;
+    }
+
+    public static int getMaxNumberOfAutoBackups() {
+        return maxNumberOfAutoBackups;
+    }
+
+    public static void setMaxNumberOfAutoBackups(int maxNumberOfAutoBackups) {
+        BackupManager.maxNumberOfAutoBackups = maxNumberOfAutoBackups;
     }
 }

@@ -83,7 +83,7 @@ public class BackupInfo implements Comparable<BackupInfo> {
         }
         int res = CompareUtils.compare(this.type, that.type);
         if (res == 0) {
-            res = CompareUtils.compare(this.timestamp, that.timestamp);
+            res = - CompareUtils.compare(this.timestamp, that.timestamp);
         }
         if (res == 0) {
             res = CompareUtils.compare(this.name, that.name);

@@ -1,6 +1,7 @@
 package org.ebookdroid.ui.library.adapters;
 
 import org.ebookdroid.R;
+import org.ebookdroid.common.notifications.NotificationsManager;
 import org.ebookdroid.common.settings.LibSettings;
 import org.ebookdroid.ui.library.IBrowserActivity;
 import org.ebookdroid.ui.library.views.BookshelfView;
@@ -25,6 +26,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.emdev.BaseDroidApp;
 import org.emdev.common.filesystem.FileSystemScanner;
 import org.emdev.ui.adapters.BaseViewHolder;
 import org.emdev.utils.LengthUtils;
@@ -380,6 +382,7 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
                     search.notifyDataSetChanged();
                 }
             }
+            NotificationsManager.createInfoNotification(BaseDroidApp.context.getString(R.string.notification_file_add), f.getAbsolutePath());
         }
     }
 
@@ -404,6 +407,7 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
                     if (search.nodes.remove(node)) {
                         search.notifyDataSetChanged();
                     }
+                    NotificationsManager.createInfoNotification(BaseDroidApp.context.getString(R.string.notification_file_delete), f.getAbsolutePath());
                     return;
                 }
             }

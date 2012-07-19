@@ -10,6 +10,8 @@ import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 
+import org.emdev.common.android.AndroidVersion;
+
 public class SettingsActivity extends BaseSettingsActivity {
 
     @Override
@@ -50,6 +52,14 @@ public class SettingsActivity extends BaseSettingsActivity {
             if (bookPrefs != null) {
                 final PreferenceScreen preferenceScreen = getPreferenceScreen();
                 preferenceScreen.removePreference(bookPrefs);
+            }
+        }
+
+        if (AndroidVersion.VERSION < 8) {
+            final Preference opdsPrefs = findPreference("opds_prefs");
+            if (opdsPrefs != null) {
+                final PreferenceScreen preferenceScreen = getPreferenceScreen();
+                preferenceScreen.removePreference(opdsPrefs);
             }
         }
     }

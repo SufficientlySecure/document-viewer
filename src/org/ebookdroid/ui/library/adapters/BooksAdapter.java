@@ -388,27 +388,30 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
 
     @Override
     public synchronized void onFileDeleted(final File parent, final File f) {
-        final String dir = parent.getAbsolutePath();
-        final BookShelfAdapter a = folders.get(dir);
-        if (a != null) {
-            final String path = f.getAbsolutePath();
-            final BookShelfAdapter search = getService(SEARCH_INDEX);
-            for (final Iterator<BookNode> i = a.nodes.iterator(); i.hasNext();) {
-                final BookNode node = i.next();
-                if (path.equals(node.path)) {
-                    i.remove();
-                    if (a.nodes.isEmpty()) {
-                        data.remove(a.id);
-                        folders.remove(a.path);
-                        this.notifyDataSetChanged();
-                    } else {
-                        a.notifyDataSetChanged();
+        if (f != null && LibSettings.current().allowedFileTypes.accept(f)) {
+            final String dir = parent.getAbsolutePath();
+            final BookShelfAdapter a = folders.get(dir);
+            if (a != null) {
+                final String path = f.getAbsolutePath();
+                final BookShelfAdapter search = getService(SEARCH_INDEX);
+                for (final Iterator<BookNode> i = a.nodes.iterator(); i.hasNext();) {
+                    final BookNode node = i.next();
+                    if (path.equals(node.path)) {
+                        i.remove();
+                        if (a.nodes.isEmpty()) {
+                            data.remove(a.id);
+                            folders.remove(a.path);
+                            this.notifyDataSetChanged();
+                        } else {
+                            a.notifyDataSetChanged();
+                        }
+                        if (search.nodes.remove(node)) {
+                            search.notifyDataSetChanged();
+                        }
+                        NotificationsManager.createInfoNotification(
+                                BaseDroidApp.context.getString(R.string.notification_file_delete), f.getAbsolutePath());
+                        return;
                     }
-                    if (search.nodes.remove(node)) {
-                        search.notifyDataSetChanged();
-                    }
-                    NotificationsManager.createInfoNotification(BaseDroidApp.context.getString(R.string.notification_file_delete), f.getAbsolutePath());
-                    return;
                 }
             }
         }

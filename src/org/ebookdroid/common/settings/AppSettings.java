@@ -156,6 +156,8 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     public final boolean backupOnBookClose;
 
+    public final int maxNumberOfAutoBackups;
+
     /* =============================================== */
 
     private AppSettings() {
@@ -226,6 +228,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         /* =============== Backup settings =============== */
         backupOnExit = BACKUP_ON_EXIT.getPreferenceValue(prefs);
         backupOnBookClose = BACKUP_ON_BOOK_CLOSE.getPreferenceValue(prefs);
+        maxNumberOfAutoBackups = MAX_NUMBER_OF_AUTO_BACKUPS.getPreferenceValue(prefs);
     }
 
     /* =============== UI settings =============== */

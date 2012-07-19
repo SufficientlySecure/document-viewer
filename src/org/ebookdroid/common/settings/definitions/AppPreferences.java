@@ -190,7 +190,8 @@ public interface AppPreferences {
 
     BooleanPreferenceDefinition FB2_HYPHEN = new BooleanPreferenceDefinition(pref_fb2hyphen_id, pref_fb2hyphen_defvalue);
 
-    BooleanPreferenceDefinition FB2_CACHE_IMAGES = new BooleanPreferenceDefinition(pref_fb2cacheimages_id, pref_fb2cacheimages_defvalue);
+    BooleanPreferenceDefinition FB2_CACHE_IMAGES = new BooleanPreferenceDefinition(pref_fb2cacheimages_id,
+            pref_fb2cacheimages_defvalue);
 
     /* =============== Backup settings =============== */
 
@@ -199,5 +200,9 @@ public interface AppPreferences {
 
     BooleanPreferenceDefinition BACKUP_ON_BOOK_CLOSE = new BooleanPreferenceDefinition(pref_backuponbookclose_id,
             pref_backuponbookclose_defvalue);
+
+    IntegerPreferenceDefinition MAX_NUMBER_OF_AUTO_BACKUPS = new IntegerPreferenceDefinition(
+            pref_maxnumberofautobackups_id, pref_maxnumberofautobackups_defvalue, pref_maxnumberofautobackups_minvalue,
+            pref_maxnumberofautobackups_maxvalue);
 
 }

@@ -16,4 +16,12 @@
         android:summary="@string/pref_backuponbookclose_summary"
         android:title="@string/pref_backuponbookclose_title" />
 
+       <org.emdev.ui.preference.SeekBarPreference
+            android:defaultValue="@string/pref_maxnumberofautobackups_defvalue"
+            android:key="@string/pref_maxnumberofautobackups_id"
+            ebookdroid:minValue="@string/pref_maxnumberofautobackups_minvalue"
+            ebookdroid:maxValue="@string/pref_maxnumberofautobackups_maxvalue"
+            android:summary="@string/pref_maxnumberofautobackups_summary"
+            android:title="@string/pref_maxnumberofautobackups_title" />
+
 </PreferenceScreen>

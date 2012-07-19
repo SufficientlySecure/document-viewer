@@ -7,4 +7,10 @@
     <string translatable="false" name="pref_backuponbookclose_id">backup-on-book-close</string>
     <string translatable="false" name="pref_backuponbookclose_defvalue">false</string>
 
+    <string translatable="false" name="pref_maxnumberofautobackups_id">max-number-of-auto-backups</string>
+    <string translatable="false" name="pref_maxnumberofautobackups_defvalue">1</string>
+    <string translatable="false" name="pref_maxnumberofautobackups_minvalue">1</string>
+    <string translatable="false" name="pref_maxnumberofautobackups_maxvalue">16</string>
+
+    
 </resources>

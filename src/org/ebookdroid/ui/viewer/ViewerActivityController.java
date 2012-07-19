@@ -165,9 +165,6 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
         TouchManager.loadFromSettings(newSettings);
         KeyBindingsManager.loadFromSettings(newSettings);
-
-        BitmapManager.setPartSize(1 << newSettings.bitmapSize);
-        BitmapManager.setUseEarlyRecycling(newSettings.useEarlyRecycling);
     }
 
     public void afterCreate() {
@@ -690,10 +687,6 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         if (diff.isKeyBindingChanged()) {
             KeyBindingsManager.loadFromSettings(newSettings);
         }
-
-        BitmapManager.setPartSize(1 << newSettings.bitmapSize);
-        BitmapManager.setUseEarlyRecycling(newSettings.useEarlyRecycling);
-        BitmapManager.setUseBitmapHack(newSettings.useBitmapHack);
     }
 
     /**

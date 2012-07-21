@@ -21,7 +21,7 @@
     <string name="list_rotation_user">"Usuario"</string>
 <!--<string name="list_rotation_behind">"Behind"</string>-->
     <string name="list_rotation_auto">"Automático"</string>
-<!--<string name="list_rotation_nosensor">"No sensor"</string>-->
+    <string name="list_rotation_nosensor">"Pasar de sensores"</string>-->
     <string name="list_rotation_sensor_landscape">"Sensor apaisado"</string>
     <string name="list_rotation_sensor_portrait">"Sensor retrato"</string>
     <string name="list_rotation_reverse_landscape">"Modo apaisado invertido"</string>
@@ -33,10 +33,10 @@
     <string name="pref_title_summary">"Mostrar título. Se necesita reabrir el documento"</string>
     <string name="pref_pageintitle_title">"Página en el título"</string>
     <string name="pref_pageintitle_summary">"Mostrar número de página actual en el encabezado"</string>
-<!--<string name="pref_pagenumbertoastposition_title">"Position of page number toast"</string>-->
-<!--<string name="pref_pagenumbertoastposition_summary">"Position of page number toast"</string>-->
-<!--<string name="pref_zoomtoastposition_title">"Position of zoom toast"</string>-->
-<!--<string name="pref_zoomtoastposition_summary">"Position of zoom toast"</string>-->
+    <string name="pref_pagenumbertoastposition_title">"Posición del número de página"</string>
+    <string name="pref_pagenumbertoastposition_summary">"Posición de la tostada con el número de página"</string>
+    <string name="pref_zoomtoastposition_title">"Posición del aumento"</string>
+    <string name="pref_zoomtoastposition_summary">"Posición de la tostada con el aumento aplicado"</string>
     <string name="list_toastposition_invisible">"Invisible"</string>
     <string name="list_toastposition_lefttop">"Esquina superior izquierda"</string>
     <string name="list_toastposition_righttop">"Esquina superior derecha"</string>

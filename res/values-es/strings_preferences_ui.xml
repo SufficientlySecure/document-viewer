@@ -21,7 +21,7 @@
     <string name="list_rotation_user">"Usuario"</string>
 <!--<string name="list_rotation_behind">"Behind"</string>-->
     <string name="list_rotation_auto">"Automático"</string>
-    <string name="list_rotation_nosensor">"Pasar de sensores"</string>-->
+    <string name="list_rotation_nosensor">"Pasar de sensores"</string>
     <string name="list_rotation_sensor_landscape">"Sensor apaisado"</string>
     <string name="list_rotation_sensor_portrait">"Sensor retrato"</string>
     <string name="list_rotation_reverse_landscape">"Modo apaisado invertido"</string>

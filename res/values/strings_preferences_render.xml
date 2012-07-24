@@ -84,6 +84,21 @@
     <string name="pref_ydpi_title">Y DPI</string>
     <string name="pref_ydpi_summary">Y DPI</string>
 
+    <string name="pref_monofontpack_title">Monospace font family</string>
+    <string name="pref_monofontpack_summary">Define font pack using for monospace font family</string>
+
+    <string name="pref_sansfontpack_title">Sans font family</string>
+    <string name="pref_sansfontpack_summary">Define font pack using for sans font family</string>
+
+    <string name="pref_seriffontpack_title">Serif font family</string>
+    <string name="pref_seriffontpack_summary">Define font pack using for serif font family</string>
+
+    <string name="pref_symbolfontpack_title">Symbol font family</string>
+    <string name="pref_symbolfontpack_summary">Define font pack using for symbol font family</string>
+
+    <string name="pref_dingbatfontpack_title">Dignbat font family</string>
+    <string name="pref_dingbatfontpack_summary">Define font pack using for dignbat font family</string>
+
     <string name="pref_brfiletypespecificfb2_title">FB2</string>
     <string name="pref_brfiletypespecificfb2_summary">FB2 format specific settings</string>
 

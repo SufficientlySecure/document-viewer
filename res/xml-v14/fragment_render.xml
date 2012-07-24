@@ -1,6 +1,6 @@
-<PreferenceScreen 
+<PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ebookdroid="http://ebookdroid.org" 
+    xmlns:ebookdroid="http://ebookdroid.org"
     android:summary="@string/pref_render_category_summary"
     android:title="@string/pref_render_category" >
 
@@ -133,7 +133,42 @@
                         android:summary="@string/pref_ydpi_summary"
                         android:title="@string/pref_ydpi_title" />
 
-            </PreferenceCategory>
+                <org.emdev.ui.preference.FontPickerPreference
+                        android:defaultValue="@string/pref_monofontpack_defvalue"
+                        android:key="@string/pref_monofontpack_id"
+                        ebookdroid:fontFamily="mono"
+                        android:summary="@string/pref_monofontpack_summary"
+                        android:title="@string/pref_monofontpack_title" />
+
+                <org.emdev.ui.preference.FontPickerPreference
+                        android:defaultValue="@string/pref_sansfontpack_defvalue"
+                        android:key="@string/pref_sansfontpack_id"
+                        ebookdroid:fontFamily="sans"
+                        android:summary="@string/pref_sansfontpack_summary"
+                        android:title="@string/pref_sansfontpack_title" />
+
+                <org.emdev.ui.preference.FontPickerPreference
+                        android:defaultValue="@string/pref_seriffontpack_defvalue"
+                        android:key="@string/pref_seriffontpack_id"
+                        ebookdroid:fontFamily="serif"
+                        android:summary="@string/pref_seriffontpack_summary"
+                        android:title="@string/pref_seriffontpack_title" />
+
+                <org.emdev.ui.preference.FontPickerPreference
+                        android:defaultValue="@string/pref_symbolfontpack_defvalue"
+                        android:key="@string/pref_symbolfontpack_id"
+                        ebookdroid:fontFamily="symbol"
+                        android:summary="@string/pref_symbolfontpack_summary"
+                        android:title="@string/pref_symbolfontpack_title" />
+
+                <org.emdev.ui.preference.FontPickerPreference
+                        android:defaultValue="@string/pref_dingbatfontpack_defvalue"
+                        android:key="@string/pref_dingbatfontpack_id"
+                        ebookdroid:fontFamily="dingbat"
+                        android:summary="@string/pref_dingbatfontpack_summary"
+                        android:title="@string/pref_dingbatfontpack_title" />
+
+                </PreferenceCategory>
 
             <PreferenceCategory
                 android:key="brfiletypespecificfb2"

@@ -171,10 +171,12 @@ public interface AppPreferences {
     EnumPreferenceDefinition<PageAnimationType> ANIMATION_TYPE = new EnumPreferenceDefinition<PageAnimationType>(
             PageAnimationType.class, pref_animation_type_id, pref_animation_type_none);
 
-    /* =============== Format-specific settings =============== */
+    /* =============== DjVU Format-specific settings =============== */
 
     IntegerPreferenceDefinition DJVU_RENDERING_MODE = new IntegerPreferenceDefinition(pref_djvu_rendering_mode_id,
             pref_djvu_rendering_mode_0, pref_djvu_rendering_mode_0, pref_djvu_rendering_mode_5);
+
+    /* =============== PDF Format-specific settings =============== */
 
     BooleanPreferenceDefinition PDF_CUSTOM_DPI = new BooleanPreferenceDefinition(pref_customdpi_id,
             pref_customdpi_defvalue);
@@ -184,6 +186,23 @@ public interface AppPreferences {
 
     IntegerPreferenceDefinition PDF_CUSTOM_YDPI = new IntegerPreferenceDefinition(pref_ydpi_id, pref_ydpi_defvalue,
             pref_ydpi_minvalue, pref_ydpi_maxvalue);
+
+    StringPreferenceDefinition MONO_FONT_PACK = new StringPreferenceDefinition(pref_monofontpack_id,
+            pref_monofontpack_defvalue);
+
+    StringPreferenceDefinition SANS_FONT_PACK = new StringPreferenceDefinition(pref_sansfontpack_id,
+            pref_sansfontpack_defvalue);
+
+    StringPreferenceDefinition SERIF_FONT_PACK = new StringPreferenceDefinition(pref_seriffontpack_id,
+            pref_seriffontpack_defvalue);
+
+    StringPreferenceDefinition SYMBOL_FONT_PACK = new StringPreferenceDefinition(pref_symbolfontpack_id,
+            pref_symbolfontpack_defvalue);
+
+    StringPreferenceDefinition DINGBAT_FONT_PACK = new StringPreferenceDefinition(pref_dingbatfontpack_id,
+            pref_dingbatfontpack_defvalue);
+
+    /* =============== FB2 Format-specific settings =============== */
 
     EnumPreferenceDefinition<FontSize> FB2_FONT_SIZE = new EnumPreferenceDefinition<FontSize>(FontSize.class,
             pref_fontsize_id, pref_fontsize_normal);

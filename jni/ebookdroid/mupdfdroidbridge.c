@@ -9,19 +9,21 @@
 #include <mupdf.h>
 #include <muxps.h>
 
+#include <ebookdroid.h>
+
 #define FORMAT_PDF 0
 #define FORMAT_XPS 1
 
 /* Debugging helper */
 
 #define DEBUG(args...) \
-	__android_log_print(ANDROID_LOG_DEBUG, "EBookDroid.MuPDF", args)
+    __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid.MuPDF", args)
 
 #define ERROR(args...) \
-	__android_log_print(ANDROID_LOG_ERROR, "EBookDroid.MuPDF", args)
+    __android_log_print(ANDROID_LOG_ERROR, "EBookDroid.MuPDF", args)
 
 #define INFO(args...) \
-	__android_log_print(ANDROID_LOG_INFO, "EBookDroid.MuPDF", args)
+    __android_log_print(ANDROID_LOG_INFO, "EBookDroid.MuPDF", args)
 
 typedef struct renderdocument_s renderdocument_t;
 struct renderdocument_s
@@ -47,6 +49,21 @@ struct renderpage_s
 
 extern fz_locks_context * jni_new_locks();
 extern void jni_free_locks(fz_locks_context *locks);
+
+extern char ext_font_Courier[1024]; //= "/sdcard/.org.ebookdroid/fonts/FreeMono.ttf";
+extern char ext_font_CourierBold[1024]; // = "/sdcard/.org.ebookdroid/fonts/FreeMonoBold.ttf";
+extern char ext_font_CourierOblique[1024]; // = "/sdcard/.org.ebookdroid/fonts/FreeMonoOblique.ttf";
+extern char ext_font_CourierBoldOblique[1024]; // = "/sdcard/.org.ebookdroid/fonts/FreeMonoBoldOblique.ttf";
+extern char ext_font_Helvetica[1024]; // = "/sdcard/.org.ebookdroid/fonts/FreeSans.ttf";
+extern char ext_font_HelveticaBold[1024]; // = "/sdcard/.org.ebookdroid/fonts/FreeSansBold.ttf";
+extern char ext_font_HelveticaOblique[1024]; // = "/sdcard/.org.ebookdroid/fonts/FreeSansOblique.ttf";
+extern char ext_font_HelveticaBoldOblique[1024]; // = "/sdcard/.org.ebookdroid/fonts/FreeSans.ttf";
+extern char ext_font_TimesRoman[1024]; // = "/sdcard/.org.ebookdroid/fonts/FreeSerif.ttf";
+extern char ext_font_TimesBold[1024]; // = "/sdcard/.org.ebookdroid/fonts/FreeSerifBold.ttf";
+extern char ext_font_TimesItalic[1024]; // = "/sdcard/.org.ebookdroid/fonts/FreeSerifItalic.ttf";
+extern char ext_font_TimesBoldItalic[1024]; // = "/sdcard/.org.ebookdroid/fonts/FreeSerifBoldItalic.ttf";
+extern char ext_font_Symbol[1024]; // = "/sdcard/.org.ebookdroid/fonts/StandardSymL.cff";
+extern char ext_font_ZapfDingbats[1024]; // = "/sdcard/.org.ebookdroid/fonts/Dingbats.cff";
 
 void mupdf_throw_exception_ex(JNIEnv *env, const char* exception, char *message)
 {
@@ -96,6 +113,103 @@ static void mupdf_free_document(renderdocument_t* doc)
     doc = NULL;
 }
 
+void setFontFileName(char* ext_Font, const char* fontFileName)
+{
+    if (fontFileName && fontFileName[0])
+    {
+        strcpy(ext_Font, fontFileName);
+    }
+    else
+    {
+        ext_Font[0] = 0;
+    }
+}
+
+JNIEXPORT void JNICALL
+Java_org_ebookdroid_droids_mupdf_codec_MuPdfContext_setMonoFonts(JNIEnv *env, jclass clazz, jstring regular,
+                                                                 jstring italic, jstring bold, jstring boldItalic)
+{
+    jboolean iscopy;
+    const char* regularFFN = GetStringUTFChars(env, regular, &iscopy);
+    const char* italicFFN = GetStringUTFChars(env, italic, &iscopy);
+    const char* boldFFN = GetStringUTFChars(env, bold, &iscopy);
+    const char* boldItalicFFN = GetStringUTFChars(env, boldItalic, &iscopy);
+
+    setFontFileName(ext_font_Courier, regularFFN);
+    setFontFileName(ext_font_CourierOblique, italicFFN);
+    setFontFileName(ext_font_CourierBold, boldFFN);
+    setFontFileName(ext_font_CourierBoldOblique, boldItalicFFN);
+
+    ReleaseStringUTFChars(env, regular, regularFFN);
+    ReleaseStringUTFChars(env, italic, italicFFN);
+    ReleaseStringUTFChars(env, bold, boldFFN);
+    ReleaseStringUTFChars(env, boldItalic, boldItalicFFN);
+}
+
+JNIEXPORT void JNICALL
+Java_org_ebookdroid_droids_mupdf_codec_MuPdfContext_setSansFonts(JNIEnv *env, jclass clazz, jstring regular,
+                                                                 jstring italic, jstring bold, jstring boldItalic)
+{
+    jboolean iscopy;
+    const char* regularFFN = GetStringUTFChars(env, regular, &iscopy);
+    const char* italicFFN = GetStringUTFChars(env, italic, &iscopy);
+    const char* boldFFN = GetStringUTFChars(env, bold, &iscopy);
+    const char* boldItalicFFN = GetStringUTFChars(env, boldItalic, &iscopy);
+
+    setFontFileName(ext_font_Helvetica, regularFFN);
+    setFontFileName(ext_font_HelveticaOblique, italicFFN);
+    setFontFileName(ext_font_HelveticaBold, boldFFN);
+    setFontFileName(ext_font_HelveticaBoldOblique, boldItalicFFN);
+
+    ReleaseStringUTFChars(env, regular, regularFFN);
+    ReleaseStringUTFChars(env, italic, italicFFN);
+    ReleaseStringUTFChars(env, bold, boldFFN);
+    ReleaseStringUTFChars(env, boldItalic, boldItalicFFN);
+}
+
+JNIEXPORT void JNICALL
+Java_org_ebookdroid_droids_mupdf_codec_MuPdfContext_setSerifFonts(JNIEnv *env, jclass clazz, jstring regular,
+                                                                 jstring italic, jstring bold, jstring boldItalic)
+{
+    jboolean iscopy;
+    const char* regularFFN = GetStringUTFChars(env, regular, &iscopy);
+    const char* italicFFN = GetStringUTFChars(env, italic, &iscopy);
+    const char* boldFFN = GetStringUTFChars(env, bold, &iscopy);
+    const char* boldItalicFFN = GetStringUTFChars(env, boldItalic, &iscopy);
+
+    setFontFileName(ext_font_TimesRoman, regularFFN);
+    setFontFileName(ext_font_TimesItalic, italicFFN);
+    setFontFileName(ext_font_TimesBold, boldFFN);
+    setFontFileName(ext_font_TimesBoldItalic, boldItalicFFN);
+
+    ReleaseStringUTFChars(env, regular, regularFFN);
+    ReleaseStringUTFChars(env, italic, italicFFN);
+    ReleaseStringUTFChars(env, bold, boldFFN);
+    ReleaseStringUTFChars(env, boldItalic, boldItalicFFN);
+}
+
+JNIEXPORT void JNICALL
+Java_org_ebookdroid_droids_mupdf_codec_MuPdfContext_setSymbolFont(JNIEnv *env, jclass clazz, jstring regular)
+{
+    jboolean iscopy;
+    const char* regularFFN = GetStringUTFChars(env, regular, &iscopy);
+
+    setFontFileName(ext_font_Symbol, regularFFN);
+
+    ReleaseStringUTFChars(env, regular, regularFFN);
+}
+
+JNIEXPORT void JNICALL
+Java_org_ebookdroid_droids_mupdf_codec_MuPdfContext_setDingbatFont(JNIEnv *env, jclass clazz, jstring regular)
+{
+    jboolean iscopy;
+    const char* regularFFN = GetStringUTFChars(env, regular, &iscopy);
+
+    setFontFileName(ext_font_ZapfDingbats, regularFFN);
+
+    ReleaseStringUTFChars(env, regular, regularFFN);
+}
+
 JNIEXPORT jlong JNICALL
 Java_org_ebookdroid_droids_mupdf_codec_MuPdfDocument_open(JNIEnv *env, jclass clazz, jint storememory, jint format, jstring fname,
                                                       jstring pwd)
@@ -137,10 +251,10 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfDocument_open(JNIEnv *env, jclass cl
     doc->format = format;
     fz_try(doc->ctx)
     {
-	if(format == FORMAT_XPS)
-	    doc->document = (fz_document*) xps_open_document(doc->ctx, filename);
-	else // FORMAT_PDF
-	    doc->document = (fz_document*) pdf_open_document(doc->ctx, filename);
+    if(format == FORMAT_XPS)
+        doc->document = (fz_document*) xps_open_document(doc->ctx, filename);
+    else // FORMAT_PDF
+        doc->document = (fz_document*) pdf_open_document(doc->ctx, filename);
 
 //        doc->document = fz_open_document(doc->ctx, filename);
     }
@@ -197,19 +311,19 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfDocument_getPageInfo(JNIEnv *env, jc
                                                              jobject cpi)
 {
     renderdocument_t *doc = (renderdocument_t*) (long) handle;
-    
+
     //TODO: Review this. Possible broken
 
     fz_page *page = NULL;
     fz_rect bounds;
-    
+
     jclass clazz;
     jfieldID fid;
 
     fz_try(doc->ctx)
     {
-	page = fz_load_page(doc->document, pageNumber - 1);
-	bounds = fz_bound_page(doc->document, page);
+    page = fz_load_page(doc->document, pageNumber - 1);
+    bounds = fz_bound_page(doc->document, page);
     }
     fz_catch(doc->ctx)
     {
@@ -517,7 +631,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPage(JNIEnv *env, jobject
        fz_run_display_list(page->pageList, dev, ctm, viewbox, NULL);
 
        fz_drop_pixmap(ctx, pixmap);
-    } 
+    }
     fz_always(ctx)
     {
        fz_free_device(dev);
@@ -950,3 +1064,4 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfOutline_getChild(JNIEnv *env, jclass
 //	DEBUG("MuPdfOutline_getChild(%p)",outline);
     return (jlong)(long)(outline?outline->down:NULL);
 }
+

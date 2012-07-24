@@ -11,12 +11,14 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 
 import org.emdev.common.android.AndroidVersion;
+import org.emdev.common.fonts.FontManager;
 
 public class SettingsActivity extends BaseSettingsActivity {
 
     @Override
     protected final void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FontManager.init();
         if (SettingsManager.getBookSettings() != null) {
             setRequestedOrientation(AppSettings.current().rotation.getOrientation());
         }

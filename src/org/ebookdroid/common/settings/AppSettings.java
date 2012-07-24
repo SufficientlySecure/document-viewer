@@ -134,15 +134,29 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     final PageAnimationType animationType;
 
-    /* =============== Format-specific settings =============== */
+    /* =============== DjVU Format-specific settings =============== */
 
     public final int djvuRenderingMode;
+
+    /* =============== PDF Format-specific settings =============== */
 
     public final boolean useCustomDpi;
 
     public final int xDpi;
 
     public final int yDpi;
+
+    public final String monoFontPack;
+
+    public final String sansFontPack;
+
+    public final String serifFontPack;
+
+    public final String symbolFontPack;
+
+    public final String dingbatFontPack;
+
+    /* =============== FB2 Format-specific settings =============== */
 
     public final FontSize fontSize;
 
@@ -217,11 +231,18 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         viewMode = VIEW_MODE.getPreferenceValue(prefs);
         pageAlign = PAGE_ALIGN.getPreferenceValue(prefs);
         animationType = ANIMATION_TYPE.getPreferenceValue(prefs);
-        /* =============== Format-specific settings =============== */
+        /* =============== DjVU Format-specific settings =============== */
         djvuRenderingMode = DJVU_RENDERING_MODE.getPreferenceValue(prefs);
+        /* =============== PDF Format-specific settings =============== */
         useCustomDpi = PDF_CUSTOM_DPI.getPreferenceValue(prefs);
         xDpi = PDF_CUSTOM_XDPI.getPreferenceValue(prefs);
         yDpi = PDF_CUSTOM_YDPI.getPreferenceValue(prefs);
+        monoFontPack = MONO_FONT_PACK.getPreferenceValue(prefs);
+        sansFontPack = SANS_FONT_PACK.getPreferenceValue(prefs);
+        serifFontPack = SERIF_FONT_PACK.getPreferenceValue(prefs);
+        symbolFontPack = SYMBOL_FONT_PACK.getPreferenceValue(prefs);
+        dingbatFontPack = DINGBAT_FONT_PACK.getPreferenceValue(prefs);
+        /* =============== FB2 Format-specific settings =============== */
         fontSize = FB2_FONT_SIZE.getPreferenceValue(prefs);
         fb2HyphenEnabled = FB2_HYPHEN.getPreferenceValue(prefs);
         fb2CacheImagesOnDisk = FB2_CACHE_IMAGES.getPreferenceValue(prefs);

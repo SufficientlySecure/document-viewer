@@ -11,6 +11,8 @@ public final class WidgetUtils {
 
     public static final String ATTR_JSON_PROPERTY = "jsonProperty";
 
+    public static final String ATTR_FONT_FAMILY = "fontFamily";
+
     public static final String ATTR_MIN_VALUE = "minValue";
     public static final String ATTR_MAX_VALUE = "maxValue";
     public static final String ATTR_DEFAULT_VALUE = "defaultValue";

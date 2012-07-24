@@ -10,6 +10,7 @@ import org.ebookdroid.common.settings.listeners.IAppSettingsChangeListener;
 import org.emdev.BaseDroidApp;
 import org.emdev.common.android.VMRuntimeHack;
 import org.emdev.common.backup.BackupManager;
+import org.emdev.common.fonts.FontManager;
 
 public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeListener {
 
@@ -24,6 +25,7 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
 
         SettingsManager.init(this);
         CacheManager.init(this);
+        FontManager.init();
 
         VMRuntimeHack.preallocateHeap(AppSettings.current().heapPreallocate);
 

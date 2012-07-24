@@ -17,4 +17,8 @@
         <attr name="maxLines" format="integer" />
     </declare-styleable>
 
+    <declare-styleable name="org.emdev.ui.preference.FontPickerPreference">
+        <attr name="fontFamily" format="string" />
+    </declare-styleable>
+
 </resources>

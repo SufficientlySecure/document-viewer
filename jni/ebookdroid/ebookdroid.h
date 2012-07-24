@@ -8,8 +8,10 @@ extern "C"
 {
 #endif
 
-int getDescriptor(JNIEnv *env, jobject fd)
+int getDescriptor(JNIEnv *env, jobject fd);
 
+const char* GetStringUTFChars(JNIEnv *env, jstring jstr, jboolean* iscopy);
+void ReleaseStringUTFChars(JNIEnv *env, jstring jstr, const char* str);
 
 #ifdef __cplusplus
 }

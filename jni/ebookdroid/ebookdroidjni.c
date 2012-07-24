@@ -99,3 +99,18 @@ int getDescriptor(JNIEnv *env, jobject fd)
     jfieldID field_id = (*env)->GetFieldID(env, fd_class, "descriptor", "I");
     return (*env)->GetIntField(env, fd, field_id);
 }
+
+const char* GetStringUTFChars(JNIEnv *env, jstring jstr, jboolean* iscopy)
+{
+    return jstr != NULL ? (*env)->GetStringUTFChars(env, jstr, iscopy) : NULL ;
+}
+
+void ReleaseStringUTFChars(JNIEnv *env, jstring jstr, const char* str)
+{
+    if (jstr && str)
+    {
+        (*env)->ReleaseStringUTFChars(env, jstr, str);
+    }
+}
+
+

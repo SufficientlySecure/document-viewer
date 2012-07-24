@@ -41,8 +41,8 @@
     <string name="pref_symbolfontpack_title">Symbol font family</string>
     <string name="pref_symbolfontpack_summary">Define font pack using for symbol font family</string>
 
-    <string name="pref_dingbatfontpack_title">Dignbat font family</string>
-    <string name="pref_dingbatfontpack_summary">Define font pack using for dignbat font family</string>
+    <string name="pref_dingbatfontpack_title">Dingbat font family</string>
+    <string name="pref_dingbatfontpack_summary">Define font pack using for dingbat font family</string>
 
     <string name="pref_systemfontpack">Default Android fonts</string>
 

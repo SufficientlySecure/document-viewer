@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.emdev.BaseDroidApp;
 import org.emdev.common.fonts.data.FontFamily;
 import org.emdev.common.fonts.data.FontInfo;
 import org.emdev.common.fonts.data.FontPack;
@@ -26,7 +25,6 @@ public class ExtStorageFontProvider extends AbstractCustomFontProvider {
     public ExtStorageFontProvider(final File targetAppStorage) {
         fontsFolder = new File(targetAppStorage, "fonts");
         fontsFolder.mkdirs();
-
         fontsCatalog = new File(fontsFolder, "fonts.jso");
     }
 
@@ -38,7 +36,12 @@ public class ExtStorageFontProvider extends AbstractCustomFontProvider {
     @Override
     protected Typeface loadTypeface(final FontInfo fi) {
         final File f = getFontFile(fi);
-        return f.exists() ? Typeface.createFromFile(f) : null;
+        try {
+            return f.exists() ? Typeface.createFromFile(f) : null;
+        } catch (final Throwable th) {
+            th.printStackTrace();
+        }
+        return null;
     }
 
     public File getFontFile(final FontInfo fi) {

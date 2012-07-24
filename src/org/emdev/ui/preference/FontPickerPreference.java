@@ -31,18 +31,26 @@ public class FontPickerPreference extends ListPreference {
         final List<String> values = new ArrayList<String>();
         final List<String> entries = new ArrayList<String>();
 
-        values.add("");
-        entries.add(context.getString(R.string.pref_systemfontpack));
-
         if (type != null) {
+            final String suffix = ", " + type.getResValue();
+
+            values.add("");
+            entries.add(context.getString(R.string.pref_systemfontpack) + suffix);
             for (final FontPack fp : FontManager.external) {
                 final FontFamily family = fp.getFamily(type);
                 if (family != null) {
                     values.add(fp.name);
-                    entries.add(fp.name);
+                    entries.add(fp.name + suffix);
                 }
             }
         } else {
+            for (final FontPack fp : FontManager.system) {
+                for (FontFamily family : fp) {
+                    values.add(fp.name + ", " + family.toString());
+                    entries.add(fp.name + ", " + family.toString());
+                }
+            }
+
             for (final FontPack fp : FontManager.external) {
                 for (final FontFamily family : fp) {
                     values.add(fp.name + ", " + family.toString());

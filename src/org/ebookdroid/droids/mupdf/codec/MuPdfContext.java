@@ -7,11 +7,17 @@ import org.ebookdroid.core.codec.CodecDocument;
 
 import android.graphics.Bitmap;
 
+import java.util.Arrays;
+
 import org.emdev.common.fonts.FontManager;
 import org.emdev.common.fonts.data.FontFamilyType;
 import org.emdev.common.fonts.data.FontStyle;
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 
 public class MuPdfContext extends AbstractCodecContext {
+
+    public static final LogContext LCTX = LogManager.root().lctx("MuPdf");
 
     public static final Bitmap.Config BITMAP_CFG = Bitmap.Config.RGB_565;
 
@@ -25,19 +31,32 @@ public class MuPdfContext extends AbstractCodecContext {
         final AppSettings app = AppSettings.current();
 
         final String[] monoFonts = FontManager.getExternalFonts(app.monoFontPack, FontFamilyType.MONO);
+        LCTX.d("Mono fonts: " + Arrays.toString(monoFonts));
+
         setMonoFonts(monoFonts[FontStyle.REGULAR.ordinal()], monoFonts[FontStyle.ITALIC.ordinal()],
                 monoFonts[FontStyle.BOLD.ordinal()], monoFonts[FontStyle.BOLD_ITALIC.ordinal()]);
 
         final String[] sansFonts = FontManager.getExternalFonts(app.sansFontPack, FontFamilyType.SANS);
+        LCTX.d("Sans fonts: " + Arrays.toString(sansFonts));
+
         setSansFonts(sansFonts[FontStyle.REGULAR.ordinal()], sansFonts[FontStyle.ITALIC.ordinal()],
                 sansFonts[FontStyle.BOLD.ordinal()], sansFonts[FontStyle.BOLD_ITALIC.ordinal()]);
 
         final String[] serifFonts = FontManager.getExternalFonts(app.serifFontPack, FontFamilyType.SERIF);
+        LCTX.d("Serif fonts: " + Arrays.toString(serifFonts));
+
         setSerifFonts(serifFonts[FontStyle.REGULAR.ordinal()], serifFonts[FontStyle.ITALIC.ordinal()],
                 serifFonts[FontStyle.BOLD.ordinal()], serifFonts[FontStyle.BOLD_ITALIC.ordinal()]);
 
-        setSymbolFont(FontManager.getExternalFont(app.symbolFontPack, FontFamilyType.SYMBOL, FontStyle.REGULAR));
-        setDingbatFont(FontManager.getExternalFont(app.dingbatFontPack, FontFamilyType.DINGBAT, FontStyle.REGULAR));
+        final String symbolFont = FontManager.getExternalFont(app.symbolFontPack, FontFamilyType.SYMBOL,
+                FontStyle.REGULAR);
+        LCTX.d("Symbol font: " + symbolFont);
+        setSymbolFont(symbolFont);
+
+        final String dingbatFont = FontManager.getExternalFont(app.dingbatFontPack, FontFamilyType.DINGBAT,
+                FontStyle.REGULAR);
+        LCTX.d("Dingbat font: " + dingbatFont);
+        setDingbatFont(dingbatFont);
     }
 
     @Override

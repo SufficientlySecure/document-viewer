@@ -5,7 +5,6 @@ import java.util.Iterator;
 import org.emdev.common.fonts.IFontProvider;
 import org.emdev.common.fonts.typeface.TypefaceEx;
 import org.emdev.utils.collections.ArrayIterator;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,23 +41,23 @@ public class FontPack implements Iterable<FontFamily> {
         this.name = object.getString("name");
         this.types = new FontFamily[FontFamilyType.values().length];
 
-        JSONArray arr = object.getJSONArray("families");
-        for (int i = 0, n = arr.length(); i < n; i++) {
-            FontFamily ff = new FontFamily(arr.getJSONObject(i));
-            this.types[ff.type.ordinal()] = ff;
+        for (final FontFamilyType type : FontFamilyType.values()) {
+            final JSONObject ffObject = object.optJSONObject(type.getResValue());
+            if (ffObject != null) {
+                final FontFamily ff = new FontFamily(type, ffObject);
+                this.types[type.ordinal()] = ff;
+            }
         }
     }
 
     public JSONObject toJSON() throws JSONException {
-        JSONObject object = new JSONObject();
-        JSONArray arr = new JSONArray();
+        final JSONObject object = new JSONObject();
 
         object.put("name", name);
-        object.put("families", arr);
 
-        for (FontFamily ff : types) {
+        for (final FontFamily ff : types) {
             if (ff != null) {
-                arr.put(ff.toJSON());
+                object.put(ff.type.getResValue(), ff.toJSON());
             }
         }
 
@@ -79,10 +78,11 @@ public class FontPack implements Iterable<FontFamily> {
         return ff != null ? ff.fonts[style.ordinal()] : null;
     }
 
-    public TypefaceEx getTypeface(FontFamilyType type, FontStyle style) {
+    public TypefaceEx getTypeface(final FontFamilyType type, final FontStyle style) {
         return provider.getTypeface(this, type, style);
     }
 
+    @Override
     public String toString() {
         return name;
     }

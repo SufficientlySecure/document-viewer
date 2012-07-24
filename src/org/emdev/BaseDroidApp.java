@@ -35,7 +35,7 @@ public class BaseDroidApp extends Application {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see android.app.Application#onCreate()
      */
     @Override
@@ -62,7 +62,7 @@ public class BaseDroidApp extends Application {
             APP_VERSION = pi.versionName;
             APP_PACKAGE = pi.packageName;
             EXT_STORAGE = Environment.getExternalStorageDirectory();
-            APP_STORAGE = getAppStorage();
+            APP_STORAGE = getAppStorage(APP_PACKAGE);
 
             Log.i(APP_NAME, APP_NAME + " (" + APP_PACKAGE + ")" + " v" + APP_VERSION + "(" + pi.versionCode + ")");
 
@@ -90,10 +90,10 @@ public class BaseDroidApp extends Application {
         }
     }
 
-    protected File getAppStorage() {
+    protected File getAppStorage(final String appPackage) {
         File dir = EXT_STORAGE;
         if (dir != null) {
-            final File appDir = new File(dir, "." + BaseDroidApp.APP_PACKAGE);
+            final File appDir = new File(dir, "." + appPackage);
             if (appDir.isDirectory() || appDir.mkdir()) {
                 dir = appDir;
             }

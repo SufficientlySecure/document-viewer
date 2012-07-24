@@ -89,17 +89,17 @@
             android:summary="@string/pref_showanimicon_summary"
             android:title="@string/pref_showanimicon_title" />
 
-    	<org.emdev.ui.preference.ColorPickerPreference
+        <org.emdev.ui.preference.ColorPickerPreference
             android:key="link_highlight"
             android:summary="@string/pref_link_highlight_summary"
             android:title="@string/pref_link_highlight_title" />
 
-    	<org.emdev.ui.preference.ColorPickerPreference
+        <org.emdev.ui.preference.ColorPickerPreference
             android:key="search_highlight"
             android:summary="@string/pref_search_highlight_summary"
             android:title="@string/pref_search_highlight_title" />
 
-    	<org.emdev.ui.preference.ColorPickerPreference
+        <org.emdev.ui.preference.ColorPickerPreference
             android:key="current_search_highlight"
             android:summary="@string/pref_current_search_highlight_summary"
             android:title="@string/pref_current_search_highlight_title" />
@@ -360,175 +360,119 @@
 
         </PreferenceCategory>
 
-
-        <PreferenceCategory
-            android:key="brfiletypespecific"
-            android:summary="@string/pref_brfiletypespecific_summary"
-            android:title="@string/pref_brfiletypespecific_title" >
-
-            <PreferenceScreen
-                android:summary="@string/pref_brfiletypespecific_summary"
-                android:title="@string/pref_brfiletypespecific_title" >
-
-                <PreferenceCategory
-                    android:key="brfiletypespecificdjvu"
-                    android:summary="@string/pref_brfiletypespecificdjvu_summary"
-                    android:title="@string/pref_brfiletypespecificdjvu_title" >
-
-                    <ListPreference
-                        android:defaultValue="@string/pref_djvu_rendering_mode_0"
-                        android:entries="@array/pref_djvu_rendering_mode_entries"
-                        android:entryValues="@array/pref_djvu_rendering_mode_values"
-                        android:key="@string/pref_djvu_rendering_mode_id"
-                        android:summary="@string/pref_djvu_rendering_mode_summary"
-                        android:title="@string/pref_djvu_rendering_mode_title" />
-
-                </PreferenceCategory>
-
-                <PreferenceCategory
-                    android:key="brfiletypespecificpdf"
-                    android:summary="@string/pref_brfiletypespecificpdf_summary"
-                    android:title="@string/pref_brfiletypespecificpdf_title" >
-
-                    <CheckBoxPreference
-                        android:defaultValue="@string/pref_customdpi_defvalue"
-                        android:key="@string/pref_customdpi_id"
-                        android:summary="@string/pref_customdpi_summary"
-                        android:title="@string/pref_customdpi_title" />
-
-                    <org.emdev.ui.preference.SeekBarPreference
-                        android:defaultValue="@string/pref_xdpi_defvalue"
-                        android:dependency="@string/pref_customdpi_id"
-                        android:key="@string/pref_xdpi_id"
-                        ebookdroid:minValue="@string/pref_xdpi_minvalue"
-                        ebookdroid:maxValue="@string/pref_xdpi_maxvalue"
-                        android:summary="@string/pref_xdpi_summary"
-                        android:title="@string/pref_xdpi_title" />
-
-                    <org.emdev.ui.preference.SeekBarPreference
-                        android:defaultValue="@string/pref_ydpi_defvalue"
-                        android:dependency="@string/pref_customdpi_id"
-                        android:key="@string/pref_ydpi_id"
-                        ebookdroid:minValue="@string/pref_ydpi_minvalue"
-                        ebookdroid:maxValue="@string/pref_ydpi_maxvalue"
-                        android:summary="@string/pref_ydpi_summary"
-                        android:title="@string/pref_ydpi_title" />
-
-                </PreferenceCategory>
-
-                <PreferenceCategory
-                    android:key="brfiletypespecificfb2"
-                    android:summary="@string/pref_brfiletypespecificfb2_summary"
-                    android:title="@string/pref_brfiletypespecificfb2_title" >
-
-                    <ListPreference
-                        android:defaultValue="@string/pref_fontsize_normal"
-                        android:entries="@array/pref_fontsize_entries"
-                        android:entryValues="@array/pref_fontsize_values"
-                        android:key="@string/pref_fontsize_id"
-                        android:summary="@string/pref_fontsize_summary"
-                        android:title="@string/pref_fontsize_title" />
-
-                    <CheckBoxPreference
-                        android:defaultValue="@string/pref_fb2hyphen_defvalue"
-                        android:key="@string/pref_fb2hyphen_id"
-                        android:summary="@string/pref_fb2hyphen_summary"
-                        android:title="@string/pref_fb2hyphen_title" />
-
-                    <CheckBoxPreference
-                        android:defaultValue="@string/pref_fb2cacheimages_defvalue"
-                        android:key="@string/pref_fb2cacheimages_id"
-                        android:summary="@string/pref_fb2cacheimages_summary"
-                        android:title="@string/pref_fb2cacheimages_title" />
-
-                </PreferenceCategory>
-
-            </PreferenceScreen>
-
-        </PreferenceCategory>
-
     </PreferenceScreen>
 
     <PreferenceScreen
-        android:key="book_prefs"
-        android:summary="@string/pref_book_category_summary"
-        android:title="@string/pref_book_category" >
+        android:summary="@string/pref_brfiletypespecific_summary"
+        android:title="@string/pref_brfiletypespecific_title" >
 
-        <CheckBoxPreference
-            android:defaultValue="@string/pref_splitpages_defvalue"
-            android:key="@string/pref_book_splitpages_id"
-            android:summary="@string/pref_splitpages_summary"
-            android:title="@string/pref_splitpages_title" />
-
-        <CheckBoxPreference
-            android:defaultValue="@string/pref_croppages_defvalue"
-            android:key="@string/pref_book_croppages_id"
-            android:summary="@string/pref_croppages_summary"
-            android:title="@string/pref_croppages_title" />
+    <PreferenceCategory
+        android:key="brfiletypespecificdjvu"
+        android:summary="@string/pref_brfiletypespecificdjvu_summary"
+        android:title="@string/pref_brfiletypespecificdjvu_title" >
 
         <ListPreference
-            android:defaultValue="@string/pref_viewmode_vertical_scroll"
-            android:entries="@array/pref_viewmode_entries"
-            android:entryValues="@array/pref_viewmode_values"
-            android:key="@string/pref_book_viewmode_id"
-            android:summary="@string/pref_viewmode_summary"
-            android:title="@string/pref_viewmode_title" />
+            android:defaultValue="@string/pref_djvu_rendering_mode_0"
+            android:entries="@array/pref_djvu_rendering_mode_entries"
+            android:entryValues="@array/pref_djvu_rendering_mode_values"
+            android:key="@string/pref_djvu_rendering_mode_id"
+            android:summary="@string/pref_djvu_rendering_mode_summary"
+            android:title="@string/pref_djvu_rendering_mode_title" />
 
-        <PreferenceCategory
-            android:summary="@string/pref_singlepage_category_summary"
-            android:title="@string/pref_singlepage_category" >
+    </PreferenceCategory>
 
-            <ListPreference
-                android:defaultValue="@string/pref_align_auto"
-                android:entries="@array/pref_align_entries"
-                android:entryValues="@array/pref_align_values"
-                android:key="@string/pref_book_align_id"
-                android:summary="@string/pref_align_summary"
-                android:title="@string/pref_align_title" />
+    <PreferenceCategory
+        android:key="brfiletypespecificpdf"
+        android:summary="@string/pref_brfiletypespecificpdf_summary"
+        android:title="@string/pref_brfiletypespecificpdf_title" >
 
-            <ListPreference
-                android:defaultValue="@string/pref_animation_type_none"
-                android:entries="@array/pref_animation_type_entries"
-                android:entryValues="@array/pref_animation_type_values"
-                android:key="@string/pref_book_animation_type_id"
-                android:summary="@string/pref_animationtype_summary"
-                android:title="@string/pref_animationtype_title" />
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_customdpi_defvalue"
+            android:key="@string/pref_customdpi_id"
+            android:summary="@string/pref_customdpi_summary"
+            android:title="@string/pref_customdpi_title" />
 
-        </PreferenceCategory>
+        <org.emdev.ui.preference.SeekBarPreference
+            android:defaultValue="@string/pref_xdpi_defvalue"
+            android:dependency="@string/pref_customdpi_id"
+            android:key="@string/pref_xdpi_id"
+            android:summary="@string/pref_xdpi_summary"
+            android:title="@string/pref_xdpi_title"
+            ebookdroid:maxValue="@string/pref_xdpi_maxvalue"
+            ebookdroid:minValue="@string/pref_xdpi_minvalue" />
 
-        <PreferenceCategory
-            android:summary="@string/pref_postprocessing_summary"
-            android:title="@string/pref_postprocessing_category" >
+        <org.emdev.ui.preference.SeekBarPreference
+            android:defaultValue="@string/pref_ydpi_defvalue"
+            android:dependency="@string/pref_customdpi_id"
+            android:key="@string/pref_ydpi_id"
+            android:summary="@string/pref_ydpi_summary"
+            android:title="@string/pref_ydpi_title"
+            ebookdroid:maxValue="@string/pref_ydpi_maxvalue"
+            ebookdroid:minValue="@string/pref_ydpi_minvalue" />
 
-            <CheckBoxPreference
-                android:defaultValue="@string/pref_nightmode_defvalue"
-                android:key="@string/pref_book_nightmode_id"
-                android:summary="@string/pref_nightmode_summary"
-                android:title="@string/pref_nightmode_title" />
+        <org.emdev.ui.preference.FontPickerPreference
+            android:defaultValue="@string/pref_monofontpack_defvalue"
+            android:key="@string/pref_monofontpack_id"
+            android:summary="@string/pref_monofontpack_summary"
+            android:title="@string/pref_monofontpack_title"
+            ebookdroid:fontFamily="mono" />
 
-            <org.emdev.ui.preference.SeekBarPreference
-                android:defaultValue="@string/pref_contrast_defvalue"
-                android:key="@string/pref_book_contrast_id"
-                ebookdroid:minValue="@string/pref_contrast_minvalue"
-                ebookdroid:maxValue="@string/pref_contrast_maxvalue"
-                android:summary="@string/pref_contrast_summary"
-                android:title="@string/pref_contrast_title" />
+        <org.emdev.ui.preference.FontPickerPreference
+            android:defaultValue="@string/pref_sansfontpack_defvalue"
+            android:key="@string/pref_sansfontpack_id"
+            android:summary="@string/pref_sansfontpack_summary"
+            android:title="@string/pref_sansfontpack_title"
+            ebookdroid:fontFamily="sans" />
 
-            <org.emdev.ui.preference.SeekBarPreference
-                android:defaultValue="@string/pref_exposure_defvalue"
-                android:key="@string/pref_book_exposure_id"
-                ebookdroid:minValue="@string/pref_exposure_minvalue"
-                ebookdroid:maxValue="@string/pref_exposure_maxvalue"
-                android:summary="@string/pref_exposure_summary"
-                android:title="@string/pref_exposure_title" />
+        <org.emdev.ui.preference.FontPickerPreference
+            android:defaultValue="@string/pref_seriffontpack_defvalue"
+            android:key="@string/pref_seriffontpack_id"
+            android:summary="@string/pref_seriffontpack_summary"
+            android:title="@string/pref_seriffontpack_title"
+            ebookdroid:fontFamily="serif" />
 
-            <CheckBoxPreference
-                android:defaultValue="@string/pref_autolevels_defvalue"
-                android:key="@string/pref_book_autolevels_id"
-                android:summary="@string/pref_autolevels_summary"
-                android:title="@string/pref_autolevels_title" />
+        <org.emdev.ui.preference.FontPickerPreference
+            android:defaultValue="@string/pref_symbolfontpack_defvalue"
+            android:key="@string/pref_symbolfontpack_id"
+            android:summary="@string/pref_symbolfontpack_summary"
+            android:title="@string/pref_symbolfontpack_title"
+            ebookdroid:fontFamily="symbol" />
 
-        </PreferenceCategory>
+        <org.emdev.ui.preference.FontPickerPreference
+            android:defaultValue="@string/pref_dingbatfontpack_defvalue"
+            android:key="@string/pref_dingbatfontpack_id"
+            android:summary="@string/pref_dingbatfontpack_summary"
+            android:title="@string/pref_dingbatfontpack_title"
+            ebookdroid:fontFamily="dingbat" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="brfiletypespecificfb2"
+        android:summary="@string/pref_brfiletypespecificfb2_summary"
+        android:title="@string/pref_brfiletypespecificfb2_title" >
+
+        <ListPreference
+            android:defaultValue="@string/pref_fontsize_normal"
+            android:entries="@array/pref_fontsize_entries"
+            android:entryValues="@array/pref_fontsize_values"
+            android:key="@string/pref_fontsize_id"
+            android:summary="@string/pref_fontsize_summary"
+            android:title="@string/pref_fontsize_title" />
+
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_fb2hyphen_defvalue"
+            android:key="@string/pref_fb2hyphen_id"
+            android:summary="@string/pref_fb2hyphen_summary"
+            android:title="@string/pref_fb2hyphen_title" />
+
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_fb2cacheimages_defvalue"
+            android:key="@string/pref_fb2cacheimages_id"
+            android:summary="@string/pref_fb2cacheimages_summary"
+            android:title="@string/pref_fb2cacheimages_title" />
+
+    </PreferenceCategory>
 
     </PreferenceScreen>
 

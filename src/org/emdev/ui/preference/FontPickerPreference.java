@@ -1,5 +1,7 @@
 package org.emdev.ui.preference;
 
+import org.ebookdroid.R;
+
 import android.content.Context;
 import android.preference.ListPreference;
 import android.util.AttributeSet;
@@ -30,7 +32,7 @@ public class FontPickerPreference extends ListPreference {
         final List<String> entries = new ArrayList<String>();
 
         values.add("");
-        entries.add("");
+        entries.add(context.getString(R.string.pref_systemfontpack));
 
         if (type != null) {
             for (final FontPack fp : FontManager.external) {

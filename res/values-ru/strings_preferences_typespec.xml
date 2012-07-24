@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_brfiletypespecific_title">"Особые настройки"</string>
+    <string name="pref_brfiletypespecific_summary">"Настройки специфичные для формата"</string>
+<!--<string name="pref_brfiletypespecificdjvu_title">"DJVU"</string>-->
+    <string name="pref_brfiletypespecificdjvu_summary">"Настройки для DJVU"</string>
+    <string name="pref_djvu_rendering_mode_title">"Режим отрисовки"</string>
+    <string name="pref_djvu_rendering_mode_summary">"Режим отрисовки страницы"</string>
+    <string name="list_djvu_rendering_mode_0">"Цветной"</string>
+    <string name="list_djvu_rendering_mode_1">"Черно/белый"</string>
+    <string name="list_djvu_rendering_mode_2">"Только цвет"</string>
+    <string name="list_djvu_rendering_mode_3">"Только маска"</string>
+    <string name="list_djvu_rendering_mode_4">"Только фоновый слой"</string>
+    <string name="list_djvu_rendering_mode_5">"Только основной слой"</string>
+<!--<string name="pref_brfiletypespecificpdf_title">"PDF"</string>-->
+    <string name="pref_brfiletypespecificpdf_summary">"Тонкие настройки декодирования PDF"</string>
+    <string name="pref_customdpi_title">"Использовать особое значение DPI"</string>
+    <string name="pref_customdpi_summary">"Задайте ниже пользовательское значение DPI"</string>
+<!--<string name="pref_xdpi_title">"X DPI"</string>-->
+<!--<string name="pref_xdpi_summary">"X DPI"</string>-->
+<!--<string name="pref_ydpi_title">"Y DPI"</string>-->
+<!--<string name="pref_ydpi_summary">"Y DPI"</string>-->
+<!--<string name="pref_monofontpack_title">"Monospace font family"</string>-->
+<!--<string name="pref_monofontpack_summary">"Define font pack using for monospace font family"</string>-->
+<!--<string name="pref_sansfontpack_title">"Sans font family"</string>-->
+<!--<string name="pref_sansfontpack_summary">"Define font pack using for sans font family"</string>-->
+<!--<string name="pref_seriffontpack_title">"Serif font family"</string>-->
+<!--<string name="pref_seriffontpack_summary">"Define font pack using for serif font family"</string>-->
+<!--<string name="pref_symbolfontpack_title">"Symbol font family"</string>-->
+<!--<string name="pref_symbolfontpack_summary">"Define font pack using for symbol font family"</string>-->
+<!--<string name="pref_dingbatfontpack_title">"Dignbat font family"</string>-->
+<!--<string name="pref_dingbatfontpack_summary">"Define font pack using for dignbat font family"</string>-->
+<!--<string name="pref_systemfontpack">"Default Android fonts"</string>-->
+<!--<string name="pref_brfiletypespecificfb2_title">"FB2"</string>-->
+    <string name="pref_brfiletypespecificfb2_summary">"Тонкие настройки декодирования FB2"</string>
+    <string name="pref_fontsize_title">"Размер шрифта"</string>
+    <string name="pref_fontsize_summary">"Базовый размер шрифта"</string>
+    <string name="list_fontsize_tiny">"Крохотный"</string>
+    <string name="list_fontsize_small">"Маленький"</string>
+    <string name="list_fontsize_normal">"Нормальный"</string>
+    <string name="list_fontsize_large">"Большой"</string>
+    <string name="list_fontsize_huge">"Огромный"</string>
+    <string name="pref_fb2hyphen_title">"Разрешить переносы"</string>
+    <string name="pref_fb2hyphen_summary">"Расстановка переносов по алгоритму Христова, Дымченко и Ваpсанофьева"</string>
+    <string name="pref_fb2cacheimages_title">"Кешировать изображения на диск"</string>
+    <string name="pref_fb2cacheimages_summary">"Времменно сохранять картинки на диск для уменьшения использования памяти"</string>
+
+</resources>

@@ -108,5 +108,7 @@
 <!--<string name="opds_downloading_type_dlg_title">"Select type of book to download"</string>-->
 <!--<string name="opds_downloading_dlg_title">"Downloading book as…"</string>-->
 <!--<string name="opds_downloading_dlg_raw_type">"Raw type"</string>-->
+<!--<string name="notification_file_add">"File added to library"</string>-->
+<!--<string name="notification_file_delete">"File removed from library"</string>-->
 
 </resources>

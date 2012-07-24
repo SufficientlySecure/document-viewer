@@ -17,9 +17,9 @@
             android:title="@string/pref_render_category"
             android:summary="@string/pref_render_category_summary" />
 
-    <header android:fragment="org.ebookdroid.ui.settings.fragments.BookFragment"
-            android:title="@string/pref_book_category"
-            android:summary="@string/pref_book_category_summary" />
+    <header android:fragment="org.ebookdroid.ui.settings.fragments.TypeSpecificFragment"
+            android:title="@string/pref_brfiletypespecific_title"
+            android:summary="@string/pref_brfiletypespecific_summary" />
 
     <header android:fragment="org.ebookdroid.ui.settings.fragments.BrowserFragment"
             android:title="@string/pref_browser_category"

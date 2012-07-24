@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_brfiletypespecific_title">"Sondereinstellungen"</string>
+    <string name="pref_brfiletypespecific_summary">"Spezifische Einstellungen für das Format"</string>
+<!--<string name="pref_brfiletypespecificdjvu_title">"DJVU"</string>-->
+    <string name="pref_brfiletypespecificdjvu_summary">"Einstellungen für DJVU"</string>
+    <string name="pref_djvu_rendering_mode_title">"Abzeichnungsmodus"</string>
+    <string name="pref_djvu_rendering_mode_summary">"Seitenabzeichnungsmodus"</string>
+    <string name="list_djvu_rendering_mode_0">"Farbe"</string>
+    <string name="list_djvu_rendering_mode_1">"Schwarz/weiß"</string>
+    <string name="list_djvu_rendering_mode_2">"Nur Farbe"</string>
+    <string name="list_djvu_rendering_mode_3">"Nur Maske"</string>
+    <string name="list_djvu_rendering_mode_4">"Nur Hintergrundschicht"</string>
+    <string name="list_djvu_rendering_mode_5">"Nur Hauptschicht"</string>
+<!--<string name="pref_brfiletypespecificpdf_title">"PDF"</string>-->
+<!--<string name="pref_brfiletypespecificpdf_summary">"PDF format specific settings"</string>-->
+<!--<string name="pref_customdpi_title">"Use custom DPI"</string>-->
+<!--<string name="pref_customdpi_summary">"Define custom DPI values below"</string>-->
+<!--<string name="pref_xdpi_title">"X DPI"</string>-->
+<!--<string name="pref_xdpi_summary">"X DPI"</string>-->
+<!--<string name="pref_ydpi_title">"Y DPI"</string>-->
+<!--<string name="pref_ydpi_summary">"Y DPI"</string>-->
+<!--<string name="pref_monofontpack_title">"Monospace font family"</string>-->
+<!--<string name="pref_monofontpack_summary">"Define font pack using for monospace font family"</string>-->
+<!--<string name="pref_sansfontpack_title">"Sans font family"</string>-->
+<!--<string name="pref_sansfontpack_summary">"Define font pack using for sans font family"</string>-->
+<!--<string name="pref_seriffontpack_title">"Serif font family"</string>-->
+<!--<string name="pref_seriffontpack_summary">"Define font pack using for serif font family"</string>-->
+<!--<string name="pref_symbolfontpack_title">"Symbol font family"</string>-->
+<!--<string name="pref_symbolfontpack_summary">"Define font pack using for symbol font family"</string>-->
+<!--<string name="pref_dingbatfontpack_title">"Dignbat font family"</string>-->
+<!--<string name="pref_dingbatfontpack_summary">"Define font pack using for dignbat font family"</string>-->
+<!--<string name="pref_systemfontpack">"Default Android fonts"</string>-->
+<!--<string name="pref_brfiletypespecificfb2_title">"FB2"</string>-->
+<!--<string name="pref_brfiletypespecificfb2_summary">"FB2 format specific settings"</string>-->
+<!--<string name="pref_fontsize_title">"Font size"</string>-->
+<!--<string name="pref_fontsize_summary">"Base font size"</string>-->
+<!--<string name="list_fontsize_tiny">"Tiny"</string>-->
+<!--<string name="list_fontsize_small">"Small"</string>-->
+<!--<string name="list_fontsize_normal">"Normal"</string>-->
+<!--<string name="list_fontsize_large">"Large"</string>-->
+<!--<string name="list_fontsize_huge">"Huge"</string>-->
+<!--<string name="pref_fb2hyphen_title">"Enable Hyphenation"</string>-->
+<!--<string name="pref_fb2hyphen_summary">"Experimental Hyphenation implementation"</string>-->
+<!--<string name="pref_fb2cacheimages_title">"Cache images on disk"</string>-->
+<!--<string name="pref_fb2cacheimages_summary">"Temporary store document images on disk to reduce memory usage"</string>-->
+
+</resources>

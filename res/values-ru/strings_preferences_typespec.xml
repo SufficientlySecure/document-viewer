@@ -36,6 +36,8 @@
     <string name="pref_brfiletypespecificfb2_summary">"Тонкие настройки декодирования FB2"</string>
     <string name="pref_fontsize_title">"Размер шрифта"</string>
     <string name="pref_fontsize_summary">"Базовый размер шрифта"</string>
+<!--<string name="pref_fb2fontpack_title">"FB2 font family"</string>-->
+<!--<string name="pref_fb2fontpack_summary">"Define font pack using for FB2 rendering"</string>-->
     <string name="list_fontsize_tiny">"Крохотный"</string>
     <string name="list_fontsize_small">"Маленький"</string>
     <string name="list_fontsize_normal">"Нормальный"</string>

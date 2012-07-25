@@ -2,7 +2,8 @@ package org.ebookdroid.droids.fb2.codec;
 
 import java.util.LinkedList;
 
-import org.emdev.common.textmarkup.FontStyle;
+import org.emdev.common.fonts.data.FontStyle;
+import org.emdev.common.textmarkup.TextStyle;
 import org.emdev.common.textmarkup.JustificationMode;
 import org.emdev.common.textmarkup.RenderingStyle;
 import org.xml.sax.helpers.DefaultHandler;
@@ -13,9 +14,19 @@ public class FB2BaseHandler extends DefaultHandler {
 
     protected final int[] lengths = new int[10000];
 
-    protected RenderingStyle crs = new RenderingStyle(FontStyle.TEXT);
+    protected RenderingStyle crs;
 
     private final LinkedList<RenderingStyle> renderingStates = new LinkedList<RenderingStyle>();
+
+    public final ParsedContent parsedContent;
+    String currentStream = null;
+    String oldStream = null;
+
+    public FB2BaseHandler(ParsedContent content) {
+        parsedContent = content;
+        currentStream = null;
+        crs = new RenderingStyle(content, TextStyle.TEXT);
+    }
 
     protected final RenderingStyle setPrevStyle() {
         if (!renderingStates.isEmpty()) {
@@ -24,7 +35,7 @@ public class FB2BaseHandler extends DefaultHandler {
         return crs;
     }
 
-    protected final RenderingStyle setTitleStyle(final FontStyle font) {
+    protected final RenderingStyle setTitleStyle(final TextStyle font) {
         renderingStates.addFirst(crs);
         crs = new RenderingStyle(crs, font, JustificationMode.Center);
         return crs;
@@ -32,13 +43,13 @@ public class FB2BaseHandler extends DefaultHandler {
 
     protected final RenderingStyle setEpigraphStyle() {
         renderingStates.addFirst(crs);
-        crs = new RenderingStyle(crs, JustificationMode.Right, RenderingStyle.ITALIC_TF);
+        crs = new RenderingStyle(parsedContent, crs, JustificationMode.Right, org.emdev.common.fonts.data.FontStyle.ITALIC);
         return crs;
     }
 
     protected final RenderingStyle setBoldStyle() {
         renderingStates.addFirst(crs);
-        crs = new RenderingStyle(crs, true);
+        crs = new RenderingStyle(parsedContent, crs, true);
         return crs;
     }
 
@@ -62,27 +73,25 @@ public class FB2BaseHandler extends DefaultHandler {
 
     protected final RenderingStyle setEmphasisStyle() {
         renderingStates.addFirst(crs);
-        crs = new RenderingStyle(crs, RenderingStyle.ITALIC_TF);
+        crs = new RenderingStyle(parsedContent, crs, FontStyle.ITALIC);
         return crs;
     }
 
     protected final RenderingStyle setSubtitleStyle() {
         renderingStates.addFirst(crs);
-        crs = new RenderingStyle(crs, FontStyle.SUBTITLE, JustificationMode.Center, true,
-                RenderingStyle.NORMAL_TF);
+        crs = new RenderingStyle(parsedContent, crs, TextStyle.SUBTITLE, JustificationMode.Center, FontStyle.BOLD);
         return crs;
     }
 
     protected final RenderingStyle setTextAuthorStyle(final boolean italic) {
         renderingStates.addFirst(crs);
-        crs = new RenderingStyle(crs, FontStyle.TEXT, JustificationMode.Right, false,
-                italic ? RenderingStyle.ITALIC_TF : RenderingStyle.NORMAL_TF);
+        crs = new RenderingStyle(parsedContent, crs, TextStyle.TEXT, JustificationMode.Right,italic ? FontStyle.ITALIC : FontStyle.REGULAR);
         return crs;
     }
 
     protected final RenderingStyle setPoemStyle() {
         renderingStates.addFirst(crs);
-        crs = new RenderingStyle(crs, FontStyle.TEXT, JustificationMode.Left, false, RenderingStyle.ITALIC_TF);
+        crs = new RenderingStyle(parsedContent, crs, TextStyle.TEXT, JustificationMode.Left, FontStyle.ITALIC);
         return crs;
     }
 }

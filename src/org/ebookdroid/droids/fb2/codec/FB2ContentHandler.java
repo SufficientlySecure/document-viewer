@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.emdev.common.textmarkup.FontStyle;
 import org.emdev.common.textmarkup.JustificationMode;
 import org.emdev.common.textmarkup.MarkupElement;
 import org.emdev.common.textmarkup.MarkupEndDocument;
@@ -16,11 +15,12 @@ import org.emdev.common.textmarkup.MarkupNoSpace;
 import org.emdev.common.textmarkup.MarkupNote;
 import org.emdev.common.textmarkup.MarkupParagraphEnd;
 import org.emdev.common.textmarkup.MarkupTable;
+import org.emdev.common.textmarkup.MarkupTable.Cell;
 import org.emdev.common.textmarkup.MarkupTitle;
 import org.emdev.common.textmarkup.RenderingStyle;
-import org.emdev.common.textmarkup.Words;
-import org.emdev.common.textmarkup.MarkupTable.Cell;
 import org.emdev.common.textmarkup.RenderingStyle.Script;
+import org.emdev.common.textmarkup.TextStyle;
+import org.emdev.common.textmarkup.Words;
 import org.emdev.common.textmarkup.line.TextElement;
 import org.emdev.utils.StringUtils;
 import org.xml.sax.Attributes;
@@ -56,18 +56,13 @@ public class FB2ContentHandler extends FB2BaseHandler {
 
     private boolean skipContent = true;
 
-    public final ParsedContent parsedContent;
-    String currentStream = null;
-    String oldStream = null;
-
     private MarkupTable currentTable;
 
     private byte[] tagStack = new byte[10];
     private int tagStackSize = 0;
 
     public FB2ContentHandler(ParsedContent content) {
-        parsedContent = content;
-        currentStream = null;
+        super(content);
     }
 
     @Override
@@ -119,7 +114,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
                         parsedContent.getMarkupStream(null).add(new MarkupEndDocument());
                     }
                     parsingNotes = true;
-                    crs = new RenderingStyle(FontStyle.FOOTNOTE);
+                    crs = new RenderingStyle(parsedContent, TextStyle.FOOTNOTE);
                 }
                 break;
             case FB2Tag.SECTION:
@@ -137,7 +132,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
                 break;
             case FB2Tag.TITLE:
                 if (!parsingNotes) {
-                    setTitleStyle(!inSection ? FontStyle.MAIN_TITLE : FontStyle.SECTION_TITLE);
+                    setTitleStyle(!inSection ? TextStyle.MAIN_TITLE : TextStyle.SECTION_TITLE);
                     markupStream.add(crs.jm);
                     markupStream.add(emptyLine(crs.textSize));
                     markupStream.add(MarkupParagraphEnd.E);

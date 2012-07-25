@@ -14,9 +14,15 @@ import org.emdev.common.fonts.typeface.TypefaceEx;
 
 public class SystemFontProvider extends AbstractFontProvider {
 
+    public static final String SYSTEM_FONT_PACK = "System";
+
+    public SystemFontProvider() {
+        super(0, SYSTEM_FONT_PACK);
+    }
+
     @Override
     protected List<FontPack> load() {
-        return Arrays.asList((FontPack) new SystemFontPack(this, "System"));
+        return Arrays.asList((FontPack) new SystemFontPack(this, SYSTEM_FONT_PACK));
     }
 
     @Override
@@ -25,7 +31,7 @@ public class SystemFontProvider extends AbstractFontProvider {
         final Typeface family = type.getSystem();
         final Typeface target = Typeface.create(family, st);
         final boolean fake = (st & Typeface.BOLD) != (target.getStyle() & Typeface.BOLD);
-        return new TypefaceEx(target, style, fake);
+        return new TypefaceEx(fp, type, style, target, fake);
     }
 
     private static class SystemFontPack extends FontPack {
@@ -48,10 +54,5 @@ public class SystemFontProvider extends AbstractFontProvider {
                 this.fonts[fs.ordinal()] = fi;
             }
         }
-    }
-
-    @Override
-    public String toString() {
-        return "System";
     }
 }

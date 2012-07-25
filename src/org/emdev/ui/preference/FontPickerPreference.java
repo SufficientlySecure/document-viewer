@@ -36,6 +36,7 @@ public class FontPickerPreference extends ListPreference {
 
             values.add("");
             entries.add(context.getString(R.string.pref_systemfontpack) + suffix);
+
             for (final FontPack fp : FontManager.external) {
                 final FontFamily family = fp.getFamily(type);
                 if (family != null) {
@@ -46,15 +47,19 @@ public class FontPickerPreference extends ListPreference {
         } else {
             for (final FontPack fp : FontManager.system) {
                 for (FontFamily family : fp) {
-                    values.add(fp.name + ", " + family.toString());
-                    entries.add(fp.name + ", " + family.toString());
+                    if (family.type != FontFamilyType.SYMBOL && family.type != FontFamilyType.DINGBAT) {
+                        values.add(fp.name + ", " + family.toString());
+                        entries.add(fp.name + ", " + family.toString());
+                    }
                 }
             }
 
             for (final FontPack fp : FontManager.external) {
                 for (final FontFamily family : fp) {
-                    values.add(fp.name + ", " + family.toString());
-                    entries.add(fp.name + ", " + family.toString());
+                    if (family.type != FontFamilyType.SYMBOL && family.type != FontFamilyType.DINGBAT) {
+                        values.add(fp.name + ", " + family.toString());
+                        entries.add(fp.name + ", " + family.toString());
+                    }
                 }
             }
         }

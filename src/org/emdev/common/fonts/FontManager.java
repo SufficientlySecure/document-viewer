@@ -2,12 +2,16 @@ package org.emdev.common.fonts;
 
 import org.ebookdroid.EBookDroidApp;
 
+import android.util.SparseArray;
+
 import java.io.File;
+import java.lang.ref.WeakReference;
 
 import org.emdev.common.fonts.data.FontFamilyType;
 import org.emdev.common.fonts.data.FontInfo;
 import org.emdev.common.fonts.data.FontPack;
 import org.emdev.common.fonts.data.FontStyle;
+import org.emdev.common.fonts.typeface.TypefaceEx;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.enums.EnumUtils;
 
@@ -17,13 +21,50 @@ public class FontManager {
     public static final AssetsFontProvider assets = new AssetsFontProvider();
     public static final ExtStorageFontProvider external = new ExtStorageFontProvider(EBookDroidApp.APP_STORAGE);
 
+    private static final SparseArray<WeakReference<TypefaceEx>> fonts = new SparseArray<WeakReference<TypefaceEx>>();
+
     public static void init() {
         system.init();
         assets.init();
         external.init();
     }
 
-    public static String getExternalFont(final String fontAndFamily, final FontFamilyType defaultFamily, final FontStyle style) {
+    public static TypefaceEx getFont(final String fontAndFamily) {
+        return getFont(fontAndFamily, FontFamilyType.SERIF, FontStyle.REGULAR);
+    }
+
+    public static TypefaceEx getFont(final String fontAndFamily, final FontStyle style) {
+        return getFont(fontAndFamily, FontFamilyType.SERIF, style);
+    }
+
+    public static TypefaceEx getFont(final String fontAndFamily, final FontFamilyType defaultFamily,
+            final FontStyle style) {
+
+        final String[] arr = LengthUtils.safeString(fontAndFamily).split(",");
+        final String fontPackName = arr[0].trim();
+        final FontFamilyType type = getFontFamily(arr, defaultFamily);
+
+        FontPack fontPack = external.getFontPack(fontPackName);
+        if (fontPack == null) {
+            fontPack = assets.getFontPack(fontPackName);
+            if (fontPack == null) {
+                fontPack = system.getFontPack(SystemFontProvider.SYSTEM_FONT_PACK);
+            }
+        }
+
+        final int id = TypefaceEx.calculateId(fontPack, type, style);
+        final WeakReference<TypefaceEx> res = fonts.get(id);
+        TypefaceEx result = res != null ? res.get() : null;
+        if (result == null) {
+            result = fontPack.getTypeface(type, style);
+            fonts.put(id, new WeakReference<TypefaceEx>(result));
+        }
+
+        return result;
+    }
+
+    public static String getExternalFont(final String fontAndFamily, final FontFamilyType defaultFamily,
+            final FontStyle style) {
         final String[] arr = LengthUtils.safeString(fontAndFamily).split(",");
         final String fontPackName = arr[0].trim();
         final FontFamilyType type = getFontFamily(arr, defaultFamily);

@@ -23,6 +23,8 @@ public class ExtStorageFontProvider extends AbstractCustomFontProvider {
     private final File fontsCatalog;
 
     public ExtStorageFontProvider(final File targetAppStorage) {
+        super(2, "External");
+
         fontsFolder = new File(targetAppStorage, "fonts");
         fontsFolder.mkdirs();
         fontsCatalog = new File(fontsFolder, "fonts.jso");
@@ -122,10 +124,5 @@ public class ExtStorageFontProvider extends AbstractCustomFontProvider {
                 }
             }
         }
-    }
-
-    @Override
-    public String toString() {
-        return "External Storage";
     }
 }

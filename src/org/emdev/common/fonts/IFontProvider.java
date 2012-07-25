@@ -7,6 +7,12 @@ import org.emdev.common.fonts.typeface.TypefaceEx;
 
 public interface IFontProvider extends Iterable<FontPack> {
 
+    int getId();
+
+    int getNewPackId();
+
+    String getName();
+
     FontPack getFontPack(final String name);
 
     TypefaceEx getTypeface(FontPack fp, FontFamilyType type, FontStyle style);

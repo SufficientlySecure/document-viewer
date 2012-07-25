@@ -204,6 +204,9 @@ public interface AppPreferences {
 
     /* =============== FB2 Format-specific settings =============== */
 
+    StringPreferenceDefinition FB2_FONT_PACK = new StringPreferenceDefinition(pref_fb2fontpack_id,
+            pref_fb2fontpack_defvalue);
+
     EnumPreferenceDefinition<FontSize> FB2_FONT_SIZE = new EnumPreferenceDefinition<FontSize>(FontSize.class,
             pref_fontsize_id, pref_fontsize_normal);
 

@@ -1,17 +1,14 @@
 package org.emdev.common.textmarkup;
 
-import android.graphics.Typeface;
+import org.ebookdroid.droids.fb2.codec.ParsedContent;
+
 import android.util.SparseArray;
 
-import org.emdev.BaseDroidApp;
+import org.emdev.common.fonts.data.FontStyle;
+import org.emdev.common.fonts.typeface.TypefaceEx;
 import org.emdev.common.textmarkup.line.TextElement;
 
 public class RenderingStyle {
-
-    public static final Typeface NORMAL_TF = Typeface.createFromAsset(BaseDroidApp.context.getAssets(),
-            "fonts/academy.ttf");
-    public static final Typeface ITALIC_TF = Typeface.createFromAsset(BaseDroidApp.context.getAssets(),
-            "fonts/academyi.ttf");
 
     private static final SparseArray<CustomTextPaint> paints = new SparseArray<CustomTextPaint>();
 
@@ -21,17 +18,15 @@ public class RenderingStyle {
 
     public final int textSize;
     public final JustificationMode jm;
-    public final boolean bold;
-    public final Typeface face;
+    public final TypefaceEx face;
     public final Script script;
     public final Strike strike;
 
-    public RenderingStyle(final FontStyle font) {
-        this.textSize = font.getFontSize();
+    public RenderingStyle(final ParsedContent content, final TextStyle text) {
+        this.textSize = text.getFontSize();
         this.jm = JustificationMode.Justify;
-        this.bold = false;
-        this.face = RenderingStyle.NORMAL_TF;
-        this.paint = getTextPaint(face, this.textSize, bold);
+        this.face = content.fonts[FontStyle.REGULAR.ordinal()];
+        this.paint = getTextPaint(face, this.textSize);
         this.script = null;
         this.strike = null;
 
@@ -41,9 +36,8 @@ public class RenderingStyle {
     public RenderingStyle(final RenderingStyle old, final Script script) {
         this.textSize = script != null ? old.textSize / 2 : old.textSize;
         this.jm = old.jm;
-        this.bold = old.bold;
         this.face = old.face;
-        this.paint = getTextPaint(face, textSize, bold);
+        this.paint = getTextPaint(face, textSize);
         this.script = script;
         this.strike = null;
 
@@ -53,97 +47,79 @@ public class RenderingStyle {
     public RenderingStyle(final RenderingStyle old, final Strike strike) {
         this.textSize = old.textSize;
         this.jm = old.jm;
-        this.bold = old.bold;
         this.face = old.face;
-        this.paint = getTextPaint(face, textSize, bold);
+        this.paint = getTextPaint(face, textSize);
         this.script = old.script;
         this.strike = strike;
 
         this.defis = new TextElement(new char[] { '-' }, 0, 1, this);
     }
 
-    public RenderingStyle(final RenderingStyle old, final FontStyle font, final JustificationMode jm) {
-        this.textSize = font.getFontSize();
+    public RenderingStyle(final RenderingStyle old, final TextStyle text, final JustificationMode jm) {
+        this.textSize = text.getFontSize();
         this.jm = jm;
-        this.bold = old.bold;
         this.face = old.face;
-        this.paint = getTextPaint(face, textSize, bold);
+        this.paint = getTextPaint(face, textSize);
         this.script = null;
         this.strike = null;
 
         this.defis = new TextElement(new char[] { '-' }, 0, 1, this);
     }
 
-    public RenderingStyle(final RenderingStyle old, final FontStyle font, final JustificationMode jm,
-            final boolean bold, final Typeface face) {
-        this.textSize = font.getFontSize();
+    public RenderingStyle(final ParsedContent content, final RenderingStyle old, final TextStyle text, final JustificationMode jm, FontStyle style) {
+        this.textSize = text.getFontSize();
         this.jm = jm;
-        this.bold = bold;
-        this.face = face;
-        this.paint = getTextPaint(face, textSize, bold);
+        this.face = content.fonts[style.ordinal()];
+        this.paint = getTextPaint(face, textSize);
         this.script = null;
         this.strike = null;
 
         this.defis = new TextElement(new char[] { '-' }, 0, 1, this);
     }
 
-    public RenderingStyle(final RenderingStyle old, final JustificationMode jm, final Typeface face) {
+    public RenderingStyle(final ParsedContent content, final RenderingStyle old, final JustificationMode jm, FontStyle style) {
         this.textSize = old.textSize;
         this.jm = jm;
-        this.bold = old.bold;
-        this.face = face;
-        this.paint = getTextPaint(face, textSize, bold);
+        this.face = content.fonts[style.ordinal()];
+        this.paint = getTextPaint(face, textSize);
         this.script = null;
         this.strike = null;
 
         this.defis = new TextElement(new char[] { '-' }, 0, 1, this);
     }
 
-    public RenderingStyle(final RenderingStyle old, final boolean bold) {
+    public RenderingStyle(final ParsedContent content, final RenderingStyle old, final boolean bold) {
         this.textSize = old.textSize;
         this.jm = old.jm;
-        this.bold = bold;
-        this.face = old.face;
-        this.paint = getTextPaint(face, textSize, bold);
+        this.face = content.fonts[(bold ? old.face.style.getBold() : old.face.style.getBase()).ordinal()];
+        this.paint = getTextPaint(face, textSize);
         this.script = null;
         this.strike = null;
 
         this.defis = new TextElement(new char[] { '-' }, 0, 1, this);
     }
 
-    public RenderingStyle(final RenderingStyle old, final Typeface face) {
+    public RenderingStyle(final ParsedContent content, final RenderingStyle old, final FontStyle style) {
         this.textSize = old.textSize;
         this.jm = old.jm;
-        this.bold = old.bold;
-        this.face = face;
-        this.paint = getTextPaint(face, textSize, bold);
+        this.face = content.fonts[style.ordinal()];
+        this.paint = getTextPaint(face, textSize);
         this.script = null;
         this.strike = null;
 
         this.defis = new TextElement(new char[] { '-' }, 0, 1, this);
     }
 
-    public RenderingStyle(final int textSize, final boolean bold, final boolean italic) {
-        this.textSize = textSize;
-        this.jm = JustificationMode.Justify;
-        this.bold = bold;
-        this.face = italic ? ITALIC_TF : NORMAL_TF;
-        this.paint = getTextPaint(face, textSize, bold);
-        this.script = null;
-        this.strike = null;
-
-        this.defis = new TextElement(new char[] { '-' }, 0, 1, this);
+    public static CustomTextPaint getTextPaint(final ParsedContent content, final int textSize) {
+        TypefaceEx tf = content.fonts[FontStyle.REGULAR.ordinal()];
+        return getTextPaint(tf, textSize);
     }
 
-    public static CustomTextPaint getTextPaint(final int textSize) {
-        return getTextPaint(NORMAL_TF, textSize, false);
-    }
-
-    private static final CustomTextPaint getTextPaint(final Typeface face, final int textSize, final boolean bold) {
-        final int key = (textSize & 0x0FFF) + (face == ITALIC_TF ? 1 << 14 : 0) + (bold ? 1 << 15 : 0);
+    public static final CustomTextPaint getTextPaint(final TypefaceEx face, final int textSize) {
+        final int key = face.id;
         CustomTextPaint paint = paints.get(key);
         if (paint == null) {
-            paint = new CustomTextPaint(key, face, textSize, bold);
+            paint = new CustomTextPaint(face, textSize);
             paints.append(key, paint);
         }
         return paint;

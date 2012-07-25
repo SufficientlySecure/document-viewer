@@ -7,7 +7,7 @@ import android.graphics.Canvas;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.emdev.common.textmarkup.FontStyle;
+import org.emdev.common.textmarkup.TextStyle;
 import org.emdev.common.textmarkup.JustificationMode;
 import org.emdev.common.textmarkup.MarkupTitle;
 import org.emdev.utils.LengthUtils;
@@ -119,7 +119,7 @@ public class Line {
             footnotes = new ArrayList<Line>();
             final Line lastLine = new Line(FB2Page.PAGE_WIDTH / 4, justification);
             footnotes.add(lastLine);
-            lastLine.append(new HorizontalRule(FB2Page.PAGE_WIDTH / 4, FontStyle.FOOTNOTE.getFontSize()));
+            lastLine.append(new HorizontalRule(FB2Page.PAGE_WIDTH / 4, TextStyle.FOOTNOTE.getFontSize()));
             lastLine.applyJustification(JustificationMode.Left);
         }
         footnotes.addAll(noteLines);

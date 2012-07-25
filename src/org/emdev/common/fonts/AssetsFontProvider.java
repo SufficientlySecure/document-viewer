@@ -12,6 +12,10 @@ import org.emdev.utils.LengthUtils;
 
 public class AssetsFontProvider extends AbstractCustomFontProvider {
 
+    public AssetsFontProvider() {
+        super(1, "Assets");
+    }
+
     @Override
     protected InputStream openCatalog() throws IOException {
         try {
@@ -47,10 +51,4 @@ public class AssetsFontProvider extends AbstractCustomFontProvider {
     public OutputStream openOutputFontStream(FontInfo fi) throws IOException {
         return null;
     }
-
-    @Override
-    public String toString() {
-        return "Assets";
-    }
-
 }

@@ -16,7 +16,7 @@ import android.graphics.RectF;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.emdev.common.textmarkup.FontStyle;
+import org.emdev.common.textmarkup.TextStyle;
 import org.emdev.common.textmarkup.JustificationMode;
 import org.emdev.common.textmarkup.line.AbstractLineElement;
 import org.emdev.common.textmarkup.line.Line;
@@ -39,8 +39,8 @@ public class FB2Page extends AbstractCodecPage {
 
     static final RectF PAGE_RECT = new RectF(0, 0, PAGE_WIDTH, PAGE_HEIGHT);
 
-    final ArrayList<Line> lines = new ArrayList<Line>(PAGE_HEIGHT / FontStyle.TEXT.getFontSize());
-    final ArrayList<Line> noteLines = new ArrayList<Line>(PAGE_HEIGHT / FontStyle.FOOTNOTE.getFontSize());
+    final ArrayList<Line> lines = new ArrayList<Line>(PAGE_HEIGHT / TextStyle.TEXT.getFontSize());
+    final ArrayList<Line> noteLines = new ArrayList<Line>(PAGE_HEIGHT / TextStyle.FOOTNOTE.getFontSize());
 
     boolean committed = false;
     int contentHeight = 0;

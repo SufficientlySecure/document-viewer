@@ -25,9 +25,9 @@ public abstract class AbstractLineElement implements LineElement {
     }
 
     @Override
-    public void publishToLines(ArrayList<Line> lines, LineCreationParams params) {
+    public final void publishToLines(ArrayList<Line> lines, LineCreationParams params) {
         Line line = Line.getLastLine(lines, params.maxLineWidth, params.jm);
-        final LineWhiteSpace space = RenderingStyle.getTextPaint(line.getHeight()).space;
+        final LineWhiteSpace space = RenderingStyle.getTextPaint(params.content, line.getHeight()).space;
         float remaining = params.maxLineWidth - (line.width + space.width);
         if (remaining <= 0) {
             line = new Line(params.maxLineWidth, params.jm);

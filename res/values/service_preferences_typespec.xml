@@ -54,6 +54,9 @@
     <string translatable="false" name="pref_dingbatfontpack_id">dingbatfontpack</string>
     <string translatable="false" name="pref_dingbatfontpack_defvalue"></string>
 
+    <string translatable="false" name="pref_fb2fontpack_id">fb2fontpack</string>
+    <string translatable="false" name="pref_fb2fontpack_defvalue">System, sans</string>
+
     <string translatable="false" name="pref_fontsize_id">fontsize</string>
     <string translatable="false" name="pref_fontsize_tiny">TINY</string>
     <string translatable="false" name="pref_fontsize_small">SMALL</string>

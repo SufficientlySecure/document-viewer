@@ -452,6 +452,12 @@
         android:summary="@string/pref_brfiletypespecificfb2_summary"
         android:title="@string/pref_brfiletypespecificfb2_title" >
 
+        <org.emdev.ui.preference.FontPickerPreference
+            android:defaultValue="@string/pref_fb2fontpack_defvalue"
+            android:key="@string/pref_fb2fontpack_id"
+            android:summary="@string/pref_fb2fontpack_summary"
+            android:title="@string/pref_fb2fontpack_title" />
+
         <ListPreference
             android:defaultValue="@string/pref_fontsize_normal"
             android:entries="@array/pref_fontsize_entries"

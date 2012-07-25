@@ -2,12 +2,11 @@ package org.emdev.common.textmarkup;
 
 import org.ebookdroid.droids.fb2.codec.FB2Page;
 
-import android.graphics.Typeface;
 import android.text.TextPaint;
 
+import org.emdev.common.fonts.typeface.TypefaceEx;
 import org.emdev.common.textmarkup.line.LineFixedWhiteSpace;
 import org.emdev.common.textmarkup.line.LineWhiteSpace;
-
 
 public class CustomTextPaint extends TextPaint {
 
@@ -24,11 +23,11 @@ public class CustomTextPaint extends TextPaint {
     private final float[] rus = new float[256];
     private final float[] punct = new float[256];
 
-    public CustomTextPaint(final int key, final Typeface face, final int textSize, final boolean bold) {
-        this.key = key;
+    public CustomTextPaint(final TypefaceEx face, final int textSize) {
+        this.key = face.id;
         setTextSize(textSize);
-        setTypeface(face);
-        setFakeBoldText(bold);
+        setTypeface(face.typeface);
+        setFakeBoldText(face.fakeBold);
         setAntiAlias(true);
         setFilterBitmap(true);
         setDither(true);
@@ -57,29 +56,40 @@ public class CustomTextPaint extends TextPaint {
         this.getTextWidths(chars, 0, chars.length, widths);
     }
 
+    private char[] temp = new char[256];
+
     @Override
     public float measureText(final char[] text, final int index, final int count) {
         float sum = 0;
+        int tempIndex = 0;
         for (int i = index, n = 0; n < count; i++, n++) {
-            final int ch = text[i];
-            final int enc = ch & 0xFFFFFF00;
+            final char ch = text[i];
+            final int code = ch;
+            final int enc = code & 0xFFFFFF00;
             switch (enc) {
                 case 0x0000:
-                    sum += standard[ch & 0x00FF];
+                    sum += standard[code & 0x00FF];
                     break;
                 case 0x0100:
-                    sum += latin1[ch & 0x00FF];
+                    sum += latin1[code & 0x00FF];
                     break;
                 case 0x0400:
-                    sum += rus[ch & 0x00FF];
+                    sum += rus[code & 0x00FF];
                     break;
                 case 0x2000:
-                    sum += punct[ch & 0x00FF];
+                    sum += punct[code & 0x00FF];
                     break;
                 default:
-                    // System.out.println("CTP: unknown symbol: " + text[i] + " " + Integer.toHexString(ch));
-                    sum += super.measureText(text, i, 1);
+                    if (tempIndex < temp.length) {
+                        temp[tempIndex++] = ch;
+                    } else {
+                        sum += super.measureText(temp, 0, temp.length);
+                        tempIndex = 0;
+                    }
             }
+        }
+        if (tempIndex > 0) {
+            sum += super.measureText(temp, 0, tempIndex);
         }
         return sum;
     }

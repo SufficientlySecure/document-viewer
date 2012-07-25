@@ -5,6 +5,7 @@ import static org.ebookdroid.droids.fb2.codec.FB2Page.MARGIN_Y;
 import static org.ebookdroid.droids.fb2.codec.FB2Page.PAGE_HEIGHT;
 import static org.ebookdroid.droids.fb2.codec.FB2Page.PAGE_WIDTH;
 
+import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.core.codec.CodecDocument;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
@@ -31,7 +32,9 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.emdev.common.archives.zip.ZipArchive;
 import org.emdev.common.archives.zip.ZipArchiveEntry;
-import org.emdev.common.textmarkup.FontStyle;
+import org.emdev.common.fonts.FontManager;
+import org.emdev.common.fonts.data.FontStyle;
+import org.emdev.common.textmarkup.TextStyle;
 import org.emdev.common.textmarkup.JustificationMode;
 import org.emdev.common.textmarkup.MarkupTitle;
 import org.emdev.common.textmarkup.Words;
@@ -50,7 +53,10 @@ public class FB2Document implements CodecDocument {
     public FB2Document(final String fileName) {
         final SAXParserFactory spf = SAXParserFactory.newInstance();
 
+        final long t1 = System.currentTimeMillis();
+        content.loadFonts();
         final long t2 = System.currentTimeMillis();
+        System.out.println("Fonts preloading: " + (t2 - t1) + " ms");
         parseContent(spf, fileName);
         final long t3 = System.currentTimeMillis();
         System.out.println("SAX parser: " + (t3 - t2) + " ms");
@@ -103,7 +109,7 @@ public class FB2Document implements CodecDocument {
                         lastPage = new FB2Page();
                         pages.add(lastPage);
                         final Line ruleLine = new Line(PAGE_WIDTH / 4, JustificationMode.Left);
-                        ruleLine.append(new HorizontalRule(PAGE_WIDTH / 4, FontStyle.FOOTNOTE.getFontSize()));
+                        ruleLine.append(new HorizontalRule(PAGE_WIDTH / 4, TextStyle.FOOTNOTE.getFontSize()));
                         ruleLine.applyJustification(JustificationMode.Left);
                         lastPage.appendNoteLine(ruleLine);
                     }

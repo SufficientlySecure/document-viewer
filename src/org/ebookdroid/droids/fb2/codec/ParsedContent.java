@@ -13,9 +13,15 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import org.emdev.common.fonts.FontManager;
+import org.emdev.common.fonts.data.FontFamilyType;
+import org.emdev.common.fonts.data.FontStyle;
+import org.emdev.common.fonts.typeface.TypefaceEx;
 import org.emdev.common.textmarkup.JustificationMode;
 import org.emdev.common.textmarkup.MarkupElement;
 import org.emdev.common.textmarkup.MarkupEndDocument;
+import org.emdev.common.textmarkup.RenderingStyle;
+import org.emdev.common.textmarkup.TextStyle;
 import org.emdev.common.textmarkup.image.DiskImageData;
 import org.emdev.common.textmarkup.image.IImageData;
 import org.emdev.common.textmarkup.image.MemoryImageData;
@@ -33,6 +39,19 @@ public class ParsedContent {
     private final TreeMap<String, ArrayList<Line>> notes = new TreeMap<String, ArrayList<Line>>();
 
     private String cover;
+
+    public TypefaceEx[] fonts;
+
+    public void loadFonts() {
+        FontStyle[] styles = FontStyle.values();
+        fonts = new TypefaceEx[styles.length];
+        for (FontStyle style : styles) {
+            TypefaceEx font = FontManager.getFont(AppSettings.current().fb2FontPack, FontFamilyType.SERIF, style);
+            System.out.println("Preloaded: " + font);
+            fonts[style.ordinal()] = font;
+            RenderingStyle.getTextPaint(font, TextStyle.TEXT.getFontSize());
+        }
+    }
 
     public void clear() {
         docMarkup.clear();

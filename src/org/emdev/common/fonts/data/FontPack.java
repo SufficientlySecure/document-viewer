@@ -12,11 +12,14 @@ public class FontPack implements Iterable<FontFamily> {
 
     public final IFontProvider provider;
 
+    public final int id;
+
     public final String name;
 
     protected final FontFamily[] types;
 
     public FontPack(final IFontProvider provider, final FontPack source) {
+        this.id = provider.getNewPackId();
         this.provider = provider;
         this.name = source.name;
         this.types = new FontFamily[FontFamilyType.values().length];
@@ -26,8 +29,9 @@ public class FontPack implements Iterable<FontFamily> {
         }
     }
 
-    public FontPack(final IFontProvider manager, final String name, final FontFamily... types) {
-        this.provider = manager;
+    public FontPack(final IFontProvider provider, final String name, final FontFamily... types) {
+        this.id = provider.getNewPackId();
+        this.provider = provider;
         this.name = name;
         this.types = new FontFamily[FontFamilyType.values().length];
 
@@ -36,8 +40,9 @@ public class FontPack implements Iterable<FontFamily> {
         }
     }
 
-    public FontPack(final IFontProvider manager, final JSONObject object) throws JSONException {
-        this.provider = manager;
+    public FontPack(final IFontProvider provider, final JSONObject object) throws JSONException {
+        this.id = provider.getNewPackId();
+        this.provider = provider;
         this.name = object.getString("name");
         this.types = new FontFamily[FontFamilyType.values().length];
 

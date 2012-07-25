@@ -21,6 +21,10 @@ import org.json.JSONException;
 
 public abstract class AbstractCustomFontProvider extends AbstractFontProvider {
 
+    protected AbstractCustomFontProvider(int id, String name) {
+        super(id, name);
+    }
+
     @Override
     public TypefaceEx getTypeface(final FontPack fp, final FontFamilyType type, final FontStyle style) {
         FontInfo font = fp.getFont(type, style);
@@ -43,7 +47,7 @@ public abstract class AbstractCustomFontProvider extends AbstractFontProvider {
 
         final int st = style.getStyle();
         final boolean fake = (st & Typeface.BOLD) != (target.getStyle() & Typeface.BOLD);
-        return new TypefaceEx(target, style, fake);
+        return new TypefaceEx(fp, type, style, target, fake);
     }
 
     @Override

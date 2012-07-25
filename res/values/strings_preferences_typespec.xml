@@ -52,6 +52,9 @@
     <string name="pref_fontsize_title">Font size</string>
     <string name="pref_fontsize_summary">Base font size</string>
 
+    <string name="pref_fb2fontpack_title">FB2 font family</string>
+    <string name="pref_fb2fontpack_summary">Define font pack using for FB2 rendering</string>
+
     <string name="list_fontsize_tiny">Tiny</string>
     <string name="list_fontsize_small">Small</string>
     <string name="list_fontsize_normal">Normal</string>

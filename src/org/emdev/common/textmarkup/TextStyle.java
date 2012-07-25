@@ -5,7 +5,7 @@ import org.ebookdroid.common.settings.types.FontSize;
 
 import android.util.FloatMath;
 
-public enum FontStyle {
+public enum TextStyle {
 
     /**
      *
@@ -32,7 +32,7 @@ public enum FontStyle {
 
     public final float factor;
 
-    private FontStyle(final float factor) {
+    private TextStyle(final float factor) {
         this.factor = factor;
     }
 

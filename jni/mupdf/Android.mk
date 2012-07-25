@@ -262,14 +262,9 @@ MY_MUPDF_SRC_FILES := \
 # uses libz, which is officially supported for NDK API
 MY_MUPDF_LDLIBS := -lz
 
-#Build for ARM architecture. Instead of Thumb
-ifneq ($(TARGET_ARCH_ABI),x86)
-ifneq ($(TARGET_ARCH_ABI),mips)
-#    MY_MUPDF_CFLAGS +=  -DARCH_ARM -DARCH_ARM_CAN_LOAD_UNALIGNED # commented out for removing asm optimizations which are not generic
+ifeq ($(TARGET_ARCH_ABI),armeabi)
     LOCAL_ARM_MODE := arm
-endif # TARGET_ARCH_ABI != mips
-endif # TARGET_ARCH_ABI != x86
-
+endif # TARGET_ARCH_ABI == armeabi
 
 LOCAL_CFLAGS := \
 	$(MY_FREETYPE_CFLAGS) \

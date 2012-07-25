@@ -1,6 +1,5 @@
 package org.ebookdroid.droids.fb2.codec;
 
-
 import android.util.SparseArray;
 
 import java.util.ArrayList;
@@ -63,6 +62,9 @@ public class FB2ContentHandler extends FB2BaseHandler {
 
     private MarkupTable currentTable;
 
+    private byte[] tagStack = new byte[10];
+    private int tagStackSize = 0;
+
     public FB2ContentHandler(ParsedContent content) {
         parsedContent = content;
         currentStream = null;
@@ -73,152 +75,199 @@ public class FB2ContentHandler extends FB2BaseHandler {
             throws SAXException {
         spaceNeeded = true;
         final ArrayList<MarkupElement> markupStream = parsedContent.getMarkupStream(currentStream);
-        if ("p".equals(qName)) {
-            paragraphParsing = true;
-            if (!parsingNotes) {
-                if (!inTitle) {
-                    markupStream.add(crs.paint.pOffset);
+
+        final byte tag = FB2Tag.getTagByName(qName);
+        byte[] tmpTagStack = tagStack;
+        if (tmpTagStack.length == tagStackSize) {
+            byte[] newTagStack = new byte[tagStackSize * 2];
+            if (tagStackSize > 0) {
+                System.arraycopy(tmpTagStack, 0, newTagStack, 0, tagStackSize);
+            }
+            tmpTagStack = newTagStack;
+            tagStack = tmpTagStack;
+        }
+        tmpTagStack[tagStackSize++] = tag;
+
+        switch (tag) {
+            case FB2Tag.P:
+                paragraphParsing = true;
+                if (!parsingNotes) {
+                    if (!inTitle) {
+                        markupStream.add(crs.paint.pOffset);
+                    }
                 }
-            }
-        } else if ("v".equals(qName)) {
-            paragraphParsing = true;
-            markupStream.add(crs.paint.pOffset);
-            markupStream.add(crs.paint.vOffset);
-        } else if ("binary".equals(qName)) {
-            tmpBinaryName = attributes.getValue("id");
-            tmpBinaryContents.setLength(0);
-            parsingBinary = true;
-        } else if ("body".equals(qName)) {
-            if (!documentStarted && !documentEnded) {
-                documentStarted = true;
-                skipContent = false;
-                currentStream = null;
-            }
-            if ("notes".equals(attributes.getValue("name"))) {
-                if (documentStarted) {
-                    documentEnded = true;
-                    parsedContent.getMarkupStream(null).add(new MarkupEndDocument());
+                break;
+            case FB2Tag.V:
+                paragraphParsing = true;
+                markupStream.add(crs.paint.pOffset);
+                markupStream.add(crs.paint.vOffset);
+                break;
+            case FB2Tag.BINARY:
+                tmpBinaryName = attributes.getValue("id");
+                tmpBinaryContents.setLength(0);
+                parsingBinary = true;
+                break;
+            case FB2Tag.BODY:
+                if (!documentStarted && !documentEnded) {
+                    documentStarted = true;
+                    skipContent = false;
+                    currentStream = null;
                 }
-                parsingNotes = true;
-                crs = new RenderingStyle(FontStyle.FOOTNOTE);
-            }
-        } else if ("section".equals(qName)) {
-            if (parsingNotes) {
-                currentStream = attributes.getValue("id");
-                if (currentStream != null) {
-                    final String n = getNoteId(currentStream, true);
-                    parsedContent.getMarkupStream(currentStream).add(text(n.toCharArray(), 0, n.length(), crs));
-                    parsedContent.getMarkupStream(currentStream).add(crs.paint.fixedSpace);
+                if ("notes".equals(attributes.getValue("name"))) {
+                    if (documentStarted) {
+                        documentEnded = true;
+                        parsedContent.getMarkupStream(null).add(new MarkupEndDocument());
+                    }
+                    parsingNotes = true;
+                    crs = new RenderingStyle(FontStyle.FOOTNOTE);
                 }
-            } else {
-                inSection = true;
-                sectionLevel++;
-            }
-        } else if ("title".equals(qName)) {
-            if (!parsingNotes) {
-                setTitleStyle(!inSection ? FontStyle.MAIN_TITLE : FontStyle.SECTION_TITLE);
-                markupStream.add(crs.jm);
-                markupStream.add(emptyLine(crs.textSize));
-                markupStream.add(MarkupParagraphEnd.E);
-                title.setLength(0);
-            } else {
-                skipContent = true;
-            }
-            inTitle = true;
-        } else if ("cite".equals(qName)) {
-            inCite = true;
-            setEmphasisStyle();
-            markupStream.add(emptyLine(crs.textSize));
-            markupStream.add(MarkupParagraphEnd.E);
-        } else if ("subtitle".equals(qName)) {
-            paragraphParsing = true;
-            markupStream.add(setSubtitleStyle().jm);
-            markupStream.add(emptyLine(crs.textSize));
-            markupStream.add(MarkupParagraphEnd.E);
-        } else if ("text-author".equals(qName) || ("date".equals(qName) && (documentStarted && !documentEnded || parsingNotes))) {
-            paragraphParsing = true;
-            markupStream.add(setTextAuthorStyle(inCite).jm);
-            markupStream.add(crs.paint.pOffset);
-        } else if ("a".equals(qName)) {
-            if (paragraphParsing) {
-                if ("note".equalsIgnoreCase(attributes.getValue("type"))) {
-                    String note = attributes.getValue("href");
-                    markupStream.add(new MarkupNote(note));
-                    String prettyNote = " " + getNoteId(note, false);
-                    markupStream.add(MarkupNoSpace._instance);
-                    markupStream.add(
-                            new TextElement(prettyNote.toCharArray(), 0, prettyNote.length(), new RenderingStyle(
-                                    crs, Script.SUPER)));
+                break;
+            case FB2Tag.SECTION:
+                if (parsingNotes) {
+                    currentStream = attributes.getValue("id");
+                    if (currentStream != null) {
+                        final String n = getNoteId(currentStream, true);
+                        parsedContent.getMarkupStream(currentStream).add(text(n.toCharArray(), 0, n.length(), crs));
+                        parsedContent.getMarkupStream(currentStream).add(crs.paint.fixedSpace);
+                    }
+                } else {
+                    inSection = true;
+                    sectionLevel++;
+                }
+                break;
+            case FB2Tag.TITLE:
+                if (!parsingNotes) {
+                    setTitleStyle(!inSection ? FontStyle.MAIN_TITLE : FontStyle.SECTION_TITLE);
+                    markupStream.add(crs.jm);
+                    markupStream.add(emptyLine(crs.textSize));
+                    markupStream.add(MarkupParagraphEnd.E);
+                    title.setLength(0);
+                } else {
                     skipContent = true;
                 }
-            }
-        } else if ("empty-line".equals(qName)) {
-            markupStream.add(emptyLine(crs.textSize));
-            markupStream.add(MarkupParagraphEnd.E);
-        } else if ("poem".equals(qName)) {
-            markupStream.add(MarkupParagraphEnd.E);
-            markupStream.add(emptyLine(crs.textSize));
-            markupStream.add(setPoemStyle().jm);
-        } else if ("strong".equals(qName)) {
-            setBoldStyle();
-        } else if ("sup".equals(qName)) {
-            setSupStyle();
-            spaceNeeded = false;
-        } else if ("sub".equals(qName)) {
-            setSubStyle();
-            spaceNeeded = false;
-        } else if ("strikethrough".equals(qName)) {
-            setStrikeThrough();
-        } else if ("emphasis".equals(qName)) {
-            setEmphasisStyle();
-        } else if ("epigraph".equals(qName)) {
-            markupStream.add(MarkupParagraphEnd.E);
-            markupStream.add(setEpigraphStyle().jm);
-        } else if ("image".equals(qName)) {
-            final String ref = attributes.getValue("href");
-            if (cover) {
-                parsedContent.setCover(ref);
-            } else {
-                if (!paragraphParsing) {
-                    markupStream.add(emptyLine(crs.textSize));
-                    markupStream.add(MarkupParagraphEnd.E);
-                }
-                markupStream.add(new MarkupImageRef(ref, paragraphParsing));
-                if (!paragraphParsing) {
-                    markupStream.add(emptyLine(crs.textSize));
-                    markupStream.add(MarkupParagraphEnd.E);
-                }
-            }
-        } else if ("coverpage".equals(qName)) {
-            cover = true;
-        } else if ("annotation".equals(qName)) {
-            skipContent = false;
-        } else if ("table".equals(qName)) {
-            currentTable = new MarkupTable();
-            markupStream.add(currentTable);
-        } else if ("tr".equals(qName)) {
-            if (currentTable != null) {
-                currentTable.addRow();
-            }
-        } else if ("td".equals(qName) || "th".equals(qName)) {
-            if (currentTable != null) {
-                final int rowCount = currentTable.getRowCount();
-                final Cell c = currentTable.new Cell();
-                currentTable.addCol(c);
-                final String streamId = currentTable.uuid + ":" + rowCount + ":" + currentTable.getColCount(rowCount - 1);
-                c.stream = streamId;
-                c.hasBackground = "th".equals(qName);
-                final String align = attributes.getValue("align");
-                if ("right".equals(align)) {
-                    c.align = JustificationMode.Right;
-                }
-                if ("center".equals(align)) {
-                    c.align = JustificationMode.Center;
-                }
+                inTitle = true;
+                break;
+            case FB2Tag.CITE:
+                inCite = true;
+                setEmphasisStyle();
+                markupStream.add(emptyLine(crs.textSize));
+                markupStream.add(MarkupParagraphEnd.E);
+                break;
+            case FB2Tag.SUBTITLE:
                 paragraphParsing = true;
-                oldStream = currentStream;
-                currentStream = streamId;
-            }
+                markupStream.add(setSubtitleStyle().jm);
+                markupStream.add(emptyLine(crs.textSize));
+                markupStream.add(MarkupParagraphEnd.E);
+                break;
+            case FB2Tag.TEXT_AUTHOR:
+                paragraphParsing = true;
+                markupStream.add(setTextAuthorStyle(inCite).jm);
+                markupStream.add(crs.paint.pOffset);
+                break;
+            case FB2Tag.DATE:
+                if (documentStarted && !documentEnded || parsingNotes) {
+                    paragraphParsing = true;
+                    markupStream.add(setTextAuthorStyle(inCite).jm);
+                    markupStream.add(crs.paint.pOffset);
+                }
+                break;
+            case FB2Tag.A:
+                if (paragraphParsing) {
+                    if ("note".equalsIgnoreCase(attributes.getValue("type"))) {
+                        String note = attributes.getValue("href");
+                        markupStream.add(new MarkupNote(note));
+                        String prettyNote = " " + getNoteId(note, false);
+                        markupStream.add(MarkupNoSpace._instance);
+                        markupStream.add(new TextElement(prettyNote.toCharArray(), 0, prettyNote.length(),
+                                new RenderingStyle(crs, Script.SUPER)));
+                        skipContent = true;
+                    }
+                }
+                break;
+            case FB2Tag.EMPTY_LINE:
+                markupStream.add(emptyLine(crs.textSize));
+                markupStream.add(MarkupParagraphEnd.E);
+                break;
+            case FB2Tag.POEM:
+                markupStream.add(MarkupParagraphEnd.E);
+                markupStream.add(emptyLine(crs.textSize));
+                markupStream.add(setPoemStyle().jm);
+                break;
+            case FB2Tag.STRONG:
+                setBoldStyle();
+                break;
+            case FB2Tag.SUP:
+                setSupStyle();
+                spaceNeeded = false;
+                break;
+            case FB2Tag.SUB:
+                setSubStyle();
+                spaceNeeded = false;
+                break;
+            case FB2Tag.STRIKETHROUGH:
+                setStrikeThrough();
+                break;
+            case FB2Tag.EMPHASIS:
+                setEmphasisStyle();
+                break;
+            case FB2Tag.EPIGRAPH:
+                markupStream.add(MarkupParagraphEnd.E);
+                markupStream.add(setEpigraphStyle().jm);
+                break;
+            case FB2Tag.IMAGE:
+                final String ref = attributes.getValue("href");
+                if (cover) {
+                    parsedContent.setCover(ref);
+                } else {
+                    if (!paragraphParsing) {
+                        markupStream.add(emptyLine(crs.textSize));
+                        markupStream.add(MarkupParagraphEnd.E);
+                    }
+                    markupStream.add(new MarkupImageRef(ref, paragraphParsing));
+                    if (!paragraphParsing) {
+                        markupStream.add(emptyLine(crs.textSize));
+                        markupStream.add(MarkupParagraphEnd.E);
+                    }
+                }
+                break;
+            case FB2Tag.COVERPAGE:
+                cover = true;
+                break;
+            case FB2Tag.ANNOTATION:
+                skipContent = false;
+                break;
+            case FB2Tag.TABLE:
+                currentTable = new MarkupTable();
+                markupStream.add(currentTable);
+                break;
+            case FB2Tag.TR:
+                if (currentTable != null) {
+                    currentTable.addRow();
+                }
+                break;
+            case FB2Tag.TD:
+            case FB2Tag.TH:
+                if (currentTable != null) {
+                    final int rowCount = currentTable.getRowCount();
+                    final Cell c = currentTable.new Cell();
+                    currentTable.addCol(c);
+                    final String streamId = currentTable.uuid + ":" + rowCount + ":"
+                            + currentTable.getColCount(rowCount - 1);
+                    c.stream = streamId;
+                    c.hasBackground = tag == FB2Tag.TH;
+                    final String align = attributes.getValue("align");
+                    if ("right".equals(align)) {
+                        c.align = JustificationMode.Right;
+                    }
+                    if ("center".equals(align)) {
+                        c.align = JustificationMode.Center;
+                    }
+                    paragraphParsing = true;
+                    oldStream = currentStream;
+                    currentStream = streamId;
+                }
+                break;
+
         }
     }
 
@@ -239,97 +288,123 @@ public class FB2ContentHandler extends FB2BaseHandler {
     public void endElement(final String uri, final String localName, final String qName) throws SAXException {
         spaceNeeded = true;
         final ArrayList<MarkupElement> markupStream = parsedContent.getMarkupStream(currentStream);
-        if ("p".equals(qName) || "v".equals(qName)) {
-            if (!skipContent) {
-                markupStream.add(MarkupParagraphEnd.E);
-            }
-            paragraphParsing = false;
-        } else if ("binary".equals(qName)) {
-            if (tmpBinaryContents.length() > 0) {
-                parsedContent.addImage(tmpBinaryName, tmpBinaryContents.toString());
-                tmpBinaryName = null;
-                tmpBinaryContents.setLength(0);
-            }
-            parsingBinary = false;
-        } else if ("body".equals(qName)) {
-            parsingNotes = false;
-            currentStream = null;
-        } else if ("section".equals(qName)) {
-            if (parsingNotes) {
-                noteId = -1;
-                noteFirstWord = true;
-            } else {
-                if (inSection) {
-                    markupStream.add(MarkupEndPage.E);
-                    sectionLevel--;
-                    inSection = false;
+        final byte tag = tagStack[--tagStackSize];
+        switch (tag) {
+            case FB2Tag.P:
+            case FB2Tag.V:
+                if (!skipContent) {
+                    markupStream.add(MarkupParagraphEnd.E);
                 }
-            }
-        } else if ("title".equals(qName)) {
-            inTitle = false;
-            skipContent = false;
-            if (!parsingNotes) {
-                markupStream.add(new MarkupTitle(title.toString(), sectionLevel));
+                paragraphParsing = false;
+                break;
+            case FB2Tag.BINARY:
+                if (tmpBinaryContents.length() > 0) {
+                    parsedContent.addImage(tmpBinaryName, tmpBinaryContents.toString());
+                    tmpBinaryName = null;
+                    tmpBinaryContents.setLength(0);
+                }
+                parsingBinary = false;
+                break;
+            case FB2Tag.BODY:
+                parsingNotes = false;
+                currentStream = null;
+                break;
+            case FB2Tag.SECTION:
+                if (parsingNotes) {
+                    noteId = -1;
+                    noteFirstWord = true;
+                } else {
+                    if (inSection) {
+                        markupStream.add(MarkupEndPage.E);
+                        sectionLevel--;
+                        inSection = false;
+                    }
+                }
+                break;
+            case FB2Tag.TITLE:
+                inTitle = false;
+                skipContent = false;
+                if (!parsingNotes) {
+                    markupStream.add(new MarkupTitle(title.toString(), sectionLevel));
+                    markupStream.add(emptyLine(crs.textSize));
+                    markupStream.add(MarkupParagraphEnd.E);
+                    markupStream.add(setPrevStyle().jm);
+                }
+                break;
+            case FB2Tag.CITE:
+                inCite = false;
                 markupStream.add(emptyLine(crs.textSize));
                 markupStream.add(MarkupParagraphEnd.E);
                 markupStream.add(setPrevStyle().jm);
-            }
-        } else if ("cite".equals(qName)) {
-            inCite = false;
-            markupStream.add(emptyLine(crs.textSize));
-            markupStream.add(MarkupParagraphEnd.E);
-            markupStream.add(setPrevStyle().jm);
-        } else if ("subtitle".equals(qName)) {
-            markupStream.add(MarkupParagraphEnd.E);
-            markupStream.add(emptyLine(crs.textSize));
-            markupStream.add(MarkupParagraphEnd.E);
-            markupStream.add(setPrevStyle().jm);
-            paragraphParsing = false;
-        } else if ("text-author".equals(qName) || "date".equals(qName)) {
-            markupStream.add(MarkupParagraphEnd.E);
-            markupStream.add(setPrevStyle().jm);
-            paragraphParsing = false;
-        } else if ("stanza".equals(qName)) {
-            markupStream.add(emptyLine(crs.textSize));
-            markupStream.add(MarkupParagraphEnd.E);
-        } else if ("poem".equals(qName)) {
-            markupStream.add(emptyLine(crs.textSize));
-            markupStream.add(MarkupParagraphEnd.E);
-            markupStream.add(setPrevStyle().jm);
-        } else if ("strong".equals(qName)) {
-            setPrevStyle();
-            spaceNeeded = false;
-        } else if ("strikethrough".equals(qName)) {
-            setPrevStyle();
-        } else if ("sup".equals(qName)) {
-            setPrevStyle();
-            if (markupStream.get(markupStream.size() - 1) instanceof MarkupNoSpace) {
-                markupStream.remove(markupStream.size() - 1);
-            }
-        } else if ("sub".equals(qName)) {
-            setPrevStyle();
-            if (markupStream.get(markupStream.size() - 1) instanceof MarkupNoSpace) {
-                markupStream.remove(markupStream.size() - 1);
-            }
-        } else if ("emphasis".equals(qName)) {
-            setPrevStyle();
-            spaceNeeded = false;
-        } else if ("epigraph".equals(qName)) {
-            markupStream.add(setPrevStyle().jm);
-        } else if ("coverpage".equals(qName)) {
-            cover = false;
-        } else if ("a".equals(qName)) {
-            if (paragraphParsing) {
-                skipContent = false;
-            }
-        } else if ("annotation".equals(qName)) {
-            skipContent = true;
-            parsedContent.getMarkupStream(null).add(MarkupEndPage.E);
-        } else if ("table".equals(qName)) {
-            currentTable = null;
-        } else if ("td".equals(qName) || "th".equals(qName)) {
-            paragraphParsing = false;
-            currentStream = oldStream;
+                break;
+            case FB2Tag.SUBTITLE:
+                markupStream.add(MarkupParagraphEnd.E);
+                markupStream.add(emptyLine(crs.textSize));
+                markupStream.add(MarkupParagraphEnd.E);
+                markupStream.add(setPrevStyle().jm);
+                paragraphParsing = false;
+                break;
+            case FB2Tag.TEXT_AUTHOR:
+            case FB2Tag.DATE:
+                markupStream.add(MarkupParagraphEnd.E);
+                markupStream.add(setPrevStyle().jm);
+                paragraphParsing = false;
+                break;
+            case FB2Tag.STANZA:
+                markupStream.add(emptyLine(crs.textSize));
+                markupStream.add(MarkupParagraphEnd.E);
+                break;
+            case FB2Tag.POEM:
+                markupStream.add(emptyLine(crs.textSize));
+                markupStream.add(MarkupParagraphEnd.E);
+                markupStream.add(setPrevStyle().jm);
+                break;
+            case FB2Tag.STRONG:
+                setPrevStyle();
+                spaceNeeded = false;
+                break;
+            case FB2Tag.STRIKETHROUGH:
+                setPrevStyle();
+                break;
+            case FB2Tag.SUP:
+                setPrevStyle();
+                if (markupStream.get(markupStream.size() - 1) instanceof MarkupNoSpace) {
+                    markupStream.remove(markupStream.size() - 1);
+                }
+                break;
+            case FB2Tag.SUB:
+                setPrevStyle();
+                if (markupStream.get(markupStream.size() - 1) instanceof MarkupNoSpace) {
+                    markupStream.remove(markupStream.size() - 1);
+                }
+                break;
+            case FB2Tag.EMPHASIS:
+                setPrevStyle();
+                spaceNeeded = false;
+                break;
+            case FB2Tag.EPIGRAPH:
+                markupStream.add(setPrevStyle().jm);
+                break;
+            case FB2Tag.COVERPAGE:
+                cover = false;
+                break;
+            case FB2Tag.A:
+                if (paragraphParsing) {
+                    skipContent = false;
+                }
+                break;
+            case FB2Tag.ANNOTATION:
+                skipContent = true;
+                parsedContent.getMarkupStream(null).add(MarkupEndPage.E);
+                break;
+            case FB2Tag.TABLE:
+                currentTable = null;
+                break;
+            case FB2Tag.TD:
+            case FB2Tag.TH:
+                paragraphParsing = false;
+                currentStream = oldStream;
+                break;
         }
     }
 

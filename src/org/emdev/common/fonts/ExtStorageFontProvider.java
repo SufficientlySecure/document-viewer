@@ -31,6 +31,7 @@ public class ExtStorageFontProvider extends AbstractCustomFontProvider {
     }
 
     @Override
+    @SuppressWarnings("resource")
     protected InputStream openCatalog() throws IOException {
         return fontsCatalog.exists() ? new FileInputStream(fontsCatalog) : null;
     }
@@ -56,7 +57,7 @@ public class ExtStorageFontProvider extends AbstractCustomFontProvider {
             final FileWriter fw = new FileWriter(fontsCatalog);
             final BufferedWriter out = new BufferedWriter(fw);
             try {
-                out.write(toJSON().toString());
+                out.write(toJSON().toString(4));
                 return true;
             } catch (final Exception ex) {
                 ex.printStackTrace();

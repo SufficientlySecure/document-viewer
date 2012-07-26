@@ -23,8 +23,8 @@ public class CustomTextPaint extends TextPaint {
     private final float[] rus = new float[256];
     private final float[] punct = new float[256];
 
-    public CustomTextPaint(final TypefaceEx face, final int textSize) {
-        this.key = face.id;
+    public CustomTextPaint(final int key, final TypefaceEx face, final int textSize) {
+        this.key = key;
         setTextSize(textSize);
         setTypeface(face.typeface);
         setFakeBoldText(face.fakeBold);

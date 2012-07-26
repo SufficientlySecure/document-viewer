@@ -116,10 +116,10 @@ public class RenderingStyle {
     }
 
     public static final CustomTextPaint getTextPaint(final TypefaceEx face, final int textSize) {
-        final int key = face.id;
+        final int key = (face.id & 0x0000FFFF) + ((textSize & 0x0000FFFF) << 16);
         CustomTextPaint paint = paints.get(key);
         if (paint == null) {
-            paint = new CustomTextPaint(face, textSize);
+            paint = new CustomTextPaint(key, face, textSize);
             paints.append(key, paint);
         }
         return paint;

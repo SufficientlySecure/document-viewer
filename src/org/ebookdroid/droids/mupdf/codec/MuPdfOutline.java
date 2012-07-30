@@ -30,12 +30,12 @@ public class MuPdfOutline {
             if (title != null) {
                 final OutlineLink outlineLink = new OutlineLink(title, link, level);
                 if (outlineLink.targetPage != -1) {
-                    if (fillLinkTargetPoint(outline, temp)) {
-                        outlineLink.targetRect = new RectF();
-                        outlineLink.targetRect.left = temp[0];
-                        outlineLink.targetRect.top = temp[1];
-                        MuPdfDocument.normalizeLinkTargetRect(docHandle, outlineLink.targetPage, outlineLink.targetRect);
-                    }
+                    int flags = fillLinkTargetPoint(outline, temp);
+                    outlineLink.targetRect = new RectF();
+                    outlineLink.targetRect.left = temp[0];
+                    outlineLink.targetRect.top = temp[1];
+                    MuPdfDocument.normalizeLinkTargetRect(docHandle, outlineLink.targetPage, outlineLink.targetRect,
+                            flags);
                 }
                 ls.add(outlineLink);
             }
@@ -51,7 +51,7 @@ public class MuPdfOutline {
 
     private static native String getLink(long outlinehandle, long dochandle);
 
-    private static native boolean fillLinkTargetPoint(long outlinehandle, float[] point);
+    private static native int fillLinkTargetPoint(long outlinehandle, float[] point);
 
     private static native long getNext(long outlinehandle);
 

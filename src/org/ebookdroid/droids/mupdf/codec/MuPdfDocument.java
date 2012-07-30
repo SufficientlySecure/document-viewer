@@ -15,7 +15,7 @@ public class MuPdfDocument extends AbstractCodecDocument {
     public static final int FORMAT_PDF = 0;
     public static final int FORMAT_XPS = 1;
 
-    MuPdfDocument(final MuPdfContext context, int format, final String fname, final String pwd) {
+    MuPdfDocument(final MuPdfContext context, final int format, final String fname, final String pwd) {
         super(context, open(AppSettings.current().pdfStorageSize << 20, format, fname, pwd));
     }
 
@@ -44,8 +44,6 @@ public class MuPdfDocument extends AbstractCodecDocument {
         } else {
             // Check rotation
             info.rotation = (360 + info.rotation) % 360;
-            // info.width = (MuPdfContext.getWidthInPixels(info.width));
-            // info.height = (MuPdfContext.getHeightInPixels(info.height));
             return info;
         }
     }
@@ -55,7 +53,15 @@ public class MuPdfDocument extends AbstractCodecDocument {
         free(documentHandle);
     }
 
-    static void normalizeLinkTargetRect(final long docHandle, final int targetPage, final RectF targetRect) {
+    static void normalizeLinkTargetRect(final long docHandle, final int targetPage, final RectF targetRect,
+            final int flags) {
+
+        if ((flags & 0x0F) == 0) {
+            targetRect.right = targetRect.left = 0;
+            targetRect.bottom = targetRect.top = 0;
+            return;
+        }
+
         final CodecPageInfo cpi = new CodecPageInfo();
         MuPdfDocument.getPageInfo(docHandle, targetPage, cpi);
 
@@ -80,7 +86,7 @@ public class MuPdfDocument extends AbstractCodecDocument {
     private static native int getPageCount(long handle);
 
     @Override
-    public List<? extends RectF> searchText(int pageNuber, String pattern) throws DocSearchNotSupported {
+    public List<? extends RectF> searchText(final int pageNuber, final String pattern) throws DocSearchNotSupported {
         throw new DocSearchNotSupported();
     }
 

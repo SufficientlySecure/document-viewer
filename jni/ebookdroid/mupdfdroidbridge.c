@@ -438,7 +438,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfLinks_getPageLinkTargetPage(JNIEnv *
     return (jint)link->dest.ld.gotor.page;
 }
 
-JNIEXPORT jboolean JNICALL
+JNIEXPORT jint JNICALL
 Java_org_ebookdroid_droids_mupdf_codec_MuPdfLinks_fillPageLinkTargetPoint(JNIEnv *env, jclass clazz, jlong linkhandle,
                                                                       jfloatArray pointArray)
 {
@@ -446,21 +446,27 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfLinks_fillPageLinkTargetPoint(JNIEnv
 
     if (!link || link->dest.kind != FZ_LINK_GOTO)
     {
-        return JNI_FALSE;
+        return 0;
     }
 
     jfloat *point = (*env)->GetPrimitiveArrayCritical(env, pointArray, 0);
     if (!point)
     {
-        return JNI_FALSE;
+        return 0;
     }
+
+    DEBUG("MuPdfLinks_fillPageLinkTargetPoint(): %d %x (%f, %f) - (%f, %f)",
+          link->dest.ld.gotor.page,
+          link->dest.ld.gotor.flags,
+          link->dest.ld.gotor.lt.x, link->dest.ld.gotor.lt.y,
+          link->dest.ld.gotor.rb.x, link->dest.ld.gotor.rb.y);
 
     point[0] = link->dest.ld.gotor.lt.x;
     point[1] = link->dest.ld.gotor.lt.y;
 
     (*env)->ReleasePrimitiveArrayCritical(env, pointArray, point, 0);
 
-    return JNI_TRUE;
+    return link->dest.ld.gotor.flags;
 }
 
 JNIEXPORT jint JNICALL
@@ -1024,7 +1030,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfOutline_getLink(JNIEnv *env, jclass 
     return (*env)->NewStringUTF(env, linkbuf);
 }
 
-JNIEXPORT jboolean JNICALL
+JNIEXPORT jint JNICALL
 Java_org_ebookdroid_droids_mupdf_codec_MuPdfOutline_fillLinkTargetPoint(JNIEnv *env, jclass clazz, jlong outlinehandle,
                                                                       jfloatArray pointArray)
 {
@@ -1032,21 +1038,27 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfOutline_fillLinkTargetPoint(JNIEnv *
 
     if (!outline || outline->dest.kind != FZ_LINK_GOTO)
     {
-        return JNI_FALSE;
+        return 0;
     }
 
     jfloat *point = (*env)->GetPrimitiveArrayCritical(env, pointArray, 0);
     if (!point)
     {
-        return JNI_FALSE;
+        return 0;
     }
+
+    DEBUG("MuPdfOutline_fillLinkTargetPoint(): %d %x (%f, %f) - (%f, %f)",
+          outline->dest.ld.gotor.page,
+          outline->dest.ld.gotor.flags,
+          outline->dest.ld.gotor.lt.x, outline->dest.ld.gotor.lt.y,
+          outline->dest.ld.gotor.rb.x, outline->dest.ld.gotor.rb.y);
 
     point[0] = outline->dest.ld.gotor.lt.x;
     point[1] = outline->dest.ld.gotor.lt.y;
 
     (*env)->ReleasePrimitiveArrayCritical(env, pointArray, point, 0);
 
-    return JNI_TRUE;
+    return outline->dest.ld.gotor.flags;
 }
 
 JNIEXPORT jlong JNICALL

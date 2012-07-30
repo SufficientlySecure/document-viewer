@@ -37,12 +37,12 @@ public class MuPdfLinks {
                 }
 
                 link.targetPage = getPageLinkTargetPage(linkHandle);
-                if (link.targetPage > 0 && fillPageLinkTargetPoint(linkHandle, temp)) {
+                if (link.targetPage > 0) {
+                    int flags = fillPageLinkTargetPoint(linkHandle, temp);
                     link.targetRect = new RectF();
                     link.targetRect.left = temp[0];
                     link.targetRect.top = temp[1];
-
-                    MuPdfDocument.normalizeLinkTargetRect(docHandle, link.targetPage, link.targetRect);
+                    MuPdfDocument.normalizeLinkTargetRect(docHandle, link.targetPage, link.targetRect, flags);
                 }
 
                 links.add(link);
@@ -65,6 +65,6 @@ public class MuPdfLinks {
 
     private static native int getPageLinkTargetPage(long linkhandle);
 
-    private static native boolean fillPageLinkTargetPoint(long linkhandle, float[] point);
+    private static native int fillPageLinkTargetPoint(long linkhandle, float[] point);
 
 }

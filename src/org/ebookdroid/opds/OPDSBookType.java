@@ -6,7 +6,26 @@ import java.util.Set;
 
 public enum OPDSBookType {
 
-    PDF(false, "application/pdf"), DJVU(false, "application/djvu"), FB2(true, "application/fb2");
+    /**
+     *
+     */
+    PDF(false, "application/pdf"),
+    /**
+     *
+     */
+    DJVU(false, "application/djvu"),
+    /**
+     *
+     */
+    FB2(true, "application/fb2"),
+    /**
+     *
+     */
+    CBZ(false, "application/x-cbz"),
+    /**
+    *
+    */
+    CBR(false, "application/x-cbr");
 
     private final boolean supportZip;
     private final Set<String> mimeTypes;

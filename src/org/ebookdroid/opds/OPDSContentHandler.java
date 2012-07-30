@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -58,6 +59,14 @@ public class OPDSContentHandler extends DefaultHandler {
     public void parse(final InputStreamReader inputStreamReader) throws ParserConfigurationException, SAXException,
             IOException {
         final Reader isr = new BufferedReader(inputStreamReader, 32 * 1024);
+        final InputSource is = new InputSource();
+        is.setCharacterStream(isr);
+        final SAXParser parser = spf.newSAXParser();
+        parser.parse(is, this);
+    }
+
+    public void parse(final String content) throws ParserConfigurationException, SAXException, IOException {
+        final Reader isr = new StringReader(content);
         final InputSource is = new InputSource();
         is.setCharacterStream(isr);
         final SAXParser parser = spf.newSAXParser();
@@ -149,10 +158,10 @@ public class OPDSContentHandler extends DefaultHandler {
                 final Content content = contentString != null ? new Content(contentType, contentString) : null;
                 final String entryId = values.get("id");
                 final String entryTitle = values.get("title");
-                if (feedLink != null || !facets.isEmpty()) {
-                    feed.children.add(builder.newFeed(feed, entryId, entryTitle, content, feedLink, facets));
-                } else if (LengthUtils.isNotEmpty(bookLinks)) {
+                if (LengthUtils.isNotEmpty(bookLinks)) {
                     feed.books.add(builder.newBook(feed, entryId, entryTitle, content, bookThumbnail, bookLinks));
+                } else if (feedLink != null || !facets.isEmpty()) {
+                    feed.children.add(builder.newFeed(feed, entryId, entryTitle, content, feedLink, facets));
                 }
                 values.clear();
                 facets.clear();

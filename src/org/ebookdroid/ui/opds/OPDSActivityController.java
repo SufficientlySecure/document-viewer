@@ -67,7 +67,7 @@ public class OPDSActivityController extends ActionController<OPDSActivity> imple
         }
         final OPDSActivity activity = getManagedComponent();
 
-        adapter = new OPDSAdapter(activity);
+        adapter = new OPDSAdapter(activity, this);
         adapter.addListener(this);
 
         activity.list.setOnGroupClickListener(this);

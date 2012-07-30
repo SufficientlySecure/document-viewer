@@ -5,14 +5,13 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/textAlias"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dip"
-        android:text="@string/opds_addfeed_alias" />
+        android:text="@string/opds_authfeed_username" />
 
     <EditText
-        android:id="@+id/editAlias"
+        android:id="@+id/opds_auth_editUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10" >
@@ -21,17 +20,16 @@
     </EditText>
 
     <TextView
-        android:id="@+id/textURL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dip"
-        android:text="@string/opds_addfeed_url" />
+        android:text="@string/opds_authfeed_password" />
 
     <EditText
-        android:id="@+id/editURL"
+        android:id="@+id/opds_auth_editPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textUri"
+        android:inputType="textPassword"
         android:ems="10" />
 
 </LinearLayout>

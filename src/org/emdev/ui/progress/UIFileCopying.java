@@ -61,9 +61,14 @@ public class UIFileCopying implements CopingProgress {
         copied = bytes;
         if (copied - indicated >= interval) {
             indicated = copied;
-            final String val1 = FileUtils.getFileSize(Math.min(indicated, contentLength));
-            final String val2 = FileUtils.getFileSize(contentLength);
-            delegate.setProgressDialogMessage(stringId, val1, val2);
+            if (contentLength > -1) {
+                final String val1 = FileUtils.getFileSize(Math.min(indicated, contentLength));
+                final String val2 = FileUtils.getFileSize(contentLength);
+                delegate.setProgressDialogMessage(stringId, val1, val2);
+            } else {
+                final String val1 = FileUtils.getFileSize(indicated);
+                delegate.setProgressDialogMessage(stringId, val1, "");
+            }
         }
 
     }

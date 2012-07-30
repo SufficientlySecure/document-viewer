@@ -13,7 +13,7 @@
    <item android:id="@+id/actions_verticalConfigScrollUp" />
    <item android:id="@+id/actions_verticalConfigScrollDown" />
    <item android:id="@+id/actions_quickZoom" />
-   
+
    <item android:id="@+id/actions_clearRecent" />
    <item android:id="@+id/actions_searchBook" />
 
@@ -21,6 +21,7 @@
    <item android:id="@+id/actions_addFeed" />
    <item android:id="@+id/actions_editFeed" />
    <item android:id="@+id/actions_deleteFeed" />
+   <item android:id="@+id/actions_setFeedAuth" />
 
    <item android:id="@+id/actions_doCopyBook" />
    <item android:id="@+id/actions_doMoveBook" />

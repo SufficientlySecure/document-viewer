@@ -64,6 +64,13 @@
     <string name="opds_deletefeed_title">"Eliminar catálogo"</string>
     <string name="opds_deletefeed_msg">"¿Realmente deseas eliminar el catálogo?"</string>
     <string name="opds_deletefeed_ok">"Eliminar"</string>
+<!--<string name="opds_authfeed_title">"Authorization"</string>-->
+<!--<string name="opds_authfeed_msg">"Enter user name and password for the catalog"</string>-->
+<!--<string name="opds_authfeed_username">"Username:"</string>-->
+<!--<string name="opds_authfeed_password">"Password:"</string>-->
+<!--<string name="opds_authfeed_ok">"Login"</string>-->
+<!--<string name="opds_error_title">"OPDS Error"</string>-->
+<!--<string name="opds_error_msg">"Catalog is not accessible:\n%s"</string>-->
     <string name="book_copy_start">"Copiando libro"</string>
     <string name="book_copy_progress">"Copiando libro: %1$s/%2$s…"</string>
     <string name="book_copy_complete">"Copia del libro completa: %s"</string>

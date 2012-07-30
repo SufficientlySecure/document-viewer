@@ -64,6 +64,13 @@
 <!--<string name="opds_deletefeed_title">"Delete catalog"</string>-->
 <!--<string name="opds_deletefeed_msg">"Do you really want to delete the catalog?"</string>-->
 <!--<string name="opds_deletefeed_ok">"Delete"</string>-->
+<!--<string name="opds_authfeed_title">"Authorization"</string>-->
+<!--<string name="opds_authfeed_msg">"Enter user name and password for the catalog"</string>-->
+<!--<string name="opds_authfeed_username">"Username:"</string>-->
+<!--<string name="opds_authfeed_password">"Password:"</string>-->
+<!--<string name="opds_authfeed_ok">"Login"</string>-->
+<!--<string name="opds_error_title">"OPDS Error"</string>-->
+<!--<string name="opds_error_msg">"Catalog is not accessible:\n%s"</string>-->
 <!--<string name="book_copy_start">"Copying book…"</string>-->
 <!--<string name="book_copy_progress">"Copying book: %s/%s…"</string>-->
 <!--<string name="book_copy_complete">"Book copying complete: %s"</string>-->

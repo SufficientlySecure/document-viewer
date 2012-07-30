@@ -17,7 +17,7 @@ class CompatibilityNotificationManager extends AbstractNotificationManager {
 
         nb.setSmallIcon(R.drawable.icon).setContentTitle(title);
         nb.setTicker(message).setContentText(message);
-        nb.setAutoCancel(true).setWhen(System.currentTimeMillis()).setDefaults(Notification.DEFAULT_ALL);
+        nb.setAutoCancel(true).setWhen(System.currentTimeMillis()).setDefaults(Notification.DEFAULT_ALL & (~ Notification.DEFAULT_VIBRATE));
 
         final Notification notification = nb.getNotification();
         final int id = SEQ.getAndIncrement();

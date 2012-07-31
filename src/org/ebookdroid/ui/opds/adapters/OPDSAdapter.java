@@ -45,6 +45,7 @@ import org.emdev.ui.actions.ActionMethod;
 import org.emdev.ui.actions.IActionController;
 import org.emdev.ui.actions.params.Constant;
 import org.emdev.ui.actions.params.EditableValue;
+import org.emdev.ui.actions.params.EditableValue.PasswordEditable;
 import org.emdev.ui.adapters.BaseViewHolder;
 import org.emdev.ui.progress.IProgressIndicator;
 import org.emdev.ui.tasks.BaseFileAsyncTask;
@@ -420,13 +421,13 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
     @ActionMethod(ids = R.id.actions_setFeedAuth)
     public void setFeedAuth(final ActionEx action) {
         final String username = action.getParameter("username").toString();
-        final String password = action.getParameter("password").toString();
+        final String password = ((PasswordEditable)action.getParameter("password")).getPassword();
 
         final Object info = action.getParameter("info");
         if (info instanceof FeedTaskResult) {
             final AuthorizationRequiredException ex = (AuthorizationRequiredException) ((FeedTaskResult) info).error;
             try {
-                client.setAuthorization(ex.host, ex.method, username, password);
+                client.setAuthorization(ex.host, username, password);
                 actions.getOrCreateAction(R.id.opdsrefreshfolder).run();
             } catch (final OPDSException exx) {
                 ex.printStackTrace();
@@ -435,7 +436,7 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
             final DownloadBookResult result = (DownloadBookResult) info;
             final AuthorizationRequiredException ex = (AuthorizationRequiredException) result.error;
             try {
-                client.setAuthorization(ex.host, ex.method, username, password);
+                client.setAuthorization(ex.host, username, password);
                 new DownloadBookTask().execute(result.book, result.link);
             } catch (final OPDSException exx) {
                 ex.printStackTrace();

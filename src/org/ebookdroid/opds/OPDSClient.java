@@ -12,7 +12,6 @@ import org.ebookdroid.opds.model.Feed;
 import org.ebookdroid.opds.model.Link;
 
 import android.annotation.TargetApi;
-import android.net.http.AndroidHttpClient;
 import android.webkit.URLUtil;
 
 import java.io.BufferedInputStream;
@@ -22,71 +21,45 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.InterruptedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.channels.ClosedByInterruptException;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.message.BasicHeader;
 import org.emdev.BaseDroidApp;
 import org.emdev.common.archives.zip.ZipArchive;
 import org.emdev.common.archives.zip.ZipArchiveEntry;
 import org.emdev.common.cache.CacheManager;
+import org.emdev.common.http.BaseHttpClient;
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
 import org.emdev.ui.progress.IProgressIndicator;
 import org.emdev.ui.progress.UIFileCopying;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.MathUtils;
-import org.emdev.utils.base64.Base64;
 
 @TargetApi(8)
-public class OPDSClient {
+public class OPDSClient extends BaseHttpClient {
 
     private static final LogContext LCTX = LogManager.root().lctx("OPDS");
 
-    private final AndroidHttpClient client;
     private final IEntryBuilder builder;
 
-    private final Map<String, Map<String, Header>> hostParameters = new HashMap<String, Map<String, Header>>();
-
     public OPDSClient(final IEntryBuilder builder) {
-        this.client = AndroidHttpClient.newInstance(BaseDroidApp.APP_PACKAGE + " " + BaseDroidApp.APP_VERSION);
+        super(BaseDroidApp.APP_PACKAGE + " " + BaseDroidApp.APP_VERSION);
         this.builder = builder;
     }
 
     @Override
     protected void finalize() {
         close();
-    }
-
-    public void close() {
-        client.close();
-    }
-
-    public void setAuthorization(final String host, final String method, final String username, final String password)
-            throws OPDSException {
-        Map<String, Header> params = hostParameters.get(host);
-        if (params == null) {
-            params = new HashMap<String, Header>();
-            hostParameters.put(host, params);
-        }
-        if ("Basic".equalsIgnoreCase(method)) {
-            params.put(
-                    "Authorization",
-                    new BasicHeader("Authorization", method + " "
-                            + Base64.encodeToString((username + ":" + password).getBytes(), 0)));
-        } else {
-            throw new OPDSException("Required authorization method not supported: " + method);
-        }
     }
 
     public Feed loadFeed(final Feed feed, final IProgressIndicator progress) throws OPDSException {
@@ -102,10 +75,6 @@ public class OPDSClient {
             final HttpResponse resp = connect(uri, h1, h2);
             final StatusLine statusLine = resp.getStatusLine();
             final int statusCode = statusLine.getStatusCode();
-
-            if (statusCode == 401) {
-                onAuthorizationRequired(uri, resp, statusLine);
-            }
 
             if (statusCode != 200) {
                 LCTX.e("Content cannot be retrived: " + statusLine);
@@ -133,6 +102,9 @@ public class OPDSClient {
 
             h.parse(buf.toString());
 
+        } catch (final InterruptedIOException ex) {
+            LCTX.e("Error on OPDS catalog access: " + ex.getMessage());
+            throw new OPDSException(ex);
         } catch (final OPDSException ex) {
             LCTX.e("Error on OPDS catalog access: " + ex.getMessage());
             throw ex;
@@ -152,10 +124,6 @@ public class OPDSClient {
             final HttpResponse resp = connect(uri);
             final StatusLine statusLine = resp.getStatusLine();
             final int statusCode = statusLine.getStatusCode();
-
-            if (statusCode == 401) {
-                onAuthorizationRequired(uri, resp, statusLine);
-            }
 
             if (statusCode != 200) {
                 LCTX.e("Content cannot be retrived: " + statusLine);
@@ -222,6 +190,10 @@ public class OPDSClient {
             final HttpResponse resp = connect(uriRef);
             final HttpEntity entity = resp.getEntity();
             return CacheManager.createTempFile(entity.getContent(), ".opds");
+        } catch (final AuthorizationRequiredException ex) {
+            // No thumbnails without authentication
+        } catch (final OPDSException ex) {
+            LCTX.e("Error on OPDS thumbnail loading: ", ex.getCause());
         } catch (final Throwable th) {
             LCTX.e("Error on OPDS catalog access: ", th);
         }
@@ -241,78 +213,6 @@ public class OPDSClient {
             }
         }
         return new AtomicReference<URI>(reqUri);
-    }
-
-    protected HttpGet createRequest(final URI uri, final Header... headers) {
-        final HttpGet req = new HttpGet(uri);
-        final String host = uri.getHost();
-        req.setHeader("Host", host);
-        req.setHeader("User-Agent", "EBookDroid OPDS browser");
-
-        if (LengthUtils.isNotEmpty(headers)) {
-            for (final Header h : headers) {
-                req.setHeader(h);
-            }
-        }
-        final Map<String, Header> params = hostParameters.get(host);
-        if (LengthUtils.isNotEmpty(params)) {
-            for (final Header h : params.values()) {
-                req.setHeader(h);
-            }
-        }
-        return req;
-    }
-
-    protected HttpResponse connect(final AtomicReference<URI> uriRef, final Header... headers) throws IOException,
-            URISyntaxException {
-        URI uri = uriRef.get();
-        HttpGet req = createRequest(uri, headers);
-
-        LCTX.d("Connecting to: " + req.getURI());
-
-        HttpResponse resp = client.execute(req);
-        StatusLine statusLine = resp.getStatusLine();
-        int statusCode = statusLine.getStatusCode();
-
-        LCTX.d("Status: " + statusLine);
-        int redirectCount = 5;
-        while (redirectCount > 0 && (statusCode == 301 || statusCode == 302)) {
-            redirectCount--;
-
-            final String location = getHeaderValue(resp, "Location");
-            if (LengthUtils.isEmpty(location)) {
-                break;
-            }
-
-            uri = new URI(location);
-            uriRef.set(uri);
-            LCTX.d("Location: " + uri);
-
-            req = createRequest(uri, headers);
-            LCTX.d("Connecting to: " + req.getURI());
-            resp = client.execute(req);
-            statusLine = resp.getStatusLine();
-            statusCode = statusLine.getStatusCode();
-            LCTX.d("Status: " + statusLine);
-        }
-
-        return resp;
-    }
-
-    protected void onAuthorizationRequired(final AtomicReference<URI> uri, final HttpResponse resp,
-            final StatusLine statusLine) throws AuthorizationRequiredException {
-
-        LCTX.i("Authorization required: " + statusLine);
-        final Header[] allHeaders = resp.getAllHeaders();
-        for (final Header header : allHeaders) {
-            LCTX.d("" + header.getName() + "=" + header.getValue());
-        }
-        String method = "Basic";
-        final Header authHeader = resp.getFirstHeader("WWW-Authenticate");
-        if (authHeader != null) {
-            method = LengthUtils.safeString(authHeader.getValue(), method).split(" ")[0];
-        }
-        throw new AuthorizationRequiredException(uri.get().getHost(), method);
     }
 
     protected File unpack(final File file, final IProgressIndicator progress) {
@@ -367,14 +267,4 @@ public class OPDSClient {
             }
         }
     }
-
-    protected static String getHeaderValue(final HttpResponse resp, final String name) {
-        final Header header = resp.getFirstHeader(name);
-        return header != null ? header.getValue() : "";
-    }
-
-    protected static String getHeaderValue(final Header header) {
-        return header != null ? header.getValue() : "";
-    }
-
 }

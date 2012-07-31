@@ -8,15 +8,21 @@ import org.ebookdroid.common.settings.definitions.BookPreferences;
 import org.ebookdroid.common.settings.definitions.LibPreferences;
 import org.ebookdroid.common.settings.definitions.OpdsPreferences;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
+import org.ebookdroid.common.settings.types.DocumentViewType;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.core.curl.PageAnimationType;
 
+import android.annotation.TargetApi;
+import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceGroup;
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.preference.TwoStatePreference;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -83,6 +89,9 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
     }
 
     public void decorateMemorySettings() {
+        addViewTypeListener(VIEW_TYPE.key, HWA_ENABLED.key);
+
+        setHWA(AppSettings.current().viewType, HWA_ENABLED.key);
     }
 
     public void decorateRenderSettings() {
@@ -115,6 +124,26 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
             if (pref != null) {
                 pref.setEnabled(type == DocumentViewMode.SINGLE_PAGE);
             }
+        }
+    }
+
+    public void setHWA(final DocumentViewType type, final String hwaPrefKey) {
+        final Preference hwaPref = findPreference(hwaPrefKey);
+
+        Class<? extends Preference> clazz = hwaPref.getClass();
+        try {
+            final Method setCheckedMethod = clazz.getMethod("setChecked", boolean.class);
+            final Method setEnabledMethod = clazz.getMethod("setEnabled", boolean.class);
+            if ((type == DocumentViewType.SURFACE)) {
+                setCheckedMethod.invoke(hwaPref, false);
+                setEnabledMethod.invoke(hwaPref, false);
+            } else {
+                setEnabledMethod.invoke(hwaPref, true);
+            }
+        } catch (NoSuchMethodException e) {
+        } catch (IllegalArgumentException e) {
+        } catch (IllegalAccessException e) {
+        } catch (InvocationTargetException e) {
         }
     }
 
@@ -229,6 +258,9 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
         addListener(source, new ViewModeListener(targets));
     }
 
+    protected void addViewTypeListener(final String source, final String target) {
+        addListener(source, new ViewTypeListener(target));
+    }
     protected static class CompositeListener implements OnPreferenceChangeListener {
 
         final List<OnPreferenceChangeListener> listeners = new LinkedList<Preference.OnPreferenceChangeListener>();
@@ -278,5 +310,21 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
             enableSinglePageModeSetting(type, relatedKeys);
             return true;
         }
+    }
+
+    protected class ViewTypeListener implements OnPreferenceChangeListener {
+        private final String relatedKey;
+
+        public ViewTypeListener(final String relatedKey) {
+            this.relatedKey = relatedKey;
+        }
+
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
+            final DocumentViewType dvt = EnumUtils.getByResValue(DocumentViewType.class, newValue.toString(), null);
+            setHWA(dvt, relatedKey);
+            return true;
+        }
+
     }
 }

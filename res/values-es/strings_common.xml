@@ -64,14 +64,14 @@
     <string name="opds_deletefeed_title">"Eliminar catálogo"</string>
     <string name="opds_deletefeed_msg">"¿Realmente deseas eliminar el catálogo?"</string>
     <string name="opds_deletefeed_ok">"Eliminar"</string>
-<!--<string name="opds_authfeed_title">"Authorization"</string>-->
-<!--<string name="opds_authfeed_msg">"Enter user name and password for the catalog"</string>-->
-<!--<string name="opds_authfeed_username">"Username:"</string>-->
-<!--<string name="opds_authfeed_password">"Password:"</string>-->
-<!--<string name="opds_authfeed_ok">"Login"</string>-->
-<!--<string name="opds_error_title">"OPDS Error"</string>-->
+    <string name="opds_authfeed_title">"Autorización"</string>
+    <string name="opds_authfeed_msg">"Introduce usuario y contraseña para el catálogo"</string>
+    <string name="opds_authfeed_username">"Usuario:"</string>
+    <string name="opds_authfeed_password">"Contraseña:"</string>
+    <string name="opds_authfeed_ok">"Acceso"</string>
+    <string name="opds_error_title">"Error OPDS"</string>
 <!--<string name="opds_error_msg">"%s"</string>-->
-<!--<string name="opds_retry_download">"Retry"</string>-->
+    <string name="opds_retry_download">"Reintentar"</string>
     <string name="book_copy_start">"Copiando libro"</string>
     <string name="book_copy_progress">"Copiando libro: %1$s/%2$s…"</string>
     <string name="book_copy_complete">"Copia del libro completa: %s"</string>
@@ -116,7 +116,7 @@
     <string name="opds_downloading_type_dlg_title">"Selecciona el tipo de libro para descargar"</string>
     <string name="opds_downloading_dlg_title">"Descargando libro como…"</string>
     <string name="opds_downloading_dlg_raw_type">"Tipo Raw"</string>
-<!--<string name="notification_file_add">"File added to library"</string>-->
-<!--<string name="notification_file_delete">"File removed from library"</string>-->
+    <string name="notification_file_add">"Archivo añadido a la biblioteca"</string>
+    <string name="notification_file_delete">"Archivo eliminado de la biblioteca"</string>
 
 </resources>

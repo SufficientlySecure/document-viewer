@@ -29,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.emdev.common.android.AndroidVersion;
 import org.emdev.ui.preference.SeekBarPreference;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.enums.EnumUtils;
@@ -134,7 +135,7 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
         try {
             final Method setCheckedMethod = clazz.getMethod("setChecked", boolean.class);
             final Method setEnabledMethod = clazz.getMethod("setEnabled", boolean.class);
-            if ((type == DocumentViewType.SURFACE)) {
+            if ((type == DocumentViewType.SURFACE) || AndroidVersion.lessThan3x) {
                 setCheckedMethod.invoke(hwaPref, false);
                 setEnabledMethod.invoke(hwaPref, false);
             } else {

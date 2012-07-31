@@ -2,7 +2,6 @@ package org.ebookdroid.ui.viewer;
 
 import org.ebookdroid.CodecType;
 import org.ebookdroid.R;
-import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.keysbinding.KeyBindingsDialog;
 import org.ebookdroid.common.keysbinding.KeyBindingsManager;
@@ -72,6 +71,7 @@ import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.actions.IActionController;
 import org.emdev.ui.actions.params.Constant;
 import org.emdev.ui.actions.params.EditableValue;
+import org.emdev.ui.actions.params.EditableValue.PasswordEditable;
 import org.emdev.ui.progress.IProgressIndicator;
 import org.emdev.ui.tasks.BaseAsyncTask;
 import org.emdev.ui.uimanager.IUIManager;
@@ -355,8 +355,8 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     @ActionMethod(ids = R.id.actions_redecodingWithPassword)
     public void redecodingWithPassword(final ActionEx action) {
-        final Editable value = action.getParameter("input");
-        final String password = value.toString();
+        final PasswordEditable value = action.getParameter("input");
+        final String password = value.getPassword();
         final String fileName = action.getParameter("fileName");
         startDecoding(fileName, password);
     }
@@ -443,7 +443,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IActivityController#jumpToPage(int, float, float)
      */
     @Override
@@ -542,7 +542,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * Gets the zoom model.
-     * 
+     *
      * @return the zoom model
      */
     @Override
@@ -560,7 +560,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * Gets the decoding progress model.
-     * 
+     *
      * @return the decoding progress model
      */
     @Override
@@ -660,7 +660,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.common.settings.listeners.ISettingsChangeListener#onAppSettingsChanged(org.ebookdroid.common.settings.AppSettings,
      *      org.ebookdroid.common.settings.AppSettings, org.ebookdroid.common.settings.AppSettings.Diff)
      */
@@ -691,7 +691,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.common.settings.listeners.ISettingsChangeListener#onBookSettingsChanged(org.ebookdroid.common.settings.books.BookSettings,
      *      org.ebookdroid.common.settings.books.BookSettings, org.ebookdroid.common.settings.books.BookSettings.Diff,
      *      org.ebookdroid.common.settings.AppSettings.Diff)

@@ -72,6 +72,23 @@ public class OPDSClient {
         client.close();
     }
 
+    public void setAuthorization(final String host, final String method, final String username, final String password)
+            throws OPDSException {
+        Map<String, Header> params = hostParameters.get(host);
+        if (params == null) {
+            params = new HashMap<String, Header>();
+            hostParameters.put(host, params);
+        }
+        if ("Basic".equalsIgnoreCase(method)) {
+            params.put(
+                    "Authorization",
+                    new BasicHeader("Authorization", method + " "
+                            + Base64.encodeToString((username + ":" + password).getBytes(), 0)));
+        } else {
+            throw new OPDSException("Required authorization method not supported: " + method);
+        }
+    }
+
     public Feed loadFeed(final Feed feed, final IProgressIndicator progress) throws OPDSException {
         if (feed.link == null) {
             return feed;
@@ -87,22 +104,12 @@ public class OPDSClient {
             final int statusCode = statusLine.getStatusCode();
 
             if (statusCode == 401) {
-                LCTX.i("Authorization required: " + statusLine);
-                final Header[] allHeaders = resp.getAllHeaders();
-                for (final Header header : allHeaders) {
-                    LCTX.d("" + header.getName() + "=" + header.getValue());
-                }
-                String method = "Basic";
-                final Header authHeader = resp.getFirstHeader("WWW-Authenticate");
-                if (authHeader != null) {
-                    method = LengthUtils.safeString(authHeader.getValue(), method).split(" ")[0];
-                }
-                throw new AuthorizationRequiredException(uri.get().getHost(), method);
+                onAuthorizationRequired(uri, resp, statusLine);
             }
 
             if (statusCode != 200) {
                 LCTX.e("Content cannot be retrived: " + statusLine);
-                throw new HttpRequestFailed(statusCode, statusLine.getReasonPhrase());
+                throw new HttpRequestFailed(statusLine);
             }
 
             progress.setProgressDialogMessage(R.string.opds_loading_catalog);
@@ -138,44 +145,21 @@ public class OPDSClient {
         return feed;
     }
 
-    private AtomicReference<URI> createURI(final Feed parent, String uri) throws URISyntaxException {
-        URI reqUri = new URI(uri);
-        if (reqUri.getHost() == null) {
-            for (Feed p = parent; p != null; p = p.parent) {
-                final URI parentURI = new URI(p.link.uri);
-                if (parentURI.getHost() != null) {
-                    reqUri = new URI(parentURI.getScheme(), parentURI.getHost(), reqUri.getPath(), reqUri.getFragment());
-                    uri = reqUri.toASCIIString();
-                    break;
-                }
-            }
-        }
-        return new AtomicReference<URI>(reqUri);
-    }
-
-    public File loadFile(final Feed parent, final Link link) {
-        try {
-            final AtomicReference<URI> uriRef = createURI(parent, link.uri);
-            final HttpResponse resp = connect(uriRef);
-            final HttpEntity entity = resp.getEntity();
-            return CacheManager.createTempFile(entity.getContent(), ".opds");
-        } catch (final Throwable th) {
-            LCTX.e("Error on OPDS catalog access: ", th);
-        }
-        return null;
-    }
-
     public File downloadBook(final Book book, final BookDownloadLink link, final IProgressIndicator progress)
-            throws IOException {
+            throws OPDSException {
         try {
             final AtomicReference<URI> uri = createURI(book.parent, link.uri);
             final HttpResponse resp = connect(uri);
             final StatusLine statusLine = resp.getStatusLine();
             final int statusCode = statusLine.getStatusCode();
 
+            if (statusCode == 401) {
+                onAuthorizationRequired(uri, resp, statusLine);
+            }
+
             if (statusCode != 200) {
                 LCTX.e("Content cannot be retrived: " + statusLine);
-                return null;
+                throw new HttpRequestFailed(statusLine);
             }
 
             final HttpEntity entity = resp.getEntity();
@@ -187,7 +171,8 @@ public class OPDSClient {
             LCTX.d("Content-Type: " + mimeType);
             LCTX.d("Content-Length: " + contentLength);
 
-            final String guessFileName = URLUtil.guessFileName(uri.get().toString(), contentDisposition.replace("attachement", "attachment"), mimeType);
+            final String guessFileName = URLUtil.guessFileName(uri.get().toString(),
+                    contentDisposition.replace("attachement", "attachment"), mimeType);
 
             LCTX.d("File name: " + guessFileName);
 
@@ -205,7 +190,8 @@ public class OPDSClient {
                 if (!exists) {
                     final UIFileCopying worker = new UIFileCopying(R.string.opds_loading_book, 64 * 1024, progress);
                     final BufferedInputStream input = new BufferedInputStream(entity.getContent(), 64 * 1024);
-                    final BufferedOutputStream fileOutput = new BufferedOutputStream(new FileOutputStream(file), 256 * 1024);
+                    final BufferedOutputStream fileOutput = new BufferedOutputStream(new FileOutputStream(file),
+                            256 * 1024);
                     worker.copy(contentLength, input, fileOutput);
                 }
                 if (OpdsSettings.current().unpackArchives && link.isZipped && !link.bookType.isZipSupported()) {
@@ -219,13 +205,114 @@ public class OPDSClient {
             }
 
             return file;
+        } catch (final OPDSException ex) {
+            throw ex;
         } catch (final IOException ex) {
             LCTX.e("Error on downloading book: " + ex.getMessage());
-            throw ex;
+            throw new OPDSException(ex);
         } catch (final Throwable th) {
             LCTX.e("Error on downloading book: ", th);
+            throw new OPDSException(th);
+        }
+    }
+
+    public File loadFile(final Feed parent, final Link link) {
+        try {
+            final AtomicReference<URI> uriRef = createURI(parent, link.uri);
+            final HttpResponse resp = connect(uriRef);
+            final HttpEntity entity = resp.getEntity();
+            return CacheManager.createTempFile(entity.getContent(), ".opds");
+        } catch (final Throwable th) {
+            LCTX.e("Error on OPDS catalog access: ", th);
         }
         return null;
+    }
+
+    protected AtomicReference<URI> createURI(final Feed parent, String uri) throws URISyntaxException {
+        URI reqUri = new URI(uri);
+        if (reqUri.getHost() == null) {
+            for (Feed p = parent; p != null; p = p.parent) {
+                final URI parentURI = new URI(p.link.uri);
+                if (parentURI.getHost() != null) {
+                    reqUri = new URI(parentURI.getScheme(), parentURI.getHost(), reqUri.getPath(), reqUri.getFragment());
+                    uri = reqUri.toASCIIString();
+                    break;
+                }
+            }
+        }
+        return new AtomicReference<URI>(reqUri);
+    }
+
+    protected HttpGet createRequest(final URI uri, final Header... headers) {
+        final HttpGet req = new HttpGet(uri);
+        final String host = uri.getHost();
+        req.setHeader("Host", host);
+        req.setHeader("User-Agent", "EBookDroid OPDS browser");
+
+        if (LengthUtils.isNotEmpty(headers)) {
+            for (final Header h : headers) {
+                req.setHeader(h);
+            }
+        }
+        final Map<String, Header> params = hostParameters.get(host);
+        if (LengthUtils.isNotEmpty(params)) {
+            for (final Header h : params.values()) {
+                req.setHeader(h);
+            }
+        }
+        return req;
+    }
+
+    protected HttpResponse connect(final AtomicReference<URI> uriRef, final Header... headers) throws IOException,
+            URISyntaxException {
+        URI uri = uriRef.get();
+        HttpGet req = createRequest(uri, headers);
+
+        LCTX.d("Connecting to: " + req.getURI());
+
+        HttpResponse resp = client.execute(req);
+        StatusLine statusLine = resp.getStatusLine();
+        int statusCode = statusLine.getStatusCode();
+
+        LCTX.d("Status: " + statusLine);
+        int redirectCount = 5;
+        while (redirectCount > 0 && (statusCode == 301 || statusCode == 302)) {
+            redirectCount--;
+
+            final String location = getHeaderValue(resp, "Location");
+            if (LengthUtils.isEmpty(location)) {
+                break;
+            }
+
+            uri = new URI(location);
+            uriRef.set(uri);
+            LCTX.d("Location: " + uri);
+
+            req = createRequest(uri, headers);
+            LCTX.d("Connecting to: " + req.getURI());
+            resp = client.execute(req);
+            statusLine = resp.getStatusLine();
+            statusCode = statusLine.getStatusCode();
+            LCTX.d("Status: " + statusLine);
+        }
+
+        return resp;
+    }
+
+    protected void onAuthorizationRequired(final AtomicReference<URI> uri, final HttpResponse resp,
+            final StatusLine statusLine) throws AuthorizationRequiredException {
+
+        LCTX.i("Authorization required: " + statusLine);
+        final Header[] allHeaders = resp.getAllHeaders();
+        for (final Header header : allHeaders) {
+            LCTX.d("" + header.getName() + "=" + header.getValue());
+        }
+        String method = "Basic";
+        final Header authHeader = resp.getFirstHeader("WWW-Authenticate");
+        if (authHeader != null) {
+            method = LengthUtils.safeString(authHeader.getValue(), method).split(" ")[0];
+        }
+        throw new AuthorizationRequiredException(uri.get().getHost(), method);
     }
 
     protected File unpack(final File file, final IProgressIndicator progress) {
@@ -268,7 +355,7 @@ public class OPDSClient {
         return file;
     }
 
-    private void release(final File file, final ZipArchive archive) {
+    protected void release(final File file, final ZipArchive archive) {
         try {
             archive.close();
         } catch (final Exception ex1) {
@@ -281,89 +368,13 @@ public class OPDSClient {
         }
     }
 
-    public void setAuthorization(final String host, final String method, final String username, final String password)
-            throws OPDSException {
-        Map<String, Header> params = hostParameters.get(host);
-        if (params == null) {
-            params = new HashMap<String, Header>();
-            hostParameters.put(host, params);
-        }
-        if ("Basic".equalsIgnoreCase(method)) {
-            params.put(
-                    "Authorization",
-                    new BasicHeader("Authorization", method + " "
-                            + Base64.encodeToString((username + ":" + password).getBytes(), 0)));
-        } else {
-            throw new OPDSException("Required authorization method not supported: " + method);
-        }
-    }
-
-    protected HttpResponse connect(final AtomicReference<URI> uriRef, final Header... headers) throws IOException,
-            URISyntaxException {
-        URI uri = uriRef.get();
-        HttpGet req = createRequest(uri, headers);
-
-        LCTX.d("Connecting to: " + req.getURI());
-//        for (final Header h : req.getAllHeaders()) {
-//            LCTX.d("Connecting to: " + "\t" + h.getName() + "=" + h.getValue());
-//        }
-
-        HttpResponse resp = client.execute(req);
-        StatusLine statusLine = resp.getStatusLine();
-        int statusCode = statusLine.getStatusCode();
-
-        LCTX.d("Status: " + statusLine);
-        int redirectCount = 5;
-        while (redirectCount > 0 && (statusCode == 301 || statusCode == 302)) {
-            redirectCount--;
-
-            final String location = getHeaderValue(resp, "Location");
-            if (LengthUtils.isEmpty(location)) {
-                break;
-            }
-
-            uri = new URI(location);
-            uriRef.set(uri);
-            LCTX.d("Location: " + uri);
-
-            req = createRequest(uri, headers);
-            LCTX.d("Connecting to: " + req.getURI());
-            resp = client.execute(req);
-            statusLine = resp.getStatusLine();
-            statusCode = statusLine.getStatusCode();
-            LCTX.d("Status: " + statusLine);
-        }
-
-        return resp;
-    }
-
-    protected HttpGet createRequest(final URI uri, final Header... headers) {
-        final HttpGet req = new HttpGet(uri);
-        final String host = uri.getHost();
-        req.setHeader("Host", host);
-        req.setHeader("User-Agent", "EBookDroid OPDS browser");
-
-        if (LengthUtils.isNotEmpty(headers)) {
-            for (final Header h : headers) {
-                req.setHeader(h);
-            }
-        }
-        final Map<String, Header> params = hostParameters.get(host);
-        if (LengthUtils.isNotEmpty(params)) {
-            for (final Header h : params.values()) {
-                req.setHeader(h);
-            }
-        }
-        return req;
-    }
-
     protected static String getHeaderValue(final HttpResponse resp, final String name) {
         final Header header = resp.getFirstHeader(name);
-        return header != null ? header.getValue() : null;
+        return header != null ? header.getValue() : "";
     }
 
     protected static String getHeaderValue(final Header header) {
-        return header != null ? header.getValue() : null;
+        return header != null ? header.getValue() : "";
     }
 
 }

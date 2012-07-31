@@ -88,7 +88,8 @@
     <string name="opds_authfeed_password">"Password:"</string>
     <string name="opds_authfeed_ok">"Login"</string>
     <string name="opds_error_title">"OPDS Error"</string>
-    <string name="opds_error_msg">"Catalog is not accessible:\n%s"</string>
+    <string name="opds_error_msg">"%s"</string>
+    <string name="opds_retry_download">"Retry"</string>
 
     <string name="book_copy_start" formatted="false">"Copying book&#8230;"</string>
     <string name="book_copy_progress" formatted="false">"Copying book: %s/%s&#8230;"</string>

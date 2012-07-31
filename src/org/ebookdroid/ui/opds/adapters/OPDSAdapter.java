@@ -34,7 +34,6 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +48,7 @@ import org.emdev.ui.actions.params.EditableValue;
 import org.emdev.ui.adapters.BaseViewHolder;
 import org.emdev.ui.progress.IProgressIndicator;
 import org.emdev.ui.tasks.BaseFileAsyncTask;
+import org.emdev.ui.tasks.BaseFileAsyncTask.FileTaskResult;
 import org.emdev.ui.widget.TextViewMultilineEllipse;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.listeners.ListenerProxy;
@@ -384,7 +384,22 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
         new DownloadBookTask().execute(book, link);
     }
 
-    public void showAuthDlg(final FeedTaskResult result) {
+    public void showErrorDlg(final int pbLabel, final int pbAction, final Object result, OPDSException error) {
+        final String msg = error.getErrorMessage();
+
+        final ActionDialogBuilder b = new ActionDialogBuilder(context, actions);
+        b.setTitle(R.string.opds_error_title);
+        b.setMessage(R.string.opds_error_msg, msg);
+        if (pbAction != R.id.actions_no_action) {
+            b.setPositiveButton(pbLabel, pbAction, new Constant("info", result));
+            b.setNegativeButton();
+        } else {
+            b.setPositiveButton(pbLabel, pbAction);
+        }
+        b.show();
+    }
+
+    public void showAuthDlg(final Object info) {
         final ActionDialogBuilder b = new ActionDialogBuilder(context, actions);
 
         final View view = LayoutInflater.from(context).inflate(R.layout.opds_auth_dlg, null);
@@ -395,21 +410,10 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
         b.setMessage(R.string.opds_authfeed_msg);
         b.setView(view);
         b.setPositiveButton(R.string.opds_authfeed_ok, R.id.actions_setFeedAuth, new EditableValue("username",
-                editUsername), new EditableValue("password", editPassword), new Constant("info", result.error),
-                new Constant("feed", result.feed));
+                editUsername), new EditableValue("password", editPassword), new Constant("info", info));
 
         b.setNegativeButton();
 
-        b.show();
-    }
-
-    public void showErrorDlg(final FeedTaskResult result) {
-        String msg = LengthUtils.safeString(result.error.getMessage(), result.error.getClass().getSimpleName());
-
-        final ActionDialogBuilder b = new ActionDialogBuilder(context, actions);
-        b.setTitle(R.string.opds_error_title);
-        b.setMessage(R.string.opds_error_msg, msg);
-        b.setPositiveButton(R.string.error_close, R.id.actions_no_action);
         b.show();
     }
 
@@ -417,14 +421,32 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
     public void setFeedAuth(final ActionEx action) {
         final String username = action.getParameter("username").toString();
         final String password = action.getParameter("password").toString();
-        final AuthorizationRequiredException info = action.getParameter("info");
 
-        try {
-            client.setAuthorization(info.host, info.method, username, password);
-            actions.getOrCreateAction(R.id.opdsrefreshfolder).run();
-        } catch (final OPDSException ex) {
-            ex.printStackTrace();
+        final Object info = action.getParameter("info");
+        if (info instanceof FeedTaskResult) {
+            final AuthorizationRequiredException ex = (AuthorizationRequiredException) ((FeedTaskResult) info).error;
+            try {
+                client.setAuthorization(ex.host, ex.method, username, password);
+                actions.getOrCreateAction(R.id.opdsrefreshfolder).run();
+            } catch (final OPDSException exx) {
+                ex.printStackTrace();
+            }
+        } else if (info instanceof DownloadBookResult) {
+            final DownloadBookResult result = (DownloadBookResult) info;
+            final AuthorizationRequiredException ex = (AuthorizationRequiredException) result.error;
+            try {
+                client.setAuthorization(ex.host, ex.method, username, password);
+                new DownloadBookTask().execute(result.book, result.link);
+            } catch (final OPDSException exx) {
+                ex.printStackTrace();
+            }
         }
+    }
+
+    @ActionMethod(ids = R.id.actions_retryDownloadBook)
+    public void retryDownload(final ActionEx action) {
+        DownloadBookResult info = action.getParameter("info");
+        new DownloadBookTask().execute(info.book, info.link);
     }
 
     public static class ViewHolder extends BaseViewHolder {
@@ -496,7 +518,7 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
             if (result.error instanceof AuthorizationRequiredException) {
                 showAuthDlg(result);
             } else if (result.error != null) {
-                showErrorDlg(result);
+                showErrorDlg(R.string.opdsrefreshfolder, R.id.opdsrefreshfolder, result, result.error);
             }
 
             final FeedListener l = listeners.getListener();
@@ -572,7 +594,26 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
         void feedLoaded(Feed feed);
     }
 
-    final class DownloadBookTask extends BaseFileAsyncTask<Object> implements OnCancelListener, IProgressIndicator {
+    protected static class DownloadBookResult extends FileTaskResult {
+
+        public Book book;
+        public BookDownloadLink link;
+
+        public DownloadBookResult(final Book book, final BookDownloadLink link, final File target) {
+            super(target);
+            this.book = book;
+            this.link = link;
+        }
+
+        public DownloadBookResult(final Book book, final BookDownloadLink link, final Throwable error) {
+            super(error);
+            this.book = book;
+            this.link = link;
+        }
+    }
+
+    final class DownloadBookTask extends BaseFileAsyncTask<Object, DownloadBookResult> implements OnCancelListener,
+            IProgressIndicator {
 
         public DownloadBookTask() {
             super(OPDSAdapter.this.context, R.string.opds_connecting, R.string.opds_download_complete,
@@ -580,15 +621,35 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
         }
 
         @Override
-        protected FileTaskResult doInBackground(final Object... params) {
+        protected DownloadBookResult doInBackground(final Object... params) {
             final Book book = (Book) params[0];
             final BookDownloadLink link = (BookDownloadLink) params[1];
             try {
                 final File file = client.downloadBook(book, link, this);
-                return new FileTaskResult(file);
-            } catch (final IOException ex) {
-                return new FileTaskResult(ex);
+                return new DownloadBookResult(book, link, file);
+            } catch (final OPDSException ex) {
+                return new DownloadBookResult(book, link, ex);
             }
+        }
+
+        @Override
+        protected void onPostExecute(DownloadBookResult result) {
+            super.onPostExecute(result);
+            if (result != null) {
+                if (result.error instanceof AuthorizationRequiredException) {
+                    showAuthDlg(result);
+                } else if (result.error instanceof OPDSException) {
+                    showErrorDlg(R.string.opds_retry_download, R.id.actions_retryDownloadBook, result,
+                            (OPDSException) result.error);
+                } else if (result.error != null) {
+                    showErrorDlg(R.string.opds_retry_download, R.id.actions_retryDownloadBook, result,
+                            new OPDSException(result.error));
+                }
+            }
+        }
+
+        @Override
+        protected void processError(final Throwable error) {
         }
     }
 

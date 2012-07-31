@@ -9,7 +9,7 @@ import java.io.File;
 import org.emdev.ui.progress.IProgressIndicator;
 import org.emdev.ui.tasks.BaseFileAsyncTask.FileTaskResult;
 
-public abstract class BaseFileAsyncTask<Params> extends BaseAsyncTask<Params, FileTaskResult> implements
+public abstract class BaseFileAsyncTask<Params, Result extends FileTaskResult> extends BaseAsyncTask<Params, Result> implements
         IProgressIndicator {
 
     protected final int resultStringId;
@@ -28,7 +28,7 @@ public abstract class BaseFileAsyncTask<Params> extends BaseAsyncTask<Params, Fi
     }
 
     @Override
-    protected void onPostExecute(final FileTaskResult result) {
+    protected void onPostExecute(final Result result) {
         super.onPostExecute(result);
         if (result == null) {
             processNoResult();

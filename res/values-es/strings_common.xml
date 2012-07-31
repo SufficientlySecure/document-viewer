@@ -70,7 +70,8 @@
 <!--<string name="opds_authfeed_password">"Password:"</string>-->
 <!--<string name="opds_authfeed_ok">"Login"</string>-->
 <!--<string name="opds_error_title">"OPDS Error"</string>-->
-<!--<string name="opds_error_msg">"Catalog is not accessible:\n%s"</string>-->
+<!--<string name="opds_error_msg">"%s"</string>-->
+<!--<string name="opds_retry_download">"Retry"</string>-->
     <string name="book_copy_start">"Copiando libro"</string>
     <string name="book_copy_progress">"Copiando libro: %1$s/%2$s…"</string>
     <string name="book_copy_complete">"Copia del libro completa: %s"</string>

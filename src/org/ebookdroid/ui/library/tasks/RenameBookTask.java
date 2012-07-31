@@ -15,9 +15,10 @@ import java.io.IOException;
 
 import org.emdev.ui.progress.UIFileCopying;
 import org.emdev.ui.tasks.BaseFileAsyncTask;
+import org.emdev.ui.tasks.BaseFileAsyncTask.FileTaskResult;
 import org.emdev.utils.FileUtils;
 
-public class RenameBookTask extends BaseFileAsyncTask<BookNode> {
+public class RenameBookTask extends BaseFileAsyncTask<BookNode, FileTaskResult> {
 
     protected final RecentAdapter recentAdapter;
     protected final FileUtils.FilePath target;

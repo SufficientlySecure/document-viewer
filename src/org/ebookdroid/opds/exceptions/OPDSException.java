@@ -1,5 +1,6 @@
 package org.ebookdroid.opds.exceptions;
 
+import org.emdev.utils.LengthUtils;
 
 public class OPDSException extends Exception {
 
@@ -9,22 +10,26 @@ public class OPDSException extends Exception {
     private static final long serialVersionUID = 5328207114120530250L;
 
     public OPDSException() {
-        // TODO Auto-generated constructor stub
     }
 
-    public OPDSException(String detailMessage) {
+    public OPDSException(final String detailMessage) {
         super(detailMessage);
-        // TODO Auto-generated constructor stub
     }
 
-    public OPDSException(Throwable throwable) {
+    public OPDSException(final Throwable throwable) {
         super(throwable);
-        // TODO Auto-generated constructor stub
     }
 
-    public OPDSException(String detailMessage, Throwable throwable) {
+    public OPDSException(final String detailMessage, final Throwable throwable) {
         super(detailMessage, throwable);
-        // TODO Auto-generated constructor stub
+    }
+
+    public String getErrorMessage() {
+        String message = LengthUtils.safeString(this.getLocalizedMessage(), this.getClass().getName());
+        for (Throwable cause = this.getCause(); cause != null; cause = cause.getCause()) {
+            message = LengthUtils.safeString(cause.getLocalizedMessage(), message);
+        }
+        return message;
     }
 
 }

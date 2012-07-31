@@ -20,6 +20,7 @@ import android.widget.Scroller;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.utils.MathUtils;
 import org.emdev.utils.concurrent.Flag;
 
@@ -39,6 +40,16 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     protected final Flag layoutFlag = new Flag();
 
+    protected final Runnable fullScreenCallback = new Runnable() {
+
+        @Override
+        public void run() {
+            if (AppSettings.current().fullScreen) {
+                IUIManager.instance.setFullScreenMode(base.getActivity(), SurfaceView.this, true);
+            }
+        }
+    };
+
     public SurfaceView(final IActivityController baseActivity) {
         super(baseActivity.getContext());
         this.base = baseActivity;
@@ -53,7 +64,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IView#getView()
      */
     @Override
@@ -63,7 +74,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IView#getBase()
      */
     @Override
@@ -73,7 +84,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IView#getScroller()
      */
     @Override
@@ -83,7 +94,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IView#invalidateScroll()
      */
     @Override
@@ -96,7 +107,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IView#invalidateScroll(float, float)
      */
     @Override
@@ -118,7 +129,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IView#startPageScroll(int, int)
      */
     @Override
@@ -129,7 +140,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IView#startFling(float, float, android.graphics.Rect)
      */
     @Override
@@ -140,7 +151,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IView#continueScroll()
      */
     @Override
@@ -152,7 +163,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IView#forceFinishScroll()
      */
     @Override
@@ -164,7 +175,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see android.view.View#onScrollChanged(int, int, int, int)
      */
     @Override
@@ -176,20 +187,28 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see android.view.View#onTouchEvent(android.view.MotionEvent)
      */
     @Override
     public boolean onTouchEvent(final MotionEvent ev) {
+        checkFullScreenMode();
+
         if (base.getDocumentController().onTouchEvent(ev)) {
             return true;
         }
         return super.onTouchEvent(ev);
     }
 
+    @Override
+    public void checkFullScreenMode() {
+        getHandler().removeCallbacks(fullScreenCallback);
+        getHandler().postDelayed(fullScreenCallback, 2000);
+    }
+
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IView#scrollTo(int, int)
      */
     @Override
@@ -214,7 +233,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IView#getViewRect()
      */
     @Override
@@ -224,7 +243,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IView#changeLayoutLock(boolean)
      */
     @Override
@@ -240,7 +259,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IView#isLayoutLocked()
      */
     @Override
@@ -250,7 +269,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see android.view.View#onLayout(boolean, int, int, int, int)
      */
     @Override
@@ -268,7 +287,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IView#waitForInitialization()
      */
     @Override
@@ -290,7 +309,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IView#getScrollScaleRatio()
      */
     @Override
@@ -306,7 +325,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IView#stopScroller()
      */
     @Override
@@ -318,7 +337,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IView#redrawView()
      */
     @Override
@@ -362,7 +381,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IView#getBase(android.graphics.RectF)
      */
     @Override

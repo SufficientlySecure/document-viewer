@@ -1,6 +1,5 @@
 package org.emdev.ui.uimanager;
 
-
 import android.app.Activity;
 import android.view.View;
 
@@ -12,8 +11,21 @@ public interface IUIManager {
 
     LogContext LCTX = LogManager.root().lctx("UIManager");
 
-    IUIManager instance = AndroidVersion.lessThan3x ? new UIManager1x() : AndroidVersion.is3x ? new UIManager3x()
-            : new UIManager4x();
+    IUIManager instance =
+    /* Check old versions */
+    AndroidVersion.lessThan3x
+    /* UIManager1x */
+    ? new UIManager1x()
+    /* Check Android 3.x versions */
+    : AndroidVersion.is3x
+    /* UIManager3x */
+    ? new UIManager3x()
+    /* Check Android 4.0.x versions */
+    : AndroidVersion.is40x
+    /* UIManager40x */
+    ? new UIManager40x()
+    /* UIManager41x */
+    : new UIManager41x();
 
     void onPause(Activity activity);
 

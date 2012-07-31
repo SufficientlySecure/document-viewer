@@ -125,4 +125,8 @@ public class ViewStub implements IView {
         return new PointF(0, 0);
     }
 
+    @Override
+    public void checkFullScreenMode() {
+    }
+
 }

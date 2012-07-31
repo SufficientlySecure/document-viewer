@@ -12,11 +12,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 @TargetApi(14)
-public class UIManager4x implements IUIManager {
+public class UIManager40x implements IUIManager {
 
-    private static final int FLAG_FULLSCREEN = WindowManager.LayoutParams.FLAG_FULLSCREEN;
+    protected static final int FLAG_FULLSCREEN = WindowManager.LayoutParams.FLAG_FULLSCREEN;
 
-    private static final Map<ComponentName, Data> data = new HashMap<ComponentName, Data>() {
+    protected static final Map<ComponentName, Data> data = new HashMap<ComponentName, Data>() {
+
+        /**
+         * Serial version UID.
+         */
+        private static final long serialVersionUID = 742779545837272718L;
 
         @Override
         public Data get(final Object key) {
@@ -53,22 +58,28 @@ public class UIManager4x implements IUIManager {
     @Override
     public void setFullScreenMode(final Activity activity, final View view, final boolean fullScreen) {
         data.get(activity.getComponentName()).statusBarHidden = fullScreen;
+        final Window w = activity.getWindow();
+        final View decorView = w.getDecorView();
+
         if (!isTabletUi(activity)) {
-            final Window w = activity.getWindow();
             if (fullScreen) {
                 w.setFlags(FLAG_FULLSCREEN, FLAG_FULLSCREEN);
             } else {
                 w.clearFlags(FLAG_FULLSCREEN);
             }
-        } else {
-            if (view != null) {
-                if (fullScreen) {
-                    view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-                } else {
-                    view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-                }
+        }
+
+        if (decorView != null) {
+            if (fullScreen) {
+                decorView.setSystemUiVisibility(getHideSysUIFlags());
+            } else {
+                decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
             }
         }
+    }
+
+    protected int getHideSysUIFlags() {
+        return View.SYSTEM_UI_FLAG_LOW_PROFILE | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
     }
 
     @Override
@@ -128,6 +139,7 @@ public class UIManager4x implements IUIManager {
     }
 
     private static class Data {
+
         boolean hwaEnabled = false;
         boolean titleVisible;
         boolean statusBarHidden = false;

@@ -22,6 +22,7 @@ import android.widget.Scroller;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.utils.MathUtils;
 import org.emdev.utils.concurrent.Flag;
 
@@ -42,6 +43,16 @@ public final class BaseView extends View implements IView {
     protected final AtomicReference<Rect> layout = new AtomicReference<Rect>();
 
     protected final Flag layoutFlag = new Flag();
+
+    protected final Runnable fullScreenCallback = new Runnable() {
+
+        @Override
+        public void run() {
+            if (AppSettings.current().fullScreen) {
+                IUIManager.instance.setFullScreenMode(base.getActivity(), BaseView.this, true);
+            }
+        }
+    };
 
     public BaseView(final IActivityController baseActivity) {
         super(baseActivity.getContext());
@@ -177,10 +188,18 @@ public final class BaseView extends View implements IView {
      */
     @Override
     public boolean onTouchEvent(final MotionEvent ev) {
+        checkFullScreenMode();
+
         if (base.getDocumentController().onTouchEvent(ev)) {
             return true;
         }
         return super.onTouchEvent(ev);
+    }
+
+    @Override
+    public void checkFullScreenMode() {
+        getHandler().removeCallbacks(fullScreenCallback);
+        getHandler().postDelayed(fullScreenCallback, 2000);
     }
 
     /**
@@ -274,7 +293,7 @@ public final class BaseView extends View implements IView {
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.ui.viewer.IView#onDestroy()
      */
     @Override

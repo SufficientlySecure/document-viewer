@@ -76,7 +76,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.emdev.ui.AbstractActionActivity#createController()
      */
     @Override
@@ -261,7 +261,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
      */
     @Override
@@ -273,7 +273,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see android.app.Activity#onMenuOpened(int, android.view.Menu)
      */
     @Override
@@ -285,7 +285,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see android.app.Activity#onPanelClosed(int, android.view.Menu)
      */
     @Override
@@ -299,7 +299,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see android.app.Activity#onOptionsMenuClosed(android.view.Menu)
      */
     @Override
@@ -320,6 +320,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     @Override
     public final boolean dispatchKeyEvent(final KeyEvent event) {
+        view.checkFullScreenMode();
         if (getController().dispatchKeyEvent(event)) {
             return true;
         }

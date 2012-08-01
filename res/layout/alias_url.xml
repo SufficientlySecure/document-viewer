@@ -15,8 +15,8 @@
         android:id="@+id/editAlias"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
- 		android:inputType="text"
-        android:ems="10">
+        android:ems="10"
+        android:inputType="text" >
 
         <requestFocus />
     </EditText>
@@ -32,10 +32,20 @@
         android:id="@+id/editURL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textUri"
-        android:ems="10" />
+        android:ems="10"
+        android:inputType="textUri" />
+
+    <CheckBox
+        android:id="@+id/checkAuth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dip"
+        android:checked="true"
+        android:text="@string/opds_addfeed_auth" >
+    </CheckBox>
 
     <TextView
+        android:id="@+id/textUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dip"
@@ -45,11 +55,12 @@
         android:id="@+id/editUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
- 		android:inputType="text"
-        android:ems="10" >
+        android:ems="10"
+        android:inputType="text" >
     </EditText>
 
     <TextView
+        android:id="@+id/textPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dip"
@@ -59,7 +70,7 @@
         android:id="@+id/editPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:ems="10" />
+        android:ems="10"
+        android:inputType="textPassword" />
 
 </LinearLayout>

@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.http.Header;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.message.BasicHeader;
+import org.emdev.utils.LengthUtils;
 import org.emdev.utils.base64.Base64;
 
 public class HostCredentials extends UsernamePasswordCredentials {
@@ -13,7 +14,7 @@ public class HostCredentials extends UsernamePasswordCredentials {
     private final AtomicReference<State> state = new AtomicReference<HostCredentials.State>(State.CREATED);
 
     public HostCredentials(final String host, final String userName, final String password) {
-        super(userName, password);
+        super(userName, LengthUtils.safeString(password));
         this.host = host;
     }
 

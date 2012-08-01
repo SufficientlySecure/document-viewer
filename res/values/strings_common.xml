@@ -76,6 +76,7 @@
     <string name="opds_addfeed_ok">"Add"</string>
     <string name="opds_addfeed_alias">"Alias:"</string>
     <string name="opds_addfeed_url">"URL:"</string>
+    <string name="opds_addfeed_auth">"Authorization required"</string>
     <string name="opds_editfeed_title">"Edit catalog"</string>
     <string name="opds_editfeed_msg">"Enter alias and URL for the catalog"</string>
     <string name="opds_editfeed_ok">"Save"</string>

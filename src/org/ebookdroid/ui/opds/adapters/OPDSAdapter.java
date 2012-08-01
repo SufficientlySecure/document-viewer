@@ -82,8 +82,8 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
                 final JSONObject obj = feeds.getJSONObject(i);
                 final String alias = obj.getString("alias");
                 final String url = obj.getString("url");
-                final String login = LengthUtils.safeString(obj.getString("login"));
-                final String password = LengthUtils.safeString(obj.getString("password"));
+                final String login = obj.optString("login");
+                final String password = obj.optString("password");
                 if (LengthUtils.isAllNotEmpty(alias, url)) {
                     rootFeeds.add(new Feed(alias, url, login, password));
                 }
@@ -94,8 +94,8 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
 
         // TODO remove in release
         if (rootFeeds.isEmpty()) {
-            addFeeds(new Feed("Flibusta", "http://flibusta.net/opds", "", ""), new Feed("Plough",
-                    "http://www.plough.com/ploughCatalog_opds.xml", "", ""));
+            addFeeds(new Feed("Flibusta", "http://flibusta.net/opds"), new Feed("Plough",
+                    "http://www.plough.com/ploughCatalog_opds.xml"));
         }
 
         this.currentFeed = null;
@@ -108,8 +108,10 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
                 final JSONObject newCatalog = new JSONObject();
                 newCatalog.put("alias", feed.title);
                 newCatalog.put("url", feed.link.uri);
-                newCatalog.put("login", feed.login);
-                newCatalog.put("password", feed.password);
+                if (feed.login != null) {
+                    newCatalog.put("login", feed.login);
+                    newCatalog.put("password", feed.password);
+                }
                 catalogs.put(newCatalog);
             } catch (final JSONException ex) {
                 ex.printStackTrace();
@@ -127,6 +129,10 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
         client.close();
     }
 
+    public void addFeed(final String alias, final String url) {
+        addFeeds(new Feed(alias, url));
+    }
+
     public void addFeed(final String alias, final String url, final String login, final String password) {
         addFeeds(new Feed(alias, url, login, password));
     }
@@ -141,7 +147,8 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
         }
     }
 
-    public void editFeed(final Feed feed, final String alias, final String url, final String login, final String password) {
+    public void editFeed(final Feed feed, final String alias, final String url, final String login,
+            final String password) {
         if (feed.id.equals(url)) {
             feed.title = alias;
             feed.login = login;
@@ -391,7 +398,7 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
         new DownloadBookTask().execute(book, link);
     }
 
-    public void showErrorDlg(final int pbLabel, final int pbAction, final Object result, OPDSException error) {
+    public void showErrorDlg(final int pbLabel, final int pbAction, final Object result, final OPDSException error) {
         final String msg = error.getErrorMessage();
 
         final ActionDialogBuilder b = new ActionDialogBuilder(context, actions);
@@ -427,32 +434,26 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
     @ActionMethod(ids = R.id.actions_setFeedAuth)
     public void setFeedAuth(final ActionEx action) {
         final String username = action.getParameter("username").toString();
-        final String password = ((PasswordEditable)action.getParameter("password")).getPassword();
+        final String password = ((PasswordEditable) action.getParameter("password")).getPassword();
 
         final Object info = action.getParameter("info");
         if (info instanceof FeedTaskResult) {
             final AuthorizationRequiredException ex = (AuthorizationRequiredException) ((FeedTaskResult) info).error;
-            try {
-                client.setAuthorization(ex.host, username, password);
-                actions.getOrCreateAction(R.id.opdsrefreshfolder).run();
-            } catch (final OPDSException exx) {
-                ex.printStackTrace();
-            }
+            client.setAuthorization(ex.host, username, password);
+            actions.getOrCreateAction(R.id.opdsrefreshfolder).run();
         } else if (info instanceof DownloadBookResult) {
             final DownloadBookResult result = (DownloadBookResult) info;
             final AuthorizationRequiredException ex = (AuthorizationRequiredException) result.error;
-            try {
-                client.setAuthorization(ex.host, username, password);
-                new DownloadBookTask().execute(result.book, result.link);
-            } catch (final OPDSException exx) {
-                ex.printStackTrace();
-            }
+            client.setAuthorization(ex.host, username, password);
+            new DownloadBookTask().execute(result.book, result.link);
         }
+
+        store();
     }
 
     @ActionMethod(ids = R.id.actions_retryDownloadBook)
     public void retryDownload(final ActionEx action) {
-        DownloadBookResult info = action.getParameter("info");
+        final DownloadBookResult info = action.getParameter("info");
         new DownloadBookTask().execute(info.book, info.link);
     }
 
@@ -640,7 +641,7 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
         }
 
         @Override
-        protected void onPostExecute(DownloadBookResult result) {
+        protected void onPostExecute(final DownloadBookResult result) {
             super.onPostExecute(result);
             if (result != null) {
                 if (result.error instanceof AuthorizationRequiredException) {

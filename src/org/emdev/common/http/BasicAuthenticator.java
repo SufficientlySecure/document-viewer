@@ -13,7 +13,7 @@ public class BasicAuthenticator {
 
     private final Map<String, HostCredentials> credentials = new HashMap<String, HostCredentials>();
 
-    public void setAuthorization(final String host, final String username, final String password) throws OPDSException {
+    public void setAuthorization(final String host, final String username, final String password) {
         final HostCredentials newCred = new HostCredentials(host, username, password);
         final HostCredentials oldCred = credentials.put(host, newCred);
         if (oldCred != null && oldCred.getState() == State.AUTH_ASKED) {

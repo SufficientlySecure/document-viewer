@@ -44,7 +44,7 @@ public class BaseHttpClient {
         client.close();
     }
 
-    public void setAuthorization(final String host, final String username, final String password) throws OPDSException {
+    public void setAuthorization(final String host, final String username, final String password) {
         auth.setAuthorization(host, username, password);
     }
 

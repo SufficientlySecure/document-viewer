@@ -9,8 +9,12 @@ import org.ebookdroid.ui.opds.adapters.OPDSAdapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +29,7 @@ import org.emdev.ui.actions.ActionMethod;
 import org.emdev.ui.actions.ActionMethodDef;
 import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.actions.IActionController;
+import org.emdev.ui.actions.params.CheckableValue;
 import org.emdev.ui.actions.params.Constant;
 import org.emdev.ui.actions.params.EditableValue;
 import org.emdev.ui.actions.params.EditableValue.PasswordEditable;
@@ -205,12 +210,28 @@ public class OPDSActivityController extends ActionController<OPDSActivity> imple
 
         final EditText aliasEdit = (EditText) childView.findViewById(R.id.editAlias);
         final EditText urlEdit = (EditText) childView.findViewById(R.id.editURL);
+        final CheckBox authCheck = (CheckBox) childView.findViewById(R.id.checkAuth);
+        final TextView loginText = (TextView) childView.findViewById(R.id.textUsername);
         final EditText loginEdit = (EditText) childView.findViewById(R.id.editUsername);
+        final TextView passwordText = (TextView) childView.findViewById(R.id.textPassword);
         final EditText passwordEdit = (EditText) childView.findViewById(R.id.editPassword);
 
+        authCheck.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                loginText.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                loginEdit.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                passwordText.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                passwordEdit.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            }
+        });
+
+        authCheck.setChecked(false);
+
         builder.setPositiveButton(R.string.opds_addfeed_ok, R.id.actions_addFeed,
-                new EditableValue("alias", aliasEdit), new EditableValue("url", urlEdit),
-                new EditableValue("login", loginEdit), new EditableValue("password", passwordEdit));
+                new EditableValue("alias", aliasEdit), new EditableValue("url", urlEdit), new CheckableValue("auth",
+                        authCheck), new EditableValue("login", loginEdit), new EditableValue("password", passwordEdit));
         builder.setNegativeButton();
         builder.show();
     }
@@ -219,11 +240,17 @@ public class OPDSActivityController extends ActionController<OPDSActivity> imple
     public void addFeed(final ActionEx action) {
         final String alias = LengthUtils.toString(action.getParameter("alias"));
         final String url = LengthUtils.toString(action.getParameter("url"));
-        final String login = LengthUtils.toString(action.getParameter("login"));
-        final String password = LengthUtils.toString(((PasswordEditable)action.getParameter("password")).getPassword());
+        if (LengthUtils.isAnyEmpty(alias, url)) {
+            return;
+        }
 
-        if (LengthUtils.isAllNotEmpty(alias, url)) {
+        final Boolean auth = action.getParameter("auth");
+        if (auth) {
+            final String login = action.getParameter("login").toString();
+            final String password = ((PasswordEditable) action.getParameter("password")).getPassword();
             adapter.addFeed(alias, url, login, password);
+        } else {
+            adapter.addFeed(alias, url);
         }
     }
 
@@ -240,8 +267,25 @@ public class OPDSActivityController extends ActionController<OPDSActivity> imple
 
         final EditText aliasEdit = (EditText) childView.findViewById(R.id.editAlias);
         final EditText urlEdit = (EditText) childView.findViewById(R.id.editURL);
+        final CheckBox authCheck = (CheckBox) childView.findViewById(R.id.checkAuth);
+        final TextView loginText = (TextView) childView.findViewById(R.id.textUsername);
         final EditText loginEdit = (EditText) childView.findViewById(R.id.editUsername);
+        final TextView passwordText = (TextView) childView.findViewById(R.id.textPassword);
         final EditText passwordEdit = (EditText) childView.findViewById(R.id.editPassword);
+
+        authCheck.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                loginText.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                loginEdit.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                passwordText.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                passwordEdit.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            }
+        });
+
+        authCheck.setChecked(feed.login == null);
+        authCheck.setChecked(feed.login != null);
 
         aliasEdit.setText(feed.title);
         urlEdit.setText(feed.id);
@@ -249,9 +293,9 @@ public class OPDSActivityController extends ActionController<OPDSActivity> imple
         passwordEdit.setText(feed.password);
 
         builder.setPositiveButton(R.string.opds_editfeed_ok, R.id.actions_editFeed, new EditableValue("alias",
-                aliasEdit), new EditableValue("url", urlEdit),
-                new EditableValue("login", loginEdit), new EditableValue("password", passwordEdit),
-                new Constant("feed", feed));
+                aliasEdit), new EditableValue("url", urlEdit), new CheckableValue("auth", authCheck),
+                new EditableValue("login", loginEdit), new EditableValue("password", passwordEdit), new Constant(
+                        "feed", feed));
         builder.setNegativeButton();
         builder.show();
     }
@@ -261,8 +305,9 @@ public class OPDSActivityController extends ActionController<OPDSActivity> imple
         final Feed feed = action.getParameter("feed");
         final String alias = LengthUtils.toString(action.getParameter("alias"));
         final String url = LengthUtils.toString(action.getParameter("url"));
-        final String login = LengthUtils.toString(action.getParameter("login"));
-        final String password = LengthUtils.toString(((PasswordEditable)action.getParameter("password")).getPassword());
+        final Boolean auth = action.getParameter("auth");
+        final String login = auth ? action.getParameter("login").toString() : null;
+        final String password = auth ? ((PasswordEditable) action.getParameter("password")).getPassword() : null;
 
         if (LengthUtils.isAllNotEmpty(alias, url)) {
             adapter.editFeed(feed, alias, url, login, password);

@@ -8,6 +8,7 @@ import org.ebookdroid.ui.viewer.IViewController;
 import android.graphics.RectF;
 import android.util.SparseArray;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import org.emdev.common.log.LogContext;
@@ -23,11 +24,11 @@ public class SearchModel implements DecodeService.SearchCallback {
     private String pattern;
     private Page currentPage;
     private int currentMatchIndex;
-    private final SparseArray<Matches> matches;
+    private final SparseArray<WeakReference<Matches>> matches;
 
     public SearchModel(final IActivityController base) {
         this.base = base;
-        this.matches = new SparseArray<Matches>();
+        this.matches = new SparseArray<WeakReference<Matches>>();
     }
 
     public String getPattern() {
@@ -48,7 +49,8 @@ public class SearchModel implements DecodeService.SearchCallback {
             return null;
         }
         final int key = page.index.docIndex;
-        return matches.get(key);
+        final WeakReference<Matches> ref = matches.get(key);
+        return ref != null ? ref.get() : null;
     }
 
     public Page getCurrentPage() {
@@ -63,7 +65,8 @@ public class SearchModel implements DecodeService.SearchCallback {
         if (currentPage == null) {
             return null;
         }
-        final Matches m = matches.get(currentPage.index.docIndex);
+        final WeakReference<Matches> ref = matches.get(currentPage.index.docIndex);
+        final Matches m = ref != null ? ref.get() : null;
         if (m == null) {
             return null;
         }
@@ -83,7 +86,8 @@ public class SearchModel implements DecodeService.SearchCallback {
             return searchFirstFrom(firstVisiblePage, callback);
         }
 
-        final Matches m = matches.get(currentPage.index.docIndex);
+        final WeakReference<Matches> ref = matches.get(currentPage.index.docIndex);
+        final Matches m = ref != null ? ref.get() : null;
         if (m == null) {
             return searchFirstFrom(currentPage.index.viewIndex, callback);
         }
@@ -110,7 +114,8 @@ public class SearchModel implements DecodeService.SearchCallback {
             return searchLastFrom(lastVisiblePage, callback);
         }
 
-        final Matches m = matches.get(currentPage.index.docIndex);
+        final WeakReference<Matches> ref = matches.get(currentPage.index.docIndex);
+        final Matches m = ref != null ? ref.get() : null;
         if (m == null) {
             return searchLastFrom(currentPage.index.viewIndex, callback);
         }
@@ -187,10 +192,12 @@ public class SearchModel implements DecodeService.SearchCallback {
             return null;
         }
         final int key = page.index.docIndex;
-        Matches m = matches.get(key);
+        WeakReference<Matches> ref = matches.get(key);
+        Matches m = ref != null ? ref.get() : null;
         if (m == null) {
             m = new Matches();
-            matches.put(key, m);
+            ref = new WeakReference<Matches>(m);
+            matches.put(key, ref);
             base.getDecodeService().searchText(page, pattern, this);
         }
         return m;
@@ -199,10 +206,12 @@ public class SearchModel implements DecodeService.SearchCallback {
     @Override
     public void searchComplete(final Page page, final List<? extends RectF> regions) {
         final int key = page.index.docIndex;
-        Matches m = matches.get(key);
+        WeakReference<Matches> ref = matches.get(key);
+        Matches m = ref != null ? ref.get() : null;
         if (m == null) {
             m = new Matches();
-            matches.put(key, m);
+            ref = new WeakReference<Matches>(m);
+            matches.put(key, ref);
         }
         m.setMatches(regions);
     }

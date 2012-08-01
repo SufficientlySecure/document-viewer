@@ -67,6 +67,8 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
 
     private volatile Feed currentFeed;
 
+    private volatile LoadThumbnailTask background;
+
     private final ListenerProxy listeners = new ListenerProxy(FeedListener.class);
 
     public OPDSAdapter(final Context context, final IActionController<?> actions) {
@@ -197,7 +199,7 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
             if (feed.loadedAt == 0) {
                 new LoadFeedTask().execute(feed);
             } else {
-                new LoadThumbnailTask().execute(feed);
+                startLoadThumbnails(feed);
             }
         }
     }
@@ -395,7 +397,7 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
             return;
         }
         final BookDownloadLink link = book.downloads.get(linkIndex);
-        new DownloadBookTask().execute(book, link);
+        startBookDownload(book, link);
     }
 
     public void showErrorDlg(final int pbLabel, final int pbAction, final Object result, final OPDSException error) {
@@ -445,7 +447,7 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
             final DownloadBookResult result = (DownloadBookResult) info;
             final AuthorizationRequiredException ex = (AuthorizationRequiredException) result.error;
             client.setAuthorization(ex.host, username, password);
-            new DownloadBookTask().execute(result.book, result.link);
+            startBookDownload(result.book, result.link);
         }
 
         store();
@@ -454,7 +456,27 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
     @ActionMethod(ids = R.id.actions_retryDownloadBook)
     public void retryDownload(final ActionEx action) {
         final DownloadBookResult info = action.getParameter("info");
-        new DownloadBookTask().execute(info.book, info.link);
+        startBookDownload(info.book, info.link);
+    }
+
+    protected void startBookDownload(final Book book, final BookDownloadLink link) {
+        stopLoadThumbnails();
+        new DownloadBookTask().execute(book, link);
+    }
+
+    protected void startLoadThumbnails(final Feed feed) {
+        if (background != null) {
+            background.cancel(true);
+        }
+        background = new LoadThumbnailTask();
+        background.execute(feed);
+    }
+
+    protected void stopLoadThumbnails() {
+        if (background != null) {
+            background.cancel(true);
+            background = null;
+        }
     }
 
     public static class ViewHolder extends BaseViewHolder {
@@ -507,7 +529,7 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
             final Feed f = params[0];
             try {
                 final Feed feed = client.loadFeed(f, this);
-                new LoadThumbnailTask().execute(feed);
+                startLoadThumbnails(feed);
                 return new FeedTaskResult(feed);
             } catch (final OPDSException ex) {
                 return new FeedTaskResult(f, ex);
@@ -570,8 +592,8 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
                     continue;
                 }
                 for (final Book book : feed.books) {
-                    if (currentFeed != book.parent) {
-                        break;
+                    if (isCancelled() || currentFeed != book.parent) {
+                        return null;
                     }
                     loadBookThumbnail(book);
                     publishProgress(book);
@@ -654,6 +676,7 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
                             new OPDSException(result.error));
                 }
             }
+            startLoadThumbnails(currentFeed);
         }
 
         @Override

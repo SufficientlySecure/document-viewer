@@ -193,6 +193,12 @@ public class OPDSClient extends BaseHttpClient {
             final HttpResponse resp = connect(uriRef);
             final HttpEntity entity = resp.getEntity();
             return CacheManager.createTempFile(entity.getContent(), ".opds");
+        } catch (final ClosedByInterruptException ex) {
+            Thread.interrupted();
+            LCTX.w("Thumbnail loading interrupted");
+        } catch (final InterruptedIOException ex) {
+            Thread.interrupted();
+            LCTX.w("Thumbnail loading interrupted");
         } catch (final AuthorizationRequiredException ex) {
             // No thumbnails without authentication
         } catch (final OPDSException ex) {

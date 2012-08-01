@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.emdev.common.lang.StrBuilder;
 import org.emdev.common.textmarkup.JustificationMode;
 import org.emdev.common.textmarkup.MarkupElement;
 import org.emdev.common.textmarkup.MarkupEndDocument;
@@ -49,6 +50,8 @@ public class FB2ContentHandler extends FB2BaseHandler {
     private static final Pattern notesPattern = Pattern.compile("n([0-9]+)|n_([0-9]+)|note_([0-9]+)|.*?([0-9]+)");
     private final StringBuilder tmpBinaryContents = new StringBuilder(64 * 1024);
     private final StringBuilder title = new StringBuilder();
+
+    private final StrBuilder tmpTagContent = new StrBuilder(16 * 1024);
 
     final SparseArray<Words> words = new SparseArray<Words>();
 
@@ -264,6 +267,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
                 break;
 
         }
+        tmpTagContent.setLength(0);
     }
 
     private MarkupElement emptyLine(final int textSize) {
@@ -281,6 +285,9 @@ public class FB2ContentHandler extends FB2BaseHandler {
 
     @Override
     public void endElement(final String uri, final String localName, final String qName) throws SAXException {
+        if (tmpTagContent.length() > 0) {
+            processTagContent();
+        }
         spaceNeeded = true;
         final ArrayList<MarkupElement> markupStream = parsedContent.getMarkupStream(currentStream);
         final byte tag = tagStack[--tagStackSize];
@@ -403,6 +410,53 @@ public class FB2ContentHandler extends FB2BaseHandler {
         }
     }
 
+    private void processTagContent() {
+        final int length = tmpTagContent.length();
+        final int start = 0;
+        char[] ch = tmpTagContent.getValue();
+        if (inTitle) {
+            title.append(ch, start, length);
+        }
+        final int count = StringUtils.split(ch, start, length, starts, lengths);
+
+        if (count > 0) {
+            final ArrayList<MarkupElement> markupStream = parsedContent.getMarkupStream(currentStream);
+            if (!spaceNeeded && !Character.isWhitespace(ch[start])) {
+                markupStream.add(MarkupNoSpace._instance);
+            }
+            spaceNeeded = true;
+
+            for (int i = 0; i < count; i++) {
+                final int st = starts[i];
+                final int len = lengths[i];
+                if (parsingNotes) {
+                    if (noteFirstWord) {
+                        noteFirstWord = false;
+                        int id = -2;
+                        try {
+                            id = Integer.parseInt(new String(ch, st, len));
+                        } catch (final Exception e) {
+                            id = -2;
+                        }
+                        if (id == noteId) {
+                            continue;
+                        }
+                    }
+                }
+                markupStream.add(text(ch, st, len, crs));
+                if (crs.script != null) {
+                    markupStream.add(MarkupNoSpace._instance);
+                }
+            }
+            if (Character.isWhitespace(ch[start + length - 1])) {
+                markupStream.add(MarkupNoSpace._instance);
+                markupStream.add(crs.paint.space);
+            }
+            spaceNeeded = false;
+        }
+        tmpTagContent.setLength(0);
+    }
+
     @Override
     public void characters(final char[] ch, final int start, final int length) throws SAXException {
         if (skipContent
@@ -412,46 +466,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
         if (parsingBinary) {
             tmpBinaryContents.append(ch, start, length);
         } else {
-            if (inTitle) {
-                title.append(ch, start, length);
-            }
-            final int count = StringUtils.split(ch, start, length, starts, lengths);
-
-            if (count > 0) {
-                final ArrayList<MarkupElement> markupStream = parsedContent.getMarkupStream(currentStream);
-                if (!spaceNeeded && !Character.isWhitespace(ch[start])) {
-                    markupStream.add(MarkupNoSpace._instance);
-                }
-                spaceNeeded = true;
-
-                for (int i = 0; i < count; i++) {
-                    final int st = starts[i];
-                    final int len = lengths[i];
-                    if (parsingNotes) {
-                        if (noteFirstWord) {
-                            noteFirstWord = false;
-                            int id = -2;
-                            try {
-                                id = Integer.parseInt(new String(ch, st, len));
-                            } catch (final Exception e) {
-                                id = -2;
-                            }
-                            if (id == noteId) {
-                                continue;
-                            }
-                        }
-                    }
-                    markupStream.add(text(ch, st, len, crs));
-                    if (crs.script != null) {
-                        markupStream.add(MarkupNoSpace._instance);
-                    }
-                }
-                if (Character.isWhitespace(ch[start + length - 1])) {
-                    markupStream.add(MarkupNoSpace._instance);
-                    markupStream.add(crs.paint.space);
-                }
-                spaceNeeded = false;
-            }
+            tmpTagContent.append(ch, start, length);
         }
     }
 

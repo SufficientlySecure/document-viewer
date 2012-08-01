@@ -15,7 +15,8 @@
         android:id="@+id/editAlias"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10" >
+ 		android:inputType="text"
+        android:ems="10">
 
         <requestFocus />
     </EditText>
@@ -32,6 +33,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textUri"
+        android:ems="10" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dip"
+        android:text="@string/opds_authfeed_username" />
+
+    <EditText
+        android:id="@+id/editUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+ 		android:inputType="text"
+        android:ems="10" >
+    </EditText>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dip"
+        android:text="@string/opds_authfeed_password" />
+
+    <EditText
+        android:id="@+id/editPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
         android:ems="10" />
 
 </LinearLayout>

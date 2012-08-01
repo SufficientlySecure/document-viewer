@@ -27,6 +27,7 @@ import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.actions.IActionController;
 import org.emdev.ui.actions.params.Constant;
 import org.emdev.ui.actions.params.EditableValue;
+import org.emdev.ui.actions.params.EditableValue.PasswordEditable;
 import org.emdev.utils.LengthUtils;
 
 @ActionTarget(
@@ -204,9 +205,12 @@ public class OPDSActivityController extends ActionController<OPDSActivity> imple
 
         final EditText aliasEdit = (EditText) childView.findViewById(R.id.editAlias);
         final EditText urlEdit = (EditText) childView.findViewById(R.id.editURL);
+        final EditText loginEdit = (EditText) childView.findViewById(R.id.editUsername);
+        final EditText passwordEdit = (EditText) childView.findViewById(R.id.editPassword);
 
         builder.setPositiveButton(R.string.opds_addfeed_ok, R.id.actions_addFeed,
-                new EditableValue("alias", aliasEdit), new EditableValue("url", urlEdit));
+                new EditableValue("alias", aliasEdit), new EditableValue("url", urlEdit),
+                new EditableValue("login", loginEdit), new EditableValue("password", passwordEdit));
         builder.setNegativeButton();
         builder.show();
     }
@@ -215,9 +219,11 @@ public class OPDSActivityController extends ActionController<OPDSActivity> imple
     public void addFeed(final ActionEx action) {
         final String alias = LengthUtils.toString(action.getParameter("alias"));
         final String url = LengthUtils.toString(action.getParameter("url"));
+        final String login = LengthUtils.toString(action.getParameter("login"));
+        final String password = LengthUtils.toString(((PasswordEditable)action.getParameter("password")).getPassword());
 
         if (LengthUtils.isAllNotEmpty(alias, url)) {
-            adapter.addFeed(alias, url);
+            adapter.addFeed(alias, url, login, password);
         }
     }
 
@@ -234,12 +240,18 @@ public class OPDSActivityController extends ActionController<OPDSActivity> imple
 
         final EditText aliasEdit = (EditText) childView.findViewById(R.id.editAlias);
         final EditText urlEdit = (EditText) childView.findViewById(R.id.editURL);
+        final EditText loginEdit = (EditText) childView.findViewById(R.id.editUsername);
+        final EditText passwordEdit = (EditText) childView.findViewById(R.id.editPassword);
 
         aliasEdit.setText(feed.title);
         urlEdit.setText(feed.id);
+        loginEdit.setText(feed.login);
+        passwordEdit.setText(feed.password);
 
         builder.setPositiveButton(R.string.opds_editfeed_ok, R.id.actions_editFeed, new EditableValue("alias",
-                aliasEdit), new EditableValue("url", urlEdit), new Constant("feed", feed));
+                aliasEdit), new EditableValue("url", urlEdit),
+                new EditableValue("login", loginEdit), new EditableValue("password", passwordEdit),
+                new Constant("feed", feed));
         builder.setNegativeButton();
         builder.show();
     }
@@ -249,9 +261,11 @@ public class OPDSActivityController extends ActionController<OPDSActivity> imple
         final Feed feed = action.getParameter("feed");
         final String alias = LengthUtils.toString(action.getParameter("alias"));
         final String url = LengthUtils.toString(action.getParameter("url"));
+        final String login = LengthUtils.toString(action.getParameter("login"));
+        final String password = LengthUtils.toString(((PasswordEditable)action.getParameter("password")).getPassword());
 
         if (LengthUtils.isAllNotEmpty(alias, url)) {
-            adapter.editFeed(feed, alias, url);
+            adapter.editFeed(feed, alias, url, login, password);
         }
     }
 

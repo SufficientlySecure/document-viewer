@@ -72,6 +72,9 @@ public class OPDSClient extends BaseHttpClient {
 
         try {
             final AtomicReference<URI> uri = createURI(feed.parent, feed.link.uri);
+            if (LengthUtils.isNotEmpty(feed.login)) {
+                setAuthorization(uri.get().getHost(), feed.login, feed.password);
+            }
             final HttpResponse resp = connect(uri, h1, h2);
             final StatusLine statusLine = resp.getStatusLine();
             final int statusCode = statusLine.getStatusCode();

@@ -82,8 +82,10 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
                 final JSONObject obj = feeds.getJSONObject(i);
                 final String alias = obj.getString("alias");
                 final String url = obj.getString("url");
+                final String login = LengthUtils.safeString(obj.getString("login"));
+                final String password = LengthUtils.safeString(obj.getString("password"));
                 if (LengthUtils.isAllNotEmpty(alias, url)) {
-                    rootFeeds.add(new Feed(alias, url));
+                    rootFeeds.add(new Feed(alias, url, login, password));
                 }
             } catch (final JSONException ex) {
                 ex.printStackTrace();
@@ -92,8 +94,8 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
 
         // TODO remove in release
         if (rootFeeds.isEmpty()) {
-            addFeeds(new Feed("Flibusta", "http://flibusta.net/opds"), new Feed("Plough",
-                    "http://www.plough.com/ploughCatalog_opds.xml"));
+            addFeeds(new Feed("Flibusta", "http://flibusta.net/opds", "", ""), new Feed("Plough",
+                    "http://www.plough.com/ploughCatalog_opds.xml", "", ""));
         }
 
         this.currentFeed = null;
@@ -106,6 +108,8 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
                 final JSONObject newCatalog = new JSONObject();
                 newCatalog.put("alias", feed.title);
                 newCatalog.put("url", feed.link.uri);
+                newCatalog.put("login", feed.login);
+                newCatalog.put("password", feed.password);
                 catalogs.put(newCatalog);
             } catch (final JSONException ex) {
                 ex.printStackTrace();
@@ -123,8 +127,8 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
         client.close();
     }
 
-    public void addFeed(final String alias, final String url) {
-        addFeeds(new Feed(alias, url));
+    public void addFeed(final String alias, final String url, final String login, final String password) {
+        addFeeds(new Feed(alias, url, login, password));
     }
 
     public void addFeeds(final Feed... feeds) {
@@ -137,16 +141,18 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
         }
     }
 
-    public void editFeed(final Feed feed, final String alias, final String url) {
+    public void editFeed(final Feed feed, final String alias, final String url, final String login, final String password) {
         if (feed.id.equals(url)) {
             feed.title = alias;
+            feed.login = login;
+            feed.password = password;
             store();
             if (currentFeed == null) {
                 notifyDataSetInvalidated();
             }
             return;
         }
-        final Feed newFeed = new Feed(alias, url);
+        final Feed newFeed = new Feed(alias, url, login, password);
         final int index = rootFeeds.indexOf(feed);
         if (index == -1) {
             rootFeeds.add(newFeed);

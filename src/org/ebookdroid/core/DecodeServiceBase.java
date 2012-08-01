@@ -120,12 +120,12 @@ public class DecodeServiceBase implements DecodeService {
 
     @Override
     public CodecPageInfo getUnifiedPageInfo() {
-        return document.getUnifiedPageInfo();
+        return document != null ? document.getUnifiedPageInfo() : null;
     }
 
     @Override
     public CodecPageInfo getPageInfo(final int pageIndex) {
-        return document.getPageInfo(pageIndex);
+        return document != null ? document.getPageInfo(pageIndex) : null;
     }
 
     @Override
@@ -371,7 +371,8 @@ public class DecodeServiceBase implements DecodeService {
             final CodecPageHolder ref = entry.getValue();
             if (ref.isInvalid(-1)) {
                 if (LCTX.isDebugEnabled()) {
-                    LCTX.d(Thread.currentThread().getName() + "Task " + taskId + ": Remove auto-recycled codec page reference: " + index);
+                    LCTX.d(Thread.currentThread().getName() + "Task " + taskId
+                            + ": Remove auto-recycled codec page reference: " + index);
                 }
                 i.remove();
             }
@@ -397,12 +398,12 @@ public class DecodeServiceBase implements DecodeService {
 
     @Override
     public int getPageCount() {
-        return document.getPageCount();
+        return document != null ? document.getPageCount() : 0;
     }
 
     @Override
     public List<OutlineLink> getOutline() {
-        return document.getOutline();
+        return document != null ? document.getOutline() : null;
     }
 
     @Override
@@ -754,16 +755,18 @@ public class DecodeServiceBase implements DecodeService {
         @Override
         public void run() {
             List<? extends RectF> regions = null;
-            try {
+            if (document != null) {
                 try {
-                    regions = document.searchText(page.index.docIndex, pattern);
-                } catch (final DocSearchNotSupported ex) {
-                    regions = getPage(page.index.docIndex).searchText(pattern);
+                    try {
+                        regions = document.searchText(page.index.docIndex, pattern);
+                    } catch (final DocSearchNotSupported ex) {
+                        regions = getPage(page.index.docIndex).searchText(pattern);
+                    }
+                    callback.searchComplete(page, regions);
+                } catch (final Throwable th) {
+                    LCTX.e("Unexpected error: ", th);
+                    callback.searchComplete(page, null);
                 }
-                callback.searchComplete(page, regions);
-            } catch (final Throwable th) {
-                LCTX.e("Unexpected error: ", th);
-                callback.searchComplete(page, null);
             }
         }
     }

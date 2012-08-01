@@ -92,6 +92,10 @@ public class FB2ContentHandler extends FB2BaseHandler {
                 if (!parsingNotes) {
                     if (!inTitle) {
                         markupStream.add(crs.paint.pOffset);
+                    } else {
+                        if (title.length() > 0) {
+                            title.append(" ");
+                        }
                     }
                 }
                 break;

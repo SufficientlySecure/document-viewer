@@ -19,6 +19,7 @@ import android.preference.PreferenceManager;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.emdev.common.log.LogContext;
@@ -43,7 +44,10 @@ public class SettingsManager {
     private static BookSettings current;
 
     static ListenerProxy listeners = new ListenerProxy(IAppSettingsChangeListener.class,
-            ILibSettingsChangeListener.class, IOpdsSettingsChangeListener.class, IBookSettingsChangeListener.class, IRecentBooksChangedListener.class);
+            ILibSettingsChangeListener.class, IOpdsSettingsChangeListener.class, IBookSettingsChangeListener.class,
+            IRecentBooksChangedListener.class);
+
+    private static BookSettingsUpdate updateThread;
 
     public static void init(final Context context) {
         if (ctx == null) {
@@ -54,6 +58,9 @@ public class SettingsManager {
             AppSettings.init();
             LibSettings.init();
             OpdsSettings.init();
+
+            updateThread = new BookSettingsUpdate();
+            updateThread.start();
         }
     }
 
@@ -166,7 +173,7 @@ public class SettingsManager {
             db.clearRecent();
             bookSettings.clear();
 
-           if (current != null) {
+            if (current != null) {
                 AppSettings.clearPseudoBookSettings();
                 AppSettings.updatePseudoBookSettings(current);
             } else {
@@ -181,8 +188,8 @@ public class SettingsManager {
         lock.writeLock().lock();
         try {
             BookSettings bs = bookSettings.get(path);
-           if (bs != null) {
-               db.removeBookFromRecents(bs);
+            if (bs != null) {
+                db.removeBookFromRecents(bs);
             }
         } finally {
             lock.writeLock().unlock();
@@ -275,6 +282,7 @@ public class SettingsManager {
             if (current != null) {
                 final BookSettings olds = new BookSettings(current);
                 current.nightMode = !current.nightMode;
+                updateThread.flag.set(false);
                 db.storeBookSettings(current);
                 AppSettings.updatePseudoBookSettings(current);
 
@@ -290,7 +298,8 @@ public class SettingsManager {
         try {
             if (current != null) {
                 current.currentPageChanged(oldIndex, newIndex);
-                db.storeBookSettings(current);
+                // db.storeBookSettings(current);
+                updateThread.flag.compareAndSet(false, true);
             }
         } finally {
             lock.readLock().unlock();
@@ -303,7 +312,8 @@ public class SettingsManager {
             if (current != null) {
                 current.setZoom(zoom);
                 if (committed) {
-                    db.storeBookSettings(current);
+                    // db.storeBookSettings(current);
+                    updateThread.flag.compareAndSet(false, true);
                 }
             }
         } finally {
@@ -372,6 +382,7 @@ public class SettingsManager {
         lock.readLock().lock();
         try {
             if (current != null) {
+                updateThread.flag.set(false);
                 db.storeBookSettings(current);
                 db.updateBookmarks(current);
             }
@@ -399,4 +410,32 @@ public class SettingsManager {
         final IRecentBooksChangedListener l = listeners.getListener();
         l.onRecentBooksChanged();
     }
+
+    private static class BookSettingsUpdate extends Thread {
+
+        final AtomicBoolean run = new AtomicBoolean(true);
+        final AtomicBoolean flag = new AtomicBoolean();
+
+        @Override
+        public void run() {
+            while (run.get()) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Thread.interrupted();
+                }
+                if (flag.compareAndSet(true, false)) {
+                    lock.writeLock().lock();
+                    try {
+                        if (current != null) {
+                            db.storeBookSettings(current);
+                        }
+                    } finally {
+                        lock.writeLock().unlock();
+                    }
+                }
+            }
+        }
+    }
+
 }

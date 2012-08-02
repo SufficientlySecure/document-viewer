@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.emdev.common.backup.BackupManager;
 import org.emdev.common.backup.IBackupAgent;
@@ -28,16 +31,27 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter, I
 
     private SQLiteDatabase upgragingInstance;
 
+    private SQLiteDatabase m_db;
+
     public DBSettingsManager(final Context context) {
         super(context, context.getPackageName() + ".settings", null, DB_VERSION);
         adapter = createAdapter(DB_VERSION);
         try {
-            final SQLiteDatabase db = getWritableDatabase();
-            db.close();
+            m_db = getWritableDatabase();
         } catch (final Exception ex) {
             LCTX.e("Unexpected DB error: ", ex);
         }
         BackupManager.addAgent(this);
+    }
+
+    public void close() {
+        if (m_db != null) {
+            try {
+                m_db.close();
+            } catch (Exception ex) {
+            }
+            m_db = null;
+        }
     }
 
     @Override
@@ -111,7 +125,16 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter, I
      */
     @Override
     public synchronized SQLiteDatabase getWritableDatabase() {
-        return upgragingInstance != null ? upgragingInstance : super.getWritableDatabase();
+        if (upgragingInstance != null) {
+            return upgragingInstance;
+        }
+
+        if (m_db != null && m_db.isOpen()) {
+            return m_db;
+        }
+
+        m_db = super.getWritableDatabase();
+        return m_db;
     }
 
     /**
@@ -121,11 +144,18 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter, I
      */
     @Override
     public synchronized SQLiteDatabase getReadableDatabase() {
-        return upgragingInstance != null ? upgragingInstance : super.getReadableDatabase();
+        if (upgragingInstance != null) {
+            return upgragingInstance;
+        }
+
+        if (m_db != null && m_db.isOpen()) {
+            return m_db;
+        }
+        return super.getReadableDatabase();
     }
 
     synchronized void closeDatabase(final SQLiteDatabase db) {
-        if (db != upgragingInstance) {
+        if (db != upgragingInstance && db != m_db) {
             try {
                 db.close();
             } catch (final Exception ex) {

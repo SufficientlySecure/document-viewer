@@ -83,14 +83,13 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
             return;
         }
 
+        IUIManager.instance.setTitleVisible(this, !AndroidVersion.lessThan3x);
+
         setContentView(R.layout.recent);
 
         if (AndroidVersion.lessThan3x) {
             // Old layout with custom title bar
             libraryButton = (ImageView) findViewById(R.id.recent_showlibrary);
-        } else {
-            // New layout with action bar
-            IUIManager.instance.setTitleVisible(this, true);
         }
 
         viewflipper = (ViewFlipper) findViewById(R.id.recentflip);

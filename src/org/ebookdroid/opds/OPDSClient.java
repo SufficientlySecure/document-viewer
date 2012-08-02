@@ -153,6 +153,7 @@ public class OPDSClient extends BaseHttpClient {
                 downloadDir.mkdirs();
             }
             final File file = new File(downloadDir, guessFileName);
+            final File tmpFile = new File(downloadDir, guessFileName + ".part");
 
             final boolean exists = file.exists() && file.length() == contentLength;
 
@@ -161,9 +162,10 @@ public class OPDSClient extends BaseHttpClient {
                 if (!exists) {
                     final UIFileCopying worker = new UIFileCopying(R.string.opds_loading_book, 64 * 1024, progress);
                     final BufferedInputStream input = new BufferedInputStream(entity.getContent(), 64 * 1024);
-                    final BufferedOutputStream fileOutput = new BufferedOutputStream(new FileOutputStream(file),
+                    final BufferedOutputStream tmpFileOutput = new BufferedOutputStream(new FileOutputStream(tmpFile),
                             256 * 1024);
-                    worker.copy(contentLength, input, fileOutput);
+                    worker.copy(contentLength, input, tmpFileOutput);
+                    tmpFile.renameTo(file);
                 }
                 if (OpdsSettings.current().unpackArchives && link.isZipped && !link.bookType.isZipSupported()) {
                     return unpack(file, progress);
@@ -171,6 +173,7 @@ public class OPDSClient extends BaseHttpClient {
             } catch (final ClosedByInterruptException ex) {
                 try {
                     file.delete();
+                    tmpFile.delete();
                 } catch (final Exception ex1) {
                 }
             }

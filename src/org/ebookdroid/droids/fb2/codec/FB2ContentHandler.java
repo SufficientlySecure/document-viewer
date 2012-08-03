@@ -74,6 +74,10 @@ public class FB2ContentHandler extends FB2BaseHandler {
         spaceNeeded = true;
         final ArrayList<MarkupElement> markupStream = parsedContent.getMarkupStream(currentStream);
 
+        if (tmpTagContent.length() > 0) {
+            processTagContent();
+        }
+
         final byte tag = FB2Tag.getTagByName(qName);
         byte[] tmpTagStack = tagStack;
         if (tmpTagStack.length == tagStackSize) {

@@ -7,6 +7,7 @@ import android.util.SparseArray;
 import java.io.File;
 import java.lang.ref.WeakReference;
 
+import org.emdev.common.android.AndroidVersion;
 import org.emdev.common.fonts.data.FontFamilyType;
 import org.emdev.common.fonts.data.FontInfo;
 import org.emdev.common.fonts.data.FontPack;
@@ -17,24 +18,36 @@ import org.emdev.utils.enums.EnumUtils;
 
 public class FontManager {
 
-    public static final SystemFontProvider system = new SystemFontProvider();
-    public static final AssetsFontProvider assets = new AssetsFontProvider();
-    public static final ExtStorageFontProvider external = new ExtStorageFontProvider(EBookDroidApp.APP_STORAGE);
+    public static SystemFontProvider system;
+    public static AssetsFontProvider assets;
+    public static BaseExtStorageFontProvider external;
 
     private static final SparseArray<WeakReference<TypefaceEx>> fonts = new SparseArray<WeakReference<TypefaceEx>>();
 
     public static void init() {
+        try {
+        system = new SystemFontProvider();
+        assets = new AssetsFontProvider();
+
+        try {
+            Class<?> classESFP = null;
+            if(AndroidVersion.VERSION < 4) {
+                classESFP = Class.forName(FontManager.class.getPackage().getName() +".BaseExtStorageFontProvider");
+            } else {
+                classESFP = Class.forName(FontManager.class.getPackage().getName() +".ExtStorageFontProvider");
+            }
+            external = (BaseExtStorageFontProvider) classESFP.getConstructor(File.class).newInstance(EBookDroidApp.APP_STORAGE);
+        } catch (Throwable ex) {
+            ex.printStackTrace();
+        }
+
         system.init();
         assets.init();
         external.init();
-    }
-
-    public static TypefaceEx getFont(final String fontAndFamily) {
-        return getFont(fontAndFamily, FontFamilyType.SERIF, FontStyle.REGULAR);
-    }
-
-    public static TypefaceEx getFont(final String fontAndFamily, final FontStyle style) {
-        return getFont(fontAndFamily, FontFamilyType.SERIF, style);
+        } catch (VerifyError ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 
     public static TypefaceEx getFont(final String fontAndFamily, final FontFamilyType defaultFamily,

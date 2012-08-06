@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.emdev.BaseDroidApp;
+import org.emdev.common.fonts.data.FontFamilyType;
 import org.emdev.common.fonts.data.FontInfo;
 import org.emdev.utils.LengthUtils;
 
@@ -26,7 +27,7 @@ public class AssetsFontProvider extends AbstractCustomFontProvider {
     }
 
     @Override
-    protected Typeface loadTypeface(final FontInfo fi) {
+    protected Typeface loadTypeface(final FontFamilyType type, final FontInfo fi) {
         final String path = "fonts/" + fi.path;
         try {
             return Typeface.createFromAsset(BaseDroidApp.context.getAssets(), path);

@@ -30,14 +30,14 @@ public abstract class AbstractCustomFontProvider extends AbstractFontProvider {
         FontInfo font = fp.getFont(type, style);
         Typeface target = null;
         if (font != null) {
-            target = loadTypeface(font);
+            target = loadTypeface(type, font);
         }
         if (target == null) {
             final FontStyle base = style.getBase();
             if (base != style) {
                 font = fp.getFont(type, base);
                 if (font != null) {
-                    target = loadTypeface(font);
+                    target = loadTypeface(type, font);
                 }
             }
         }
@@ -106,7 +106,7 @@ public abstract class AbstractCustomFontProvider extends AbstractFontProvider {
 
     protected abstract InputStream openCatalog() throws IOException;
 
-    protected abstract Typeface loadTypeface(FontInfo fi);
+    protected abstract Typeface loadTypeface(final FontFamilyType type, FontInfo fi);
 
     public abstract InputStream openInputFontStream(FontInfo fi) throws IOException;
 

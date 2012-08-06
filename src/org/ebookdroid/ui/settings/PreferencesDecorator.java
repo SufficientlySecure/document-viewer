@@ -130,21 +130,22 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
 
     public void setHWA(final DocumentViewType type, final String hwaPrefKey) {
         final Preference hwaPref = findPreference(hwaPrefKey);
-
-        Class<? extends Preference> clazz = hwaPref.getClass();
-        try {
-            final Method setCheckedMethod = clazz.getMethod("setChecked", boolean.class);
-            final Method setEnabledMethod = clazz.getMethod("setEnabled", boolean.class);
-            if ((type == DocumentViewType.SURFACE) || AndroidVersion.lessThan3x) {
-                setCheckedMethod.invoke(hwaPref, false);
-                setEnabledMethod.invoke(hwaPref, false);
-            } else {
-                setEnabledMethod.invoke(hwaPref, true);
+        if (hwaPref != null) {
+            Class<? extends Preference> clazz = hwaPref.getClass();
+            try {
+                final Method setCheckedMethod = clazz.getMethod("setChecked", boolean.class);
+                final Method setEnabledMethod = clazz.getMethod("setEnabled", boolean.class);
+                if ((type == DocumentViewType.SURFACE) || AndroidVersion.lessThan3x) {
+                    setCheckedMethod.invoke(hwaPref, false);
+                    setEnabledMethod.invoke(hwaPref, false);
+                } else {
+                    setEnabledMethod.invoke(hwaPref, true);
+                }
+            } catch (NoSuchMethodException e) {
+            } catch (IllegalArgumentException e) {
+            } catch (IllegalAccessException e) {
+            } catch (InvocationTargetException e) {
             }
-        } catch (NoSuchMethodException e) {
-        } catch (IllegalArgumentException e) {
-        } catch (IllegalAccessException e) {
-        } catch (InvocationTargetException e) {
         }
     }
 
@@ -262,6 +263,7 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
     protected void addViewTypeListener(final String source, final String target) {
         addListener(source, new ViewTypeListener(target));
     }
+
     protected static class CompositeListener implements OnPreferenceChangeListener {
 
         final List<OnPreferenceChangeListener> listeners = new LinkedList<Preference.OnPreferenceChangeListener>();
@@ -314,6 +316,7 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
     }
 
     protected class ViewTypeListener implements OnPreferenceChangeListener {
+
         private final String relatedKey;
 
         public ViewTypeListener(final String relatedKey) {

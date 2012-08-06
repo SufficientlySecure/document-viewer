@@ -1,0 +1,39 @@
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ebookdroid="http://ebookdroid.org"
+    android:summary="@string/pref_scroll_category_summary"
+    android:title="@string/pref_scroll_category" >
+
+    <CheckBoxPreference
+        android:defaultValue="@string/pref_tapsenabled_defvalue"
+        android:key="@string/pref_tapsenabled_id"
+        android:summary="@string/pref_tapsenabled_summary"
+        android:title="@string/pref_tapsenabled_title" />
+
+        <EditTextPreference
+            android:maxLength="3"
+            android:numeric="integer"
+            android:defaultValue="@string/pref_scrollheight_defvalue"
+            android:key="@string/pref_scrollheight_id"
+            ebookdroid:minValue="@string/pref_scrollheight_minvalue"
+            ebookdroid:maxValue="@string/pref_scrollheight_maxvalue"
+            android:summary="@string/pref_scroll_summary"
+            android:title="@string/pref_scroll_title" />
+
+        <EditTextPreference
+            android:maxLength="3"
+            android:numeric="integer"
+            android:defaultValue="@string/pref_touchdelay_defvalue"
+            android:key="@string/pref_touchdelay_id"
+            ebookdroid:minValue="@string/pref_touchdelay_minvalue"
+            ebookdroid:maxValue="@string/pref_touchdelay_maxvalue"
+            android:summary="@string/pref_touchdelay_summary"
+            android:title="@string/pref_touchdelay_title" />
+
+    <CheckBoxPreference
+            android:defaultValue="@string/pref_animate_scrolling_defvalue"
+            android:key="@string/pref_animate_scrolling_id"
+            android:summary="@string/pref_animate_scrolling_summary"
+            android:title="@string/pref_animate_scrolling_title" />
+
+</PreferenceScreen>

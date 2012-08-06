@@ -1,0 +1,88 @@
+<PreferenceScreen 
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:ebookdroid="http://ebookdroid.org"
+        android:key="browserscreen"
+        android:summary="@string/pref_browser_category_summary"
+        android:title="@string/pref_browser_category" >
+
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_usebookcase_defvalue"
+            android:key="@string/pref_usebookcase_id"
+            android:summary="@string/pref_usebookcase_summary"
+            android:title="@string/pref_usebookcase_title" />
+
+        <EditTextPreference
+            android:defaultValue="@string/pref_brautoscandir_defvalue"
+            android:key="@string/pref_brautoscandir_id"
+            android:summary="@string/pref_brautoscandir_summary"
+            android:title="@string/pref_brautoscandir_title" />
+
+        <PreferenceCategory
+            android:key="brfiletypesscreen"
+            android:summary="@string/pref_brbrfiletypesscreen_summary"
+            android:title="@string/pref_brbrfiletypesscreen_title" >
+
+        <org.emdev.ui.preference.JsonCheckBoxPreference
+                android:defaultValue="true"
+                android:key="@string/pref_brfiletypes"
+                ebookdroid:jsonProperty="djvu"
+                android:summary="@string/pref_brfiletypedjvu_summary"
+                android:title="@string/pref_brfiletypedjvu_title" />
+
+        <org.emdev.ui.preference.JsonCheckBoxPreference
+                android:defaultValue="true"
+                android:key="@string/pref_brfiletypes"
+                ebookdroid:jsonProperty="djv"
+                android:summary="@string/pref_brfiletypedjv_summary"
+                android:title="@string/pref_brfiletypedjv_title" />
+
+        <org.emdev.ui.preference.JsonCheckBoxPreference
+                android:defaultValue="true"
+                android:key="@string/pref_brfiletypes"
+                ebookdroid:jsonProperty="pdf"
+                android:summary="@string/pref_brfiletypepdf_summary"
+                android:title="@string/pref_brfiletypepdf_title" />
+
+        <org.emdev.ui.preference.JsonCheckBoxPreference
+                android:defaultValue="true"
+                android:key="@string/pref_brfiletypes"
+                ebookdroid:jsonProperty="xps"
+                android:summary="@string/pref_brfiletypexps_summary"
+                android:title="@string/pref_brfiletypexps_title" />
+
+        <org.emdev.ui.preference.JsonCheckBoxPreference
+                android:defaultValue="true"
+                android:key="@string/pref_brfiletypes"
+                ebookdroid:jsonProperty="oxps"
+                android:summary="@string/pref_brfiletypeoxps_summary"
+                android:title="@string/pref_brfiletypeoxps_title" />
+
+        <org.emdev.ui.preference.JsonCheckBoxPreference
+                android:defaultValue="true"
+                android:key="@string/pref_brfiletypes"
+                ebookdroid:jsonProperty="cbz"
+                android:summary="@string/pref_brfiletypecbz_summary"
+                android:title="@string/pref_brfiletypecbz_title" />
+
+        <org.emdev.ui.preference.JsonCheckBoxPreference
+                android:defaultValue="true"
+                android:key="@string/pref_brfiletypes"
+                ebookdroid:jsonProperty="cbr"
+                android:summary="@string/pref_brfiletypecbr_summary"
+                android:title="@string/pref_brfiletypecbr_title" />
+
+        <org.emdev.ui.preference.JsonCheckBoxPreference
+                android:defaultValue="true"
+                android:key="@string/pref_brfiletypes"
+                ebookdroid:jsonProperty="fb2"
+                android:summary="@string/pref_brfiletypefb2_summary"
+                android:title="@string/pref_brfiletypefb2_title" />
+
+        <org.emdev.ui.preference.JsonCheckBoxPreference
+                android:defaultValue="true"
+                android:key="@string/pref_brfiletypes"
+                ebookdroid:jsonProperty="fb2.zip"
+                android:summary="@string/pref_brfiletypefb2.zip_summary"
+                android:title="@string/pref_brfiletypefb2.zip_title" />
+        </PreferenceCategory>
+    </PreferenceScreen>

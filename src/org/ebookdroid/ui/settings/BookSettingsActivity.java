@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
-import org.emdev.common.android.AndroidVersion;
 import org.emdev.common.filesystem.PathFromUri;
 
 public class BookSettingsActivity extends BaseSettingsActivity {
@@ -29,7 +28,7 @@ public class BookSettingsActivity extends BaseSettingsActivity {
         }
 
         try {
-            addPreferencesFromResource(AndroidVersion.lessThan3x ? R.xml.books_prefs : R.xml.fragment_book);
+            addPreferencesFromResource(R.xml.fragment_book);
         } catch (final ClassCastException e) {
             LCTX.e("Book preferences are corrupt! Resetting to default values.");
 
@@ -38,10 +37,11 @@ public class BookSettingsActivity extends BaseSettingsActivity {
             editor.clear();
             editor.commit();
 
-            PreferenceManager.setDefaultValues(this, R.xml.books_prefs, true);
-            addPreferencesFromResource(R.xml.books_prefs);
+            PreferenceManager.setDefaultValues(this, R.xml.fragment_book, true);
+            addPreferencesFromResource(R.xml.fragment_book);
         }
 
+        decorator.decoratePreference(getRoot());
         decorator.decorateBooksSettings();
     }
 

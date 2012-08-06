@@ -6,7 +6,6 @@ import org.ebookdroid.common.settings.SettingsManager;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 
@@ -33,8 +32,7 @@ public class SettingsActivity extends BaseSettingsActivity {
 
     protected void onCreate() {
         try {
-            addPreferencesFromResource(R.xml.preferences);
-
+            setPreferenceScreen(createPreferences());
         } catch (final ClassCastException e) {
             LCTX.e("Shared preferences are corrupt! Resetting to default values.");
 
@@ -43,26 +41,38 @@ public class SettingsActivity extends BaseSettingsActivity {
             editor.clear();
             editor.commit();
 
-            PreferenceManager.setDefaultValues(this, R.xml.preferences, true);
-            addPreferencesFromResource(R.xml.preferences);
+            setPreferenceScreen(createPreferences());
         }
 
         decorator.decorateSettings();
+    }
 
-        if (SettingsManager.getBookSettings() == null) {
-            final Preference bookPrefs = findPreference("book_prefs");
-            if (bookPrefs != null) {
-                final PreferenceScreen preferenceScreen = getPreferenceScreen();
-                preferenceScreen.removePreference(bookPrefs);
-            }
+    PreferenceScreen createPreferences() {
+        final PreferenceScreen root = getPreferenceManager().createPreferenceScreen(this);
+
+        loadPreferences(root, R.xml.fragment_ui);
+        loadPreferences(root, R.xml.fragment_scroll);
+        loadPreferences(root, R.xml.fragment_memory);
+        loadPreferences(root, R.xml.fragment_render);
+        loadPreferences(root, R.xml.fragment_typespec);
+        loadPreferences(root, R.xml.fragment_browser);
+
+        if (AndroidVersion.VERSION >= 8) {
+            loadPreferences(root, R.xml.fragment_opds);
         }
 
-        if (AndroidVersion.VERSION < 8) {
-            final Preference opdsPrefs = findPreference("opds_prefs");
-            if (opdsPrefs != null) {
-                final PreferenceScreen preferenceScreen = getPreferenceScreen();
-                preferenceScreen.removePreference(opdsPrefs);
-            }
+        loadPreferences(root, R.xml.fragment_backup);
+
+        return root;
+    }
+
+    void loadPreferences(final PreferenceScreen root, final int... resourceIds) {
+        for (final int id : resourceIds) {
+            setPreferenceScreen(null);
+            addPreferencesFromResource(id);
+            root.addPreference(getPreferenceScreen());
+            setPreferenceScreen(null);
         }
     }
+
 }

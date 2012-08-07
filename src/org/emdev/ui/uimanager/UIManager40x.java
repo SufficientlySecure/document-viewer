@@ -37,7 +37,6 @@ public class UIManager40x implements IUIManager {
 
     @Override
     public void setTitleVisible(final Activity activity, final boolean visible) {
-        data.get(activity.getComponentName()).titleVisible = visible;
         try {
             final Window window = activity.getWindow();
             if (!visible) {
@@ -50,9 +49,15 @@ public class UIManager40x implements IUIManager {
                 activity.setProgressBarIndeterminateVisibility(true);
                 window.setFeatureInt(Window.FEATURE_INDETERMINATE_PROGRESS, 1);
             }
+            data.get(activity.getComponentName()).titleVisible = visible;
         } catch (final Throwable th) {
             LCTX.e("Error on requestFeature call: " + th.getMessage());
         }
+    }
+
+    @Override
+    public boolean isTitleVisible(final Activity activity) {
+        return data.get(activity.getComponentName()).titleVisible;
     }
 
     @Override
@@ -141,7 +146,7 @@ public class UIManager40x implements IUIManager {
     private static class Data {
 
         boolean hwaEnabled = false;
-        boolean titleVisible;
+        boolean titleVisible = true;
         boolean statusBarHidden = false;
     }
 }

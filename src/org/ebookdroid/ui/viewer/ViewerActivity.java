@@ -188,7 +188,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
         }
 
         AppSettings app = AppSettings.current();
-        if (app.showTitle && app.pageInTitle) {
+        if (IUIManager.instance.isTitleVisible(this) && app.pageInTitle) {
             getWindow().setTitle("(" + pageText + ") " + bookTitle);
             return;
         }

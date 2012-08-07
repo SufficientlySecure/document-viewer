@@ -37,6 +37,8 @@ public interface IUIManager {
 
     void setTitleVisible(Activity activity, boolean visible);
 
+    boolean isTitleVisible(Activity activity);
+
     void setHardwareAccelerationEnabled(Activity activity, boolean enabled);
 
     void setHardwareAccelerationMode(Activity activity, View view, boolean accelerated);

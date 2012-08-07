@@ -15,8 +15,13 @@ public class UIManager1x implements IUIManager {
 
     private static final Map<ComponentName, Data> data = new HashMap<ComponentName, Data>() {
 
+        /**
+         * Serial version UID.
+         */
+        private static final long serialVersionUID = -3701577210751612032L;
+
         @Override
-        public Data get(Object key) {
+        public Data get(final Object key) {
             Data existing = super.get(key);
             if (existing == null) {
                 existing = new Data();
@@ -28,9 +33,9 @@ public class UIManager1x implements IUIManager {
     };
 
     @Override
-    public void setTitleVisible(Activity activity, boolean visible) {
+    public void setTitleVisible(final Activity activity, final boolean visible) {
         try {
-            Window window = activity.getWindow();
+            final Window window = activity.getWindow();
             if (!visible) {
                 window.requestFeature(Window.FEATURE_NO_TITLE);
             } else {
@@ -39,15 +44,21 @@ public class UIManager1x implements IUIManager {
                 activity.setProgressBarIndeterminateVisibility(true);
                 window.setFeatureInt(Window.FEATURE_INDETERMINATE_PROGRESS, 1);
             }
+            data.get(activity.getComponentName()).titleVisible = visible;
         } catch (final Throwable th) {
             LCTX.e("Error on requestFeature call: " + th.getMessage());
         }
     }
 
     @Override
+    public boolean isTitleVisible(final Activity activity) {
+        return data.get(activity.getComponentName()).titleVisible;
+    }
+
+    @Override
     public void setFullScreenMode(final Activity activity, final View view, final boolean fullScreen) {
         data.get(activity.getComponentName()).fullScreen = fullScreen;
-        Window w = activity.getWindow();
+        final Window w = activity.getWindow();
         if (fullScreen) {
             w.setFlags(FLAG_FULLSCREEN, FLAG_FULLSCREEN);
         } else {
@@ -95,6 +106,8 @@ public class UIManager1x implements IUIManager {
     }
 
     private static class Data {
+
         boolean fullScreen = false;
+        boolean titleVisible = true;
     }
 }

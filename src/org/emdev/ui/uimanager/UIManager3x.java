@@ -59,9 +59,15 @@ public class UIManager3x implements IUIManager {
                 activity.setProgressBarIndeterminateVisibility(true);
                 window.setFeatureInt(Window.FEATURE_INDETERMINATE_PROGRESS, 1);
             }
+            data.get(activity.getComponentName()).titleVisible = visible;
         } catch (final Throwable th) {
             LCTX.e("Error on requestFeature call: " + th.getMessage());
         }
+    }
+
+    @Override
+    public boolean isTitleVisible(final Activity activity) {
+        return data.get(activity.getComponentName()).titleVisible;
     }
 
     @Override
@@ -231,6 +237,7 @@ public class UIManager3x implements IUIManager {
     private static class Data {
         boolean hwaEnabled = false;
         boolean fullScreen = false;
+        boolean titleVisible = true;
         final AtomicBoolean fullScreenState = new AtomicBoolean();
     }
 }

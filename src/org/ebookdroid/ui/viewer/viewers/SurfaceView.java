@@ -20,7 +20,6 @@ import android.widget.Scroller;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.utils.MathUtils;
 import org.emdev.utils.concurrent.Flag;
 
@@ -40,15 +39,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     protected final Flag layoutFlag = new Flag();
 
-    protected final Runnable fullScreenCallback = new Runnable() {
-
-        @Override
-        public void run() {
-            if (AppSettings.current().fullScreen) {
-                IUIManager.instance.setFullScreenMode(base.getActivity(), SurfaceView.this, true);
-            }
-        }
-    };
+    protected final FullScreenCallback fullScreenCallback;
 
     public SurfaceView(final IActivityController baseActivity) {
         super(baseActivity.getContext());
@@ -60,6 +51,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
         setFocusableInTouchMode(true);
 
         getHolder().addCallback(this);
+        fullScreenCallback = new FullScreenCallback(baseActivity.getActivity(), this);
     }
 
     /**
@@ -202,8 +194,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     @Override
     public void checkFullScreenMode() {
-        getHandler().removeCallbacks(fullScreenCallback);
-        getHandler().postDelayed(fullScreenCallback, 2000);
+        fullScreenCallback.checkFullScreenMode();
     }
 
     /**

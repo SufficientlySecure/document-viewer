@@ -162,6 +162,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         final AppSettings newSettings = AppSettings.current();
 
         activity.setRequestedOrientation(newSettings.rotation.getOrientation());
+        IUIManager.instance.setTitleVisible(activity, newSettings.showTitle);
 
         TouchManager.loadFromSettings(newSettings);
         KeyBindingsManager.loadFromSettings(newSettings);
@@ -176,7 +177,6 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         final AppSettings appSettings = AppSettings.current();
 
         IUIManager.instance.setFullScreenMode(activity, getManagedComponent().view.getView(), appSettings.fullScreen);
-        IUIManager.instance.setTitleVisible(activity, appSettings.showTitle);
 
         createAction(R.id.mainmenu_goto_page, new Constant("dialogId", DIALOG_GOTO));
         createAction(R.id.mainmenu_zoom).putValue("view", activity.getZoomControls());

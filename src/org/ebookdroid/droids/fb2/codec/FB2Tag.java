@@ -1,5 +1,6 @@
 package org.ebookdroid.droids.fb2.codec;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 final class FB2Tag {
@@ -47,70 +48,110 @@ final class FB2Tag {
     public static final byte TD = 38;
     public static final byte TH = 39;
 
+    public static final FB2Tag unknownTag;
 
-	private static final HashMap<String, Byte> tagsByName = new HashMap<String, Byte>(256, 0.2f);
-	private static final Byte unknownTag;
+    private static final HashMap<String, FB2Tag> tagsByName = new HashMap<String, FB2Tag>(256, 0.2f);
 
 	static {
-		tagsByName.put("unknown", UNKNOWN);
-		unknownTag = (Byte)tagsByName.get("unknown");
-		tagsByName.put("p", P);
-		tagsByName.put("v", V);
-		tagsByName.put("subtitle", SUBTITLE);
-		tagsByName.put("text-author", TEXT_AUTHOR);
-		tagsByName.put("date", DATE);
-		tagsByName.put("cite", CITE);
-		tagsByName.put("section", SECTION);
-		tagsByName.put("poem", POEM);
-		tagsByName.put("stanza", STANZA);
-		tagsByName.put("epigraph", EPIGRAPH);
-		tagsByName.put("annotation", ANNOTATION);
-		tagsByName.put("coverpage", COVERPAGE);
-		tagsByName.put("a", A);
-		tagsByName.put("empty-line", EMPTY_LINE);
-		tagsByName.put("sup", SUP);
-		tagsByName.put("sub", SUB);
-		tagsByName.put("emphasis", EMPHASIS);
-		tagsByName.put("strong", STRONG);
-		tagsByName.put("code", CODE);
-		tagsByName.put("strikethrough", STRIKETHROUGH);
-		tagsByName.put("title", TITLE);
-		tagsByName.put("title-info", TITLE_INFO);
-		tagsByName.put("body", BODY);
-		tagsByName.put("image", IMAGE);
-		tagsByName.put("binary", BINARY);
-		tagsByName.put("fictionbook", FICTIONBOOK);
-		tagsByName.put("book-title", BOOK_TITLE);
-		tagsByName.put("sequence", SEQUENCE);
-		tagsByName.put("first-name", FIRST_NAME);
-		tagsByName.put("middle-name", MIDDLE_NAME);
-		tagsByName.put("last-name", LAST_NAME);
-		tagsByName.put("book-title", BOOK_TITLE);
-		tagsByName.put("author", AUTHOR);
-		tagsByName.put("lang", LANG);
-		tagsByName.put("genre", GENRE);
-		tagsByName.put("description", DESCRIPTION);
-        tagsByName.put("table", TABLE);
-        tagsByName.put("tr", TR);
-        tagsByName.put("td", TD);
-        tagsByName.put("th", TH);
+        unknownTag = addTag("unknown", UNKNOWN, true, false);
+
+        addTag("p", P, true, true);
+        addTag("v", V, true, true);
+        addTag("subtitle", SUBTITLE, true, true);
+        addTag("text-author", TEXT_AUTHOR, true, true);
+        addTag("date", DATE, true, true);
+        addTag("cite", CITE, true, true);
+        addTag("section", SECTION, true, true, "id");
+        addTag("poem", POEM, true, true);
+        addTag("stanza", STANZA, true, true);
+        addTag("epigraph", EPIGRAPH, true, true);
+        addTag("annotation", ANNOTATION, true, true);
+        addTag("coverpage", COVERPAGE, true, true);
+        addTag("a", A, true, true, "type", "href");
+        addTag("empty-line", EMPTY_LINE, true, true);
+        addTag("sup", SUP, true, true);
+        addTag("sub", SUB, true, true);
+        addTag("emphasis", EMPHASIS, true, true);
+        addTag("strong", STRONG, true, true);
+        addTag("code", CODE, true, true);
+        addTag("strikethrough", STRIKETHROUGH, true, true);
+        addTag("title", TITLE, true, true);
+        addTag("title-info", TITLE_INFO, true, true);
+        addTag("body", BODY, true, true, "name");
+        addTag("image", IMAGE, true, true, "href");
+        addTag("binary", BINARY, true, true, "id");
+        addTag("fictionbook", FICTIONBOOK, true, true);
+        addTag("book-title", BOOK_TITLE, true, true);
+        addTag("sequence", SEQUENCE, true, true);
+        addTag("first-name", FIRST_NAME, true, true);
+        addTag("middle-name", MIDDLE_NAME, true, true);
+        addTag("last-name", LAST_NAME, true, true);
+        addTag("book-title", BOOK_TITLE, true, true);
+        addTag("author", AUTHOR, true, true);
+        addTag("lang", LANG, true, true);
+        addTag("genre", GENRE, true, true);
+        addTag("description", DESCRIPTION, true, true);
+        addTag("table", TABLE, true, true);
+        addTag("tr", TR, true, true);
+        addTag("td", TD, true, true, "align");
+        addTag("th", TH, true, true, "align");
+    }
+
+    public final byte tag;
+    public final String name;
+    public final boolean processChildren;
+    public final boolean processText;
+    public final String[] attributes;
+
+    private FB2Tag(byte tag, String name, boolean processChildren, boolean processText, String[] attributes) {
+        super();
+        this.tag = tag;
+        this.name = name;
+        this.processChildren = processChildren;
+        this.processText = processText;
+        this.attributes = attributes;
+
+        if (this.attributes.length > 1) {
+            Arrays.sort(this.attributes);
+        }
+    }
+
+    public String toString() {
+        return name;
+    }
+
+    public static byte getTagIdByName(String name) {
+        FB2Tag tag = tagsByName.get(name);
+        if (tag == null) {
+            final String upperCaseName = name.toLowerCase().intern();
+            tag = tagsByName.get(upperCaseName);
+            if (tag == null) {
+                tag = unknownTag;
+                tagsByName.put(upperCaseName, tag);
+            }
+            tagsByName.put(name, tag);
+        }
+        return tag.tag;
 	}
 
-	public static byte getTagByName(String name) {
-		final HashMap<String,Byte> tagByName = tagsByName;
-		Byte num = tagByName.get(name);
-		if (num == null) {
+    public static FB2Tag getTagByName(String name) {
+        FB2Tag tag = tagsByName.get(name);
+        if (tag == null) {
 			final String upperCaseName = name.toLowerCase().intern();
-			num = (Byte)tagByName.get(upperCaseName);
-			if (num == null) {
-				num = unknownTag;
-				tagByName.put(upperCaseName, num);
+            tag = tagsByName.get(upperCaseName);
+            if (tag == null) {
+                tag = unknownTag;
+                tagsByName.put(upperCaseName, tag);
 			}
-			tagByName.put(name, num);
+            tagsByName.put(name, tag);
 		}
-		return num.byteValue();
+        return tag;
 	}
 
-	private FB2Tag() {
+    private static FB2Tag addTag(String name, byte tag, boolean processChildren, boolean processText,
+            String... attributes) {
+        FB2Tag t = new FB2Tag(tag, name, processChildren, processText, attributes);
+        tagsByName.put(name, t);
+        return t;
 	}
 }

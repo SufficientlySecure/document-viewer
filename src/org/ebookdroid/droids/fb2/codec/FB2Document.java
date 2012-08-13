@@ -46,8 +46,6 @@ import org.xml.sax.InputSource;
 
 public class FB2Document implements CodecDocument {
 
-    private final static boolean USE_NEW_PARSER = false;
-
     private final ArrayList<FB2Page> pages = new ArrayList<FB2Page>();
 
     private final List<OutlineLink> outline = new ArrayList<OutlineLink>();
@@ -61,12 +59,9 @@ public class FB2Document implements CodecDocument {
         content.loadFonts();
         final long t2 = System.currentTimeMillis();
         System.out.println("Fonts preloading: " + (t2 - t1) + " ms");
-        if (USE_NEW_PARSER) {
-            parseContent3(spf, fileName);
-        }
-        else {
-            parseContent(spf, fileName);
-        }
+
+        parseContent(spf, fileName);
+
         final long t3 = System.currentTimeMillis();
         System.out.println("SAX parser: " + (t3 - t2) + " ms");
         System.out.println("Words=" + Words.words + ", uniques=" + Words.uniques);
@@ -179,72 +174,6 @@ public class FB2Document implements CodecDocument {
             resources.clear();
         }
     }
-
-    private void parseContent3(final SAXParserFactory spf, final String fileName) {
-        final FB2ContentHandler3 h = new FB2ContentHandler3(content);
-        final List<Closeable> resources = new ArrayList<Closeable>();
-
-        try {
-            InputStream inStream = null;
-            int length = -1;
-
-            if (fileName.endsWith("zip")) {
-                final ZipArchive zipArchive = new ZipArchive(new File(fileName));
-
-                final Enumeration<ZipArchiveEntry> entries = zipArchive.entries();
-                while (entries.hasMoreElements()) {
-                    final ZipArchiveEntry entry = entries.nextElement();
-                    if (!entry.isDirectory() && entry.getName().endsWith("fb2")) {
-                        inStream = entry.open();
-                        resources.add(inStream);
-                        length = (int) entry.getSize();
-                        break;
-                    }
-                }
-                resources.add(zipArchive);
-            } else {
-                inStream = new FileInputStream(fileName);
-                resources.add(inStream);
-                length = (int) new File(fileName).length();
-            }
-            if (inStream != null && length != -1) {
-
-                String encoding = getEncoding(inStream);
-
-                final Reader isr = new BufferedReader(new InputStreamReader(inStream, encoding), 32 * 1024);
-                resources.add(isr);
-
-                char[] xmlChars = new char[length];
-                int offset = 0;
-                final long t1 = System.currentTimeMillis();
-
-                while (true) {
-                    int n = isr.read(xmlChars, offset, length - offset);
-                    if (n == -1) {
-                        break;
-                    }
-                    offset += n;
-                }
-                final long t2 = System.currentTimeMillis();
-                System.out.println("File preloading: " + (t2 - t1) + " ms");
-                System.out.println("Stream length:" + offset);
-                h.parse(xmlChars, offset);
-            }
-        } catch (final Exception e) {
-            throw new RuntimeException("FB2 document can not be opened: " + e.getMessage(), e);
-        } finally {
-            for (final Closeable r : resources) {
-                try {
-                    if (r != null) {
-                        r.close();
-                    }
-                } catch (final IOException e) {
-                }
-            }
-            resources.clear();
-        }
-    }
-
 
     private String getEncoding(InputStream inStream) throws IOException {
         String encoding = "utf-8";

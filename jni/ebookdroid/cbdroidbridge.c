@@ -1,6 +1,9 @@
 #include <string.h>
 #include <jni.h>
 #include <stdint.h>
+
+#include <android/log.h>
+
 #include "hqxcommon.h"
 #include "hqx.h"
 
@@ -189,12 +192,17 @@ JNIEXPORT void JNICALL
     int i;
     unsigned char* src1;
     int histoR[256];
+    int cumulativeFreqR[256];
     int histoG[256];
+    int cumulativeFreqG[256];
     int histoB[256];
+    int cumulativeFreqB[256];
 
     int numpixels = width * height;
     int minR = 0, minG = 0, minB = 0;
     int maxR = 0, maxG = 0, maxB = 0;
+
+    __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "nativeAutoLevels");
 
     src = (*env)->GetIntArrayElements(env, srcArray, 0);
 
@@ -211,37 +219,77 @@ JNIEXPORT void JNICALL
     }
 
     for (i = 0; i < 256; i++) {
-        if (histoR[i] > numpixels / 100 && minR == 0) {
+        cumulativeFreqR[i] = histoR[i] + (i > 0 ? cumulativeFreqR[i-1] : 0);
+        cumulativeFreqG[i] = histoG[i] + (i > 0 ? cumulativeFreqG[i-1] : 0);
+        cumulativeFreqB[i] = histoB[i] + (i > 0 ? cumulativeFreqB[i-1] : 0);
+    }
+
+    for (i = 0; i < 256; i++) {
+        if (cumulativeFreqR[i] > 5 * numpixels / 100 && minR == 0) {
             minR = i;
         }
-        if (histoG[i] > numpixels / 100 && minG == 0) {
+        if (cumulativeFreqG[i] > 5 * numpixels / 100 && minG == 0) {
             minG = i;
         }
-        if (histoB[i] > numpixels / 100 && minB == 0) {
+        if (cumulativeFreqB[i] > 5 * numpixels / 100 && minB == 0) {
             minB = i;
         }
     }
 
     for (i = 255; i >= 0; i--) {
-        if (histoR[i] > numpixels / 100 && maxR == 0) {
+        if (cumulativeFreqR[i] < 95 * numpixels / 100 && maxR == 0) {
             maxR = i;
         }
-        if (histoG[i] > numpixels / 100 && maxG == 0) {
+        if (cumulativeFreqG[i] < 95 * numpixels / 100 && maxG == 0) {
             maxG = i;
         }
-        if (histoB[i] > numpixels / 100 && maxB == 0) {
+        if (cumulativeFreqB[i] < 95 * numpixels / 100 && maxB == 0) {
             maxB = i;
         }
     }
+
     if (minR == maxR) {
-        maxR = minR + 1;
+        if (minR != 255) {
+          maxR = minR + 1;
+        } else {
+          minR = maxR - 1;
+        }
     }
     if (minG == maxG) {
-        maxG = minG + 1;
+        if (minG != 255) {
+          maxG = minG + 1;
+        } else {
+          minG = maxG - 1;
+        }
     }
     if (minB == maxB) {
-        maxB = minB + 1;
+        if (minB != 255) {
+          maxB = minB + 1;
+        } else {
+          minB = maxB - 1;
+        }
     }
+
+    if (maxR - minR < 10) {
+      minR = MAX(0, minR - 5);
+      maxR = MIN(255, maxR + 5);
+    }
+
+    if (maxG - minG < 10) {
+      minG = MAX(0, minG - 5);
+      maxG = MIN(255, maxG + 5);
+    }
+
+    if (maxB - minB < 10) {
+      minB = MAX(0, minB - 5);
+      maxB = MIN(255, maxB + 5);
+    }
+
+    int min = MIN(MIN(minR, minG), minB);
+    int max = MAX(MAX(maxR, maxG), maxB);
+
+    __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "minR = %d, minG = %d, minB = %d", minR, minG, minB);
+    __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "maxR = %d, maxG = %d, maxB = %d", maxR, maxG, maxB);
 
     for (i = 0; i < numpixels * 4; i += 4) {
         src1[i] = MIN(MAX((src1[i] - minR) * 255 / (maxR - minR), 0), 255);

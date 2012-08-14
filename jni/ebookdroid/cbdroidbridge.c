@@ -226,47 +226,25 @@ JNIEXPORT void JNICALL
 
     for (i = 0; i < 256; i++) {
         if (cumulativeFreqR[i] > 5 * numpixels / 100 && minR == 0) {
-            minR = i;
+            minR = MAX(0, i - 1);
         }
         if (cumulativeFreqG[i] > 5 * numpixels / 100 && minG == 0) {
-            minG = i;
+            minG = MAX(0, i - 1);
         }
         if (cumulativeFreqB[i] > 5 * numpixels / 100 && minB == 0) {
-            minB = i;
+            minB = MAX(0, i - 1);
         }
     }
 
     for (i = 255; i >= 0; i--) {
         if (cumulativeFreqR[i] < 95 * numpixels / 100 && maxR == 0) {
-            maxR = i;
+            maxR = MIN(255, i + 1);
         }
         if (cumulativeFreqG[i] < 95 * numpixels / 100 && maxG == 0) {
-            maxG = i;
+            maxG = MIN(255, i + 1);
         }
         if (cumulativeFreqB[i] < 95 * numpixels / 100 && maxB == 0) {
-            maxB = i;
-        }
-    }
-
-    if (minR == maxR) {
-        if (minR != 255) {
-          maxR = minR + 1;
-        } else {
-          minR = maxR - 1;
-        }
-    }
-    if (minG == maxG) {
-        if (minG != 255) {
-          maxG = minG + 1;
-        } else {
-          minG = maxG - 1;
-        }
-    }
-    if (minB == maxB) {
-        if (minB != 255) {
-          maxB = minB + 1;
-        } else {
-          minB = maxB - 1;
+            maxB = MIN(255, i + 1);
         }
     }
 
@@ -288,16 +266,14 @@ JNIEXPORT void JNICALL
     int min = MIN(MIN(minR, minG), minB);
     int max = MAX(MAX(maxR, maxG), maxB);
 
-    __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "minR = %d, minG = %d, minB = %d", minR, minG, minB);
-    __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "maxR = %d, maxG = %d, maxB = %d", maxR, maxG, maxB);
+//    __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "minR = %d, minG = %d, minB = %d", minR, minG, minB);
+//    __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "maxR = %d, maxG = %d, maxB = %d", maxR, maxG, maxB);
 
     for (i = 0; i < numpixels * 4; i += 4) {
         src1[i] = MIN(MAX((src1[i] - minR) * 255 / (maxR - minR), 0), 255);
         src1[i+1] = MIN(MAX((src1[i+1] - minG) * 255 / (maxG - minG), 0), 255);
         src1[i+2] = MIN(MAX((src1[i+2] - minB) * 255 / (maxB - minB), 0), 255);
     }
-
-
 
     (*env)->ReleaseIntArrayElements(env, srcArray, src, 0);
 }

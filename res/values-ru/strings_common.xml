@@ -40,6 +40,7 @@
     <string name="list_clear_recent_mode_delete_cached_data">"Удалить все кэшированные файлы"</string>
     <string name="about_title">"О программе"</string>
     <string name="about_commmon_title">"Общая информация"</string>
+    <string name="about_fonts_title">"Шрифты"</string>
     <string name="about_license_title">"Лицензия"</string>
     <string name="about_3dparty_title">"Стороннее ПО"</string>
     <string name="about_changelog_title">"Изменения"</string>
@@ -58,6 +59,7 @@
     <string name="opds_addfeed_ok">"Добавить"</string>
     <string name="opds_addfeed_alias">"Имя:"</string>
 <!--<string name="opds_addfeed_url">"URL:"</string>-->
+    <string name="opds_addfeed_auth">"Требуется авторизация"</string>
     <string name="opds_editfeed_title">"Изменить каталог"</string>
     <string name="opds_editfeed_msg">"Введите имя и URL каталога"</string>
     <string name="opds_editfeed_ok">"Изменить"</string>
@@ -118,8 +120,7 @@
     <string name="opds_downloading_dlg_raw_type">"Неизвестный тип"</string>
     <string name="notification_file_add">"Файл добавлен в бибилиотеку"</string>
     <string name="notification_file_delete">"Файл удален из библиотеки"</string>
-
-    <string name="font_reminder_title">Внимание</string>
-    <string name="font_reminder">Начиная с версии 1.5 из программы удалены встроенные шрифты, которые использовались для отображения книг в форматах PDF и FB2. Теперь вместо них используются стандартные шрифты Андроида. Если вы хотите вернуть старые шрифты или установить новые, скачайте пакеты шрифтов с Google Play Market: &lt;ul&gt;&lt;li&gt;&lt;a href=&quot;market://details?id=org.ebookdroid.fontpack.legacy&quot;&gt;Старые шрифты&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;</string>
+    <string name="font_reminder_title">"Внимание"</string>
+    <string name="font_reminder">"Начиная с версии 1.5 из программы удалены встроенные шрифты, которые использовались для отображения книг в форматах PDF и FB2. Теперь вместо них используются стандартные шрифты Андроида. Если вы хотите вернуть старые шрифты или установить новые, скачайте пакеты шрифтов с Google Play Market: <ul><li><a href="market://details?id=org.ebookdroid.fontpack.legacy">Старые шрифты</a></li></ul>"</string>
 
 </resources>

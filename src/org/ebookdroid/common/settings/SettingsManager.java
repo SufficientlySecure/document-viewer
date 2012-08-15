@@ -32,6 +32,10 @@ public class SettingsManager {
 
     public static final LogContext LCTX = LogManager.root().lctx("SettingsManager");
 
+    public static final int INITIAL_FONTS = 1 << 0;
+
+    private static final String INITIAL_FLAGS = "initial_flags";
+
     static Context ctx;
 
     static SharedPreferences prefs;
@@ -187,10 +191,10 @@ public class SettingsManager {
         }
     }
 
-    public static void removeBookFromRecents(String path) {
+    public static void removeBookFromRecents(final String path) {
         lock.writeLock().lock();
         try {
-            BookSettings bs = bookSettings.get(path);
+            final BookSettings bs = bookSettings.get(path);
             if (bs != null) {
                 db.removeBookFromRecents(bs);
             }
@@ -414,6 +418,18 @@ public class SettingsManager {
         l.onRecentBooksChanged();
     }
 
+    public static boolean isInitialFlagsSet(final int flag) {
+        if (prefs.contains(INITIAL_FLAGS)) {
+            return (prefs.getInt(INITIAL_FLAGS, 0) & flag) == flag;
+        }
+        return false;
+    }
+
+    public static void setInitialFlags(final int flag) {
+        final int old = prefs.getInt(INITIAL_FLAGS, 0);
+        prefs.edit().putInt(INITIAL_FLAGS, old | flag).commit();
+    }
+
     private static class BookSettingsUpdate extends Thread {
 
         final AtomicBoolean run = new AtomicBoolean(true);
@@ -424,7 +440,7 @@ public class SettingsManager {
             while (run.get()) {
                 try {
                     Thread.sleep(1000);
-                } catch (InterruptedException ex) {
+                } catch (final InterruptedException ex) {
                     Thread.interrupted();
                 }
                 if (flag.compareAndSet(true, false)) {

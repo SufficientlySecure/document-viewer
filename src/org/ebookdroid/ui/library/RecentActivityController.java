@@ -32,6 +32,7 @@ import android.net.Uri;
 import android.text.Editable;
 import android.view.View;
 import android.view.Window;
+import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -42,6 +43,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.emdev.common.backup.BackupManager;
 import org.emdev.common.filesystem.FileExtensionFilter;
+import org.emdev.common.fonts.FontManager;
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
 import org.emdev.ui.AbstractActionActivity;
@@ -151,6 +153,28 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         }
 
         changeLibraryView(recent != null ? RecentActivity.VIEW_RECENT : RecentActivity.VIEW_LIBRARY);
+
+        if (!FontManager.external.hasInstalled()) {
+            if (!SettingsManager.isInitialFlagsSet(SettingsManager.INITIAL_FONTS)) {
+                SettingsManager.setInitialFlags(SettingsManager.INITIAL_FONTS);
+
+                final ActionDialogBuilder b = new ActionDialogBuilder(getManagedComponent(), this);
+                final WebView view = new WebView(getManagedComponent());
+
+                final String content = getFontsReminderText();
+                view.loadDataWithBaseURL("file:///fake/not_used", content, "text/html", "UTF-8", "");
+
+                b.setTitle(R.string.font_reminder_title);
+                b.setView(view);
+                b.setPositiveButton(android.R.string.ok, R.id.actions_no_action);
+                b.show();
+            }
+        }
+    }
+
+    protected String getFontsReminderText() {
+        final String text = getManagedComponent().getResources().getString(R.string.font_reminder);
+        return "<html><body>" + text + "</body></html>";
     }
 
     public void onRestore(final RecentActivity activity) {

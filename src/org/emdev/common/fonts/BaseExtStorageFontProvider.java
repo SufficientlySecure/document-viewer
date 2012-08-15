@@ -48,6 +48,10 @@ public class BaseExtStorageFontProvider extends AbstractCustomFontProvider {
         return null;
     }
 
+    public final boolean hasInstalled() {
+        return fontsCatalog.exists();
+    }
+
     public final File getFontFile(final FontInfo fi) {
         return fi.path.startsWith("/") ? new File(fi.path) : new File(fontsFolder, fi.path);
     }

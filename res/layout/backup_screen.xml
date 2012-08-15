@@ -7,18 +7,26 @@
         android:id="@+id/backupButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/removeBackupButton"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_margin="8dip"
+        android:layout_marginBottom="8dip"
+        android:layout_marginRight="8dip"
+        android:layout_marginTop="8dip"
+        android:maxLines="1"
         android:text="@string/dialog_backup_backup" />
 
     <Button
         android:id="@+id/restoreBackupButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/removeBackupButton"
         android:layout_alignParentRight="true"
         android:layout_below="@id/backupButton"
-        android:layout_margin="8dip"
+        android:layout_marginBottom="8dip"
+        android:layout_marginRight="8dip"
+        android:layout_marginTop="8dip"
+        android:maxLines="1"
         android:text="@string/dialog_backup_restore" />
 
     <Button
@@ -27,7 +35,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@id/restoreBackupButton"
-        android:layout_margin="8dip"
+        android:layout_marginBottom="8dip"
+        android:layout_marginRight="8dip"
+        android:layout_marginTop="8dip"
+        android:maxLines="1"
         android:text="@string/dialog_backup_remove" />
 
     <EditText
@@ -49,10 +60,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/newBackupNameEdit"
-        android:layout_toLeftOf="@id/restoreBackupButton"
-        android:clickable="true"
-        android:choiceMode="multipleChoice"
         android:layout_margin="8dip"
+        android:layout_toLeftOf="@id/restoreBackupButton"
+        android:choiceMode="multipleChoice"
+        android:clickable="true"
         android:overScrollMode="ifContentScrolls" />
 
 </RelativeLayout>

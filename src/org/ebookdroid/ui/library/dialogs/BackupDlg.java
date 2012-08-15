@@ -31,6 +31,8 @@ import org.emdev.utils.LengthUtils;
 public class BackupDlg extends Dialog implements TextWatcher, ListView.OnItemLongClickListener,
         ListView.OnItemClickListener {
 
+    private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     private final EditText newBackupNameEdit;
 
     private final Button backupButton;
@@ -40,6 +42,8 @@ public class BackupDlg extends Dialog implements TextWatcher, ListView.OnItemLon
     private final Button restoreButton;
 
     private final ListView backupsList;
+
+    private final BackupInfoAdapter adapter;
 
     private final ActionController<BackupDlg> actions = new ActionController<BackupDlg>(this);
 
@@ -93,7 +97,7 @@ public class BackupDlg extends Dialog implements TextWatcher, ListView.OnItemLon
     }
 
     private void updateControls(final String newBackupName) {
-        final int checked = backupsList.getCheckedItemPositions().size();
+        final int checked = getCheckedPositionsCount();
         backupButton.setEnabled(LengthUtils.isNotEmpty(newBackupName));
         restoreButton.setEnabled(1 == checked);
         removeButton.setEnabled(0 < checked);
@@ -109,19 +113,20 @@ public class BackupDlg extends Dialog implements TextWatcher, ListView.OnItemLon
 
     @ActionMethod(ids = R.id.restoreBackupButton)
     public void restore(final ActionEx action) {
-        final SparseBooleanArray checked = backupsList.getCheckedItemPositions();
-        if (checked != null && checked.size() == 1) {
-            final int pos = checked.keyAt(0);
-            final BackupInfo backup = adapter.getItem(pos);
-            BackupManager.restore(backup);
-            backupsList.clearChoices();
+        if (getCheckedPositionsCount() == 1) {
+            final int pos = getFirstCheckedPosition();
+            if (pos != -1) {
+                final BackupInfo backup = adapter.getItem(pos);
+                BackupManager.restore(backup);
+                backupsList.clearChoices();
+            }
         }
     }
 
     @ActionMethod(ids = R.id.removeBackupButton)
     public void remove(final ActionEx action) {
         final SparseBooleanArray checked = backupsList.getCheckedItemPositions();
-        if (checked != null && checked.size() > 0) {
+        if (checked != null) {
             for (int i = 0, n = checked.size(); i < n; i++) {
                 final int pos = checked.keyAt(i);
                 final boolean state = checked.valueAt(i);
@@ -158,9 +163,26 @@ public class BackupDlg extends Dialog implements TextWatcher, ListView.OnItemLon
         return true;
     }
 
-    private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    protected int getCheckedPositionsCount() {
+        final SparseBooleanArray checked = backupsList.getCheckedItemPositions();
+        int count = 0;
+        for (int i = 0, n = checked != null ? checked.size() : 0; i < n; i++) {
+            if (checked.valueAt(i)) {
+                count++;
+            }
+        }
+        return count;
+    }
 
-    private final BackupInfoAdapter adapter;
+    protected int getFirstCheckedPosition() {
+        final SparseBooleanArray checked = backupsList.getCheckedItemPositions();
+        for (int i = 0, n = checked != null ? checked.size() : 0; i < n; i++) {
+            if (checked.valueAt(i)) {
+                return checked.keyAt(i);
+            }
+        }
+        return -1;
+    }
 
     private static class BackupInfoAdapter extends ArrayAdapter<BackupInfo> {
 

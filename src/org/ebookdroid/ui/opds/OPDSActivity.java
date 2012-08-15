@@ -100,7 +100,7 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActiv
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
      */
     @Override
@@ -127,8 +127,8 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActiv
             final int type = ExpandableListView.getPackedPositionType(cmi.packedPosition);
             final int groupPosition = ExpandableListView.getPackedPositionGroup(cmi.packedPosition);
             final int childPosition = ExpandableListView.getPackedPositionChild(cmi.packedPosition);
-            System.out.println("OPDSActivity.onCreateContextMenu(): " + type + ", " + groupPosition + ", "
-                    + childPosition);
+//            System.out.println("OPDSActivity.onCreateContextMenu(): " + type + ", " + groupPosition + ", "
+//                    + childPosition);
             switch (type) {
                 case ExpandableListView.PACKED_POSITION_TYPE_NULL:
                     onCreateContextMenu(menu);

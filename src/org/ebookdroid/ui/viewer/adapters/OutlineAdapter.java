@@ -192,7 +192,7 @@ public class OutlineAdapter extends BaseAdapter {
 
         @Override
         public void onClick(final View v) {
-            System.out.println("btn.OnClickListener()");
+//            System.out.println("btn.OnClickListener()");
             {
                 final int position = ((Integer) v.getTag()).intValue();
                 final int id = (int) getItemId(position);

@@ -111,7 +111,7 @@ public class MultiTouchGestureDetector implements IGestureDetector {
             }
 
             if (twoFingerPress && ev.getPointerCount() < 2) {
-                System.out.println("MultiTouchGestureDetector.onTouchEvent(): up pointer");
+                // System.out.println("MultiTouchGestureDetector.onTouchEvent(): up pointer");
                 if (twoFingerMove) {
                     listener.onTwoFingerPinchEnd(calculateCenterEvent(ev));
                 } else {

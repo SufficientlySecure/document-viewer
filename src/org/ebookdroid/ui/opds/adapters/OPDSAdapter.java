@@ -297,6 +297,7 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
         return null;
     }
 
+    @SuppressWarnings("deprecation")
     protected View getItemView(final Object item, final boolean child, final View view, final ViewGroup parent) {
 
         final ViewHolder holder = BaseViewHolder.getOrCreateViewHolder(ViewHolder.class, R.layout.opdsitem, view,
@@ -306,8 +307,11 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
             final Entry entry = (Entry) item;
             holder.textView.setText(entry.title);
             if (entry.content != null) {
-                @SuppressWarnings("deprecation")
-                final String decoded = URLDecoder.decode(entry.content.content);
+                String decoded = entry.content.content;
+                try {
+                    decoded = URLDecoder.decode(entry.content.content);
+                } catch (Exception ex) {
+                }
                 holder.info.setText(Html.fromHtml(decoded));
             } else {
                 holder.info.setText("");
@@ -569,13 +573,16 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
                 return;
             }
             final String last = values[length - 1];
-            if (progressDialog == null || !progressDialog.isShowing()) {
-                progressDialog = ProgressDialog.show(context, "", last, true);
-                progressDialog.setCancelable(true);
-                progressDialog.setCanceledOnTouchOutside(true);
-                progressDialog.setOnCancelListener(this);
-            } else {
-                progressDialog.setMessage(last);
+            try {
+                if (progressDialog == null || !progressDialog.isShowing()) {
+                    progressDialog = ProgressDialog.show(context, "", last, true);
+                    progressDialog.setCancelable(true);
+                    progressDialog.setCanceledOnTouchOutside(true);
+                    progressDialog.setOnCancelListener(this);
+                } else {
+                    progressDialog.setMessage(last);
+                }
+            } catch (final Throwable th) {
             }
         }
     }

@@ -3,6 +3,7 @@ package org.ebookdroid.ui.viewer.viewers;
 import org.ebookdroid.common.settings.AppSettings;
 
 import android.app.Activity;
+import android.os.Handler;
 import android.view.View;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,11 +28,16 @@ public class FullScreenCallback implements Runnable {
         if (AppSettings.current().fullScreen && AndroidVersion.is41x) {
             final long expected = time + 2000;
             final long now = System.currentTimeMillis();
-            if (now <= expected) {
-                IUIManager.instance.setFullScreenMode(activity, view, true);
-                added.set(false);
-            } else {
-                view.getHandler().postDelayed(this, expected - now);
+            if (view != null) {
+                if (now <= expected) {
+                    IUIManager.instance.setFullScreenMode(activity, view, true);
+                    added.set(false);
+                } else {
+                    Handler handler = view.getHandler();
+                    if (handler != null) {
+                        handler.postDelayed(this, expected - now);
+                    }
+                }
             }
         }
     }

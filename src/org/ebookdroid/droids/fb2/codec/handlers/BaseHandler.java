@@ -1,14 +1,22 @@
-package org.ebookdroid.droids.fb2.codec;
+package org.ebookdroid.droids.fb2.codec.handlers;
+
+import org.ebookdroid.droids.fb2.codec.ParsedContent;
 
 import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.emdev.common.fonts.data.FontStyle;
-import org.emdev.common.textmarkup.TextStyle;
 import org.emdev.common.textmarkup.JustificationMode;
+import org.emdev.common.textmarkup.MarkupElement;
 import org.emdev.common.textmarkup.RenderingStyle;
-import org.xml.sax.helpers.DefaultHandler;
+import org.emdev.common.textmarkup.TextStyle;
 
-public class FB2BaseHandler extends DefaultHandler {
+public abstract class BaseHandler implements IContentHandler {
+
+    protected static final Pattern notesPattern = Pattern.compile("n([0-9]+)|n_([0-9]+)|note_([0-9]+)|.*?([0-9]+)");
+
+    public final ParsedContent parsedContent;
 
     protected final int[] starts = new int[10000];
 
@@ -16,13 +24,14 @@ public class FB2BaseHandler extends DefaultHandler {
 
     protected RenderingStyle crs;
 
-    private final LinkedList<RenderingStyle> renderingStates = new LinkedList<RenderingStyle>();
+    protected final LinkedList<RenderingStyle> renderingStates = new LinkedList<RenderingStyle>();
 
-    public final ParsedContent parsedContent;
-    String currentStream = null;
-    String oldStream = null;
+    protected String currentStream = null;
+    protected String oldStream = null;
 
-    public FB2BaseHandler(ParsedContent content) {
+    protected int noteId = -1;
+
+    public BaseHandler(final ParsedContent content) {
         parsedContent = content;
         currentStream = null;
         crs = new RenderingStyle(content, TextStyle.TEXT);
@@ -43,7 +52,8 @@ public class FB2BaseHandler extends DefaultHandler {
 
     protected final RenderingStyle setEpigraphStyle() {
         renderingStates.addFirst(crs);
-        crs = new RenderingStyle(parsedContent, crs, JustificationMode.Right, org.emdev.common.fonts.data.FontStyle.ITALIC);
+        crs = new RenderingStyle(parsedContent, crs, JustificationMode.Right,
+                org.emdev.common.fonts.data.FontStyle.ITALIC);
         return crs;
     }
 
@@ -85,7 +95,8 @@ public class FB2BaseHandler extends DefaultHandler {
 
     protected final RenderingStyle setTextAuthorStyle(final boolean italic) {
         renderingStates.addFirst(crs);
-        crs = new RenderingStyle(parsedContent, crs, TextStyle.TEXT, JustificationMode.Right,italic ? FontStyle.ITALIC : FontStyle.REGULAR);
+        crs = new RenderingStyle(parsedContent, crs, TextStyle.TEXT, JustificationMode.Right, italic ? FontStyle.ITALIC
+                : FontStyle.REGULAR);
         return crs;
     }
 
@@ -93,5 +104,30 @@ public class FB2BaseHandler extends DefaultHandler {
         renderingStates.addFirst(crs);
         crs = new RenderingStyle(parsedContent, crs, TextStyle.TEXT, JustificationMode.Left, FontStyle.ITALIC);
         return crs;
+    }
+
+    protected MarkupElement emptyLine(final int textSize) {
+        return crs.paint.emptyLine;
+    }
+
+    protected String getNoteId(final String noteName, final boolean bracket) {
+        final Matcher matcher = notesPattern.matcher(noteName);
+        String n = noteName;
+        if (matcher.matches()) {
+            for (int i = 1; i <= matcher.groupCount(); i++) {
+                if (matcher.group(i) != null) {
+                    noteId = Integer.parseInt(matcher.group(i));
+                    n = "" + noteId + (bracket ? ")" : "");
+                    break;
+                }
+                noteId = -1;
+            }
+        }
+        return n;
+    }
+
+    @Override
+    public boolean skipCharacters() {
+        return false;
     }
 }

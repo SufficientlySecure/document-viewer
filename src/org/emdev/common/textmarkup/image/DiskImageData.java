@@ -37,6 +37,14 @@ public class DiskImageData extends AbstractImageData implements Runnable {
     }
 
     @Override
+    public void recycle() {
+        MemoryImageData data = cachedData.getAndSet(null);
+        if (data != null) {
+            data.recycle();
+        }
+    }
+
+    @Override
     protected Options getImageSize() {
         return imageSize;
     }

@@ -3,110 +3,113 @@ package org.ebookdroid.droids.fb2.codec;
 import java.util.Arrays;
 import java.util.HashMap;
 
-final class FB2Tag {
-	public static final byte UNKNOWN = 0;
-	public static final byte P = 1;
-	public static final byte V = 2;
-	public static final byte SUBTITLE = 3;
-	public static final byte TEXT_AUTHOR = 4;
-	public static final byte DATE = 5;
-	public static final byte CITE = 6;
-	public static final byte SECTION = 7;
-	public static final byte POEM = 8;
-	public static final byte STANZA = 9;
-	public static final byte EPIGRAPH = 10;
-	public static final byte ANNOTATION = 11;
-	public static final byte COVERPAGE = 12;
-	public static final byte A = 13;
-	public static final byte EMPTY_LINE = 14;
-	public static final byte SUP = 15;
-	public static final byte SUB = 16;
-	public static final byte EMPHASIS = 17;
-	public static final byte STRONG = 18;
-	public static final byte CODE = 19;
-	public static final byte STRIKETHROUGH = 20;
-	public static final byte TITLE = 21;
-	public static final byte BODY = 22;
-	public static final byte IMAGE = 23;
-	public static final byte BINARY = 24;
-	public static final byte FICTIONBOOK = 25;
+import org.emdev.utils.collections.SymbolTree;
 
-	public static final byte TITLE_INFO = 26;
-	public static final byte BOOK_TITLE = 27;
-	public static final byte AUTHOR = 28;
-	public static final byte LANG = 29;
-	public static final byte FIRST_NAME = 30;
-	public static final byte MIDDLE_NAME = 31;
-	public static final byte LAST_NAME = 32;
-	public static final byte SEQUENCE = 33;
-	public static final byte GENRE = 34;
+public enum FB2Tag {
 
-	public static final byte DESCRIPTION = 35;
-
-	public static final byte TABLE = 36;
-    public static final byte TR = 37;
-    public static final byte TD = 38;
-    public static final byte TH = 39;
-
-    public static final FB2Tag unknownTag;
+    /** **/
+    UNKNOWN("unknown", FB2TagId.UNKNOWN, true, false),
+    /** **/
+    P("p", FB2TagId.P, true, true),
+    /** **/
+    V("v", FB2TagId.V, true, true),
+    /** **/
+    SUBTITLE("subtitle", FB2TagId.SUBTITLE, true, true),
+    /** **/
+    TEXT_AUTHOR("text-author", FB2TagId.TEXT_AUTHOR, true, true),
+    /** **/
+    DATE("date", FB2TagId.DATE, true, true),
+    /** **/
+    CITE("cite", FB2TagId.CITE, true, true),
+    /** **/
+    SECTION("section", FB2TagId.SECTION, true, true, "id"),
+    /** **/
+    POEM("poem", FB2TagId.POEM, true, true),
+    /** **/
+    STANZA("stanza", FB2TagId.STANZA, true, true),
+    /** **/
+    EPIGRAPH("epigraph", FB2TagId.EPIGRAPH, true, true),
+    /** **/
+    ANNOTATION("annotation", FB2TagId.ANNOTATION, true, true),
+    /** **/
+    COVERPAGE("coverpage", FB2TagId.COVERPAGE, true, true),
+    /** **/
+    A("a", FB2TagId.A, true, true, "type", "href"),
+    /** **/
+    EMPTY_LINE("empty-line", FB2TagId.EMPTY_LINE, true, true),
+    /** **/
+    SUP("sup", FB2TagId.SUP, true, true),
+    /** **/
+    SUB("sub", FB2TagId.SUB, true, true),
+    /** **/
+    EMPHASIS("emphasis", FB2TagId.EMPHASIS, true, true),
+    /** **/
+    STRONG("strong", FB2TagId.STRONG, true, true),
+    /** **/
+    CODE("code", FB2TagId.CODE, true, true),
+    /** **/
+    STRIKETHROUGH("strikethrough", FB2TagId.STRIKETHROUGH, true, true),
+    /** **/
+    TITLE("title", FB2TagId.TITLE, true, true),
+    /** **/
+    TITLE_INFO("title-info", FB2TagId.TITLE_INFO, true, true),
+    /** **/
+    BODY("body", FB2TagId.BODY, true, true, "name"),
+    /** **/
+    IMAGE("image", FB2TagId.IMAGE, true, true, "href"),
+    /** **/
+    BINARY("binary", FB2TagId.BINARY, true, true, "id"),
+    /** **/
+    FICTIONBOOK("FictionBook", FB2TagId.FICTIONBOOK, true, true),
+    /** **/
+    BOOK_TITLE("book-title", FB2TagId.BOOK_TITLE, true, true),
+    /** **/
+    SEQUENCE("sequence", FB2TagId.SEQUENCE, true, true),
+    /** **/
+    FIRST_NAME("first-name", FB2TagId.FIRST_NAME, true, true),
+    /** **/
+    MIDDLE_NAME("middle-name", FB2TagId.MIDDLE_NAME, true, true),
+    /** **/
+    LAST_NAME("last-name", FB2TagId.LAST_NAME, true, true),
+    /** **/
+    AUTHOR("author", FB2TagId.AUTHOR, true, true),
+    /** **/
+    LANG("lang", FB2TagId.LANG, true, true),
+    /** **/
+    GENRE("genre", FB2TagId.GENRE, true, true),
+    /** **/
+    DESCRIPTION("description", FB2TagId.DESCRIPTION, true, true),
+    /** **/
+    TABLE("table", FB2TagId.TABLE, true, true),
+    /** **/
+    TR("tr", FB2TagId.TR, true, true),
+    /** **/
+    TD("td", FB2TagId.TD, true, true, "align"),
+    /** **/
+    TH("th", FB2TagId.TH, true, true, "align");
 
     private static final HashMap<String, FB2Tag> tagsByName = new HashMap<String, FB2Tag>(256, 0.2f);
+    private static final SymbolTree<FB2Tag> tagsTree = new SymbolTree<FB2Tag>();
 
-	static {
-        unknownTag = addTag("unknown", UNKNOWN, true, false);
-
-        addTag("p", P, true, true);
-        addTag("v", V, true, true);
-        addTag("subtitle", SUBTITLE, true, true);
-        addTag("text-author", TEXT_AUTHOR, true, true);
-        addTag("date", DATE, true, true);
-        addTag("cite", CITE, true, true);
-        addTag("section", SECTION, true, true, "id");
-        addTag("poem", POEM, true, true);
-        addTag("stanza", STANZA, true, true);
-        addTag("epigraph", EPIGRAPH, true, true);
-        addTag("annotation", ANNOTATION, true, true);
-        addTag("coverpage", COVERPAGE, true, true);
-        addTag("a", A, true, true, "type", "href");
-        addTag("empty-line", EMPTY_LINE, true, true);
-        addTag("sup", SUP, true, true);
-        addTag("sub", SUB, true, true);
-        addTag("emphasis", EMPHASIS, true, true);
-        addTag("strong", STRONG, true, true);
-        addTag("code", CODE, true, true);
-        addTag("strikethrough", STRIKETHROUGH, true, true);
-        addTag("title", TITLE, true, true);
-        addTag("title-info", TITLE_INFO, true, true);
-        addTag("body", BODY, true, true, "name");
-        addTag("image", IMAGE, true, true, "href");
-        addTag("binary", BINARY, true, true, "id");
-        addTag("fictionbook", FICTIONBOOK, true, true);
-        addTag("book-title", BOOK_TITLE, true, true);
-        addTag("sequence", SEQUENCE, true, true);
-        addTag("first-name", FIRST_NAME, true, true);
-        addTag("middle-name", MIDDLE_NAME, true, true);
-        addTag("last-name", LAST_NAME, true, true);
-        addTag("book-title", BOOK_TITLE, true, true);
-        addTag("author", AUTHOR, true, true);
-        addTag("lang", LANG, true, true);
-        addTag("genre", GENRE, true, true);
-        addTag("description", DESCRIPTION, true, true);
-        addTag("table", TABLE, true, true);
-        addTag("tr", TR, true, true);
-        addTag("td", TD, true, true, "align");
-        addTag("th", TH, true, true, "align");
+    static {
+        for (final FB2Tag t : values()) {
+            tagsByName.put(t.name, t);
+            tagsTree.add(t, t.name);
+        }
     }
 
     public final byte tag;
     public final String name;
+    public final char[] _name;
     public final boolean processChildren;
     public final boolean processText;
     public final String[] attributes;
 
-    private FB2Tag(byte tag, String name, boolean processChildren, boolean processText, String[] attributes) {
-        super();
+    private FB2Tag(final String name, final byte tag, final boolean processChildren, final boolean processText,
+            final String... attributes) {
         this.tag = tag;
         this.name = name;
+        this._name = name.toCharArray();
         this.processChildren = processChildren;
         this.processText = processText;
         this.attributes = attributes;
@@ -116,42 +119,122 @@ final class FB2Tag {
         }
     }
 
+    @Override
     public String toString() {
         return name;
     }
 
-    public static byte getTagIdByName(String name) {
+    public static FB2Tag getTagByName(final String name) {
         FB2Tag tag = tagsByName.get(name);
         if (tag == null) {
             final String upperCaseName = name.toLowerCase().intern();
             tag = tagsByName.get(upperCaseName);
             if (tag == null) {
-                tag = unknownTag;
+                tag = UNKNOWN;
                 tagsByName.put(upperCaseName, tag);
             }
             tagsByName.put(name, tag);
         }
-        return tag.tag;
-	}
-
-    public static FB2Tag getTagByName(String name) {
-        FB2Tag tag = tagsByName.get(name);
-        if (tag == null) {
-			final String upperCaseName = name.toLowerCase().intern();
-            tag = tagsByName.get(upperCaseName);
-            if (tag == null) {
-                tag = unknownTag;
-                tagsByName.put(upperCaseName, tag);
-			}
-            tagsByName.put(name, tag);
-		}
         return tag;
-	}
+    }
 
-    private static FB2Tag addTag(String name, byte tag, boolean processChildren, boolean processText,
-            String... attributes) {
-        FB2Tag t = new FB2Tag(tag, name, processChildren, processText, attributes);
-        tagsByName.put(name, t);
-        return t;
-	}
+    public static FB2Tag getTagByName1(final char[] ch, final int start, final int length) {
+        switch (length) {
+            case 1:
+                switch (ch[start]) {
+                    case 'p':
+                        return P;
+                    case 'v':
+                        return V;
+                    case 'a':
+                        return A;
+                }
+                return UNKNOWN;
+            case 2:
+                switch (ch[start]) {
+                    case 't':
+                        switch (ch[start + 1]) {
+                            case 'r':
+                                return TR;
+                            case 'd':
+                                return TD;
+                            case 'h':
+                                return TH;
+                        }
+                        return UNKNOWN;
+                }
+                return UNKNOWN;
+            case 3:
+                if (ch[start] == 's' && ch[start + 1] == 'u') {
+                    if (ch[start + 2] == 'p') {
+                        return SUP;
+                    } else if (ch[start + 2] == 'b') {
+                        return SUB;
+                    }
+                }
+                return UNKNOWN;
+            default:
+                L1: for (final FB2Tag t : values()) {
+                    if (t._name.length == length) {
+                        for (int i = 0; i < length; i++) {
+                            if (t._name[i] != ch[start + i]) {
+                                continue L1;
+                            }
+                        }
+                        return t;
+                    }
+                }
+            case 0:
+                return UNKNOWN;
+        }
+    }
+
+    public static FB2Tag getTagByName2(final char[] ch, final int start, final int length) {
+        final FB2Tag fb2Tag = tagsTree.get(ch, start, length);
+        return fb2Tag != null ? fb2Tag : UNKNOWN;
+    }
+
+    public static FB2Tag getTagByName3(final char[] ch, final int start, final int length) {
+        switch (length) {
+            case 1:
+                switch (ch[start]) {
+                    case 'p':
+                        return P;
+                    case 'v':
+                        return V;
+                    case 'a':
+                        return A;
+                }
+                return UNKNOWN;
+            case 2:
+                switch (ch[start]) {
+                    case 't':
+                        switch (ch[start + 1]) {
+                            case 'r':
+                                return TR;
+                            case 'd':
+                                return TD;
+                            case 'h':
+                                return TH;
+                        }
+                        return UNKNOWN;
+                }
+                return UNKNOWN;
+            case 3:
+                if (ch[start] == 's' && ch[start + 1] == 'u') {
+                    if (ch[start + 2] == 'p') {
+                        return SUP;
+                    } else if (ch[start + 2] == 'b') {
+                        return SUB;
+                    }
+                }
+                return UNKNOWN;
+            default:
+                final FB2Tag t = tagsTree.get(ch, start, length);
+                return t != null ? t : UNKNOWN;
+            case 0:
+                return UNKNOWN;
+        }
+    }
+
 }

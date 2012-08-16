@@ -25,6 +25,12 @@ public class MemoryImageData extends AbstractImageData {
         return bmp;
     }
 
+    @Override
+    public void recycle() {
+        encoded = null;
+        data = null;
+    }
+
     protected byte[] getData() {
         if (data == null) {
             data = Base64.decode(encoded, Base64.DEFAULT);

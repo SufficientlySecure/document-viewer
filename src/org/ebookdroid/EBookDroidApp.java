@@ -11,8 +11,11 @@ import org.emdev.BaseDroidApp;
 import org.emdev.common.android.VMRuntimeHack;
 import org.emdev.common.backup.BackupManager;
 import org.emdev.common.fonts.FontManager;
+import org.emdev.utils.concurrent.Flag;
 
 public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeListener {
+
+    public static final Flag initialized = new Flag();
 
     /**
      * {@inheritDoc}
@@ -31,6 +34,8 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
 
         SettingsManager.addListener(this);
         onAppSettingsChanged(null, AppSettings.current(), null);
+
+        initialized.set();
     }
 
     /**

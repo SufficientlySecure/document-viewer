@@ -16,8 +16,8 @@ import android.graphics.RectF;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.emdev.common.textmarkup.TextStyle;
 import org.emdev.common.textmarkup.JustificationMode;
+import org.emdev.common.textmarkup.TextStyle;
 import org.emdev.common.textmarkup.line.AbstractLineElement;
 import org.emdev.common.textmarkup.line.Line;
 import org.emdev.common.textmarkup.line.LineFixedWhiteSpace;
@@ -56,7 +56,7 @@ public class FB2Page extends AbstractCodecPage {
     }
 
     @Override
-    public List<? extends RectF> searchText(String pattern) {
+    public List<? extends RectF> searchText(final String pattern) {
         final List<RectF> rects = new ArrayList<RectF>();
 
         final char[] charArray = pattern.toCharArray();
@@ -79,12 +79,12 @@ public class FB2Page extends AbstractCodecPage {
                 if (e instanceof TextElement) {
                     final TextElement textElement = (TextElement) e;
                     if (textElement.indexOf(pattern) != -1) {
-                        Rect bounds = new Rect();
+                        final Rect bounds = new Rect();
                         textElement.getTextBounds(bounds);
 
-
-                        rects.add(new RectF((x - 3) / FB2Page.PAGE_WIDTH, (bottom + bounds.top - 3) / FB2Page.PAGE_HEIGHT, (x + w + 3)
-                                / FB2Page.PAGE_WIDTH, (bottom + bounds.bottom + 3) / FB2Page.PAGE_HEIGHT));
+                        rects.add(new RectF((x - 3) / FB2Page.PAGE_WIDTH, (bottom + bounds.top - 3)
+                                / FB2Page.PAGE_HEIGHT, (x + w + 3) / FB2Page.PAGE_WIDTH, (bottom + bounds.bottom + 3)
+                                / FB2Page.PAGE_HEIGHT));
                     }
                 }
                 x += w;
@@ -96,6 +96,16 @@ public class FB2Page extends AbstractCodecPage {
 
     @Override
     public void recycle() {
+    }
+
+    void finalRecycle() {
+        for (final Line l : lines) {
+            l.recycle();
+        }
+        lines.clear();
+        for (final Line l : noteLines) {
+            l.recycle();
+        }
     }
 
     @Override
@@ -114,14 +124,14 @@ public class FB2Page extends AbstractCodecPage {
         paint1.setColor(Color.WHITE);
         c.drawRect(PAGE_RECT, paint1);
 
-        RectF bounds = new RectF(pageSliceBounds.left * PAGE_WIDTH, pageSliceBounds.top * PAGE_HEIGHT,
+        final RectF bounds = new RectF(pageSliceBounds.left * PAGE_WIDTH, pageSliceBounds.top * PAGE_HEIGHT,
                 pageSliceBounds.right * PAGE_WIDTH, pageSliceBounds.bottom * PAGE_HEIGHT);
 
         int y = MARGIN_Y;
         for (int i = 0, n = lines.size(); i < n; i++) {
             final Line line = lines.get(i);
-            int top = y;
-            int bottom = y + line.getHeight();
+            final int top = y;
+            final int bottom = y + line.getHeight();
             if (bounds.top < bottom && top < bounds.bottom) {
                 line.render(c, FB2Page.MARGIN_X, bottom, bounds.left, bounds.right);
             }
@@ -129,8 +139,8 @@ public class FB2Page extends AbstractCodecPage {
         }
         for (int i = 0, n = noteLines.size(); i < n; i++) {
             final Line line = noteLines.get(i);
-            int top = y;
-            int bottom = y + line.getHeight();
+            final int top = y;
+            final int bottom = y + line.getHeight();
             if (bounds.top < bottom && top < bounds.bottom) {
                 line.render(c, FB2Page.MARGIN_X, bottom, bounds.left, bounds.right);
             }

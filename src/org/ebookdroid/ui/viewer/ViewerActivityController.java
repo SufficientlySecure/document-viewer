@@ -2,6 +2,7 @@ package org.ebookdroid.ui.viewer;
 
 import org.ebookdroid.CodecType;
 import org.ebookdroid.R;
+import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.keysbinding.KeyBindingsDialog;
 import org.ebookdroid.common.keysbinding.KeyBindingsManager;
@@ -318,6 +319,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                 CacheManager.clear(E_MAIL_ATTACHMENT);
             }
             SettingsManager.removeListener(this);
+            BitmapManager.clear("on finish");
         }
     }
 

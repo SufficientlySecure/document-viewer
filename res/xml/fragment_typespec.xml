@@ -93,6 +93,14 @@
         android:summary="@string/pref_brfiletypespecificfb2_summary"
         android:title="@string/pref_brfiletypespecificfb2_title" >
 
+        <ListPreference
+            android:defaultValue="@string/pref_fb2_xmlparser_standard"
+            android:entries="@array/pref_fb2_xmlparser_entries"
+            android:entryValues="@array/pref_fb2_xmlparser_values"
+            android:key="@string/pref_fb2_xmlparser_id"
+            android:summary="@string/pref_fb2_xmlparser_summary"
+            android:title="@string/pref_fb2_xmlparser_title" />
+
         <org.emdev.ui.preference.FontPickerPreference
             android:defaultValue="@string/pref_fb2fontpack_defvalue"
             android:key="@string/pref_fb2fontpack_id"

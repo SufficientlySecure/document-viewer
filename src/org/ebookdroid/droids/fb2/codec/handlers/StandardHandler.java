@@ -1,10 +1,9 @@
-package org.ebookdroid.droids.fb2.codec;
+package org.ebookdroid.droids.fb2.codec.handlers;
 
-import android.util.SparseArray;
+import org.ebookdroid.droids.fb2.codec.FB2Tag;
+import org.ebookdroid.droids.fb2.codec.ParsedContent;
 
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.emdev.common.lang.StrBuilder;
 import org.emdev.common.textmarkup.JustificationMode;
@@ -24,53 +23,50 @@ import org.emdev.common.textmarkup.TextStyle;
 import org.emdev.common.textmarkup.Words;
 import org.emdev.common.textmarkup.line.TextElement;
 import org.emdev.utils.StringUtils;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 
-public class FB2ContentHandler extends FB2BaseHandler {
+public class StandardHandler extends BaseHandler implements IContentHandler {
 
-    private boolean documentStarted = false, documentEnded = false;
+    protected boolean documentStarted = false, documentEnded = false;
 
-    private boolean inSection = false;
+    protected boolean inSection = false;
 
-    private boolean paragraphParsing = false;
+    protected boolean paragraphParsing = false;
 
-    private boolean cover = false;
+    protected boolean cover = false;
 
-    private String tmpBinaryName = null;
-    private boolean parsingNotes = false;
-    private boolean parsingBinary = false;
-    private boolean inTitle = false;
-    private boolean inCite = false;
-    private int noteId = -1;
-    private boolean noteFirstWord = true;
+    protected String tmpBinaryName = null;
+    protected boolean parsingNotes = false;
+    protected boolean parsingBinary = false;
+    protected boolean inTitle = false;
+    protected boolean inCite = false;
+    protected boolean noteFirstWord = true;
 
-    private boolean spaceNeeded = true;
+    protected boolean spaceNeeded = true;
 
-    private static final Pattern notesPattern = Pattern.compile("n([0-9]+)|n_([0-9]+)|note_([0-9]+)|.*?([0-9]+)");
-    private final StringBuilder tmpBinaryContents = new StringBuilder(64 * 1024);
-    private final StringBuilder title = new StringBuilder();
+    protected final StringBuilder tmpBinaryContents = new StringBuilder(64 * 1024);
+    protected final StringBuilder title = new StringBuilder();
 
-    private final StrBuilder tmpTagContent = new StrBuilder(16 * 1024);
+    protected final StrBuilder tmpTagContent = new StrBuilder(16 * 1024);
 
-    final SparseArray<Words> words = new SparseArray<Words>();
+    protected int sectionLevel = -1;
 
-    int sectionLevel = -1;
+    protected boolean skipContent = true;
 
-    private boolean skipContent = true;
+    protected MarkupTable currentTable;
 
-    private MarkupTable currentTable;
+    protected boolean useUniqueTextElements;
 
-    private byte[] tagStack = new byte[10];
-    private int tagStackSize = 0;
+    public StandardHandler(final ParsedContent content) {
+        this(content, true);
+    }
 
-    public FB2ContentHandler(ParsedContent content) {
+    public StandardHandler(final ParsedContent content, final boolean useUniqueTextElements) {
         super(content);
+        this.useUniqueTextElements = useUniqueTextElements;
     }
 
     @Override
-    public void startElement(final String uri, final String localName, final String qName, final Attributes attributes)
-            throws SAXException {
+    public void startElement(final FB2Tag tag, final String... attributes) {
         spaceNeeded = true;
         final ArrayList<MarkupElement> markupStream = parsedContent.getMarkupStream(currentStream);
 
@@ -78,20 +74,8 @@ public class FB2ContentHandler extends FB2BaseHandler {
             processTagContent();
         }
 
-        final byte tag = FB2Tag.getTagIdByName(qName);
-        byte[] tmpTagStack = tagStack;
-        if (tmpTagStack.length == tagStackSize) {
-            byte[] newTagStack = new byte[tagStackSize * 2];
-            if (tagStackSize > 0) {
-                System.arraycopy(tmpTagStack, 0, newTagStack, 0, tagStackSize);
-            }
-            tmpTagStack = newTagStack;
-            tagStack = tmpTagStack;
-        }
-        tmpTagStack[tagStackSize++] = tag;
-
         switch (tag) {
-            case FB2Tag.P:
+            case P:
                 paragraphParsing = true;
                 if (!parsingNotes) {
                     if (!inTitle) {
@@ -103,23 +87,23 @@ public class FB2ContentHandler extends FB2BaseHandler {
                     }
                 }
                 break;
-            case FB2Tag.V:
+            case V:
                 paragraphParsing = true;
                 markupStream.add(crs.paint.pOffset);
                 markupStream.add(crs.paint.vOffset);
                 break;
-            case FB2Tag.BINARY:
-                tmpBinaryName = attributes.getValue("id");
+            case BINARY:
+                tmpBinaryName = attributes[0];
                 tmpBinaryContents.setLength(0);
                 parsingBinary = true;
                 break;
-            case FB2Tag.BODY:
+            case BODY:
                 if (!documentStarted && !documentEnded) {
                     documentStarted = true;
                     skipContent = false;
                     currentStream = null;
                 }
-                if ("notes".equals(attributes.getValue("name"))) {
+                if ("notes".equals(attributes[0])) {
                     if (documentStarted) {
                         documentEnded = true;
                         parsedContent.getMarkupStream(null).add(new MarkupEndDocument());
@@ -128,12 +112,13 @@ public class FB2ContentHandler extends FB2BaseHandler {
                     crs = new RenderingStyle(parsedContent, TextStyle.FOOTNOTE);
                 }
                 break;
-            case FB2Tag.SECTION:
+            case SECTION:
                 if (parsingNotes) {
-                    currentStream = attributes.getValue("id");
+                    currentStream = attributes[0];
                     if (currentStream != null) {
                         final String n = getNoteId(currentStream, true);
-                        parsedContent.getMarkupStream(currentStream).add(text(n.toCharArray(), 0, n.length(), crs));
+                        parsedContent.getMarkupStream(currentStream).add(
+                                text(n.toCharArray(), 0, n.length(), crs, true));
                         parsedContent.getMarkupStream(currentStream).add(crs.paint.fixedSpace);
                     }
                 } else {
@@ -141,7 +126,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
                     sectionLevel++;
                 }
                 break;
-            case FB2Tag.TITLE:
+            case TITLE:
                 if (!parsingNotes) {
                     setTitleStyle(!inSection ? TextStyle.MAIN_TITLE : TextStyle.SECTION_TITLE);
                     markupStream.add(crs.jm);
@@ -153,36 +138,36 @@ public class FB2ContentHandler extends FB2BaseHandler {
                 }
                 inTitle = true;
                 break;
-            case FB2Tag.CITE:
+            case CITE:
                 inCite = true;
                 setEmphasisStyle();
                 markupStream.add(emptyLine(crs.textSize));
                 markupStream.add(MarkupParagraphEnd.E);
                 break;
-            case FB2Tag.SUBTITLE:
+            case SUBTITLE:
                 paragraphParsing = true;
                 markupStream.add(setSubtitleStyle().jm);
                 markupStream.add(emptyLine(crs.textSize));
                 markupStream.add(MarkupParagraphEnd.E);
                 break;
-            case FB2Tag.TEXT_AUTHOR:
+            case TEXT_AUTHOR:
                 paragraphParsing = true;
                 markupStream.add(setTextAuthorStyle(inCite).jm);
                 markupStream.add(crs.paint.pOffset);
                 break;
-            case FB2Tag.DATE:
+            case DATE:
                 if (documentStarted && !documentEnded || parsingNotes) {
                     paragraphParsing = true;
                     markupStream.add(setTextAuthorStyle(inCite).jm);
                     markupStream.add(crs.paint.pOffset);
                 }
                 break;
-            case FB2Tag.A:
+            case A:
                 if (paragraphParsing) {
-                    if ("note".equalsIgnoreCase(attributes.getValue("type"))) {
-                        String note = attributes.getValue("href");
+                    if ("note".equalsIgnoreCase(attributes[1])) {
+                        final String note = attributes[0];
                         markupStream.add(new MarkupNote(note));
-                        String prettyNote = " " + getNoteId(note, false);
+                        final String prettyNote = " " + getNoteId(note, false);
                         markupStream.add(MarkupNoSpace._instance);
                         markupStream.add(new TextElement(prettyNote.toCharArray(), 0, prettyNote.length(),
                                 new RenderingStyle(crs, Script.SUPER)));
@@ -190,38 +175,38 @@ public class FB2ContentHandler extends FB2BaseHandler {
                     }
                 }
                 break;
-            case FB2Tag.EMPTY_LINE:
+            case EMPTY_LINE:
                 markupStream.add(emptyLine(crs.textSize));
                 markupStream.add(MarkupParagraphEnd.E);
                 break;
-            case FB2Tag.POEM:
+            case POEM:
                 markupStream.add(MarkupParagraphEnd.E);
                 markupStream.add(emptyLine(crs.textSize));
                 markupStream.add(setPoemStyle().jm);
                 break;
-            case FB2Tag.STRONG:
+            case STRONG:
                 setBoldStyle();
                 break;
-            case FB2Tag.SUP:
+            case SUP:
                 setSupStyle();
                 spaceNeeded = false;
                 break;
-            case FB2Tag.SUB:
+            case SUB:
                 setSubStyle();
                 spaceNeeded = false;
                 break;
-            case FB2Tag.STRIKETHROUGH:
+            case STRIKETHROUGH:
                 setStrikeThrough();
                 break;
-            case FB2Tag.EMPHASIS:
+            case EMPHASIS:
                 setEmphasisStyle();
                 break;
-            case FB2Tag.EPIGRAPH:
+            case EPIGRAPH:
                 markupStream.add(MarkupParagraphEnd.E);
                 markupStream.add(setEpigraphStyle().jm);
                 break;
-            case FB2Tag.IMAGE:
-                final String ref = attributes.getValue("href");
+            case IMAGE:
+                final String ref = attributes[0];
                 if (cover) {
                     parsedContent.setCover(ref);
                 } else {
@@ -236,23 +221,23 @@ public class FB2ContentHandler extends FB2BaseHandler {
                     }
                 }
                 break;
-            case FB2Tag.COVERPAGE:
+            case COVERPAGE:
                 cover = true;
                 break;
-            case FB2Tag.ANNOTATION:
+            case ANNOTATION:
                 skipContent = false;
                 break;
-            case FB2Tag.TABLE:
+            case TABLE:
                 currentTable = new MarkupTable();
                 markupStream.add(currentTable);
                 break;
-            case FB2Tag.TR:
+            case TR:
                 if (currentTable != null) {
                     currentTable.addRow();
                 }
                 break;
-            case FB2Tag.TD:
-            case FB2Tag.TH:
+            case TD:
+            case TH:
                 if (currentTable != null) {
                     final int rowCount = currentTable.getRowCount();
                     final Cell c = currentTable.new Cell();
@@ -261,7 +246,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
                             + currentTable.getColCount(rowCount - 1);
                     c.stream = streamId;
                     c.hasBackground = tag == FB2Tag.TH;
-                    final String align = attributes.getValue("align");
+                    final String align = attributes[0];
                     if ("right".equals(align)) {
                         c.align = JustificationMode.Right;
                     }
@@ -278,36 +263,22 @@ public class FB2ContentHandler extends FB2BaseHandler {
         tmpTagContent.setLength(0);
     }
 
-    private MarkupElement emptyLine(final int textSize) {
-        return crs.paint.emptyLine;
-    }
-
-    private TextElement text(final char[] ch, final int st, final int len, final RenderingStyle style) {
-        Words w = words.get(style.paint.key);
-        if (w == null) {
-            w = new Words();
-            words.append(style.paint.key, w);
-        }
-        return w.get(ch, st, len, style);
-    }
-
     @Override
-    public void endElement(final String uri, final String localName, final String qName) throws SAXException {
+    public void endElement(final FB2Tag tag) {
         if (tmpTagContent.length() > 0) {
             processTagContent();
         }
         spaceNeeded = true;
         final ArrayList<MarkupElement> markupStream = parsedContent.getMarkupStream(currentStream);
-        final byte tag = tagStack[--tagStackSize];
         switch (tag) {
-            case FB2Tag.P:
-            case FB2Tag.V:
+            case P:
+            case V:
                 if (!skipContent) {
                     markupStream.add(MarkupParagraphEnd.E);
                 }
                 paragraphParsing = false;
                 break;
-            case FB2Tag.BINARY:
+            case BINARY:
                 if (tmpBinaryContents.length() > 0) {
                     parsedContent.addImage(tmpBinaryName, tmpBinaryContents.toString());
                     tmpBinaryName = null;
@@ -315,11 +286,11 @@ public class FB2ContentHandler extends FB2BaseHandler {
                 }
                 parsingBinary = false;
                 break;
-            case FB2Tag.BODY:
+            case BODY:
                 parsingNotes = false;
                 currentStream = null;
                 break;
-            case FB2Tag.SECTION:
+            case SECTION:
                 if (parsingNotes) {
                     noteId = -1;
                     noteFirstWord = true;
@@ -331,7 +302,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
                     }
                 }
                 break;
-            case FB2Tag.TITLE:
+            case TITLE:
                 inTitle = false;
                 skipContent = false;
                 if (!parsingNotes) {
@@ -341,87 +312,114 @@ public class FB2ContentHandler extends FB2BaseHandler {
                     markupStream.add(setPrevStyle().jm);
                 }
                 break;
-            case FB2Tag.CITE:
+            case CITE:
                 inCite = false;
                 markupStream.add(emptyLine(crs.textSize));
                 markupStream.add(MarkupParagraphEnd.E);
                 markupStream.add(setPrevStyle().jm);
                 break;
-            case FB2Tag.SUBTITLE:
+            case SUBTITLE:
                 markupStream.add(MarkupParagraphEnd.E);
                 markupStream.add(emptyLine(crs.textSize));
                 markupStream.add(MarkupParagraphEnd.E);
                 markupStream.add(setPrevStyle().jm);
                 paragraphParsing = false;
                 break;
-            case FB2Tag.TEXT_AUTHOR:
-            case FB2Tag.DATE:
+            case TEXT_AUTHOR:
+            case DATE:
                 markupStream.add(MarkupParagraphEnd.E);
                 markupStream.add(setPrevStyle().jm);
                 paragraphParsing = false;
                 break;
-            case FB2Tag.STANZA:
+            case STANZA:
                 markupStream.add(emptyLine(crs.textSize));
                 markupStream.add(MarkupParagraphEnd.E);
                 break;
-            case FB2Tag.POEM:
+            case POEM:
                 markupStream.add(emptyLine(crs.textSize));
                 markupStream.add(MarkupParagraphEnd.E);
                 markupStream.add(setPrevStyle().jm);
                 break;
-            case FB2Tag.STRONG:
+            case STRONG:
                 setPrevStyle();
                 spaceNeeded = false;
                 break;
-            case FB2Tag.STRIKETHROUGH:
+            case STRIKETHROUGH:
                 setPrevStyle();
                 break;
-            case FB2Tag.SUP:
+            case SUP:
                 setPrevStyle();
                 if (markupStream.get(markupStream.size() - 1) instanceof MarkupNoSpace) {
                     markupStream.remove(markupStream.size() - 1);
                 }
                 break;
-            case FB2Tag.SUB:
+            case SUB:
                 setPrevStyle();
                 if (markupStream.get(markupStream.size() - 1) instanceof MarkupNoSpace) {
                     markupStream.remove(markupStream.size() - 1);
                 }
                 break;
-            case FB2Tag.EMPHASIS:
+            case EMPHASIS:
                 setPrevStyle();
                 spaceNeeded = false;
                 break;
-            case FB2Tag.EPIGRAPH:
+            case EPIGRAPH:
                 markupStream.add(setPrevStyle().jm);
                 break;
-            case FB2Tag.COVERPAGE:
+            case COVERPAGE:
                 cover = false;
                 break;
-            case FB2Tag.A:
+            case A:
                 if (paragraphParsing) {
                     skipContent = false;
                 }
                 break;
-            case FB2Tag.ANNOTATION:
+            case ANNOTATION:
                 skipContent = true;
                 parsedContent.getMarkupStream(null).add(MarkupEndPage.E);
                 break;
-            case FB2Tag.TABLE:
+            case TABLE:
                 currentTable = null;
                 break;
-            case FB2Tag.TD:
-            case FB2Tag.TH:
+            case TD:
+            case TH:
                 paragraphParsing = false;
                 currentStream = oldStream;
                 break;
         }
     }
 
-    private void processTagContent() {
+    @Override
+    public boolean skipCharacters() {
+        return skipContent
+                || (!(documentStarted && !documentEnded) && !paragraphParsing && !parsingBinary && !parsingNotes);
+    }
+
+    @Override
+    public void characters(final char[] ch, final int start, final int length, final boolean persistent) {
+        if (parsingBinary) {
+            tmpBinaryContents.append(ch, start, length);
+        } else {
+            if (persistent) {
+                processText(ch, start, length, persistent);
+            } else {
+                tmpTagContent.append(ch, start, length);
+            }
+        }
+    }
+
+    protected void processTagContent() {
+
         final int length = tmpTagContent.length();
         final int start = 0;
-        char[] ch = tmpTagContent.getValue();
+        final char[] ch = tmpTagContent.getValue();
+
+        processText(ch, start, length, false);
+
+        tmpTagContent.setLength(0);
+    }
+
+    protected void processText(final char[] ch, final int start, final int length, final boolean persistent) {
         if (inTitle) {
             title.append(ch, start, length);
         }
@@ -451,7 +449,7 @@ public class FB2ContentHandler extends FB2BaseHandler {
                         }
                     }
                 }
-                markupStream.add(text(ch, st, len, crs));
+                markupStream.add(text(ch, st, len, crs, persistent));
                 if (crs.script != null) {
                     markupStream.add(MarkupNoSpace._instance);
                 }
@@ -462,36 +460,21 @@ public class FB2ContentHandler extends FB2BaseHandler {
             }
             spaceNeeded = false;
         }
-        tmpTagContent.setLength(0);
     }
 
-    @Override
-    public void characters(final char[] ch, final int start, final int length) throws SAXException {
-        if (skipContent
-                || (!(documentStarted && !documentEnded) && !paragraphParsing && !parsingBinary && !parsingNotes)) {
-            return;
+    protected TextElement text(final char[] ch, final int st, final int len, final RenderingStyle style,
+            final boolean persistent) {
+        if (!useUniqueTextElements && persistent) {
+            return new TextElement(ch, st, len, style);
         }
-        if (parsingBinary) {
-            tmpBinaryContents.append(ch, start, length);
-        } else {
-            tmpTagContent.append(ch, start, length);
-        }
-    }
 
-    private String getNoteId(String noteName, boolean bracket) {
-        final Matcher matcher = notesPattern.matcher(noteName);
-        String n = noteName;
-        if (matcher.matches()) {
-            for (int i = 1; i <= matcher.groupCount(); i++) {
-                if (matcher.group(i) != null) {
-                    noteId = Integer.parseInt(matcher.group(i));
-                    n = "" + noteId + (bracket ? ")" : "");
-                    break;
-                }
-                noteId = -1;
-            }
+        Words w = parsedContent.words.get(style.paint.key);
+        if (w == null) {
+            w = new Words();
+            parsedContent.words.append(style.paint.key, w);
         }
-        return n;
+        return w.get(ch, st, len, style, persistent);
+
     }
 
 }

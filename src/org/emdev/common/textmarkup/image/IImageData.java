@@ -9,4 +9,6 @@ public interface IImageData {
     public RectF getImageRect(boolean inline);
 
     public Bitmap getBitmap();
+
+    public void recycle();
 }

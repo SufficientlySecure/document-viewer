@@ -114,6 +114,21 @@ public class StrBuilder {
         return this;
     }
 
+    /**
+     * Appends the string representation of the specified {@code char} value.
+     * The {@code char} value is converted to a string according to the rule
+     * defined by {@link String#valueOf(char)}.
+     *
+     * @param c
+     *            the {@code char} value to append.
+     * @return this builder.
+     * @see String#valueOf(char)
+     */
+    public StrBuilder append(char c) {
+        append0(c);
+        return this;
+    }
+
     final void append0(char[] chars, int offset, int length) {
 
         if ((offset | length) < 0 || offset > chars.length || chars.length - offset < length) {
@@ -126,4 +141,18 @@ public class StrBuilder {
         System.arraycopy(chars, offset, value, count, length);
         count = newCount;
     }
+
+    final void append0(char ch) {
+        if (count == value.length) {
+            enlargeBuffer(count + 1);
+        }
+        value[count++] = ch;
+    }
+
+    @Override
+    public String toString() {
+        return new String(value, 0, count);
+    }
+
+
 }

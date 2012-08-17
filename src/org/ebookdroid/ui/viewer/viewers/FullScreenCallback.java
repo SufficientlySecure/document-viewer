@@ -13,40 +13,77 @@ import org.emdev.ui.uimanager.IUIManager;
 
 public class FullScreenCallback implements Runnable {
 
-    protected final Activity activity;
-    protected final View view;
-    protected long time;
+    private static final int TIMEOUT = 2000;
+
     protected final AtomicBoolean added = new AtomicBoolean();
 
-    public FullScreenCallback(final Activity activity, final View view) {
+    protected final Activity activity;
+
+    protected final View view;
+
+    protected volatile long time;
+
+    private FullScreenCallback(final Activity activity, final View view) {
         this.activity = activity;
         this.view = view;
     }
 
+    public static FullScreenCallback get(final Activity activity, final View view) {
+        return AndroidVersion.is41x && !IUIManager.instance.isTabletUi(activity) ?
+        /* Creates full-screen callback only for phones with Android 4.1.x */
+        new FullScreenCallback(activity, view) : null;
+    }
+
     @Override
     public void run() {
-        if (AppSettings.current().fullScreen && AndroidVersion.is41x) {
-            final long expected = time + 2000;
-            final long now = System.currentTimeMillis();
+        if (!AppSettings.current().fullScreen) {
+            // System.out.println("fullScreenCallback: full-screen mode off");
+            added.set(false);
+            return;
+        }
+
+        final long now = System.currentTimeMillis();
+
+        // Check if checkFullScreenMode() was called
+        if (added.compareAndSet(false, true)) {
+            // Only adds delayed message
+            this.time = System.currentTimeMillis();
+            // System.out.println("fullScreenCallback: postDelayed(): " + TIMEOUT);
+            view.getHandler().postDelayed(this, TIMEOUT);
+            return;
+        }
+
+        // Process delayed message
+        final long expected = time + TIMEOUT;
+        if (expected <= now) {
+            // System.out.println("fullScreenCallback: setFullScreenMode()");
             if (view != null) {
-                if (now <= expected) {
-                    IUIManager.instance.setFullScreenMode(activity, view, true);
-                    added.set(false);
-                } else {
-                    Handler handler = view.getHandler();
-                    if (handler != null) {
-                        handler.postDelayed(this, expected - now);
-                    }
-                }
+                IUIManager.instance.setFullScreenMode(activity, view, true);
+            }
+            added.set(false);
+            return;
+        }
+
+        if (view != null) {
+            final Handler handler = view.getHandler();
+            if (handler != null) {
+                added.set(true);
+                final long delta = expected - now;
+                // System.out.println("fullScreenCallback: postDelayed(): " + delta);
+                handler.postDelayed(this, delta);
+                return;
             }
         }
+
+        added.set(false);
     }
 
     public void checkFullScreenMode() {
-        if (AppSettings.current().fullScreen && AndroidVersion.is41x) {
-            this.time = System.currentTimeMillis();
-            if (added.compareAndSet(false, true)) {
-                view.getHandler().postDelayed(this, 2000);
+        // System.out.println("fullScreenCallback: checkFullScreenMode()");
+        this.time = System.currentTimeMillis();
+        if (!added.get()) {
+            if (view != null) {
+                view.post(this);
             }
         }
     }

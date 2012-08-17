@@ -51,7 +51,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
         setFocusableInTouchMode(true);
 
         getHolder().addCallback(this);
-        fullScreenCallback = new FullScreenCallback(baseActivity.getActivity(), this);
+        fullScreenCallback = FullScreenCallback.get(baseActivity.getActivity(), this);
     }
 
     /**
@@ -192,9 +192,16 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
         return super.onTouchEvent(ev);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.ui.viewer.IView#checkFullScreenMode()
+     */
     @Override
     public void checkFullScreenMode() {
-        fullScreenCallback.checkFullScreenMode();
+        if (fullScreenCallback != null) {
+            fullScreenCallback.checkFullScreenMode();
+        }
     }
 
     /**

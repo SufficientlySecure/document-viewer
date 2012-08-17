@@ -105,9 +105,15 @@ public class UIManager1x implements IUIManager {
     public void onDestroy(final Activity activity) {
     }
 
+    @Override
+    public boolean isTabletUi(Activity activity) {
+        return false;
+    }
+
     private static class Data {
 
         boolean fullScreen = false;
         boolean titleVisible = true;
     }
+
 }

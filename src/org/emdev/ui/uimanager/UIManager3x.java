@@ -34,6 +34,11 @@ public class UIManager3x implements IUIManager {
 
     private static final Map<ComponentName, Data> data = new HashMap<ComponentName, Data>() {
 
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -6627308913610357179L;
+
         @Override
         public Data get(final Object key) {
             Data existing = super.get(key);
@@ -137,6 +142,11 @@ public class UIManager3x implements IUIManager {
         }
     }
 
+    @Override
+    public boolean isTabletUi(final Activity activity) {
+        return true;
+    }
+
     protected void startSystemUI(final Activity activity) {
         if (isSystemUIRunning()) {
             data.get(activity.getComponentName()).fullScreenState.set(false);
@@ -235,9 +245,11 @@ public class UIManager3x implements IUIManager {
     }
 
     private static class Data {
+
         boolean hwaEnabled = false;
         boolean fullScreen = false;
         boolean titleVisible = true;
         final AtomicBoolean fullScreenState = new AtomicBoolean();
     }
+
 }

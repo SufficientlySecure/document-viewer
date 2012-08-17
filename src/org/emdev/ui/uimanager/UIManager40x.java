@@ -1,20 +1,19 @@
 package org.emdev.ui.uimanager;
 
+import static android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.res.Configuration;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @TargetApi(14)
 public class UIManager40x implements IUIManager {
-
-    protected static final int FLAG_FULLSCREEN = WindowManager.LayoutParams.FLAG_FULLSCREEN;
 
     protected static final Map<ComponentName, Data> data = new HashMap<ComponentName, Data>() {
 
@@ -138,7 +137,8 @@ public class UIManager40x implements IUIManager {
     public void onDestroy(final Activity activity) {
     }
 
-    private boolean isTabletUi(final Activity activity) {
+    @Override
+    public boolean isTabletUi(final Activity activity) {
         final Configuration c = activity.getResources().getConfiguration();
         return 0 != (Configuration.SCREENLAYOUT_SIZE_XLARGE & c.screenLayout);
     }

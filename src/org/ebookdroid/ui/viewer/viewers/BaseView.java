@@ -55,7 +55,7 @@ public final class BaseView extends View implements IView {
         setFocusableInTouchMode(true);
 
         drawThread = new DrawThread(null);
-        fullScreenCallback = new FullScreenCallback(baseActivity.getActivity(), this);
+        fullScreenCallback = FullScreenCallback.get(baseActivity.getActivity(), this);
     }
 
     /**
@@ -188,9 +188,16 @@ public final class BaseView extends View implements IView {
         return super.onTouchEvent(ev);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.ui.viewer.IView#checkFullScreenMode()
+     */
     @Override
     public void checkFullScreenMode() {
-        fullScreenCallback.checkFullScreenMode();
+        if (fullScreenCallback != null) {
+            fullScreenCallback.checkFullScreenMode();
+        }
     }
 
     /**

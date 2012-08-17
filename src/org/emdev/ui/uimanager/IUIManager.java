@@ -49,4 +49,5 @@ public interface IUIManager {
 
     void onMenuClosed(Activity activity);
 
+    boolean isTabletUi(final Activity activity);
 }

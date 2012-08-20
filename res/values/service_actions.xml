@@ -5,6 +5,7 @@
         <item></item>
         <item>mainmenu_bookmark</item>
         <item>mainmenu_goto_page</item>
+        <item>mainmenu_search</item>
         <item>mainmenu_outline</item>
         <item>mainmenu_zoom</item>
         <item>mainmenu_nightmode</item>
@@ -24,6 +25,7 @@
         <item></item>
         <item>@string/menu_add_bookmark</item>
         <item>@string/menu_goto_page</item>
+        <item>@string/menu_searchtext</item>
         <item>@string/menu_outline</item>
         <item>@string/menu_zoom</item>
         <item>@string/menu_nightmode</item>

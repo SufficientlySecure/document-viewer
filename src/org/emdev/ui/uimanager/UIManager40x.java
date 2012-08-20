@@ -15,6 +15,9 @@ import java.util.Map;
 @TargetApi(14)
 public class UIManager40x implements IUIManager {
 
+    protected static final int STANDARD_SYS_UI_FLAGS = View.SYSTEM_UI_FLAG_LOW_PROFILE
+            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+
     protected static final Map<ComponentName, Data> data = new HashMap<ComponentName, Data>() {
 
         /**
@@ -63,7 +66,6 @@ public class UIManager40x implements IUIManager {
     public void setFullScreenMode(final Activity activity, final View view, final boolean fullScreen) {
         data.get(activity.getComponentName()).statusBarHidden = fullScreen;
         final Window w = activity.getWindow();
-        final View decorView = w.getDecorView();
 
         if (!isTabletUi(activity)) {
             if (fullScreen) {
@@ -73,17 +75,17 @@ public class UIManager40x implements IUIManager {
             }
         }
 
-        if (decorView != null) {
+        if (view != null) {
             if (fullScreen) {
-                decorView.setSystemUiVisibility(getHideSysUIFlags());
+                view.setSystemUiVisibility(getHideSysUIFlags(activity));
             } else {
-                decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+                view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
             }
         }
     }
 
-    protected int getHideSysUIFlags() {
-        return View.SYSTEM_UI_FLAG_LOW_PROFILE | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+    protected int getHideSysUIFlags(final Activity activity) {
+        return STANDARD_SYS_UI_FLAGS;
     }
 
     @Override

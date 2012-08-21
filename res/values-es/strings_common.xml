@@ -31,7 +31,7 @@
     <string name="del_bookmark_title">"Eliminar marcador"</string>
     <string name="del_bookmark_text">"¿Está seguro de querer eliminar este marcador?"</string>
     <string name="clear_recent_title">"Borrar historial reciente"</string>
-    <string name="clear_recent_text">"">"¿Está seguro de querer borrar la lista de los libros recientes?"</string>
+    <string name="clear_recent_text">"¿Está seguro de querer borrar la lista de los libros recientes?"</string>
     <string name="bookcase_shelves">"Estanterías"</string>
     <string name="recent_title">"Libros recientes"</string>
     <string name="list_clear_recent_mode_clear_recent_list">"Borrar la lista de recientes"</string>
@@ -121,6 +121,6 @@
     <string name="notification_file_add">"Archivo añadido a la biblioteca"</string>
     <string name="notification_file_delete">"Archivo eliminado de la biblioteca"</string>
 <!--<string name="font_reminder_title">"Attension"</string>-->
-<!--<string name="font_reminder">"Since version 1.5 all embedded PDF and FB2 fonts are removed and standard Android fonts are used instead of them. If you want to restore legacy fonts or install new ones, please install font package installers from Google Play Market: <ul><li><a href="market://details?id=org.ebookdroid.fontpack.legacy">Legacy fonts</a></li></ul>"</string>-->
+<!--<string name="font_reminder">"Since version 1.5 all embedded PDF and FB2 fonts are removed and standard Android fonts are used instead of them. If you want to restore legacy fonts or install new ones, please install font package installers from Google Play Market: &lt;ul&gt;&lt;li&gt;&lt;a href=&quot;market://details?id=org.ebookdroid.fontpack.legacy&quot;&gt;Legacy fonts&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;"</string>-->
 
 </resources>

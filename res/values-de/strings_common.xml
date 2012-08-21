@@ -9,8 +9,8 @@
 <!--<string name="msg_no_intent_data">"No intent data:\n%s"</string>-->
 <!--<string name="msg_unknown_intent_data_type">"Unknown intent data type:\n%s"</string>-->
 <!--<string name="msg_wrong_password">"Wrong password given…"</string>-->
-    <string name="msg_password_required">""Passwort eingeben"…"</string>
-<!--<string name="msg_unexpected_error">""Unexpected error occured:\n%s"</string>-->
+    <string name="msg_password_required">"Passwort eingeben…"</string>
+<!--<string name="msg_unexpected_error">"Unexpected error occured:\n%s"</string>-->
 <!--<string name="msg_search_text_on_page">"Searching on page %1$d…"</string>-->
 <!--<string name="msg_no_text_found">"Text not found"</string>-->
     <string name="dialog_title_goto_page">"Seite"</string>
@@ -121,6 +121,6 @@
 <!--<string name="notification_file_add">"File added to library"</string>-->
 <!--<string name="notification_file_delete">"File removed from library"</string>-->
 <!--<string name="font_reminder_title">"Attension"</string>-->
-<!--<string name="font_reminder">"Since version 1.5 all embedded PDF and FB2 fonts are removed and standard Android fonts are used instead of them. If you want to restore legacy fonts or install new ones, please install font package installers from Google Play Market: <ul><li><a href="market://details?id=org.ebookdroid.fontpack.legacy">Legacy fonts</a></li></ul>"</string>-->
+<!--<string name="font_reminder">"Since version 1.5 all embedded PDF and FB2 fonts are removed and standard Android fonts are used instead of them. If you want to restore legacy fonts or install new ones, please install font package installers from Google Play Market: &lt;ul&gt;&lt;li&gt;&lt;a href=&quot;market://details?id=org.ebookdroid.fontpack.legacy&quot;&gt;Legacy fonts&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;"</string>-->
 
 </resources>

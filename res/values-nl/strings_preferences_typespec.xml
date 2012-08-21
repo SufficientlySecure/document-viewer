@@ -5,7 +5,7 @@
     <string name="pref_brfiletypespecific_summary">"Instellingen die specifiek zijn voor het formaat"</string>
 <!--<string name="pref_brfiletypespecificdjvu_title">"DJVU"</string>-->
     <string name="pref_brfiletypespecificdjvu_summary">"Instellingen voor DJVU"</string>
-    <string name="pref_djvu_rendering_mode_title">"Weergave modus""</string>
+    <string name="pref_djvu_rendering_mode_title">"Weergave modus"</string>
     <string name="pref_djvu_rendering_mode_summary">"Weergave van pagina modus"</string>
     <string name="list_djvu_rendering_mode_0">"Kleur regime"</string>
     <string name="list_djvu_rendering_mode_1">"Zwart / Wit regime"</string>

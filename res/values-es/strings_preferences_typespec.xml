@@ -7,7 +7,7 @@
     <string name="pref_brfiletypespecificdjvu_summary">"Ajustes para DJVU"</string>
     <string name="pref_djvu_rendering_mode_title">"Modo de representación"</string>
     <string name="pref_djvu_rendering_mode_summary">"Modo de representación de la página"</string>
-    <string name="list_djvu_rendering_mode_0">""Color"</string>
+    <string name="list_djvu_rendering_mode_0">"Color"</string>
     <string name="list_djvu_rendering_mode_1">"Blanco y Negro"</string>
     <string name="list_djvu_rendering_mode_2">"Sólo el color"</string>
     <string name="list_djvu_rendering_mode_3">"Sólo la máscara"</string>

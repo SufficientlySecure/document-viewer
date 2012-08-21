@@ -3,6 +3,17 @@
 
     <string name="pref_ui_category">"Пользовательский интерфейс"</string>
     <string name="pref_ui_category_summary">"Настройки пользовательского интерфейса"</string>
+    <string name="pref_lang_title">"Язык интерфейса"</string>
+    <string name="pref_lang_summary">"Язык интерфейса (требуетсфя перезапуск)"</string>
+    <string name="list_lang_default">"Системный"</string>
+    <string name="list_lang_en">"Английский"</string>
+    <string name="list_lang_de">"Немецкий"</string>
+    <string name="list_lang_es">"Испанский"</string>
+    <string name="list_lang_fr">"Французский"</string>
+    <string name="list_lang_it">"Итальянский"</string>
+    <string name="list_lang_nl">"Голландский"</string>
+    <string name="list_lang_ru">"Русский"</string>
+    <string name="list_lang_uk">"Украинский"</string>
     <string name="pref_loadrecent_title">"Открывать последнее"</string>
     <string name="pref_loadrecent_summary">"На старте автоматически открывать последнюю книгу"</string>
     <string name="pref_confirmclose_title">"Потверждать закрытие книги"</string>

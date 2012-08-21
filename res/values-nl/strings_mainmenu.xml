@@ -2,7 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="menu_close">"Sluiten Menu"</string>
-    <string name="menu_goto_page">"Ga naar Pagina""</string>
+    <string name="menu_goto_page">"Ga naar Pagina"</string>
     <string name="menu_outline">"Inhoud"</string>
     <string name="menu_zoom">"Vergroten regime"</string>
     <string name="menu_nightmode">"Dag / Nacht regime"</string>
@@ -17,6 +17,6 @@
 <!--<string name="menu_searchbook">"Search"</string>-->
 <!--<string name="menu_searchtext">"Search"</string>-->
 <!--<string name="menu_show_options_menu">"Show options menu"</string>-->
-<!--<string name="menu_backupsettings">"Backup & Restore settings"</string>-->
+<!--<string name="menu_backupsettings">"Backup &amp; Restore settings"</string>-->
 
 </resources>

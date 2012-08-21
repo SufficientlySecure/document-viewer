@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-<!--<string name="pref_backup_category">"Backup & Restore"</string>-->
+<!--<string name="pref_backup_category">"Backup &amp; Restore"</string>-->
 <!--<string name="pref_backup_category_summary">"Backup and restore preferences"</string>-->
 <!--<string name="pref_backuponexit_title">"Auto backup on app exit"</string>-->
 <!--<string name="pref_backuponexit_summary">"Automatically backup preferences on application exit"</string>-->

@@ -7,7 +7,7 @@
     <string name="opdsnextfolder">"Prossima"</string>
     <string name="opds_feed_add">"Aggiungi"</string>
     <string name="opdsclose">"Chiudi"</string>
-<!--<string name="opds_book_download">"Download"</string>-->
+	<string name="opds_book_download">"Download"</string>
     <string name="opdsgoto">"Apri"</string>
     <string name="opds_feed_edit">"Modifica"</string>
     <string name="opds_feed_delete">"Cancella"</string>

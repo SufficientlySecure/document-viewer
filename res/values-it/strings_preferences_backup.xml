@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="pref_backup_category">"Backup e Ripristino"</string>
-    <string name="pref_backup_category_summary">"Preferenze di backup e ripristino"</string>
+    <string name="pref_backup_category">"Impostazioni di backup e ripristino"</string>
+    <string name="pref_backup_category_summary">"Preferenze delle operazioni automatiche di salvataggio e ripristino"</string>
     <string name="pref_backuponexit_title">"Backup automatico alla chiusura dell'app"</string>
     <string name="pref_backuponexit_summary">"Salva automaticamente le preferenze all'uscita dall'applicazione"</string>
     <string name="pref_backuponbookclose_title">"Backup automatico alla chiusura del libro"</string>

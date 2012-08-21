@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="pref_scroll_category">"Tocco e scorrimento"</string>
+    <string name="pref_scroll_category">"Tocchi e scorrimento"</string>
     <string name="pref_scroll_category_summary">"Modalità di scorrimento delle pagine"</string>
     <string name="pref_tapsenabled_title">"Abilita i tocchi"</string>
     <string name="pref_tapsenabled_summary">"Utilizza la configurazione dei tocchi per definire le aree attive e le rispettive azioni"</string>

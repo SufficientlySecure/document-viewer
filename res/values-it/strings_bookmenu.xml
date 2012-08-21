@@ -10,7 +10,7 @@
     <string name="bookmenu_cleardata">"Cancella cache dati"</string>
     <string name="bookmenu_deletesettings">"Rimuovi impostazioni libro"</string>
     <string name="bookmenu_filegroup">"Operazioni sui file..."</string>
-    <string name="bookmenu_copy">"Copia il libro in..."</string>
+    <string name="bookmenu_copy">"Copia libro in..."</string>
     <string name="bookmenu_rename">"Rinomina libro..."</string>
     <string name="bookmenu_move">"Sposta libro in..."</string>
     <string name="bookmenu_delete">"Cancella libro"</string>

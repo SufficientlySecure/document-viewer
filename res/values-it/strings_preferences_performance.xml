@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="pref_performance_category">"Impostazione prestazioni"</string>
-    <string name="pref_performance_category_summary">"Impostazione dei parametri che influiscono sulle prestazioni"</string>
+    <string name="pref_performance_category">"Impostazioni di elaborazione"</string>
+    <string name="pref_performance_category_summary">"Impostazione dei parametri di elaborazione che influiscono sulle prestazioni"</string>
     <string name="pref_pagesinmemory_title">"Pagine in memoria"</string>
     <string name="pref_pagesinmemory_summary">"Numero di pagine\ conservate in memoria"</string>
     <string name="pref_lowlevel_category">"Preferenze di basso livello (E' necessario ricaricare il documento per applicarle)"</string>
@@ -26,17 +26,17 @@
     <string name="pref_usenativegraphics_summary">"Usa la libreria grafica nativa di Android 2+"</string>
     <string name="pref_hwa_enabled_title">"Abilita accelerazione hardware"</string>
     <string name="pref_hwa_enabled_summary">"Selezionare se l'accelarazione hardware può essere abilitata dal visualizzatore"</string>
-    <string name="pref_bitmapsize_title">"Dimensioni della bitmap texture"</string>
+    <string name="pref_bitmapsize_title">"Dimensioni mappa di bit delle texture"</string>
     <string name="pref_bitmapsize_summary">"Imposta la dimensione dei componenti che realizzano la texture"</string>
 <!--<string name="list_bitmapsize_64">"64 * 64"</string>-->
 <!--<string name="list_bitmapsize_128">"128 * 128"</string>-->
 <!--<string name="list_bitmapsize_256">"256 * 256"</string>-->
 <!--<string name="list_bitmapsize_512">"512 * 512"</string>-->
 <!--<string name="list_bitmapsize_1024">"1024 * 1024"</string>-->
-<!--<string name="pref_bitmapfilering_enabled_title">"Texture filtering"</string>-->
-<!--<string name="pref_bitmapfilering_enabled_summary">"Enable bilinear texture filtering"</string>-->
-<!--<string name="pref_texturereuse_title">"Reuse texture bitmaps"</string>-->
-<!--<string name="pref_texturereuse_summary">"Reuse existing texture bitmaps when page part is decoded again"</string>-->
+	<string name="pref_bitmapfilering_enabled_title">"Filtro texture"</string>
+	<string name="pref_bitmapfilering_enabled_summary">"Abilita filtro bilineare per le texture"</string>
+	<string name="pref_texturereuse_title">"Riutilizza le mappe di bit delle texture"</string>
+	<string name="pref_texturereuse_summary">"Riutilizza le mappe di bit esistenti quando parte della pagine viene decodificata di nuovo"</string>
 <!--<string name="pref_bitmaphack_title">"Bitmap allocation hack"</string>-->
 <!--<string name="pref_bitmaphack_summary">"Use bitmap allocation tracking hack"</string>-->
 <!--<string name="pref_earlyrecycling_title">"Early bitmap recycling"</string>-->

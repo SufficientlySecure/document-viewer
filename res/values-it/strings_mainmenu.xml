@@ -4,19 +4,19 @@
     <string name="menu_close">"Chiudi"</string>
     <string name="menu_goto_page">"Pagina"</string>
     <string name="menu_outline">"Indice"</string>
-<!--<string name="menu_zoom">"Zoom"</string>-->
+	<string name="menu_zoom">"Zoom"</string>
     <string name="menu_nightmode">"Giorno/Notte"</string>
     <string name="menu_settings">"Impostazioni generali"</string>
-    <string name="menu_booksettings">"Impostazioni di questo libro"</string>
+    <string name="menu_booksettings">"Impostazioni libro"</string>
     <string name="menu_cleanrecent">"Svuota lista recenti"</string>
-    <string name="menu_add_bookmark">"Aggiungi segnalibro"</string>
-    <string name="menu_thumbnail">"Imposta come copertina"</string>
-    <string name="menu_about">"Informazioni su ebookDroid"</string>
-    <string name="menu_tap_configuration">"Configurazione tocco"</string>
-    <string name="menu_key_bindings">"Associazione comandi (Key bindings)"</string>
-    <string name="menu_searchbook">"Ricerca"</string>
-    <string name="menu_searchtext">"Cerca"</string>
+    <string name="menu_add_bookmark">"Inserisci segnalibro"</string>
+    <string name="menu_thumbnail">"Usa come copertina"</string>
+    <string name="menu_about">"Informazioni su EBookDroid"</string>
+    <string name="menu_tap_configuration">"Configura gesti"</string>
+    <string name="menu_key_bindings">"Configura comandi"</string>
+    <string name="menu_searchbook">"Cerca libro"</string>
+    <string name="menu_searchtext">"Cerca nel testo"</string>
     <string name="menu_show_options_menu">"Visualizza menu opzioni"</string>
-    <string name="menu_backupsettings">"Impostazioni di Backup e Ripristino"</string>
+    <string name="menu_backupsettings">"Backup e Ripristino"</string>
 
 </resources>

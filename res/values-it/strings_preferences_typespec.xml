@@ -34,8 +34,8 @@
     <string name="pref_systemfontpack">"Caratteri di default di Android"</string>
 <!--<string name="pref_brfiletypespecificfb2_title">"FB2"</string>-->
     <string name="pref_brfiletypespecificfb2_summary">"Impostazioni specifiche del formato FB2"</string>
-<!--<string name="pref_fb2_xmlparser_title">"XML parser"</string>-->
-<!--<string name="pref_fb2_xmlparser_summary">"XML parser"</string>-->
+	<string name="pref_fb2_xmlparser_title">"Parser XML"</string>
+	<string name="pref_fb2_xmlparser_summary">"Parser XML"</string>
 <!--<string name="list_fb2_xmlparser_standard">"Standard"</string>-->
 <!--<string name="list_fb2_xmlparser_vtd_ex">"VTD based"</string>-->
 <!--<string name="list_fb2_xmlparser_duckbill">"Duckbill"</string>-->

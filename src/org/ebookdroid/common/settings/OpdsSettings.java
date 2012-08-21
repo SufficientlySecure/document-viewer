@@ -64,7 +64,7 @@ public class OpdsSettings implements OpdsPreferences, IBackupAgent {
             edit.commit();
             final OpdsSettings oldSettings = current;
             current = new OpdsSettings();
-            applyOpdsSettingsChanges(oldSettings, current);
+            applySettingsChanges(oldSettings, current);
         } finally {
             SettingsManager.lock.writeLock().unlock();
         }
@@ -73,10 +73,10 @@ public class OpdsSettings implements OpdsPreferences, IBackupAgent {
     static Diff onSettingsChanged() {
         final OpdsSettings oldOpdsSettings = current;
         current = new OpdsSettings();
-        return applyOpdsSettingsChanges(oldOpdsSettings, current);
+        return applySettingsChanges(oldOpdsSettings, current);
     }
 
-    public static OpdsSettings.Diff applyOpdsSettingsChanges(final OpdsSettings oldSettings,
+    public static OpdsSettings.Diff applySettingsChanges(final OpdsSettings oldSettings,
             final OpdsSettings newSettings) {
         final OpdsSettings.Diff diff = new OpdsSettings.Diff(oldSettings, newSettings);
         final IOpdsSettingsChangeListener l = SettingsManager.listeners.getListener();

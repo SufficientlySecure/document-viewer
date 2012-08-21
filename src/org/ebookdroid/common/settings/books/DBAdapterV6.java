@@ -50,7 +50,9 @@ class DBAdapterV6 extends DBAdapterV5 {
     //
     ;
 
-    public static final String DB_BOOK_GET_ALL = "SELECT book, last_updated, doc_page, view_page, zoom, view_mode, page_align, page_animation, flags, offset_x, offset_y, contrast, exposure FROM book_settings where last_updated > 0 ORDER BY last_updated DESC";
+    public static final String DB_BOOK_GET_ALL = "SELECT book, last_updated, doc_page, view_page, zoom, view_mode, page_align, page_animation, flags, offset_x, offset_y, contrast, exposure FROM book_settings ORDER BY book ASC";
+
+    public static final String DB_BOOK_GET_RNT = "SELECT book, last_updated, doc_page, view_page, zoom, view_mode, page_align, page_animation, flags, offset_x, offset_y, contrast, exposure FROM book_settings where last_updated > 0 ORDER BY last_updated DESC";
 
     public static final String DB_BOOK_GET_ONE = "SELECT book, last_updated, doc_page, view_page, zoom, view_mode, page_align, page_animation, flags, offset_x, offset_y, contrast, exposure FROM book_settings WHERE book=?";
 
@@ -67,8 +69,13 @@ class DBAdapterV6 extends DBAdapterV5 {
     }
 
     @Override
-    public Map<String, BookSettings> getBookSettings(final boolean all) {
-        return getBookSettings(DB_BOOK_GET_ALL, all);
+    public Map<String, BookSettings> getAllBooks() {
+        return getBookSettings(DB_BOOK_GET_ALL, true);
+    }
+
+    @Override
+    public Map<String, BookSettings> getRecentBooks(final boolean all) {
+        return getBookSettings(DB_BOOK_GET_RNT, all);
     }
 
     @Override

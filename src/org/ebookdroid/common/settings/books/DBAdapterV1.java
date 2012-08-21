@@ -70,7 +70,12 @@ class DBAdapterV1 implements IDBAdapter {
     }
 
     @Override
-    public Map<String, BookSettings> getBookSettings(final boolean all) {
+    public Map<String, BookSettings> getAllBooks() {
+        return getRecentBooks(true);
+    }
+
+    @Override
+    public Map<String, BookSettings> getRecentBooks(final boolean all) {
         return getBookSettings(DB_BOOK_GET_ALL, all);
     }
 

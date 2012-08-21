@@ -59,6 +59,10 @@ public class IntegerPreferenceDefinition extends BasePreferenceDefinition<Intege
     @Override
     public void restore(final JSONObject root, final Editor edit) throws JSONException {
         final String value = root.optString(key);
-        setPreferenceValue(edit, value != null ? Integer.valueOf(value) : defValue);
+        try {
+            setPreferenceValue(edit, LengthUtils.isNotEmpty(value) ? Integer.valueOf(value) : defValue);
+        } catch (NumberFormatException ex) {
+            LCTX.e("Settings restoring error: [" + key + "] " + ex.getMessage());
+        }
     }
 }

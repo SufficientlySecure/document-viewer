@@ -18,7 +18,9 @@ interface IDBAdapter {
 
     void onDestroy(final SQLiteDatabase db);
 
-    Map<String, BookSettings> getBookSettings(final boolean all);
+    Map<String, BookSettings> getAllBooks();
+
+    Map<String, BookSettings> getRecentBooks(final boolean all);
 
     BookSettings getBookSettings(final String fileName);
 
@@ -40,5 +42,5 @@ interface IDBAdapter {
 
     boolean removeBookFromRecents(BookSettings bs);
 
-    
+
 }

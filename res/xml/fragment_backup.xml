@@ -9,21 +9,28 @@
         android:key="@string/pref_backuponexit_id"
         android:summary="@string/pref_backuponexit_summary"
         android:title="@string/pref_backuponexit_title" />
-
     <CheckBoxPreference
         android:defaultValue="@string/pref_backuponbookclose_defvalue"
         android:key="@string/pref_backuponbookclose_id"
         android:summary="@string/pref_backuponbookclose_summary"
         android:title="@string/pref_backuponbookclose_title" />
 
-        <EditTextPreference
-            android:maxLength="3"
-            android:numeric="integer"
-            android:defaultValue="@string/pref_maxnumberofautobackups_defvalue"
-            android:key="@string/pref_maxnumberofautobackups_id"
-            ebookdroid:minValue="@string/pref_maxnumberofautobackups_minvalue"
-            ebookdroid:maxValue="@string/pref_maxnumberofautobackups_maxvalue"
-            android:summary="@string/pref_maxnumberofautobackups_summary"
-            android:title="@string/pref_maxnumberofautobackups_title" />
+    <EditTextPreference
+        android:defaultValue="@string/pref_maxnumberofautobackups_defvalue"
+        android:key="@string/pref_maxnumberofautobackups_id"
+        android:maxLength="3"
+        android:numeric="integer"
+        android:summary="@string/pref_maxnumberofautobackups_summary"
+        android:title="@string/pref_maxnumberofautobackups_title"
+        ebookdroid:maxValue="@string/pref_maxnumberofautobackups_maxvalue"
+        ebookdroid:minValue="@string/pref_maxnumberofautobackups_minvalue" />
+
+    <ListPreference
+        android:defaultValue="@string/pref_bookbackuptype_defvalue"
+        android:entries="@array/pref_bookbackuptype_entries"
+        android:entryValues="@array/pref_bookbackuptype_values"
+        android:key="@string/pref_bookbackuptype_id"
+        android:summary="@string/pref_bookbackuptype_summary"
+        android:title="@string/pref_bookbackuptype_title" />
 
 </PreferenceScreen>

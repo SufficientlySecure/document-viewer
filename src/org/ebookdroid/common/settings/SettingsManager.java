@@ -3,6 +3,7 @@ package org.ebookdroid.common.settings;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.books.DBSettingsManager;
 import org.ebookdroid.common.settings.listeners.IAppSettingsChangeListener;
+import org.ebookdroid.common.settings.listeners.IBackupSettingsChangeListener;
 import org.ebookdroid.common.settings.listeners.IBookSettingsChangeListener;
 import org.ebookdroid.common.settings.listeners.ILibSettingsChangeListener;
 import org.ebookdroid.common.settings.listeners.IOpdsSettingsChangeListener;
@@ -49,8 +50,8 @@ public class SettingsManager {
     private static BookSettings current;
 
     static ListenerProxy listeners = new ListenerProxy(IAppSettingsChangeListener.class,
-            ILibSettingsChangeListener.class, IOpdsSettingsChangeListener.class, IBookSettingsChangeListener.class,
-            IRecentBooksChangedListener.class);
+            IBackupSettingsChangeListener.class, ILibSettingsChangeListener.class, IOpdsSettingsChangeListener.class,
+            IBookSettingsChangeListener.class, IRecentBooksChangedListener.class);
 
     private static BookSettingsUpdate updateThread;
 
@@ -61,6 +62,7 @@ public class SettingsManager {
             db = new DBSettingsManager(context);
 
             AppSettings.init();
+            BackupSettings.init();
             LibSettings.init();
             OpdsSettings.init();
 
@@ -258,7 +260,7 @@ public class SettingsManager {
             if (current != null) {
                 return current;
             }
-            final Map<String, BookSettings> books = db.getBookSettings(false);
+            final Map<String, BookSettings> books = db.getRecentBooks(false);
             final BookSettings bs = books.isEmpty() ? null : books.values().iterator().next();
             if (bs != null) {
                 bookSettings.put(bs.fileName, bs);
@@ -269,11 +271,11 @@ public class SettingsManager {
         }
     }
 
-    public static Map<String, BookSettings> getAllBooksSettings() {
+    public static Map<String, BookSettings> getRecentBooks() {
         lock.writeLock().lock();
         try {
             final String fileName = current != null ? current.fileName : null;
-            final Map<String, BookSettings> books = db.getBookSettings(true);
+            final Map<String, BookSettings> books = db.getRecentBooks(true);
             bookSettings.clear();
             bookSettings.putAll(books);
             replaceCurrentBookSettings(books.get(fileName));
@@ -344,6 +346,7 @@ public class SettingsManager {
         lock.writeLock().lock();
         try {
             final AppSettings.Diff appDiff = AppSettings.onSettingsChanged();
+            BackupSettings.onSettingsChanged();
             LibSettings.onSettingsChanged();
             OpdsSettings.onSettingsChanged();
 

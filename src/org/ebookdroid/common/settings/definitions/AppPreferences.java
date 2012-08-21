@@ -221,17 +221,4 @@ public interface AppPreferences {
 
     BooleanPreferenceDefinition FB2_CACHE_IMAGES = new BooleanPreferenceDefinition(pref_fb2cacheimages_id,
             pref_fb2cacheimages_defvalue);
-
-    /* =============== Backup settings =============== */
-
-    BooleanPreferenceDefinition BACKUP_ON_EXIT = new BooleanPreferenceDefinition(pref_backuponexit_id,
-            pref_backuponexit_defvalue);
-
-    BooleanPreferenceDefinition BACKUP_ON_BOOK_CLOSE = new BooleanPreferenceDefinition(pref_backuponbookclose_id,
-            pref_backuponbookclose_defvalue);
-
-    IntegerPreferenceDefinition MAX_NUMBER_OF_AUTO_BACKUPS = new IntegerPreferenceDefinition(
-            pref_maxnumberofautobackups_id, pref_maxnumberofautobackups_defvalue, pref_maxnumberofautobackups_minvalue,
-            pref_maxnumberofautobackups_maxvalue);
-
 }

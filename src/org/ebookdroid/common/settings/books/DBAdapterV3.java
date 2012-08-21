@@ -57,7 +57,7 @@ class DBAdapterV3 extends DBAdapterV2 {
     }
 
     @Override
-    public Map<String, BookSettings> getBookSettings(final boolean all) {
+    public Map<String, BookSettings> getRecentBooks(final boolean all) {
         return getBookSettings(DB_BOOK_GET_ALL, all);
     }
 

@@ -1,5 +1,6 @@
 package org.ebookdroid.common.settings.books;
 
+import org.ebookdroid.common.settings.BackupSettings;
 import org.ebookdroid.common.settings.SettingsManager;
 
 import android.content.Context;
@@ -10,9 +11,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.emdev.common.backup.BackupManager;
 import org.emdev.common.backup.IBackupAgent;
@@ -111,7 +109,7 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter, I
     }
 
     public void switchAdapter(final SQLiteDatabase db, final IDBAdapter oldAdapter, final IDBAdapter newAdapter) {
-        final Map<String, BookSettings> bookSettings = oldAdapter.getBookSettings(true);
+        final Map<String, BookSettings> bookSettings = oldAdapter.getAllBooks();
         oldAdapter.deleteAll();
         oldAdapter.onDestroy(db);
         newAdapter.onCreate(db);
@@ -164,8 +162,13 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter, I
     }
 
     @Override
-    public Map<String, BookSettings> getBookSettings(final boolean all) {
-        return adapter.getBookSettings(all);
+    public Map<String, BookSettings> getAllBooks() {
+        return adapter.getAllBooks();
+    }
+
+    @Override
+    public Map<String, BookSettings> getRecentBooks(final boolean all) {
+        return adapter.getRecentBooks(all);
     }
 
     @Override
@@ -225,11 +228,16 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter, I
 
     @Override
     public JSONObject backup() {
+        final BookBackupType backupType = BackupSettings.current().bookBackup;
         final JSONObject root = new JSONObject();
+        if (backupType == BookBackupType.NONE) {
+            return root;
+        }
         try {
             final JSONArray books = new JSONArray();
             root.put("books", books);
-            final Map<String, BookSettings> m = getBookSettings(true);
+            final Map<String, BookSettings> m = backupType == BookBackupType.RECENT ? getRecentBooks(true)
+                    : getAllBooks();
             for (final BookSettings bs : m.values()) {
                 final JSONObject obj = bs.toJSON();
                 books.put(obj);

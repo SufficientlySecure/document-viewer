@@ -172,14 +172,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     public final boolean fb2CacheImagesOnDisk;
 
-    /* =============== Backup settings =============== */
-
-    public final boolean backupOnExit;
-
-    public final boolean backupOnBookClose;
-
-    public final int maxNumberOfAutoBackups;
-
     /* =============================================== */
 
     private AppSettings() {
@@ -257,10 +249,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         fontSize = FB2_FONT_SIZE.getPreferenceValue(prefs);
         fb2HyphenEnabled = FB2_HYPHEN.getPreferenceValue(prefs);
         fb2CacheImagesOnDisk = FB2_CACHE_IMAGES.getPreferenceValue(prefs);
-        /* =============== Backup settings =============== */
-        backupOnExit = BACKUP_ON_EXIT.getPreferenceValue(prefs);
-        backupOnBookClose = BACKUP_ON_BOOK_CLOSE.getPreferenceValue(prefs);
-        maxNumberOfAutoBackups = MAX_NUMBER_OF_AUTO_BACKUPS.getPreferenceValue(prefs);
     }
 
     /* =============== UI settings =============== */
@@ -366,10 +354,10 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
     static Diff onSettingsChanged() {
         final AppSettings oldAppSettings = current;
         current = new AppSettings();
-        return applyAppSettingsChanges(oldAppSettings, current);
+        return applySettingsChanges(oldAppSettings, current);
     }
 
-    static AppSettings.Diff applyAppSettingsChanges(final AppSettings oldSettings, final AppSettings newSettings) {
+    static AppSettings.Diff applySettingsChanges(final AppSettings oldSettings, final AppSettings newSettings) {
         final AppSettings.Diff diff = new AppSettings.Diff(oldSettings, newSettings);
         final IAppSettingsChangeListener l = SettingsManager.listeners.getListener();
         l.onAppSettingsChanged(oldSettings, newSettings, diff);

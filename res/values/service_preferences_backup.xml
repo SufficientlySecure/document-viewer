@@ -12,5 +12,22 @@
     <string translatable="false" name="pref_maxnumberofautobackups_minvalue">1</string>
     <string translatable="false" name="pref_maxnumberofautobackups_maxvalue">16</string>
 
-    
+    <string translatable="false" name="pref_bookbackuptype_id">book-backup-type</string>
+    <string translatable="false" name="pref_bookbackuptype_defvalue">Recent</string>
+    <string translatable="false" name="pref_bookbackuptype_none">None</string>
+    <string translatable="false" name="pref_bookbackuptype_recent">Recent</string>
+    <string translatable="false" name="pref_bookbackuptype_all">All</string>
+
+    <string-array name="pref_bookbackuptype_entries" translatable="false">
+        <item>@string/list_bookbackuptype_none</item>
+        <item>@string/list_bookbackuptype_recent</item>
+        <item>@string/list_bookbackuptype_all</item>
+    </string-array>
+
+    <string-array name="pref_bookbackuptype_values" translatable="false">
+        <item>@string/pref_bookbackuptype_none</item>
+        <item>@string/pref_bookbackuptype_recent</item>
+        <item>@string/pref_bookbackuptype_all</item>
+    </string-array>
+
 </resources>

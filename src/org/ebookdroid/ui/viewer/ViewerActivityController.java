@@ -7,6 +7,7 @@ import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.keysbinding.KeyBindingsDialog;
 import org.ebookdroid.common.keysbinding.KeyBindingsManager;
 import org.ebookdroid.common.settings.AppSettings;
+import org.ebookdroid.common.settings.BackupSettings;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.books.Bookmark;
@@ -328,7 +329,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
             LCTX.d("afterDestroy()");
         }
         getDocumentController().onDestroy();
-        if(finishing && AppSettings.current().backupOnBookClose) {
+        if(finishing && BackupSettings.current().backupOnBookClose) {
             BackupManager.backup();
         }
     }

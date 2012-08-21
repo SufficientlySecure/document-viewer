@@ -73,7 +73,7 @@ public class LibSettings implements LibPreferences, IBackupAgent {
                 edit.commit();
                 final LibSettings oldSettings = current;
                 current = new LibSettings();
-                applyLibSettingsChanges(oldSettings, current);
+                applySettingsChanges(oldSettings, current);
             }
         } finally {
             SettingsManager.lock.writeLock().unlock();
@@ -88,7 +88,7 @@ public class LibSettings implements LibPreferences, IBackupAgent {
             edit.commit();
             final LibSettings oldSettings = current;
             current = new LibSettings();
-            applyLibSettingsChanges(oldSettings, current);
+            applySettingsChanges(oldSettings, current);
         } finally {
             SettingsManager.lock.writeLock().unlock();
         }
@@ -97,10 +97,10 @@ public class LibSettings implements LibPreferences, IBackupAgent {
     static Diff onSettingsChanged() {
         final LibSettings oldLibSettings = current;
         current = new LibSettings();
-        return applyLibSettingsChanges(oldLibSettings, current);
+        return applySettingsChanges(oldLibSettings, current);
     }
 
-    public static LibSettings.Diff applyLibSettingsChanges(final LibSettings oldSettings, final LibSettings newSettings) {
+    public static LibSettings.Diff applySettingsChanges(final LibSettings oldSettings, final LibSettings newSettings) {
         final LibSettings.Diff diff = new LibSettings.Diff(oldSettings, newSettings);
         final ILibSettingsChangeListener l = SettingsManager.listeners.getListener();
         l.onLibSettingsChanged(oldSettings, newSettings, diff);

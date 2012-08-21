@@ -9,5 +9,10 @@
     <string name="pref_backuponbookclose_summary">"Автоматически сохранять настройки при закрытии книги"</string>
     <string name="pref_maxnumberofautobackups_title">"Число авто-бэкапов"</string>
     <string name="pref_maxnumberofautobackups_summary">"Число хранимых авто-бэкапов"</string>
+    <string name="pref_bookbackuptype_title">"Сохранение настроек книг"</string>
+    <string name="pref_bookbackuptype_summary">"Сохранение настроек книг"</string>
+    <string name="list_bookbackuptype_none">"Не сохранять"</string>
+    <string name="list_bookbackuptype_recent">"Только недавние"</string>
+    <string name="list_bookbackuptype_all">"Все"</string>
 
 </resources>

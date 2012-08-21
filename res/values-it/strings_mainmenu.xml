@@ -4,7 +4,7 @@
     <string name="menu_close">"Chiudi"</string>
     <string name="menu_goto_page">"Pagina"</string>
     <string name="menu_outline">"Indice"</string>
-	<string name="menu_zoom">"Zoom"</string>
+    <string name="menu_zoom">"Zoom"</string>
     <string name="menu_nightmode">"Giorno/Notte"</string>
     <string name="menu_settings">"Impostazioni generali"</string>
     <string name="menu_booksettings">"Impostazioni libro"</string>

@@ -33,10 +33,10 @@
 <!--<string name="list_bitmapsize_256">"256 * 256"</string>-->
 <!--<string name="list_bitmapsize_512">"512 * 512"</string>-->
 <!--<string name="list_bitmapsize_1024">"1024 * 1024"</string>-->
-	<string name="pref_bitmapfilering_enabled_title">"Filtro texture"</string>
-	<string name="pref_bitmapfilering_enabled_summary">"Abilita filtro bilineare per le texture"</string>
-	<string name="pref_texturereuse_title">"Riutilizza le mappe di bit delle texture"</string>
-	<string name="pref_texturereuse_summary">"Riutilizza le mappe di bit esistenti quando parte della pagine viene decodificata di nuovo"</string>
+    <string name="pref_bitmapfilering_enabled_title">"Filtro texture"</string>
+    <string name="pref_bitmapfilering_enabled_summary">"Abilita filtro bilineare per le texture"</string>
+    <string name="pref_texturereuse_title">"Riutilizza le mappe di bit delle texture"</string>
+    <string name="pref_texturereuse_summary">"Riutilizza le mappe di bit esistenti quando parte della pagine viene decodificata di nuovo"</string>
 <!--<string name="pref_bitmaphack_title">"Bitmap allocation hack"</string>-->
 <!--<string name="pref_bitmaphack_summary">"Use bitmap allocation tracking hack"</string>-->
 <!--<string name="pref_earlyrecycling_title">"Early bitmap recycling"</string>-->

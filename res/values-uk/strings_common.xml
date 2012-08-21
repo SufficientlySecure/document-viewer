@@ -49,8 +49,8 @@
 <!--<string name="menu_opds">"OPDS Browser"</string>-->
 <!--<string name="opds_connecting">"Connecting…"</string>-->
 <!--<string name="opds_loading_catalog">"Loading catalog…"</string>-->
-<!--<string name="opds_loading_book">"Loading book: %s/%s…"</string>-->
-<!--<string name="opds_unpacking_book">"Unpacking book: %s/%s…"</string>-->
+<!--<string name="opds_loading_book">"Loading book: %1$s/%2$s…"</string>-->
+<!--<string name="opds_unpacking_book">"Unpacking book: %1$s/%2$s…"</string>-->
 <!--<string name="opds_download_complete">"Book download complete: %s"</string>-->
 <!--<string name="opds_download_error">"Book download failed: %s"</string>-->
 <!--<string name="opds_add_new_feed">"Add new feed"</string>-->
@@ -75,11 +75,11 @@
 <!--<string name="opds_error_msg">"%s"</string>-->
 <!--<string name="opds_retry_download">"Retry"</string>-->
 <!--<string name="book_copy_start">"Copying book…"</string>-->
-<!--<string name="book_copy_progress">"Copying book: %s/%s…"</string>-->
+<!--<string name="book_copy_progress">"Copying book: %1$s/%2$s…"</string>-->
 <!--<string name="book_copy_complete">"Book copying complete: %s"</string>-->
 <!--<string name="book_copy_error">"Book copying failed: %s"</string>-->
 <!--<string name="book_move_start">"Moving book…"</string>-->
-<!--<string name="book_move_progress">"Moving book: %s/%s…"</string>-->
+<!--<string name="book_move_progress">"Moving book: %1$s/%2$s…"</string>-->
 <!--<string name="book_move_complete">"Book moving complete: %s"</string>-->
 <!--<string name="book_move_error">"Book moving failed: %s"</string>-->
 <!--<string name="book_rename_title">"Rename book"</string>-->

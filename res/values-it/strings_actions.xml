@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-<!--<string name="actions_verticalConfigScrollUp">"Scroll Up"</string>-->
-<!--<string name="actions_verticalConfigScrollDown">"Scroll Down"</string>-->
-<!--<string name="actions_quickZoom">"Quick zoom"</string>-->
+    <string name="actions_verticalConfigScrollUp">"Scorri verso l'alto"</string>
+    <string name="actions_verticalConfigScrollDown">"Scorri verso il basso"</string>
+    <string name="actions_quickZoom">"Zoom rapido"</string>
 
 </resources>

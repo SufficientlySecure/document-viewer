@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="menu_close">"Chiudere"</string>
+    <string name="menu_close">"Chiudi"</string>
     <string name="menu_goto_page">"Pagina"</string>
     <string name="menu_outline">"Indice"</string>
-    <string name="menu_zoom">"Ingrandire"</string>
+<!--<string name="menu_zoom">"Zoom"</string>-->
     <string name="menu_nightmode">"Giorno/Notte"</string>
-    <string name="menu_settings">"Tutte le impostazioni"</string>
-    <string name="menu_booksettings">"Impostazioni del libro"</string>
-    <string name="menu_cleanrecent">"Eliminare i dati"</string>
-    <string name="menu_add_bookmark">"Aggiungere il segnalibro"</string>
-    <string name="menu_thumbnail">"Scegliere come copertina"</string>
-<!--<string name="menu_about">"About"</string>-->
-<!--<string name="menu_tap_configuration">"Tap configuration"</string>-->
-<!--<string name="menu_key_bindings">"Key bindings"</string>-->
-<!--<string name="menu_searchbook">"Search"</string>-->
-<!--<string name="menu_searchtext">"Search"</string>-->
-<!--<string name="menu_show_options_menu">"Show options menu"</string>-->
-<!--<string name="menu_backupsettings">"Backup & Restore settings"</string>-->
+    <string name="menu_settings">"Impostazioni generali"</string>
+    <string name="menu_booksettings">"Impostazioni di questo libro"</string>
+    <string name="menu_cleanrecent">"Svuota lista recenti"</string>
+    <string name="menu_add_bookmark">"Aggiungi segnalibro"</string>
+    <string name="menu_thumbnail">"Imposta come copertina"</string>
+    <string name="menu_about">"Informazioni su ebookDroid"</string>
+    <string name="menu_tap_configuration">"Configurazione tocco"</string>
+    <string name="menu_key_bindings">"Associazione comandi (Key bindings)"</string>
+    <string name="menu_searchbook">"Ricerca"</string>
+    <string name="menu_searchtext">"Cerca"</string>
+    <string name="menu_show_options_menu">"Visualizza menu opzioni"</string>
+    <string name="menu_backupsettings">"Impostazioni di Backup e Ripristino"</string>
 
 </resources>

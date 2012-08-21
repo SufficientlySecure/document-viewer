@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-<!--<string name="pref_backup_category">"Backup & Restore"</string>-->
-<!--<string name="pref_backup_category_summary">"Backup and restore preferences"</string>-->
-<!--<string name="pref_backuponexit_title">"Auto backup on app exit"</string>-->
-<!--<string name="pref_backuponexit_summary">"Automatically backup preferences on application exit"</string>-->
-<!--<string name="pref_backuponbookclose_title">"Auto backup on book close"</string>-->
-<!--<string name="pref_backuponbookclose_summary">"Automatically backup preferences on book close"</string>-->
-<!--<string name="pref_maxnumberofautobackups_title">"Number of auto backups"</string>-->
-<!--<string name="pref_maxnumberofautobackups_summary">"Max number of auto backups"</string>-->
+    <string name="pref_backup_category">"Backup e Ripristino"</string>
+    <string name="pref_backup_category_summary">"Preferenze di backup e ripristino"</string>
+    <string name="pref_backuponexit_title">"Backup automatico alla chiusura dell'app"</string>
+    <string name="pref_backuponexit_summary">"Salva automaticamente le preferenze all'uscita dall'applicazione"</string>
+    <string name="pref_backuponbookclose_title">"Backup automatico alla chiusura del libro"</string>
+    <string name="pref_backuponbookclose_summary">"Salva automaticamente le preferenze alla chiusura del libro"</string>
+    <string name="pref_maxnumberofautobackups_title">"Numero di backup automatici"</string>
+    <string name="pref_maxnumberofautobackups_summary">"Numero massimo di backup automatici"</string>
 
 </resources>

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-<!--<string name="opdsupfolder">"Up"</string>-->
-<!--<string name="opdsrefreshfolder">"Refresh"</string>-->
-<!--<string name="opdsprevfolder">"Prev section"</string>-->
-<!--<string name="opdsnextfolder">"Next section"</string>-->
-<!--<string name="opds_feed_add">"Add"</string>-->
-<!--<string name="opdsclose">"Close"</string>-->
+    <string name="opdsupfolder">"Su"</string>
+    <string name="opdsrefreshfolder">"Aggiorna"</string>
+    <string name="opdsprevfolder">"Precedente"</string>
+    <string name="opdsnextfolder">"Prossima"</string>
+    <string name="opds_feed_add">"Aggiungi"</string>
+    <string name="opdsclose">"Chiudi"</string>
 <!--<string name="opds_book_download">"Download"</string>-->
-<!--<string name="opdsgoto">"Open"</string>-->
-<!--<string name="opds_feed_edit">"Edit"</string>-->
-<!--<string name="opds_feed_delete">"Delete"</string>-->
+    <string name="opdsgoto">"Apri"</string>
+    <string name="opds_feed_edit">"Modifica"</string>
+    <string name="opds_feed_delete">"Cancella"</string>
 
 </resources>

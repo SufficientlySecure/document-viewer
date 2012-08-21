@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="pref_browser_category">"Visione dei files"</string>
-    <string name="pref_browser_category_summary">"Impostazioni del browser e il supporto dei files"</string>
-    <string name="pref_usebookcase_title">"Utilizzare la libreria"</string>
-    <string name="pref_usebookcase_summary">"Utilizzare la libreria con le copertine al posto degli elenchi"</string>
-    <string name="pref_brautoscandir_title">"Catalogo per fare scansioni"</string>
-    <string name="pref_brautoscandir_summary">"Catalogo per una scansione automatica"</string>
-    <string name="pref_brbrfiletypesscreen_title">"Tipi dei files"</string>
-    <string name="pref_brbrfiletypesscreen_summary">"Tipi dei files da visualizzare"</string>
+    <string name="pref_browser_category">"Visualizza file"</string>
+    <string name="pref_browser_category_summary">"Impostazioni del browser e gestione dei file"</string>
+    <string name="pref_usebookcase_title">"Utilizza libreria"</string>
+    <string name="pref_usebookcase_summary">"Utilizza la libreria con le copertine al posto degli elenchi"</string>
+    <string name="pref_brautoscandir_title">"Scandisci directory"</string>
+    <string name="pref_brautoscandir_summary">"Effettua una scansione automatica della directory alla ricerca di documenti in formato conosciuto"</string>
+    <string name="pref_brbrfiletypesscreen_title">"Tipi di file"</string>
+    <string name="pref_brbrfiletypesscreen_summary">"Associazione dei tipi di file"</string>
 <!--<string name="pref_brfiletypedjvu_title">".djvu"</string>-->
-    <string name="pref_brfiletypedjvu_summary">"Vusualizzare files DjVu"</string>
+    <string name="pref_brfiletypedjvu_summary">"Visualizza file DjVu"</string>
 <!--<string name="pref_brfiletypedjv_title">".djv"</string>-->
-    <string name="pref_brfiletypedjv_summary">"Visualizzare files DjVu "</string>
+    <string name="pref_brfiletypedjv_summary">"Visualizza file DjVu "</string>
 <!--<string name="pref_brfiletypepdf_title">".pdf"</string>-->
-    <string name="pref_brfiletypepdf_summary">" Visualizzare files  PDF"</string>
+    <string name="pref_brfiletypepdf_summary">" Visualizza file PDF"</string>
 <!--<string name="pref_brfiletypexps_title">".xps"</string>-->
-    <string name="pref_brfiletypexps_summary">" Visualizzare files XPS"</string>
+    <string name="pref_brfiletypexps_summary">" Visualizza file XPS"</string>
 <!--<string name="pref_brfiletypeoxps_title">".oxps"</string>-->
-    <string name="pref_brfiletypeoxps_summary">" Visualizzare files  OXPS"</string>
+    <string name="pref_brfiletypeoxps_summary">" Visualizza file OXPS"</string>
 <!--<string name="pref_brfiletypecbz_title">".cbz"</string>-->
-    <string name="pref_brfiletypecbz_summary">" Visualizzare files  CBZ"</string>
+    <string name="pref_brfiletypecbz_summary">" Visualizza file CBZ"</string>
 <!--<string name="pref_brfiletypecbr_title">".cbr"</string>-->
-    <string name="pref_brfiletypecbr_summary">" Visualizzare files  CBR"</string>
+    <string name="pref_brfiletypecbr_summary">" Visualizza file CBR"</string>
 <!--<string name="pref_brfiletypefb2_title">".fb2"</string>-->
-    <string name="pref_brfiletypefb2_summary">" Visualizzare files  FB2"</string>
+    <string name="pref_brfiletypefb2_summary">" Visualizza file FB2"</string>
 <!--<string name="pref_brfiletypefb2.zip_title">".fb2.zip"</string>-->
-    <string name="pref_brfiletypefb2.zip_summary">" Visualizzare files FB2.ZIP"</string>
+    <string name="pref_brfiletypefb2.zip_summary">" Visualizza file FB2.ZIP"</string>
 
 </resources>

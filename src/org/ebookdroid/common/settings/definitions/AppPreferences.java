@@ -20,6 +20,9 @@ public interface AppPreferences {
 
     /* =============== UI settings =============== */
 
+    StringPreferenceDefinition LANG = new StringPreferenceDefinition(pref_lang_id,
+            pref_lang_defvalue);
+
     BooleanPreferenceDefinition LOAD_RECENT = new BooleanPreferenceDefinition(pref_loadrecent_id,
             pref_loadrecent_defvalue);
 

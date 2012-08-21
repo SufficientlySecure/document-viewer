@@ -57,5 +57,7 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
         BitmapManager.setUseBitmapHack(newSettings.useBitmapHack);
 
         BackupManager.setMaxNumberOfAutoBackups(newSettings.maxNumberOfAutoBackups);
+
+        setAppLocale(newSettings.lang);
     }
 }

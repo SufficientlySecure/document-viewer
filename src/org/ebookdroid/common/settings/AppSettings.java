@@ -19,6 +19,7 @@ import android.content.SharedPreferences.Editor;
 import org.emdev.common.backup.BackupManager;
 import org.emdev.common.backup.IBackupAgent;
 import org.emdev.common.settings.backup.SettingsBackupHelper;
+import org.emdev.utils.CompareUtils;
 import org.json.JSONObject;
 
 public class AppSettings implements AppPreferences, BookPreferences, IBackupAgent {
@@ -28,6 +29,8 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
     private static AppSettings current;
 
     /* =============== UI settings =============== */
+
+    public final String lang;
 
     public final boolean loadRecent;
 
@@ -183,6 +186,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         BackupManager.addAgent(this);
         final SharedPreferences prefs = SettingsManager.prefs;
         /* =============== UI settings =============== */
+        lang = LANG.getPreferenceValue(prefs);
         loadRecent = LOAD_RECENT.getPreferenceValue(prefs);
         confirmClose = CONFIRM_CLOSE.getPreferenceValue(prefs);
         brightnessInNightModeOnly = BRIGHTNESS_NIGHT_MODE_ONLY.getPreferenceValue(prefs);
@@ -390,6 +394,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     public static class Diff {
 
+        private static final int D_Lang = 0x0001 << 0;
         private static final int D_Rotation = 0x0001 << 1;
         private static final int D_FullScreen = 0x0001 << 2;
         private static final int D_ShowTitle = 0x0001 << 3;
@@ -416,6 +421,9 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
             if (firstTime) {
                 mask = 0xFFFFFFFF;
             } else if (news != null) {
+                if (CompareUtils.compare(olds.lang, news.lang) != 0) {
+                    mask |= D_Lang;
+                }
                 if (olds.rotation != news.rotation) {
                     mask |= D_Rotation;
                 }
@@ -463,6 +471,10 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
         public boolean isFirstTime() {
             return firstTime;
+        }
+
+        public boolean isLangChanged() {
+            return 0 != (mask & D_Lang);
         }
 
         public boolean isRotationChanged() {

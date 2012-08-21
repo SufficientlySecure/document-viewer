@@ -5,6 +5,14 @@
     android:summary="@string/pref_ui_category_summary"
     android:title="@string/pref_ui_category" >
 
+    <ListPreference
+            android:defaultValue="@string/pref_lang_default"
+            android:entries="@array/pref_lang_entries"
+            android:entryValues="@array/pref_lang_values"
+            android:key="@string/pref_lang_id"
+            android:summary="@string/pref_lang_summary"
+            android:title="@string/pref_lang_title" />
+
     <CheckBoxPreference
             android:defaultValue="@string/pref_loadrecent_defvalue"
             android:key="@string/pref_loadrecent_id"

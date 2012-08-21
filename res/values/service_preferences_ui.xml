@@ -1,6 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
+    <string name="pref_lang_id" translatable="false">lang</string>
+    <string name="pref_lang_defvalue" translatable="false">""</string>
+    <string name="pref_lang_default" translatable="false">""</string>
+    <string name="pref_lang_en" translatable="false">"en"</string>
+    <string name="pref_lang_de" translatable="false">"de"</string>
+    <string name="pref_lang_es" translatable="false">"es"</string>
+    <string name="pref_lang_fr" translatable="false">"fr"</string>
+    <string name="pref_lang_it" translatable="false">"it"</string>
+    <string name="pref_lang_nl" translatable="false">"nl"</string>
+    <string name="pref_lang_ru" translatable="false">"ru"</string>
+    <string name="pref_lang_uk" translatable="false">"uk"</string>
+
+<!--
+Order according to application statistics from Market:
+
+Russian (Russia)			115,004	59.43 %
+English (United States)		26,558	13.72 %
+English (United Kingdom)	9,109	 4.71 %
+German (Germany)			4,247	 2.19 %
+Spanish (Spain)				3,630	 1.88 %
+Russian (Ukraine)			2,382	 1.23 %
+Portuguese (Brazil)			2,204	 1.14 %
+French (France)				2,150	 1.11 %
+Italian (Italy)				1,738	 0.90 %
+Others						26,479	13.68 %
+ -->
+
+    <string-array name="pref_lang_entries" translatable="false">
+        <item>@string/list_lang_default</item>
+        <item>@string/list_lang_ru</item>
+        <item>@string/list_lang_en</item>
+        <item>@string/list_lang_de</item>
+        <item>@string/list_lang_es</item>
+        <item>@string/list_lang_uk</item>
+        <item>@string/list_lang_fr</item>
+        <item>@string/list_lang_it</item>
+        <item>@string/list_lang_nl</item>
+    </string-array>
+
+    <string-array name="pref_lang_values" translatable="false">
+        <item>@string/pref_lang_default</item>
+        <item>@string/pref_lang_ru</item>
+        <item>@string/pref_lang_en</item>
+        <item>@string/pref_lang_de</item>
+        <item>@string/pref_lang_es</item>
+        <item>@string/pref_lang_uk</item>
+        <item>@string/pref_lang_fr</item>
+        <item>@string/pref_lang_it</item>
+        <item>@string/pref_lang_nl</item>
+    </string-array>
+
     <string translatable="false" name="pref_loadrecent_id">loadrecent</string>
     <string translatable="false" name="pref_loadrecent_defvalue">false</string>
 
@@ -130,17 +181,16 @@
 
     <string translatable="false" name="pref_current_search_highlight_id">current_search_highlight</string>
     <string translatable="false" name="pref_current_search_highlight_defvalue">0x7F007F00</string>
-    
+
     <string translatable="false" name="pref_storeGotoHistory_id">store_goto_history</string>
     <string translatable="false" name="pref_storeGotoHistory_defvalue">true</string>
-    
+
     <string translatable="false" name="pref_storeLinkGotoHistory_id">store_link_goto_history</string>
     <string translatable="false" name="pref_storeLinkGotoHistory_defvalue">true</string>
-    
+
     <string translatable="false" name="pref_storeOutlineGotoHistory_id">store_outline_goto_history</string>
     <string translatable="false" name="pref_storeOutlineGotoHistory_defvalue">true</string>
-    
+
     <string translatable="false" name="pref_storeSearchGotoHistory_id">store_search_goto_history</string>
     <string translatable="false" name="pref_storeSearchGotoHistory_defvalue">false</string>
-    
-</resources>
+    </resources>

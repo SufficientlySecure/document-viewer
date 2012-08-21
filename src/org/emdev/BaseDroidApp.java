@@ -5,17 +5,20 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Locale;
 import java.util.Properties;
 
 import org.emdev.common.android.AndroidVersion;
 import org.emdev.common.log.LogManager;
 import org.emdev.utils.FileUtils;
+import org.emdev.utils.LengthUtils;
 
 public class BaseDroidApp extends Application {
 
@@ -33,6 +36,10 @@ public class BaseDroidApp extends Application {
 
     public static String APP_NAME;
 
+    public static Locale defLocale;
+
+    private static Locale appLocale;
+
     /**
      * {@inheritDoc}
      *
@@ -49,6 +56,10 @@ public class BaseDroidApp extends Application {
 
     protected void init() {
         context = getApplicationContext();
+
+        final Configuration config = context.getResources().getConfiguration();
+        defLocale = config.locale;
+
         BUILD_PROPS = new Properties();
         try {
             BUILD_PROPS.load(new FileInputStream("/system/build.prop"));
@@ -72,6 +83,7 @@ public class BaseDroidApp extends Application {
             Log.i(APP_NAME, "App      storage dir: " + APP_STORAGE);
             Log.i(APP_NAME, "Files            dir: " + FileUtils.getAbsolutePath(getFilesDir()));
             Log.i(APP_NAME, "Cache            dir: " + FileUtils.getAbsolutePath(getCacheDir()));
+            Log.i(APP_NAME, "System locale       : " + defLocale);
 
             Log.i(APP_NAME, "VERSION     : " + AndroidVersion.VERSION);
             Log.i(APP_NAME, "BOARD       : " + Build.BOARD);
@@ -90,6 +102,14 @@ public class BaseDroidApp extends Application {
         }
     }
 
+    @Override
+    public void onConfigurationChanged(final Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (appLocale != null) {
+            setAppLocale(newConfig);
+        }
+    }
+
     protected File getAppStorage(final String appPackage) {
         File dir = EXT_STORAGE;
         if (dir != null) {
@@ -102,5 +122,23 @@ public class BaseDroidApp extends Application {
         }
         dir.mkdirs();
         return dir.getAbsoluteFile();
+    }
+
+    public static void setAppLocale(final String lang) {
+        if (LengthUtils.isNotEmpty(lang) && !getAppLocale().getLanguage().equals(lang)) {
+            final Configuration config = context.getResources().getConfiguration();
+            appLocale = new Locale(lang);
+            setAppLocale(config);
+        }
+    }
+
+    public static Locale getAppLocale() {
+        return appLocale != null ? appLocale : defLocale;
+    }
+
+    protected static void setAppLocale(final Configuration config) {
+        Locale.setDefault(appLocale);
+        config.locale = appLocale;
+        context.getResources().updateConfiguration(config, context.getResources().getDisplayMetrics());
     }
 }

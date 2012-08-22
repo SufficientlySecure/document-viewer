@@ -2,7 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="pref_render_category">"Impostazioni generali di visualizzazione"</string>
-    <string name="pref_render_category_summary">"Imposta le modalità generali di visualizzazione del testo e della pagina."</string>
+    <string name="pref_render_category_summary">"Imposta le modalità generali di visualizzazione della pagina e del testo"</string>
     <string name="pref_book_category">"Impostazioni per il libro corrente"</string>
     <string name="pref_book_category_summary">"Imposta le modalità di visualizzazione per il solo libro corrente. Queste impostazioni hanno la precedenza sulle impostazioni generali."</string>
     <string name="pref_splitpages_title">"Spezza le pagine"</string>
@@ -13,16 +13,16 @@
     <string name="pref_viewmode_summary">"Modalità di visualizzazione delle pagine"</string>
     <string name="list_viewmode_vertical_scroll">"Pagine affiancate verticalmente"</string>
     <string name="list_viewmode_horizontal_scroll">"Pagine affiancate orizzontalmente"</string>
-    <string name="list_viewmode_single_page">"Pagina intera"</string>
-    <string name="pref_singlepage_category">"Modalità di visualizzazione pagina intera"</string>
-    <string name="pref_singlepage_category_summary">"Impostazioni delle modalità di visualizzazione a pagina intera"</string>
-    <string name="pref_align_title">"Inquadramento delle pagine"</string>
-    <string name="pref_align_summary">"Modalità di inquadramento delle pagine"</string>
+    <string name="list_viewmode_single_page">"Una sola pagina"</string>
+    <string name="pref_singlepage_category">"Modalità di visualizzazione della singola pagina"</string>
+    <string name="pref_singlepage_category_summary">"Impostazioni delle modalità di visualizzazione della singola pagina"</string>
+    <string name="pref_align_title">"Adattamento delle pagine"</string>
+    <string name="pref_align_summary">"Modalità di adattamento delle pagine allo schermo"</string>
     <string name="list_align_by_width">"Adatta alla larghezza della pagina"</string>
     <string name="list_align_by_height">"Adatta all'altezza della pagina"</string>
     <string name="list_align_auto">"Adatta automaticamente"</string>
     <string name="pref_animationtype_title">"Animazione cambio pagina"</string>
-    <string name="pref_animationtype_summary">"Tipo di animazione del cambio pagina"</string>
+    <string name="pref_animationtype_summary">"Modalità di animazione del passaggio da una pagina all'altra"</string>
     <string name="list_animation_none">"Nessuna animazione"</string>
     <string name="list_animation_curler_simple">"Sfoglia - Semplice"</string>
     <string name="list_animation_curler_dynamic">"Sfoglia - Dinamica"</string>
@@ -31,7 +31,7 @@
     <string name="list_animation_fader">"Dissolvi"</string>
     <string name="list_animation_squeezer">"Comprimi"</string>
     <string name="pref_postprocessing_category">"Effetti aggiuntivi"</string>
-    <string name="pref_postprocessing_summary">"Effetti e correzioni applicati dopo il rendering della pagina"</string>
+    <string name="pref_postprocessing_summary">"Effetti e correzioni applicati successivamente al rendering della pagina"</string>
     <string name="pref_nightmode_title">"Modalità notte"</string>
     <string name="pref_nightmode_summary">"Testo bianco su sfondo nero"</string>
     <string name="pref_contrast_title">"Contrasto"</string>

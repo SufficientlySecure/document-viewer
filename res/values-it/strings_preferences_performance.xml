@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="pref_performance_category">"Impostazioni di elaborazione"</string>
+    <string name="pref_performance_category">"Impostazioni avanzate"</string>
     <string name="pref_performance_category_summary">"Impostazione dei parametri di elaborazione che influiscono sulle prestazioni"</string>
     <string name="pref_pagesinmemory_title">"Pagine in memoria"</string>
     <string name="pref_pagesinmemory_summary">"Numero di pagine\ conservate in memoria"</string>
@@ -9,14 +9,14 @@
     <string name="pref_lowlevel_category_summary">"Preferenze dell'applicazione che agiscono a basso livello. Vengono applicate alla successiva apertura del documento"</string>
     <string name="pref_docviewtype_title">"Implementazione del visualizzatore di documenti"</string>
     <string name="pref_docviewtype_summary">"Definizione classe visualizzatore"</string>
-    <string name="list_docviewtype_base">"Basato su android.view.View"</string>
-    <string name="list_docviewtype_surface">"Basato su android.view.SurfaceView"</string>
+    <string name="list_docviewtype_base">"Basata su android.view.View"</string>
+    <string name="list_docviewtype_surface">"Basata su android.view.SurfaceView"</string>
     <string name="pref_decoding_threads_title">"Thread di decodifica"</string>
-    <string name="pref_decoding_threads_summary">"Numero dei thread di decodifica"</string>
+    <string name="pref_decoding_threads_summary">"Numero dei thread per la decodifica"</string>
     <string name="pref_decodethread_priority_title">"Priorità thread di decodifica"</string>
-    <string name="pref_decodethread_priority_summary">"Impostazione della priorità del thread di decodifica"</string>
+    <string name="pref_decodethread_priority_summary">"Impostazione della priorità dei thread per la decodifica"</string>
     <string name="pref_drawthread_priority_title">"Priorità thread tracciamento superfici"</string>
-    <string name="pref_drawthread_priority_summary">"Impostazione della priorità del thread di tracciamento superfici"</string>
+    <string name="pref_drawthread_priority_summary">"Impostazione della priorità del thread per il tracciamento superfici"</string>
     <string name="list_thread_priority_lowest">"Molto bassa"</string>
     <string name="list_thread_priority_lower">"Bassa"</string>
     <string name="list_thread_priority_normal">"Normale"</string>
@@ -36,16 +36,16 @@
     <string name="pref_bitmapfilering_enabled_title">"Filtro texture"</string>
     <string name="pref_bitmapfilering_enabled_summary">"Abilita filtro bilineare per le texture"</string>
     <string name="pref_texturereuse_title">"Riutilizza le mappe di bit delle texture"</string>
-    <string name="pref_texturereuse_summary">"Riutilizza le mappe di bit esistenti quando parte della pagine viene decodificata di nuovo"</string>
+    <string name="pref_texturereuse_summary">"Riutilizza le mappe di bit esistenti quando parte della pagina viene decodificata di nuovo"</string>
 <!--<string name="pref_bitmaphack_title">"Bitmap allocation hack"</string>-->
 <!--<string name="pref_bitmaphack_summary">"Use bitmap allocation tracking hack"</string>-->
 <!--<string name="pref_earlyrecycling_title">"Early bitmap recycling"</string>-->
 <!--<string name="pref_earlyrecycling_summary">"Bitmaps are manually recycled when they are removed from pool"</string>-->
-<!--<string name="pref_reloadduringzoom_title">"Reload page during zoom"</string>-->
-<!--<string name="pref_reloadduringzoom_summary">"Reload page during zoom if zoom changed more than 20%"</string>-->
-<!--<string name="pref_heappreallocate_title">"Heap preallocation"</string>-->
-<!--<string name="pref_heappreallocate_summary">"Size in megabytes of heap preallocation at application startup"</string>-->
-<!--<string name="pref_pdfstoragesize_title">"MuPDF internal storage size"</string>-->
-<!--<string name="pref_pdfstoragesize_summary">"Size in megabytes of MuPDF internal storage"</string>-->
+    <string name="pref_reloadduringzoom_title">"Ricarica la pagina durante lo zoom"</string>
+    <string name="pref_reloadduringzoom_summary">"Se l'ingrandimento supera il 20%, ricarica la pagina durante lo zoom"</string>
+    <string name="pref_heappreallocate_title">"Prealloca l'area di heap"</string>
+    <string name="pref_heappreallocate_summary">"Dimensione in MB dell'area di heap preallocata all'avvio dell'applicazione"</string>
+    <string name="pref_pdfstoragesize_title">"Dimensione memoria interna MuPDF"</string>
+    <string name="pref_pdfstoragesize_summary">"Dimensione in MB dell'area di memoria interna MuPDF"</string>
 
 </resources>

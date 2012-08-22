@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="pref_browser_category">"Gestione dei file"</string>
+    <string name="pref_browser_category">"Visualizzazione dei file"</string>
     <string name="pref_browser_category_summary">"Impostazioni della gestione e visualizzazione di file e cartelle"</string>
     <string name="pref_usebookcase_title">"Utilizza libreria"</string>
     <string name="pref_usebookcase_summary">"Utilizza la libreria con le copertine al posto degli elenchi"</string>

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="pref_scroll_category">"Tocchi e scorrimento"</string>
-    <string name="pref_scroll_category_summary">"Modalità di scorrimento delle pagine"</string>
-    <string name="pref_tapsenabled_title">"Abilita i tocchi"</string>
-    <string name="pref_tapsenabled_summary">"Utilizza la configurazione dei tocchi per definire le aree attive e le rispettive azioni"</string>
-    <string name="pref_scroll_title">"Altezza sulla barra di scorrimento"</string>
-    <string name="pref_scroll_summary">"Imposta l’altezza sulla barra di scorrimento"</string>
-    <string name="pref_touchdelay_title">"Ritardo nell'elaborazione del tocco"</string>
+    <string name="pref_scroll_category">"Tocchi e trascinamento"</string>
+    <string name="pref_scroll_category_summary">"Definisce le modalità dell'interfaccia gestuale per il trascinamento delle pagine"</string>
+    <string name="pref_tapsenabled_title">"Rileva i tocchi"</string>
+    <string name="pref_tapsenabled_summary">"Utilizza la configurazione dei tocchi (tap) per definire le aree attive e le rispettive azioni"</string>
+    <string name="pref_scroll_title">"Altezza dell'area di trascinamento"</string>
+    <string name="pref_scroll_summary">"Imposta l’altezza dell'area attiva di trascinamento"</string>
+    <string name="pref_touchdelay_title">"Ritardo di elaborazione del tocco"</string>
     <string name="pref_touchdelay_summary">"Ritardo (in millisecondi) nell'elaborazione del tocco"</string>
-    <string name="pref_animate_scrolling_title">"Animazione dello scorrimento"</string>
-    <string name="pref_animate_scrolling_summary">"Anima lo scorrimento nelle modalità che lo consentono"</string>
+    <string name="pref_animate_scrolling_title">"Animazione del trascinamento"</string>
+    <string name="pref_animate_scrolling_summary">"Anima l'operazione di trascinamento nelle modalità che lo consentono"</string>
 
 </resources>

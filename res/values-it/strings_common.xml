@@ -2,8 +2,8 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
 <!--<string name="app_name">"EBookDroid"</string>-->
-    <string name="confirmclose_title">"Chiusura applicazione…"</string>
-    <string name="confirmclose_msg">"Sei sicuro di voler chiudere EBookDroid?"</string>
+    <string name="confirmclose_title">"Chiusura…"</string>
+    <string name="confirmclose_msg">"Sei sicuro di voler chiudere il documento?"</string>
     <string name="error_dlg_title">"Errore dell'applicazione"</string>
 <!--<string name="msg_bad_intent">"Bad intent or scheme:\n%s"</string>-->
 <!--<string name="msg_no_intent_data">"No intent data:\n%s"</string>-->
@@ -36,14 +36,14 @@
     <string name="recent_title">"Libri recenti"</string>
     <string name="list_clear_recent_mode_clear_recent_list">"Elimina l’elenco dei libri letti recentemente"</string>
     <string name="list_clear_recent_mode_delete_bookmarks">"Elimina tutti i segnalibri"</string>
-    <string name="list_clear_recent_mode_delete_book_settings">"Rimuovi le impostazioni specifiche per libri"</string>
-    <string name="list_clear_recent_mode_delete_cached_data">"Rimuovere tutti i file della cache"</string>
+    <string name="list_clear_recent_mode_delete_book_settings">"Rimuovi le impostazioni specifiche per libro"</string>
+    <string name="list_clear_recent_mode_delete_cached_data">"Rimuovi tutti i file della cache"</string>
     <string name="about_title">"Informazioni su"</string>
     <string name="about_commmon_title">"Informazioni generiche"</string>
-    <string name="about_fonts_title">"Famiglia di caratteri"</string>
+    <string name="about_fonts_title">"Famiglie di caratteri"</string>
     <string name="about_license_title">"Licenza"</string>
     <string name="about_3dparty_title">"Software di terze parti"</string>
-    <string name="about_changelog_title">"Variazioni"</string>
+    <string name="about_changelog_title">"Cronologia modifiche"</string>
     <string name="about_thanks_title">"Ringraziamenti"</string>
     <string name="opds">"Browser OPDS"</string>
     <string name="menu_opds">"Browser OPDS"</string>
@@ -81,7 +81,7 @@
     <string name="book_move_start">"Sposta libro…"</string>
     <string name="book_move_progress">"Sposta libro: %1$s/%2$s…"</string>
     <string name="book_move_complete">"Spostamento libro completato: %s"</string>
-    <string name="book_move_error">"spostamento libro fallito: %s"</string>
+    <string name="book_move_error">"Spostamento libro fallito: %s"</string>
     <string name="book_rename_title">"Rinomina libro"</string>
     <string name="book_rename_msg">"Inserire il nuovo nome:"</string>
     <string name="book_delete_title">"Elimina libro"</string>
@@ -90,7 +90,7 @@
     <string name="content_description_icon">"Icona"</string>
     <string name="content_description_library">"Biblioteca"</string>
     <string name="content_description_browser">"Browser"</string>
-<!--<string name="content_description_clear">"Clear"</string>-->
+    <string name="content_description_clear">"Pulisci"</string>
     <string name="content_description_settings">"Impostazioni"</string>
     <string name="content_description_thumb">"Miniatura"</string>
     <string name="content_description_left">"Sinistra"</string>

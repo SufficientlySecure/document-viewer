@@ -25,7 +25,7 @@ public class MarkupNote implements MarkupElement {
     public void publishToLines(ArrayList<Line> lines, LineCreationParams params) {
         final List<Line> note = params.content.getNote(ref);
         if (note != null && LengthUtils.isNotEmpty(lines)) {
-            final Line line = Line.getLastLine(lines, params.maxLineWidth, params.jm);
+            final Line line = Line.getLastLine(lines, params);
             line.addNote(note);
         }
     }

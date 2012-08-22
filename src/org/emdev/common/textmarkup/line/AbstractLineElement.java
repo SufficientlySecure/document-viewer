@@ -8,6 +8,7 @@ import android.graphics.RectF;
 import java.util.ArrayList;
 
 import org.emdev.common.textmarkup.RenderingStyle;
+import org.emdev.utils.LengthUtils;
 
 
 public abstract class AbstractLineElement implements LineElement {
@@ -26,7 +27,7 @@ public abstract class AbstractLineElement implements LineElement {
 
     @Override
     public final void publishToLines(ArrayList<Line> lines, LineCreationParams params) {
-        Line line = Line.getLastLine(lines, params.maxLineWidth, params.jm);
+        Line line = Line.getLastLine(lines, params);
         final LineWhiteSpace space = RenderingStyle.getTextPaint(params.content, line.getHeight()).space;
         float remaining = params.maxLineWidth - (line.width + space.width);
         if (remaining <= 0) {
@@ -34,6 +35,10 @@ public abstract class AbstractLineElement implements LineElement {
             lines.add(line);
             remaining = params.maxLineWidth;
         }
+        if (params.extraSpace > 0 && LengthUtils.isEmpty(line.elements)) {
+            line.append(new LineFixedWhiteSpace(params.extraSpace, 0));
+        }
+
         if (this.width <= remaining) {
             if (line.hasNonWhiteSpaces() && params.insertSpace) {
                 line.append(space);
@@ -51,6 +56,9 @@ public abstract class AbstractLineElement implements LineElement {
             }
 
             line = new Line(params.maxLineWidth, params.jm);
+            if (params.extraSpace > 0 && LengthUtils.isEmpty(line.elements)) {
+                line.append(new LineFixedWhiteSpace(params.extraSpace, 0));
+            }
             lines.add(line);
 
             if (splitted == null) {

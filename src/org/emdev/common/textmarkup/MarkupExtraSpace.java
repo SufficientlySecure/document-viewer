@@ -1,6 +1,5 @@
 package org.emdev.common.textmarkup;
 
-
 import org.ebookdroid.droids.fb2.codec.LineCreationParams;
 
 import java.util.ArrayList;
@@ -8,19 +7,17 @@ import java.util.ArrayList;
 import org.emdev.common.textmarkup.line.Line;
 
 
-public class MarkupTitle implements MarkupElement {
+public class MarkupExtraSpace implements MarkupElement {
 
-    public final String title;
-    public final int level;
-
-    public MarkupTitle(final String string, int level) {
-        this.title = string;
-        this.level = level;
+    private final int extraSpace;
+    
+    public MarkupExtraSpace(int extraSpace) {
+        this.extraSpace = extraSpace;
     }
-
+    
     @Override
     public void publishToLines(ArrayList<Line> lines, LineCreationParams params) {
-        Line.getLastLine(lines, params).setTitle(this);
+        params.extraSpace += this.extraSpace;
     }
 
 }

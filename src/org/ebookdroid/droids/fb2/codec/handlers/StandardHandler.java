@@ -1,5 +1,6 @@
 package org.ebookdroid.droids.fb2.codec.handlers;
 
+import org.ebookdroid.droids.fb2.codec.FB2Page;
 import org.ebookdroid.droids.fb2.codec.FB2Tag;
 import org.ebookdroid.droids.fb2.codec.ParsedContent;
 
@@ -10,6 +11,7 @@ import org.emdev.common.textmarkup.JustificationMode;
 import org.emdev.common.textmarkup.MarkupElement;
 import org.emdev.common.textmarkup.MarkupEndDocument;
 import org.emdev.common.textmarkup.MarkupEndPage;
+import org.emdev.common.textmarkup.MarkupExtraSpace;
 import org.emdev.common.textmarkup.MarkupImageRef;
 import org.emdev.common.textmarkup.MarkupNoSpace;
 import org.emdev.common.textmarkup.MarkupNote;
@@ -140,9 +142,9 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
                 break;
             case CITE:
                 inCite = true;
-                setEmphasisStyle();
                 markupStream.add(emptyLine(crs.textSize));
                 markupStream.add(MarkupParagraphEnd.E);
+                markupStream.add(new MarkupExtraSpace(FB2Page.PAGE_WIDTH / 6));
                 break;
             case SUBTITLE:
                 paragraphParsing = true;
@@ -316,7 +318,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
                 inCite = false;
                 markupStream.add(emptyLine(crs.textSize));
                 markupStream.add(MarkupParagraphEnd.E);
-                markupStream.add(setPrevStyle().jm);
+                markupStream.add(new MarkupExtraSpace(-FB2Page.PAGE_WIDTH / 6));
                 break;
             case SUBTITLE:
                 markupStream.add(MarkupParagraphEnd.E);

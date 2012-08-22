@@ -8,4 +8,5 @@ public class LineCreationParams {
     public int maxLineWidth;
     public boolean insertSpace = true;
     public ParsedContent content;
+    public int extraSpace = 0;
 }

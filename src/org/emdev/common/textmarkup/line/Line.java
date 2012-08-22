@@ -1,6 +1,7 @@
 package org.emdev.common.textmarkup.line;
 
 import org.ebookdroid.droids.fb2.codec.FB2Page;
+import org.ebookdroid.droids.fb2.codec.LineCreationParams;
 
 import android.graphics.Canvas;
 
@@ -79,13 +80,13 @@ public class Line {
         }
     }
 
-    public static Line getLastLine(final ArrayList<Line> lines, int maxLineWidth, JustificationMode jm) {
+    public static Line getLastLine(final ArrayList<Line> lines, LineCreationParams params) {
         if (lines.size() == 0) {
-            lines.add(new Line(maxLineWidth, jm));
+            lines.add(new Line(params.maxLineWidth, params.jm));
         }
         Line fb2Line = lines.get(lines.size() - 1);
         if (fb2Line.committed) {
-            fb2Line = new Line(maxLineWidth, jm);
+            fb2Line = new Line(params.maxLineWidth, params.jm);
             lines.add(fb2Line);
         }
         return fb2Line;

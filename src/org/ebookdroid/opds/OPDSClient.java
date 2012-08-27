@@ -217,8 +217,8 @@ public class OPDSClient extends BaseHttpClient {
         if (reqUri.getHost() == null) {
             for (Feed p = parent; p != null; p = p.parent) {
                 final URI parentURI = new URI(p.link.uri);
-                if (parentURI.getHost() != null) {
-                    reqUri = new URI(parentURI.getScheme(), parentURI.getHost(), reqUri.getPath(), reqUri.getFragment());
+                if (parentURI.isAbsolute()) {
+                    reqUri = parentURI.resolve(reqUri);
                     uri = reqUri.toASCIIString();
                     break;
                 }

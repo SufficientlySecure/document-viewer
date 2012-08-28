@@ -33,6 +33,8 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
     protected boolean inSection = false;
 
     protected boolean paragraphParsing = false;
+    
+    protected int ulLevel = 0;
 
     protected boolean cover = false;
 
@@ -57,6 +59,8 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
     protected MarkupTable currentTable;
 
     protected boolean useUniqueTextElements;
+
+    private static final char[] BULLET = "\u2022 ".toCharArray();
 
     public StandardHandler(final ParsedContent content) {
         this(content, true);
@@ -88,6 +92,17 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
                         }
                     }
                 }
+                break;
+            case UL:
+                markupStream.add(emptyLine(crs.textSize));
+                markupStream.add(MarkupParagraphEnd.E);
+                ulLevel++;
+                break;
+            case LI:
+                paragraphParsing = true;
+                markupStream.add(new MarkupExtraSpace((int) (crs.paint.pOffset.width * ulLevel)));
+                markupStream.add(new TextElement(BULLET, 0, BULLET.length, crs));
+                markupStream.add(MarkupNoSpace._instance);
                 break;
             case V:
                 paragraphParsing = true;
@@ -178,6 +193,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
                 }
                 break;
             case EMPTY_LINE:
+            case BR:
                 markupStream.add(emptyLine(crs.textSize));
                 markupStream.add(MarkupParagraphEnd.E);
                 break;
@@ -273,12 +289,19 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
         spaceNeeded = true;
         final ArrayList<MarkupElement> markupStream = parsedContent.getMarkupStream(currentStream);
         switch (tag) {
+            case LI:
+                markupStream.add(new MarkupExtraSpace(-(int) (crs.paint.pOffset.width * ulLevel)));
             case P:
             case V:
                 if (!skipContent) {
                     markupStream.add(MarkupParagraphEnd.E);
                 }
                 paragraphParsing = false;
+                break;
+            case UL:
+                ulLevel--;
+                markupStream.add(emptyLine(crs.textSize));
+                markupStream.add(MarkupParagraphEnd.E);
                 break;
             case BINARY:
                 if (tmpBinaryContents.length() > 0) {

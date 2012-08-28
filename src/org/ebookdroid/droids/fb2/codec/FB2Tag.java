@@ -86,7 +86,14 @@ public enum FB2Tag {
     /** **/
     TD("td", FB2TagId.TD, true, true, "align"),
     /** **/
-    TH("th", FB2TagId.TH, true, true, "align");
+    TH("th", FB2TagId.TH, true, true, "align"),
+    /** **/
+    BR("br", FB2TagId.BR, true, true),
+    /** **/
+    UL("ul", FB2TagId.UL, true, true),
+    /** **/
+    LI("li", FB2TagId.LI, true, true)
+    ;
 
     private static final HashMap<String, FB2Tag> tagsByName = new HashMap<String, FB2Tag>(256, 0.2f);
     private static final SymbolTree<FB2Tag> tagsTree = new SymbolTree<FB2Tag>();
@@ -162,6 +169,24 @@ public enum FB2Tag {
                                 return TH;
                         }
                         return UNKNOWN;
+                    case 'b':
+                        switch (ch[start + 1]) {
+                            case 'r':
+                                return BR;
+                        }
+                        return UNKNOWN;
+                    case 'u':
+                        switch (ch[start + 1]) {
+                            case 'l':
+                                return UL;
+                        }
+                        return UNKNOWN;
+                    case 'l':
+                        switch (ch[start + 1]) {
+                            case 'i':
+                                return LI;
+                        }
+                        return UNKNOWN;
                 }
                 return UNKNOWN;
             case 3:
@@ -216,6 +241,24 @@ public enum FB2Tag {
                                 return TD;
                             case 'h':
                                 return TH;
+                        }
+                        return UNKNOWN;
+                    case 'b':
+                        switch (ch[start + 1]) {
+                            case 'r':
+                                return BR;
+                        }
+                        return UNKNOWN;
+                    case 'u':
+                        switch (ch[start + 1]) {
+                            case 'l':
+                                return UL;
+                        }
+                        return UNKNOWN;
+                    case 'l':
+                        switch (ch[start + 1]) {
+                            case 'i':
+                                return LI;
                         }
                         return UNKNOWN;
                 }

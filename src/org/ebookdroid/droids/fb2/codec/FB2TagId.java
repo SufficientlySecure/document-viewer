@@ -46,4 +46,7 @@ public interface FB2TagId {
     public static final byte TD = 38;
     public static final byte TH = 39;
 
+    public static final byte BR = 40;
+    public static final byte UL = 41;
+    public static final byte LI = 42;
 }

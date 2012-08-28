@@ -2446,6 +2446,7 @@ pdf_run_keyword(pdf_csi *csi, pdf_obj *rdb, fz_stream *file, char *buf)
 	case A('K'): pdf_run_K(csi); break;
 	case A('M'): pdf_run_M(csi); break;
 	case B('M','P'): pdf_run_MP(csi); break;
+	case B('Q','q'): // workaround for Finereadered document with invalid keyword 'Qq'
 	case A('Q'): pdf_run_Q(csi); break;
 	case B('R','G'): pdf_run_RG(csi); break;
 	case A('S'): pdf_run_S(csi); break;
@@ -2526,7 +2527,7 @@ pdf_run_keyword(pdf_csi *csi, pdf_obj *rdb, fz_stream *file, char *buf)
 	default:
 		if (!csi->xbalance)
 		{
-			fz_warn(ctx, "unknown keyword: '%s'", buf);
+			fz_warn(ctx, "unknown keyword: '%s', %X", buf, key);
 			return 1;
 		}
 		break;

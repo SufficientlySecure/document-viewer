@@ -129,7 +129,7 @@ public class OPDSClient extends BaseHttpClient {
             final int statusCode = statusLine.getStatusCode();
 
             if (statusCode != 200) {
-                LCTX.e("Content cannot be retrived: " + statusLine);
+                LCTX.e(Thread.currentThread().getName() + ": Content cannot be retrived: " + statusLine);
                 throw new HttpRequestFailed(statusLine);
             }
 
@@ -138,14 +138,14 @@ public class OPDSClient extends BaseHttpClient {
             final String mimeType = getHeaderValue(entity.getContentType());
             final long contentLength = entity.getContentLength();
 
-            LCTX.d("Content-Disposition: " + contentDisposition);
-            LCTX.d("Content-Type: " + mimeType);
-            LCTX.d("Content-Length: " + contentLength);
+            LCTX.d(Thread.currentThread().getName() + ": Content-Disposition: " + contentDisposition);
+            LCTX.d(Thread.currentThread().getName() + ": Content-Type: " + mimeType);
+            LCTX.d(Thread.currentThread().getName() + ": Content-Length: " + contentLength);
 
             final String guessFileName = URLUtil.guessFileName(uri.get().toString(),
                     contentDisposition.replace("attachement", "attachment"), mimeType);
 
-            LCTX.d("File name: " + guessFileName);
+            LCTX.d(Thread.currentThread().getName() + ": File name: " + guessFileName);
 
             // create a new file, specifying the path, and the filename which we want to save the file as.
             final File downloadDir = new File(OpdsSettings.current().downloadDir);
@@ -182,10 +182,10 @@ public class OPDSClient extends BaseHttpClient {
         } catch (final OPDSException ex) {
             throw ex;
         } catch (final IOException ex) {
-            LCTX.e("Error on downloading book: " + ex.getMessage());
+            LCTX.e(Thread.currentThread().getName() + ": Error on downloading book: " + ex.getMessage());
             throw new OPDSException(ex);
         } catch (final Throwable th) {
-            LCTX.e("Error on downloading book: ", th);
+            LCTX.e(Thread.currentThread().getName() + ": Error on downloading book: ", th);
             throw new OPDSException(th);
         }
     }
@@ -198,16 +198,16 @@ public class OPDSClient extends BaseHttpClient {
             return CacheManager.createTempFile(entity.getContent(), ".opds");
         } catch (final ClosedByInterruptException ex) {
             Thread.interrupted();
-            LCTX.w("Thumbnail loading interrupted");
+            LCTX.w(Thread.currentThread().getName() + ": Thumbnail loading interrupted");
         } catch (final InterruptedIOException ex) {
             Thread.interrupted();
-            LCTX.w("Thumbnail loading interrupted");
+            LCTX.w(Thread.currentThread().getName() + ": Thumbnail loading interrupted");
         } catch (final AuthorizationRequiredException ex) {
             // No thumbnails without authentication
         } catch (final OPDSException ex) {
-            LCTX.e("Error on OPDS thumbnail loading: ", ex.getCause());
+            LCTX.e(Thread.currentThread().getName() + ": Error on OPDS thumbnail loading: ", ex.getCause());
         } catch (final Throwable th) {
-            LCTX.e("Error on OPDS catalog access: ", th);
+            LCTX.e(Thread.currentThread().getName() + ": Error on OPDS catalog access: ", th);
         }
         return null;
     }
@@ -238,7 +238,7 @@ public class OPDSClient extends BaseHttpClient {
                     if (codecType != null) {
 
                         final File entryFile = new File(file.getParentFile(), entry.getName());
-                        LCTX.d("Unpacked file name: " + entryFile.getAbsolutePath());
+                        LCTX.d(Thread.currentThread().getName() + ": Unpacked file name: " + entryFile.getAbsolutePath());
 
                         final int bufsize = 256 * 1024;
                         final UIFileCopying worker = new UIFileCopying(R.string.opds_unpacking_book, bufsize, progress);
@@ -255,14 +255,14 @@ public class OPDSClient extends BaseHttpClient {
             } catch (final ClosedByInterruptException ex) {
                 release(file, archive);
             } catch (final Exception ex) {
-                LCTX.e("Error on unpacking book: ", ex);
+                LCTX.e(Thread.currentThread().getName() + ": Error on unpacking book: ", ex);
                 try {
                     archive.close();
                 } catch (final Exception ex1) {
                 }
             }
         } catch (final Exception ex) {
-            LCTX.e("Error on unpacking book: ", ex);
+            LCTX.e(Thread.currentThread().getName() + ": Error on unpacking book: ", ex);
         }
         return file;
     }

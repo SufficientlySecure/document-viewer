@@ -5,6 +5,7 @@ import org.ebookdroid.opds.model.Book;
 import org.ebookdroid.opds.model.Entry;
 import org.ebookdroid.opds.model.Feed;
 import org.ebookdroid.opds.model.Link;
+import org.ebookdroid.ui.opds.adapters.FeedListener;
 import org.ebookdroid.ui.opds.adapters.OPDSAdapter;
 
 import android.view.LayoutInflater;
@@ -52,7 +53,7 @@ actions = {
 // finish
 })
 public class OPDSActivityController extends ActionController<OPDSActivity> implements
-        ExpandableListView.OnGroupClickListener, ExpandableListView.OnChildClickListener, OPDSAdapter.FeedListener {
+        ExpandableListView.OnGroupClickListener, ExpandableListView.OnChildClickListener, FeedListener {
 
     public final LogContext LCTX;
 

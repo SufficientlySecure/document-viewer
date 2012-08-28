@@ -68,13 +68,13 @@ public class BaseHttpClient {
 
         HttpGet req = createRequest(uri, headers);
         onPreAuthentication(req);
-        LCTX.d("Connecting to: " + req.getURI());
+        LCTX.d(Thread.currentThread().getName() + ": Connecting to: " + req.getURI());
 
         HttpResponse resp = client.execute(req);
         StatusLine statusLine = resp.getStatusLine();
         int statusCode = statusLine.getStatusCode();
 
-        LCTX.d("Status: " + statusLine);
+        LCTX.d(Thread.currentThread().getName() + ": Status: " + statusLine);
         int redirectCount = 5;
 
         while (redirectCount > 0 && (statusCode == 401 || statusCode == 301 || statusCode == 302)) {
@@ -90,17 +90,17 @@ public class BaseHttpClient {
                 }
                 uri = new URI(location);
                 uriRef.set(uri);
-                LCTX.d("Location: " + uri);
+                LCTX.d(Thread.currentThread().getName() + ": Location: " + uri);
 
                 req = createRequest(uri, headers);
                 onPreAuthentication(req);
             }
 
-            LCTX.d("Connecting to: " + req.getURI());
+            LCTX.d(Thread.currentThread().getName() + ": Connecting to: " + req.getURI());
             resp = client.execute(req);
             statusLine = resp.getStatusLine();
             statusCode = statusLine.getStatusCode();
-            LCTX.d("Status: " + statusLine);
+            LCTX.d(Thread.currentThread().getName() + ": Status: " + statusLine);
         }
 
         return resp;

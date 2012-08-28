@@ -14,14 +14,7 @@ import org.ebookdroid.opds.model.Entry;
 import org.ebookdroid.opds.model.Feed;
 import org.ebookdroid.opds.model.Link;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
-import android.os.AsyncTask;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,8 +25,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,9 +38,6 @@ import org.emdev.ui.actions.params.Constant;
 import org.emdev.ui.actions.params.EditableValue;
 import org.emdev.ui.actions.params.EditableValue.PasswordEditable;
 import org.emdev.ui.adapters.BaseViewHolder;
-import org.emdev.ui.progress.IProgressIndicator;
-import org.emdev.ui.tasks.BaseFileAsyncTask;
-import org.emdev.ui.tasks.BaseFileAsyncTask.FileTaskResult;
 import org.emdev.ui.widget.TextViewMultilineEllipse;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.listeners.ListenerProxy;
@@ -59,17 +47,17 @@ import org.json.JSONObject;
 
 public class OPDSAdapter extends BaseExpandableListAdapter {
 
-    private final Context context;
-    private final IActionController<?> actions;
+    final Context context;
+    final IActionController<?> actions;
 
-    private final OPDSClient client;
-    private final List<Feed> rootFeeds;
+    final OPDSClient client;
+    final List<Feed> rootFeeds;
 
-    private volatile Feed currentFeed;
+    volatile Feed currentFeed;
 
-    private volatile LoadThumbnailTask background;
+    final ListenerProxy listeners = new ListenerProxy(FeedListener.class);
 
-    private final ListenerProxy listeners = new ListenerProxy(FeedListener.class);
+    final OPDSTaskExecutor executor = new OPDSTaskExecutor(this);
 
     public OPDSAdapter(final Context context, final IActionController<?> actions) {
         this.context = context;
@@ -195,13 +183,7 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
 
         notifyDataSetInvalidated();
 
-        if (feed != null) {
-            if (feed.loadedAt == 0) {
-                new LoadFeedTask().execute(feed);
-            } else {
-                startLoadThumbnails(feed);
-            }
-        }
+        executor.startLoadFeed(feed);
     }
 
     public Feed getCurrentFeed() {
@@ -338,56 +320,6 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
         return holder.getView();
     }
 
-    protected void loadBookThumbnail(final Book book) {
-        if (book.thumbnail == null) {
-            return;
-        }
-        final ThumbnailFile thumbnailFile = CacheManager.getThumbnailFile(book.id);
-        if (thumbnailFile.exists()) {
-            return;
-        }
-
-        try {
-            final File file = client.loadFile(book.parent, book.thumbnail);
-            if (file == null) {
-                return;
-            }
-
-            final Options opts = new Options();
-            opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            opts.inJustDecodeBounds = true;
-
-            BitmapFactory.decodeStream(new FileInputStream(file), null, opts);
-
-            opts.inSampleSize = getScale(opts, 200, 200);
-            opts.inJustDecodeBounds = false;
-
-            final Bitmap image = BitmapFactory.decodeStream(new FileInputStream(file), null, opts);
-            if (image != null) {
-                thumbnailFile.setImage(image);
-                image.recycle();
-            }
-        } catch (final Throwable ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    protected int getScale(final Options opts, final float requiredWidth, final float requiredHeight) {
-        int scale = 1;
-        int widthTmp = opts.outWidth;
-        int heightTmp = opts.outHeight;
-        while (true) {
-            if (widthTmp / 2 < requiredWidth || heightTmp / 2 < requiredHeight) {
-                break;
-            }
-            widthTmp /= 2;
-            heightTmp /= 2;
-
-            scale *= 2;
-        }
-        return scale;
-    }
-
     public void addListener(final FeedListener listener) {
         listeners.addListener(listener);
     }
@@ -401,7 +333,7 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
             return;
         }
         final BookDownloadLink link = book.downloads.get(linkIndex);
-        startBookDownload(book, link);
+        executor.startBookDownload(book, link);
     }
 
     public void showErrorDlg(final int pbLabel, final int pbAction, final Object result, final OPDSException error) {
@@ -451,7 +383,7 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
             final DownloadBookResult result = (DownloadBookResult) info;
             final AuthorizationRequiredException ex = (AuthorizationRequiredException) result.error;
             client.setAuthorization(ex.host, username, password);
-            startBookDownload(result.book, result.link);
+            executor.startBookDownload(result.book, result.link);
         }
 
         store();
@@ -460,27 +392,11 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
     @ActionMethod(ids = R.id.actions_retryDownloadBook)
     public void retryDownload(final ActionEx action) {
         final DownloadBookResult info = action.getParameter("info");
-        startBookDownload(info.book, info.link);
+        executor.startBookDownload(info.book, info.link);
     }
 
-    protected void startBookDownload(final Book book, final BookDownloadLink link) {
-        stopLoadThumbnails();
-        new DownloadBookTask().execute(book, link);
-    }
-
-    protected void startLoadThumbnails(final Feed feed) {
-        if (background != null) {
-            background.cancel(true);
-        }
-        background = new LoadThumbnailTask();
-        background.execute(feed);
-    }
-
-    protected void stopLoadThumbnails() {
-        if (background != null) {
-            background.cancel(true);
-            background = null;
-        }
+    public void startLoadThumbnails() {
+        executor.startLoadThumbnails(currentFeed);
     }
 
     public static class ViewHolder extends BaseViewHolder {
@@ -495,199 +411,6 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
             textView = (TextView) convertView.findViewById(R.id.opdsItemText);
             imageView = (ImageView) convertView.findViewById(R.id.opdsItemIcon);
             info = (TextViewMultilineEllipse) convertView.findViewById(R.id.opdsDescription);
-        }
-    }
-
-    public static class FeedTaskResult {
-
-        public Feed feed;
-        public OPDSException error;
-
-        public FeedTaskResult(final Feed feed) {
-            this.feed = feed;
-        }
-
-        public FeedTaskResult(final Feed feed, final OPDSException error) {
-            this.feed = feed;
-            this.error = error;
-        }
-    }
-
-    final class LoadFeedTask extends AsyncTask<Feed, String, FeedTaskResult> implements OnCancelListener,
-            IProgressIndicator {
-
-        private ProgressDialog progressDialog;
-
-        @Override
-        protected void onPreExecute() {
-            onProgressUpdate(context.getResources().getString(R.string.opds_connecting));
-        }
-
-        @Override
-        public void onCancel(final DialogInterface dialog) {
-            this.cancel(true);
-        }
-
-        @Override
-        protected FeedTaskResult doInBackground(final Feed... params) {
-            final Feed f = params[0];
-            try {
-                final Feed feed = client.loadFeed(f, this);
-                startLoadThumbnails(feed);
-                return new FeedTaskResult(feed);
-            } catch (final OPDSException ex) {
-                return new FeedTaskResult(f, ex);
-            }
-        }
-
-        @Override
-        protected void onPostExecute(final FeedTaskResult result) {
-            if (progressDialog != null) {
-                try {
-                    progressDialog.dismiss();
-                } catch (final Throwable th) {
-                }
-            }
-
-            if (result.error instanceof AuthorizationRequiredException) {
-                showAuthDlg(result);
-            } else if (result.error != null) {
-                showErrorDlg(R.string.opdsrefreshfolder, R.id.opdsrefreshfolder, result, result.error);
-            }
-
-            final FeedListener l = listeners.getListener();
-            l.feedLoaded(result.feed);
-            notifyDataSetChanged();
-
-        }
-
-        @Override
-        public void setProgressDialogMessage(final int resourceID, final Object... args) {
-            publishProgress(context.getResources().getString(resourceID, args));
-        }
-
-        @Override
-        protected void onProgressUpdate(final String... values) {
-            final int length = LengthUtils.length(values);
-            if (length == 0) {
-                return;
-            }
-            final String last = values[length - 1];
-            try {
-                if (progressDialog == null || !progressDialog.isShowing()) {
-                    progressDialog = ProgressDialog.show(context, "", last, true);
-                    progressDialog.setCancelable(true);
-                    progressDialog.setCanceledOnTouchOutside(true);
-                    progressDialog.setOnCancelListener(this);
-                } else {
-                    progressDialog.setMessage(last);
-                }
-            } catch (final Throwable th) {
-            }
-        }
-    }
-
-    final class LoadThumbnailTask extends AsyncTask<Feed, Book, String> {
-
-        @Override
-        protected String doInBackground(final Feed... params) {
-            if (LengthUtils.isEmpty(params)) {
-                return null;
-            }
-            for (final Feed feed : params) {
-                if (feed == null) {
-                    continue;
-                }
-                for (final Book book : feed.books) {
-                    if (isCancelled() || currentFeed != book.parent) {
-                        return null;
-                    }
-                    loadBookThumbnail(book);
-                    publishProgress(book);
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(final String result) {
-            notifyDataSetInvalidated();
-        }
-
-        @Override
-        protected void onProgressUpdate(final Book... books) {
-            boolean inCurrent = false;
-            for (final Book book : books) {
-                inCurrent |= book.parent == currentFeed;
-            }
-            if (inCurrent) {
-                notifyDataSetInvalidated();
-            }
-        }
-    }
-
-    public static interface FeedListener {
-
-        void feedLoaded(Feed feed);
-    }
-
-    protected static class DownloadBookResult extends FileTaskResult {
-
-        public Book book;
-        public BookDownloadLink link;
-
-        public DownloadBookResult(final Book book, final BookDownloadLink link, final File target) {
-            super(target);
-            this.book = book;
-            this.link = link;
-        }
-
-        public DownloadBookResult(final Book book, final BookDownloadLink link, final Throwable error) {
-            super(error);
-            this.book = book;
-            this.link = link;
-        }
-    }
-
-    final class DownloadBookTask extends BaseFileAsyncTask<Object, DownloadBookResult> implements OnCancelListener,
-            IProgressIndicator {
-
-        public DownloadBookTask() {
-            super(OPDSAdapter.this.context, R.string.opds_connecting, R.string.opds_download_complete,
-                    R.string.opds_download_error, true);
-        }
-
-        @Override
-        protected DownloadBookResult doInBackground(final Object... params) {
-            final Book book = (Book) params[0];
-            final BookDownloadLink link = (BookDownloadLink) params[1];
-            try {
-                final File file = client.downloadBook(book, link, this);
-                return new DownloadBookResult(book, link, file);
-            } catch (final OPDSException ex) {
-                return new DownloadBookResult(book, link, ex);
-            }
-        }
-
-        @Override
-        protected void onPostExecute(final DownloadBookResult result) {
-            super.onPostExecute(result);
-            if (result != null) {
-                if (result.error instanceof AuthorizationRequiredException) {
-                    showAuthDlg(result);
-                } else if (result.error instanceof OPDSException) {
-                    showErrorDlg(R.string.opds_retry_download, R.id.actions_retryDownloadBook, result,
-                            (OPDSException) result.error);
-                } else if (result.error != null) {
-                    showErrorDlg(R.string.opds_retry_download, R.id.actions_retryDownloadBook, result,
-                            new OPDSException(result.error));
-                }
-            }
-            startLoadThumbnails(currentFeed);
-        }
-
-        @Override
-        protected void processError(final Throwable error) {
         }
     }
 

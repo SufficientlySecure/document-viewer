@@ -57,7 +57,7 @@ public class CopyBookTask extends BaseFileAsyncTask<BookNode, FileTaskResult> {
         if (book.settings != null) {
             try {
                 final BookSettings bs = SettingsManager.copyBookSettings(target, book.settings);
-                if (recentAdapter != null) {
+                if (recentAdapter != null && bs.lastUpdated > 0) {
                     recentAdapter.replaceBook(null, bs);
                 }
             } catch (final Throwable th) {

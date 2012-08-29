@@ -148,7 +148,12 @@ class DBAdapterV1 implements IDBAdapter {
             try {
                 db.beginTransaction();
 
-                bs.lastUpdated = System.currentTimeMillis();
+                if (bs.lastChanged > 0) {
+                    bs.lastUpdated = System.currentTimeMillis();
+                }
+
+                System.out.println("Store: " + bs.toJSON());
+
                 storeBookSettings(bs, db);
 
                 db.setTransactionSuccessful();

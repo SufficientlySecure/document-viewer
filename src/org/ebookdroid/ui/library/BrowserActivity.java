@@ -166,7 +166,7 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
 
     @ActionMethod(ids = R.id.mainmenu_settings)
     public void showSettings(final ActionEx action) {
-        SettingsUI.showAppSettings(this);
+        SettingsUI.showAppSettings(this, null);
     }
 
     @ActionMethod(ids = R.id.browserrecent)

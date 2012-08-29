@@ -18,7 +18,7 @@ public class SettingsActivity extends BaseSettingsActivity {
     protected final void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FontManager.init();
-        if (SettingsManager.getBookSettings() != null) {
+        if (getIntent().getData() != null) {
             setRequestedOrientation(AppSettings.current().rotation.getOrientation());
         }
         onCreate();
@@ -30,6 +30,7 @@ public class SettingsActivity extends BaseSettingsActivity {
         super.onPause();
     }
 
+    @SuppressWarnings("deprecation")
     protected void onCreate() {
         try {
             setPreferenceScreen(createPreferences());
@@ -47,6 +48,7 @@ public class SettingsActivity extends BaseSettingsActivity {
         decorator.decorateSettings();
     }
 
+    @SuppressWarnings("deprecation")
     PreferenceScreen createPreferences() {
         final PreferenceScreen root = getPreferenceManager().createPreferenceScreen(this);
 
@@ -66,6 +68,7 @@ public class SettingsActivity extends BaseSettingsActivity {
         return root;
     }
 
+    @SuppressWarnings("deprecation")
     void loadPreferences(final PreferenceScreen root, final int... resourceIds) {
         for (final int id : resourceIds) {
             setPreferenceScreen(null);

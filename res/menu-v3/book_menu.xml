@@ -5,6 +5,9 @@
         android:id="@+id/bookmenu_open"
         android:title="@string/bookmenu_open"/>
     <item
+        android:id="@+id/bookmenu_openbooksettings"
+        android:title="@string/bookmenu_openbooksettings"/>
+    <item
         android:id="@+id/bookmenu_openbookshelf"
         android:title="@string/bookmenu_openbookshelf"/>
     <item

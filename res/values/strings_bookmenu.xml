@@ -2,6 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="bookmenu_open">Open book</string>
+    <string name="bookmenu_openbooksettings">Show book settings</string>
     <string name="bookmenu_openbookshelf">Show book shelf</string>
     <string name="bookmenu_openbookfolder">Show book folder</string>
     <string name="bookmenu_settings">Show book settings</string>

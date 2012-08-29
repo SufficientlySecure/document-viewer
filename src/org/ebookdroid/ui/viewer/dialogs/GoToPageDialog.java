@@ -109,7 +109,7 @@ public class GoToPageDialog extends Dialog {
         final int current = dm != null ? dm.getCurrentViewPageIndex() : 0;
         final int max = lastPage != null ? lastPage.index.viewIndex : 0;
 
-        adapter = new BookmarkAdapter(lastPage, SettingsManager.getBookSettings());
+        adapter = new BookmarkAdapter(lastPage, base.getBookSettings());
 
         final ListView bookmarks = (ListView) findViewById(R.id.bookmarks);
         bookmarks.setAdapter(adapter);
@@ -269,21 +269,21 @@ public class GoToPageDialog extends Dialog {
             for (final Bookmark bookmark : bookmarks) {
                 bookSettings.bookmarks.add(bookmark);
             }
-            SettingsManager.storeBookSettings();
+            SettingsManager.storeBookSettings(bookSettings);
             notifyDataSetChanged();
         }
 
         public void remove(final Bookmark b) {
             if (!b.service) {
                 bookSettings.bookmarks.remove(b);
-                SettingsManager.storeBookSettings();
+                SettingsManager.storeBookSettings(bookSettings);
                 notifyDataSetChanged();
             }
         }
 
         public void clear() {
             bookSettings.bookmarks.clear();
-            SettingsManager.storeBookSettings();
+            SettingsManager.storeBookSettings(bookSettings);
             notifyDataSetChanged();
         }
 

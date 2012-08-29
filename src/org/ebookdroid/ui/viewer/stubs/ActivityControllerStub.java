@@ -1,6 +1,7 @@
 package org.ebookdroid.ui.viewer.stubs;
 
 import org.ebookdroid.EBookDroidApp;
+import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.core.DecodeService;
 import org.ebookdroid.core.models.DecodingProgressModel;
 import org.ebookdroid.core.models.DocumentModel;
@@ -43,6 +44,11 @@ public class ActivityControllerStub extends ActionController<ViewerActivity> imp
 
     @Override
     public DecodeService getDecodeService() {
+        return null;
+    }
+
+    @Override
+    public BookSettings getBookSettings() {
         return null;
     }
 

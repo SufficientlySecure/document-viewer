@@ -1,7 +1,6 @@
 package org.ebookdroid.ui.settings;
 
 import org.ebookdroid.common.settings.AppSettings;
-import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.definitions.AppPreferences;
 import org.ebookdroid.common.settings.definitions.BookPreferences;
@@ -12,14 +11,11 @@ import org.ebookdroid.common.settings.types.DocumentViewType;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.core.curl.PageAnimationType;
 
-import android.annotation.TargetApi;
-import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.PreferenceGroup;
 import android.preference.Preference.OnPreferenceChangeListener;
-import android.preference.TwoStatePreference;
+import android.preference.PreferenceGroup;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -63,7 +59,6 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
 
     public void decorateSettings() {
         decoratePreference(getRoot());
-        decorateBooksSettings();
         decorateBrowserSettings();
         decorateOpdsSettings();
         decorateMemorySettings();
@@ -73,14 +68,11 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
         decorateUISettings();
     }
 
-    public void decorateBooksSettings() {
+    public void decorateBooksSettings(BookSettings bs) {
         addViewModeListener(BOOK_VIEW_MODE.key, BOOK_PAGE_ALIGN.key, BOOK_ANIMATION_TYPE.key);
         addAnimationTypeListener(BOOK_ANIMATION_TYPE.key, BOOK_PAGE_ALIGN.key);
 
-        BookSettings bs = SettingsManager.getBookSettings();
-        if (bs != null) {
-            enableSinglePageModeSetting(bs.viewMode, BOOK_PAGE_ALIGN.key, BOOK_ANIMATION_TYPE.key);
-        }
+        enableSinglePageModeSetting(bs.viewMode, BOOK_PAGE_ALIGN.key, BOOK_ANIMATION_TYPE.key);
     }
 
     public void decorateBrowserSettings() {

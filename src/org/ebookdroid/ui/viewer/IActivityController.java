@@ -1,5 +1,6 @@
 package org.ebookdroid.ui.viewer;
 
+import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.core.DecodeService;
 import org.ebookdroid.core.models.DecodingProgressModel;
 import org.ebookdroid.core.models.DocumentModel;
@@ -16,6 +17,8 @@ public interface IActivityController extends IActionController<ViewerActivity> {
     Context getContext();
 
     Activity getActivity();
+
+    BookSettings getBookSettings();
 
     DecodeService getDecodeService();
 

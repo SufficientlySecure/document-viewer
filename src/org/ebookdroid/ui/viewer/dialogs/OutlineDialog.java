@@ -1,7 +1,6 @@
 package org.ebookdroid.ui.viewer.dialogs;
 
 import org.ebookdroid.R;
-import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.core.codec.OutlineLink;
 import org.ebookdroid.ui.viewer.IActivityController;
@@ -45,7 +44,7 @@ public class OutlineDialog extends Dialog implements OnItemClickListener {
 
         setContentView(listView);
 
-        final BookSettings bs = SettingsManager.getBookSettings();
+        final BookSettings bs = base.getBookSettings();
         OutlineLink current = null;
         if (bs != null) {
             final int currentIndex = bs.currentPage.docIndex;

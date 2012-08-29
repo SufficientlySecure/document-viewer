@@ -18,7 +18,9 @@ import org.json.JSONObject;
 
 public class BookSettings implements CurrentPageListener {
 
-    public boolean persistent;
+    public transient boolean persistent;
+
+    public transient long lastChanged;
 
     public final String fileName;
 
@@ -54,6 +56,7 @@ public class BookSettings implements CurrentPageListener {
 
     public BookSettings(final BookSettings current) {
         this.persistent = current.persistent;
+        this.lastChanged = current.lastChanged;
         this.fileName = current.fileName;
         this.lastUpdated = current.lastUpdated;
 
@@ -75,6 +78,7 @@ public class BookSettings implements CurrentPageListener {
 
     public BookSettings(final String fileName, final BookSettings current) {
         this.persistent = true;
+        this.lastChanged = 0;
         this.fileName = fileName;
         this.lastUpdated = current.lastUpdated;
 
@@ -96,6 +100,7 @@ public class BookSettings implements CurrentPageListener {
 
     public BookSettings(final String fileName) {
         this.persistent = true;
+        this.lastChanged = 0;
         this.fileName = fileName;
         this.lastUpdated = System.currentTimeMillis();
         this.currentPage = PageIndex.FIRST;
@@ -103,6 +108,7 @@ public class BookSettings implements CurrentPageListener {
 
     BookSettings(final JSONObject object) throws JSONException {
         this.persistent = true;
+        this.lastChanged = 0;
         this.fileName = object.getString("fileName");
         this.lastUpdated = object.getLong("lastUpdated");
 
@@ -161,6 +167,13 @@ public class BookSettings implements CurrentPageListener {
     @Override
     public void currentPageChanged(final PageIndex oldIndex, final PageIndex newIndex) {
         this.currentPage = newIndex;
+        this.lastChanged = System.currentTimeMillis();
+    }
+
+    public void positionChanged(final float offsetX, final float offsetY) {
+        this.offsetX = offsetX;
+        this.offsetY = offsetY;
+        this.lastChanged = System.currentTimeMillis();
     }
 
     public PageIndex getCurrentPage() {
@@ -171,8 +184,11 @@ public class BookSettings implements CurrentPageListener {
         return zoom / 100.0f;
     }
 
-    public void setZoom(final float zoom) {
+    public void setZoom(final float zoom, final boolean committed) {
         this.zoom = Math.round(zoom * 100);
+        if (committed) {
+            this.lastChanged = System.currentTimeMillis();
+        }
     }
 
     public static class Diff {

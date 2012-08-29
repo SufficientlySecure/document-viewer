@@ -55,7 +55,7 @@ public class MoveBookTask extends BaseFileAsyncTask<BookNode, FileTaskResult> {
         try {
             if (book.settings != null) {
                 final BookSettings bs = SettingsManager.copyBookSettings(target, book.settings);
-                if (recentAdapter != null) {
+                if (recentAdapter != null && bs.lastUpdated > 0) {
                     recentAdapter.replaceBook(book, bs);
                 }
                 SettingsManager.deleteBookSettings(book.settings);

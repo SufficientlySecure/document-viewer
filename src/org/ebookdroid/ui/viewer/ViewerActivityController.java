@@ -115,6 +115,8 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     private final LogContext LCTX;
 
+    private final long id;
+
     private final AtomicReference<IViewController> ctrl = new AtomicReference<IViewController>(ViewContollerStub.STUB);
 
     private ZoomModel zoomModel;
@@ -141,12 +143,15 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     private String currentSearchPattern;
 
+    private BookSettings bookSettings;
+
     /**
      * Instantiates a new base viewer activity.
      */
     public ViewerActivityController(final ViewerActivity activity) {
         super(activity);
-        LCTX = LogManager.root().lctx("Controller", true).lctx("" + SEQ.getAndIncrement(), true);
+        id = SEQ.getAndIncrement();
+        LCTX = LogManager.root().lctx("Controller", true).lctx("" + id, true);
         this.intent = activity.getIntent();
         SettingsManager.addListener(this);
 
@@ -256,8 +261,8 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                 m_fileName = PathFromUri.retrieve(activity.getContentResolver(), uri);
             }
 
-            SettingsManager.init(m_fileName, intent);
-            SettingsManager.applyBookSettingsChanges(null, SettingsManager.getBookSettings(), null);
+            bookSettings = SettingsManager.create(id, m_fileName, temporaryBook, intent);
+            SettingsManager.applyBookSettingsChanges(null, bookSettings);
         }
     }
 
@@ -303,7 +308,6 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         if (LCTX.isDebugEnabled()) {
             LCTX.d("afterPause()");
         }
-        SettingsManager.storeBookSettings();
     }
 
     public void beforeDestroy() {
@@ -328,8 +332,10 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         if (LCTX.isDebugEnabled()) {
             LCTX.d("afterDestroy()");
         }
+
         getDocumentController().onDestroy();
-        if(finishing && BackupSettings.current().backupOnBookClose) {
+
+        if (finishing && BackupSettings.current().backupOnBookClose) {
             BackupManager.backup();
         }
     }
@@ -406,7 +412,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
             pageText = (newIndex.viewIndex + 1) + "/" + pageCount;
         }
         getManagedComponent().currentPageChanged(pageText, bookTitle);
-        SettingsManager.currentPageChanged(oldIndex, newIndex);
+        SettingsManager.currentPageChanged(bookSettings, oldIndex, newIndex);
     }
 
     public void setWindowTitle() {
@@ -478,6 +484,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         new SearchTask().execute(newPattern, oldPattern, (String) action.getParameter("forward"));
     }
 
+    @SuppressWarnings("deprecation")
     @ActionMethod(ids = R.id.mainmenu_goto_page)
     public void showDialog(final ActionEx action) {
         final Integer dialogId = action.getParameter("dialogId");
@@ -486,24 +493,24 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     @ActionMethod(ids = R.id.mainmenu_booksettings)
     public void showBookSettings(final ActionEx action) {
-        SettingsUI.showBookSettings(getManagedComponent(), SettingsManager.getBookSettings().fileName);
+        SettingsUI.showBookSettings(getManagedComponent(), bookSettings.fileName);
     }
 
     @ActionMethod(ids = R.id.mainmenu_settings)
     public void showAppSettings(final ActionEx action) {
-        SettingsUI.showAppSettings(getManagedComponent());
+        SettingsUI.showAppSettings(getManagedComponent(), bookSettings.fileName);
     }
 
     @ActionMethod(ids = R.id.mainmenu_nightmode)
     public void toggleNightMode(final ActionEx action) {
-        SettingsManager.toggleNightMode();
+        SettingsManager.toggleNightMode(bookSettings);
     }
 
     @ActionMethod(ids = R.id.mainmenu_thumbnail)
     public void setCurrentPageAsThumbnail(final ActionEx action) {
         final Page page = documentModel.getCurrentPageObject();
         if (page != null) {
-            documentModel.createBookThumbnail(SettingsManager.getBookSettings(), page, true);
+            documentModel.createBookThumbnail(bookSettings, page, true);
         }
     }
 
@@ -527,13 +534,12 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
     public void addBookmark(final ActionEx action) {
         final Editable value = action.getParameter("input");
         final String name = value.toString();
-        final BookSettings bs = SettingsManager.getBookSettings();
         final Page page = documentModel.getCurrentPageObject();
         if (page != null) {
             final ViewState state = new ViewState(getDocumentController());
             final PointF pos = state.getPositionOnPage(page);
-            bs.bookmarks.add(new Bookmark(name, documentModel.getCurrentIndex(), pos.x, pos.y));
-            SettingsManager.storeBookSettings();
+            bookSettings.bookmarks.add(new Bookmark(name, documentModel.getCurrentIndex(), pos.x, pos.y));
+            SettingsManager.storeBookSettings(bookSettings);
         }
     }
 
@@ -577,32 +583,37 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
     }
 
     @Override
-    public SearchModel getSearchModel() {
+    public final SearchModel getSearchModel() {
         return searchModel;
     }
 
     @Override
-    public IViewController getDocumentController() {
+    public final IViewController getDocumentController() {
         return ctrl.get();
     }
 
     @Override
-    public Context getContext() {
+    public final Context getContext() {
         return getManagedComponent();
     }
 
     @Override
-    public IView getView() {
+    public final IView getView() {
         return getManagedComponent().view;
     }
 
     @Override
-    public Activity getActivity() {
+    public final Activity getActivity() {
         return getManagedComponent();
     }
 
     @Override
-    public IActionController<?> getActionController() {
+    public final BookSettings getBookSettings() {
+        return bookSettings;
+    }
+
+    @Override
+    public final IActionController<?> getActionController() {
         return this;
     }
 
@@ -654,10 +665,8 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         }
         if (temporaryBook) {
             CacheManager.clear(E_MAIL_ATTACHMENT);
-            SettingsManager.removeCurrentBookSettings();
-        } else {
-            SettingsManager.clearCurrentBookSettings();
         }
+        SettingsManager.releaseBookSettings(id, bookSettings);
         getManagedComponent().finish();
     }
 
@@ -690,6 +699,10 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         if (diff.isKeyBindingChanged()) {
             KeyBindingsManager.loadFromSettings(newSettings);
         }
+
+        if (diff.isPagesInMemoryChanged()) {
+            getDocumentController().updateMemorySettings();
+        }
     }
 
     /**
@@ -701,7 +714,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
      */
     @Override
     public void onBookSettingsChanged(final BookSettings oldSettings, final BookSettings newSettings,
-            final BookSettings.Diff diff, final AppSettings.Diff appDiff) {
+            final BookSettings.Diff diff) {
         if (newSettings == null) {
             return;
         }
@@ -733,12 +746,6 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
         if (diff.isAnimationTypeChanged()) {
             dc.updateAnimationType();
-        }
-
-        if (!redrawn && appDiff != null) {
-            if (appDiff.isPagesInMemoryChanged()) {
-                dc.updateMemorySettings();
-            }
         }
 
         currentPageChanged(PageIndex.NULL, documentModel.getCurrentIndex());
@@ -846,7 +853,8 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
         @Override
         public void searchStarted(final int pageIndex) {
-            publishProgress(getManagedComponent().getResources().getString(R.string.msg_search_text_on_page, pageIndex + 1));
+            publishProgress(getManagedComponent().getResources().getString(R.string.msg_search_text_on_page,
+                    pageIndex + 1));
         }
 
         @Override

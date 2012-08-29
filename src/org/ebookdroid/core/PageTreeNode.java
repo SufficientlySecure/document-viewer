@@ -5,7 +5,6 @@ import org.ebookdroid.common.bitmaps.BitmapRef;
 import org.ebookdroid.common.bitmaps.Bitmaps;
 import org.ebookdroid.common.bitmaps.RawBitmap;
 import org.ebookdroid.common.settings.AppSettings;
-import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.definitions.AppPreferences;
 import org.ebookdroid.core.codec.CodecPage;
@@ -122,7 +121,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 return;
             }
 
-            final BookSettings bs = SettingsManager.getBookSettings();
+            final BookSettings bs = page.base.getBookSettings();
             if (bs != null) {
                 final boolean correctContrast = bs.contrast != AppPreferences.CONTRAST.defValue;
                 final boolean correctExposure = bs.exposure != AppPreferences.EXPOSURE.defValue;
@@ -263,7 +262,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         }
 
         public Bitmaps reuse(final String nodeId, final BitmapRef bitmap, final Rect bitmapBounds) {
-            final BookSettings bs = SettingsManager.getBookSettings();
+            final BookSettings bs = page.base.getBookSettings();
             final AppSettings app = AppSettings.current();
             final boolean invert = bs != null ? bs.nightMode : app.nightMode;
             if (app.textureReuseEnabled) {

@@ -1,5 +1,6 @@
 package org.ebookdroid.ui.library;
 
+import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
 import org.ebookdroid.ui.library.adapters.BookNode;
 import org.ebookdroid.ui.library.adapters.BookShelfAdapter;
@@ -130,19 +131,18 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
 
     @Override
     protected void onDestroy() {
+        final boolean finishing = isFinishing();
         if (LCTX.isDebugEnabled()) {
-            LCTX.d("onDestroy(): " + isFinishing());
+            LCTX.d("onDestroy(): " + finishing);
         }
         super.onDestroy();
         if (!isTaskRoot()) {
             LCTX.d("onDestroy(): close duplicated activity");
             return;
         }
-        getController().onDestroy(isFinishing());
+        getController().onDestroy(finishing);
 
-        if (isFinishing()) {
-            System.exit(0);
-        }
+        EBookDroidApp.onActivityClose(finishing);
     }
 
     @Override
@@ -184,8 +184,10 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
             menu.findItem(R.id.bookmenu_recentgroup).setVisible(node.settings != null);
 
             final BookShelfAdapter bookShelf = getController().getBookShelf(node);
-            final BookShelfAdapter current = bookcaseView != null ? getController().getBookShelf(bookcaseView.getCurrentList()) : null;
-            menu.findItem(R.id.bookmenu_openbookshelf).setVisible(bookShelf != null && current != null && bookShelf != current);
+            final BookShelfAdapter current = bookcaseView != null ? getController().getBookShelf(
+                    bookcaseView.getCurrentList()) : null;
+            menu.findItem(R.id.bookmenu_openbookshelf).setVisible(
+                    bookShelf != null && current != null && bookShelf != current);
         } else if (source instanceof BookShelfAdapter) {
             final BookShelfAdapter a = (BookShelfAdapter) source;
 

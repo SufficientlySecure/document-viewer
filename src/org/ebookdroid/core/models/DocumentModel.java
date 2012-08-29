@@ -8,7 +8,6 @@ import org.ebookdroid.common.bitmaps.Bitmaps;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.cache.PageCacheFile;
 import org.ebookdroid.common.cache.ThumbnailFile;
-import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.PageType;
 import org.ebookdroid.core.DecodeService;
@@ -116,7 +115,7 @@ public class DocumentModel extends ListenerProxy {
 
     /**
      * Gets the current page object.
-     * 
+     *
      * @return the current page object
      */
     public Page getCurrentPageObject() {
@@ -125,7 +124,7 @@ public class DocumentModel extends ListenerProxy {
 
     /**
      * Gets the last page object.
-     * 
+     *
      * @return the last page object
      */
     public Page getLastPageObject() {
@@ -167,7 +166,7 @@ public class DocumentModel extends ListenerProxy {
     public void initPages(final IActivityController base, final IProgressIndicator task) {
         recyclePages();
 
-        final BookSettings bs = SettingsManager.getBookSettings();
+        final BookSettings bs = base.getBookSettings();
 
         if (base == null || bs == null || context == null || decodeService == null) {
             return;

@@ -92,7 +92,7 @@ public abstract class AbstractViewController extends AbstractComponentController
         this.firstVisiblePage = -1;
         this.lastVisiblePage = -1;
 
-        this.pageToGo = SettingsManager.getBookSettings().getCurrentPage();
+        this.pageToGo = base.getBookSettings().getCurrentPage();
 
         createAction(R.id.actions_verticalConfigScrollUp, new Constant("direction", -1));
         createAction(R.id.actions_verticalConfigScrollDown, new Constant("direction", +1));
@@ -114,7 +114,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#getView()
      */
     @Override
@@ -124,7 +124,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#getBase()
      */
     @Override
@@ -134,7 +134,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#init(org.ebookdroid.ui.viewer.IActivityController.IBookLoadTask)
      */
     @Override
@@ -149,7 +149,7 @@ public abstract class AbstractViewController extends AbstractComponentController
     }
 
     /**
-     * 
+     *
      */
     @Override
     public final void onDestroy() {
@@ -158,7 +158,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#show()
      */
     @Override
@@ -177,7 +177,9 @@ public abstract class AbstractViewController extends AbstractComponentController
 
             invalidatePageSizes(InvalidateSizeReason.INIT, null);
 
-            final BookSettings bs = SettingsManager.getBookSettings();
+            final BookSettings bs = base.getBookSettings();
+            bs.lastChanged = System.currentTimeMillis();
+
             final Page page = pageToGo.getActualPage(model, bs);
             final int toPage = page != null ? page.index.viewIndex : 0;
 
@@ -191,12 +193,12 @@ public abstract class AbstractViewController extends AbstractComponentController
 
     protected final void updatePosition(final Page page, final ViewState viewState) {
         final PointF pos = viewState.getPositionOnPage(page);
-        SettingsManager.positionChanged(pos.x, pos.y);
+        SettingsManager.positionChanged(base.getBookSettings(), pos.x, pos.y);
     }
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.events.ZoomListener#zoomChanged(float, float, boolean)
      */
     @Override
@@ -231,7 +233,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#updateMemorySettings()
      */
     @Override
@@ -257,7 +259,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#dispatchKeyEvent(android.view.KeyEvent)
      */
     @Override
@@ -288,7 +290,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#onTouchEvent(android.view.MotionEvent)
      */
     @Override
@@ -312,7 +314,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#onLayoutChanged(boolean, boolean, android.graphics.Rect,
      *      android.graphics.Rect)
      */
@@ -337,7 +339,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#toggleRenderingEffects()
      */
     @Override
@@ -347,7 +349,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#invalidateScroll()
      */
     @Override
@@ -360,7 +362,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
     /**
      * Sets the page align flag.
-     * 
+     *
      * @param align
      *            the new flag indicating align
      */
@@ -371,7 +373,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
     /**
      * Checks if view is initialized.
-     * 
+     *
      * @return true, if is initialized
      */
     protected final boolean isShown() {
@@ -380,7 +382,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#getFirstVisiblePage()
      */
     @Override
@@ -390,7 +392,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#getLastVisiblePage()
      */
     @Override
@@ -400,7 +402,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#redrawView()
      */
     @Override
@@ -410,7 +412,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#redrawView(org.ebookdroid.core.ViewState)
      */
     @Override
@@ -524,7 +526,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
         /**
          * {@inheritDoc}
-         * 
+         *
          * @see android.view.GestureDetector.SimpleOnGestureListener#onDoubleTap(android.view.MotionEvent)
          */
         @Override
@@ -537,7 +539,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
         /**
          * {@inheritDoc}
-         * 
+         *
          * @see android.view.GestureDetector.SimpleOnGestureListener#onDown(android.view.MotionEvent)
          */
         @Override
@@ -551,7 +553,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
         /**
          * {@inheritDoc}
-         * 
+         *
          * @see android.view.GestureDetector.SimpleOnGestureListener#onFling(android.view.MotionEvent,
          *      android.view.MotionEvent, float, float)
          */
@@ -575,7 +577,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
         /**
          * {@inheritDoc}
-         * 
+         *
          * @see android.view.GestureDetector.SimpleOnGestureListener#onScroll(android.view.MotionEvent,
          *      android.view.MotionEvent, float, float)
          */
@@ -597,7 +599,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
         /**
          * {@inheritDoc}
-         * 
+         *
          * @see android.view.GestureDetector.SimpleOnGestureListener#onSingleTapUp(android.view.MotionEvent)
          */
         @Override
@@ -610,7 +612,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
         /**
          * {@inheritDoc}
-         * 
+         *
          * @see android.view.GestureDetector.SimpleOnGestureListener#onSingleTapConfirmed(android.view.MotionEvent)
          */
         @Override
@@ -623,7 +625,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
         /**
          * {@inheritDoc}
-         * 
+         *
          * @see android.view.GestureDetector.SimpleOnGestureListener#onLongPress(android.view.MotionEvent)
          */
         @Override
@@ -637,7 +639,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
         /**
          * {@inheritDoc}
-         * 
+         *
          * @see org.ebookdroid.common.touch.IMultiTouchListener#onTwoFingerPinch(float, float)
          */
         @Override
@@ -651,7 +653,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
         /**
          * {@inheritDoc}
-         * 
+         *
          * @see org.ebookdroid.common.touch.IMultiTouchListener#onTwoFingerPinchEnd()
          */
         @Override
@@ -664,7 +666,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
         /**
          * {@inheritDoc}
-         * 
+         *
          * @see org.ebookdroid.common.touch.IMultiTouchListener#onTwoFingerTap()
          */
         @Override

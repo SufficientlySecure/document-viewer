@@ -1,5 +1,6 @@
 package org.ebookdroid.ui.viewer;
 
+import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.types.ToastPosition;
@@ -36,8 +37,8 @@ import org.emdev.utils.LengthUtils;
 @ActionTarget(
 // action list
 actions = {
-        // start
-        @ActionMethodDef(id = R.id.mainmenu_about, method = "showAbout")
+// start
+@ActionMethodDef(id = R.id.mainmenu_about, method = "showAbout")
 // finish
 })
 public class ViewerActivity extends AbstractActionActivity<ViewerActivity, ViewerActivityController> {
@@ -85,7 +86,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
+    protected void onNewIntent(final Intent intent) {
         super.onNewIntent(intent);
         if (LCTX.isDebugEnabled()) {
             LCTX.d("onNewIntent(): " + intent);
@@ -154,7 +155,8 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
         getController().afterPause();
     }
 
-    public void onWindowFocusChanged(boolean hasFocus) {
+    @Override
+    public void onWindowFocusChanged(final boolean hasFocus) {
         if (hasFocus && this.view != null) {
             IUIManager.instance.setFullScreenMode(this, this.view.getView(), AppSettings.current().fullScreen);
         }
@@ -162,13 +164,16 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     @Override
     protected void onDestroy() {
+        final boolean finishing = isFinishing();
         if (LCTX.isDebugEnabled()) {
-            LCTX.d("onDestroy(): " + isFinishing());
+            LCTX.d("onDestroy(): " + finishing);
         }
 
         getController().beforeDestroy();
         super.onDestroy();
-        getController().afterDestroy(isFinishing());
+        getController().afterDestroy(finishing);
+
+        EBookDroidApp.onActivityClose(finishing);
     }
 
     protected IView createView() {
@@ -187,7 +192,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
             return;
         }
 
-        AppSettings app = AppSettings.current();
+        final AppSettings app = AppSettings.current();
         if (IUIManager.instance.isTitleVisible(this) && app.pageInTitle) {
             getWindow().setTitle("(" + pageText + ") " + bookTitle);
             return;
@@ -211,13 +216,13 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
             return;
         }
 
-        AppSettings app = AppSettings.current();
+        final AppSettings app = AppSettings.current();
 
         if (app.zoomToastPosition == ToastPosition.Invisible) {
             return;
         }
 
-        String zoomText = String.format("%.2f", zoom) + "x";
+        final String zoomText = String.format("%.2f", zoom) + "x";
 
         if (zoomToast != null) {
             zoomToast.setText(zoomText);
@@ -252,7 +257,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu(final ContextMenu menu, final View v, final ContextMenuInfo menuInfo) {
         menu.setHeaderTitle(R.string.app_name);
         menu.setHeaderIcon(R.drawable.icon);
         final MenuInflater inflater = getMenuInflater();
@@ -328,7 +333,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
         return super.dispatchKeyEvent(event);
     }
 
-    public void showToastText(int duration, int resId, Object... args) {
+    public void showToastText(final int duration, final int resId, final Object... args) {
         Toast.makeText(getApplicationContext(), getResources().getString(resId, args), duration).show();
     }
 

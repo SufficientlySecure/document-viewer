@@ -1,7 +1,6 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.common.settings.AppSettings;
-import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
@@ -18,7 +17,7 @@ public class HScrollController extends AbstractScrollController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#calculateCurrentPage(org.ebookdroid.core.ViewState)
      */
     @Override
@@ -46,7 +45,7 @@ public class HScrollController extends AbstractScrollController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#verticalConfigScroll(int)
      */
     @Override
@@ -63,7 +62,7 @@ public class HScrollController extends AbstractScrollController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#getScrollLimits()
      */
     @Override
@@ -81,7 +80,7 @@ public class HScrollController extends AbstractScrollController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#invalidatePageSizes(org.ebookdroid.ui.viewer.IViewController.InvalidateSizeReason,
      *      org.ebookdroid.core.Page)
      */
@@ -97,7 +96,7 @@ public class HScrollController extends AbstractScrollController {
 
         final int height = getHeight();
         final int width = getWidth();
-        final BookSettings bookSettings = SettingsManager.getBookSettings();
+        final BookSettings bookSettings = base.getBookSettings();
         final PageAlign pageAlign = DocumentViewMode.getPageAlign(bookSettings);
 
         if (changedPage == null) {

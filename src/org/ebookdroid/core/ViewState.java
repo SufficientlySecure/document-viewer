@@ -1,7 +1,6 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.common.settings.AppSettings;
-import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
@@ -39,7 +38,7 @@ public class ViewState {
 
     public ViewState(final IViewController dc, final float zoom) {
         this.app = AppSettings.current();
-        this.book = SettingsManager.getBookSettings();
+        this.book = dc.getBase().getBookSettings();
         this.ctrl = dc;
         this.model = dc.getBase().getDocumentModel();
 

@@ -14,6 +14,9 @@ import org.emdev.common.filesystem.PathFromUri;
 
 public class BookSettingsActivity extends BaseSettingsActivity {
 
+    private BookSettings current;
+
+    @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,10 +25,12 @@ public class BookSettingsActivity extends BaseSettingsActivity {
 
         final Uri uri = getIntent().getData();
         final String fileName = PathFromUri.retrieve(getContentResolver(), uri);
-        final BookSettings bs = SettingsManager.getBookSettings(fileName);
-        if (bs == null) {
+        current = SettingsManager.getBookSettings(fileName);
+        if (current == null) {
             finish();
         }
+
+        SettingsManager.onBookSettingsActivityCreated(current);
 
         try {
             addPreferencesFromResource(R.xml.fragment_book);
@@ -42,12 +47,12 @@ public class BookSettingsActivity extends BaseSettingsActivity {
         }
 
         decorator.decoratePreference(getRoot());
-        decorator.decorateBooksSettings();
+        decorator.decorateBooksSettings(current);
     }
 
     @Override
     protected void onPause() {
-        SettingsManager.onBookSettingsChanged(null);
+        SettingsManager.onBookSettingsActivityClosed(current);
         super.onPause();
     }
 }

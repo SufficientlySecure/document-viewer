@@ -7,6 +7,9 @@ import org.ebookdroid.common.settings.BackupSettings;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.listeners.IAppSettingsChangeListener;
 import org.ebookdroid.common.settings.listeners.IBackupSettingsChangeListener;
+import org.ebookdroid.ui.library.RecentActivityController;
+
+import android.util.Log;
 
 import org.emdev.BaseDroidApp;
 import org.emdev.common.android.VMRuntimeHack;
@@ -20,7 +23,7 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see android.app.Application#onCreate()
      */
     @Override
@@ -42,7 +45,7 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see android.app.Application#onLowMemory()
      */
     @Override
@@ -66,5 +69,12 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
     public void onBackupSettingsChanged(final BackupSettings oldSettings, final BackupSettings newSettings,
             final BackupSettings.Diff diff) {
         BackupManager.setMaxNumberOfAutoBackups(newSettings.maxNumberOfAutoBackups);
+    }
+
+    public static void onActivityClose(final boolean finishing) {
+        if (finishing && !SettingsManager.hasOpenedBooks() && !RecentActivityController.working.get()) {
+            Log.i(APP_NAME, "Application finished");
+            System.exit(0);
+        }
     }
 }

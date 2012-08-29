@@ -2,7 +2,6 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.R;
 import org.ebookdroid.common.settings.AppSettings;
-import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.ui.viewer.IActivityController;
@@ -30,7 +29,7 @@ public abstract class AbstractScrollController extends AbstractViewController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#goToPage(int)
      */
     @Override
@@ -40,7 +39,7 @@ public abstract class AbstractScrollController extends AbstractViewController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#goToPage(int, float, float)
      */
     @Override
@@ -50,7 +49,7 @@ public abstract class AbstractScrollController extends AbstractViewController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#drawView(org.ebookdroid.core.EventDraw)
      */
     @Override
@@ -74,14 +73,14 @@ public abstract class AbstractScrollController extends AbstractViewController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.AbstractViewController#onLayoutChanged(boolean, boolean, android.graphics.Rect,
      *      android.graphics.Rect)
      */
     @Override
     public final boolean onLayoutChanged(final boolean layoutChanged, final boolean layoutLocked, final Rect oldLaout,
             final Rect newLayout) {
-        final BookSettings bs = SettingsManager.getBookSettings();
+        final BookSettings bs = base.getBookSettings();
         final int page = model != null ? model.getCurrentViewPageIndex() : -1;
         final float offsetX = bs != null ? bs.offsetX : 0;
         final float offsetY = bs != null ? bs.offsetY : 0;
@@ -97,7 +96,7 @@ public abstract class AbstractScrollController extends AbstractViewController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#onScrollChanged(int, int)
      */
     @Override
@@ -111,7 +110,7 @@ public abstract class AbstractScrollController extends AbstractViewController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.AbstractViewController#isPageVisible(org.ebookdroid.core.Page,
      *      org.ebookdroid.core.ViewState)
      */
@@ -122,7 +121,7 @@ public abstract class AbstractScrollController extends AbstractViewController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#pageUpdated(org.ebookdroid.core.ViewState,
      *      org.ebookdroid.core.Page)
      */
@@ -132,7 +131,7 @@ public abstract class AbstractScrollController extends AbstractViewController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#updateAnimationType()
      */
     @Override

@@ -1,7 +1,6 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.common.settings.AppSettings;
-import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
@@ -24,7 +23,7 @@ import org.emdev.utils.LengthUtils;
 
 /**
  * The Class SinglePageController.
- * 
+ *
  * Used in single page view mode
  */
 public class SinglePageController extends AbstractViewController {
@@ -34,7 +33,7 @@ public class SinglePageController extends AbstractViewController {
 
     /**
      * Instantiates a new single page document view.
-     * 
+     *
      * @param baseActivity
      *            the base activity
      */
@@ -45,7 +44,7 @@ public class SinglePageController extends AbstractViewController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.AbstractViewController#goToPageImpl(int)
      */
     @Override
@@ -65,7 +64,7 @@ public class SinglePageController extends AbstractViewController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.AbstractViewController#goToPageImpl(int, float, float)
      */
     @Override
@@ -91,7 +90,7 @@ public class SinglePageController extends AbstractViewController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#onScrollChanged(int, int)
      */
     @Override
@@ -106,7 +105,7 @@ public class SinglePageController extends AbstractViewController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#calculateCurrentPage(org.ebookdroid.core.ViewState)
      */
     @Override
@@ -116,7 +115,7 @@ public class SinglePageController extends AbstractViewController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#verticalConfigScroll(int)
      */
     @Override
@@ -124,7 +123,7 @@ public class SinglePageController extends AbstractViewController {
         if (curler.enabled()) {
             curler.animate(direction);
         } else {
-            final BookSettings bs = SettingsManager.getBookSettings();
+            final BookSettings bs = base.getBookSettings();
             final float offsetX = bs != null ? bs.offsetX : 0;
 
             final Page page = model.getCurrentPageObject();
@@ -154,7 +153,7 @@ public class SinglePageController extends AbstractViewController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#getScrollLimits()
      */
     @Override
@@ -180,7 +179,7 @@ public class SinglePageController extends AbstractViewController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.AbstractViewController#initGestureDetectors(java.util.List)
      */
     @Override
@@ -194,7 +193,7 @@ public class SinglePageController extends AbstractViewController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#drawView(org.ebookdroid.core.EventDraw)
      */
     @Override
@@ -211,7 +210,7 @@ public class SinglePageController extends AbstractViewController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#invalidatePageSizes(org.ebookdroid.ui.viewer.IViewController.InvalidateSizeReason,
      *      org.ebookdroid.core.Page)
      */
@@ -222,7 +221,7 @@ public class SinglePageController extends AbstractViewController {
         }
         final int width = getWidth();
         final int height = getHeight();
-        final BookSettings bookSettings = SettingsManager.getBookSettings();
+        final BookSettings bookSettings = base.getBookSettings();
         final PageAlign pageAlign = DocumentViewMode.getPageAlign(bookSettings);
 
         if (changedPage == null) {
@@ -266,7 +265,7 @@ public class SinglePageController extends AbstractViewController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.AbstractViewController#isPageVisible(org.ebookdroid.core.Page,
      *      org.ebookdroid.core.ViewState)
      */
@@ -277,12 +276,12 @@ public class SinglePageController extends AbstractViewController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IViewController#updateAnimationType()
      */
     @Override
     public final void updateAnimationType() {
-        final PageAnimationType animationType = SettingsManager.getBookSettings().animationType;
+        final PageAnimationType animationType = base.getBookSettings().animationType;
         final PageAnimator newCurler = PageAnimationType.create(animationType, this);
 
         IUIManager.instance.setHardwareAccelerationEnabled(base.getActivity(), AppSettings.current().hwaEnabled);
@@ -294,7 +293,7 @@ public class SinglePageController extends AbstractViewController {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.AbstractViewController#pageUpdated(org.ebookdroid.core.ViewState,
      *      org.ebookdroid.core.Page)
      */

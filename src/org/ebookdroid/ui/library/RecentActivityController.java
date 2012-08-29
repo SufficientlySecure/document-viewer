@@ -40,6 +40,7 @@ import android.widget.ProgressBar;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.emdev.common.backup.BackupManager;
@@ -82,6 +83,7 @@ actions = {
         @ActionMethodDef(id = R.id.bookmenu_delete, method = "deleteBook"),
         @ActionMethodDef(id = R.id.actions_doDeleteBook, method = "doDeleteBook"),
         @ActionMethodDef(id = R.id.bookmenu_open, method = "openBook"),
+        @ActionMethodDef(id = R.id.bookmenu_openbooksettings, method = "openBookSettings"),
         @ActionMethodDef(id = R.id.bookmenu_openbookshelf, method = "openBookShelf"),
         @ActionMethodDef(id = R.id.bookmenu_openbookfolder, method = "openBookFolder"),
         @ActionMethodDef(id = R.id.ShelfCaption, method = "showSelectShelfDlg"),
@@ -97,6 +99,8 @@ actions = {
 })
 public class RecentActivityController extends ActionController<RecentActivity> implements IBrowserActivity,
         ILibSettingsChangeListener, IRecentBooksChangedListener {
+
+    public static final AtomicBoolean working = new AtomicBoolean();
 
     public final LogContext LCTX;
 
@@ -118,6 +122,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
     public RecentActivityController(final RecentActivity activity) {
         super(activity);
         LCTX = LogManager.root().lctx(this.getClass().getSimpleName(), true).lctx("" + SEQ.getAndIncrement());
+        working.set(true);
     }
 
     public void onCreate() {
@@ -206,8 +211,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
                 if (SettingsManager.getRecentBook() == null) {
                     changeLibraryView(RecentActivity.VIEW_LIBRARY);
                 } else {
-                    recentAdapter
-                            .setBooks(SettingsManager.getRecentBooks().values(), libSettings.allowedFileTypes);
+                    recentAdapter.setBooks(SettingsManager.getRecentBooks().values(), libSettings.allowedFileTypes);
                 }
             }
         }
@@ -227,6 +231,9 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         }
         if (finishing && BackupSettings.current().backupOnExit) {
             BackupManager.backup();
+        }
+        if (finishing) {
+            working.set(false);
         }
     }
 
@@ -330,7 +337,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
     public void showSettings(final ActionEx action) {
         libraryAdapter.stopScan();
         bookshelfAdapter.stopScan();
-        SettingsUI.showAppSettings(getManagedComponent());
+        SettingsUI.showAppSettings(getManagedComponent(), null);
     }
 
     @ActionMethod(ids = { R.id.bookmenu_copy, R.id.bookmenu_move })
@@ -451,6 +458,13 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         if (!file.isDirectory()) {
             showDocument(Uri.fromFile(file));
         }
+    }
+
+    @ActionMethod(ids = R.id.bookmenu_openbooksettings)
+    public void openBookSettings(final ActionEx action) {
+        final BookNode book = action.getParameter(AbstractActionActivity.MENU_ITEM_SOURCE);
+        SettingsManager.create(0, book.path, false, null);
+        SettingsUI.showBookSettings(getManagedComponent(), book.path);
     }
 
     @ActionMethod(ids = R.id.bookmenu_openbookshelf)
@@ -620,8 +634,14 @@ public class RecentActivityController extends ActionController<RecentActivity> i
 
     @Override
     public void onRecentBooksChanged() {
-        final FileExtensionFilter filter = LibSettings.current().allowedFileTypes;
-        recentAdapter.setBooks(SettingsManager.getRecentBooks().values(), filter);
+        getManagedComponent().runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                final FileExtensionFilter filter = LibSettings.current().allowedFileTypes;
+                recentAdapter.setBooks(SettingsManager.getRecentBooks().values(), filter);
+            }
+        });
     }
 
     public void changeLibraryView(final int view) {

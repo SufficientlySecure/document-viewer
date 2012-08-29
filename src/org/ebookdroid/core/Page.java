@@ -1,7 +1,6 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.common.bitmaps.Bitmaps;
-import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.PageType;
 import org.ebookdroid.core.codec.CodecPageInfo;
@@ -146,7 +145,7 @@ public class Page {
     }
 
     public RectF getPageRegion(final RectF pageBounds, final RectF sourceRect) {
-        final BookSettings bs = SettingsManager.getBookSettings();
+        final BookSettings bs = base.getBookSettings();
         final RectF cb = nodes.root.croppedBounds;
         if (bs != null && bs.cropPages && cb != null) {
             final Matrix m = MatrixUtils.get();

@@ -2,6 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="bookmenu_open">"Apri libro"</string>
+<!--<string name="bookmenu_openbooksettings">"Show book settings"</string>-->
     <string name="bookmenu_openbookshelf">"Visualizza libreria"</string>
     <string name="bookmenu_openbookfolder">"Visualizza cartelle"</string>
     <string name="bookmenu_settings">"Mostra impostazioni libro"</string>

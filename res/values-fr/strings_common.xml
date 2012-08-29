@@ -51,8 +51,8 @@
 <!--<string name="opds_loading_catalog">"Loading catalog…"</string>-->
 <!--<string name="opds_loading_book">"Loading book: %1$s/%2$s…"</string>-->
 <!--<string name="opds_unpacking_book">"Unpacking book: %1$s/%2$s…"</string>-->
-<!--<string name="opds_download_complete">"Book download complete: %s"</string>-->
-<!--<string name="opds_download_error">"Book download failed: %s"</string>-->
+<!--<string name="opds_download_complete">"Book download complete: %1$s"</string>-->
+<!--<string name="opds_download_error">"Book download failed: %1$s"</string>-->
 <!--<string name="opds_add_new_feed">"Add new feed"</string>-->
 <!--<string name="opds_addfeed_title">"Adding new catalog"</string>-->
 <!--<string name="opds_addfeed_msg">"Enter alias and URL for the catalog"</string>-->

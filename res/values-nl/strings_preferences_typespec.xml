@@ -38,7 +38,7 @@
 <!--<string name="pref_fb2_xmlparser_summary">"XML parser"</string>-->
 <!--<string name="list_fb2_xmlparser_standard">"Standard"</string>-->
 <!--<string name="list_fb2_xmlparser_vtd_ex">"VTD based"</string>-->
-<!--<string name="list_fb2_xmlparser_duckbill">"Duckbill"</string>-->
+<!--<string name="list_fb2_xmlparser_duckbill">"Dumb &amp; Dirty"</string>-->
 <!--<string name="pref_fontsize_title">"Font size"</string>-->
 <!--<string name="pref_fontsize_summary">"Base font size"</string>-->
 <!--<string name="pref_fb2fontpack_title">"FB2 font family"</string>-->

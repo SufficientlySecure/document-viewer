@@ -15,15 +15,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.emdev.ui.tasks.BaseAsyncTaskExecutor;
+
 public class ThumbnailFile extends File {
 
     private static final long serialVersionUID = 4540533658351961301L;
+
+    private static final BaseAsyncTaskExecutor executor = new BaseAsyncTaskExecutor(256, 1, 5, 1, "ThumbnailLoader");
 
     private static Bitmap defaultImage;
 
     private final AtomicReference<Bitmap> ref = new AtomicReference<Bitmap>();
 
-    private final AtomicReference<LoadingTask> task = new AtomicReference<ThumbnailFile.LoadingTask>();
+    private ImageLoadingListener listener;
 
     ThumbnailFile(final File dir, final String name) {
         super(dir, name);
@@ -41,17 +45,23 @@ public class ThumbnailFile extends File {
         return bitmap;
     }
 
-    public Bitmap getImageAsync(final ImageLoadingListener l) {
+    public synchronized void loadImageAsync(final Bitmap defImage, final ImageLoadingListener l) {
         final Bitmap bitmap = ref.get();
         if (bitmap != null && !bitmap.isRecycled()) {
-            return bitmap;
+            l.onImageLoaded(bitmap);
+            return;
         }
 
-        if (task.compareAndSet(null, new LoadingTask(l))) {
-            task.get().execute();
-        }
+        l.onImageLoaded(defImage);
+        listener = l;
+        executor.execute(new LoadingTask());
+    }
 
-        return null;
+    protected synchronized void onImageLoaded(final Bitmap result) {
+        ref.set(result);
+        if (listener != null) {
+            listener.onImageLoaded(result);
+        }
     }
 
     public Bitmap getRawImage() {
@@ -146,12 +156,6 @@ public class ThumbnailFile extends File {
 
     private final class LoadingTask extends AsyncTask<Void, Void, Bitmap> {
 
-        private final ImageLoadingListener listener;
-
-        private LoadingTask(final ImageLoadingListener l) {
-            listener = l;
-        }
-
         @Override
         protected Bitmap doInBackground(final Void... params) {
             try {
@@ -163,9 +167,7 @@ public class ThumbnailFile extends File {
 
         @Override
         protected void onPostExecute(final Bitmap result) {
-            ref.set(result);
-            task.compareAndSet(this, null);
-            listener.onImageLoaded(result);
+            onImageLoaded(result);
         }
     }
 }

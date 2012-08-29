@@ -225,7 +225,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         }
     }
 
-    protected void onDestroy(boolean finishing) {
+    protected void onDestroy(final boolean finishing) {
         if (LCTX.isDebugEnabled()) {
             LCTX.d("onDestroy(): " + finishing);
         }
@@ -583,20 +583,24 @@ public class RecentActivityController extends ActionController<RecentActivity> i
 
     @Override
     public void loadThumbnail(final String path, final ImageView imageView, final int defaultResID) {
-        final ThumbnailFile tf = CacheManager.getThumbnailFile(path);
-        final Bitmap bmp = tf.getImageAsync(new ThumbnailFile.ImageLoadingListener() {
+        final ThumbnailFile oldTF = (ThumbnailFile) imageView.getTag();
+        final ThumbnailFile newTF = CacheManager.getThumbnailFile(path);
+        if (oldTF == newTF) {
+            return;
+        }
+        imageView.setTag(newTF);
+
+        final Bitmap defImage = def.getImage();
+        newTF.loadImageAsync(defImage, new ThumbnailFile.ImageLoadingListener() {
 
             @Override
             public void onImageLoaded(final Bitmap image) {
-                if (image != null) {
+                if (image != null && imageView.getTag() == newTF) {
                     imageView.setImageBitmap(image);
                     imageView.postInvalidate();
                 }
             }
         });
-
-        imageView.setImageBitmap(bmp != null ? bmp : def.getImage());
-        imageView.setTag(tf);
     }
 
     @Override

@@ -30,10 +30,8 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
 
     protected boolean documentStarted = false, documentEnded = false;
 
-    protected boolean inSection = false;
-
     protected boolean paragraphParsing = false;
-    
+
     protected int ulLevel = 0;
 
     protected boolean cover = false;
@@ -139,13 +137,12 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
                         parsedContent.getMarkupStream(currentStream).add(crs.paint.fixedSpace);
                     }
                 } else {
-                    inSection = true;
                     sectionLevel++;
                 }
                 break;
             case TITLE:
                 if (!parsingNotes) {
-                    setTitleStyle(!inSection ? TextStyle.MAIN_TITLE : TextStyle.SECTION_TITLE);
+                    setTitleStyle(!isInSection() ? TextStyle.MAIN_TITLE : TextStyle.SECTION_TITLE);
                     markupStream.add(crs.jm);
                     markupStream.add(emptyLine(crs.textSize));
                     markupStream.add(MarkupParagraphEnd.E);
@@ -276,7 +273,8 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
                     currentStream = streamId;
                 }
                 break;
-
+            default:
+                break;
         }
         tmpTagContent.setLength(0);
     }
@@ -320,10 +318,9 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
                     noteId = -1;
                     noteFirstWord = true;
                 } else {
-                    if (inSection) {
+                    if (isInSection()) {
                         markupStream.add(MarkupEndPage.E);
                         sectionLevel--;
-                        inSection = false;
                     }
                 }
                 break;
@@ -411,7 +408,13 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
                 paragraphParsing = false;
                 currentStream = oldStream;
                 break;
+            default:
+                break;
         }
+    }
+
+    protected boolean isInSection() {
+        return sectionLevel >= 0;
     }
 
     @Override

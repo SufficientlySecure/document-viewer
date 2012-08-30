@@ -7,7 +7,6 @@ import org.ebookdroid.ui.library.IBrowserActivity;
 import org.ebookdroid.ui.library.views.BookshelfView;
 
 import android.database.DataSetObserver;
-import android.os.AsyncTask;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -28,6 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.emdev.common.filesystem.FileSystemScanner;
 import org.emdev.ui.adapters.BaseViewHolder;
+import org.emdev.ui.tasks.AsyncTask;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.StringUtils;
 import org.emdev.utils.collections.SparseArrayEx;

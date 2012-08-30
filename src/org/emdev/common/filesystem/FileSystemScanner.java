@@ -6,7 +6,6 @@ import static android.os.FileObserver.MOVED_FROM;
 import static android.os.FileObserver.MOVED_TO;
 
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.FileObserver;
 
 import java.io.File;
@@ -20,6 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.emdev.ui.actions.EventDispatcher;
 import org.emdev.ui.actions.InvokationType;
+import org.emdev.ui.tasks.AsyncTask;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.StringUtils;
 

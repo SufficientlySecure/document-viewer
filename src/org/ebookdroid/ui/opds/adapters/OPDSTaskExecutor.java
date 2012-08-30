@@ -4,15 +4,15 @@ import org.ebookdroid.opds.model.Book;
 import org.ebookdroid.opds.model.BookDownloadLink;
 import org.ebookdroid.opds.model.Feed;
 
-import org.emdev.ui.tasks.BaseAsyncTaskExecutor;
+import org.emdev.ui.tasks.AsyncTaskExecutor;
 
 public class OPDSTaskExecutor {
 
-    private static final int CORE_POOL_SIZE = 5;
-    private static final int MAXIMUM_POOL_SIZE = 128;
+    private static final int CORE_POOL_SIZE = 1;
+    private static final int MAXIMUM_POOL_SIZE = 10;
     private static final int KEEP_ALIVE = 1;
 
-    private static final BaseAsyncTaskExecutor executor = new BaseAsyncTaskExecutor(1024, CORE_POOL_SIZE,
+    private static final AsyncTaskExecutor executor = new AsyncTaskExecutor(1024, CORE_POOL_SIZE,
             MAXIMUM_POOL_SIZE, KEEP_ALIVE, "OPDSThread");
 
     private final OPDSAdapter adapter;

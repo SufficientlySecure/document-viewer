@@ -8,11 +8,11 @@ import org.ebookdroid.opds.model.Feed;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
-import android.os.AsyncTask;
 
 import java.io.File;
 import java.io.FileInputStream;
 
+import org.emdev.ui.tasks.AsyncTask;
 import org.emdev.utils.LengthUtils;
 
 final class LoadThumbnailTask extends AsyncTask<Feed, Book, String> {

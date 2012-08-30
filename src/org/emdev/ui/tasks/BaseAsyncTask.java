@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
-import android.os.AsyncTask;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

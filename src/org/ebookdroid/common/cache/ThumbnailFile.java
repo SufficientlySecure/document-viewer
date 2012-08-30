@@ -8,20 +8,20 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.os.AsyncTask;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.emdev.ui.tasks.BaseAsyncTaskExecutor;
+import org.emdev.ui.tasks.AsyncTask;
+import org.emdev.ui.tasks.AsyncTaskExecutor;
 
 public class ThumbnailFile extends File {
 
     private static final long serialVersionUID = 4540533658351961301L;
 
-    private static final BaseAsyncTaskExecutor executor = new BaseAsyncTaskExecutor(256, 1, 5, 1, "ThumbnailLoader");
+    private static final AsyncTaskExecutor executor = new AsyncTaskExecutor(256, 1, 5, 1, "ThumbnailLoader");
 
     private static Bitmap defaultImage;
 

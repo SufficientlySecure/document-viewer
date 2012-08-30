@@ -71,6 +71,9 @@ public class EventDraw implements IEvent {
     @Override
     public ViewState process() {
         try {
+            if (canvas == null || viewState == null) {
+                return viewState;
+            }
             canvas.drawRect(canvas.getClipBounds(), viewState.paint.backgroundFillPaint);
             viewState.ctrl.drawView(this);
             return viewState;

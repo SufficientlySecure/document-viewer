@@ -169,7 +169,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
             LCTX.d("onDestroy(): " + finishing);
         }
 
-        getController().beforeDestroy();
+        getController().beforeDestroy(finishing);
         super.onDestroy();
         getController().afterDestroy(finishing);
 

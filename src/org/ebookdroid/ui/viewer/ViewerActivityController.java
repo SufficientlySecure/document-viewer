@@ -310,8 +310,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         }
     }
 
-    public void beforeDestroy() {
-        final boolean finishing = getManagedComponent().isFinishing();
+    public void beforeDestroy(boolean finishing) {
         if (LCTX.isDebugEnabled()) {
             LCTX.d("beforeDestroy(): " + finishing);
         }

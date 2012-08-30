@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:name="EBookDroidApp" android:hardwareAccelerated="true" android:largeHeap="true">
-        <activity android:name=".ui.viewer.ViewerActivity" android:configChanges="orientation|keyboardHidden">
+        <activity android:name=".ui.viewer.ViewerActivity" android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -39,17 +39,17 @@
                 <data android:pathPattern=".*\\.fb2\\.zip" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.library.RecentActivity" android:label="@string/app_name" android:configChanges="keyboardHidden|orientation" android:hardwareAccelerated="true">
+        <activity android:name=".ui.library.RecentActivity" android:label="@string/app_name" android:configChanges="keyboardHidden|orientation|screenSize" android:hardwareAccelerated="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.opds.OPDSActivity" android:label="@string/opds" android:configChanges="keyboardHidden|orientation" android:launchMode="singleTask" />
-        <activity android:name=".ui.settings.SettingsActivity" android:configChanges="keyboardHidden|orientation" />
-        <activity android:name=".ui.settings.FragmentedSettingsActivity" android:configChanges="keyboardHidden|orientation"/>
-        <activity android:name=".ui.settings.BookSettingsActivity" android:configChanges="keyboardHidden|orientation" android:launchMode="singleTask"/>
-        <activity android:name=".ui.library.BrowserActivity" android:theme="@android:style/Theme.NoTitleBar" android:configChanges="keyboardHidden|orientation" android:launchMode="singleTask"/>
+        <activity android:name=".ui.opds.OPDSActivity" android:label="@string/opds" android:configChanges="keyboardHidden|orientation|screenSize" android:launchMode="singleTask" />
+        <activity android:name=".ui.settings.SettingsActivity" android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity android:name=".ui.settings.FragmentedSettingsActivity" android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".ui.settings.BookSettingsActivity" android:configChanges="keyboardHidden|orientation|screenSize" android:launchMode="singleTask"/>
+        <activity android:name=".ui.library.BrowserActivity" android:theme="@android:style/Theme.NoTitleBar" android:configChanges="keyboardHidden|orientation|screenSize" android:launchMode="singleTask"/>
         <activity android:name=".ui.about.AboutActivity" android:icon="@drawable/icon" android:theme="@android:style/Theme.Dialog"/>
         <activity android:name=".ui.library.dialogs.FolderDlg" android:icon="@drawable/icon" android:theme="@android:style/Theme.Dialog"/>
 

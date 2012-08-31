@@ -6,17 +6,19 @@ import org.ebookdroid.core.codec.CodecDocument;
 
 public class FB2Context extends AbstractCodecContext {
 
+    public static final int FB2_FEATURES = FEATURE_UNIFIED_PAGE_INTO | FEATURE_PARALLEL_PAGE_ACCESS
+            | FEATURE_DOCUMENT_TEXT_SEARCH | FEATURE_EMBEDDED_COVER | FEATURE_EMBEDDED_OUTLINE;
+
     static {
         EBookDroidLibraryLoader.load();
     }
 
-    @Override
-    public CodecDocument openDocument(final String fileName, final String password) {
-        return new FB2Document(fileName);
+    public FB2Context() {
+        super(FB2_FEATURES);
     }
 
     @Override
-    public boolean isPageSizeCacheable() {
-        return false;
+    public CodecDocument openDocument(final String fileName, final String password) {
+        return new FB2Document(this, fileName);
     }
 }

@@ -16,6 +16,7 @@ import org.ebookdroid.core.DecodeServiceStub;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.core.codec.CodecContext;
+import org.ebookdroid.core.codec.CodecFeatures;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.events.CurrentPageListener;
 import org.ebookdroid.ui.viewer.IActivityController;
@@ -232,9 +233,12 @@ public class DocumentModel extends ListenerProxy {
 
     private CodecPageInfo[] retrievePagesInfo(final IActivityController base, final BookSettings bs,
             final IProgressIndicator task) {
+
+        final boolean cacheable = decodeService.isFeatureSupported(CodecFeatures.FEATURE_CACHABLE_PAGE_INFO);
+
         final PageCacheFile pagesFile = CacheManager.getPageFile(bs.fileName);
 
-        if (decodeService.isPageSizeCacheable() && pagesFile.exists()) {
+        if (cacheable && pagesFile.exists()) {
             final CodecPageInfo[] infos = pagesFile.load();
             if (infos != null) {
                 return infos;
@@ -251,7 +255,7 @@ public class DocumentModel extends ListenerProxy {
             infos[i] = unified != null ? unified : decodeService.getPageInfo(i);
         }
 
-        if (decodeService.isPageSizeCacheable()) {
+        if (cacheable) {
             pagesFile.save(infos);
         }
         return infos;

@@ -6,7 +6,7 @@ import static org.ebookdroid.droids.fb2.codec.FB2Page.PAGE_HEIGHT;
 import static org.ebookdroid.droids.fb2.codec.FB2Page.PAGE_WIDTH;
 
 import org.ebookdroid.common.settings.AppSettings;
-import org.ebookdroid.core.codec.CodecDocument;
+import org.ebookdroid.core.codec.AbstractCodecDocument;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.codec.OutlineLink;
@@ -46,7 +46,7 @@ import org.emdev.utils.LengthUtils;
 
 import com.ximpleware.VTDGenEx;
 
-public class FB2Document implements CodecDocument {
+public class FB2Document extends AbstractCodecDocument {
 
     private final ArrayList<FB2Page> pages = new ArrayList<FB2Page>();
 
@@ -54,7 +54,9 @@ public class FB2Document implements CodecDocument {
 
     private final ParsedContent content = new ParsedContent();
 
-    public FB2Document(final String fileName) {
+    public FB2Document(final FB2Context context, final String fileName) {
+        super(context, context.getContextHandle());
+
         Words.clear();
 
         final long t1 = System.currentTimeMillis();
@@ -368,12 +370,7 @@ public class FB2Document implements CodecDocument {
     }
 
     @Override
-    public boolean isRecycled() {
-        return false;
-    }
-
-    @Override
-    public void recycle() {
+    protected void freeDocument() {
         content.recycle();
         for (final FB2Page p : pages) {
             p.finalRecycle();
@@ -395,7 +392,7 @@ public class FB2Document implements CodecDocument {
     }
 
     @Override
-    public List<? extends RectF> searchText(final int pageNuber, final String pattern) throws DocSearchNotSupported {
+    public List<? extends RectF> searchText(final int pageNuber, final String pattern) {
         if (LengthUtils.isEmpty(pattern)) {
             return null;
         }

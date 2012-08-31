@@ -5,7 +5,7 @@ import org.ebookdroid.common.bitmaps.BitmapRef;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.core.codec.CodecContext;
 import org.ebookdroid.core.codec.CodecDocument;
-import org.ebookdroid.core.codec.CodecDocument.DocSearchNotSupported;
+import org.ebookdroid.core.codec.CodecFeatures;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageHolder;
 import org.ebookdroid.core.codec.CodecPageInfo;
@@ -69,7 +69,7 @@ public class DecodeServiceBase implements DecodeService {
                         }
                         return true;
                     } else {
-                        boolean recycled = value.recycle(-1, false);
+                        final boolean recycled = value.recycle(-1, false);
                         if (LCTX.isDebugEnabled()) {
                             if (recycled) {
                                 LCTX.d(Thread.currentThread().getName() + ": Recycle and remove old codec page: "
@@ -89,6 +89,11 @@ public class DecodeServiceBase implements DecodeService {
 
     public DecodeServiceBase(final CodecContext codecContext) {
         this.codecContext = codecContext;
+    }
+
+    @Override
+    public boolean isFeatureSupported(final int feature) {
+        return codecContext.isFeatureSupported(feature);
     }
 
     @Override
@@ -385,7 +390,7 @@ public class DecodeServiceBase implements DecodeService {
         }
 
         // Preventing problem inside the MuPDF
-        if (!codecContext.isParallelPageAccessAvailable()) {
+        if (!codecContext.isFeatureSupported(CodecFeatures.FEATURE_PARALLEL_PAGE_ACCESS)) {
             holder.getPage(taskId);
         }
         return holder;
@@ -419,7 +424,7 @@ public class DecodeServiceBase implements DecodeService {
         if (vs != null) {
             minSize = vs.pages.lastVisible - vs.pages.firstVisible + 1;
         }
-        int pagesInMemory = AppSettings.current().pagesInMemory;
+        final int pagesInMemory = AppSettings.current().pagesInMemory;
         return pagesInMemory == 0 ? 0 : Math.max(minSize, pagesInMemory);
     }
 
@@ -757,9 +762,9 @@ public class DecodeServiceBase implements DecodeService {
             List<? extends RectF> regions = null;
             if (document != null) {
                 try {
-                    try {
+                    if (codecContext.isFeatureSupported(CodecFeatures.FEATURE_DOCUMENT_TEXT_SEARCH)) {
                         regions = document.searchText(page.index.docIndex, pattern);
-                    } catch (final DocSearchNotSupported ex) {
+                    } else if (codecContext.isFeatureSupported(CodecFeatures.FEATURE_PAGE_TEXT_SEARCH)) {
                         regions = getPage(page.index.docIndex).searchText(pattern);
                     }
                     callback.searchComplete(page, regions);
@@ -829,6 +834,10 @@ public class DecodeServiceBase implements DecodeService {
         if (document == null) {
             return null;
         }
+        if (!codecContext.isFeatureSupported(FEATURE_EMBEDDED_COVER)) {
+            return null;
+        }
+
         final Bitmap thumbnail = document.getEmbeddedThumbnail();
         if (thumbnail != null) {
             width = 200;
@@ -847,10 +856,5 @@ public class DecodeServiceBase implements DecodeService {
             final CodecPage page = getPage(pageNo);
             return page.renderBitmap(width, height, region);
         }
-    }
-
-    @Override
-    public boolean isPageSizeCacheable() {
-        return codecContext.isPageSizeCacheable();
     }
 }

@@ -14,13 +14,18 @@ public abstract class AbstractCodecContext implements CodecContext {
 
     private static Integer densityDPI;
 
+    final int supportedFeatures;
+
     private long contextHandle;
 
     /**
      * Constructor.
+     *
+     * @param supportedFeatures
+     *            supported features list
      */
-    protected AbstractCodecContext() {
-        this(SEQ.incrementAndGet());
+    protected AbstractCodecContext(final int supportedFeatures) {
+        this(SEQ.incrementAndGet(), supportedFeatures);
     }
 
     /**
@@ -29,8 +34,9 @@ public abstract class AbstractCodecContext implements CodecContext {
      * @param contextHandle
      *            contect handler
      */
-    protected AbstractCodecContext(final long contextHandle) {
+    protected AbstractCodecContext(final long contextHandle, final int supportedFeatures) {
         this.contextHandle = contextHandle;
+        this.supportedFeatures = supportedFeatures;
     }
 
     @Override
@@ -76,13 +82,8 @@ public abstract class AbstractCodecContext implements CodecContext {
     }
 
     @Override
-    public boolean isPageSizeCacheable() {
-        return true;
-    }
-
-    @Override
-    public boolean isParallelPageAccessAvailable() {
-        return true;
+    public boolean isFeatureSupported(final int feature) {
+        return (supportedFeatures & feature) == feature;
     }
 
     /**

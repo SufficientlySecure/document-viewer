@@ -1,18 +1,18 @@
 package org.ebookdroid.core.codec;
 
-
 import android.graphics.Bitmap;
+import android.graphics.RectF;
 
 import java.util.Collections;
 import java.util.List;
 
 public abstract class AbstractCodecDocument implements CodecDocument {
 
-    protected final CodecContext context;
+    protected final AbstractCodecContext context;
 
     protected final long documentHandle;
 
-    protected AbstractCodecDocument(final CodecContext context, long documentHandle) {
+    protected AbstractCodecDocument(final AbstractCodecContext context, final long documentHandle) {
         this.context = context;
         this.documentHandle = documentHandle;
     }
@@ -21,21 +21,6 @@ public abstract class AbstractCodecDocument implements CodecDocument {
     protected final void finalize() throws Throwable {
         recycle();
         super.finalize();
-    }
-
-    @Override
-    public List<OutlineLink> getOutline() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public CodecPageInfo getUnifiedPageInfo() {
-        return null;
-    }
-
-    @Override
-    public CodecPageInfo getPageInfo(final int pageIndex) {
-        return null;
     }
 
     @Override
@@ -52,6 +37,31 @@ public abstract class AbstractCodecDocument implements CodecDocument {
     }
 
     protected void freeDocument() {
+    }
+
+    @Override
+    public final CodecContext getContext() {
+        return context;
+    }
+
+    @Override
+    public final boolean isFeatureSupported(final int feature) {
+        return (context.supportedFeatures & feature) == feature;
+    }
+
+    @Override
+    public List<OutlineLink> getOutline() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public CodecPageInfo getUnifiedPageInfo() {
+        return null;
+    }
+
+    @Override
+    public List<? extends RectF> searchText(final int pageNuber, final String pattern){
+        return Collections.emptyList();
     }
 
     @Override

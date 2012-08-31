@@ -58,9 +58,9 @@ public class DjvuDocument extends AbstractCodecDocument {
     private native static int getPageCount(long docHandle);
 
     private native static void free(long pageHandle);
-    
+
     @Override
-    public List<? extends RectF> searchText(final int pageNuber, final String pattern) throws DocSearchNotSupported {
+    public List<? extends RectF> searchText(final int pageNuber, final String pattern) {
         final List<PageTextBox> list = DjvuPage.getPageText(documentHandle, pageNuber, context.getContextHandle(), pattern.toLowerCase());
         if (LengthUtils.isNotEmpty(list)) {
             CodecPageInfo cpi = getPageInfo(pageNuber);

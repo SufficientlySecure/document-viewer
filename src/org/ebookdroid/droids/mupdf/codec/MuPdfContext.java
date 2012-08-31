@@ -3,7 +3,6 @@ package org.ebookdroid.droids.mupdf.codec;
 import org.ebookdroid.EBookDroidLibraryLoader;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.core.codec.AbstractCodecContext;
-import org.ebookdroid.core.codec.CodecDocument;
 
 import android.graphics.Bitmap;
 
@@ -15,9 +14,11 @@ import org.emdev.common.fonts.data.FontStyle;
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
 
-public class MuPdfContext extends AbstractCodecContext {
+public abstract class MuPdfContext extends AbstractCodecContext {
 
     public static final LogContext LCTX = LogManager.root().lctx("MuPdf");
+
+    public static final int MUPDF_FEATURES = FEATURE_CACHABLE_PAGE_INFO | FEATURE_EMBEDDED_OUTLINE | FEATURE_PAGE_TEXT_SEARCH;
 
     public static final Bitmap.Config BITMAP_CFG = Bitmap.Config.RGB_565;
 
@@ -28,6 +29,8 @@ public class MuPdfContext extends AbstractCodecContext {
     }
 
     public MuPdfContext() {
+        super(MUPDF_FEATURES);
+
         final AppSettings app = AppSettings.current();
 
         final String[] monoFonts = FontManager.getExternalFonts(app.monoFontPack, FontFamilyType.MONO);
@@ -63,16 +66,6 @@ public class MuPdfContext extends AbstractCodecContext {
     public Bitmap.Config getBitmapConfig() {
         return EBookDroidLibraryLoader.nativeGraphicsAvailable && AppSettings.current().useNativeGraphics ? NATIVE_BITMAP_CFG
                 : BITMAP_CFG;
-    }
-
-    @Override
-    public CodecDocument openDocument(final String fileName, final String password) {
-        return null;
-    }
-
-    @Override
-    public boolean isParallelPageAccessAvailable() {
-        return false;
     }
 
     private static native void setMonoFonts(String regular, String italic, String bold, String boldItalic);

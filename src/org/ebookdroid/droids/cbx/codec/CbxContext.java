@@ -13,13 +13,19 @@ import org.emdev.common.archives.ArchiveFile;
 public abstract class CbxContext<ArchiveEntryType extends ArchiveEntry> extends AbstractCodecContext implements
         CbxArchiveFactory<ArchiveEntryType> {
 
+    public static final int CBX_FEATURES = FEATURE_CACHABLE_PAGE_INFO | FEATURE_PARALLEL_PAGE_ACCESS;
+
     static {
         EBookDroidLibraryLoader.load();
     }
 
+    protected CbxContext() {
+        super(CBX_FEATURES);
+    }
+
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.codec.CodecContext#openDocument(java.lang.String, java.lang.String)
      */
     @Override

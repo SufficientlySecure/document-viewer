@@ -15,7 +15,7 @@ public class DjvuContext extends AbstractCodecContext {
     }
 
     public DjvuContext() {
-        super(create());
+        super(create(), FEATURE_CACHABLE_PAGE_INFO | FEATURE_PARALLEL_PAGE_ACCESS | FEATURE_DOCUMENT_TEXT_ACCESS | FEATURE_EMBEDDED_OUTLINE);
     }
 
     @Override

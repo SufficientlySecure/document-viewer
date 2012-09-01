@@ -19,6 +19,8 @@ enum {
 	FZ_DRAWDEV_FLAGS_TYPE3 = 1,
 };
 
+int ebookdroid_nightmode = 0;
+
 typedef struct fz_draw_state_s fz_draw_state;
 
 struct fz_draw_state_s {
@@ -885,6 +887,7 @@ fz_draw_fill_image(fz_device *devp, fz_image *image, fz_matrix ctm, float alpha)
 	fz_pixmap *scaled = NULL;
 	fz_pixmap *pixmap;
 	fz_pixmap *orig_pixmap;
+	fz_pixmap *inverted;
 	int after;
 	int dx, dy;
 	fz_context *ctx = dev->ctx;
@@ -962,13 +965,24 @@ fz_draw_fill_image(fz_device *devp, fz_image *image, fz_matrix ctm, float alpha)
 			}
 		}
 
-		fz_paint_image(state->dest, state->scissor, state->shape, pixmap, ctm, alpha * 255);
+		if (ebookdroid_nightmode) {
+			inverted = fz_new_pixmap(ctx, pixmap->colorspace, pixmap->w, pixmap->h);
+			memcpy(inverted->samples, pixmap->samples, pixmap->n * pixmap->w * pixmap->h);
+			fz_invert_pixmap(ctx, inverted);
+
+			fz_paint_image(state->dest, state->scissor, state->shape, inverted, ctm, alpha * 255);
+		} else {
+			fz_paint_image(state->dest, state->scissor, state->shape, pixmap, ctm, alpha * 255);
+		}
 
 		if (state->blendmode & FZ_BLEND_KNOCKOUT)
 			fz_knockout_end(dev);
 	}
 	fz_always(ctx)
 	{
+		if (ebookdroid_nightmode) {
+			fz_drop_pixmap(ctx, inverted);
+		}
 		fz_drop_pixmap(ctx, scaled);
 		fz_drop_pixmap(ctx, converted);
 		fz_drop_pixmap(ctx, orig_pixmap);

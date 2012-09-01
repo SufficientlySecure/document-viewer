@@ -19,8 +19,6 @@ enum {
 	FZ_DRAWDEV_FLAGS_TYPE3 = 1,
 };
 
-int ebookdroid_nightmode = 0;
-
 typedef struct fz_draw_state_s fz_draw_state;
 
 struct fz_draw_state_s {
@@ -965,7 +963,7 @@ fz_draw_fill_image(fz_device *devp, fz_image *image, fz_matrix ctm, float alpha)
 			}
 		}
 
-		if (ebookdroid_nightmode) {
+		if (ctx->ebookdroid_nightmode) {
 			inverted = fz_new_pixmap(ctx, pixmap->colorspace, pixmap->w, pixmap->h);
 			memcpy(inverted->samples, pixmap->samples, pixmap->n * pixmap->w * pixmap->h);
 			fz_invert_pixmap(ctx, inverted);
@@ -980,7 +978,7 @@ fz_draw_fill_image(fz_device *devp, fz_image *image, fz_matrix ctm, float alpha)
 	}
 	fz_always(ctx)
 	{
-		if (ebookdroid_nightmode) {
+		if (ctx->ebookdroid_nightmode) {
 			fz_drop_pixmap(ctx, inverted);
 		}
 		fz_drop_pixmap(ctx, scaled);
@@ -1003,6 +1001,7 @@ fz_draw_fill_image_mask(fz_device *devp, fz_image *image, fz_matrix ctm,
 	fz_pixmap *scaled = NULL;
 	fz_pixmap *pixmap;
 	fz_pixmap *orig_pixmap;
+	fz_pixmap *inverted;
 	int dx, dy;
 	int i;
 	fz_context *ctx = dev->ctx;
@@ -1046,7 +1045,15 @@ fz_draw_fill_image_mask(fz_device *devp, fz_image *image, fz_matrix ctm,
 			colorbv[i] = colorfv[i] * 255;
 		colorbv[i] = alpha * 255;
 
-		fz_paint_image_with_color(state->dest, state->scissor, state->shape, pixmap, ctm, colorbv);
+		if (ctx->ebookdroid_nightmode) {
+			inverted = fz_new_pixmap(ctx, pixmap->colorspace, pixmap->w, pixmap->h);
+			memcpy(inverted->samples, pixmap->samples, pixmap->n * pixmap->w * pixmap->h);
+			fz_invert_pixmap(ctx, inverted);
+
+			fz_paint_image_with_color(state->dest, state->scissor, state->shape, inverted, ctm, colorbv);
+		} else {
+			fz_paint_image_with_color(state->dest, state->scissor, state->shape, pixmap, ctm, colorbv);
+		}
 
 		if (scaled)
 			fz_drop_pixmap(dev->ctx, scaled);
@@ -1056,6 +1063,9 @@ fz_draw_fill_image_mask(fz_device *devp, fz_image *image, fz_matrix ctm,
 	}
 	fz_always(ctx)
 	{
+		if (ctx->ebookdroid_nightmode) {
+			fz_drop_pixmap(ctx, inverted);
+		}
 		fz_drop_pixmap(dev->ctx, orig_pixmap);
 	}
 	fz_catch(ctx)

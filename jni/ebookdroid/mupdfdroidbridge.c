@@ -65,8 +65,6 @@ extern char ext_font_TimesBoldItalic[1024]; // = "/sdcard/.org.ebookdroid/fonts/
 extern char ext_font_Symbol[1024]; // = "/sdcard/.org.ebookdroid/fonts/StandardSymL.cff";
 extern char ext_font_ZapfDingbats[1024]; // = "/sdcard/.org.ebookdroid/fonts/Dingbats.cff";
 
-extern int ebookdroid_nightmode;
-
 void mupdf_throw_exception_ex(JNIEnv *env, const char* exception, char *message)
 {
     jthrowable new_exception = (*env)->FindClass(env, exception);
@@ -630,7 +628,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPage(JNIEnv *env, jobject
     fz_context* ctx = page->ctx;
 
     //add check for night mode and set global variable accordingly
-    ebookdroid_nightmode = 1;
+    ctx->ebookdroid_nightmode = 0;
 
     fz_try(ctx)
     {
@@ -725,7 +723,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPageBitmap(JNIEnv *env, j
     }
 
     //add check for night mode and set global variable accordingly
-    ebookdroid_nightmode = 1;
+    ctx->ebookdroid_nightmode = 0;
 
     fz_try(ctx)
     {

@@ -68,11 +68,17 @@ JNIEXPORT void JNICALL
 {
     jint* src;
 	int i;
+    unsigned char* src1;
 
     src = (*env)->GetIntArrayElements(env, srcArray, 0);
 
-    for (i = 0; i < width * height; i++) {
-    	src[i] ^= 0x00FFFFFF;
+    src1 = (unsigned char*)src;
+
+    for (i = 0; i < width * height * 4; i+=4) {
+    	int bright = (((src1[i+2] * 77 + src1[i + 1] * 150 + src1[i] * 29) >> 8) ^ 0xFF) & 0xFF;
+    	src1[i] = bright;
+    	src1[i + 1] = bright;
+    	src1[i + 2] = bright;
     }
 
     (*env)->ReleaseIntArrayElements(env, srcArray, src, 0);

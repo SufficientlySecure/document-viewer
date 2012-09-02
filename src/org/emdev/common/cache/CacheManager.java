@@ -27,49 +27,56 @@ public class CacheManager {
     public static void init(final Context context) {
         s_context = context;
         s_cacheDir = context.getFilesDir();
-        LCTX.i("Default app cache dir: " + s_cacheDir.getAbsolutePath());;
+        LCTX.i("Default app cache dir: " + s_cacheDir.getAbsolutePath());
+        ;
     }
 
     public static File getCacheDir() {
         return s_cacheDir;
     }
 
-    public static void setCacheDir(final File newCache, final boolean moveFiles) {
+    public static boolean setCacheDir(final File newCache, final boolean moveFiles) {
         final File oldCache = s_cacheDir;
         s_cacheDir = newCache;
-        s_cacheDir.mkdir();
 
+        if (s_cacheDir.equals(oldCache)) {
+            return false;
+        }
+
+        s_cacheDir.mkdir();
         LCTX.i("Actual app cache dir: " + s_cacheDir.getAbsolutePath());
 
-        if (!s_cacheDir.equals(oldCache) && moveFiles) {
-            final String[] files = oldCache.list();
-            if (LengthUtils.isEmpty(files)) {
-                return;
-            }
+        if (!moveFiles) {
+            return true;
+        }
 
-            boolean renamed = true;
-            for (final String file : files) {
-                final File source = new File(oldCache, file);
-                final File target = new File(newCache, file);
-                renamed = renamed && source.renameTo(target);
-                if (!renamed) {
-                    try {
-                        FileUtils.copy(source, target);
-                        source.delete();
-                        if (LCTX.isDebugEnabled()) {
-                            LCTX.d("File moving completed: " + target.getName());
-                        }
-                    } catch (final IOException ex) {
-                        LCTX.e("File moving failed: " + ex.getMessage());
-                    }
-                } else {
+        final String[] files = oldCache.list();
+        if (LengthUtils.isEmpty(files)) {
+            return true;
+        }
+
+        boolean renamed = true;
+        for (final String file : files) {
+            final File source = new File(oldCache, file);
+            final File target = new File(newCache, file);
+            renamed = renamed && source.renameTo(target);
+            if (!renamed) {
+                try {
+                    FileUtils.copy(source, target);
+                    source.delete();
                     if (LCTX.isDebugEnabled()) {
-                        LCTX.d("File renaming completed: " + target.getName());
+                        LCTX.d("File moving completed: " + target.getName());
                     }
+                } catch (final IOException ex) {
+                    LCTX.e("File moving failed: " + ex.getMessage());
+                }
+            } else {
+                if (LCTX.isDebugEnabled()) {
+                    LCTX.d("File renaming completed: " + target.getName());
                 }
             }
         }
-
+        return true;
     }
 
     public static File createTempFile(final InputStream source, final String suffix) throws IOException {
@@ -82,8 +89,7 @@ public class CacheManager {
     }
 
     public static File createTempFile(final byte[] source, final String suffix) throws IOException {
-        final File cacheDir = s_cacheDir;
-        final File tempfile = File.createTempFile("temp", suffix, cacheDir);
+        final File tempfile = File.createTempFile("temp", suffix, s_cacheDir);
         tempfile.deleteOnExit();
 
         FileUtils.copy(new ByteArrayInputStream(source), new FileOutputStream(tempfile), source.length, null);
@@ -111,16 +117,15 @@ public class CacheManager {
     }
 
     public static void copy(final String sourcePath, final String targetPath, final boolean deleteSource) {
-        final File cacheDir = s_cacheDir;
-        final String[] files = cacheDir.list(new FilePrefixFilter(StringUtils.md5(sourcePath) + "."));
+        final String[] files = s_cacheDir.list(new FilePrefixFilter(StringUtils.md5(sourcePath) + "."));
         if (LengthUtils.isEmpty(files)) {
             return;
         }
         final String targetPrefix = StringUtils.md5(targetPath);
         boolean renamed = true;
         for (final String file : files) {
-            final File source = new File(cacheDir, file);
-            final File target = new File(cacheDir, targetPrefix + FileUtils.getExtensionWithDot(source));
+            final File source = new File(s_cacheDir, file);
+            final File target = new File(s_cacheDir, targetPrefix + FileUtils.getExtensionWithDot(source));
             if (deleteSource) {
                 renamed = renamed && source.renameTo(target);
                 if (!renamed) {

@@ -1,6 +1,7 @@
 package org.ebookdroid;
 
 import org.ebookdroid.common.bitmaps.BitmapManager;
+import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.BackupSettings;
 import org.ebookdroid.common.settings.LibSettings;
@@ -9,17 +10,13 @@ import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.listeners.IAppSettingsChangeListener;
 import org.ebookdroid.common.settings.listeners.IBackupSettingsChangeListener;
 import org.ebookdroid.common.settings.listeners.ILibSettingsChangeListener;
-import org.ebookdroid.common.settings.types.CacheLocation;
 import org.ebookdroid.ui.library.RecentActivityController;
 
 import android.util.Log;
 
-import java.io.File;
-
 import org.emdev.BaseDroidApp;
 import org.emdev.common.android.VMRuntimeHack;
 import org.emdev.common.backup.BackupManager;
-import org.emdev.common.cache.CacheManager;
 import org.emdev.common.fonts.FontManager;
 import org.emdev.utils.concurrent.Flag;
 
@@ -30,7 +27,7 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see android.app.Application#onCreate()
      */
     @Override
@@ -52,7 +49,7 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see android.app.Application#onLowMemory()
      */
     @Override
@@ -81,13 +78,7 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
     @Override
     public void onLibSettingsChanged(final LibSettings oldSettings, final LibSettings newSettings, final Diff diff) {
         if (diff.isCacheLocationChanged()) {
-            File cacheDir = getFilesDir();
-            if (newSettings.cacheLocation == CacheLocation.Custom) {
-                if (!APP_STORAGE.equals(cacheDir)) {
-                    cacheDir = new File(APP_STORAGE, "files");
-                }
-            }
-            CacheManager.setCacheDir(cacheDir, !diff.isFirstTime());
+            CacheManager.setCacheLocation(newSettings.cacheLocation, !diff.isFirstTime());
         }
     }
 

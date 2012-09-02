@@ -13,6 +13,11 @@
     <string name="pref_brbrfiletypesscreen_title">Files Types</string>
     <string name="pref_brbrfiletypesscreen_summary">Files Types for Show in library</string>
 
+    <string name="pref_cachelocation_title">Cache location</string>
+    <string name="pref_cachelocation_summary">Location of a file cache</string>
+    <string name="list_cachelocation_system">System app cache</string>
+    <string name="list_cachelocation_custom">Sdcard app cache</string>
+
     <string name="pref_brfiletypedjvu_title">.djvu</string>
     <string name="pref_brfiletypedjvu_summary">Show DjVu files</string>
 

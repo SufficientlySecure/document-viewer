@@ -2,6 +2,7 @@ package org.ebookdroid.common.settings;
 
 import org.ebookdroid.common.settings.definitions.LibPreferences;
 import org.ebookdroid.common.settings.listeners.ILibSettingsChangeListener;
+import org.ebookdroid.common.settings.types.CacheLocation;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -32,6 +33,8 @@ public class LibSettings implements LibPreferences, IBackupAgent {
 
     public final FileExtensionFilter allowedFileTypes;
 
+    public final CacheLocation cacheLocation;
+
     private LibSettings() {
         BackupManager.addAgent(this);
         final SharedPreferences prefs = SettingsManager.prefs;
@@ -40,6 +43,7 @@ public class LibSettings implements LibPreferences, IBackupAgent {
         autoScanDirs = AUTO_SCAN_DIRS.getPreferenceValue(prefs);
         searchBookQuery = SEARCH_BOOK_QUERY.getPreferenceValue(prefs);
         allowedFileTypes = FILE_TYPE_FILTER.getFilter(prefs);
+        cacheLocation  = CACHE_LOCATION.getPreferenceValue(prefs);
     }
 
     /* =============== Browser settings =============== */
@@ -125,9 +129,10 @@ public class LibSettings implements LibPreferences, IBackupAgent {
 
     public static class Diff {
 
-        private static final int D_UseBookcase = 0x0001 << 12;
-        private static final int D_AutoScanDirs = 0x0001 << 14;
-        private static final int D_AllowedFileTypes = 0x0001 << 15;
+        private static final int D_UseBookcase = 0x0001 << 0;
+        private static final int D_AutoScanDirs = 0x0001 << 1;
+        private static final int D_AllowedFileTypes = 0x0001 << 2;
+        private static final int D_CacheLocation = 0x0001 << 3;
 
         private int mask;
         private final boolean firstTime;
@@ -145,6 +150,9 @@ public class LibSettings implements LibPreferences, IBackupAgent {
                 }
                 if (!olds.allowedFileTypes.equals(news.allowedFileTypes)) {
                     mask |= D_AllowedFileTypes;
+                }
+                if (olds.cacheLocation != news.cacheLocation) {
+                    mask |= D_CacheLocation;
                 }
             }
         }
@@ -164,5 +172,10 @@ public class LibSettings implements LibPreferences, IBackupAgent {
         public boolean isAllowedFileTypesChanged() {
             return 0 != (mask & D_AllowedFileTypes);
         }
+
+        public boolean isCacheLocationChanged() {
+            return 0 != (mask & D_CacheLocation);
+        }
+
     }
 }

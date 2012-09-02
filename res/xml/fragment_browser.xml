@@ -1,4 +1,4 @@
-<PreferenceScreen 
+<PreferenceScreen
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:ebookdroid="http://ebookdroid.org"
         android:key="browserscreen"
@@ -16,6 +16,14 @@
             android:key="@string/pref_brautoscandir_id"
             android:summary="@string/pref_brautoscandir_summary"
             android:title="@string/pref_brautoscandir_title" />
+
+        <ListPreference
+            android:defaultValue="@string/pref_cachelocation_defvalue"
+            android:entries="@array/pref_cachelocation_entries"
+            android:entryValues="@array/pref_cachelocation_values"
+            android:key="@string/pref_cachelocation_id"
+            android:summary="@string/pref_cachelocation_summary"
+            android:title="@string/pref_cachelocation_title" />
 
         <PreferenceCategory
             android:key="brfiletypesscreen"

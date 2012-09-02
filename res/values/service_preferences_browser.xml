@@ -11,4 +11,18 @@
 
     <string translatable="false" name="pref_brsearchbookquery_id">brsearchbookquery</string>
 
+    <string translatable="false" name="pref_cachelocation_id">cachelocation</string>
+    <string translatable="false" name="pref_cachelocation_defvalue">System</string>
+    <string translatable="false" name="pref_cachelocation_system">System</string>
+    <string translatable="false" name="pref_cachelocation_custom">Custom</string>
+
+    <string-array name="pref_cachelocation_entries" translatable="false">
+        <item>@string/list_cachelocation_system</item>
+        <item>@string/list_cachelocation_custom</item>
+    </string-array>
+
+    <string-array name="pref_cachelocation_values" translatable="false">
+        <item>@string/pref_cachelocation_system</item>
+        <item>@string/pref_cachelocation_custom</item>
+    </string-array>
 </resources>

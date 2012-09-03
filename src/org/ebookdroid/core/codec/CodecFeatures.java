@@ -20,5 +20,7 @@ public interface CodecFeatures {
     int FEATURE_EMBEDDED_COVER = 1 << 8;
     int FEATURE_EMBEDDED_OUTLINE = 1 << 9;
 
+    int FEATURE_POSITIVE_IMAGES_IN_NIGHT_MODE = 1 << 10;
+
     boolean isFeatureSupported(int feature);
 }

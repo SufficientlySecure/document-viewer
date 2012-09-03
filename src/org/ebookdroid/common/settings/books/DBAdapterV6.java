@@ -18,6 +18,8 @@ class DBAdapterV6 extends DBAdapterV5 {
 
     public static final long F_AUTO_LEVELS = 1 << 3;
 
+    public static final long F_NIGHT_MODE_POS_IMAGES = 1 << 4;
+
     public static final String DB_BOOK_CREATE = "create table book_settings ("
     // Book file path
             + "book varchar(1024) primary key, "
@@ -103,7 +105,7 @@ class DBAdapterV6 extends DBAdapterV5 {
                 // Page animation type
                 bs.animationType.ordinal(),
                 // Flags
-                (bs.splitPages ? F_SPLIT_PAGES : 0) | (bs.cropPages ? F_CROP_PAGES : 0) | (bs.nightMode ? F_NIGHT_MODE : 0) | (bs.autoLevels ? F_AUTO_LEVELS : 0),
+                getFlags(bs),
                 // Offset x
                 (int) (bs.offsetX * OFFSET_FACTOR),
                 // Offset y
@@ -132,11 +134,7 @@ class DBAdapterV6 extends DBAdapterV5 {
         bs.pageAlign = PageAlign.values()[c.getInt(index++)];
         bs.animationType = PageAnimationType.values()[c.getInt(index++)];
 
-        long flags = c.getLong(index++);
-        bs.splitPages = (flags & F_SPLIT_PAGES) != 0;
-        bs.cropPages = (flags & F_CROP_PAGES) != 0;
-        bs.nightMode = (flags & F_NIGHT_MODE) != 0;
-        bs.autoLevels = (flags & F_AUTO_LEVELS) != 0;
+        setFlags(bs, c.getLong(index++));
 
         bs.offsetX = c.getInt(index++) / OFFSET_FACTOR;
         bs.offsetY = c.getInt(index++) / OFFSET_FACTOR;
@@ -145,5 +143,19 @@ class DBAdapterV6 extends DBAdapterV5 {
         bs.exposure = c.getInt(index++);
 
         return bs;
+    }
+
+    protected long getFlags(final BookSettings bs) {
+        return (bs.splitPages ? F_SPLIT_PAGES : 0) | (bs.cropPages ? F_CROP_PAGES : 0)
+                | (bs.nightMode ? F_NIGHT_MODE : 0) | (bs.autoLevels ? F_AUTO_LEVELS : 0)
+                | (bs.positiveImagesInNightMode ? F_NIGHT_MODE_POS_IMAGES : 0);
+    }
+
+    protected void setFlags(final BookSettings bs, final long flags) {
+        bs.splitPages = (flags & F_SPLIT_PAGES) != 0;
+        bs.cropPages = (flags & F_CROP_PAGES) != 0;
+        bs.nightMode = (flags & F_NIGHT_MODE) != 0;
+        bs.positiveImagesInNightMode = (flags & F_NIGHT_MODE_POS_IMAGES) != 0;
+        bs.autoLevels = (flags & F_AUTO_LEVELS) != 0;
     }
 }

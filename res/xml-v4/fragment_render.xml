@@ -56,6 +56,12 @@
             android:summary="@string/pref_nightmode_summary"
             android:title="@string/pref_nightmode_title" />
 
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_posimages_in_nightmode_defvalue"
+            android:key="@string/pref_posimages_in_nightmode_id"
+            android:summary="@string/pref_posimages_in_nightmode_summary"
+            android:title="@string/pref_posimages_in_nightmode_title" />
+
         <org.emdev.ui.preference.SeekBarPreference
             android:defaultValue="@string/pref_contrast_defvalue"
             android:key="@string/pref_contrast_id"

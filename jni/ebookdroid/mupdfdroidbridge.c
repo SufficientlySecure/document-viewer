@@ -589,7 +589,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_getBounds(JNIEnv *env, jclass c
 JNIEXPORT void JNICALL
 Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPage(JNIEnv *env, jobject this, jlong dochandle, jlong pagehandle,
                                                         jintArray viewboxarray, jfloatArray matrixarray,
-                                                        jintArray bufferarray)
+                                                        jintArray bufferarray, jint nightmode)
 {
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
     renderpage_t *page = (renderpage_t*) (long) pagehandle;
@@ -628,7 +628,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPage(JNIEnv *env, jobject
     fz_context* ctx = page->ctx;
 
     //add check for night mode and set global variable accordingly
-    ctx->ebookdroid_nightmode = 0;
+    ctx->ebookdroid_nightmode = nightmode;
 
     fz_try(ctx)
     {
@@ -657,7 +657,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPage(JNIEnv *env, jobject
 JNIEXPORT jboolean JNICALL
 Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPageBitmap(JNIEnv *env, jobject this, jlong dochandle,
                                                               jlong pagehandle, jintArray viewboxarray,
-                                                              jfloatArray matrixarray, jobject bitmap)
+                                                              jfloatArray matrixarray, jobject bitmap, jint nightmode)
 {
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
     renderpage_t *page = (renderpage_t*) (long) pagehandle;
@@ -723,7 +723,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPageBitmap(JNIEnv *env, j
     }
 
     //add check for night mode and set global variable accordingly
-    ctx->ebookdroid_nightmode = 0;
+    ctx->ebookdroid_nightmode = nightmode;
 
     fz_try(ctx)
     {

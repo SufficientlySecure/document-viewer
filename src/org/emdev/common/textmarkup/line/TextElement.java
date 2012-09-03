@@ -44,7 +44,7 @@ public class TextElement extends AbstractLineElement {
 
     @Override
     public float render(final Canvas c, final int y, final int x, final float additionalWidth, final float left,
-            final float right) {
+            final float right, final int nightmode) {
         if (left < x + width && x < right) {
             final int yy = y + offset;
             c.drawText(chars, start, length, x, yy, style.paint);

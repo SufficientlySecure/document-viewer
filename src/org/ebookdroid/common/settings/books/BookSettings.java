@@ -48,6 +48,8 @@ public class BookSettings implements CurrentPageListener {
 
     public boolean nightMode;
 
+    public boolean positiveImagesInNightMode;
+
     public int contrast = AppPreferences.CONTRAST.defValue;
 
     public int exposure = AppPreferences.EXPOSURE.defValue;
@@ -71,6 +73,7 @@ public class BookSettings implements CurrentPageListener {
         this.offsetX = current.offsetX;
         this.offsetY = current.offsetY;
         this.nightMode = current.nightMode;
+        this.positiveImagesInNightMode = current.positiveImagesInNightMode;
         this.contrast = current.contrast;
         this.exposure = current.exposure;
         this.autoLevels = current.autoLevels;
@@ -93,6 +96,7 @@ public class BookSettings implements CurrentPageListener {
         this.offsetX = current.offsetX;
         this.offsetY = current.offsetY;
         this.nightMode = current.nightMode;
+        this.positiveImagesInNightMode = current.positiveImagesInNightMode;
         this.contrast = current.contrast;
         this.exposure = current.exposure;
         this.autoLevels = current.autoLevels;
@@ -124,6 +128,7 @@ public class BookSettings implements CurrentPageListener {
         this.offsetX = (float) object.getDouble("offsetX");
         this.offsetY = (float) object.getDouble("offsetY");
         this.nightMode = object.getBoolean("nightMode");
+        this.positiveImagesInNightMode = object.optBoolean("positiveImagesInNightMode", false);
         this.contrast = object.getInt("contrast");
         this.exposure = object.getInt("exposure");
         this.autoLevels = object.getBoolean("autoLevels");
@@ -151,6 +156,7 @@ public class BookSettings implements CurrentPageListener {
         obj.put("offsetX", offsetX);
         obj.put("offsetY", offsetY);
         obj.put("nightMode", nightMode);
+        obj.put("positiveImagesInNightMode", positiveImagesInNightMode);
         obj.put("contrast", contrast);
         obj.put("exposure", exposure);
         obj.put("autoLevels", autoLevels);
@@ -202,8 +208,9 @@ public class BookSettings implements CurrentPageListener {
         private static final short D_Exposure = 0x0001 << 8;
         private static final short D_NightMode = 0x0001 << 9;
         private static final short D_AutoLevels = 0x0001 << 10;
+        private static final short D_PositiveImagesInNightMode = 0x0001 << 11;
 
-        private static final short D_Effects = D_Contrast | D_Exposure | D_NightMode | D_AutoLevels;
+        private static final short D_Effects = D_Contrast | D_Exposure | D_NightMode | D_PositiveImagesInNightMode | D_AutoLevels;
 
         private short mask;
         private final boolean firstTime;
@@ -236,6 +243,9 @@ public class BookSettings implements CurrentPageListener {
                 }
                 if (olds.nightMode != news.nightMode) {
                     mask |= D_NightMode;
+                }
+                if (olds.positiveImagesInNightMode != news.positiveImagesInNightMode) {
+                    mask |= D_PositiveImagesInNightMode;
                 }
                 if (olds.autoLevels != news.autoLevels) {
                     mask |= D_AutoLevels;
@@ -277,6 +287,10 @@ public class BookSettings implements CurrentPageListener {
 
         public boolean isNightModeChanged() {
             return 0 != (mask & D_NightMode);
+        }
+
+        public boolean isPositiveImagesInNightModeChanged() {
+            return 0 != (mask & D_PositiveImagesInNightMode);
         }
 
         public boolean isAutoLevelsChanged() {

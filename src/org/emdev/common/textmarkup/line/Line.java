@@ -71,12 +71,12 @@ public class Line {
         return h;
     }
 
-    public void render(final Canvas c, final int x, final int y, float left, float right) {
+    public void render(final Canvas c, final int x, final int y, float left, float right, final int nightmode) {
         ensureJustification();
         float x1 = x;
         for (int i = 0, n = elements.size(); i < n && !recycled ; i++) {
             final AbstractLineElement e = elements.get(i);
-            x1 += e.render(c, y, (int) x1, spaceWidth, left, right);
+            x1 += e.render(c, y, (int) x1, spaceWidth, left, right, nightmode);
         }
     }
 

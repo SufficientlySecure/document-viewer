@@ -152,6 +152,8 @@ public interface AppPreferences {
 
     BooleanPreferenceDefinition NIGHT_MODE = new BooleanPreferenceDefinition(pref_nightmode_id, pref_nightmode_defvalue);
 
+    BooleanPreferenceDefinition NIGHT_MODE_POS_IMAGES = new BooleanPreferenceDefinition(pref_posimages_in_nightmode_id, pref_posimages_in_nightmode_defvalue);
+
     IntegerPreferenceDefinition CONTRAST = new IntegerPreferenceDefinition(pref_contrast_id, pref_contrast_defvalue,
             pref_contrast_minvalue, pref_contrast_maxvalue);
 

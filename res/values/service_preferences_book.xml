@@ -5,6 +5,8 @@
 
     <string translatable="false" name="pref_book_nightmode_id">book_nightmode</string>
 
+    <string translatable="false" name="pref_book_posimages_in_nightmode_id">book-posimages-in-nightmode</string>
+
     <string translatable="false" name="pref_book_contrast_id">book_contrast</string>
 
     <string translatable="false" name="pref_book_exposure_id">book_exposure</string>

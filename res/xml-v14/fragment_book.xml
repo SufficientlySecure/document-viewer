@@ -1,7 +1,7 @@
 
-<PreferenceScreen 
+<PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ebookdroid="http://ebookdroid.org" 
+    xmlns:ebookdroid="http://ebookdroid.org"
 	android:key="book_prefs"
 	android:summary="@string/pref_book_category_summary"
 	android:title="@string/pref_book_category">
@@ -46,7 +46,7 @@
                 android:summary="@string/pref_animationtype_summary"
                 android:title="@string/pref_animationtype_title" />
 	</PreferenceCategory>
-	
+
     <PreferenceCategory
         android:summary="@string/pref_postprocessing_summary"
         android:title="@string/pref_postprocessing_category" >
@@ -56,6 +56,12 @@
             android:key="@string/pref_book_nightmode_id"
             android:summary="@string/pref_nightmode_summary"
             android:title="@string/pref_nightmode_title" />
+
+        <org.emdev.ui.preference.SwitchPreferenceEx
+            android:defaultValue="@string/pref_posimages_in_nightmode_defvalue"
+            android:key="@string/pref_book_posimages_in_nightmode_id"
+            android:summary="@string/pref_posimages_in_nightmode_summary"
+            android:title="@string/pref_posimages_in_nightmode_title" />
 
         <org.emdev.ui.preference.SeekBarPreference
             android:defaultValue="@string/pref_contrast_defvalue"
@@ -81,5 +87,5 @@
 
     </PreferenceCategory>
 
-	
+
 </PreferenceScreen>

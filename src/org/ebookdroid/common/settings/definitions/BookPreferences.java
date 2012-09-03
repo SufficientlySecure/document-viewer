@@ -11,6 +11,7 @@ import static org.ebookdroid.R.string.pref_book_croppages_id;
 import static org.ebookdroid.R.string.pref_book_exposure_id;
 import static org.ebookdroid.R.string.pref_book_id;
 import static org.ebookdroid.R.string.pref_book_nightmode_id;
+import static org.ebookdroid.R.string.pref_book_posimages_in_nightmode_id;
 import static org.ebookdroid.R.string.pref_book_splitpages_id;
 import static org.ebookdroid.R.string.pref_book_viewmode_id;
 import static org.ebookdroid.R.string.pref_contrast_defvalue;
@@ -21,6 +22,7 @@ import static org.ebookdroid.R.string.pref_exposure_defvalue;
 import static org.ebookdroid.R.string.pref_exposure_maxvalue;
 import static org.ebookdroid.R.string.pref_exposure_minvalue;
 import static org.ebookdroid.R.string.pref_nightmode_defvalue;
+import static org.ebookdroid.R.string.pref_posimages_in_nightmode_defvalue;
 import static org.ebookdroid.R.string.pref_splitpages_defvalue;
 import static org.ebookdroid.R.string.pref_viewmode_vertical_scroll;
 
@@ -40,6 +42,8 @@ public interface BookPreferences {
     StringPreferenceDefinition BOOK = new StringPreferenceDefinition(pref_book_id, 0);
 
     BooleanPreferenceDefinition BOOK_NIGHT_MODE = new BooleanPreferenceDefinition(pref_book_nightmode_id, pref_nightmode_defvalue);
+
+    BooleanPreferenceDefinition BOOK_NIGHT_MODE_POS_IMAGES = new BooleanPreferenceDefinition(pref_book_posimages_in_nightmode_id, pref_posimages_in_nightmode_defvalue);
 
     IntegerPreferenceDefinition BOOK_CONTRAST = new IntegerPreferenceDefinition(pref_book_contrast_id,
             pref_contrast_defvalue, pref_contrast_minvalue, pref_contrast_maxvalue);

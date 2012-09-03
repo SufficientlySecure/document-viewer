@@ -2,6 +2,7 @@ package org.ebookdroid.droids.fb2.codec;
 
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.BitmapRef;
+import org.ebookdroid.core.ViewState;
 import org.ebookdroid.core.codec.AbstractCodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
 
@@ -109,7 +110,9 @@ public class FB2Page extends AbstractCodecPage {
     }
 
     @Override
-    public BitmapRef renderBitmap(final int width, final int height, final RectF pageSliceBounds) {
+    public BitmapRef renderBitmap(final ViewState viewState, final int width, final int height, final RectF pageSliceBounds) {
+        final int nightmode = viewState != null && viewState.nightMode && viewState.positiveImagesInNightMode ? 1 : 0;
+
         final Matrix matrix = MatrixUtils.get();
         matrix.postScale((float) width / PAGE_WIDTH, (float) height / PAGE_HEIGHT);
         matrix.postTranslate(-pageSliceBounds.left * width, -pageSliceBounds.top * height);
@@ -133,7 +136,7 @@ public class FB2Page extends AbstractCodecPage {
             final int top = y;
             final int bottom = y + line.getHeight();
             if (bounds.top < bottom && top < bounds.bottom) {
-                line.render(c, FB2Page.MARGIN_X, bottom, bounds.left, bounds.right);
+                line.render(c, FB2Page.MARGIN_X, bottom, bounds.left, bounds.right, nightmode);
             }
             y = bottom;
         }
@@ -142,7 +145,7 @@ public class FB2Page extends AbstractCodecPage {
             final int top = y;
             final int bottom = y + line.getHeight();
             if (bounds.top < bottom && top < bounds.bottom) {
-                line.render(c, FB2Page.MARGIN_X, bottom, bounds.left, bounds.right);
+                line.render(c, FB2Page.MARGIN_X, bottom, bounds.left, bounds.right, nightmode);
             }
             y = bottom;
         }

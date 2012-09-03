@@ -11,7 +11,7 @@ public class LineFixedWhiteSpace extends AbstractLineElement {
     }
 
     @Override
-    public float render(final Canvas c, final int y, final int x, final float additionalWidth, float left, float right) {
+    public float render(final Canvas c, final int y, final int x, final float additionalWidth, float left, float right, final int nightmode) {
         return width;
     }
 }

@@ -3,6 +3,7 @@ package org.ebookdroid.droids.cbx.codec;
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.BitmapRef;
 import org.ebookdroid.common.bitmaps.RawBitmap;
+import org.ebookdroid.core.ViewState;
 import org.ebookdroid.core.codec.AbstractCodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
 
@@ -105,7 +106,7 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> extends AbstractCode
     }
 
     @Override
-    public BitmapRef renderBitmap(final int width, final int height, final RectF pageSliceBounds) {
+    public BitmapRef renderBitmap(final ViewState viewState, final int width, final int height, final RectF pageSliceBounds) {
         if (getPageInfo() == null) {
             return null;
         }

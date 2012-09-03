@@ -39,7 +39,7 @@ public class MultiLineElement extends AbstractLineElement {
     }
 
     @Override
-    public float render(Canvas c, int y, int x, float additionalWidth, float left, float right) {
+    public float render(Canvas c, int y, int x, float additionalWidth, float left, float right, final int nightmode) {
         if (hasBackground) {
             paint.setStyle(Style.FILL);
             paint.setStrokeWidth(0);
@@ -55,7 +55,7 @@ public class MultiLineElement extends AbstractLineElement {
         if (LengthUtils.isNotEmpty(lines)) {
             int y1 = y - height + BORDER_WIDTH;
             for (Line line : lines) {
-                line.render(c, x + BORDER_WIDTH, y1 + line.getHeight(), left, right);
+                line.render(c, x + BORDER_WIDTH, y1 + line.getHeight(), left, right, nightmode);
                 y1 += line.getHeight();
             }
         }

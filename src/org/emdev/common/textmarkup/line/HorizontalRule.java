@@ -19,7 +19,7 @@ public class HorizontalRule extends AbstractLineElement {
     }
 
     @Override
-    public float render(final Canvas c, final int y, final int x, final float additionalWidth, float left, float right) {
+    public float render(final Canvas c, final int y, final int x, final float additionalWidth, float left, float right, final int nightmode) {
         if (left < x + width && x < right) {
             c.drawLine(x, y - height / 2, x + width, y - height / 2, rulePaint);
             c.drawRect(x, y - height / 2, x + width, y - height / 2 + 1, rulePaint);

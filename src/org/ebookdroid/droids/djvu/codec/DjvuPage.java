@@ -4,6 +4,7 @@ import org.ebookdroid.EBookDroidLibraryLoader;
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.BitmapRef;
 import org.ebookdroid.common.settings.AppSettings;
+import org.ebookdroid.core.ViewState;
 import org.ebookdroid.core.codec.AbstractCodecPage;
 import org.ebookdroid.core.codec.PageLink;
 import org.ebookdroid.core.codec.PageTextBox;
@@ -46,7 +47,7 @@ public class DjvuPage extends AbstractCodecPage {
     }
 
     @Override
-    public BitmapRef renderBitmap(final int width, final int height, final RectF pageSliceBounds) {
+    public BitmapRef renderBitmap(final ViewState viewState, final int width, final int height, final RectF pageSliceBounds) {
         final int renderMode = AppSettings.current().djvuRenderingMode;
         BitmapRef bmp = null;
         if (width > 0 && height > 0) {

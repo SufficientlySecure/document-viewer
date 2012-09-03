@@ -18,7 +18,7 @@ import org.emdev.utils.StringUtils;
 
 public class CacheManager {
 
-    public static final LogContext LCTX = LogManager.root().lctx("CacheManager");
+    public static final LogContext LCTX = LogManager.root().lctx("CacheManager", false);
 
     protected static Context s_context;
 
@@ -55,27 +55,8 @@ public class CacheManager {
             return true;
         }
 
-        boolean renamed = true;
-        for (final String file : files) {
-            final File source = new File(oldCache, file);
-            final File target = new File(newCache, file);
-            renamed = renamed && source.renameTo(target);
-            if (!renamed) {
-                try {
-                    FileUtils.copy(source, target);
-                    source.delete();
-                    if (LCTX.isDebugEnabled()) {
-                        LCTX.d("File moving completed: " + target.getName());
-                    }
-                } catch (final IOException ex) {
-                    LCTX.e("File moving failed: " + ex.getMessage());
-                }
-            } else {
-                if (LCTX.isDebugEnabled()) {
-                    LCTX.d("File renaming completed: " + target.getName());
-                }
-            }
-        }
+        final int count = FileUtils.move(oldCache, newCache, files);
+        LCTX.i("" + count + " files moved");
         return true;
     }
 

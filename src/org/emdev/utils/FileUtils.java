@@ -107,6 +107,58 @@ public final class FileUtils {
         }
     }
 
+    public static int move(final File sourceDir, final File targetDir, final String[] fileNames) {
+        int count = 0;
+        boolean renamed = true;
+
+        final ByteBuffer buf = ByteBuffer.allocateDirect(128 * 1024);
+        for (final String file : fileNames) {
+            final File source = new File(sourceDir, file);
+            final File target = new File(targetDir, file);
+
+            renamed = renamed && source.renameTo(target);
+            if (renamed) {
+                count++;
+                continue;
+            }
+
+            try {
+                buf.clear();
+                ReadableByteChannel in = null;
+                WritableByteChannel out = null;
+                try {
+                    final InputStream ins = new FileInputStream(source);
+                    final OutputStream outs = new FileOutputStream(target);
+                    in = Channels.newChannel(ins);
+                    out = Channels.newChannel(outs);
+                    while (in.read(buf) > 0) {
+                        buf.flip();
+                        out.write(buf);
+                        buf.flip();
+                    }
+                } finally {
+                    if (out != null) {
+                        try {
+                            out.close();
+                        } catch (final IOException ex) {
+                        }
+                    }
+                    if (in != null) {
+                        try {
+                            in.close();
+                        } catch (final IOException ex) {
+                        }
+                    }
+                }
+                source.delete();
+                count++;
+            } catch (final IOException ex) {
+                System.err.println(ex.getMessage());
+            }
+        }
+        return count;
+    }
+
     public static void copy(final InputStream source, final OutputStream target) throws IOException {
         ReadableByteChannel in = null;
         WritableByteChannel out = null;

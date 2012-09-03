@@ -48,7 +48,7 @@
     <string name="pref_pagenumbertoastposition_summary">"Posición de la tostada con el número de página"</string>
     <string name="pref_zoomtoastposition_title">"Posición del aumento"</string>
     <string name="pref_zoomtoastposition_summary">"Posición de la tostada con el aumento aplicado"</string>
-    <string name="list_toastposition_invisible">"Invisible"</string>
+    <string name="list_toastposition_invisible" translatable="true">"Invisible"</string>
     <string name="list_toastposition_lefttop">"Esquina superior izquierda"</string>
     <string name="list_toastposition_righttop">"Esquina superior derecha"</string>
     <string name="list_toastposition_leftbottom">"Esquina inferior izquierda"</string>

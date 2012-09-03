@@ -9,6 +9,10 @@
     <string name="pref_brautoscandir_summary">"Adresboekdirectory automatisch te  scannen"</string>
     <string name="pref_brbrfiletypesscreen_title">"Bestanden categorie"</string>
     <string name="pref_brbrfiletypesscreen_summary">"Bestanden categorie voor het vertonen"</string>
+<!--<string name="pref_cachelocation_title">"Cache location"</string>-->
+<!--<string name="pref_cachelocation_summary">"Location of a file cache"</string>-->
+<!--<string name="list_cachelocation_system">"System app cache"</string>-->
+<!--<string name="list_cachelocation_custom">"Sdcard app cache"</string>-->
 <!--<string name="pref_brfiletypedjvu_title">".djvu"</string>-->
     <string name="pref_brfiletypedjvu_summary">"Vertoon DjVu-bestanden"</string>
     <string name="pref_brfiletypedjv_title">".DJV"</string>

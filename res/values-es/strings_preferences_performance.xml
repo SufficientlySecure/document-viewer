@@ -19,7 +19,7 @@
     <string name="pref_drawthread_priority_summary">"Define la prioridad del hilo encargado del dibujo en pantalla"</string>
     <string name="list_thread_priority_lowest">"Baja"</string>
     <string name="list_thread_priority_lower">"Debajo de lo normal"</string>
-    <string name="list_thread_priority_normal">"Normal"</string>
+    <string name="list_thread_priority_normal" translatable="true">"Normal"</string>
     <string name="list_thread_priority_higher">"Arriba de lo normal"</string>
     <string name="list_thread_priority_highest">"Alta"</string>
     <string name="pref_usenativegraphics_title">"Usar gráficos nativos"</string>

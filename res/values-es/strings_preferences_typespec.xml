@@ -7,7 +7,7 @@
     <string name="pref_brfiletypespecificdjvu_summary">"Ajustes para DJVU"</string>
     <string name="pref_djvu_rendering_mode_title">"Modo de representación"</string>
     <string name="pref_djvu_rendering_mode_summary">"Modo de representación de la página"</string>
-    <string name="list_djvu_rendering_mode_0">"Color"</string>
+    <string name="list_djvu_rendering_mode_0" translatable="true">"Color"</string>
     <string name="list_djvu_rendering_mode_1">"Blanco y Negro"</string>
     <string name="list_djvu_rendering_mode_2">"Sólo el color"</string>
     <string name="list_djvu_rendering_mode_3">"Sólo la máscara"</string>
@@ -45,7 +45,7 @@
     <string name="pref_fb2fontpack_summary">"Define el paquete de fuentes para el renderizado de FB2"</string>
     <string name="list_fontsize_tiny">"Diminuta"</string>
     <string name="list_fontsize_small">"Pequeña"</string>
-    <string name="list_fontsize_normal">"Normal"</string>
+    <string name="list_fontsize_normal" translatable="true">"Normal"</string>
     <string name="list_fontsize_large">"Grande"</string>
     <string name="list_fontsize_huge">"Enorme"</string>
     <string name="pref_fb2hyphen_title">"Habilitar separación silábica"</string>

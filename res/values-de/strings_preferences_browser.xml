@@ -9,6 +9,10 @@
     <string name="pref_brautoscandir_summary">"Der Katalog wird automatisch gescannt"</string>
     <string name="pref_brbrfiletypesscreen_title">"Dateitypen"</string>
     <string name="pref_brbrfiletypesscreen_summary">"Dateitypen zur Anzeige"</string>
+<!--<string name="pref_cachelocation_title">"Cache location"</string>-->
+<!--<string name="pref_cachelocation_summary">"Location of a file cache"</string>-->
+<!--<string name="list_cachelocation_system">"System app cache"</string>-->
+<!--<string name="list_cachelocation_custom">"Sdcard app cache"</string>-->
 <!--<string name="pref_brfiletypedjvu_title">".djvu"</string>-->
     <string name="pref_brfiletypedjvu_summary">"DjVu Dateien anzeigen"</string>
 <!--<string name="pref_brfiletypedjv_title">".djv"</string>-->

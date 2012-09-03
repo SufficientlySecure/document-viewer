@@ -72,7 +72,7 @@
     <string name="opds_authfeed_password">"Пароль:"</string>
     <string name="opds_authfeed_ok">"Авторизоваться"</string>
     <string name="opds_error_title">"Ошибка OPDS"</string>
-    <string name="opds_error_msg">"%s"</string>
+    <string name="opds_error_msg" translatable="true">"%s"</string>
     <string name="opds_retry_download">"Повторить"</string>
     <string name="book_copy_start">"Копирование книги…"</string>
     <string name="book_copy_progress">"Копирование книги: %1$s/%2$s…"</string>

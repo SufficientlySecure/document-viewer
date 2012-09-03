@@ -57,8 +57,8 @@
     <string name="opds_addfeed_title">"Aggiunta nuovo catalogo"</string>
     <string name="opds_addfeed_msg">"Inserire alias e URL per il catalogo"</string>
     <string name="opds_addfeed_ok">"Aggiungi"</string>
-    <string name="opds_addfeed_alias">"Alias:"</string>
-    <string name="opds_addfeed_url">"URL:"</string>
+    <string name="opds_addfeed_alias" translatable="true">"Alias:"</string>
+    <string name="opds_addfeed_url" translatable="true">"URL:"</string>
     <string name="opds_addfeed_auth">"Autorizzazione richiesta"</string>
     <string name="opds_editfeed_title">"Modifica catalogo"</string>
     <string name="opds_editfeed_msg">"Inserire alias e URL per il catalogo"</string>
@@ -89,7 +89,7 @@
     <string name="content_description_searchbook">"Ricerca libri per nome…"</string>
     <string name="content_description_icon">"Icona"</string>
     <string name="content_description_library">"Biblioteca"</string>
-    <string name="content_description_browser">"Browser"</string>
+    <string name="content_description_browser" translatable="true">"Browser"</string>
     <string name="content_description_clear">"Pulisci"</string>
     <string name="content_description_settings">"Impostazioni"</string>
     <string name="content_description_thumb">"Miniatura"</string>

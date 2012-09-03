@@ -46,7 +46,7 @@ public abstract class AbstractCodecDocument implements CodecDocument {
 
     @Override
     public final boolean isFeatureSupported(final int feature) {
-        return (context.supportedFeatures & feature) == feature;
+        return (context.supportedFeatures & feature) != 0;
     }
 
     @Override

@@ -2,33 +2,38 @@ package org.ebookdroid.core.models;
 
 import org.ebookdroid.core.DecodeService;
 import org.ebookdroid.core.Page;
+import org.ebookdroid.core.codec.CodecFeatures;
 import org.ebookdroid.ui.viewer.IActivityController;
 import org.ebookdroid.ui.viewer.IViewController;
 
 import android.graphics.RectF;
-import android.util.SparseArray;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
 import org.emdev.utils.CompareUtils;
 import org.emdev.utils.LengthUtils;
+import org.emdev.utils.collections.SparseArrayEx;
 
-public class SearchModel implements DecodeService.SearchCallback {
+public class SearchModel {
 
-    protected static final LogContext LCTX = LogManager.root().lctx("SearchModel");
+    protected static final LogContext LCTX = LogManager.root().lctx("SearchModel", false);
 
     private final IActivityController base;
     private String pattern;
     private Page currentPage;
     private int currentMatchIndex;
-    private final SparseArray<WeakReference<Matches>> matches;
+    private final SparseArrayEx<Matches> matches;
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     public SearchModel(final IActivityController base) {
         this.base = base;
-        this.matches = new SparseArray<WeakReference<Matches>>();
+        this.matches = new SparseArrayEx<Matches>();
     }
 
     public String getPattern() {
@@ -37,10 +42,24 @@ public class SearchModel implements DecodeService.SearchCallback {
 
     public void setPattern(final String pattern) {
         if (!CompareUtils.equals(this.pattern, pattern)) {
-            this.pattern = pattern;
-            this.matches.clear();
-            this.currentPage = null;
-            this.currentMatchIndex = -1;
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("SearchModel.setPattern(" + pattern + ")");
+            }
+            lock.writeLock().lock();
+            try {
+                this.pattern = pattern;
+                for (final Matches ref : matches) {
+                    final Matches m = ref;
+                    if (m != null) {
+                        m.cancel();
+                    }
+                }
+                this.matches.clear();
+                this.currentPage = null;
+                this.currentMatchIndex = -1;
+            } finally {
+                lock.writeLock().unlock();
+            }
         }
     }
 
@@ -48,9 +67,33 @@ public class SearchModel implements DecodeService.SearchCallback {
         if (LengthUtils.isEmpty(this.pattern)) {
             return null;
         }
-        final int key = page.index.docIndex;
-        final WeakReference<Matches> ref = matches.get(key);
-        return ref != null ? ref.get() : null;
+        return getMatches(page.index.docIndex);
+    }
+
+    protected Matches getMatches(final int key) {
+        lock.readLock().lock();
+        try {
+            final Matches ref = matches.get(key);
+            return ref;
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    protected Matches getOrCreateMatches(final int key) {
+        lock.writeLock().lock();
+        try {
+            Matches ref = matches.get(key);
+            Matches m = ref;
+            if (m == null) {
+                m = new Matches(key);
+                ref = m;
+                matches.put(key, ref);
+            }
+            return m;
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     public Page getCurrentPage() {
@@ -65,8 +108,7 @@ public class SearchModel implements DecodeService.SearchCallback {
         if (currentPage == null) {
             return null;
         }
-        final WeakReference<Matches> ref = matches.get(currentPage.index.docIndex);
-        final Matches m = ref != null ? ref.get() : null;
+        final Matches m = getMatches(currentPage.index.docIndex);
         if (m == null) {
             return null;
         }
@@ -86,8 +128,7 @@ public class SearchModel implements DecodeService.SearchCallback {
             return searchFirstFrom(firstVisiblePage, callback);
         }
 
-        final WeakReference<Matches> ref = matches.get(currentPage.index.docIndex);
-        final Matches m = ref != null ? ref.get() : null;
+        final Matches m = getMatches(currentPage.index.docIndex);
         if (m == null) {
             return searchFirstFrom(currentPage.index.viewIndex, callback);
         }
@@ -114,8 +155,7 @@ public class SearchModel implements DecodeService.SearchCallback {
             return searchLastFrom(lastVisiblePage, callback);
         }
 
-        final WeakReference<Matches> ref = matches.get(currentPage.index.docIndex);
-        final Matches m = ref != null ? ref.get() : null;
+        final Matches m = getMatches(currentPage.index.docIndex);
         if (m == null) {
             return searchLastFrom(currentPage.index.viewIndex, callback);
         }
@@ -134,6 +174,12 @@ public class SearchModel implements DecodeService.SearchCallback {
     }
 
     private RectF searchFirstFrom(final int pageIndex, final ProgressCallback callback) {
+        if (LengthUtils.isEmpty(this.pattern)) {
+            return null;
+        }
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("SearchModel.searchFirstFrom(" + pageIndex + "): start");
+        }
         final int pageCount = base.getDocumentModel().getPageCount();
 
         currentPage = null;
@@ -146,8 +192,14 @@ public class SearchModel implements DecodeService.SearchCallback {
                 callback.searchStarted(index);
             }
 
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("SearchModel.searchFirstFrom(" + pageIndex + "): >>> " + index);
+            }
             final Matches m = startSearchOnPage(p);
             final List<? extends RectF> mm = m.waitForMatches();
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("SearchModel.searchFirstFrom(" + pageIndex + "): <<< " + index);
+            }
 
             if (callback != null) {
                 callback.searchFinished(index);
@@ -158,10 +210,16 @@ public class SearchModel implements DecodeService.SearchCallback {
                 return mm.get(currentMatchIndex);
             }
         }
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("SearchModel.searchFirstFrom(" + pageIndex + "): end");
+        }
         return null;
     }
 
     private RectF searchLastFrom(final int pageIndex, final ProgressCallback callback) {
+        if (LengthUtils.isEmpty(this.pattern)) {
+            return null;
+        }
         currentPage = null;
         currentMatchIndex = -1;
 
@@ -188,57 +246,83 @@ public class SearchModel implements DecodeService.SearchCallback {
     }
 
     private Matches startSearchOnPage(final Page page) {
-        if (LengthUtils.isEmpty(this.pattern)) {
-            return null;
-        }
-        final int key = page.index.docIndex;
-        WeakReference<Matches> ref = matches.get(key);
-        Matches m = ref != null ? ref.get() : null;
-        if (m == null) {
-            m = new Matches();
-            ref = new WeakReference<Matches>(m);
-            matches.put(key, ref);
-            base.getDecodeService().searchText(page, pattern, this);
-        }
+        final Matches m = getOrCreateMatches(page.index.docIndex);
+        m.startSearchOnPage(base.getDecodeService(), page, pattern);
         return m;
     }
 
-    @Override
-    public void searchComplete(final Page page, final List<? extends RectF> regions) {
-        final int key = page.index.docIndex;
-        WeakReference<Matches> ref = matches.get(key);
-        Matches m = ref != null ? ref.get() : null;
-        if (m == null) {
-            m = new Matches();
-            ref = new WeakReference<Matches>(m);
-            matches.put(key, ref);
-        }
-        m.setMatches(regions);
-    }
+    public static class Matches implements DecodeService.SearchCallback {
 
-    public static class Matches {
+        static final AtomicLong SEQ = new AtomicLong();
+        final long id = SEQ.getAndIncrement();
+        final int key;
+        final AtomicReference<CountDownLatch> running = new AtomicReference<CountDownLatch>();
+        final AtomicReference<List<? extends RectF>> matches = new AtomicReference<List<? extends RectF>>();
 
-        private List<? extends RectF> matches;
-
-        public synchronized void setMatches(final List<? extends RectF> matches) {
-            this.matches = matches;
-            this.notify();
+        Matches(final int key) {
+            this.key = key;
         }
 
-        public synchronized List<? extends RectF> getMatches() {
-            return this.matches;
+        public void cancel() {
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("Matches.cancel(" + key + ")");
+            }
+            setMatches(null);
         }
 
-        public synchronized List<? extends RectF> waitForMatches() {
-            if (this.matches == null) {
+        public void startSearchOnPage(final DecodeService ds, final Page page, final String pattern) {
+            if (running.compareAndSet(null, new CountDownLatch(1))) {
+                if (!ds.isFeatureSupported(CodecFeatures.FEATURE_TEXT_SEARCH)) {
+                    if (LCTX.isDebugEnabled()) {
+                        LCTX.d("Matches.startSearchOnPage(" + id + ", " + key + "): search not supported");
+                    }
+                    setMatches(null);
+                    return;
+                }
+                if (LCTX.isDebugEnabled()) {
+                    LCTX.d("Matches.startSearchOnPage(" + id + ", " + key + ")");
+                }
+                ds.searchText(page, pattern, this);
+            }
+        }
+
+        public void setMatches(final List<? extends RectF> matches) {
+            this.matches.set(matches);
+            final CountDownLatch event = running.getAndSet(null);
+            if (event != null) {
+                if (LCTX.isDebugEnabled()) {
+                    LCTX.d("SearchModel.Matches.setMatches(" + id + ", " + key + "): " + matches);
+                }
+                event.countDown();
+            }
+        }
+
+        public List<? extends RectF> getMatches() {
+            return this.matches.get();
+        }
+
+        public List<? extends RectF> waitForMatches() {
+            final CountDownLatch event = running.get();
+            if (event != null) {
                 try {
-                    this.wait();
+                    event.await();
                 } catch (final InterruptedException ex) {
                     Thread.interrupted();
                 }
-
             }
-            return this.matches;
+            final List<? extends RectF> res = this.matches.get();
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("Matches.waitForMatches(" + id + ", " + key + "): " + res);
+            }
+            return res;
+        }
+
+        @Override
+        public void searchComplete(final Page page, final List<? extends RectF> regions) {
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("Matches.searchComplete(" + id + ", " + key + "): " + regions);
+            }
+            this.setMatches(regions);
         }
     }
 

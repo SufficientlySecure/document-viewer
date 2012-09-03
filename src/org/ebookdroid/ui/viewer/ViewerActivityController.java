@@ -872,6 +872,9 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
                 final RectF current = forward ? searchModel.moveToNext(this) : searchModel.moveToPrev(this);
                 targetPage = searchModel.getCurrentPage();
+                if (LCTX.isDebugEnabled()) {
+                    LCTX.d("SearchTask.doInBackground(): " + targetPage + " " + current);
+                }
                 return current;
 
             } catch (final Throwable th) {

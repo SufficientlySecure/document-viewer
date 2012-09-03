@@ -83,7 +83,7 @@ public abstract class AbstractCodecContext implements CodecContext {
 
     @Override
     public boolean isFeatureSupported(final int feature) {
-        return (supportedFeatures & feature) == feature;
+        return (supportedFeatures & feature) != 0;
     }
 
     /**

@@ -97,6 +97,7 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public int getPixelFormat() {
         final Config cfg = getBitmapConfig();
         switch (cfg) {
@@ -834,10 +835,6 @@ public class DecodeServiceBase implements DecodeService {
         if (document == null) {
             return null;
         }
-        if (!codecContext.isFeatureSupported(FEATURE_EMBEDDED_COVER)) {
-            return null;
-        }
-
         final Bitmap thumbnail = document.getEmbeddedThumbnail();
         if (thumbnail != null) {
             width = 200;

@@ -152,7 +152,9 @@ class DBAdapterV1 implements IDBAdapter {
                     bs.lastUpdated = System.currentTimeMillis();
                 }
 
-                System.out.println("Store: " + bs.toJSON());
+                if (LCTX.isDebugEnabled()) {
+                    LCTX.d("Store: " + bs.toJSON());
+                }
 
                 storeBookSettings(bs, db);
 

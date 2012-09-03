@@ -80,7 +80,7 @@ public class SettingsManager {
                 if (current == null) {
                     created = true;
                     current = new BookSettings(fileName);
-                    AppSettings.fillBookSettings(current);
+                    AppSettings.setDefaultSettings(current);
                     if (temporaryBook) {
                         current.persistent = false;
                     }

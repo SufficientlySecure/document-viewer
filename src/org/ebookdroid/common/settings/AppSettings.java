@@ -306,6 +306,18 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     /* =============== */
 
+    static void setDefaultSettings(final BookSettings bs) {
+        bs.nightMode = current.nightMode;
+        bs.contrast = current.contrast;
+        bs.exposure = current.exposure;
+        bs.autoLevels = current.autoLevels;
+        bs.splitPages = current.splitPages;
+        bs.cropPages = current.cropPages;
+        bs.viewMode = current.viewMode;
+        bs.pageAlign = current.pageAlign;
+        bs.animationType = current.animationType;
+    }
+
     static void fillBookSettings(final BookSettings bs) {
         final SharedPreferences prefs = SettingsManager.prefs;
         bs.nightMode = BOOK_NIGHT_MODE.getPreferenceValue(prefs, current.nightMode);

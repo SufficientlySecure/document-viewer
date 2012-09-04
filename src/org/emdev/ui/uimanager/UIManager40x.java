@@ -15,8 +15,13 @@ import java.util.Map;
 @TargetApi(14)
 public class UIManager40x implements IUIManager {
 
-    protected static final int STANDARD_SYS_UI_FLAGS = View.SYSTEM_UI_FLAG_LOW_PROFILE
-            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+    protected static final int STANDARD_SYS_UI_FLAGS =
+    /**/
+    View.SYSTEM_UI_FLAG_LOW_PROFILE |
+    /**/
+    View.SYSTEM_UI_FLAG_FULLSCREEN |
+    /**/
+    View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
 
     protected static final Map<ComponentName, Data> data = new HashMap<ComponentName, Data>() {
 

@@ -29,8 +29,8 @@ public class FullScreenCallback implements Runnable {
     }
 
     public static FullScreenCallback get(final Activity activity, final View view) {
-        return AndroidVersion.is41x /* && !IUIManager.instance.isTabletUi(activity) */ ?
-        /* Creates full-screen callback devices with Android 4.1.x */
+        return AndroidVersion.is4x ?
+        /* Creates full-screen callback devices with Android 4.x */
         new FullScreenCallback(activity, view) : null;
     }
 

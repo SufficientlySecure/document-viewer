@@ -1,6 +1,8 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.R;
+import org.ebookdroid.common.bitmaps.BitmapManager;
+import org.ebookdroid.common.bitmaps.BitmapRef;
 import org.ebookdroid.common.keysbinding.KeyBindingsManager;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.SettingsManager;
@@ -15,6 +17,7 @@ import org.ebookdroid.common.touch.MultiTouchGestureDetectorFactory;
 import org.ebookdroid.common.touch.TouchManager;
 import org.ebookdroid.common.touch.TouchManager.Touch;
 import org.ebookdroid.core.codec.PageLink;
+import org.ebookdroid.core.crop.PageCropper;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.ui.viewer.IActivityController;
 import org.ebookdroid.ui.viewer.IView;
@@ -49,7 +52,8 @@ actions = {
         // actions
         @ActionMethodDef(id = R.id.actions_verticalConfigScrollUp, method = "verticalConfigScroll"),
         @ActionMethodDef(id = R.id.actions_verticalConfigScrollDown, method = "verticalConfigScroll"),
-        @ActionMethodDef(id = R.id.actions_quickZoom, method = "quickZoom")
+        @ActionMethodDef(id = R.id.actions_quickZoom, method = "quickZoom"),
+        @ActionMethodDef(id = R.id.actions_zoomToColumn, method = "zoomToColumn")
 // no more
 })
 public abstract class AbstractViewController extends AbstractComponentController<IView> implements IViewController {
@@ -71,6 +75,8 @@ public abstract class AbstractViewController extends AbstractComponentController
     protected final AtomicBoolean inZoom = new AtomicBoolean();
 
     protected final AtomicBoolean inQuickZoom = new AtomicBoolean();
+
+    protected final AtomicBoolean inZoomToColumn = new AtomicBoolean();
 
     protected final PageIndex pageToGo;
 
@@ -229,6 +235,64 @@ public abstract class AbstractViewController extends AbstractComponentController
             inQuickZoom.set(true);
         }
         base.getZoomModel().scaleAndCommitZoom(zoomFactor);
+    }
+
+    @ActionMethod(ids = R.id.actions_zoomToColumn)
+    public final void zoomToColumn(final ActionEx action) {
+        if (inZoom.get()) {
+            return;
+        }
+
+        final Float tapX = action.getParameter("tap_x", Float.valueOf(0));
+        final Float tapY = action.getParameter("tap_y", Float.valueOf(0));
+        if (tapX == 0 && tapY == 0) {
+            return;
+        }
+
+        System.out.println("AbstractViewController.zoomToColumn(" + tapX + "," + tapY + ")");
+        PointF pos = null;
+        for (final Page page : model.getPages(firstVisiblePage, lastVisiblePage + 1)) {
+            ViewState vs = new ViewState(this);
+            pos = vs.getPositionOnPage(page, tapX.intValue(), tapY.intValue());
+            if ((0 <= pos.x && pos.x <= 1) && (0 <= pos.y && pos.y <= 1)) {
+
+                float newZoom;
+                final RectF cb = page.nodes.root.croppedBounds;
+                float offset = 0;
+                if (inZoomToColumn.compareAndSet(true, false)) {
+                    newZoom = 1.0f;
+                } else {
+                    inZoomToColumn.set(true);
+
+                    System.out.println("AbstractViewController.zoomToColumn(" + pos.x + "," + pos.y + "), page = "
+                            + page.index);
+
+                    final Rect rootRect = new Rect(0, 0, PageCropper.BMP_SIZE, PageCropper.BMP_SIZE);
+
+                    final BitmapRef pageImage = base.getDecodeService().createThumbnail(PageCropper.BMP_SIZE,
+                            PageCropper.BMP_SIZE, page.index.docIndex, page.type.getInitialRect());
+                    RectF column = PageCropper.getColumn(pageImage, rootRect, pos.x, pos.y);
+                    BitmapManager.release(pageImage);
+                    System.out.println("AbstractViewController.zoomToColumn(): column - " + column);
+
+                    final float initialWidth = page.type.getInitialRect().width();
+
+                    final float screenAspect = (float) base.getView().getWidth() / base.getView().getHeight();
+                    final float pageAspect = page.getAspectRatio();
+
+                    float pageWidth = cb != null ? cb.width() : initialWidth;
+
+                    newZoom = (screenAspect > pageAspect ? screenAspect / pageAspect : 1) * pageWidth / column.width();
+                    offset = column.left;
+                }
+                base.getZoomModel().setZoom(newZoom, true);
+                float cropOffset = cb != null ? cb.left : 0;
+                final float offsetX = offset - cropOffset;
+                final float offsetY = pos.y - 0.5f * (base.getView().getHeight() / page.getBounds(newZoom).height());
+                goToPage(page.index.viewIndex, offsetX, offsetY);
+                break;
+            }
+        }
     }
 
     /**
@@ -446,6 +510,8 @@ public abstract class AbstractViewController extends AbstractComponentController
             if (LCTX.isDebugEnabled()) {
                 LCTX.d("Touch action: " + action.name + ", " + action.getMethod().toString());
             }
+            action.addParameter(new Constant("tap_x", Float.valueOf(x))).addParameter(
+                    new Constant("tap_y", Float.valueOf(y)));
             action.run();
             return true;
         } else {

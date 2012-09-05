@@ -28,10 +28,12 @@ public class PageCropper {
     private static Bitmap BITMAP = Bitmap.createBitmap(BMP_SIZE, BMP_SIZE, Bitmap.Config.RGB_565);
 
     private static final Rect RECT = new Rect(0, 0, BMP_SIZE, BMP_SIZE);
+
+    private static final int COLUMN_WIDTH = 5;
     private PageCropper() {
     }
 
-    public static RectF getCropBounds(final BitmapRef bitmap, final Rect bitmapBounds, final RectF pageSliceBounds) {
+    public static synchronized RectF getCropBounds(final BitmapRef bitmap, final Rect bitmapBounds, final RectF pageSliceBounds) {
         Canvas c = new Canvas(BITMAP);
         c.drawBitmap(bitmap.getBitmap(), bitmapBounds, RECT, null);
 
@@ -45,6 +47,49 @@ public class PageCropper {
         return new RectF(left * pageSliceBounds.width() + pageSliceBounds.left, top * pageSliceBounds.height()
                 + pageSliceBounds.top, right * pageSliceBounds.width() + pageSliceBounds.left, bottom
                 * pageSliceBounds.height() + pageSliceBounds.top);
+    }
+
+    public static synchronized RectF getColumn(BitmapRef bitmap, Rect bitmapBounds, float x, float y) {
+        Canvas c = new Canvas(BITMAP);
+        c.drawBitmap(bitmap.getBitmap(), bitmapBounds, RECT, null);
+        final float avgLum = calculateAvgLum();
+        final float left = getLeftBound(avgLum, x, y);
+        final float right = getRightBound(avgLum, x, y);
+
+        return new RectF(left, 0, right, 1);
+    }
+    private static float getLeftBound(float avgLum, float x, float y) {
+        int pointX = (int) (BMP_SIZE * x);
+        int pointY = (int) (BMP_SIZE * y);
+        int top = Math.max(0, pointY - 25);
+        int bottom = Math.min(BMP_SIZE -1, pointY + 25);
+
+
+        RawBitmap column = new RawBitmap(COLUMN_WIDTH, bottom - top, false);
+        for (int left = pointX; left>=0; left -= COLUMN_WIDTH) {
+            column.retrieve(BITMAP, left, top, COLUMN_WIDTH, bottom - top);
+            if (isRectWhite(column, avgLum)) {
+                return ((float)left /BMP_SIZE);
+            }
+        }
+        return 0;
+    }
+
+    private static float getRightBound(float avgLum, float x, float y) {
+        int pointX = (int) (BMP_SIZE * x);
+        int pointY = (int) (BMP_SIZE * y);
+        int top = Math.max(0, pointY - 25);
+        int bottom = Math.min(BMP_SIZE -1, pointY + 25);
+
+
+        RawBitmap column = new RawBitmap(COLUMN_WIDTH, bottom - top, false);
+        for (int left = pointX; left<BMP_SIZE - COLUMN_WIDTH; left += COLUMN_WIDTH) {
+            column.retrieve(BITMAP, left, top, COLUMN_WIDTH, bottom - top);
+            if (isRectWhite(column, avgLum)) {
+                return ((float)(left + COLUMN_WIDTH) /BMP_SIZE);
+            }
+        }
+        return 1;
     }
 
     private static float getLeftBound(final float avgLum) {
@@ -168,5 +213,4 @@ public class PageCropper {
         final int max = Math.max(r, Math.max(g, b));
         return (min + max) / 2;
     }
-
 }

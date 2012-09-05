@@ -13,6 +13,7 @@
    <item android:id="@+id/actions_verticalConfigScrollUp" />
    <item android:id="@+id/actions_verticalConfigScrollDown" />
    <item android:id="@+id/actions_quickZoom" />
+   <item android:id="@+id/actions_zoomToColumn" />
 
    <item android:id="@+id/actions_clearRecent" />
    <item android:id="@+id/actions_searchBook" />

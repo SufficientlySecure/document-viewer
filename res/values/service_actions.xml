@@ -19,7 +19,8 @@
         <item>actions_verticalConfigScrollUp</item>
         <item>actions_verticalConfigScrollDown</item>
         <item>actions_quickZoom</item>
-    </string-array>
+        <item>actions_zoomToColumn</item>
+        </string-array>
 
     <string-array name="list_actions_labels" translatable="false">
         <item></item>
@@ -39,6 +40,7 @@
         <item>@string/actions_verticalConfigScrollUp</item>
         <item>@string/actions_verticalConfigScrollDown</item>
         <item>@string/actions_quickZoom</item>
-    </string-array>
+        <item>@string/actions_zoomToColumn</item>
+        </string-array>
 
 </resources>

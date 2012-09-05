@@ -4,6 +4,7 @@ import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
+import org.ebookdroid.common.settings.types.PageType;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.ui.viewer.IView;
 import org.ebookdroid.ui.viewer.IViewController;
@@ -113,6 +114,32 @@ public class ViewState {
 
             pos.x = (left - cpBounds.left) / cpBounds.width();
             pos.y = (top - cpBounds.top) / cpBounds.height();
+        }
+        return pos;
+    }
+
+    public final PointF getPositionOnPage(final Page page, final int x, final int y) {
+        final PointF pos = new PointF();
+        final IView view = ctrl.getView();
+        if (view != null) {
+            System.out.println("ViewState.getPositionOnPage("+x+","+y+","+view.getScrollX()+","+view.getScrollY()+")");
+            final int left = (int) (x + view.getScrollX());
+            final int top = (int) (y + view.getScrollY());
+            final RectF cpBounds = getBounds(page);
+
+            pos.x = (left - cpBounds.left) / cpBounds.width();
+            pos.y = (top - cpBounds.top) / cpBounds.height();
+            if (page.nodes.root.croppedBounds != null) {
+                pos.x *= page.nodes.root.croppedBounds.width();
+                pos.x += page.nodes.root.croppedBounds.left;
+                pos.y *= page.nodes.root.croppedBounds.height();
+                pos.y += page.nodes.root.croppedBounds.top;
+            } else {
+                if (page.type == PageType.RIGHT_PAGE) {
+                    pos.x += 0.5;
+                }
+            }
+
         }
         return pos;
     }

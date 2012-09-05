@@ -4,5 +4,6 @@
     <string name="actions_verticalConfigScrollUp">Scroll Up</string>
     <string name="actions_verticalConfigScrollDown">Scroll Down</string>
     <string name="actions_quickZoom">Quick zoom</string>
+    <string name="actions_zoomToColumn">Zoom to column</string>
 
 </resources>

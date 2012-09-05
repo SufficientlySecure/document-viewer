@@ -206,6 +206,9 @@ public class RecentActivityController extends ActionController<RecentActivity> i
                 bookshelfAdapter.startScan();
             }
             recentAdapter.setBooks(SettingsManager.getRecentBooks().values(), libSettings.allowedFileTypes);
+            final int currentList = getManagedComponent().bookcaseView.getCurrentList();
+            final BookShelfAdapter list = bookshelfAdapter.getList(currentList);
+            list.notifyDataSetInvalidated();
         } else {
             if (getManagedComponent().getViewMode() == RecentActivity.VIEW_RECENT) {
                 if (SettingsManager.getRecentBook() == null) {

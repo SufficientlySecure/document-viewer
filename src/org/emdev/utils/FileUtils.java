@@ -15,6 +15,8 @@ import java.nio.channels.WritableByteChannel;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 
+import org.emdev.ui.progress.IProgressIndicator;
+
 public final class FileUtils {
 
     private FileUtils() {
@@ -77,44 +79,46 @@ public final class FileUtils {
         final long length = source.length();
         final int bufsize = MathUtils.adjust((int) length, 1024, 512 * 1024);
 
-        ReadableByteChannel in = null;
-        WritableByteChannel out = null;
+        final byte[] buf = new byte[bufsize];
+        int l = 0;
+        InputStream ins = null;
+        OutputStream outs = null;
         try {
-            final BufferedInputStream ins = new BufferedInputStream(new FileInputStream(source), bufsize);
-            final BufferedOutputStream outs = new BufferedOutputStream(new FileOutputStream(target), bufsize);
-
-            in = Channels.newChannel(ins);
-            out = Channels.newChannel(outs);
-            final ByteBuffer buf = ByteBuffer.allocateDirect(bufsize);
-            while (in.read(buf) > 0) {
-                buf.flip();
-                out.write(buf);
-                buf.flip();
+            ins = new FileInputStream(source);
+            outs = new FileOutputStream(target);
+            for (l = ins.read(buf); l > -1; l = ins.read(buf)) {
+                outs.write(buf, 0, l);
             }
         } finally {
-            if (out != null) {
+            if (outs != null) {
                 try {
-                    out.close();
+                    outs.close();
                 } catch (final IOException ex) {
                 }
             }
-            if (in != null) {
+            if (ins != null) {
                 try {
-                    in.close();
+                    ins.close();
                 } catch (final IOException ex) {
                 }
             }
         }
     }
 
-    public static int move(final File sourceDir, final File targetDir, final String[] fileNames) {
+    public static int move(final File sourceDir, final File targetDir, final String[] fileNames,
+            final IProgressIndicator progress) {
         int count = 0;
+        int processed = 0;
+        final int updates = Math.max(1, fileNames.length / 20);
+
         boolean renamed = true;
 
-        final ByteBuffer buf = ByteBuffer.allocateDirect(128 * 1024);
+        final byte[] buf = new byte[128 * 1024];
+        int length = 0;
         for (final String file : fileNames) {
             final File source = new File(sourceDir, file);
             final File target = new File(targetDir, file);
+            processed++;
 
             renamed = renamed && source.renameTo(target);
             if (renamed) {
@@ -123,35 +127,34 @@ public final class FileUtils {
             }
 
             try {
-                buf.clear();
-                ReadableByteChannel in = null;
-                WritableByteChannel out = null;
+                InputStream ins = null;
+                OutputStream outs = null;
                 try {
-                    final InputStream ins = new FileInputStream(source);
-                    final OutputStream outs = new FileOutputStream(target);
-                    in = Channels.newChannel(ins);
-                    out = Channels.newChannel(outs);
-                    while (in.read(buf) > 0) {
-                        buf.flip();
-                        out.write(buf);
-                        buf.flip();
+                    ins = new FileInputStream(source);
+                    outs = new FileOutputStream(target);
+                    for (length = ins.read(buf); length > -1; length = ins.read(buf)) {
+                        outs.write(buf, 0, length);
                     }
                 } finally {
-                    if (out != null) {
+                    if (outs != null) {
                         try {
-                            out.close();
+                            outs.close();
                         } catch (final IOException ex) {
                         }
                     }
-                    if (in != null) {
+                    if (ins != null) {
                         try {
-                            in.close();
+                            ins.close();
                         } catch (final IOException ex) {
                         }
                     }
                 }
                 source.delete();
                 count++;
+
+                if (progress != null && (processed % updates) == 0) {
+                    progress.setProgressDialogMessage(0, processed, fileNames.length);
+                }
             } catch (final IOException ex) {
                 System.err.println(ex.getMessage());
             }

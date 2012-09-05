@@ -1,11 +1,13 @@
 package org.ebookdroid.ui.settings;
 
+import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.definitions.AppPreferences;
 import org.ebookdroid.common.settings.definitions.BookPreferences;
 import org.ebookdroid.common.settings.definitions.LibPreferences;
 import org.ebookdroid.common.settings.definitions.OpdsPreferences;
+import org.ebookdroid.common.settings.types.CacheLocation;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.DocumentViewType;
 import org.ebookdroid.common.settings.types.PageAlign;
@@ -76,6 +78,17 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
     }
 
     public void decorateBrowserSettings() {
+        addListener(CACHE_LOCATION.key, new OnPreferenceChangeListener() {
+
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                CacheLocation newLocation = EnumUtils.getByResValue(CacheLocation.class, LengthUtils.toString(newValue), null);
+                if (newLocation != null) {
+                    CacheManager.moveCacheLocation(preference.getContext(), newLocation);
+                }
+                return true;
+            }
+        });
     }
 
     public void decorateOpdsSettings() {

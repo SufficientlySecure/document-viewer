@@ -12,6 +12,7 @@ import java.io.InputStream;
 import org.emdev.common.filesystem.FilePrefixFilter;
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
+import org.emdev.ui.progress.IProgressIndicator;
 import org.emdev.utils.FileUtils;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.StringUtils;
@@ -35,7 +36,7 @@ public class CacheManager {
         return s_cacheDir;
     }
 
-    public static boolean setCacheDir(final File newCache, final boolean moveFiles) {
+    public static boolean setCacheDir(final File newCache, final boolean moveFiles, IProgressIndicator progress) {
         final File oldCache = s_cacheDir;
         s_cacheDir = newCache;
 
@@ -55,7 +56,7 @@ public class CacheManager {
             return true;
         }
 
-        final int count = FileUtils.move(oldCache, newCache, files);
+        final int count = FileUtils.move(oldCache, newCache, files, progress);
         LCTX.i("" + count + " files moved");
         return true;
     }

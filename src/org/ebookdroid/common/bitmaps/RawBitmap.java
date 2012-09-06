@@ -83,6 +83,10 @@ public final class RawBitmap {
         nativeInvert(pixels, width, height);
     }
 
+    public int getAvgLum() {
+        return nativeAvgLum(pixels, width, height);
+    }
+
     public void contrast(final int contrast) {
         nativeContrast(pixels, width, height, contrast * 256 / 100);
     }
@@ -150,5 +154,7 @@ public final class RawBitmap {
 
     private static native void nativeAutoLevels(int[] src, int width, int height);
     private static native void nativeAutoLevels2(int[] src, int width, int height);
+
+    private static native int nativeAvgLum(int[] src, int width, int height);
 
 }

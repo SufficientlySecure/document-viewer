@@ -10,6 +10,8 @@ import android.graphics.RectF;
 
 public class PageCropper {
 
+    private static final int COLUMN_HALF_HEIGHT = 15;
+
     public static final int BMP_SIZE = 400;
 
     private final static int V_LINE_SIZE = 5;
@@ -25,6 +27,8 @@ public class PageCropper {
 
     private static RawBitmap CENTER = new RawBitmap(BMP_SIZE / 5, BMP_SIZE / 5, false);
 
+    private static RawBitmap WHOLE = new RawBitmap(BMP_SIZE, BMP_SIZE, false);
+
     private static Bitmap BITMAP = Bitmap.createBitmap(BMP_SIZE, BMP_SIZE, Bitmap.Config.RGB_565);
 
     private static final Rect RECT = new Rect(0, 0, BMP_SIZE, BMP_SIZE);
@@ -39,6 +43,7 @@ public class PageCropper {
 
         final float avgLum = calculateAvgLum();
 
+        System.out.println("PageCropper.getCropBounds() avgLum="+avgLum);
         final float left = getLeftBound(avgLum);
         final float right = getRightBound(avgLum);
         final float top = getTopBound(avgLum);
@@ -59,34 +64,44 @@ public class PageCropper {
         return new RectF(left, 0, right, 1);
     }
     private static float getLeftBound(float avgLum, float x, float y) {
+        boolean blackFound = false;
         int pointX = (int) (BMP_SIZE * x);
         int pointY = (int) (BMP_SIZE * y);
-        int top = Math.max(0, pointY - 25);
-        int bottom = Math.min(BMP_SIZE -1, pointY + 25);
+        int top = Math.max(0, pointY - COLUMN_HALF_HEIGHT);
+        int bottom = Math.min(BMP_SIZE -1, pointY + COLUMN_HALF_HEIGHT);
 
 
         RawBitmap column = new RawBitmap(COLUMN_WIDTH, bottom - top, false);
         for (int left = pointX; left>=0; left -= COLUMN_WIDTH) {
             column.retrieve(BITMAP, left, top, COLUMN_WIDTH, bottom - top);
             if (isRectWhite(column, avgLum)) {
-                return ((float)left /BMP_SIZE);
+                if (blackFound) {
+                    return ((float)left /BMP_SIZE);
+                }
+            } else {
+                blackFound = true;
             }
         }
         return 0;
     }
 
     private static float getRightBound(float avgLum, float x, float y) {
+        boolean blackFound = false;
         int pointX = (int) (BMP_SIZE * x);
         int pointY = (int) (BMP_SIZE * y);
-        int top = Math.max(0, pointY - 25);
-        int bottom = Math.min(BMP_SIZE -1, pointY + 25);
+        int top = Math.max(0, pointY - COLUMN_HALF_HEIGHT);
+        int bottom = Math.min(BMP_SIZE -1, pointY + COLUMN_HALF_HEIGHT);
 
 
         RawBitmap column = new RawBitmap(COLUMN_WIDTH, bottom - top, false);
         for (int left = pointX; left<BMP_SIZE - COLUMN_WIDTH; left += COLUMN_WIDTH) {
             column.retrieve(BITMAP, left, top, COLUMN_WIDTH, bottom - top);
             if (isRectWhite(column, avgLum)) {
-                return ((float)(left + COLUMN_WIDTH) /BMP_SIZE);
+                if (blackFound) {
+                    return ((float)(left + COLUMN_WIDTH) /BMP_SIZE);
+                }
+            } else {
+                blackFound = true;
             }
         }
         return 1;
@@ -193,15 +208,8 @@ public class PageCropper {
     }
 
     private static float calculateAvgLum() {
-        float lum = 0f;
-
-        CENTER.retrieve(BITMAP,  4 * BMP_SIZE / 10, 4 * BMP_SIZE / 10, CENTER.getWidth(), CENTER.getHeight());
-        final int[] pixels = CENTER.getPixels();
-        for (final int c : pixels) {
-            lum += getLum(c);
-        }
-
-        return lum / (pixels.length);
+        WHOLE.retrieve(BITMAP,  0, 0, WHOLE.getWidth(), WHOLE.getHeight());
+        return WHOLE.getAvgLum();
     }
 
     private static float getLum(final int c) {
@@ -209,6 +217,7 @@ public class PageCropper {
         final int g = (c & 0xFF00) >> 8;
         final int b = c & 0xFF;
 
+//        return (77 * r + 150 * g + 29 * b) >> 8;
         final int min = Math.min(r, Math.min(g, b));
         final int max = Math.max(r, Math.max(g, b));
         return (min + max) / 2;

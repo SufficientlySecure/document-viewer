@@ -123,6 +123,29 @@ JNIEXPORT void JNICALL
     (*env)->ReleaseIntArrayElements(env, srcArray, src, 0);
 }
 
+JNIEXPORT jint JNICALL
+ Java_org_ebookdroid_common_bitmaps_RawBitmap_nativeAvgLum(JNIEnv* env, jclass classObject, jintArray srcArray,
+                                                          jint width, jint height, jint contrast)
+{
+    jint* src;
+    int i, a;
+    int midBright = 0;
+    unsigned char* src1;
+
+    src = (*env)->GetIntArrayElements(env, srcArray, 0);
+
+	src1 = (unsigned char*)src;
+
+    for (i = 0; i < width * height * 4; i += 4) {
+//        midBright += src1[i+2] * 77 + src1[i + 1] * 150 + src1[i] * 29;
+        midBright += (MIN(src1[i+2],MIN(src1[i + 1],src1[i])) + MAX(src1[i+2],MAX(src1[i + 1],src1[i]))) / 2;
+    }
+    midBright /= (width * height);
+ 
+  (*env)->ReleaseIntArrayElements(env, srcArray, src, 0);
+	return (jint) midBright;
+}
+
 JNIEXPORT void JNICALL
  Java_org_ebookdroid_common_bitmaps_RawBitmap_nativeExposure(JNIEnv* env, jclass classObject, jintArray srcArray,
                                                           jint width, jint height, jint exp)

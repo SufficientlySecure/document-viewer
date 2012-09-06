@@ -22,7 +22,7 @@ public class PageCropper {
 
     private static final double WHITE_THRESHOLD = 0.005;
 
-    private static RawBitmap VLINE = new RawBitmap(V_LINE_SIZE,  BMP_SIZE - 2 * LINE_MARGIN, false);
+    private static RawBitmap VLINE = new RawBitmap(V_LINE_SIZE, BMP_SIZE - 2 * LINE_MARGIN, false);
     private static RawBitmap HLINE = new RawBitmap(BMP_SIZE - 2 * LINE_MARGIN, H_LINE_SIZE, false);
 
     private static RawBitmap CENTER = new RawBitmap(BMP_SIZE / 5, BMP_SIZE / 5, false);
@@ -34,16 +34,18 @@ public class PageCropper {
     private static final Rect RECT = new Rect(0, 0, BMP_SIZE, BMP_SIZE);
 
     private static final int COLUMN_WIDTH = 5;
+
     private PageCropper() {
     }
 
-    public static synchronized RectF getCropBounds(final BitmapRef bitmap, final Rect bitmapBounds, final RectF pageSliceBounds) {
+    public static synchronized RectF getCropBounds(final BitmapRef bitmap, final Rect bitmapBounds,
+            final RectF pageSliceBounds) {
         Canvas c = new Canvas(BITMAP);
         c.drawBitmap(bitmap.getBitmap(), bitmapBounds, RECT, null);
 
         final float avgLum = calculateAvgLum();
 
-        System.out.println("PageCropper.getCropBounds() avgLum="+avgLum);
+        System.out.println("PageCropper.getCropBounds() avgLum=" + avgLum);
         final float left = getLeftBound(avgLum);
         final float right = getRightBound(avgLum);
         final float top = getTopBound(avgLum);
@@ -63,20 +65,20 @@ public class PageCropper {
 
         return new RectF(left, 0, right, 1);
     }
+
     private static float getLeftBound(float avgLum, float x, float y) {
         boolean blackFound = false;
         int pointX = (int) (BMP_SIZE * x);
         int pointY = (int) (BMP_SIZE * y);
         int top = Math.max(0, pointY - COLUMN_HALF_HEIGHT);
-        int bottom = Math.min(BMP_SIZE -1, pointY + COLUMN_HALF_HEIGHT);
-
+        int bottom = Math.min(BMP_SIZE - 1, pointY + COLUMN_HALF_HEIGHT);
 
         RawBitmap column = new RawBitmap(COLUMN_WIDTH, bottom - top, false);
-        for (int left = pointX; left>=0; left -= COLUMN_WIDTH) {
-            column.retrieve(BITMAP, left, top, COLUMN_WIDTH, bottom - top);
+        for (int left = pointX; left >= 0; left -= COLUMN_WIDTH) {
+            column.retrieve(BITMAP, left, top);
             if (isRectWhite(column, avgLum)) {
                 if (blackFound) {
-                    return ((float)left /BMP_SIZE);
+                    return ((float) left / BMP_SIZE);
                 }
             } else {
                 blackFound = true;
@@ -90,15 +92,14 @@ public class PageCropper {
         int pointX = (int) (BMP_SIZE * x);
         int pointY = (int) (BMP_SIZE * y);
         int top = Math.max(0, pointY - COLUMN_HALF_HEIGHT);
-        int bottom = Math.min(BMP_SIZE -1, pointY + COLUMN_HALF_HEIGHT);
-
+        int bottom = Math.min(BMP_SIZE - 1, pointY + COLUMN_HALF_HEIGHT);
 
         RawBitmap column = new RawBitmap(COLUMN_WIDTH, bottom - top, false);
-        for (int left = pointX; left<BMP_SIZE - COLUMN_WIDTH; left += COLUMN_WIDTH) {
-            column.retrieve(BITMAP, left, top, COLUMN_WIDTH, bottom - top);
+        for (int left = pointX; left < BMP_SIZE - COLUMN_WIDTH; left += COLUMN_WIDTH) {
+            column.retrieve(BITMAP, left, top);
             if (isRectWhite(column, avgLum)) {
                 if (blackFound) {
-                    return ((float)(left + COLUMN_WIDTH) /BMP_SIZE);
+                    return ((float) (left + COLUMN_WIDTH) / BMP_SIZE);
                 }
             } else {
                 blackFound = true;
@@ -119,14 +120,12 @@ public class PageCropper {
                 whiteCount++;
             } else {
                 if (whiteCount >= 1) {
-                    return (float) (Math.max(RECT.left, x - V_LINE_SIZE) - RECT.left)
-                            / RECT.width();
+                    return (float) (Math.max(RECT.left, x - V_LINE_SIZE) - RECT.left) / RECT.width();
                 }
                 whiteCount = 0;
             }
         }
-        return whiteCount > 0 ? (float) (Math.max(RECT.left, x - V_LINE_SIZE) - RECT.left)
-                / RECT.width() : 0;
+        return whiteCount > 0 ? (float) (Math.max(RECT.left, x - V_LINE_SIZE) - RECT.left) / RECT.width() : 0;
     }
 
     private static float getTopBound(final float avgLum) {
@@ -141,14 +140,12 @@ public class PageCropper {
                 whiteCount++;
             } else {
                 if (whiteCount >= 1) {
-                    return (float) (Math.max(RECT.top, y - H_LINE_SIZE) - RECT.top)
-                            / RECT.height();
+                    return (float) (Math.max(RECT.top, y - H_LINE_SIZE) - RECT.top) / RECT.height();
                 }
                 whiteCount = 0;
             }
         }
-        return whiteCount > 0 ? (float) (Math.max(RECT.top, y - H_LINE_SIZE) - RECT.top)
-                / RECT.height() : 0;
+        return whiteCount > 0 ? (float) (Math.max(RECT.top, y - H_LINE_SIZE) - RECT.top) / RECT.height() : 0;
     }
 
     private static float getRightBound(final float avgLum) {
@@ -163,14 +160,12 @@ public class PageCropper {
                 whiteCount++;
             } else {
                 if (whiteCount >= 1) {
-                    return (float) (Math.min(RECT.right, x + 2 * V_LINE_SIZE) - RECT.left)
-                            / RECT.width();
+                    return (float) (Math.min(RECT.right, x + 2 * V_LINE_SIZE) - RECT.left) / RECT.width();
                 }
                 whiteCount = 0;
             }
         }
-        return whiteCount > 0 ? (float) (Math.min(RECT.right, x + 2 * V_LINE_SIZE) - RECT.left)
-                / RECT.width() : 1;
+        return whiteCount > 0 ? (float) (Math.min(RECT.right, x + 2 * V_LINE_SIZE) - RECT.left) / RECT.width() : 1;
     }
 
     private static float getBottomBound(final float avgLum) {
@@ -184,14 +179,12 @@ public class PageCropper {
                 whiteCount++;
             } else {
                 if (whiteCount >= 1) {
-                    return (float) (Math.min(RECT.bottom, y + 2 * H_LINE_SIZE) - RECT.top)
-                            / RECT.height();
+                    return (float) (Math.min(RECT.bottom, y + 2 * H_LINE_SIZE) - RECT.top) / RECT.height();
                 }
                 whiteCount = 0;
             }
         }
-        return whiteCount > 0 ? (float) (Math.min(RECT.bottom, y + 2 * H_LINE_SIZE) - RECT.top)
-                / RECT.height() : 1;
+        return whiteCount > 0 ? (float) (Math.min(RECT.bottom, y + 2 * H_LINE_SIZE) - RECT.top) / RECT.height() : 1;
     }
 
     private static boolean isRectWhite(RawBitmap rb, final float avgLum) {
@@ -208,7 +201,7 @@ public class PageCropper {
     }
 
     private static float calculateAvgLum() {
-        WHOLE.retrieve(BITMAP,  0, 0, WHOLE.getWidth(), WHOLE.getHeight());
+        WHOLE.retrieve(BITMAP, 0, 0, WHOLE.getWidth(), WHOLE.getHeight());
         return WHOLE.getAvgLum();
     }
 
@@ -217,7 +210,7 @@ public class PageCropper {
         final int g = (c & 0xFF00) >> 8;
         final int b = c & 0xFF;
 
-//        return (77 * r + 150 * g + 29 * b) >> 8;
+        // return (77 * r + 150 * g + 29 * b) >> 8;
         final int min = Math.min(r, Math.min(g, b));
         final int max = Math.max(r, Math.max(g, b));
         return (min + max) / 2;

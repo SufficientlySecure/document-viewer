@@ -12,14 +12,14 @@ public final class RawBitmap {
     int height;
     final boolean hasAlpha;
 
-    public RawBitmap(int width, int height, boolean hasAlpha) {
+    public RawBitmap(final int width, final int height, final boolean hasAlpha) {
         this.width = width;
         this.height = height;
         this.hasAlpha = hasAlpha;
         this.pixels = new int[width * height];
     }
 
-    public RawBitmap(Bitmap bitmap, Rect srcRect) {
+    public RawBitmap(final Bitmap bitmap, final Rect srcRect) {
         width = srcRect.width();
         height = srcRect.height();
         hasAlpha = bitmap.hasAlpha();
@@ -28,7 +28,7 @@ public final class RawBitmap {
         bitmap.getPixels(pixels, 0, width, srcRect.left, srcRect.top, width, height);
     }
 
-    public RawBitmap(Bitmap bitmap, int left, int top, int width, int height) {
+    public RawBitmap(final Bitmap bitmap, final int left, final int top, final int width, final int height) {
         this.width = width;
         this.height = height;
         hasAlpha = bitmap.hasAlpha();
@@ -37,7 +37,11 @@ public final class RawBitmap {
         bitmap.getPixels(pixels, 0, width, left, top, width, height);
     }
 
-    public void retrieve(Bitmap bitmap, int left, int top, int width, int height) {
+    public void retrieve(final Bitmap bitmap, final int left, final int top) {
+        bitmap.getPixels(pixels, 0, width, left, top, width, height);
+    }
+
+    public void retrieve(final Bitmap bitmap, final int left, final int top, final int width, final int height) {
         this.width = width;
         this.height = height;
         bitmap.getPixels(pixels, 0, width, left, top, width, height);
@@ -55,16 +59,16 @@ public final class RawBitmap {
         return height;
     }
 
-    public void draw(Canvas canvas, float x, float y, Paint paint) {
+    public void draw(final Canvas canvas, final float x, final float y, final Paint paint) {
         canvas.drawBitmap(pixels, 0, width, x, y, width, height, hasAlpha, paint);
     }
 
-    public void toBitmap(Bitmap bitmap) {
+    public void toBitmap(final Bitmap bitmap) {
         bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
     }
 
     public BitmapRef toBitmap() {
-        BitmapRef bitmap = BitmapManager.getBitmap("RawBitmap", width, height, Bitmap.Config.RGB_565);
+        final BitmapRef bitmap = BitmapManager.getBitmap("RawBitmap", width, height, Bitmap.Config.RGB_565);
         bitmap.getBitmap().setPixels(pixels, 0, width, 0, 0, width, height);
         return bitmap;
     }
@@ -73,7 +77,7 @@ public final class RawBitmap {
         return hasAlpha;
     }
 
-    public void fillAlpha(int v) {
+    public void fillAlpha(final int v) {
         for (int i = 0; i < pixels.length; ++i) {
             pixels[i] = (0x00ffffff & pixels[i]) | (v << 24);
         }
@@ -111,8 +115,8 @@ public final class RawBitmap {
         return scaleHq2x(this);
     }
 
-    public static BitmapRef scaleHq4x(RawBitmap src) {
-        RawBitmap dest = new RawBitmap(src.width * 4, src.height * 4, src.hasAlpha);
+    public static BitmapRef scaleHq4x(final RawBitmap src) {
+        final RawBitmap dest = new RawBitmap(src.width * 4, src.height * 4, src.hasAlpha);
         src.fillAlpha(0x00);
 
         nativeHq4x(src.pixels, dest.pixels, src.width, src.height);
@@ -120,8 +124,8 @@ public final class RawBitmap {
         return dest.toBitmap();
     }
 
-    public static BitmapRef scaleHq3x(RawBitmap src) {
-        RawBitmap dest = new RawBitmap(src.width * 3, src.height * 3, src.hasAlpha);
+    public static BitmapRef scaleHq3x(final RawBitmap src) {
+        final RawBitmap dest = new RawBitmap(src.width * 3, src.height * 3, src.hasAlpha);
         src.fillAlpha(0x00);
 
         nativeHq3x(src.pixels, dest.pixels, src.width, src.height);
@@ -129,8 +133,8 @@ public final class RawBitmap {
         return dest.toBitmap();
     }
 
-    public static BitmapRef scaleHq2x(RawBitmap src) {
-        RawBitmap dest = new RawBitmap(src.width * 2, src.height * 2, src.hasAlpha);
+    public static BitmapRef scaleHq2x(final RawBitmap src) {
+        final RawBitmap dest = new RawBitmap(src.width * 2, src.height * 2, src.hasAlpha);
         src.fillAlpha(0x00);
 
         nativeHq2x(src.pixels, dest.pixels, src.width, src.height);
@@ -153,6 +157,7 @@ public final class RawBitmap {
     private static native void nativeExposure(int[] src, int width, int height, int exposure);
 
     private static native void nativeAutoLevels(int[] src, int width, int height);
+
     private static native void nativeAutoLevels2(int[] src, int width, int height);
 
     private static native int nativeAvgLum(int[] src, int width, int height);

@@ -16,14 +16,23 @@ public class PageLink {
 
     public int targetPage = -1;
     public RectF targetRect;
+    public boolean enabled;
 
     public PageLink() {
+    }
+
+    public PageLink(final RectF source) {
+        rectType = 1;
+        url = "";
+        sourceRect = new RectF(source);
+        enabled = false;
     }
 
     public PageLink(final String l, final int type, final int[] source) {
         rectType = type;
         url = l;
         sourceRect = new RectF(source[0], source[1], source[2], source[3]);
+        enabled = true;
     }
 
     @Override
@@ -34,7 +43,7 @@ public class PageLink {
         if (url != null) {
             buf.append(", ");
             buf.append("url").append("=").append(url);
-        } 
+        }
         if (targetPage != -1) {
             buf.append(", ");
             buf.append("target").append("=").append(targetPage);

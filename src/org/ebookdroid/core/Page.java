@@ -1,13 +1,18 @@
 package org.ebookdroid.core;
 
+import org.ebookdroid.common.bitmaps.BitmapManager;
+import org.ebookdroid.common.bitmaps.BitmapRef;
 import org.ebookdroid.common.bitmaps.Bitmaps;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.PageType;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.codec.PageLink;
+import org.ebookdroid.core.crop.PageCropper;
 import org.ebookdroid.ui.viewer.IActivityController;
 
 import android.graphics.Matrix;
+import android.graphics.PointF;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.FloatMath;
 
@@ -164,5 +169,18 @@ public class Page {
         }
 
         return getTargetRect(type, pageBounds, sourceRect);
+    }
+
+    protected RectF getColumn(final PointF pos) {
+        final Rect rootRect = new Rect(0, 0, PageCropper.BMP_SIZE, PageCropper.BMP_SIZE);
+
+        DecodeService ds = base.getDecodeService();
+        final BitmapRef pageImage = ds.createThumbnail(PageCropper.BMP_SIZE, PageCropper.BMP_SIZE, index.docIndex,
+                type.getInitialRect());
+
+        final RectF column = PageCropper.getColumn(pageImage, rootRect, pos.x, pos.y);
+        BitmapManager.release(pageImage);
+
+        return column;
     }
 }

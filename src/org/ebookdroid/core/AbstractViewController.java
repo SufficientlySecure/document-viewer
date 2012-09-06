@@ -1,8 +1,6 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.R;
-import org.ebookdroid.common.bitmaps.BitmapManager;
-import org.ebookdroid.common.bitmaps.BitmapRef;
 import org.ebookdroid.common.keysbinding.KeyBindingsManager;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.SettingsManager;
@@ -17,7 +15,6 @@ import org.ebookdroid.common.touch.MultiTouchGestureDetectorFactory;
 import org.ebookdroid.common.touch.TouchManager;
 import org.ebookdroid.common.touch.TouchManager.Touch;
 import org.ebookdroid.core.codec.PageLink;
-import org.ebookdroid.core.crop.PageCropper;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.ui.viewer.IActivityController;
 import org.ebookdroid.ui.viewer.IView;
@@ -61,6 +58,8 @@ public abstract class AbstractViewController extends AbstractComponentController
     protected static final LogContext LCTX = LogManager.root().lctx("View", false);
 
     public static final int DOUBLE_TAP_TIME = 500;
+
+    private static final Float FZERO = Float.valueOf(0);
 
     public final IActivityController base;
 
@@ -220,6 +219,7 @@ public abstract class AbstractViewController extends AbstractComponentController
             base.getManagedComponent().zoomChanged(newZoom);
         } else {
             inQuickZoom.set(false);
+            inZoomToColumn.set(false);
         }
     }
 
@@ -233,6 +233,7 @@ public abstract class AbstractViewController extends AbstractComponentController
             zoomFactor = 1.0f / zoomFactor;
         } else {
             inQuickZoom.set(true);
+            inZoomToColumn.set(false);
         }
         base.getZoomModel().scaleAndCommitZoom(zoomFactor);
     }
@@ -243,56 +244,70 @@ public abstract class AbstractViewController extends AbstractComponentController
             return;
         }
 
-        final Float tapX = action.getParameter("tap_x", Float.valueOf(0));
-        final Float tapY = action.getParameter("tap_y", Float.valueOf(0));
+        final int tapX = action.getParameter("tap_x", FZERO).intValue();
+        final int tapY = action.getParameter("tap_y", FZERO).intValue();
         if (tapX == 0 && tapY == 0) {
             return;
         }
 
-        System.out.println("AbstractViewController.zoomToColumn(" + tapX + "," + tapY + ")");
+        // System.out.println("AbstractViewController.zoomToColumn(" + tapX + "," + tapY + ")");
         PointF pos = null;
-        for (final Page page : model.getPages(firstVisiblePage, lastVisiblePage + 1)) {
-            ViewState vs = new ViewState(this);
-            pos = vs.getPositionOnPage(page, tapX.intValue(), tapY.intValue());
+        Page page = null;
+
+        ViewState vs = new ViewState(this);
+        for (final Page p : model.getPages(firstVisiblePage, lastVisiblePage + 1)) {
+            pos = vs.getPositionOnPage(p, tapX, tapY);
             if ((0 <= pos.x && pos.x <= 1) && (0 <= pos.y && pos.y <= 1)) {
-
-                float newZoom;
-                final RectF cb = page.nodes.root.croppedBounds;
-                float offset = 0;
-                if (inZoomToColumn.compareAndSet(true, false)) {
-                    newZoom = 1.0f;
-                } else {
-                    inZoomToColumn.set(true);
-
-                    System.out.println("AbstractViewController.zoomToColumn(" + pos.x + "," + pos.y + "), page = "
-                            + page.index);
-
-                    final Rect rootRect = new Rect(0, 0, PageCropper.BMP_SIZE, PageCropper.BMP_SIZE);
-
-                    final BitmapRef pageImage = base.getDecodeService().createThumbnail(PageCropper.BMP_SIZE,
-                            PageCropper.BMP_SIZE, page.index.docIndex, page.type.getInitialRect());
-                    RectF column = PageCropper.getColumn(pageImage, rootRect, pos.x, pos.y);
-                    BitmapManager.release(pageImage);
-                    System.out.println("AbstractViewController.zoomToColumn(): column - " + column);
-
-                    final float initialWidth = page.type.getInitialRect().width();
-
-                    final float screenAspect = (float) base.getView().getWidth() / base.getView().getHeight();
-                    final float pageAspect = page.getAspectRatio();
-
-                    float pageWidth = cb != null ? cb.width() : initialWidth;
-
-                    newZoom = (screenAspect > pageAspect ? screenAspect / pageAspect : 1) * pageWidth / column.width();
-                    offset = column.left;
-                }
-                base.getZoomModel().setZoom(newZoom, true);
-                float cropOffset = cb != null ? cb.left : 0;
-                final float offsetX = offset - cropOffset;
-                final float offsetY = pos.y - 0.5f * (base.getView().getHeight() / page.getBounds(newZoom).height());
-                goToPage(page.index.viewIndex, offsetX, offsetY);
+                page = p;
                 break;
             }
         }
+        if (page == null) {
+            return;
+        }
+
+        // System.out.println("AbstractViewController.zoomToColumn(" + pos.x + "," + pos.y + "), page = " + page.index);
+
+        final IView view = base.getView();
+        if (inZoomToColumn.compareAndSet(true, false)) {
+            base.getZoomModel().setZoom(1.0f, true);
+            final float offsetX = 0;
+            final float offsetY = pos.y - 0.5f * (view.getHeight() / page.getBounds(1.0f).height());
+            goToPage(page.index.viewIndex, offsetX, offsetY);
+            return;
+        }
+
+        final RectF column = page.getColumn(pos);
+        // System.out.println("AbstractViewController.zoomToColumn(): column = " + column);
+
+        if (column == null || column.width() > 0.95f) {
+            return;
+        }
+
+        inZoomToColumn.set(true);
+        inQuickZoom.set(false);
+
+        final int screenWidth = view.getWidth();
+        final int screenHeight = view.getHeight();
+
+        RectF pb = vs.getBounds(page);
+
+        final float columnScreenWidth = page.getPageRegion(pb, new RectF(column)).width();
+
+        final float newZoom = screenWidth / columnScreenWidth;
+
+        base.getZoomModel().setZoom(newZoom, true);
+
+        vs = new ViewState(AbstractViewController.this);
+        pb = vs.getBounds(page);
+        final RectF columnRegion = page.getPageRegion(pb, new RectF(column));
+        columnRegion.offset(-vs.viewBase.x, -vs.viewBase.y);
+
+        // System.out.println("AbstractViewController.zoomToColumn(): " + column + ", " + columnRegion);
+
+        final float toX = columnRegion.left;
+        final float toY = pb.top + pos.y * pb.height() - 0.5f * screenHeight;
+        getView().scrollTo((int) toX, (int) toY);
     }
 
     /**
@@ -532,7 +547,7 @@ public abstract class AbstractViewController extends AbstractComponentController
             if (RectF.intersects(bounds, rect)) {
                 if (LengthUtils.isNotEmpty(page.links)) {
                     for (final PageLink link : page.links) {
-                        if (processLinkTap(page, link, bounds, rect)) {
+                        if (link.enabled && processLinkTap(page, link, bounds, rect)) {
                             return true;
                         }
                     }

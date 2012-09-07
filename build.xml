@@ -68,7 +68,7 @@
 
     <mkdir dir="apk" />
 
-    <target name="--make-release">
+    <target name="-make-release">
 
         <delete dir="${out.absolute.dir}" />
         <mkdir dir="${out.absolute.dir}" />
@@ -105,55 +105,55 @@
             <export srcurl="http://ebookdroid.googlecode.com/svn/wiki/ChangeLog.wiki" destpath="assets/about_changelog.wiki" />
         </svn>
 
-        <antcall target="--make-release" inheritall="true">
+        <antcall target="-make-release" inheritall="true">
             <param name="mk" value="${arm.mk}" />
             <param name="apk" value="${arm.apk}" />
             <param name="ndk.dir" value="${arm.ndk.dir}" />
             <param name="unrar.arch" value="arm5" />
         </antcall>
-        <antcall target="--make-release" inheritall="true">
+        <antcall target="-make-release" inheritall="true">
             <param name="mk" value="${arm7.mk}" />
             <param name="apk" value="${arm7.apk}" />
             <param name="ndk.dir" value="${arm.ndk.dir}" />
             <param name="unrar.arch" value="arm7" />
         </antcall>
-        <antcall target="--make-release" inheritall="true">
+        <antcall target="-make-release" inheritall="true">
             <param name="mk" value="${cortex.a8.mk}" />
             <param name="apk" value="${cortex.a8.apk}" />
             <param name="ndk.dir" value="${arm.ndk.dir}" />
             <param name="unrar.arch" value="arm7.a8" />
         </antcall>
-        <antcall target="--make-release" inheritall="true">
+        <antcall target="-make-release" inheritall="true">
             <param name="mk" value="${cortex.a8.neon.mk}" />
             <param name="apk" value="${cortex.a8.neon.apk}" />
             <param name="ndk.dir" value="${arm.ndk.dir}" />
             <param name="unrar.arch" value="arm7.a8.neon" />
         </antcall>
-        <antcall target="--make-release">
+        <antcall target="-make-release">
             <param name="mk" value="${cortex.a9.mk}" />
             <param name="apk" value="${cortex.a9.apk}" />
             <param name="ndk.dir" value="${arm.ndk.dir}" />
             <param name="unrar.arch" value="arm7.a9" />
         </antcall>
-        <antcall target="--make-release">
+        <antcall target="-make-release">
             <param name="mk" value="${cortex.a9.neon.mk}" />
             <param name="apk" value="${cortex.a9.neon.apk}" />
             <param name="ndk.dir" value="${arm.ndk.dir}" />
             <param name="unrar.arch" value="arm7.a9.neon" />
         </antcall>
-        <antcall target="--make-release">
+        <antcall target="-make-release">
             <param name="mk" value="${wexler.mk}" />
             <param name="apk" value="${wexler.apk}" />
             <param name="ndk.dir" value="${arm.ndk.dir}" />
             <param name="unrar.arch" value="arm7.a8.neon" />
         </antcall>
-        <antcall target="--make-release">
+        <antcall target="-make-release">
             <param name="mk" value="${mips.mk}" />
             <param name="apk" value="${mips.apk}" />
             <param name="ndk.dir" value="${mips.ndk.dir}" />
             <param name="unrar.arch" value="mips" />
         </antcall>
-        <antcall target="--make-release">
+        <antcall target="-make-release">
             <param name="mk" value="${x86.mk}" />
             <param name="apk" value="${x86.apk}" />
             <param name="ndk.dir" value="${x86.ndk.dir}" />
@@ -167,7 +167,7 @@
             <export srcurl="http://ebookdroid.googlecode.com/svn/wiki/ChangeLog.wiki" destpath="assets/about_changelog.wiki" />
         </svn>
 
-        <antcall target="--make-release">
+        <antcall target="-make-release">
             <param name="mk" value="${wexler.mk}" />
             <param name="apk" value="${wexler.apk}" />
             <param name="ndk.dir" value="${arm.ndk.dir}" />
@@ -189,7 +189,7 @@
             <export srcurl="http://ebookdroid.googlecode.com/svn/wiki/ChangeLog.wiki" destpath="assets/about_changelog.wiki" />
         </svn>
 
-        <antcall target="--make-release">
+        <antcall target="-make-release">
             <param name="mk" value="${arm.mk}" />
             <param name="apk" value="${target.apk}" />
             <param name="ndk.dir" value="${arm.ndk.dir}" />
@@ -211,49 +211,49 @@
             <export srcurl="http://ebookdroid.googlecode.com/svn/wiki/ChangeLog.wiki" destpath="assets/about_changelog.wiki" />
         </svn>
 
-        <antcall target="--make-release" inheritall="true">
+        <antcall target="-make-release" inheritall="true">
             <param name="mk" value="${arm.mk}" />
             <param name="apk" value="apk/${package.name}-${manifest.version}-r${svn.info.rev}.apk" />
             <param name="ndk.dir" value="${arm.ndk.dir}" />
             <param name="unrar.arch" value="arm5" />
         </antcall>
-        <antcall target="--make-release" inheritall="true">
+        <antcall target="-make-release" inheritall="true">
             <param name="mk" value="${arm7.mk}" />
             <param name="apk" value="apk/${package.name}-arm7-${manifest.version}-r${svn.info.rev}.apk" />
             <param name="ndk.dir" value="${arm.ndk.dir}" />
             <param name="unrar.arch" value="arm7" />
         </antcall>
-        <antcall target="--make-release" inheritall="true">
+        <antcall target="-make-release" inheritall="true">
             <param name="mk" value="${cortex.a8.mk}" />
             <param name="apk" value="apk/${package.name}-arm7-cortex-a8-${manifest.version}-r${svn.info.rev}.apk" />
             <param name="ndk.dir" value="${arm.ndk.dir}" />
             <param name="unrar.arch" value="arm7.a8" />
         </antcall>
-        <antcall target="--make-release" inheritall="true">
+        <antcall target="-make-release" inheritall="true">
             <param name="mk" value="${cortex.a8.neon.mk}" />
             <param name="apk" value="apk/${package.name}-arm7-cortex-a8-neon-${manifest.version}-r${svn.info.rev}.apk" />
             <param name="ndk.dir" value="${arm.ndk.dir}" />
             <param name="unrar.arch" value="arm7.a8.neon" />
         </antcall>
-        <antcall target="--make-release">
+        <antcall target="-make-release">
             <param name="mk" value="${cortex.a9.mk}" />
             <param name="apk" value="apk/${package.name}-arm7-cortex-a9-${manifest.version}-r${svn.info.rev}.apk" />
             <param name="ndk.dir" value="${arm.ndk.dir}" />
             <param name="unrar.arch" value="arm7.a9" />
         </antcall>
-        <antcall target="--make-release">
+        <antcall target="-make-release">
             <param name="mk" value="${cortex.a9.neon.mk}" />
             <param name="apk" value="apk/${package.name}-arm7-cortex-a9-neon-${manifest.version}-r${svn.info.rev}.apk" />
             <param name="ndk.dir" value="${arm.ndk.dir}" />
             <param name="unrar.arch" value="arm7.a9.neon" />
         </antcall>
-        <antcall target="--make-release">
+        <antcall target="-make-release">
             <param name="mk" value="${mips.mk}" />
             <param name="apk" value="apk/${package.name}-mips-${manifest.version}-r${svn.info.rev}.apk" />
             <param name="ndk.dir" value="${mips.ndk.dir}" />
             <param name="unrar.arch" value="mips" />
         </antcall>
-        <antcall target="--make-release">
+        <antcall target="-make-release">
             <param name="mk" value="${x86.mk}" />
             <param name="apk" value="apk/${package.name}-x86-${manifest.version}-r${svn.info.rev}.apk" />
             <param name="ndk.dir" value="${x86.ndk.dir}" />
@@ -275,7 +275,7 @@
             <export srcurl="http://ebookdroid.googlecode.com/svn/wiki/ChangeLog.wiki" destpath="assets/about_changelog.wiki" />
         </svn>
 
-        <antcall target="--make-release">
+        <antcall target="-make-release">
             <param name="mk" value="${cortex.a9.mk}" />
             <param name="apk" value="${target.apk}" />
             <param name="ndk.dir" value="${arm.ndk.dir}" />
@@ -296,7 +296,7 @@
             <export srcurl="http://ebookdroid.googlecode.com/svn/wiki/ChangeLog.wiki" destpath="assets/about_changelog.wiki" />
         </svn>
 
-        <antcall target="--make-release">
+        <antcall target="-make-release">
             <param name="mk" value="${cortex.a9.neon.mk}" />
             <param name="apk" value="${target.apk}" />
             <param name="ndk.dir" value="${arm.ndk.dir}" />
@@ -317,7 +317,7 @@
             <export srcurl="http://ebookdroid.googlecode.com/svn/wiki/ChangeLog.wiki" destpath="assets/about_changelog.wiki" />
         </svn>
 
-        <antcall target="--make-release">
+        <antcall target="-make-release">
             <param name="mk" value="${wexler.mk}" />
             <param name="apk" value="${target.apk}" />
             <param name="ndk.dir" value="${arm.ndk.dir}" />
@@ -338,7 +338,7 @@
             <export srcurl="http://ebookdroid.googlecode.com/svn/wiki/ChangeLog.wiki" destpath="assets/about_changelog.wiki" />
         </svn>
 
-        <antcall target="--make-release">
+        <antcall target="-make-release">
             <param name="mk" value="${mips.mk}" />
             <param name="apk" value="${target.apk}" />
             <param name="ndk.dir" value="${mips.ndk.dir}" />

@@ -831,11 +831,11 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     @Override
-    public BitmapRef createThumbnail(int width, int height, final int pageNo, final RectF region) {
+    public BitmapRef createThumbnail(boolean useEmbeddedIfAvailable, int width, int height, final int pageNo, final RectF region) {
         if (document == null) {
             return null;
         }
-        final Bitmap thumbnail = document.getEmbeddedThumbnail();
+        final Bitmap thumbnail = useEmbeddedIfAvailable ? document.getEmbeddedThumbnail() : null;
         if (thumbnail != null) {
             width = 200;
             height = 200;

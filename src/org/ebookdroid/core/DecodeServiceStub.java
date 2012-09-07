@@ -108,10 +108,10 @@ public class DecodeServiceStub implements DecodeService {
     /**
      * {@inheritDoc}
      *
-     * @see org.ebookdroid.core.DecodeService#createThumbnail(int, int, int, android.graphics.RectF)
+     * @see org.ebookdroid.core.DecodeService#createThumbnail(booleam int, int, int, android.graphics.RectF)
      */
     @Override
-    public BitmapRef createThumbnail(final int width, final int height, final int pageNo, final RectF region) {
+    public BitmapRef createThumbnail(boolean useEmbeddedIfAvailable, final int width, final int height, final int pageNo, final RectF region) {
         return null;
     }
 

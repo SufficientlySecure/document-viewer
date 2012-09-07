@@ -202,14 +202,14 @@ public class DocumentModel extends ListenerProxy {
             }
             pages = list.toArray(new Page[list.size()]);
             if (pages.length > 0) {
-                createBookThumbnail(bs, pages[0], false);
+                createBookThumbnail(bs, pages[0], false, true);
             }
         } finally {
             LCTX.d("Loading page info: " + (System.currentTimeMillis() - start) + " ms");
         }
     }
 
-    public void createBookThumbnail(final BookSettings bs, final Page page, final boolean override) {
+    public void createBookThumbnail(final BookSettings bs, final Page page, final boolean override, boolean useEmbeddedIfAvailable) {
         final ThumbnailFile thumbnailFile = CacheManager.getThumbnailFile(bs.fileName);
         if (!override && thumbnailFile.exists()) {
             return;
@@ -226,7 +226,7 @@ public class DocumentModel extends ListenerProxy {
             height = (int) (200 * pageHeight / pageWidth);
         }
 
-        BitmapRef image = decodeService.createThumbnail(width, height, page.index.docIndex, page.type.getInitialRect());
+        BitmapRef image = decodeService.createThumbnail(useEmbeddedIfAvailable, width, height, page.index.docIndex, page.type.getInitialRect());
         thumbnailFile.setImage(image != null ? image.getBitmap() : null);
         BitmapManager.release(image);
     }

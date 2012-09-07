@@ -509,7 +509,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
     public void setCurrentPageAsThumbnail(final ActionEx action) {
         final Page page = documentModel.getCurrentPageObject();
         if (page != null) {
-            documentModel.createBookThumbnail(bookSettings, page, true);
+            documentModel.createBookThumbnail(bookSettings, page, true, false);
         }
     }
 

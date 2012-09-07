@@ -36,7 +36,7 @@ public interface DecodeService extends CodecFeatures {
 
     void updateViewState(ViewState viewState);
 
-    BitmapRef createThumbnail(int width, int height, int pageNo, RectF region);
+    BitmapRef createThumbnail(boolean useEmbeddedIfAvailable, int width, int height, int pageNo, RectF region);
 
     int getPixelFormat();
 

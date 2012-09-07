@@ -175,7 +175,7 @@ public class Page {
         final Rect rootRect = new Rect(0, 0, PageCropper.BMP_SIZE, PageCropper.BMP_SIZE);
 
         DecodeService ds = base.getDecodeService();
-        final BitmapRef pageImage = ds.createThumbnail(PageCropper.BMP_SIZE, PageCropper.BMP_SIZE, index.docIndex,
+        final BitmapRef pageImage = ds.createThumbnail(false, PageCropper.BMP_SIZE, PageCropper.BMP_SIZE, index.docIndex,
                 type.getInitialRect());
 
         final RectF column = PageCropper.getColumn(pageImage, rootRect, pos.x, pos.y);

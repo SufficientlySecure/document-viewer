@@ -40,7 +40,15 @@ public class BookcaseView extends RelativeLayout {
             @Override
             public void onChanged() {
                 super.onChanged();
-                shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentItem()));
+                int count = BookcaseView.this.adapter.getCount();
+                int currentItem = shelves.getCurrentItem();
+                if (currentItem >= count) {
+                    currentItem = count - 1;
+                    shelves.setCurrentItem(currentItem);
+                    return;
+                }
+                String listName = BookcaseView.this.adapter.getListName(currentItem);
+                shelfCaption.setText(listName);
             }
         });
 

@@ -4,5 +4,6 @@
     <string name="actions_verticalConfigScrollUp">"Прокрутить вверх"</string>
     <string name="actions_verticalConfigScrollDown">"Прокрутить вниз"</string>
     <string name="actions_quickZoom">"Быстрое увеличение"</string>
+    <string name="actions_zoomToColumn">"Увеличить колонку"</string>
 
 </resources>

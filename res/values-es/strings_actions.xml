@@ -4,5 +4,6 @@
     <string name="actions_verticalConfigScrollUp">"Deslazar hacia arriba"</string>
     <string name="actions_verticalConfigScrollDown">"Desplazar hacia abajo"</string>
     <string name="actions_quickZoom">"Ampliación rápida"</string>
+<!--<string name="actions_zoomToColumn">"Zoom to column"</string>-->
 
 </resources>

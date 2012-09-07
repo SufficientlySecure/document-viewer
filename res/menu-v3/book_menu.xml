@@ -5,17 +5,14 @@
         android:id="@+id/bookmenu_open"
         android:title="@string/bookmenu_open"/>
     <item
-        android:id="@+id/bookmenu_openbooksettings"
-        android:title="@string/bookmenu_openbooksettings"/>
+        android:id="@+id/bookmenu_settings"
+        android:title="@string/bookmenu_settings"/>
     <item
         android:id="@+id/bookmenu_openbookshelf"
         android:title="@string/bookmenu_openbookshelf"/>
     <item
         android:id="@+id/bookmenu_openbookfolder"
         android:title="@string/bookmenu_openbookfolder"/>
-    <item
-        android:id="@+id/bookmenu_settings"
-        android:title="@string/bookmenu_settings"/>
     <item
         android:id="@+id/bookmenu_recentgroup"
         android:title="@string/bookmenu_recentgroup">

@@ -52,6 +52,8 @@ public class SettingsActivity extends BaseSettingsActivity {
     PreferenceScreen createPreferences() {
         final PreferenceScreen root = getPreferenceManager().createPreferenceScreen(this);
 
+        root.setTitle(R.string.menu_settings);
+
         loadPreferences(root, R.xml.fragment_ui);
         loadPreferences(root, R.xml.fragment_scroll);
         loadPreferences(root, R.xml.fragment_memory);

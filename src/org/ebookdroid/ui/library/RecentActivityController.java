@@ -83,7 +83,7 @@ actions = {
         @ActionMethodDef(id = R.id.bookmenu_delete, method = "deleteBook"),
         @ActionMethodDef(id = R.id.actions_doDeleteBook, method = "doDeleteBook"),
         @ActionMethodDef(id = R.id.bookmenu_open, method = "openBook"),
-        @ActionMethodDef(id = R.id.bookmenu_openbooksettings, method = "openBookSettings"),
+        @ActionMethodDef(id = R.id.bookmenu_settings, method = "openBookSettings"),
         @ActionMethodDef(id = R.id.bookmenu_openbookshelf, method = "openBookShelf"),
         @ActionMethodDef(id = R.id.bookmenu_openbookfolder, method = "openBookFolder"),
         @ActionMethodDef(id = R.id.ShelfCaption, method = "showSelectShelfDlg"),
@@ -463,7 +463,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         }
     }
 
-    @ActionMethod(ids = R.id.bookmenu_openbooksettings)
+    @ActionMethod(ids = R.id.bookmenu_settings)
     public void openBookSettings(final ActionEx action) {
         final BookNode book = action.getParameter(AbstractActionActivity.MENU_ITEM_SOURCE);
         SettingsManager.create(0, book.path, false, null);

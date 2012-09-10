@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="opdsupfolder">"向上"</string>
+    <string name="opdsrefreshfolder">"刷新"</string>
+    <string name="opdsprevfolder">"上一节"</string>
+    <string name="opdsnextfolder">"下一节"</string>
+    <string name="opds_feed_add">"添加"</string>
+    <string name="opdsclose">"关闭"</string>
+    <string name="opds_book_download">"下载"</string>
+    <string name="opdsgoto">"打开"</string>
+    <string name="opds_feed_edit">"编辑"</string>
+    <string name="opds_feed_delete">"删除"</string>
+
+</resources>

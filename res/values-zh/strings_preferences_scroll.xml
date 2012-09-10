@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_scroll_category">"触摸和滚动"</string>
+    <string name="pref_scroll_category_summary">"触摸和滚动首选项"</string>
+    <string name="pref_tapsenabled_title">"启用点击"</string>
+    <string name="pref_tapsenabled_summary">"定义使用点击区域和行动"</string>
+    <string name="pref_scroll_title">"滚动高度"</string>
+    <string name="pref_scroll_summary">"设置滚动条的高度"</string>
+    <string name="pref_touchdelay_title">"轻触处理延时"</string>
+    <string name="pref_touchdelay_summary">"触摸处理延时（毫秒）"</string>
+    <string name="pref_animate_scrolling_title">"动画滚动"</string>
+    <string name="pref_animate_scrolling_summary">"动画滚动滚动模式"</string>
+
+</resources>

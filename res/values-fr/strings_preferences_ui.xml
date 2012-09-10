@@ -14,6 +14,7 @@
 <!--<string name="list_lang_nl">"Dutch"</string>-->
 <!--<string name="list_lang_ru">"Russian"</string>-->
 <!--<string name="list_lang_uk">"Ukrainian"</string>-->
+<!--<string name="list_lang_zh">"Chinese"</string>-->
     <string name="pref_loadrecent_title">"Ouvrir le dernier"</string>
     <string name="pref_loadrecent_summary">"Ouvrir automatiquement au démarrage le dernier livre "</string>
 <!--<string name="pref_confirmclose_title">"Confirm closing"</string>-->

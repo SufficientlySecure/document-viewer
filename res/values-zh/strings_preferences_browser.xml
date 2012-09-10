@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_browser_category">"文件浏览"</string>
+    <string name="pref_browser_category_summary">"文件浏览方式和文件类型设置"</string>
+    <string name="pref_usebookcase_title">"使用书柜视图"</string>
+    <string name="pref_usebookcase_summary">"使用书柜视图，而不是列表"</string>
+    <string name="pref_brautoscandir_title">"自动扫描目录"</string>
+    <string name="pref_brautoscandir_summary">"自动搜索的文件目录"</string>
+    <string name="pref_brbrfiletypesscreen_title">"文件类型"</string>
+    <string name="pref_brbrfiletypesscreen_summary">"书库中显示的文件类型"</string>
+<!--<string name="pref_cachelocation_title">"Cache location"</string>-->
+<!--<string name="pref_cachelocation_summary">"Location of a file cache"</string>-->
+<!--<string name="list_cachelocation_system">"System app cache"</string>-->
+<!--<string name="list_cachelocation_custom">"Sdcard app cache"</string>-->
+    <string name="pref_brfiletypedjvu_title" translatable="true">".djvu"</string>
+    <string name="pref_brfiletypedjvu_summary">"显示DjVu文件"</string>
+    <string name="pref_brfiletypedjv_title" translatable="true">".djv"</string>
+    <string name="pref_brfiletypedjv_summary">"显示Djv文件"</string>
+    <string name="pref_brfiletypepdf_title" translatable="true">".pdf"</string>
+    <string name="pref_brfiletypepdf_summary">"显示PDF文件"</string>
+    <string name="pref_brfiletypexps_title" translatable="true">".xps"</string>
+    <string name="pref_brfiletypexps_summary">"显示XPS文件"</string>
+    <string name="pref_brfiletypeoxps_title" translatable="true">".oxps"</string>
+    <string name="pref_brfiletypeoxps_summary">"显示OXPS文件"</string>
+    <string name="pref_brfiletypecbz_title" translatable="true">".cbz"</string>
+    <string name="pref_brfiletypecbz_summary">"显示CBZ文件"</string>
+    <string name="pref_brfiletypecbr_title" translatable="true">".cbr"</string>
+    <string name="pref_brfiletypecbr_summary">"显示CBR文件"</string>
+    <string name="pref_brfiletypefb2_title" translatable="true">".fb2"</string>
+    <string name="pref_brfiletypefb2_summary">"显示FB2中的文件"</string>
+    <string name="pref_brfiletypefb2.zip_title" translatable="true">".fb2.zip"</string>
+    <string name="pref_brfiletypefb2.zip_summary">"显示FB2.ZIP文件"</string>
+
+</resources>

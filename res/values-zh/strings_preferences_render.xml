@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_render_category">"呈现"</string>
+    <string name="pref_render_category_summary">"渲染设置"</string>
+    <string name="pref_book_category">"当前设置"</string>
+    <string name="pref_book_category_summary">"当前阅读的文件设置"</string>
+    <string name="pref_splitpages_title">"拆分页"</string>
+    <string name="pref_splitpages_summary">"将两个纵向页面拆分为横向页面"</string>
+    <string name="pref_croppages_title">"裁剪页面"</string>
+    <string name="pref_croppages_summary">"裁剪页面边框"</string>
+    <string name="pref_viewmode_title">"页面视图模式"</string>
+    <string name="pref_viewmode_summary">"页面视图模式"</string>
+    <string name="list_viewmode_vertical_scroll">"上下滚动"</string>
+    <string name="list_viewmode_horizontal_scroll">"水平滚动"</string>
+    <string name="list_viewmode_single_page">"单个页面"</string>
+    <string name="pref_singlepage_category">"单个页面设置"</string>
+    <string name="pref_singlepage_category_summary">"设置实际为单页模式"</string>
+    <string name="pref_align_title">"页面对齐模式"</string>
+    <string name="pref_align_summary">"如何对齐页"</string>
+    <string name="list_align_by_width">"按宽度"</string>
+    <string name="list_align_by_height">"按高度"</string>
+    <string name="list_align_auto">"自动"</string>
+    <string name="pref_animationtype_title">"动画类型"</string>
+    <string name="pref_animationtype_summary">"选择过渡的动画类型"</string>
+    <string name="list_animation_none">"无"</string>
+    <string name="list_animation_curler_simple">"简单卷"</string>
+    <string name="list_animation_curler_dynamic">"动态卷"</string>
+    <string name="list_animation_curler_natural">"自然卷"</string>
+    <string name="list_animation_slider">"滑动"</string>
+    <string name="list_animation_fader">"渐显淡入"</string>
+<!--<string name="list_animation_squeezer">"Squeeze"</string>-->
+    <string name="pref_postprocessing_category">"后处理效果"</string>
+    <string name="pref_postprocessing_summary">"后处理效果"</string>
+    <string name="pref_nightmode_title">"夜间模式"</string>
+    <string name="pref_nightmode_summary">"在黑色背景上使用白色符号"</string>
+<!--<string name="pref_posimages_in_nightmode_title">"Positive images in night mode"</string>-->
+<!--<string name="pref_posimages_in_nightmode_summary">"Show positivy gray-scaled images in night mode"</string>-->
+    <string name="pref_contrast_title">"对比"</string>
+    <string name="pref_contrast_summary">"对比度校正极 (0——1000,默认为 100)：100&quot;"</string>
+    <string name="pref_exposure_title">"曝光"</string>
+    <string name="pref_exposure_summary">"曝光校正极 (0 - 200, 默认为100)：100"</string>
+    <string name="pref_autolevels_title">"自动色阶"</string>
+    <string name="pref_autolevels_summary">"使用自动水平矫正"</string>
+
+</resources>

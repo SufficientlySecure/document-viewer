@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="actions_verticalConfigScrollUp">"向上滚动"</string>
+    <string name="actions_verticalConfigScrollDown">"向下滚动"</string>
+    <string name="actions_quickZoom">"缩放"</string>
+<!--<string name="actions_zoomToColumn">"Zoom to column"</string>-->
+
+</resources>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="menu_close">"关闭"</string>
+    <string name="menu_goto_page">"转到页面"</string>
+    <string name="menu_outline">"大纲"</string>
+    <string name="menu_zoom">"缩放"</string>
+    <string name="menu_nightmode">"日间/夜间"</string>
+    <string name="menu_settings">"首选项"</string>
+    <string name="menu_booksettings">"阅读设置"</string>
+    <string name="menu_cleanrecent">"清空数据"</string>
+    <string name="menu_add_bookmark">"添加书签"</string>
+    <string name="menu_thumbnail">"设置缩略图"</string>
+    <string name="menu_about">"关于"</string>
+    <string name="menu_tap_configuration">"感应器设置"</string>
+    <string name="menu_key_bindings">"按键绑定"</string>
+    <string name="menu_searchbook">"搜索"</string>
+    <string name="menu_searchtext">"搜索"</string>
+    <string name="menu_show_options_menu">"显示菜单"</string>
+    <string name="menu_backupsettings">"备份与恢复"</string>
+
+</resources>

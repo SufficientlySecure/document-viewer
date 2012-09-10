@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_backup_category">"备份与恢复"</string>
+    <string name="pref_backup_category_summary">"设置备份和恢复"</string>
+    <string name="pref_backuponexit_title">"程序退出时自动备份"</string>
+    <string name="pref_backuponexit_summary">"程序退出时自动备份参数设置"</string>
+    <string name="pref_backuponbookclose_title">"关闭书籍时自动备份"</string>
+    <string name="pref_backuponbookclose_summary">"关闭书籍时自动备份参数设置"</string>
+    <string name="pref_maxnumberofautobackups_title">"自动备份的数目"</string>
+    <string name="pref_maxnumberofautobackups_summary">"自动备份的最大数目"</string>
+<!--<string name="pref_bookbackuptype_title">"Book settings backup"</string>-->
+<!--<string name="pref_bookbackuptype_summary">"Book settings backup"</string>-->
+<!--<string name="list_bookbackuptype_none">"None"</string>-->
+<!--<string name="list_bookbackuptype_recent">"Recent"</string>-->
+<!--<string name="list_bookbackuptype_all">"All"</string>-->
+
+</resources>

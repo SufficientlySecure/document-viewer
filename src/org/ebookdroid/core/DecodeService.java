@@ -1,6 +1,6 @@
 package org.ebookdroid.core;
 
-import org.ebookdroid.common.bitmaps.BitmapRef;
+import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.core.codec.CodecFeatures;
 import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
@@ -36,7 +36,7 @@ public interface DecodeService extends CodecFeatures {
 
     void updateViewState(ViewState viewState);
 
-    BitmapRef createThumbnail(boolean useEmbeddedIfAvailable, int width, int height, int pageNo, RectF region);
+    IBitmapRef createThumbnail(boolean useEmbeddedIfAvailable, int width, int height, int pageNo, RectF region);
 
     int getPixelFormat();
 
@@ -44,7 +44,7 @@ public interface DecodeService extends CodecFeatures {
 
     interface DecodeCallback {
 
-        void decodeComplete(CodecPage codecPage, BitmapRef bitmap, Rect bitmapBounds, RectF croppedPageBounds);
+        void decodeComplete(CodecPage codecPage, IBitmapRef bitmap, Rect bitmapBounds, RectF croppedPageBounds);
 
     }
 

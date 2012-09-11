@@ -16,7 +16,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.emdev.common.log.LogContext;
 import org.emdev.utils.LengthUtils;
-import org.emdev.utils.MathUtils;
 
 public class Bitmaps {
 
@@ -35,19 +34,18 @@ public class Bitmaps {
     public int rows;
 
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-    private BitmapRef[] bitmaps;
+    private AbstractBitmapRef[] bitmaps;
 
-    public Bitmaps(final String nodeId, final BitmapRef orig, final Rect bitmapBounds, final boolean invert) {
-        final Bitmap origBitmap = orig.getBitmap();
+    public Bitmaps(final String nodeId, final IBitmapRef orig, final Rect bitmapBounds, final boolean invert) {
 
         this.partSize = BitmapManager.partSize;
         this.bounds = bitmapBounds;
         this.columns = (int) FloatMath.ceil(bounds.width() / (float) partSize);
         this.rows = (int) FloatMath.ceil(bounds.height() / (float) partSize);
-        this.config = useDefaultBitmapType ? DEF_BITMAP_TYPE : origBitmap.getConfig();
-        this.bitmaps = new BitmapRef[columns * rows];
+        this.config = useDefaultBitmapType ? DEF_BITMAP_TYPE : ((AbstractBitmapRef) orig).config;
+        this.bitmaps = new AbstractBitmapRef[columns * rows];
 
-        final boolean hasAlpha = origBitmap.hasAlpha();
+        final boolean hasAlpha = ((AbstractBitmapRef) orig).hasAlpha;
         RawBitmap slice = threadSlices.get();
         if (slice == null || slice.pixels.length < partSize * partSize || slice.hasAlpha != hasAlpha) {
             slice = new RawBitmap(partSize, partSize, hasAlpha);
@@ -59,21 +57,22 @@ public class Bitmaps {
             int left = 0;
             for (int col = 0; col < columns; col++, left += partSize) {
                 final String name = nodeId + ":[" + row + ", " + col + "]";
-                final BitmapRef b = BitmapManager.getBitmap(name, partSize, partSize, config);
-                final Bitmap bmp = b.getBitmap();
+                final AbstractBitmapRef b = BitmapManager.getTexture(name, config);
 
                 if (row == rows - 1 || col == columns - 1) {
                     final int right = Math.min(left + partSize, bounds.width());
                     final int bottom = Math.min(top + partSize, bounds.height());
-                    bmp.eraseColor(invert ? PagePaint.NIGHT.fillPaint.getColor() : PagePaint.DAY.fillPaint.getColor());
-                    slice.retrieve(origBitmap, left, top, right - left, bottom - top);
+                    b.eraseColor(invert ? PagePaint.NIGHT.fillPaint.getColor() : PagePaint.DAY.fillPaint
+                            .getColor());
+                    orig.getPixels(slice, left, top, right - left, bottom - top);
                 } else {
-                    slice.retrieve(origBitmap, left, top, partSize, partSize);
+                    orig.getPixels(slice, left, top, partSize, partSize);
                 }
                 if (invert) {
                     slice.invert();
                 }
-                slice.toBitmap(bmp);
+
+                b.setPixels(slice);
 
                 final int index = row * columns + col;
                 bitmaps[index] = b;
@@ -81,11 +80,10 @@ public class Bitmaps {
         }
     }
 
-    public boolean reuse(final String nodeId, final BitmapRef orig, final Rect bitmapBounds, final boolean invert) {
+    public boolean reuse(final String nodeId, final IBitmapRef orig, final Rect bitmapBounds, final boolean invert) {
         lock.writeLock().lock();
         try {
-            final Bitmap origBitmap = orig.getBitmap();
-            final Config cfg = useDefaultBitmapType ? DEF_BITMAP_TYPE : origBitmap.getConfig();
+            final Config cfg = useDefaultBitmapType ? DEF_BITMAP_TYPE : ((AbstractBitmapRef) orig).config;
             if (cfg != this.config) {
                 return false;
             }
@@ -93,13 +91,13 @@ public class Bitmaps {
                 return false;
             }
 
-            final BitmapRef[] oldBitmaps = this.bitmaps;
+            final AbstractBitmapRef[] oldBitmaps = this.bitmaps;
             final int oldBitmapsLength = LengthUtils.length(oldBitmaps);
 
             this.bounds = bitmapBounds;
             this.columns = (int) FloatMath.ceil(bitmapBounds.width() / (float) partSize);
             this.rows = (int) FloatMath.ceil(bitmapBounds.height() / (float) partSize);
-            this.bitmaps = new BitmapRef[columns * rows];
+            this.bitmaps = new AbstractBitmapRef[columns * rows];
 
             final int newsize = this.columns * this.rows;
 
@@ -113,19 +111,19 @@ public class Bitmaps {
                     }
                 }
                 if (this.bitmaps[i] == null) {
-                    this.bitmaps[i] = BitmapManager.getBitmap(nodeId + ":reuse:" + i, partSize, partSize, config);
+                    this.bitmaps[i] = BitmapManager.getTexture(nodeId + ":reuse:" + i, config);
                 } else {
                     if (LCTX.isDebugEnabled()) {
                         LCTX.d("Reuse  bitmap: " + this.bitmaps[i]);
                     }
                 }
-                this.bitmaps[i].getBitmap().eraseColor(Color.CYAN);
+                this.bitmaps[i].eraseColor(Color.CYAN);
             }
             for (; i < oldBitmapsLength; i++) {
                 BitmapManager.release(oldBitmaps[i]);
             }
 
-            final boolean hasAlpha = origBitmap.hasAlpha();
+            final boolean hasAlpha = ((AbstractBitmapRef) orig).hasAlpha;
             RawBitmap slice = threadSlices.get();
             if (slice == null || slice.pixels.length < partSize * partSize || slice.hasAlpha != hasAlpha) {
                 slice = new RawBitmap(partSize, partSize, hasAlpha);
@@ -137,22 +135,21 @@ public class Bitmaps {
                 int left = 0;
                 for (int col = 0; col < columns; col++, left += partSize) {
                     final int index = row * columns + col;
-                    final BitmapRef b = bitmaps[index];
-                    final Bitmap bmp = b.getBitmap();
+                    final AbstractBitmapRef b = bitmaps[index];
 
                     if (row == rows - 1 || col == columns - 1) {
                         final int right = Math.min(left + partSize, bounds.width());
                         final int bottom = Math.min(top + partSize, bounds.height());
-                        bmp.eraseColor(invert ? PagePaint.NIGHT.fillPaint.getColor() : PagePaint.DAY.fillPaint
+                        b.eraseColor(invert ? PagePaint.NIGHT.fillPaint.getColor() : PagePaint.DAY.fillPaint
                                 .getColor());
-                        slice.retrieve(origBitmap, left, top, right - left, bottom - top);
+                        orig.getPixels(slice, left, top, right - left, bottom - top);
                     } else {
-                        slice.retrieve(origBitmap, left, top, partSize, partSize);
+                        orig.getPixels(slice, left, top, partSize, partSize);
                     }
                     if (invert) {
                         slice.invert();
                     }
-                    slice.toBitmap(bmp);
+                    b.setPixels(slice);
                 }
             }
 
@@ -182,10 +179,10 @@ public class Bitmaps {
         }
     }
 
-    BitmapRef[] clear() {
+    AbstractBitmapRef[] clear() {
         lock.writeLock().lock();
         try {
-            final BitmapRef[] refs = this.bitmaps;
+            final AbstractBitmapRef[] refs = this.bitmaps;
             this.bitmaps = null;
             return refs;
         } finally {
@@ -198,7 +195,7 @@ public class Bitmaps {
         lock.writeLock().lock();
         try {
             if (bitmaps != null) {
-                for (final BitmapRef ref : bitmaps) {
+                for (final AbstractBitmapRef ref : bitmaps) {
                     BitmapManager.release(ref);
                 }
                 bitmaps = null;
@@ -215,8 +212,9 @@ public class Bitmaps {
                 return false;
             }
 
+            final RectF actual = new RectF(cr.left - vb.x, cr.top - vb.y, cr.right - vb.x, cr.bottom - vb.y);
             final Rect orig = canvas.getClipBounds();
-            canvas.clipRect(cr.left - vb.x, cr.top - vb.y, cr.right - vb.x, cr.bottom - vb.y, Op.INTERSECT);
+            canvas.clipRect(actual, Op.INTERSECT);
 
             final float offsetX = tr.left - vb.x;
             final float offsetY = tr.top - vb.y;
@@ -235,17 +233,11 @@ public class Bitmaps {
             for (int row = 0; row < rows; row++) {
                 for (int col = 0; col < columns; col++) {
                     final int index = row * columns + col;
-                    final BitmapRef ref = this.bitmaps[index];
+                    final AbstractBitmapRef ref = this.bitmaps[index];
                     if (ref != null) {
                         r.set(rect);
-                        if (ref.bitmap != null) {
-                            try {
-                                src.set(0, 0, ref.bitmap.getWidth(), ref.bitmap.getHeight());
-                                canvas.drawBitmap(ref.bitmap, src, MathUtils.round(r), paint.bitmapPaint);
-                            } catch (final Throwable th) {
-                                LCTX.e("Unexpected error: ", th);
-                            }
-                        }
+                        src.set(0, 0, ref.width, ref.height);
+                        ref.draw(canvas, paint, src, r);
                     } else {
                         res = false;
                     }
@@ -264,4 +256,5 @@ public class Bitmaps {
             lock.readLock().unlock();
         }
     }
+
 }

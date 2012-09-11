@@ -1,6 +1,6 @@
 package org.ebookdroid.core.codec;
 
-import org.ebookdroid.common.bitmaps.BitmapRef;
+import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.core.ViewState;
 
 import android.graphics.RectF;
@@ -13,7 +13,7 @@ public interface CodecPage {
 
     int getHeight();
 
-    BitmapRef renderBitmap(ViewState viewState, int width, int height, RectF pageSliceBounds);
+    IBitmapRef renderBitmap(ViewState viewState, int width, int height, RectF pageSliceBounds);
 
     List<PageLink> getPageLinks();
 

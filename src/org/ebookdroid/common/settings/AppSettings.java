@@ -108,6 +108,8 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     public final boolean textureReuseEnabled;
 
+    public final boolean useNativeTextures;
+
     public final boolean useBitmapHack;
 
     public final boolean useEarlyRecycling;
@@ -219,6 +221,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         bitmapSize = BITMAP_SIZE.getPreferenceValue(prefs);
         bitmapFileringEnabled = BITMAP_FILTERING.getPreferenceValue(prefs);
         textureReuseEnabled = REUSE_TEXTURES.getPreferenceValue(prefs);
+        useNativeTextures = USE_NATIVE_TEXTURES.getPreferenceValue(prefs);
         useBitmapHack = USE_BITMAP_HACK.getPreferenceValue(prefs);
         useEarlyRecycling = EARLY_RECYCLING.getPreferenceValue(prefs);
         reloadDuringZoom = RELOAD_DURING_ZOOM.getPreferenceValue(prefs);

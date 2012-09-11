@@ -32,7 +32,7 @@ public class SinglePageSlider extends AbstractPageSlider {
             final Rect src = new Rect((int) mA.x, 0, (int) viewRect.width(), (int) viewRect.height());
             final RectF dst = new RectF(0, 0, viewRect.width() - mA.x, viewRect.height());
 
-            event.canvas.drawBitmap(foreBitmap.getBitmap(), src, dst, PAINT);
+            foreBitmap.draw(event.canvas, src, dst, PAINT);
         }
     }
 
@@ -52,7 +52,7 @@ public class SinglePageSlider extends AbstractPageSlider {
             final Rect src = new Rect(0, 0, (int) mA.x, view.getHeight());
             final RectF dst = new RectF(viewRect.width() - mA.x, 0, viewRect.width(), viewRect.height());
 
-            event.canvas.drawBitmap(backBitmap.getBitmap(), src, dst, PAINT);
+            backBitmap.draw(event.canvas, src, dst, PAINT);
         }
     }
 }

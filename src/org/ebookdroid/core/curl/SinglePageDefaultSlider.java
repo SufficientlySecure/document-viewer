@@ -46,7 +46,7 @@ public class SinglePageDefaultSlider extends AbstractPageSlider {
             final Rect src = new Rect(0, 0, (int) viewState.viewRect.width(), (int) viewState.viewRect.height());
             final RectF dst = new RectF(0, 0, viewState.viewRect.width(), viewState.viewRect.height());
 
-            event.canvas.drawBitmap(foreBitmap.getBitmap(), src, dst, PAINT);
+            foreBitmap.draw(event.canvas, src, dst, PAINT);
         }
     }
 

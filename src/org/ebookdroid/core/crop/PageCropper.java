@@ -1,6 +1,6 @@
 package org.ebookdroid.core.crop;
 
-import org.ebookdroid.common.bitmaps.BitmapRef;
+import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.common.bitmaps.RawBitmap;
 
 import android.graphics.Bitmap;
@@ -38,10 +38,10 @@ public class PageCropper {
     private PageCropper() {
     }
 
-    public static synchronized RectF getCropBounds(final BitmapRef bitmap, final Rect bitmapBounds,
+    public static synchronized RectF getCropBounds(final IBitmapRef bitmap, final Rect bitmapBounds,
             final RectF pageSliceBounds) {
         Canvas c = new Canvas(BITMAP);
-        c.drawBitmap(bitmap.getBitmap(), bitmapBounds, RECT, null);
+        bitmap.draw(c, bitmapBounds, RECT, null);
 
         final float avgLum = calculateAvgLum();
 
@@ -56,9 +56,9 @@ public class PageCropper {
                 * pageSliceBounds.height() + pageSliceBounds.top);
     }
 
-    public static synchronized RectF getColumn(BitmapRef bitmap, Rect bitmapBounds, float x, float y) {
+    public static synchronized RectF getColumn(IBitmapRef bitmap, Rect bitmapBounds, float x, float y) {
         Canvas c = new Canvas(BITMAP);
-        c.drawBitmap(bitmap.getBitmap(), bitmapBounds, RECT, null);
+        bitmap.draw(c, bitmapBounds, RECT, null);
         final float avgLum = calculateAvgLum();
         final float left = getLeftBound(avgLum, x, y);
         final float right = getRightBound(avgLum, x, y);

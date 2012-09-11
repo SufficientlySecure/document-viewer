@@ -3,8 +3,8 @@ package org.ebookdroid.core.models;
 import org.ebookdroid.CodecType;
 import org.ebookdroid.R;
 import org.ebookdroid.common.bitmaps.BitmapManager;
-import org.ebookdroid.common.bitmaps.BitmapRef;
 import org.ebookdroid.common.bitmaps.Bitmaps;
+import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.cache.PageCacheFile;
 import org.ebookdroid.common.cache.ThumbnailFile;
@@ -226,7 +226,7 @@ public class DocumentModel extends ListenerProxy {
             height = (int) (200 * pageHeight / pageWidth);
         }
 
-        BitmapRef image = decodeService.createThumbnail(useEmbeddedIfAvailable, width, height, page.index.docIndex, page.type.getInitialRect());
+        IBitmapRef image = decodeService.createThumbnail(useEmbeddedIfAvailable, width, height, page.index.docIndex, page.type.getInitialRect());
         thumbnailFile.setImage(image != null ? image.getBitmap() : null);
         BitmapManager.release(image);
     }

@@ -1,8 +1,8 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.common.bitmaps.BitmapManager;
-import org.ebookdroid.common.bitmaps.BitmapRef;
 import org.ebookdroid.common.bitmaps.Bitmaps;
+import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.common.bitmaps.RawBitmap;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.books.BookSettings;
@@ -11,7 +11,6 @@ import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.models.DecodingProgressModel;
 import org.ebookdroid.ui.viewer.IViewController;
 
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.PointF;
@@ -106,7 +105,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     @Override
-    public void decodeComplete(final CodecPage codecPage, final BitmapRef bitmap, final Rect bitmapBounds,
+    public void decodeComplete(final CodecPage codecPage, final IBitmapRef bitmap, final Rect bitmapBounds,
             final RectF croppedPageBounds) {
 
         try {
@@ -127,18 +126,17 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 final boolean correctExposure = bs.exposure != AppPreferences.EXPOSURE.defValue;
 
                 if (correctContrast || correctExposure || bs.autoLevels) {
-                    final Bitmap origBitmap = bitmap.getBitmap();
-                    final RawBitmap bmp = new RawBitmap(origBitmap, bitmapBounds);
+                    final RawBitmap raw = new RawBitmap(bitmap, bitmapBounds);
                     if (correctContrast) {
-                        bmp.contrast(bs.contrast);
+                        raw.contrast(bs.contrast);
                     }
                     if (correctExposure) {
-                        bmp.exposure(bs.exposure - AppPreferences.EXPOSURE.defValue);
+                        raw.exposure(bs.exposure - AppPreferences.EXPOSURE.defValue);
                     }
                     if (bs.autoLevels) {
-                        bmp.autoLevels();
+                        raw.autoLevels();
                     }
-                    bmp.toBitmap(origBitmap);
+                    bitmap.setPixels(raw);
                 }
             }
 
@@ -261,7 +259,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             return bitmaps != null ? bitmaps.draw(canvas, paint, viewBase, targetRect, clipRect) : false;
         }
 
-        public Bitmaps reuse(final String nodeId, final BitmapRef bitmap, final Rect bitmapBounds) {
+        public Bitmaps reuse(final String nodeId, final IBitmapRef bitmap, final Rect bitmapBounds) {
             final BookSettings bs = page.base.getBookSettings();
             final AppSettings app = AppSettings.current();
             final boolean invert = bs != null ? bs.nightMode : app.nightMode;

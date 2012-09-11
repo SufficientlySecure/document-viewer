@@ -11,7 +11,7 @@ import android.graphics.RectF;
 public class SinglePageFader extends AbstractPageSlider {
 
     private final Paint paint = new Paint(PAINT);
-    
+
     public SinglePageFader(final SinglePageController singlePageDocumentView) {
         super(PageAnimationType.FADER, singlePageDocumentView);
     }
@@ -51,7 +51,7 @@ public class SinglePageFader extends AbstractPageSlider {
 
             paint.setAlpha(255 * (int) mA.x / (int) viewRect.width());
 
-            event.canvas.drawBitmap(backBitmap.getBitmap(), src, dst, paint);
+            backBitmap.draw(event.canvas, src, dst, paint);
         }
     }
 }

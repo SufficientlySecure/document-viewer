@@ -65,6 +65,7 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
         BitmapManager.setPartSize(1 << newSettings.bitmapSize);
         BitmapManager.setUseEarlyRecycling(newSettings.useEarlyRecycling);
         BitmapManager.setUseBitmapHack(newSettings.useBitmapHack);
+        BitmapManager.setUseNativeTextures(newSettings.useNativeTextures);
 
         setAppLocale(newSettings.lang);
     }

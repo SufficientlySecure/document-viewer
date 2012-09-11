@@ -1,8 +1,8 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.common.bitmaps.BitmapManager;
-import org.ebookdroid.common.bitmaps.BitmapRef;
 import org.ebookdroid.common.bitmaps.Bitmaps;
+import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.PageType;
 import org.ebookdroid.core.codec.CodecPageInfo;
@@ -175,7 +175,7 @@ public class Page {
         final Rect rootRect = new Rect(0, 0, PageCropper.BMP_SIZE, PageCropper.BMP_SIZE);
 
         DecodeService ds = base.getDecodeService();
-        final BitmapRef pageImage = ds.createThumbnail(false, PageCropper.BMP_SIZE, PageCropper.BMP_SIZE, index.docIndex,
+        final IBitmapRef pageImage = ds.createThumbnail(false, PageCropper.BMP_SIZE, PageCropper.BMP_SIZE, index.docIndex,
                 type.getInitialRect());
 
         final RectF column = PageCropper.getColumn(pageImage, rootRect, pos.x, pos.y);

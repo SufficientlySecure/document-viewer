@@ -20,7 +20,7 @@
 package org.ebookdroid.core.curl;
 
 import org.ebookdroid.common.bitmaps.BitmapManager;
-import org.ebookdroid.common.bitmaps.BitmapRef;
+import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.core.EventDraw;
 import org.ebookdroid.core.EventPool;
@@ -40,7 +40,7 @@ import org.emdev.utils.MatrixUtils;
 
 /**
  * The Class SinglePageNaturalCurler.
- * 
+ *
  * Used code from FBReader.
  */
 public class SinglePageNaturalCurler extends AbstractPageAnimator {
@@ -65,7 +65,7 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.curl.AbstractPageAnimator#getInitialXForBackFlip(int)
      */
     @Override
@@ -92,12 +92,11 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
 
         final Canvas canvas = event.canvas;
 
-        final BitmapRef fgBitmap = BitmapManager.getBitmap("Foreground", canvas.getWidth(), canvas.getHeight(),
+        final IBitmapRef fgBitmap = BitmapManager.getBitmap("Foreground", canvas.getWidth(), canvas.getHeight(),
                 Bitmap.Config.RGB_565);
         try {
-            final Bitmap bmp = fgBitmap.getBitmap();
-            bmp.eraseColor(Color.BLACK);
-            drawForeground(EventPool.newEventDraw(event, new Canvas(bmp)));
+            fgBitmap.eraseColor(Color.BLACK);
+            drawForeground(EventPool.newEventDraw(event, fgBitmap.getCanvas()));
 
             final int myWidth = canvas.getWidth();
             final int myHeight = canvas.getHeight();
@@ -155,10 +154,10 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
 
             canvas.save();
             canvas.clipPath(forePath);
-            canvas.drawBitmap(bmp, 0, 0, null);
+            fgBitmap.draw(canvas, 0, 0, null);
             canvas.restore();
 
-            edgePaint.setColor(getAverageColor(bmp));
+            edgePaint.setColor(fgBitmap.getAverageColor());
 
             edgePath.rewind();
             edgePath.moveTo((int) mA.x, (int) mA.y);
@@ -183,7 +182,7 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
                 angle = 180 - 180 / 3.1416f * (float) Math.atan2((int) mA.x - cornerX, (int) mA.y - y1);
             }
             m.postRotate(angle, (int) mA.x, (int) mA.y);
-            canvas.drawBitmap(bmp, m, backPaint);
+            fgBitmap.draw(canvas, m, backPaint);
             canvas.restore();
         } finally {
             BitmapManager.release(fgBitmap);
@@ -193,7 +192,7 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.curl.AbstractPageAnimator#getLeftBound()
      */
     @Override
@@ -203,7 +202,7 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.curl.AbstractPageAnimator#resetClipEdge()
      */
     @Override
@@ -219,7 +218,7 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.curl.AbstractPageAnimator#fixMovement(org.ebookdroid.core.curl.Vector2D, boolean)
      */
     @Override
@@ -229,7 +228,7 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawBackground(org.ebookdroid.core.EventDraw)
      */
     @Override
@@ -251,7 +250,7 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawForeground(org.ebookdroid.core.EventDraw)
      */
     @Override
@@ -273,7 +272,7 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawExtraObjects(org.ebookdroid.core.EventDraw)
      */
     @Override
@@ -288,7 +287,7 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.curl.AbstractPageAnimator#onFirstDrawEvent(android.graphics.Canvas,
      *      org.ebookdroid.core.ViewState)
      */
@@ -303,25 +302,4 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
             lock.writeLock().unlock();
         }
     }
-
-    private static int getAverageColor(final Bitmap bitmap) {
-        final int w = Math.min(bitmap.getWidth(), 7);
-        final int h = Math.min(bitmap.getHeight(), 7);
-        long r = 0, g = 0, b = 0;
-        for (int i = 0; i < w; ++i) {
-            for (int j = 0; j < h; ++j) {
-                final int color = bitmap.getPixel(i, j);
-                r += color & 0xFF0000;
-                g += color & 0xFF00;
-                b += color & 0xFF;
-            }
-        }
-        r /= w * h;
-        g /= w * h;
-        b /= w * h;
-        r >>= 16;
-        g >>= 8;
-        return Color.rgb((int) (r & 0xFF), (int) (g & 0xFF), (int) (b & 0xFF));
-    }
-
 }

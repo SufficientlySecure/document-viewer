@@ -1,14 +1,13 @@
 package org.ebookdroid.core.curl;
 
 import org.ebookdroid.common.bitmaps.BitmapManager;
-import org.ebookdroid.common.bitmaps.BitmapRef;
+import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.core.EventDraw;
 import org.ebookdroid.core.EventPool;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.SinglePageController;
 import org.ebookdroid.core.ViewState;
 
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 public abstract class AbstractPageSlider extends AbstractPageAnimator {
@@ -31,7 +30,8 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
     /**
      * {@inheritDoc}
      *
-     * @see org.ebookdroid.core.curl.AbstractPageAnimator#onFirstDrawEvent(android.graphics.Canvas, org.ebookdroid.core.ViewState)
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#onFirstDrawEvent(android.graphics.Canvas,
+     *      org.ebookdroid.core.ViewState)
      */
     @Override
     protected void onFirstDrawEvent(final Canvas canvas, final ViewState viewState) {
@@ -72,16 +72,12 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
         mA.y = 0;
     }
 
-    protected final BitmapRef getBitmap(final ViewState viewState, final BitmapRef ref) {
-        BitmapRef bitmap = ref;
+    protected final IBitmapRef getBitmap(final ViewState viewState, final IBitmapRef ref) {
         final float width = viewState.viewRect.width();
         final float height = viewState.viewRect.height();
 
-        if (ref == null || ref.isRecycled() || ref.width != width || ref.height != height) {
-            BitmapManager.release(ref);
-            bitmap = BitmapManager.getBitmap("Curler image", (int) width, (int) height, Bitmap.Config.RGB_565);
-        }
-        bitmap.getBitmap().eraseColor(viewState.paint.backgroundFillPaint.getColor());
+        final IBitmapRef bitmap = BitmapManager.checkBitmap(ref, width, height);
+        bitmap.eraseColor(viewState.paint.backgroundFillPaint.getColor());
         return bitmap;
     }
 
@@ -113,7 +109,7 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
         if (foreBitmapIndex != foreIndex || foreBitmap == null) {
             foreBitmap = getBitmap(event.viewState, foreBitmap);
 
-            EventPool.newEventDraw(event, new Canvas(foreBitmap.getBitmap())).process(page);
+            EventPool.newEventDraw(event, foreBitmap.getCanvas()).process(page);
             foreBitmapIndex = foreIndex;
         }
     }
@@ -122,7 +118,7 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
         if (backBitmapIndex != backIndex || backBitmap == null) {
             backBitmap = getBitmap(event.viewState, backBitmap);
 
-            EventPool.newEventDraw(event, new Canvas(backBitmap.getBitmap())).process(page);
+            EventPool.newEventDraw(event, backBitmap.getCanvas()).process(page);
             backBitmapIndex = backIndex;
         }
     }

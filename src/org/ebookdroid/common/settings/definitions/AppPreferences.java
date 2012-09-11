@@ -133,6 +133,9 @@ public interface AppPreferences {
     BooleanPreferenceDefinition REUSE_TEXTURES = new BooleanPreferenceDefinition(pref_texturereuse_id,
             pref_texturereuse_defvalue);
 
+    BooleanPreferenceDefinition USE_NATIVE_TEXTURES = new BooleanPreferenceDefinition(pref_usenativetextures_id,
+            pref_usenativetextures_defvalue);
+
     BooleanPreferenceDefinition USE_BITMAP_HACK = new BooleanPreferenceDefinition(pref_bitmaphack_id,
             pref_bitmaphack_defvalue);
 

@@ -3,7 +3,7 @@
 
     <string name="pref_performance_category">Performance settings</string>
     <string name="pref_performance_category_summary">Performance settings</string>
-    
+
     <string name="pref_pagesinmemory_title">Pages in memory</string>
     <string name="pref_pagesinmemory_summary">Number of pages to store in memory</string>
 
@@ -51,6 +51,9 @@
 
     <string name="pref_texturereuse_title">Reuse texture bitmaps</string>
     <string name="pref_texturereuse_summary">Reuse existing texture bitmaps when page part is decoded again</string>
+
+    <string name="pref_usenativetextures_title">Store textures in native memory</string>
+    <string name="pref_usenativetextures_summary">Store textures in native memory</string>
 
     <string name="pref_bitmaphack_title">Bitmap allocation hack</string>
     <string name="pref_bitmaphack_summary">Use bitmap allocation tracking hack</string>

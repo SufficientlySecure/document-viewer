@@ -1,6 +1,6 @@
 package org.ebookdroid.core;
 
-import org.ebookdroid.common.bitmaps.BitmapRef;
+import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.codec.OutlineLink;
 
@@ -111,7 +111,7 @@ public class DecodeServiceStub implements DecodeService {
      * @see org.ebookdroid.core.DecodeService#createThumbnail(booleam int, int, int, android.graphics.RectF)
      */
     @Override
-    public BitmapRef createThumbnail(boolean useEmbeddedIfAvailable, final int width, final int height, final int pageNo, final RectF region) {
+    public IBitmapRef createThumbnail(boolean useEmbeddedIfAvailable, final int width, final int height, final int pageNo, final RectF region) {
         return null;
     }
 

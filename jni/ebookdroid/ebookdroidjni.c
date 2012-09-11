@@ -113,4 +113,164 @@ void ReleaseStringUTFChars(JNIEnv *env, jstring jstr, const char* str)
     }
 }
 
+JNIEXPORT jint JNICALL Java_org_ebookdroid_common_bitmaps_NativeTextureRef_nativeSetPixels(JNIEnv *env, jclass cls,
+                                                                                           jint ref, jint ownwidth,
+                                                                                           jint ownheight,
+                                                                                           jintArray pixels, jint width,
+                                                                                           jint height)
+{
+    jint *storage = (jint*) ref;
+
+    // __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "nativeSetPixels(%p, [%i, %i], [%i, %i]): start", storage, ownwidth, ownheight, width, height);
+
+    jint *buffer = (*env)->GetPrimitiveArrayCritical(env, pixels, 0);
+    if (buffer == NULL)
+    {
+        // __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "nativeSetPixels(): cannot lock pixels");
+        if (storage != NULL)
+        {
+            free(storage);
+        }
+        // __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "nativeSetPixels(): end");
+        return (jint) NULL ;
+    }
+
+    off_t stsize = ownwidth * ownwidth * sizeof(jint);
+
+    if (storage == NULL)
+    {
+        storage = (jint*) malloc(stsize);
+    }
+
+    if (storage != NULL)
+    {
+        if (ownwidth != width || ownheight != ownheight)
+        {
+            int offset = 0;
+            int ownoffset = 0;
+            int y;
+            for (y = 0; y < height; y++)
+            {
+                memcpy(storage + ownoffset, buffer + offset, width * sizeof(jint));
+                offset += width;
+                ownoffset += ownwidth;
+            }
+        }
+        else
+        {
+            memcpy(storage, buffer, stsize);
+        }
+    }
+    else
+    {
+        // __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "nativeSetPixels(): cannot alloc memory");
+    }
+
+    (*env)->ReleasePrimitiveArrayCritical(env, pixels, buffer, 0);
+
+    // __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "nativeSetPixels(%p): end", storage);
+
+    return (jint) storage;
+}
+
+JNIEXPORT void JNICALL Java_org_ebookdroid_common_bitmaps_NativeTextureRef_nativeGetRegionPixels(JNIEnv *env,
+                                                                                                 jclass cls, jint ref,
+                                                                                                 jint ownwidth,
+                                                                                                 jint ownheight,
+                                                                                                 jintArray pixels,
+                                                                                                 jint left, jint top,
+                                                                                                 jint width,
+                                                                                                 jint height)
+{
+
+    jint *storage = (jint*) ref;
+    // __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "nativeGetRegionPixels(%p, [%i, %i], [%i, %i], [%i, %i]): start", storage, ownwidth, ownheight, left, top, width, height);
+
+    if (storage != NULL)
+    {
+        jint *buffer = (*env)->GetPrimitiveArrayCritical(env, pixels, 0);
+
+        int ownoffset = top * ownwidth + left;
+        int offset = 0;
+        int y;
+        for (y = 0; y < height; y++)
+        {
+            memcpy(buffer + offset, storage + ownoffset, width * sizeof(jint));
+            offset += width;
+            ownoffset += ownwidth;
+        }
+
+        (*env)->ReleasePrimitiveArrayCritical(env, pixels, buffer, 0);
+    }
+
+    // __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "nativeGetRegionPixels(): end");
+
+}
+
+JNIEXPORT void JNICALL Java_org_ebookdroid_common_bitmaps_NativeTextureRef_nativeGetPixels(JNIEnv *env, jclass cls,
+                                                                                           jint ref, jintArray pixels,
+                                                                                           jint width, jint height)
+{
+    jint *storage = (jint*) ref;
+
+    // __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "nativeGetPixels(%p, %i, %i): start", storage, width, height);
+    if (storage != NULL)
+    {
+        jint *buffer = (*env)->GetPrimitiveArrayCritical(env, pixels, 0);
+        memcpy(buffer, storage, width * height * sizeof(jint));
+        (*env)->ReleasePrimitiveArrayCritical(env, pixels, buffer, 0);
+    }
+
+    // __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "nativeGetPixels(): end");
+
+}
+
+JNIEXPORT jint JNICALL Java_org_ebookdroid_common_bitmaps_NativeTextureRef_nativeEraseColor(JNIEnv *env, jclass cls,
+                                                                                            jint ref, jint color,
+                                                                                            jint width, jint height)
+{
+    jint* storage = (jint*) ref;
+
+    // __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "nativeEraseColor(%p, %i, %i, %i): start", storage, color, width, height);
+
+    int size = width * height;
+
+    if (storage == NULL)
+    {
+        storage = (jint*) malloc(size * sizeof(jint));
+    }
+
+    if (storage != NULL)
+    {
+        int i;
+        for (i = 0; i < size; i++)
+        {
+            storage[i] = color;
+        }
+    }
+    else
+    {
+        // __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "nativeEraseColor(): cannot alloc memory");
+    }
+
+    // __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "nativeEraseColor(%p): end", storage);
+
+    return (jint) storage;
+}
+
+JNIEXPORT jint JNICALL Java_org_ebookdroid_common_bitmaps_NativeTextureRef_nativeRecycle(JNIEnv *env, jclass cls,
+                                                                                         jint ref)
+{
+    // __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "nativeRecycle(): start");
+
+    jint *storage = (jint*) ref;
+    if (storage != NULL)
+    {
+        free(storage);
+    }
+
+    // __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid", "nativeRecycle(): end");
+
+    return (jint) NULL ;
+}
 

@@ -2,7 +2,7 @@ package org.ebookdroid.droids.mupdf.codec;
 
 import org.ebookdroid.EBookDroidLibraryLoader;
 import org.ebookdroid.common.bitmaps.BitmapManager;
-import org.ebookdroid.common.bitmaps.BitmapRef;
+import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.core.ViewState;
 import org.ebookdroid.core.codec.AbstractCodecPage;
@@ -50,7 +50,7 @@ public class MuPdfPage extends AbstractCodecPage {
     }
 
     @Override
-    public BitmapRef renderBitmap(ViewState viewState, final int width, final int height, final RectF pageSliceBounds) {
+    public IBitmapRef renderBitmap(ViewState viewState, final int width, final int height, final RectF pageSliceBounds) {
         final float[] matrixArray = calculateFz(width, height, pageSliceBounds);
         return render(viewState, new Rect(0, 0, width, height), matrixArray);
     }
@@ -105,7 +105,7 @@ public class MuPdfPage extends AbstractCodecPage {
         return new RectF(box[0], box[1], box[2], box[3]);
     }
 
-    public BitmapRef render(ViewState viewState, final Rect viewbox, final float[] ctm) {
+    public IBitmapRef render(ViewState viewState, final Rect viewbox, final float[] ctm) {
         if (isRecycled()) {
             throw new RuntimeException("The page has been recycled before: " + this);
         }
@@ -120,7 +120,7 @@ public class MuPdfPage extends AbstractCodecPage {
         final int nightmode = viewState != null && viewState.nightMode && viewState.positiveImagesInNightMode ? 1 : 0;
 
         if (EBookDroidLibraryLoader.nativeGraphicsAvailable && AppSettings.current().useNativeGraphics) {
-            final BitmapRef bmp = BitmapManager.getBitmap("PDF page", width, height, MuPdfContext.NATIVE_BITMAP_CFG);
+            final IBitmapRef bmp = BitmapManager.getBitmap("PDF page", width, height, MuPdfContext.NATIVE_BITMAP_CFG);
             boolean res = renderPageBitmap(docHandle, pageHandle, mRect, ctm, bmp.getBitmap(), nightmode);
             if (res) {
                 return bmp;
@@ -131,8 +131,8 @@ public class MuPdfPage extends AbstractCodecPage {
 
         final int[] bufferarray = new int[width * height];
         renderPage(docHandle, pageHandle, mRect, ctm, bufferarray, nightmode);
-        final BitmapRef b = BitmapManager.getBitmap("PDF page", width, height, MuPdfContext.BITMAP_CFG);
-        b.getBitmap().setPixels(bufferarray, 0, width, 0, 0, width, height);
+        final IBitmapRef b = BitmapManager.getBitmap("PDF page", width, height, MuPdfContext.BITMAP_CFG);
+        b.setPixels(bufferarray, width, height);
         return b;
     }
 

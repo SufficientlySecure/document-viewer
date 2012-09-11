@@ -1,7 +1,7 @@
 package org.ebookdroid.droids.cbx.codec;
 
 import org.ebookdroid.common.bitmaps.BitmapManager;
-import org.ebookdroid.common.bitmaps.BitmapRef;
+import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.common.bitmaps.RawBitmap;
 import org.ebookdroid.core.ViewState;
 import org.ebookdroid.core.codec.AbstractCodecPage;
@@ -106,7 +106,8 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> extends AbstractCode
     }
 
     @Override
-    public BitmapRef renderBitmap(final ViewState viewState, final int width, final int height, final RectF pageSliceBounds) {
+    public IBitmapRef renderBitmap(final ViewState viewState, final int width, final int height,
+            final RectF pageSliceBounds) {
         if (getPageInfo() == null) {
             return null;
         }
@@ -132,14 +133,14 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> extends AbstractCode
             return null;
         }
 
-        final BitmapRef bmp = BitmapManager.getBitmap("CBX page", width, height, Bitmap.Config.RGB_565);
+        final IBitmapRef bmp = BitmapManager.getBitmap("CBX page", width, height, Bitmap.Config.RGB_565);
 
-        final Canvas c = new Canvas(bmp.getBitmap());
+        final Canvas c = bmp.getCanvas();
 
         final Rect srcRect = new Rect((int) (pageSliceBounds.left * storedBitmap.getWidth()),
-                (int) (pageSliceBounds.top * storedBitmap.getHeight()),
-                (int)FloatMath.ceil(pageSliceBounds.right * storedBitmap.getWidth()),
-                (int)FloatMath.ceil(pageSliceBounds.bottom * storedBitmap.getHeight()));
+                (int) (pageSliceBounds.top * storedBitmap.getHeight()), (int) FloatMath.ceil(pageSliceBounds.right
+                        * storedBitmap.getWidth()), (int) FloatMath.ceil(pageSliceBounds.bottom
+                        * storedBitmap.getHeight()));
 
         if (CbxDocument.LCTX.isDebugEnabled()) {
             CbxDocument.LCTX.d("source ratio=" + (srcRect.width() / (float) srcRect.height()) + ", target ratio="
@@ -156,24 +157,24 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> extends AbstractCode
                 CbxDocument.LCTX.d("Calling Native HQ4x");
             }
             final RawBitmap src = new RawBitmap(storedBitmap, srcRect);
-            final BitmapRef scaled = src.scaleHq4x();
-            c.drawBitmap(scaled.getBitmap(), null, new Rect(0, 0, width, height), PAINT);
+            final IBitmapRef scaled = src.scaleHq4x();
+            scaled.draw(c, null, new Rect(0, 0, width, height), PAINT);
             BitmapManager.release(scaled);
         } else if (scaleFactor > 3.5) {
             if (CbxDocument.LCTX.isDebugEnabled()) {
                 CbxDocument.LCTX.d("Calling Native HQ3x");
             }
             final RawBitmap src = new RawBitmap(storedBitmap, srcRect);
-            final BitmapRef scaled = src.scaleHq3x();
-            c.drawBitmap(scaled.getBitmap(), null, new Rect(0, 0, width, height), PAINT);
+            final IBitmapRef scaled = src.scaleHq3x();
+            scaled.draw(c, null, new Rect(0, 0, width, height), PAINT);
             BitmapManager.release(scaled);
         } else if (scaleFactor > 2.5) {
             if (CbxDocument.LCTX.isDebugEnabled()) {
                 CbxDocument.LCTX.d("Calling Native HQ2x");
             }
             final RawBitmap src = new RawBitmap(storedBitmap, srcRect);
-            final BitmapRef scaled = src.scaleHq2x();
-            c.drawBitmap(scaled.getBitmap(), null, new Rect(0, 0, width, height), PAINT);
+            final IBitmapRef scaled = src.scaleHq2x();
+            scaled.draw(c, null, new Rect(0, 0, width, height), PAINT);
             BitmapManager.release(scaled);
         } else {
             c.drawBitmap(storedBitmap, srcRect, new Rect(0, 0, width, height), PAINT);

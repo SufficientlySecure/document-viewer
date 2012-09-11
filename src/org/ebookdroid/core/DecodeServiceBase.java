@@ -1,7 +1,7 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.common.bitmaps.BitmapManager;
-import org.ebookdroid.common.bitmaps.BitmapRef;
+import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.core.codec.CodecContext;
 import org.ebookdroid.core.codec.CodecDocument;
@@ -222,7 +222,7 @@ public class DecodeServiceBase implements DecodeService {
 
             final RectF actualSliceBounds = task.node.croppedBounds != null ? task.node.croppedBounds
                     : task.node.pageSliceBounds;
-            final BitmapRef bitmap = vuPage.renderBitmap(task.viewState, r.width(), r.height(), actualSliceBounds);
+            final IBitmapRef bitmap = vuPage.renderBitmap(task.viewState, r.width(), r.height(), actualSliceBounds);
 
             if (executor.isTaskDead(task)) {
                 if (LCTX.isDebugEnabled()) {
@@ -295,7 +295,7 @@ public class DecodeServiceBase implements DecodeService {
             final Rect rootRect = new Rect(0, 0, PageCropper.BMP_SIZE, PageCropper.BMP_SIZE);
             final RectF rootBounds = root.pageSliceBounds;
 
-            final BitmapRef rootBitmap = vuPage.renderBitmap(task.viewState, rootRect.width(), rootRect.height(), rootBounds);
+            final IBitmapRef rootBitmap = vuPage.renderBitmap(task.viewState, rootRect.width(), rootRect.height(), rootBounds);
             root.croppedBounds = PageCropper.getCropBounds(rootBitmap, rootRect, root.pageSliceBounds);
 
             if (LCTX.isDebugEnabled()) {
@@ -352,13 +352,13 @@ public class DecodeServiceBase implements DecodeService {
         return new Rect(0, 0, (int) r.width(), (int) r.height());
     }
 
-    void finishDecoding(final DecodeTask currentDecodeTask, final CodecPage page, final BitmapRef bitmap,
+    void finishDecoding(final DecodeTask currentDecodeTask, final CodecPage page, final IBitmapRef bitmap,
             final Rect bitmapBounds, final RectF croppedPageBounds) {
         stopDecoding(currentDecodeTask.node, "complete");
         updateImage(currentDecodeTask, page, bitmap, bitmapBounds, croppedPageBounds);
     }
 
-    void abortDecoding(final DecodeTask currentDecodeTask, final CodecPage page, final BitmapRef bitmap) {
+    void abortDecoding(final DecodeTask currentDecodeTask, final CodecPage page, final IBitmapRef bitmap) {
         stopDecoding(currentDecodeTask.node, "failed");
         updateImage(currentDecodeTask, page, bitmap, null, null);
     }
@@ -397,7 +397,7 @@ public class DecodeServiceBase implements DecodeService {
         return holder;
     }
 
-    void updateImage(final DecodeTask currentDecodeTask, final CodecPage page, final BitmapRef bitmap,
+    void updateImage(final DecodeTask currentDecodeTask, final CodecPage page, final IBitmapRef bitmap,
             final Rect bitmapBounds, final RectF croppedPageBounds) {
         currentDecodeTask.node.decodeComplete(page, bitmap, bitmapBounds, croppedPageBounds);
     }
@@ -831,7 +831,7 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     @Override
-    public BitmapRef createThumbnail(boolean useEmbeddedIfAvailable, int width, int height, final int pageNo, final RectF region) {
+    public IBitmapRef createThumbnail(boolean useEmbeddedIfAvailable, int width, int height, final int pageNo, final RectF region) {
         if (document == null) {
             return null;
         }
@@ -847,7 +847,7 @@ public class DecodeServiceBase implements DecodeService {
                 height = height * th / tw;
             }
             final Bitmap scaled = Bitmap.createScaledBitmap(thumbnail, width, height, true);
-            final BitmapRef ref = BitmapManager.addBitmap("Thumbnail", scaled);
+            final IBitmapRef ref = BitmapManager.addBitmap("Thumbnail", scaled);
             return ref;
         } else {
             final CodecPage page = getPage(pageNo);

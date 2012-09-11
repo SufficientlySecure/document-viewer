@@ -10,13 +10,22 @@ public final class RawBitmap {
     final int[] pixels;
     int width;
     int height;
-    final boolean hasAlpha;
+    boolean hasAlpha;
 
     public RawBitmap(final int width, final int height, final boolean hasAlpha) {
         this.width = width;
         this.height = height;
         this.hasAlpha = hasAlpha;
         this.pixels = new int[width * height];
+    }
+
+    public RawBitmap(final IBitmapRef bitmap, final Rect srcRect) {
+        width = srcRect.width();
+        height = srcRect.height();
+        hasAlpha = ((AbstractBitmapRef)bitmap).hasAlpha;
+        pixels = new int[width * height];
+
+        bitmap.getPixels(pixels, width, height);
     }
 
     public RawBitmap(final Bitmap bitmap, final Rect srcRect) {
@@ -67,9 +76,9 @@ public final class RawBitmap {
         bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
     }
 
-    public BitmapRef toBitmap() {
-        final BitmapRef bitmap = BitmapManager.getBitmap("RawBitmap", width, height, Bitmap.Config.RGB_565);
-        bitmap.getBitmap().setPixels(pixels, 0, width, 0, 0, width, height);
+    public IBitmapRef toBitmap() {
+        final IBitmapRef bitmap = BitmapManager.getBitmap("RawBitmap", width, height, Bitmap.Config.RGB_565);
+        bitmap.setPixels(this);
         return bitmap;
     }
 
@@ -103,19 +112,19 @@ public final class RawBitmap {
         nativeAutoLevels2(pixels, width, height);
     }
 
-    public BitmapRef scaleHq4x() {
+    public IBitmapRef scaleHq4x() {
         return scaleHq4x(this);
     }
 
-    public BitmapRef scaleHq3x() {
+    public IBitmapRef scaleHq3x() {
         return scaleHq3x(this);
     }
 
-    public BitmapRef scaleHq2x() {
+    public IBitmapRef scaleHq2x() {
         return scaleHq2x(this);
     }
 
-    public static BitmapRef scaleHq4x(final RawBitmap src) {
+    public static IBitmapRef scaleHq4x(final RawBitmap src) {
         final RawBitmap dest = new RawBitmap(src.width * 4, src.height * 4, src.hasAlpha);
         src.fillAlpha(0x00);
 
@@ -124,7 +133,7 @@ public final class RawBitmap {
         return dest.toBitmap();
     }
 
-    public static BitmapRef scaleHq3x(final RawBitmap src) {
+    public static IBitmapRef scaleHq3x(final RawBitmap src) {
         final RawBitmap dest = new RawBitmap(src.width * 3, src.height * 3, src.hasAlpha);
         src.fillAlpha(0x00);
 
@@ -133,7 +142,7 @@ public final class RawBitmap {
         return dest.toBitmap();
     }
 
-    public static BitmapRef scaleHq2x(final RawBitmap src) {
+    public static IBitmapRef scaleHq2x(final RawBitmap src) {
         final RawBitmap dest = new RawBitmap(src.width * 2, src.height * 2, src.hasAlpha);
         src.fillAlpha(0x00);
 

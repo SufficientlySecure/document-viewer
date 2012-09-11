@@ -2,7 +2,7 @@ package org.ebookdroid.core.curl;
 
 import org.ebookdroid.R;
 import org.ebookdroid.common.bitmaps.BitmapManager;
-import org.ebookdroid.common.bitmaps.BitmapRef;
+import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.core.EventDraw;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.SinglePageController;
@@ -46,10 +46,10 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
     /** TRUE if the user moves the pages */
     protected boolean bUserMoves;
 
-    protected BitmapRef foreBitmap;
+    protected IBitmapRef foreBitmap;
     protected int foreBitmapIndex = -1;
 
-    protected BitmapRef backBitmap;
+    protected IBitmapRef backBitmap;
     protected int backBitmapIndex = -1;
 
     protected Bitmap arrowsBitmap;
@@ -62,7 +62,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.curl.SinglePageView#init()
      */
     @Override
@@ -83,7 +83,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.curl.SinglePageView#isPageVisible(org.ebookdroid.core.Page,
      *      org.ebookdroid.core.ViewState)
      */
@@ -123,8 +123,8 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
 
         final int pageCount = viewState.model.getPageCount();
         if (pageCount == 0) {
-          return viewState;
-      }
+            return viewState;
+        }
 
         backIndex = viewState.pages.currentIndex % pageCount;
         foreIndex = (pageCount + backIndex - 1) % pageCount;
@@ -136,7 +136,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.curl.SinglePageView#flipAnimationStep()
      */
     @Override
@@ -229,7 +229,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.curl.SinglePageView#draw(org.ebookdroid.core.EventDraw)
      */
     @Override
@@ -283,7 +283,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.curl.SinglePageView#enabled()
      */
     @Override
@@ -294,7 +294,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.curl.SinglePageView#onTouchEvent(android.view.MotionEvent)
      */
     @Override
@@ -328,7 +328,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
                     if ((mFinger.absdistancex(mOldMovement) > 25)) {
                         if (!bUserMoves) {
                             // Check current and start positions
-                            if (mFinger.x  < mOldMovement.x) {
+                            if (mFinger.x < mOldMovement.x) {
                                 mMovement.x = mInitialEdgeOffset;
                                 mMovement.y = mInitialEdgeOffset;
 
@@ -399,7 +399,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.curl.SinglePageView#pageUpdated(int)
      */
     @Override
@@ -414,7 +414,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.curl.SinglePageView#animate(int)
      */
     @Override

@@ -547,7 +547,7 @@ public abstract class AbstractViewController extends AbstractComponentController
             if (RectF.intersects(bounds, rect)) {
                 if (LengthUtils.isNotEmpty(page.links)) {
                     for (final PageLink link : page.links) {
-                        if (link.enabled && processLinkTap(page, link, bounds, rect)) {
+                        if (processLinkTap(page, link, bounds, rect)) {
                             return true;
                         }
                     }

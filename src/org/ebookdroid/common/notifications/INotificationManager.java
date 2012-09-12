@@ -1,5 +1,7 @@
 package org.ebookdroid.common.notifications;
 
+import android.content.Intent;
+
 import org.emdev.common.android.AndroidVersion;
 
 public interface INotificationManager {
@@ -12,11 +14,11 @@ public interface INotificationManager {
     /* ModernNotificationManager for Android 3.0+ */
     new ModernNotificationManager();
 
-    int notify(final CharSequence title, final CharSequence message);
+    int notify(final CharSequence title, final CharSequence message, final Intent intent);
 
     int notify(final CharSequence message);
 
-    int notify(final int titleId, final CharSequence message);
+    int notify(final int titleId, final CharSequence message, final Intent intent);
 
     int notify(final int titleId, final int messageId);
 

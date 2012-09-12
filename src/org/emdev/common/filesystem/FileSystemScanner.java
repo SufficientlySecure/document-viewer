@@ -1,6 +1,6 @@
 package org.emdev.common.filesystem;
 
-import static android.os.FileObserver.CREATE;
+import static android.os.FileObserver.CLOSE_WRITE;
 import static android.os.FileObserver.DELETE;
 import static android.os.FileObserver.MOVED_FROM;
 import static android.os.FileObserver.MOVED_TO;
@@ -25,7 +25,7 @@ import org.emdev.utils.StringUtils;
 
 public class FileSystemScanner {
 
-    private static final int EVENT_MASK = CREATE | MOVED_TO | DELETE | MOVED_FROM;
+    private static final int EVENT_MASK = CLOSE_WRITE | MOVED_TO | DELETE | MOVED_FROM;
 
     final EventDispatcher listeners;
     final AtomicBoolean inScan = new AtomicBoolean();
@@ -209,7 +209,7 @@ public class FileSystemScanner {
             final Listener l = listeners.getListener();
 
             switch (event) {
-                case CREATE:
+                case CLOSE_WRITE:
                 case MOVED_TO:
                     if (isDirectory) {
                         l.onDirAdded(folder, f);

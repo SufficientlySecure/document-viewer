@@ -4,6 +4,7 @@ import org.ebookdroid.R;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
+import android.content.Intent;
 
 import org.emdev.BaseDroidApp;
 
@@ -11,14 +12,21 @@ import org.emdev.BaseDroidApp;
 class ModernNotificationManager extends AbstractNotificationManager {
 
     @Override
-    public int notify(final CharSequence title, final CharSequence message) {
+    public int notify(final CharSequence title, final CharSequence message, final Intent intent) {
         final Notification.Builder nb = new Notification.Builder(BaseDroidApp.context);
 
-        nb.setSmallIcon(R.drawable.icon).setContentTitle(title);
-        nb.setTicker(message).setContentText(message);
-        nb.setAutoCancel(true).setWhen(System.currentTimeMillis()).setDefaults(Notification.DEFAULT_ALL & (~ Notification.DEFAULT_VIBRATE));
+        nb.setSmallIcon(R.drawable.icon);
+        nb.setAutoCancel(true);
+        nb.setWhen(System.currentTimeMillis());
+        nb.setDefaults(Notification.DEFAULT_ALL & (~Notification.DEFAULT_VIBRATE));
 
-        final Notification notification = nb.getNotification();
+        nb.setContentIntent(getIntent(intent));
+
+        nb.setContentTitle(title);
+        nb.setTicker(message);
+        nb.setContentText(message);
+
+        final Notification notification = nb.build();
         final int id = SEQ.getAndIncrement();
         getManager().notify(id, notification);
 

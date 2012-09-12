@@ -381,7 +381,7 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
                     search.notifyDataSetChanged();
                 }
             }
-            INotificationManager.instance.notify(R.string.notification_file_add, f.getAbsolutePath());
+            INotificationManager.instance.notify(R.string.notification_file_add, f.getAbsolutePath(), null);
         }
     }
 
@@ -407,7 +407,7 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
                         if (search.nodes.remove(node)) {
                             search.notifyDataSetChanged();
                         }
-                        INotificationManager.instance.notify(R.string.notification_file_delete, f.getAbsolutePath());
+                        INotificationManager.instance.notify(R.string.notification_file_delete, f.getAbsolutePath(), null);
                         return;
                     }
                 }

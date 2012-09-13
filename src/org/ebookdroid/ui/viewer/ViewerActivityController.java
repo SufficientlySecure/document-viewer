@@ -13,6 +13,7 @@ import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.books.Bookmark;
 import org.ebookdroid.common.settings.listeners.IAppSettingsChangeListener;
 import org.ebookdroid.common.settings.listeners.IBookSettingsChangeListener;
+import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.touch.TouchManager;
 import org.ebookdroid.core.DecodeService;
 import org.ebookdroid.core.NavigationHistory;
@@ -99,6 +100,7 @@ actions = {
         @ActionMethodDef(id = R.id.actions_addBookmark, method = "addBookmark"),
         @ActionMethodDef(id = R.id.actions_keyBindings, method = "showKeyBindingsDialog"),
         @ActionMethodDef(id = R.id.mainmenu_zoom, method = "toggleControls"),
+        @ActionMethodDef(id = R.id.mainmenu_crop, method = "toggleControls"),
         @ActionMethodDef(id = R.id.actions_toggleTouchManagerView, method = "toggleControls"),
         @ActionMethodDef(id = R.id.mainmenu_search, method = "toggleControls"),
         @ActionMethodDef(id = R.id.mainmenu_close, method = "closeActivity")
@@ -186,6 +188,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         IUIManager.instance.setFullScreenMode(activity, getManagedComponent().view.getView(), appSettings.fullScreen);
 
         createAction(R.id.mainmenu_goto_page, new Constant("dialogId", DIALOG_GOTO));
+        createAction(R.id.mainmenu_crop).putValue("view", activity.getManualCropControls()).putValue("mode", DocumentViewMode.SINGLE_PAGE);
         createAction(R.id.mainmenu_zoom).putValue("view", activity.getZoomControls());
         createAction(R.id.mainmenu_search).putValue("view", activity.getSearchControls());
         createAction(R.id.actions_toggleTouchManagerView).putValue("view", activity.getTouchView());
@@ -616,9 +619,13 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         return this;
     }
 
-    @ActionMethod(ids = { R.id.mainmenu_zoom, R.id.actions_toggleTouchManagerView, R.id.mainmenu_search })
+    @ActionMethod(ids = { R.id.mainmenu_zoom, R.id.actions_toggleTouchManagerView, R.id.mainmenu_search, R.id.mainmenu_crop })
     public void toggleControls(final ActionEx action) {
         final View view = action.getParameter("view");
+        final DocumentViewMode mode = action.getParameter("mode");
+        if (mode != null && bookSettings != null && bookSettings.viewMode != mode) {
+            return;
+        }
         ViewEffects.toggleControls(view);
     }
 

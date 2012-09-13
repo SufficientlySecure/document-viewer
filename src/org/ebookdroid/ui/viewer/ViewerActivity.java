@@ -6,6 +6,7 @@ import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.types.ToastPosition;
 import org.ebookdroid.common.touch.TouchManagerView;
 import org.ebookdroid.ui.viewer.dialogs.GoToPageDialog;
+import org.ebookdroid.ui.viewer.views.ManualCropView;
 import org.ebookdroid.ui.viewer.views.PageViewZoomControls;
 import org.ebookdroid.ui.viewer.views.SearchControls;
 
@@ -67,6 +68,8 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     private boolean menuClosedCalled;
 
+    private ManualCropView cropControls;
+
     /**
      * Instantiates a new base viewer activity.
      */
@@ -119,6 +122,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
         frameLayout.addView(view.getView());
         frameLayout.addView(getZoomControls());
+        frameLayout.addView(getManualCropControls());
         frameLayout.addView(getSearchControls());
         frameLayout.addView(getTouchView());
 
@@ -254,6 +258,13 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
             searchControls = new SearchControls(this);
         }
         return searchControls;
+    }
+
+    public ManualCropView getManualCropControls() {
+        if (cropControls == null) {
+            cropControls = new ManualCropView(getController());
+        }
+        return cropControls;
     }
 
     @Override

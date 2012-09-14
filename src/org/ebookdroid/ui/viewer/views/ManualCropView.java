@@ -1,6 +1,10 @@
 package org.ebookdroid.ui.viewer.views;
 
 import org.ebookdroid.R;
+import org.ebookdroid.common.bitmaps.BitmapManager;
+import org.ebookdroid.common.bitmaps.Bitmaps;
+import org.ebookdroid.core.AbstractViewController;
+import org.ebookdroid.core.EventPool;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.ui.viewer.IActivityController;
 import org.ebookdroid.ui.viewer.IViewController.InvalidateSizeReason;
@@ -18,6 +22,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ManualCropView extends View {
 
@@ -51,15 +58,20 @@ public class ManualCropView extends View {
     public void initControls() {
         final Page page = base.getDocumentModel().getCurrentPageObject();
         if (page != null) {
+
+            base.getZoomModel().setZoom(1.0f, true);
+
             RectF oldCb = page.nodes.root.croppedBounds;
             if (oldCb != null) {
-                page.setAspectRatio(page.cpi);
-                base.getDocumentController().invalidatePageSizes(InvalidateSizeReason.PAGE_LOADED, page);
+
+                final List<Bitmaps> bitmapsToRecycle = new ArrayList<Bitmaps>();
+                page.nodes.recycleAll(bitmapsToRecycle, true);
+                BitmapManager.release(bitmapsToRecycle);
 
                 page.nodes.root.croppedBounds = page.type.getInitialRect();
-            }
-            if (base.getZoomModel().getZoom() != 1.0f || (page.nodes.root.croppedBounds != null && oldCb != page.type.getInitialRect())) {
-                base.getZoomModel().scaleAndCommitZoom(1.0f);
+                page.setAspectRatio(page.cpi);
+
+                EventPool.newEventReset((AbstractViewController) base.getDocumentController(), InvalidateSizeReason.PAGE_LOADED, false).process();
             }
         }
     }

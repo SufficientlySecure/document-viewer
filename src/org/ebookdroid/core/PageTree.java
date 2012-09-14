@@ -22,7 +22,7 @@ public class PageTree {
 
     final Page owner;
 
-    final PageTreeNode root;
+    public final PageTreeNode root;
 
     private PageTreeNode[] treeNodes;
 

@@ -32,6 +32,7 @@ import org.ebookdroid.ui.settings.SettingsUI;
 import org.ebookdroid.ui.viewer.dialogs.OutlineDialog;
 import org.ebookdroid.ui.viewer.stubs.ActivityControllerStub;
 import org.ebookdroid.ui.viewer.stubs.ViewContollerStub;
+import org.ebookdroid.ui.viewer.views.ManualCropView;
 import org.ebookdroid.ui.viewer.views.SearchControls;
 import org.ebookdroid.ui.viewer.views.ViewEffects;
 
@@ -188,7 +189,8 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         IUIManager.instance.setFullScreenMode(activity, getManagedComponent().view.getView(), appSettings.fullScreen);
 
         createAction(R.id.mainmenu_goto_page, new Constant("dialogId", DIALOG_GOTO));
-        createAction(R.id.mainmenu_crop).putValue("view", activity.getManualCropControls()).putValue("mode", DocumentViewMode.SINGLE_PAGE);
+        createAction(R.id.mainmenu_crop).putValue("view", activity.getManualCropControls()).putValue("mode",
+                DocumentViewMode.SINGLE_PAGE);
         createAction(R.id.mainmenu_zoom).putValue("view", activity.getZoomControls());
         createAction(R.id.mainmenu_search).putValue("view", activity.getSearchControls());
         createAction(R.id.actions_toggleTouchManagerView).putValue("view", activity.getTouchView());
@@ -619,7 +621,8 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         return this;
     }
 
-    @ActionMethod(ids = { R.id.mainmenu_zoom, R.id.actions_toggleTouchManagerView, R.id.mainmenu_search, R.id.mainmenu_crop })
+    @ActionMethod(ids = { R.id.mainmenu_zoom, R.id.actions_toggleTouchManagerView, R.id.mainmenu_search,
+            R.id.mainmenu_crop })
     public void toggleControls(final ActionEx action) {
         final View view = action.getParameter("view");
         final DocumentViewMode mode = action.getParameter("mode");
@@ -627,6 +630,12 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
             return;
         }
         ViewEffects.toggleControls(view);
+        if (view instanceof ManualCropView) {
+            ManualCropView mcv = (ManualCropView) view;
+            if (mcv.getVisibility() == View.VISIBLE) {
+                mcv.initControls();
+            }
+        }
     }
 
     public final boolean dispatchKeyEvent(final KeyEvent event) {
@@ -640,7 +649,10 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                     if (event.getRepeatCount() == 0) {
                         if (getManagedComponent().getTouchView().isShown()) {
                             ViewEffects.toggleControls(getManagedComponent().getTouchView());
+                        } else if (getManagedComponent().getManualCropControls().isShown()) {
+                            ViewEffects.toggleControls(getManagedComponent().getManualCropControls());
                         } else {
+
                             if (history.goBack()) {
                                 return true;
                             }

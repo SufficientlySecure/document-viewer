@@ -1,27 +1,29 @@
 package org.ebookdroid.ui.viewer.views;
 
 import org.ebookdroid.R;
+import org.ebookdroid.core.Page;
 import org.ebookdroid.ui.viewer.IActivityController;
-import org.ebookdroid.ui.viewer.views.ZoomRoll.GestureListener;
+import org.ebookdroid.ui.viewer.IViewController.InvalidateSizeReason;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.PorterDuff.Mode;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.ViewGroup.LayoutParams;
 
-
 public class ManualCropView extends View {
+
     private final IActivityController base;
-    PointF topLeft = new PointF(0.1f,0.1f);
-    PointF bottomRight = new PointF(0.9f,0.9f);
+    PointF topLeft = new PointF(0.1f, 0.1f);
+    PointF bottomRight = new PointF(0.9f, 0.9f);
 
     PointF currentPoint = null;
 
@@ -46,22 +48,39 @@ public class ManualCropView extends View {
 
     }
 
+    public void initControls() {
+        final Page page = base.getDocumentModel().getCurrentPageObject();
+        if (page != null) {
+            RectF oldCb = page.nodes.root.croppedBounds;
+            if (oldCb != null) {
+                page.setAspectRatio(page.cpi);
+                base.getDocumentController().invalidatePageSizes(InvalidateSizeReason.PAGE_LOADED, page);
+
+                page.nodes.root.croppedBounds = page.type.getInitialRect();
+            }
+            if (base.getZoomModel().getZoom() != 1.0f || (page.nodes.root.croppedBounds != null && oldCb != page.type.getInitialRect())) {
+                base.getZoomModel().scaleAndCommitZoom(1.0f);
+            }
+        }
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawColor(0x7F000000);
 
         canvas.save();
-        canvas.clipRect(topLeft.x * getWidth(), topLeft.y * getHeight(), bottomRight.x * getWidth(), bottomRight.y * getHeight());
+        canvas.clipRect(topLeft.x * getWidth(), topLeft.y * getHeight(), bottomRight.x * getWidth(), bottomRight.y
+                * getHeight());
         canvas.drawColor(0x00FFFFFF, Mode.CLEAR);
         canvas.restore();
 
         Drawable d = base.getContext().getResources().getDrawable(R.drawable.circle);
-        d.setBounds((int)(topLeft.x * getWidth() - 25), (int)(topLeft.y * getHeight() - 25),
-                (int)(topLeft.x * getWidth() + 25), (int)(topLeft.y * getHeight()+ 25));
+        d.setBounds((int) (topLeft.x * getWidth() - 25), (int) (topLeft.y * getHeight() - 25), (int) (topLeft.x
+                * getWidth() + 25), (int) (topLeft.y * getHeight() + 25));
         d.draw(canvas);
 
-        d.setBounds((int)(bottomRight.x * getWidth() - 25), (int)(bottomRight.y * getHeight() - 25),
-                (int)(bottomRight.x * getWidth() + 25), (int)(bottomRight.y * getHeight()+ 25));
+        d.setBounds((int) (bottomRight.x * getWidth() - 25), (int) (bottomRight.y * getHeight() - 25),
+                (int) (bottomRight.x * getWidth() + 25), (int) (bottomRight.y * getHeight() + 25));
         d.draw(canvas);
 
         canvas.drawLine(0, topLeft.y * getHeight(), getWidth(), topLeft.y * getHeight(), PAINT);
@@ -88,14 +107,15 @@ public class ManualCropView extends View {
     }
 
     protected class GestureListener extends SimpleOnGestureListener {
+
         @Override
         public boolean onDown(MotionEvent e) {
-            if ((Math.abs(e.getX() - ManualCropView.this.topLeft.x * ManualCropView.this.getWidth()) < 10)&&
-                    (Math.abs(e.getY() - ManualCropView.this.topLeft.y * ManualCropView.this.getHeight()) < 10)) {
+            if ((Math.abs(e.getX() - ManualCropView.this.topLeft.x * ManualCropView.this.getWidth()) < 10)
+                    && (Math.abs(e.getY() - ManualCropView.this.topLeft.y * ManualCropView.this.getHeight()) < 10)) {
                 ManualCropView.this.currentPoint = topLeft;
             }
-            if ((Math.abs(e.getX() - ManualCropView.this.bottomRight.x * ManualCropView.this.getWidth()) < 10)&&
-                    (Math.abs(e.getY() - ManualCropView.this.bottomRight.y * ManualCropView.this.getHeight()) < 10)) {
+            if ((Math.abs(e.getX() - ManualCropView.this.bottomRight.x * ManualCropView.this.getWidth()) < 10)
+                    && (Math.abs(e.getY() - ManualCropView.this.bottomRight.y * ManualCropView.this.getHeight()) < 10)) {
                 ManualCropView.this.currentPoint = bottomRight;
             }
             inTouch = true;

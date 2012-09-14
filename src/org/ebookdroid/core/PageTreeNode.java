@@ -42,7 +42,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     final RectF pageSliceBounds;
 
     float bitmapZoom = 1;
-    RectF croppedBounds = null;
+    public RectF croppedBounds = null;
 
     PageTreeNode(final Page page) {
         assert page != null;

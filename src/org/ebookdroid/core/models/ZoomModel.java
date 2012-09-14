@@ -40,7 +40,7 @@ public class ZoomModel extends ListenerProxy {
     public void setZoom(final float zoom, final boolean commitImmediately) {
         final float newZoom = adjust(zoom);
         final float oldZoom = this.currentZoom;
-        if (newZoom != oldZoom) {
+        if (newZoom != oldZoom || commitImmediately) {
             isCommited = commitImmediately;
             this.currentZoom = newZoom;
             this.<ZoomListener> getListener().zoomChanged(oldZoom, newZoom, commitImmediately);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="app_name">"全国省(市、自治区)科学院第28次院长书记联席会议"</string>
+    <string name="app_name">"EBookDroid"</string>
     <string name="confirmclose_title">"关闭…"</string>
     <string name="confirmclose_msg">"确定关闭当前视图？"</string>
     <string name="error_dlg_title">"应用程序错误"</string>
@@ -38,7 +38,7 @@
     <string name="list_clear_recent_mode_delete_bookmarks">"删除所有书签"</string>
     <string name="list_clear_recent_mode_delete_book_settings">"删除所有设置"</string>
     <string name="list_clear_recent_mode_delete_cached_data">"删除所有缓存的数据"</string>
-    <string name="about_title">"全国省(市、自治区)科学院第28次院长书记联席会议"</string>
+    <string name="about_title">"EBookDroid"</string>
     <string name="about_commmon_title">"软件信息"</string>
 <!--<string name="about_fonts_title">"Fonts"</string>-->
     <string name="about_license_title">"版权"</string>
@@ -120,9 +120,9 @@
     <string name="opds_downloading_dlg_raw_type">"原始类型"</string>
     <string name="notification_file_add">"文件已经添加到书库"</string>
     <string name="notification_file_delete">"文件已经从书库中删除"</string>
-<!--<string name="font_reminder_title">"Attension"</string>-->
-<!--<string name="font_reminder">"Since version 1.5 all embedded PDF and FB2 fonts are removed and standard Android fonts are used instead of them. If you want to restore legacy fonts or install new ones, please install font package installers from Google Play Market: &lt;ul&gt;&lt;li&gt;&lt;a href=&quot;market://details?id=org.ebookdroid.fontpack.legacy&quot;&gt;Legacy fonts&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;"</string>-->
-<!--<string name="cache_moving_text">"Moving cached files…"</string>-->
-<!--<string name="cache_moving_progress">"Moving cached files %1$d/%2$d"</string>-->
+	<string name="font_reminder_title">"提示"</string>
+	<string name="font_reminder">"从1.5版本开始，使用标准的安卓系统字体替换了内嵌的PDF和FB2字体。如果你想恢复原有的字体或者安装新的字体， 请从谷歌网上商店下载字体安装包 : &lt;ul&gt;&lt;li&gt;&lt;a href=&quot;market://details?id=org.ebookdroid.fontpack.legacy&quot;&gt;下载字体&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;"</string>
+	<string name="cache_moving_text">"正在移动缓存文件…"</string>-->
+	<string name="cache_moving_progress">"正在移动缓存文件 %1$d/%2$d"</string>
 
 </resources>

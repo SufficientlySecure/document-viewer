@@ -9,10 +9,10 @@
     <string name="pref_brautoscandir_summary">"自动搜索的文件目录"</string>
     <string name="pref_brbrfiletypesscreen_title">"文件类型"</string>
     <string name="pref_brbrfiletypesscreen_summary">"书库中显示的文件类型"</string>
-<!--<string name="pref_cachelocation_title">"Cache location"</string>-->
-<!--<string name="pref_cachelocation_summary">"Location of a file cache"</string>-->
-<!--<string name="list_cachelocation_system">"System app cache"</string>-->
-<!--<string name="list_cachelocation_custom">"Sdcard app cache"</string>-->
+	<string name="pref_cachelocation_title">"Cache location"</string>-->
+	<string name="pref_cachelocation_summary">"Location of a file cache"</string>
+	<string name="list_cachelocation_system">"System app cache"</string>
+	<string name="list_cachelocation_custom">"Sdcard app cache"</string>
     <string name="pref_brfiletypedjvu_title" translatable="true">".djvu"</string>
     <string name="pref_brfiletypedjvu_summary">"显示DjVu文件"</string>
     <string name="pref_brfiletypedjv_title" translatable="true">".djv"</string>

@@ -4,6 +4,6 @@
     <string name="actions_verticalConfigScrollUp">"向上滚动"</string>
     <string name="actions_verticalConfigScrollDown">"向下滚动"</string>
     <string name="actions_quickZoom">"缩放"</string>
-<!--<string name="actions_zoomToColumn">"Zoom to column"</string>-->
+    <string name="actions_zoomToColumn">"缩放到列"</string>
 
 </resources>

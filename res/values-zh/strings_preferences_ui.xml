@@ -3,18 +3,18 @@
 
     <string name="pref_ui_category">"用户界面"</string>
     <string name="pref_ui_category_summary">"用户界面设置"</string>
-<!--<string name="pref_lang_title">"Language"</string>-->
-<!--<string name="pref_lang_summary">"User interface language (restart required)"</string>-->
-<!--<string name="list_lang_default">"System"</string>-->
-<!--<string name="list_lang_en">"English"</string>-->
-<!--<string name="list_lang_de">"German"</string>-->
-<!--<string name="list_lang_es">"Spanish"</string>-->
-<!--<string name="list_lang_fr">"French"</string>-->
-<!--<string name="list_lang_it">"Italian"</string>-->
-<!--<string name="list_lang_nl">"Dutch"</string>-->
-<!--<string name="list_lang_ru">"Russian"</string>-->
-<!--<string name="list_lang_uk">"Ukrainian"</string>-->
-<!--<string name="list_lang_zh">"Chinese"</string>-->
+	<string name="pref_lang_title">"语言"</string>
+	<string name="pref_lang_summary">"用户界面语言 (需要重启)"</string>
+	<string name="list_lang_default">"系统默认"</string>
+	<string name="list_lang_en">"英语"</string>
+	<string name="list_lang_de">"德语"</string>
+	<string name="list_lang_es">"西班牙语"</string>
+	<string name="list_lang_fr">"法语"</string>
+	<string name="list_lang_it">"意大利语"</string>
+	<string name="list_lang_nl">"荷兰语"</string>
+	<string name="list_lang_ru">"俄语"</string>
+	<string name="list_lang_uk">"乌克兰语"</string>
+	<string name="list_lang_zh">"中文简体"</string>
     <string name="pref_loadrecent_title">"最近加载"</string>
     <string name="pref_loadrecent_summary">"在应用程序上启动自动加载上次打开的书"</string>
     <string name="pref_confirmclose_title">"确认关闭"</string>
@@ -69,7 +69,7 @@
 <!--<string name="pref_storeLinkGotoHistory_summary">""</string>-->
     <string name="pref_storeOutlineGotoHistory_title">"商店转到大纲环节在导航历史记录"</string>
 <!--<string name="pref_storeOutlineGotoHistory_summary">""</string>-->
-    <string name="pref_storeSearchGotoHistory_title">"商店去搜索结果中的导航历史记录"</string>
+    <string name="pref_storeSearchGotoHistory_title">"到商店去搜索结果中的导航历史记录"</string>
 <!--<string name="pref_storeSearchGotoHistory_summary">""</string>-->
 
 </resources>

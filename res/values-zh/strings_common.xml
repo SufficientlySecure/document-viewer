@@ -40,7 +40,7 @@
     <string name="list_clear_recent_mode_delete_cached_data">"删除所有缓存的数据"</string>
     <string name="about_title">"EBookDroid"</string>
     <string name="about_commmon_title">"软件信息"</string>
-<!--<string name="about_fonts_title">"Fonts"</string>-->
+    <string name="about_fonts_title">"字体"</string>
     <string name="about_license_title">"版权"</string>
     <string name="about_3dparty_title">"第三方软件"</string>
     <string name="about_changelog_title">"修改记录"</string>
@@ -103,10 +103,10 @@
     <string name="error_page_out_of_rande">"无效的页码。有效页码范围: 1-%1$d"</string>
     <string name="msg_loading">"载入中… 请稍候"</string>
     <string name="msg_getting_page_size">"获取页面大小 %1$d/%2$d"</string>
-<!--<string name="tap_zones_single_tap">"Single Tap"</string>-->
-<!--<string name="tap_zones_double_tap">"Double Tap"</string>-->
-<!--<string name="tap_zones_long_tap">"Long tap"</string>-->
-<!--<string name="tap_zones_two_finger_tap">"Two finger tap"</string>-->
+	<string name="tap_zones_single_tap">"Single Tap"</string>
+	<string name="tap_zones_double_tap">"Double Tap"</string>
+	<string name="tap_zones_long_tap">"Long tap"</string>
+	<string name="tap_zones_two_finger_tap">"Two finger tap"</string>
     <string name="tap_zones_reset">"重置"</string>
     <string name="tap_zones_delete">"删除"</string>
     <string name="tap_zones_clear">"清空"</string>

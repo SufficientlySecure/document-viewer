@@ -18,5 +18,6 @@
     <string name="menu_searchtext">"Cerca nel testo"</string>
     <string name="menu_show_options_menu">"Visualizza menu opzioni"</string>
     <string name="menu_backupsettings">"Backup e Ripristino"</string>
+<!--<string name="menu_crop">"Manual crop"</string>-->
 
 </resources>

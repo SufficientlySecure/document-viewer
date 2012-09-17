@@ -37,6 +37,8 @@
     <string name="pref_bitmapfilering_enabled_summary">"启用线性位图过滤"</string>
     <string name="pref_texturereuse_title">"重用位图"</string>
     <string name="pref_texturereuse_summary">"页面解码时使用已经存在的位图"</string>
+<!--<string name="pref_usenativetextures_title">"Store textures in native memory"</string>-->
+<!--<string name="pref_usenativetextures_summary">"Store textures in native memory"</string>-->
     <string name="pref_bitmaphack_title">"位图分配破解"</string>
     <string name="pref_bitmaphack_summary">"使用位图分配跟踪破解"</string>
     <string name="pref_earlyrecycling_title">"位图回收"</string>

@@ -9,10 +9,10 @@
     <string name="pref_backuponbookclose_summary">"关闭书籍时自动备份参数设置"</string>
     <string name="pref_maxnumberofautobackups_title">"自动备份的数目"</string>
     <string name="pref_maxnumberofautobackups_summary">"自动备份的最大数目"</string>
-	<string name="pref_bookbackuptype_title">"备份阅读设置"</string>
-	<string name="pref_bookbackuptype_summary">"备份阅读设置"</string>
-	<string name="list_bookbackuptype_none">"无"</string>
-	<string name="list_bookbackuptype_recent">"最近"</string>
-	<string name="list_bookbackuptype_all">"所有"</string>
+    <string name="pref_bookbackuptype_title">"备份阅读设置"</string>
+    <string name="pref_bookbackuptype_summary">"备份阅读设置"</string>
+    <string name="list_bookbackuptype_none">"无"</string>
+    <string name="list_bookbackuptype_recent">"最近"</string>
+    <string name="list_bookbackuptype_all">"所有"</string>
 
 </resources>

@@ -18,5 +18,6 @@
     <string name="menu_searchtext">"Buscar"</string>
     <string name="menu_show_options_menu">"Mostrar menú de opciones"</string>
     <string name="menu_backupsettings">"Configuración de Copias de seguridad y Respaldo"</string>
+<!--<string name="menu_crop">"Manual crop"</string>-->
 
 </resources>

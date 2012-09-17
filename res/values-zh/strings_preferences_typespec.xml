@@ -3,7 +3,7 @@
 
     <string name="pref_brfiletypespecific_title">"特定格式"</string>
     <string name="pref_brfiletypespecific_summary">"每个单独文件格式的设置"</string>
-    <string name="pref_brfiletypespecificdjvu_title">"DJVU"</string>
+    <string name="pref_brfiletypespecificdjvu_title" translatable="true">"DJVU"</string>
     <string name="pref_brfiletypespecificdjvu_summary">"DJVU 特定格式设置"</string>
     <string name="pref_djvu_rendering_mode_title">"渲染模式"</string>
     <string name="pref_djvu_rendering_mode_summary">"&quot;页面渲染模式“"</string>
@@ -13,7 +13,7 @@
     <string name="list_djvu_rendering_mode_3">"仅蒙版"</string>
     <string name="list_djvu_rendering_mode_4">"仅背景"</string>
     <string name="list_djvu_rendering_mode_5">"仅前台"</string>
-    <string name="pref_brfiletypespecificpdf_title">"PDF"</string>
+    <string name="pref_brfiletypespecificpdf_title" translatable="true">"PDF"</string>
     <string name="pref_brfiletypespecificpdf_summary">"PDF特定格式设置"</string>
     <string name="pref_customdpi_title">"使用自定义 DPI"</string>
     <string name="pref_customdpi_summary">"定义低于 DPI值"</string>

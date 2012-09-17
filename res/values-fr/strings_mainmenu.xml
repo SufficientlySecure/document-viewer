@@ -18,5 +18,6 @@
 <!--<string name="menu_searchtext">"Search"</string>-->
 <!--<string name="menu_show_options_menu">"Show options menu"</string>-->
 <!--<string name="menu_backupsettings">"Backup &amp; Restore settings"</string>-->
+<!--<string name="menu_crop">"Manual crop"</string>-->
 
 </resources>

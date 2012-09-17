@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="app_name">"EBookDroid"</string>
+    <string name="app_name" translatable="true">"EBookDroid"</string>
     <string name="confirmclose_title">"关闭…"</string>
     <string name="confirmclose_msg">"确定关闭当前视图？"</string>
     <string name="error_dlg_title">"应用程序错误"</string>
@@ -103,10 +103,10 @@
     <string name="error_page_out_of_rande">"无效的页码。有效页码范围: 1-%1$d"</string>
     <string name="msg_loading">"载入中… 请稍候"</string>
     <string name="msg_getting_page_size">"获取页面大小 %1$d/%2$d"</string>
-	<string name="tap_zones_single_tap">"Single Tap"</string>
-	<string name="tap_zones_double_tap">"Double Tap"</string>
-	<string name="tap_zones_long_tap">"Long tap"</string>
-	<string name="tap_zones_two_finger_tap">"Two finger tap"</string>
+<!--<string name="tap_zones_single_tap">"Single Tap"</string>-->
+<!--<string name="tap_zones_double_tap">"Double Tap"</string>-->
+<!--<string name="tap_zones_long_tap">"Long tap"</string>-->
+<!--<string name="tap_zones_two_finger_tap">"Two finger tap"</string>-->
     <string name="tap_zones_reset">"重置"</string>
     <string name="tap_zones_delete">"删除"</string>
     <string name="tap_zones_clear">"清空"</string>
@@ -120,9 +120,9 @@
     <string name="opds_downloading_dlg_raw_type">"原始类型"</string>
     <string name="notification_file_add">"文件已经添加到书库"</string>
     <string name="notification_file_delete">"文件已经从书库中删除"</string>
-	<string name="font_reminder_title">"提示"</string>
-	<string name="font_reminder">"从1.5版本开始，使用标准的安卓系统字体替换了内嵌的PDF和FB2字体。如果你想恢复原有的字体或者安装新的字体， 请从谷歌网上商店下载字体安装包 : &lt;ul&gt;&lt;li&gt;&lt;a href=&quot;market://details?id=org.ebookdroid.fontpack.legacy&quot;&gt;下载字体&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;"</string>
-	<string name="cache_moving_text">"正在移动缓存文件…"</string>-->
-	<string name="cache_moving_progress">"正在移动缓存文件 %1$d/%2$d"</string>
+    <string name="font_reminder_title">"提示"</string>
+    <string name="font_reminder">"从1.5版本开始，使用标准的安卓系统字体替换了内嵌的PDF和FB2字体。如果你想恢复原有的字体或者安装新的字体， 请从谷歌网上商店下载字体安装包 : &lt;ul&gt;&lt;li&gt;&lt;a href=&quot;market://details?id=org.ebookdroid.fontpack.legacy&quot;&gt;下载字体&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;"</string>
+    <string name="cache_moving_text">"正在移动缓存文件…"</string>
+    <string name="cache_moving_progress">"正在移动缓存文件 %1$d/%2$d"</string>
 
 </resources>

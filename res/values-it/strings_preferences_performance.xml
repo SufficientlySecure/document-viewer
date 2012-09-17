@@ -37,6 +37,8 @@
     <string name="pref_bitmapfilering_enabled_summary">"Abilita filtro bilineare per le texture"</string>
     <string name="pref_texturereuse_title">"Riutilizza le mappe di bit delle texture"</string>
     <string name="pref_texturereuse_summary">"Riutilizza le mappe di bit esistenti quando parte della pagina viene decodificata di nuovo"</string>
+<!--<string name="pref_usenativetextures_title">"Store textures in native memory"</string>-->
+<!--<string name="pref_usenativetextures_summary">"Store textures in native memory"</string>-->
 <!--<string name="pref_bitmaphack_title">"Bitmap allocation hack"</string>-->
 <!--<string name="pref_bitmaphack_summary">"Use bitmap allocation tracking hack"</string>-->
 <!--<string name="pref_earlyrecycling_title">"Early bitmap recycling"</string>-->

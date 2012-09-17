@@ -28,6 +28,7 @@ public class BookSettingsActivity extends BaseSettingsActivity {
         current = SettingsManager.getBookSettings(fileName);
         if (current == null) {
             finish();
+            return;
         }
 
         SettingsManager.onBookSettingsActivityCreated(current);

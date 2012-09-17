@@ -31,7 +31,7 @@
     <string name="list_animation_fader">"Révéler"</string>
     <string name="list_animation_squeezer">"Compression"</string>
 <!--<string name="pref_postprocessing_category">"Post–processing effects"</string>-->
-<!--<string name="pref_postprocessing_summary">"Post–processing effects"</string>-->
+<!--<string name="pref_postprocessing_summary">"Additional effects to enhance page viewing"</string>-->
     <string name="pref_nightmode_title">"Mode nuit"</string>
     <string name="pref_nightmode_summary">"Caractères blancs sur fond noir"</string>
 <!--<string name="pref_posimages_in_nightmode_title">"Positive images in night mode"</string>-->

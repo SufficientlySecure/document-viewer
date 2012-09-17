@@ -18,9 +18,9 @@
     <string name="pref_customdpi_title">"Personalizar DPI"</string>
     <string name="pref_customdpi_summary">"Definir los valores personalizados de DPI a continuación"</string>
 <!--<string name="pref_xdpi_title">"X DPI"</string>-->
-<!--<string name="pref_xdpi_summary">"X DPI"</string>-->
+<!--<string name="pref_xdpi_summary">"Horizontal (X direction) DPI"</string>-->
 <!--<string name="pref_ydpi_title">"Y DPI"</string>-->
-<!--<string name="pref_ydpi_summary">"Y DPI"</string>-->
+<!--<string name="pref_ydpi_summary">"Vertical (Y direction) DPI"</string>-->
     <string name="pref_monofontpack_title">"Fuentes Monospace"</string>
     <string name="pref_monofontpack_summary">"Define el paquete de fuentes monospace a utilizar"</string>
     <string name="pref_sansfontpack_title">"Fuentes Sans"</string>

@@ -31,7 +31,7 @@
     <string name="list_animation_fader">"Uitregelen"</string>
     <string name="list_animation_squeezer">"Drukken"</string>
 <!--<string name="pref_postprocessing_category">"Post–processing effects"</string>-->
-<!--<string name="pref_postprocessing_summary">"Post–processing effects"</string>-->
+<!--<string name="pref_postprocessing_summary">"Additional effects to enhance page viewing"</string>-->
     <string name="pref_nightmode_title">"Nacht modus"</string>
     <string name="pref_nightmode_summary">"Witte letterteken op zwarte achtergrond"</string>
 <!--<string name="pref_posimages_in_nightmode_title">"Positive images in night mode"</string>-->

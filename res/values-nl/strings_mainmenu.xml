@@ -12,12 +12,12 @@
     <string name="menu_add_bookmark">"Bladwijzer toevoegen"</string>
     <string name="menu_thumbnail">"Maak klaar voor doorbladeren"</string>
 <!--<string name="menu_about">"About"</string>-->
-<!--<string name="menu_tap_configuration">"Tap configuration"</string>-->
-<!--<string name="menu_key_bindings">"Key bindings"</string>-->
-<!--<string name="menu_searchbook">"Search"</string>-->
-<!--<string name="menu_searchtext">"Search"</string>-->
+<!--<string name="menu_tap_configuration">"Configure taps"</string>-->
+<!--<string name="menu_key_bindings">"Configure keys"</string>-->
+<!--<string name="menu_searchbook">"Find books"</string>-->
+<!--<string name="menu_searchtext">"Find text"</string>-->
 <!--<string name="menu_show_options_menu">"Show options menu"</string>-->
-<!--<string name="menu_backupsettings">"Backup &amp; Restore settings"</string>-->
+<!--<string name="menu_backupsettings">"Backup &amp; Restore"</string>-->
 <!--<string name="menu_crop">"Manual crop"</string>-->
 
 </resources>

@@ -2,7 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="pref_brfiletypespecific_title">Format specific</string>
-    <string name="pref_brfiletypespecific_summary">Settings for each individual file format</string>
+    <string name="pref_brfiletypespecific_summary">Settings unique to each individual file format</string>
 
     <string name="pref_brfiletypespecificdjvu_title">DJVU</string>
     <string name="pref_brfiletypespecificdjvu_summary">DJVU format specific settings</string>
@@ -21,30 +21,30 @@
     <string name="pref_brfiletypespecificpdf_summary">PDF format specific settings</string>
 
     <string name="pref_customdpi_title">Use custom DPI</string>
-    <string name="pref_customdpi_summary">Define custom DPI values below</string>
+    <string name="pref_customdpi_summary">Define custom DPI (Dot Per Inch) values below</string>
 
     <string name="pref_xdpi_title">X DPI</string>
-    <string name="pref_xdpi_summary">X DPI</string>
+    <string name="pref_xdpi_summary">Horizontal (X direction) DPI</string>
 
     <string name="pref_ydpi_title">Y DPI</string>
-    <string name="pref_ydpi_summary">Y DPI</string>
+    <string name="pref_ydpi_summary">Vertical (Y direction) DPI</string>
 
     <string name="pref_monofontpack_title">Monospace font family</string>
-    <string name="pref_monofontpack_summary">Define font pack using for monospace font family</string>
+    <string name="pref_monofontpack_summary">Specify what font pack to use for Monospace font family</string>
 
     <string name="pref_sansfontpack_title">Sans font family</string>
-    <string name="pref_sansfontpack_summary">Define font pack using for sans font family</string>
+    <string name="pref_sansfontpack_summary">Specify what font pack to use for Sans font family</string>
 
     <string name="pref_seriffontpack_title">Serif font family</string>
-    <string name="pref_seriffontpack_summary">Define font pack using for serif font family</string>
+    <string name="pref_seriffontpack_summary">Specify what font pack to use for Serif font family</string>
 
     <string name="pref_symbolfontpack_title">Symbol font family</string>
-    <string name="pref_symbolfontpack_summary">Define font pack using for symbol font family</string>
+    <string name="pref_symbolfontpack_summary">Specify what font pack to use for Symbol font family</string>
 
     <string name="pref_dingbatfontpack_title">Dingbat font family</string>
-    <string name="pref_dingbatfontpack_summary">Define font pack using for dingbat font family</string>
+    <string name="pref_dingbatfontpack_summary">Specify what font pack to use for Dingbat font family</string>
 
-    <string name="pref_systemfontpack">Default Android fonts</string>
+    <string name="pref_systemfontpack">Use default Android fonts</string>
 
     <string name="pref_brfiletypespecificfb2_title">FB2</string>
     <string name="pref_brfiletypespecificfb2_summary">FB2 format specific settings</string>
@@ -60,7 +60,7 @@
     <string name="pref_fontsize_summary">Base font size</string>
 
     <string name="pref_fb2fontpack_title">FB2 font family</string>
-    <string name="pref_fb2fontpack_summary">Define font pack using for FB2 rendering</string>
+    <string name="pref_fb2fontpack_summary">Specify what font pack to use in FB2 rendering</string>
 
     <string name="list_fontsize_tiny">Tiny</string>
     <string name="list_fontsize_small">Small</string>

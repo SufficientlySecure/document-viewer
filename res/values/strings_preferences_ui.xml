@@ -19,7 +19,7 @@
     <string name="list_lang_zh">Chinese</string>
 
     <string name="pref_loadrecent_title">Load recent</string>
-    <string name="pref_loadrecent_summary">Auto loading last opened book on app start</string>
+    <string name="pref_loadrecent_summary">On app start, load last opened book</string>
 
     <string name="pref_confirmclose_title">Confirm closing</string>
     <string name="pref_confirmclose_summary">Ask close confirmation on Back pressed</string>
@@ -31,7 +31,7 @@
     <string name="pref_brightnessnightmodeonly_summary">Apply brightness setting only in night mode</string>
 
     <string name="pref_keepscreenon_title">Keep screen On</string>
-    <string name="pref_keepscreenon_summary">Keep screen always on</string>
+    <string name="pref_keepscreenon_summary">Do not turn screen off when reading (do not hibernate)</string>
 
     <string name="pref_rotation_title">Rotation mode</string>
     <string name="pref_rotation_summary">How to change rotation</string>
@@ -40,20 +40,20 @@
     <string name="list_rotation_land">Force landscape</string>
     <string name="list_rotation_port">Force portrait</string>
     <string name="list_rotation_user">User</string>
-    <string name="list_rotation_behind">Behind</string>
+    <string name="list_rotation_behind">Inherit from background</string>
     <string name="list_rotation_auto">Automatic</string>
     <string name="list_rotation_nosensor">No sensor</string>
-    <string name="list_rotation_sensor_landscape">Sensor landscape</string>
-    <string name="list_rotation_sensor_portrait">Sensor portrait</string>
-    <string name="list_rotation_reverse_landscape">Reverse landscape</string>
-    <string name="list_rotation_reverse_portrait">Reverse portrait</string>
+    <string name="list_rotation_sensor_landscape">Force landscape but sense flipping</string>
+    <string name="list_rotation_sensor_portrait">Force portrait but sense flipping</string>
+    <string name="list_rotation_reverse_landscape">Force reverse landscape</string>
+    <string name="list_rotation_reverse_portrait">Force reverse portrait</string>
     <string name="list_rotation_full_sensor">Full sensor</string>
 
     <string name="pref_fullscreen_title">Full screen</string>
-    <string name="pref_fullscreen_summary">Hide status bar.</string>
+    <string name="pref_fullscreen_summary">Hide status bar</string>
 
     <string name="pref_title_title">Show Title</string>
-    <string name="pref_title_summary">Show Title. Need Document reopen!!!</string>
+    <string name="pref_title_summary">Show document title (needs document reopen)</string>
 
     <string name="pref_pageintitle_title">Page in title</string>
     <string name="pref_pageintitle_summary">Show page number in title bar</string>
@@ -64,11 +64,11 @@
     <string name="pref_zoomtoastposition_title">Position of zoom toast</string>
     <string name="pref_zoomtoastposition_summary">Position of zoom toast</string>
 
-    <string name="list_toastposition_invisible">Invisible</string>
+    <string name="list_toastposition_invisible">Do not show</string>
     <string name="list_toastposition_lefttop">Left top corner</string>
     <string name="list_toastposition_righttop">Right top corner</string>
     <string name="list_toastposition_leftbottom">Left bottom corner</string>
-    <string name="list_toastposition_bottom">Bottom of the screeen</string>
+    <string name="list_toastposition_bottom">Bottom</string>
     <string name="list_toastposition_righbottom">Right bottom corner</string>
 
     <string name="pref_showanimicon_title">Show animation icon</string>

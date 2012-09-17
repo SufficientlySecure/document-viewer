@@ -8,30 +8,30 @@
     <string name="pref_book_category_summary">Current book settings</string>
 
     <string name="pref_splitpages_title">Split pages</string>
-    <string name="pref_splitpages_summary">Split landscape pages into two portrait</string>
+    <string name="pref_splitpages_summary">Split landscape pages into two portrait pages</string>
 
     <string name="pref_croppages_title">Crop pages</string>
-    <string name="pref_croppages_summary">Crop margins of pages (experimantal)</string>
+    <string name="pref_croppages_summary">Crop page margins in order to maximize content magnification</string>
 
-    <string name="pref_viewmode_title">Page view mode</string>
-    <string name="pref_viewmode_summary">Page view mode</string>
+    <string name="pref_viewmode_title">Document view mode</string>
+    <string name="pref_viewmode_summary">View document as single pages or as a continuous scroll</string>
 
     <string name="list_viewmode_vertical_scroll">Vertical scroll</string>
     <string name="list_viewmode_horizontal_scroll">Horizontal scroll</string>
     <string name="list_viewmode_single_page">Single page</string>
 
     <string name="pref_singlepage_category">Single page settings</string>
-    <string name="pref_singlepage_category_summary">Settings actual for single page mode</string>
+    <string name="pref_singlepage_category_summary">View modes for single pages only</string>
 
-    <string name="pref_align_title">Page align mode</string>
-    <string name="pref_align_summary">How to align pages</string>
+    <string name="pref_align_title">Page fitting</string>
+    <string name="pref_align_summary">How to fit pages to the screen</string>
 
-    <string name="list_align_by_width">By width</string>
-    <string name="list_align_by_height">By height</string>
+    <string name="list_align_by_width">Fit to width</string>
+    <string name="list_align_by_height">Fit to height</string>
     <string name="list_align_auto">Automatic</string>
 
-    <string name="pref_animationtype_title">Animation type</string>
-    <string name="pref_animationtype_summary">Select type of transition animation</string>
+    <string name="pref_animationtype_title">Page transition</string>
+    <string name="pref_animationtype_summary">Select the animation for page transition in sigle page mode</string>
 
     <string name="list_animation_none">None</string>
     <string name="list_animation_curler_simple">Simple curler</string>
@@ -42,10 +42,10 @@
     <string name="list_animation_squeezer">Squeeze</string>
 
     <string name="pref_postprocessing_category" >Post&#8211;processing effects</string>
-    <string name="pref_postprocessing_summary">Post&#8211;processing effects</string>
+    <string name="pref_postprocessing_summary">Additional effects to enhance page viewing</string>
 
     <string name="pref_nightmode_title">Night mode</string>
-    <string name="pref_nightmode_summary">Use white symbols on black background</string>
+    <string name="pref_nightmode_summary">White text on black background (negative image)</string>
 
     <string name="pref_posimages_in_nightmode_title">Positive images in night mode</string>
     <string name="pref_posimages_in_nightmode_summary">Show positivy gray-scaled images in night mode</string>

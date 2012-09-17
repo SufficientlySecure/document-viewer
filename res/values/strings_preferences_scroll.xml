@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="pref_scroll_category">Touch and Scrolling</string>
-    <string name="pref_scroll_category_summary">Touch and scrolling preferences</string>
+    <string name="pref_scroll_category">Taps, swipes and keys</string>
+    <string name="pref_scroll_category_summary">Chooses how the device should react to taps, swipes and key pressings</string>
 
     <string name="pref_tapsenabled_title">Enable taps</string>
     <string name="pref_tapsenabled_summary">Use Tap Configuration to define tap regions and actions</string>

@@ -3,13 +3,16 @@ package org.ebookdroid.ui.settings;
 import org.ebookdroid.R;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.SettingsManager;
+import org.ebookdroid.common.settings.books.BookSettings;
 
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 
 import org.emdev.common.android.AndroidVersion;
+import org.emdev.common.filesystem.PathFromUri;
 import org.emdev.common.fonts.FontManager;
 
 public class SettingsActivity extends BaseSettingsActivity {
@@ -17,10 +20,18 @@ public class SettingsActivity extends BaseSettingsActivity {
     @Override
     protected final void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         FontManager.init();
-        if (getIntent().getData() != null) {
-            setRequestedOrientation(AppSettings.current().rotation.getOrientation());
+
+        final Uri uri = getIntent().getData();
+        if (uri != null) {
+            final String fileName = PathFromUri.retrieve(getContentResolver(), uri);
+            BookSettings current = SettingsManager.getBookSettings(fileName);
+            if (current != null) {
+                setRequestedOrientation(current.getOrientation(AppSettings.current()));
+            }
         }
+
         onCreate();
     }
 

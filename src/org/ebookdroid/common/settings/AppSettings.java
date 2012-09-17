@@ -4,6 +4,7 @@ import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.definitions.AppPreferences;
 import org.ebookdroid.common.settings.definitions.BookPreferences;
 import org.ebookdroid.common.settings.listeners.IAppSettingsChangeListener;
+import org.ebookdroid.common.settings.types.BookRotationType;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.DocumentViewType;
 import org.ebookdroid.common.settings.types.FontSize;
@@ -334,6 +335,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         bs.autoLevels = BOOK_AUTO_LEVELS.getPreferenceValue(prefs, current.autoLevels);
         bs.splitPages = BOOK_SPLIT_PAGES.getPreferenceValue(prefs, current.splitPages);
         bs.cropPages = BOOK_CROP_PAGES.getPreferenceValue(prefs, current.cropPages);
+        bs.rotation = BOOK_ROTATION.getPreferenceValue(prefs, BookRotationType.UNSPECIFIED);
         bs.viewMode = BOOK_VIEW_MODE.getPreferenceValue(prefs, current.viewMode);
         bs.pageAlign = BOOK_PAGE_ALIGN.getPreferenceValue(prefs, current.pageAlign);
         bs.animationType = BOOK_ANIMATION_TYPE.getPreferenceValue(prefs, current.animationType);
@@ -350,6 +352,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         edit.remove(BOOK_AUTO_LEVELS.key);
         edit.remove(BOOK_SPLIT_PAGES.key);
         edit.remove(BOOK_CROP_PAGES.key);
+        edit.remove(BOOK_ROTATION.key);
         edit.remove(BOOK_VIEW_MODE.key);
         edit.remove(BOOK_PAGE_ALIGN.key);
         edit.remove(BOOK_ANIMATION_TYPE.key);
@@ -367,6 +370,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         BOOK_AUTO_LEVELS.setPreferenceValue(edit, bs.autoLevels);
         BOOK_SPLIT_PAGES.setPreferenceValue(edit, bs.splitPages);
         BOOK_CROP_PAGES.setPreferenceValue(edit, bs.cropPages);
+        BOOK_ROTATION.setPreferenceValue(edit, bs.rotation);
         BOOK_VIEW_MODE.setPreferenceValue(edit, bs.viewMode);
         BOOK_PAGE_ALIGN.setPreferenceValue(edit, bs.pageAlign);
         BOOK_ANIMATION_TYPE.setPreferenceValue(edit, bs.animationType);

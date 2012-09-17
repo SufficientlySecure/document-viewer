@@ -6,6 +6,14 @@
 	android:summary="@string/pref_book_category_summary"
 	android:title="@string/pref_book_category">
 
+    <ListPreference
+            android:defaultValue="@string/pref_rotation_unspecified"
+            android:entries="@array/pref_book_rotation_entries"
+            android:entryValues="@array/pref_book_rotation_values"
+            android:key="@string/pref_book_rotation_id"
+            android:summary="@string/pref_rotation_summary"
+            android:title="@string/pref_rotation_title" />
+
     <org.emdev.ui.preference.SwitchPreferenceEx
             android:defaultValue="@string/pref_splitpages_defvalue"
             android:key="@string/pref_book_splitpages_id"

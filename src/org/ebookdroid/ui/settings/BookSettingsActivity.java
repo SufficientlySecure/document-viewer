@@ -21,8 +21,6 @@ public class BookSettingsActivity extends BaseSettingsActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setRequestedOrientation(AppSettings.current().rotation.getOrientation());
-
         final Uri uri = getIntent().getData();
         final String fileName = PathFromUri.retrieve(getContentResolver(), uri);
         current = SettingsManager.getBookSettings(fileName);
@@ -30,6 +28,8 @@ public class BookSettingsActivity extends BaseSettingsActivity {
             finish();
             return;
         }
+
+        setRequestedOrientation(current.getOrientation(AppSettings.current()));
 
         SettingsManager.onBookSettingsActivityCreated(current);
 

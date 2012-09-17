@@ -1,5 +1,6 @@
 package org.ebookdroid.common.settings.books;
 
+import org.ebookdroid.common.settings.types.BookRotationType;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.core.PageIndex;
@@ -19,6 +20,10 @@ class DBAdapterV6 extends DBAdapterV5 {
     public static final long F_AUTO_LEVELS = 1 << 3;
 
     public static final long F_NIGHT_MODE_POS_IMAGES = 1 << 4;
+
+    public static final long F_ROTAION_OVR = 1 << 5;
+
+    public static final long F_ROTAION_LAND = 1 << 6;
 
     public static final String DB_BOOK_CREATE = "create table book_settings ("
     // Book file path
@@ -146,9 +151,26 @@ class DBAdapterV6 extends DBAdapterV5 {
     }
 
     protected long getFlags(final BookSettings bs) {
-        return (bs.splitPages ? F_SPLIT_PAGES : 0) | (bs.cropPages ? F_CROP_PAGES : 0)
-                | (bs.nightMode ? F_NIGHT_MODE : 0) | (bs.autoLevels ? F_AUTO_LEVELS : 0)
-                | (bs.positiveImagesInNightMode ? F_NIGHT_MODE_POS_IMAGES : 0);
+        return
+        /* Split page flag */
+        (bs.splitPages ? F_SPLIT_PAGES : 0) |
+        /* Crop page flag */
+        (bs.cropPages ? F_CROP_PAGES : 0) |
+        /* Night mode flag */
+        (bs.nightMode ? F_NIGHT_MODE : 0) |
+        /* Auto-level flag */
+        (bs.autoLevels ? F_AUTO_LEVELS : 0) |
+        /* Positive image flag */
+        (bs.positiveImagesInNightMode ? F_NIGHT_MODE_POS_IMAGES : 0) |
+        /* Rotation flags */
+        getRotationFlags(bs);
+    }
+
+    protected long getRotationFlags(final BookSettings bs) {
+        if (bs.rotation == null || bs.rotation == BookRotationType.UNSPECIFIED) {
+            return 0;
+        }
+        return F_ROTAION_OVR | (bs.rotation == BookRotationType.LANDSCAPE ? F_ROTAION_LAND : 0);
     }
 
     protected void setFlags(final BookSettings bs, final long flags) {
@@ -157,5 +179,11 @@ class DBAdapterV6 extends DBAdapterV5 {
         bs.nightMode = (flags & F_NIGHT_MODE) != 0;
         bs.positiveImagesInNightMode = (flags & F_NIGHT_MODE_POS_IMAGES) != 0;
         bs.autoLevels = (flags & F_AUTO_LEVELS) != 0;
+
+        if ((flags & F_ROTAION_OVR) != 0) {
+            bs.rotation = (flags & F_ROTAION_LAND) != 0 ? BookRotationType.LANDSCAPE : BookRotationType.PORTRAIT;
+        } else {
+            bs.rotation = BookRotationType.UNSPECIFIED;
+        }
     }
 }

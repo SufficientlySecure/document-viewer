@@ -1,8 +1,11 @@
 package org.ebookdroid.common.settings.books;
 
+import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.definitions.AppPreferences;
+import org.ebookdroid.common.settings.types.BookRotationType;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
+import org.ebookdroid.common.settings.types.RotationType;
 import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.core.curl.PageAnimationType;
 import org.ebookdroid.core.events.CurrentPageListener;
@@ -31,6 +34,8 @@ public class BookSettings implements CurrentPageListener {
     public int zoom = 100;
 
     public boolean splitPages;
+
+    public BookRotationType rotation;
 
     public DocumentViewMode viewMode;
 
@@ -65,6 +70,7 @@ public class BookSettings implements CurrentPageListener {
         this.currentPage = current.currentPage;
         this.zoom = current.zoom;
         this.splitPages = current.splitPages;
+        this.rotation = current.rotation;
         this.viewMode = current.viewMode;
         this.pageAlign = current.pageAlign;
         this.animationType = current.animationType;
@@ -88,6 +94,7 @@ public class BookSettings implements CurrentPageListener {
         this.currentPage = current.currentPage;
         this.zoom = current.zoom;
         this.splitPages = current.splitPages;
+        this.rotation = current.rotation;
         this.viewMode = current.viewMode;
         this.pageAlign = current.pageAlign;
         this.animationType = current.animationType;
@@ -119,6 +126,8 @@ public class BookSettings implements CurrentPageListener {
         this.currentPage = new PageIndex(object.getJSONObject("currentPage"));
         this.zoom = object.getInt("zoom");
         this.splitPages = object.getBoolean("splitPages");
+        this.rotation = EnumUtils.getByName(BookRotationType.class, object.optString("rotation"),
+                BookRotationType.UNSPECIFIED);
         this.viewMode = EnumUtils.getByName(DocumentViewMode.class, object.getString("viewMode"),
                 DocumentViewMode.VERTICALL_SCROLL);
         this.pageAlign = EnumUtils.getByName(PageAlign.class, object.getString("pageAlign"), PageAlign.AUTO);
@@ -149,6 +158,7 @@ public class BookSettings implements CurrentPageListener {
         obj.put("currentPage", currentPage != null ? currentPage.toJSON() : null);
         obj.put("zoom", zoom);
         obj.put("splitPages", splitPages);
+        obj.put("rotation", rotation != null ? rotation.name() : null);
         obj.put("viewMode", viewMode != null ? viewMode.name() : null);
         obj.put("pageAlign", pageAlign != null ? pageAlign.name() : null);
         obj.put("animationType", animationType != null ? animationType.name() : null);
@@ -197,6 +207,11 @@ public class BookSettings implements CurrentPageListener {
         }
     }
 
+    public int getOrientation(final AppSettings appSettings) {
+        final RotationType defRotation = appSettings.rotation;
+        return rotation != null ? rotation.getOrientation(defRotation) : defRotation.getOrientation();
+    }
+
     public static class Diff {
 
         private static final short D_SplitPages = 0x0001 << 2;
@@ -209,8 +224,10 @@ public class BookSettings implements CurrentPageListener {
         private static final short D_NightMode = 0x0001 << 9;
         private static final short D_AutoLevels = 0x0001 << 10;
         private static final short D_PositiveImagesInNightMode = 0x0001 << 11;
+        private static final short D_Rotation = 0x0001 << 12;
 
-        private static final short D_Effects = D_Contrast | D_Exposure | D_NightMode | D_PositiveImagesInNightMode | D_AutoLevels;
+        private static final short D_Effects = D_Contrast | D_Exposure | D_NightMode | D_PositiveImagesInNightMode
+                | D_AutoLevels;
 
         private short mask;
         private final boolean firstTime;
@@ -225,6 +242,9 @@ public class BookSettings implements CurrentPageListener {
                 }
                 if (olds.cropPages != news.cropPages) {
                     mask |= D_CropPages;
+                }
+                if (olds.rotation != news.rotation) {
+                    mask |= D_Rotation;
                 }
                 if (olds.viewMode != news.viewMode) {
                     mask |= D_ViewMode;
@@ -259,6 +279,10 @@ public class BookSettings implements CurrentPageListener {
 
         public boolean isSplitPagesChanged() {
             return 0 != (mask & D_SplitPages);
+        }
+
+        public boolean isRotationChanged() {
+            return 0 != (mask & D_Rotation);
         }
 
         public boolean isViewModeChanged() {

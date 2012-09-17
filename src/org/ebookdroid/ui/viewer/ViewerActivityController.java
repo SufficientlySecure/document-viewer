@@ -456,7 +456,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.ui.viewer.IActivityController#jumpToPage(int, float, float)
      */
     @Override
@@ -555,7 +555,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * Gets the zoom model.
-     *
+     * 
      * @return the zoom model
      */
     @Override
@@ -573,7 +573,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * Gets the decoding progress model.
-     *
+     * 
      * @return the decoding progress model
      */
     @Override
@@ -690,7 +690,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.common.settings.listeners.ISettingsChangeListener#onAppSettingsChanged(org.ebookdroid.common.settings.AppSettings,
      *      org.ebookdroid.common.settings.AppSettings, org.ebookdroid.common.settings.AppSettings.Diff)
      */
@@ -699,7 +699,11 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
             final AppSettings.Diff diff) {
         final ViewerActivity activity = getManagedComponent();
         if (diff.isRotationChanged()) {
-            activity.setRequestedOrientation(newSettings.rotation.getOrientation());
+            if (bookSettings != null) {
+                activity.setRequestedOrientation(bookSettings.getOrientation(newSettings));
+            } else {
+                activity.setRequestedOrientation(newSettings.rotation.getOrientation());
+            }
         }
 
         if (diff.isFullScreenChanged()) {
@@ -725,7 +729,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.ebookdroid.common.settings.listeners.ISettingsChangeListener#onBookSettingsChanged(org.ebookdroid.common.settings.books.BookSettings,
      *      org.ebookdroid.common.settings.books.BookSettings, org.ebookdroid.common.settings.books.BookSettings.Diff,
      *      org.ebookdroid.common.settings.AppSettings.Diff)
@@ -745,6 +749,10 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                 newDc.init(null);
                 newDc.show();
             }
+        }
+
+        if (diff.isRotationChanged()) {
+            getManagedComponent().setRequestedOrientation(newSettings.getOrientation(AppSettings.current()));
         }
 
         if (diff.isFirstTime()) {

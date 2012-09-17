@@ -12,6 +12,7 @@ import static org.ebookdroid.R.string.pref_book_exposure_id;
 import static org.ebookdroid.R.string.pref_book_id;
 import static org.ebookdroid.R.string.pref_book_nightmode_id;
 import static org.ebookdroid.R.string.pref_book_posimages_in_nightmode_id;
+import static org.ebookdroid.R.string.pref_book_rotation_id;
 import static org.ebookdroid.R.string.pref_book_splitpages_id;
 import static org.ebookdroid.R.string.pref_book_viewmode_id;
 import static org.ebookdroid.R.string.pref_contrast_defvalue;
@@ -23,9 +24,11 @@ import static org.ebookdroid.R.string.pref_exposure_maxvalue;
 import static org.ebookdroid.R.string.pref_exposure_minvalue;
 import static org.ebookdroid.R.string.pref_nightmode_defvalue;
 import static org.ebookdroid.R.string.pref_posimages_in_nightmode_defvalue;
+import static org.ebookdroid.R.string.pref_rotation_unspecified;
 import static org.ebookdroid.R.string.pref_splitpages_defvalue;
 import static org.ebookdroid.R.string.pref_viewmode_vertical_scroll;
 
+import org.ebookdroid.common.settings.types.BookRotationType;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.core.curl.PageAnimationType;
@@ -58,6 +61,9 @@ public interface BookPreferences {
 
     BooleanPreferenceDefinition BOOK_CROP_PAGES = new BooleanPreferenceDefinition(pref_book_croppages_id,
             pref_croppages_defvalue);
+
+    EnumPreferenceDefinition<BookRotationType> BOOK_ROTATION = new EnumPreferenceDefinition<BookRotationType>(
+            BookRotationType.class, pref_book_rotation_id, pref_rotation_unspecified);
 
     EnumPreferenceDefinition<DocumentViewMode> BOOK_VIEW_MODE = new EnumPreferenceDefinition<DocumentViewMode>(
             DocumentViewMode.class, pref_book_viewmode_id, pref_viewmode_vertical_scroll);

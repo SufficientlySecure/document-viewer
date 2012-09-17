@@ -4,7 +4,7 @@
     <item
         android:id="@+id/recentmenu_searchBook"
         android:alphabeticShortcut="s"
-        android:icon="@drawable/zoomfit"
+        android:icon="@drawable/search"
         android:showAsAction="ifRoom"
         android:title="@string/menu_searchbook"/>
     <item
@@ -16,7 +16,7 @@
     <item
         android:id="@+id/recent_showbrowser"
         android:alphabeticShortcut="l"
-        android:icon="@drawable/actionbar_open"
+        android:icon="@drawable/folderview"
         android:showAsAction="ifRoom"
         android:title="Show files"/>
     <item
@@ -41,6 +41,7 @@
         android:id="@+id/recentmenu_backupsettings"
         android:alphabeticShortcut="b"
         android:showAsAction="ifRoom"
+        android:icon="@drawable/backup"
         android:title="@string/menu_backupsettings"/>
     <item
         android:id="@+id/mainmenu_about"
@@ -51,5 +52,5 @@
         android:alphabeticShortcut="c"
         android:title="@string/menu_close"
         android:icon="@drawable/close" />
-    
+
 </menu>

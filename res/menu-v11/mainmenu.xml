@@ -10,7 +10,7 @@
     <item
         android:id="@+id/mainmenu_search"
         android:alphabeticShortcut="r"
-        android:icon="@drawable/zoomfit"
+        android:icon="@drawable/search"
         android:showAsAction="ifRoom"
         android:title="Search"/>
     <item
@@ -58,6 +58,7 @@
     <item
         android:id="@+id/mainmenu_crop"
         android:alphabeticShortcut="c"
+        android:icon="@drawable/crop"
         android:title="@string/menu_crop"/>
     <item
         android:id="@+id/mainmenu_about"

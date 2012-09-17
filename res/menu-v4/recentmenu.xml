@@ -9,7 +9,7 @@
     <item
         android:id="@+id/recentmenu_searchBook"
         android:alphabeticShortcut="s"
-        android:icon="@drawable/zoomfit"
+        android:icon="@drawable/search"
         android:title="@string/menu_searchbook"/>
     <item
         android:id="@+id/mainmenu_settings"
@@ -19,6 +19,7 @@
     <item
         android:id="@+id/recentmenu_backupsettings"
         android:alphabeticShortcut="b"
+        android:icon="@drawable/backup"
         android:title="@string/menu_backupsettings"/>
     <item
         android:id="@+id/mainmenu_about"

@@ -35,7 +35,7 @@
             style="@style/action_bar_action"
             android:contentDescription="@string/content_description_recent"
             android:onClick="onButtonClick"
-            android:src="@drawable/actionbar_recent" />
+            android:src="@drawable/recent" />
     </LinearLayout>
 
     <ViewFlipper

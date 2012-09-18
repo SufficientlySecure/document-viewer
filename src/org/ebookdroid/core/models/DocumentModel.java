@@ -192,7 +192,9 @@ public class DocumentModel extends ListenerProxy {
         try {
             final ArrayList<Page> list = new ArrayList<Page>();
 
-            retrieveDocumentInfo(base, bs, task);
+            if (docInfo == null) {
+                retrieveDocumentInfo(base, bs, task);
+            }
 
             for (int docIndex = 0; docIndex < docInfo.docPageCount; docIndex++) {
                 final PageInfo pi = docInfo.docPages.get(docIndex, null);
@@ -243,6 +245,16 @@ public class DocumentModel extends ListenerProxy {
                 page.index.docIndex, page.type.getInitialRect());
         thumbnailFile.setImage(image != null ? image.getBitmap() : null);
         BitmapManager.release(image);
+    }
+
+    public void updateAutoCropping(final Page page, final RectF r) {
+        PageInfo pageInfo = docInfo.getPageInfo(page);
+        pageInfo.autoCropping = new RectF(r);
+    }
+
+    public void updateManualCropping(final Page page, final RectF r) {
+        PageInfo pageInfo = docInfo.getPageInfo(page);
+        pageInfo.manualCropping = new RectF(r);
     }
 
     private DocumentInfo retrieveDocumentInfo(final IActivityController base, final BookSettings bs,

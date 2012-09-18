@@ -1,5 +1,6 @@
 package org.ebookdroid.common.cache;
 
+import org.ebookdroid.core.Page;
 import org.ebookdroid.core.codec.CodecPageInfo;
 
 import android.graphics.RectF;
@@ -221,6 +222,27 @@ public class DocumentCacheFile extends File {
             return docPage ? this.docPages : leftPage ? this.leftPages : this.rightPages;
         }
 
+        public PageInfo getPageInfo(Page page) {
+            SparseArrayEx<PageInfo> arr = null;
+            switch (page.type) {
+                case FULL_PAGE:
+                    arr = docPages;
+                    break;
+                case LEFT_PAGE:
+                    arr = leftPages;
+                    break;
+                case RIGHT_PAGE:
+                    arr = rightPages;
+                    break;
+            }
+            int key = page.index.docIndex;
+            PageInfo pi = arr.get(key, null);
+            if (pi == null) {
+                pi = new PageInfo(key);
+                arr.append(key, pi);
+            }
+            return pi;
+        }
     }
 
     public static class PageInfo {

@@ -45,7 +45,6 @@ public class PageCropper {
 
         final float avgLum = calculateAvgLum();
 
-        System.out.println("PageCropper.getCropBounds() avgLum=" + avgLum);
         final float left = getLeftBound(avgLum);
         final float right = getRightBound(avgLum);
         final float top = getTopBound(avgLum);

@@ -73,6 +73,10 @@ public class ViewState {
         this.pages = new Pages(firstVisiblePage, lastVisiblePage);
     }
 
+    public boolean shouldCrop() {
+        return book != null && book.cropPages;
+    }
+
     public RectF getBounds(final Page page) {
         return page.getBounds(zoom);
     }
@@ -129,11 +133,12 @@ public class ViewState {
 
             pos.x = (left - cpBounds.left) / cpBounds.width();
             pos.y = (top - cpBounds.top) / cpBounds.height();
-            if (page.nodes.root.getCropping() != null) {
-                pos.x *= page.nodes.root.getCropping().width();
-                pos.x += page.nodes.root.getCropping().left;
-                pos.y *= page.nodes.root.getCropping().height();
-                pos.y += page.nodes.root.getCropping().top;
+            RectF cropping = page.nodes.root.getCropping();
+            if (shouldCrop() && cropping != null) {
+                pos.x *= cropping.width();
+                pos.x += cropping.left;
+                pos.y *= cropping.height();
+                pos.y += cropping.top;
             } else {
                 if (page.type == PageType.RIGHT_PAGE) {
                     pos.x += 0.5;

@@ -220,7 +220,8 @@ public class DecodeServiceBase implements DecodeService {
                 LCTX.d(Thread.currentThread().getName() + ": Task " + task.id + ": Rendering rect: " + r);
             }
 
-            final RectF actualSliceBounds = task.node.getCropping() != null ? task.node.getCropping()
+            RectF cropping = task.node.getCropping();
+            final RectF actualSliceBounds = task.viewState.shouldCrop() && cropping != null ? cropping
                     : task.node.pageSliceBounds;
             final IBitmapRef bitmap = vuPage.renderBitmap(task.viewState, r.width(), r.height(), actualSliceBounds);
 
@@ -271,7 +272,7 @@ public class DecodeServiceBase implements DecodeService {
 
     RectF checkCropping(final DecodeTask task, final CodecPage vuPage) {
         // Checks if cropping setting is not set
-        if (task.viewState.book == null || !task.viewState.book.cropPages) {
+        if (!task.viewState.shouldCrop()) {
             return null;
         }
         // Checks if page has been cropped before
@@ -296,7 +297,7 @@ public class DecodeServiceBase implements DecodeService {
             final RectF rootBounds = root.pageSliceBounds;
 
             final IBitmapRef rootBitmap = vuPage.renderBitmap(task.viewState, rootRect.width(), rootRect.height(), rootBounds);
-            root.setAutoCropping(PageCropper.getCropBounds(rootBitmap, rootRect, root.pageSliceBounds));
+            root.setAutoCropping(PageCropper.getCropBounds(rootBitmap, rootRect, root.pageSliceBounds), true);
 
             if (LCTX.isDebugEnabled()) {
                 LCTX.d(Thread.currentThread().getName() + ": Task " + task.id + ": cropping root bounds: "
@@ -306,14 +307,10 @@ public class DecodeServiceBase implements DecodeService {
             BitmapManager.release(rootBitmap);
 
             final ViewState viewState = task.viewState;
-            final float pageWidth = vuPage.getWidth() * root.getCropping().width();
-            final float pageHeight = vuPage.getHeight() * root.getCropping().height();
-
             final PageIndex currentPage = viewState.book.getCurrentPage();
             final float offsetX = viewState.book.offsetX;
             final float offsetY = viewState.book.offsetY;
 
-            root.page.setAspectRatio(pageWidth, pageHeight);
             viewState.ctrl.invalidatePageSizes(InvalidateSizeReason.PAGE_LOADED, task.node.page);
 
             croppedPageBounds = root.page.getBounds(task.viewState.zoom);

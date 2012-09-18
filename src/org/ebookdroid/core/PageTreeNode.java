@@ -51,6 +51,10 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     public void setInitialCropping(final PageInfo pi) {
+        if (id != 0) {
+            return;
+        }
+
         if (pi != null) {
             autoCropping = pi.autoCropping != null ? new RectF(pi.autoCropping) : null;
             manualCropping = pi.manualCropping != null ? new RectF(pi.manualCropping) : null;
@@ -58,14 +62,35 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             autoCropping = null;
             manualCropping = null;
         }
+
+        updateAspectRatio();
     }
 
-    public void setAutoCropping(final RectF r) {
+    public void setAutoCropping(final RectF r, final boolean commit) {
         autoCropping = r;
+        if (commit && id == 0) {
+            page.base.getDocumentModel().updateAutoCropping(page, r);
+            updateAspectRatio();
+        }
     }
 
-    public void setManualCropping(final RectF r) {
+    public void setManualCropping(final RectF r, final boolean commit) {
         manualCropping = r;
+        if (commit && id == 0) {
+            page.base.getDocumentModel().updateManualCropping(page, r);
+            updateAspectRatio();
+        }
+    }
+
+    public void updateAspectRatio() {
+        if (page.base.getBookSettings().cropPages) {
+            final RectF cropping = getCropping();
+            if (cropping != null) {
+                final float pageWidth = page.cpi.width * cropping.width();
+                final float pageHeight = page.cpi.height * cropping.height();
+                page.setAspectRatio(pageWidth, pageHeight);
+            }
+        }
     }
 
     PageTreeNode(final Page page) {
@@ -180,8 +205,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                         EventPool.newEventChildLoaded((AbstractViewController) dc, PageTreeNode.this, bitmapBounds)
                                 .process();
                     }
-
-                    // System.out.println("decodeComplete(): " + (System.currentTimeMillis() - t0) + " ms");
                 }
             };
 
@@ -224,22 +247,22 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             parent.evaluateCroppedPageSliceBounds();
         }
 
-        autoCropping = evaluateCroppedPageSliceBounds(parent.autoCropping);
-        manualCropping = evaluateCroppedPageSliceBounds(parent.manualCropping);
+        autoCropping = evaluateCroppedPageSliceBounds(parent.autoCropping, this.pageSliceBounds);
+        manualCropping = evaluateCroppedPageSliceBounds(parent.manualCropping, this.pageSliceBounds);
     }
 
-    protected RectF evaluateCroppedPageSliceBounds(RectF cr) {
-        if (cr == null) {
+    public static RectF evaluateCroppedPageSliceBounds(final RectF crop, final RectF slice) {
+        if (crop == null) {
             return null;
         }
 
         final Matrix tmpMatrix = MatrixUtils.get();
 
-        tmpMatrix.postScale(cr.width(), cr.height());
-        tmpMatrix.postTranslate(cr.left, cr.top);
+        tmpMatrix.postScale(crop.width(), crop.height());
+        tmpMatrix.postTranslate(crop.left, crop.top);
 
         final RectF sliceBounds = new RectF();
-        tmpMatrix.mapRect(sliceBounds, this.pageSliceBounds);
+        tmpMatrix.mapRect(sliceBounds, slice);
         return sliceBounds;
     }
 

@@ -28,19 +28,21 @@ import android.view.ViewGroup.LayoutParams;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.emdev.utils.MathUtils;
+
 public class ManualCropView extends View {
 
+    private static final Paint PAINT = new Paint();
+
     private final IActivityController base;
-    PointF topLeft = new PointF(0.1f, 0.1f);
-    PointF bottomRight = new PointF(0.9f, 0.9f);
-
-    PointF currentPoint = null;
-
-    private boolean inTouch = false;
 
     private final GestureDetector gestureDetector;
 
-    Paint PAINT = new Paint();
+    private PointF topLeft = new PointF(0.1f, 0.1f);
+    private PointF bottomRight = new PointF(0.9f, 0.9f);
+    private PointF currentPoint = null;
+
+    private Page page;
 
     public ManualCropView(final IActivityController base) {
         super(base.getContext());
@@ -54,61 +56,143 @@ public class ManualCropView extends View {
         setFocusableInTouchMode(true);
 
         gestureDetector = new GestureDetector(getContext(), new GestureListener());
-
     }
 
     public void initControls() {
-        final Page page = base.getDocumentModel().getCurrentPageObject();
-        if (page != null) {
-
-            base.getZoomModel().setZoom(1.0f, true);
-
-            base.getBookSettings().pageAlign = PageAlign.AUTO;
-
-            RectF oldCb = page.nodes.root.getCropping();
-            if (oldCb != null) {
-
-                final List<Bitmaps> bitmapsToRecycle = new ArrayList<Bitmaps>();
-                page.nodes.recycleAll(bitmapsToRecycle, true);
-                BitmapManager.release(bitmapsToRecycle);
-
-                page.nodes.root.setAutoCropping(null);
-                page.nodes.root.setManualCropping(null);
-                page.setAspectRatio(page.cpi);
-
-                EventPool.newEventReset((AbstractViewController) base.getDocumentController(), InvalidateSizeReason.PAGE_LOADED, false).process();
-            }
+        page = base.getDocumentModel().getCurrentPageObject();
+        if (page == null) {
+            return;
         }
+
+        base.getZoomModel().setZoom(1.0f, true);
+
+        base.getBookSettings().pageAlign = PageAlign.AUTO;
+
+        final RectF oldCb = page.nodes.root.getCropping();
+
+        // System.out.println("ManualCropView.initControls(): " + oldCb);
+
+        if (base.getBookSettings().cropPages && oldCb != null) {
+
+            final List<Bitmaps> bitmapsToRecycle = new ArrayList<Bitmaps>();
+            page.nodes.recycleAll(bitmapsToRecycle, true);
+            BitmapManager.release(bitmapsToRecycle);
+
+            page.nodes.root.setManualCropping(page.type.getInitialRect(), false);
+            page.setAspectRatio(page.cpi);
+
+            EventPool.newEventReset((AbstractViewController) base.getDocumentController(),
+                    InvalidateSizeReason.PAGE_LOADED, false).process();
+        }
+
+        if (oldCb == null) {
+            topLeft.set(0.1f, 0.1f);
+            bottomRight.set(0.9f, 0.9f);
+        } else {
+            final RectF ir = new RectF(page.type.getInitialRect());
+            final float irw = ir.width();
+
+            final float left = (oldCb.left - ir.left) / irw;
+            final float top = (oldCb.top);
+            final float right = (oldCb.right - ir.left) / irw;
+            final float bottom = (oldCb.bottom);
+
+            topLeft.set(left, top);
+            bottomRight.set(right, bottom);
+        }
+
+        // System.out.println("ManualCropView.initControls(): " + str(topLeft) + " " + str(bottomRight));
+    }
+
+    public void applyCropping() {
+        if (page == null) {
+            ViewEffects.toggleControls(this);
+            return;
+        }
+
+        final RectF r = new RectF(Math.min(topLeft.x, bottomRight.x), Math.min(topLeft.y, bottomRight.y), Math.max(
+                topLeft.x, bottomRight.x), Math.max(topLeft.y, bottomRight.y));
+
+        // System.out.println("ManualCropView.applyCropping(): vpc = " + r);
+
+        final RectF cb = new RectF(page.type.getInitialRect());
+        final float irw = cb.width();
+        cb.left += r.left * irw;
+        cb.right -= (1 - r.right) * irw;
+        cb.top += r.top;
+        cb.bottom -= (1 - r.bottom);
+
+        // System.out.println("ManualCropView.applyCropping(): dpc = " + cb);
+
+        final List<Bitmaps> bitmapsToRecycle = new ArrayList<Bitmaps>();
+        page.nodes.recycleAll(bitmapsToRecycle, true);
+        BitmapManager.release(bitmapsToRecycle);
+
+        page.nodes.root.setManualCropping(cb, true);
+
+        EventPool.newEventReset((AbstractViewController) base.getDocumentController(),
+                InvalidateSizeReason.PAGE_LOADED, false).process();
+
+        page = null;
+        ViewEffects.toggleControls(this);
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(final Canvas canvas) {
+        if (page == null) {
+            return;
+        }
+
+        final RectF r = getActualRect();
+
         canvas.drawColor(0x7F000000);
 
         canvas.save();
-        canvas.clipRect(topLeft.x * getWidth(), topLeft.y * getHeight(), bottomRight.x * getWidth(), bottomRight.y
-                * getHeight());
+
+        canvas.clipRect(r.left, r.top, r.right, r.bottom);
         canvas.drawColor(0x00FFFFFF, Mode.CLEAR);
         canvas.restore();
 
-        Drawable d = base.getContext().getResources().getDrawable(R.drawable.circle);
-        d.setBounds((int) (topLeft.x * getWidth() - 25), (int) (topLeft.y * getHeight() - 25), (int) (topLeft.x
-                * getWidth() + 25), (int) (topLeft.y * getHeight() + 25));
+        final Drawable d = base.getContext().getResources().getDrawable(R.drawable.circle);
+        d.setBounds((int) (r.left - 25), (int) (r.top - 25), (int) (r.left + 25), (int) (r.top + 25));
         d.draw(canvas);
 
-        d.setBounds((int) (bottomRight.x * getWidth() - 25), (int) (bottomRight.y * getHeight() - 25),
-                (int) (bottomRight.x * getWidth() + 25), (int) (bottomRight.y * getHeight() + 25));
+        d.setBounds((int) (r.right - 25), (int) (r.bottom - 25), (int) (r.right + 25), (int) (r.bottom + 25));
         d.draw(canvas);
 
-        canvas.drawLine(0, topLeft.y * getHeight(), getWidth(), topLeft.y * getHeight(), PAINT);
-        canvas.drawLine(0, bottomRight.y * getHeight(), getWidth(), bottomRight.y * getHeight(), PAINT);
-        canvas.drawLine(topLeft.x * getWidth(), 0, topLeft.x * getWidth(), getHeight(), PAINT);
-        canvas.drawLine(bottomRight.x * getWidth(), 0, bottomRight.x * getWidth(), getHeight(), PAINT);
+        canvas.drawLine(0, r.top, getWidth(), r.top, PAINT);
+        canvas.drawLine(0, r.bottom, getWidth(), r.bottom, PAINT);
+        canvas.drawLine(r.left, 0, r.left, getHeight(), PAINT);
+        canvas.drawLine(r.right, 0, r.right, getHeight(), PAINT);
 
     }
 
+    private RectF getActualRect() {
+        final RectF pageBounds = getPageRect();
+        final float pageWidth = pageBounds.width();
+        final float pageHeight = pageBounds.height();
+
+        final float left = pageBounds.left + topLeft.x * pageWidth;
+        final float top = pageBounds.top + topLeft.y * pageHeight;
+        final float right = pageBounds.left + bottomRight.x * pageWidth;
+        final float bottom = pageBounds.top + bottomRight.y * pageHeight;
+
+        return new RectF(Math.min(left, right), Math.min(top, bottom), Math.max(right, left), Math.max(bottom, top));
+    }
+
+    private RectF getPageRect() {
+        final ViewState viewState = new ViewState(base.getDocumentController());
+        final RectF pageBounds = viewState.getBounds(page);
+        pageBounds.offset(-viewState.viewBase.x, -viewState.viewBase.y);
+        return pageBounds;
+    }
+
+    static String str(final PointF p) {
+        return "(" + p.x + ", " + p.y + ")";
+    }
+
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
+    public boolean onTouchEvent(final MotionEvent ev) {
         try {
             Thread.sleep(16);
         } catch (final InterruptedException e) {
@@ -116,7 +200,6 @@ public class ManualCropView extends View {
         }
 
         if ((ev.getAction() & MotionEvent.ACTION_UP) == MotionEvent.ACTION_UP) {
-            inTouch = false;
             currentPoint = null;
         }
 
@@ -125,58 +208,54 @@ public class ManualCropView extends View {
 
     protected class GestureListener extends SimpleOnGestureListener {
 
-        @Override
-        public boolean onDown(MotionEvent e) {
-            if ((Math.abs(e.getX() - ManualCropView.this.topLeft.x * ManualCropView.this.getWidth()) < 10)
-                    && (Math.abs(e.getY() - ManualCropView.this.topLeft.y * ManualCropView.this.getHeight()) < 10)) {
-                ManualCropView.this.currentPoint = topLeft;
-            }
-            if ((Math.abs(e.getX() - ManualCropView.this.bottomRight.x * ManualCropView.this.getWidth()) < 10)
-                    && (Math.abs(e.getY() - ManualCropView.this.bottomRight.y * ManualCropView.this.getHeight()) < 10)) {
-                ManualCropView.this.currentPoint = bottomRight;
-            }
-            inTouch = true;
-            return true;
-        }
+        private static final int SPOT_SIZE = 25;
 
         @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            if (ManualCropView.this.currentPoint != null) {
-                ManualCropView.this.currentPoint.x = e2.getX() / ManualCropView.this.getWidth();
-                ManualCropView.this.currentPoint.y = e2.getY() / ManualCropView.this.getHeight();
-                ManualCropView.this.invalidate();
+        public boolean onDown(final MotionEvent e) {
+            if (page == null) {
                 return true;
             }
-            return false;
+
+            final float x = e.getX();
+            final float y = e.getY();
+            final RectF r = getActualRect();
+
+            if ((Math.abs(x - r.left) < SPOT_SIZE) && (Math.abs(y - r.top) < SPOT_SIZE)) {
+                currentPoint = topLeft;
+                return true;
+            }
+
+            if ((Math.abs(x - r.right) < SPOT_SIZE) && (Math.abs(y - r.bottom) < SPOT_SIZE)) {
+                currentPoint = bottomRight;
+                return true;
+            }
+
+            currentPoint = null;
+            return true;
         }
 
         @Override
-        public boolean onDoubleTap(MotionEvent e) {
-            ManualCropView.this.applyCropping();
+        public boolean onScroll(final MotionEvent e1, final MotionEvent e2, final float distanceX, final float distanceY) {
+            if (page == null || currentPoint == null) {
+                return true;
+            }
+
+            final float x = e2.getX();
+            final float y = e2.getY();
+            final RectF r = getPageRect();
+
+            currentPoint.x = MathUtils.adjust((x - r.left) / r.width(), 0f, 1f);
+            currentPoint.y = MathUtils.adjust((y - r.top) / r.height(), 0f, 1f);
+
+            invalidate();
+
             return true;
         }
-    }
 
-    public void applyCropping() {
-        System.out.println("ManualCropView.applyCropping()");
-        final Page page = base.getDocumentModel().getCurrentPageObject();
-        if (page != null) {
-            ViewState vs = new ViewState(base.getDocumentController());
-            PointF tl = vs.getPositionOnPage(page, (int)(Math.min(topLeft.x, bottomRight.x) * getWidth()), (int)(Math.min(topLeft.y, bottomRight.y) * getHeight()));
-            PointF br = vs.getPositionOnPage(page, (int)(Math.max(topLeft.x, bottomRight.x) * getWidth()), (int)(Math.max(topLeft.y, bottomRight.y) * getHeight()));
-
-            RectF cb = new RectF(tl.x, tl.y, br.x, br.y);
-
-            final List<Bitmaps> bitmapsToRecycle = new ArrayList<Bitmaps>();
-            page.nodes.recycleAll(bitmapsToRecycle, true);
-            BitmapManager.release(bitmapsToRecycle);
-
-            page.nodes.root.setManualCropping(cb);
-            page.setAspectRatio(cb.width() * page.cpi.width, cb.height() * page.cpi.height);
-
-            EventPool.newEventReset((AbstractViewController) base.getDocumentController(), InvalidateSizeReason.PAGE_LOADED, false).process();
+        @Override
+        public boolean onDoubleTap(final MotionEvent e) {
+            applyCropping();
+            return true;
         }
-
-        ViewEffects.toggleControls(this);
     }
 }

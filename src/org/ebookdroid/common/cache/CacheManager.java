@@ -62,6 +62,11 @@ public class CacheManager extends org.emdev.common.cache.CacheManager {
         return new PageCacheFile(s_cacheDir, md5 + ".cache");
     }
 
+    public static DocumentCacheFile getDocumentFile(final String path) {
+        final String md5 = StringUtils.md5(path);
+        return new DocumentCacheFile(s_cacheDir, md5 + ".dcache");
+    }
+
     public static void clear() {
         thumbmails.clear();
         org.emdev.common.cache.CacheManager.clear();

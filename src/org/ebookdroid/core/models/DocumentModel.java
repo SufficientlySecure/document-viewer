@@ -6,6 +6,9 @@ import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.Bitmaps;
 import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.common.cache.CacheManager;
+import org.ebookdroid.common.cache.DocumentCacheFile;
+import org.ebookdroid.common.cache.DocumentCacheFile.DocumentInfo;
+import org.ebookdroid.common.cache.DocumentCacheFile.PageInfo;
 import org.ebookdroid.common.cache.PageCacheFile;
 import org.ebookdroid.common.cache.ThumbnailFile;
 import org.ebookdroid.common.settings.books.BookSettings;
@@ -49,6 +52,10 @@ public class DocumentModel extends ListenerProxy {
 
     private Page[] pages = EMPTY_PAGES;
 
+    private DocumentCacheFile cacheFile;
+
+    public DocumentInfo docInfo;
+
     public DocumentModel(final CodecType activityType) {
         super(CurrentPageListener.class);
         if (activityType != null) {
@@ -64,7 +71,7 @@ public class DocumentModel extends ListenerProxy {
         }
     }
 
-    public void open(String fileName, String password) {
+    public void open(final String fileName, final String password) {
         decodeService.open(fileName, password);
     }
 
@@ -106,7 +113,7 @@ public class DocumentModel extends ListenerProxy {
     }
 
     public Page getPageByDocIndex(final int docIndex) {
-        for (Page page : pages) {
+        for (final Page page : pages) {
             if (page.index.docIndex == docIndex) {
                 return page;
             }
@@ -184,20 +191,25 @@ public class DocumentModel extends ListenerProxy {
         final long start = System.currentTimeMillis();
         try {
             final ArrayList<Page> list = new ArrayList<Page>();
-            final CodecPageInfo[] infos = retrievePagesInfo(base, bs, task);
 
-            for (int docIndex = 0; docIndex < infos.length; docIndex++) {
-                if (!bs.splitPages || infos[docIndex] == null || (infos[docIndex].width < infos[docIndex].height)) {
+            retrieveDocumentInfo(base, bs, task);
+
+            for (int docIndex = 0; docIndex < docInfo.docPageCount; docIndex++) {
+                final PageInfo pi = docInfo.docPages.get(docIndex, null);
+                final CodecPageInfo info = pi != null ? pi.info : null;
+                if (!bs.splitPages || info == null || (info.width < info.height)) {
                     final Page page = new Page(base, new PageIndex(docIndex, viewIndex++), PageType.FULL_PAGE,
-                            infos[docIndex] != null ? infos[docIndex] : defCpi);
+                            info != null ? info : defCpi);
                     list.add(page);
+                    page.nodes.root.setInitialCropping(pi);
                 } else {
-                    final Page page1 = new Page(base, new PageIndex(docIndex, viewIndex++), PageType.LEFT_PAGE,
-                            infos[docIndex]);
-                    list.add(page1);
-                    final Page page2 = new Page(base, new PageIndex(docIndex, viewIndex++), PageType.RIGHT_PAGE,
-                            infos[docIndex]);
-                    list.add(page2);
+                    final Page left = new Page(base, new PageIndex(docIndex, viewIndex++), PageType.LEFT_PAGE, info);
+                    left.nodes.root.setInitialCropping(docInfo.leftPages.get(docIndex, null));
+                    list.add(left);
+
+                    final Page right = new Page(base, new PageIndex(docIndex, viewIndex++), PageType.RIGHT_PAGE, info);
+                    right.nodes.root.setInitialCropping(docInfo.rightPages.get(docIndex, null));
+                    list.add(right);
                 }
             }
             pages = list.toArray(new Page[list.size()]);
@@ -209,7 +221,8 @@ public class DocumentModel extends ListenerProxy {
         }
     }
 
-    public void createBookThumbnail(final BookSettings bs, final Page page, final boolean override, boolean useEmbeddedIfAvailable) {
+    public void createBookThumbnail(final BookSettings bs, final Page page, final boolean override,
+            final boolean useEmbeddedIfAvailable) {
         final ThumbnailFile thumbnailFile = CacheManager.getThumbnailFile(bs.fileName);
         if (!override && thumbnailFile.exists()) {
             return;
@@ -226,39 +239,48 @@ public class DocumentModel extends ListenerProxy {
             height = (int) (200 * pageHeight / pageWidth);
         }
 
-        IBitmapRef image = decodeService.createThumbnail(useEmbeddedIfAvailable, width, height, page.index.docIndex, page.type.getInitialRect());
+        final IBitmapRef image = decodeService.createThumbnail(useEmbeddedIfAvailable, width, height,
+                page.index.docIndex, page.type.getInitialRect());
         thumbnailFile.setImage(image != null ? image.getBitmap() : null);
         BitmapManager.release(image);
     }
 
-    private CodecPageInfo[] retrievePagesInfo(final IActivityController base, final BookSettings bs,
+    private DocumentInfo retrieveDocumentInfo(final IActivityController base, final BookSettings bs,
             final IProgressIndicator task) {
 
         final boolean cacheable = decodeService.isFeatureSupported(CodecFeatures.FEATURE_CACHABLE_PAGE_INFO);
 
-        final PageCacheFile pagesFile = CacheManager.getPageFile(bs.fileName);
-
-        if (cacheable && pagesFile.exists()) {
-            final CodecPageInfo[] infos = pagesFile.load();
-            if (infos != null) {
-                return infos;
+        if (cacheable) {
+            cacheFile = CacheManager.getDocumentFile(bs.fileName);
+            docInfo = cacheFile.exists() ? cacheFile.load() : null;
+            if (docInfo == null) {
+                final PageCacheFile pagesFile = CacheManager.getPageFile(bs.fileName);
+                docInfo = pagesFile.exists() ? pagesFile.load() : null;
+            }
+            if (docInfo != null) {
+                return docInfo;
             }
         }
 
         LCTX.d("Retrieving pages from document...");
-        final CodecPageInfo[] infos = new CodecPageInfo[decodeService.getPageCount()];
+        docInfo = new DocumentInfo();
+        docInfo.docPageCount = decodeService.getPageCount();
+        docInfo.viewPageCount = -1;
+
         final CodecPageInfo unified = decodeService.getUnifiedPageInfo();
-        for (int i = 0; i < infos.length; i++) {
+        for (int i = 0; i < docInfo.docPageCount; i++) {
             if (task != null) {
-                task.setProgressDialogMessage(R.string.msg_getting_page_size, (i + 1), infos.length);
+                task.setProgressDialogMessage(R.string.msg_getting_page_size, (i + 1), docInfo.docPageCount);
             }
-            infos[i] = unified != null ? unified : decodeService.getPageInfo(i);
+            final PageInfo pi = new PageInfo(i);
+            docInfo.docPages.append(i, pi);
+            pi.info = unified != null ? unified : decodeService.getPageInfo(i);
         }
 
         if (cacheable) {
-            pagesFile.save(infos);
+            cacheFile.save(docInfo);
         }
-        return infos;
+        return docInfo;
     }
 
     private final class PageIterator implements Iterable<Page>, Iterator<Page> {

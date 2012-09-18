@@ -65,14 +65,15 @@ public class ManualCropView extends View {
 
             base.getBookSettings().pageAlign = PageAlign.AUTO;
 
-            RectF oldCb = page.nodes.root.croppedBounds;
+            RectF oldCb = page.nodes.root.getCropping();
             if (oldCb != null) {
 
                 final List<Bitmaps> bitmapsToRecycle = new ArrayList<Bitmaps>();
                 page.nodes.recycleAll(bitmapsToRecycle, true);
                 BitmapManager.release(bitmapsToRecycle);
 
-                page.nodes.root.croppedBounds = page.type.getInitialRect();
+                page.nodes.root.setAutoCropping(null);
+                page.nodes.root.setManualCropping(null);
                 page.setAspectRatio(page.cpi);
 
                 EventPool.newEventReset((AbstractViewController) base.getDocumentController(), InvalidateSizeReason.PAGE_LOADED, false).process();
@@ -170,7 +171,7 @@ public class ManualCropView extends View {
             page.nodes.recycleAll(bitmapsToRecycle, true);
             BitmapManager.release(bitmapsToRecycle);
 
-            page.nodes.root.croppedBounds = cb;
+            page.nodes.root.setManualCropping(cb);
             page.setAspectRatio(cb.width() * page.cpi.width, cb.height() * page.cpi.height);
 
             EventPool.newEventReset((AbstractViewController) base.getDocumentController(), InvalidateSizeReason.PAGE_LOADED, false).process();

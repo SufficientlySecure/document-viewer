@@ -220,7 +220,7 @@ public class DecodeServiceBase implements DecodeService {
                 LCTX.d(Thread.currentThread().getName() + ": Task " + task.id + ": Rendering rect: " + r);
             }
 
-            final RectF actualSliceBounds = task.node.croppedBounds != null ? task.node.croppedBounds
+            final RectF actualSliceBounds = task.node.getCropping() != null ? task.node.getCropping()
                     : task.node.pageSliceBounds;
             final IBitmapRef bitmap = vuPage.renderBitmap(task.viewState, r.width(), r.height(), actualSliceBounds);
 
@@ -275,7 +275,7 @@ public class DecodeServiceBase implements DecodeService {
             return null;
         }
         // Checks if page has been cropped before
-        if (task.node.croppedBounds != null) {
+        if (task.node.getCropping() != null) {
             // Page size is actuall now
             return null;
         }
@@ -288,7 +288,7 @@ public class DecodeServiceBase implements DecodeService {
 
         // Checks if page root node has been cropped before
         final PageTreeNode root = task.node.page.nodes.root;
-        if (root.croppedBounds == null) {
+        if (root.getCropping() == null) {
             if (LCTX.isDebugEnabled()) {
                 LCTX.d(Thread.currentThread().getName() + ": Task " + task.id + ": Decode full page to crop");
             }
@@ -296,18 +296,18 @@ public class DecodeServiceBase implements DecodeService {
             final RectF rootBounds = root.pageSliceBounds;
 
             final IBitmapRef rootBitmap = vuPage.renderBitmap(task.viewState, rootRect.width(), rootRect.height(), rootBounds);
-            root.croppedBounds = PageCropper.getCropBounds(rootBitmap, rootRect, root.pageSliceBounds);
+            root.setAutoCropping(PageCropper.getCropBounds(rootBitmap, rootRect, root.pageSliceBounds));
 
             if (LCTX.isDebugEnabled()) {
                 LCTX.d(Thread.currentThread().getName() + ": Task " + task.id + ": cropping root bounds: "
-                        + root.croppedBounds);
+                        + root.getCropping());
             }
 
             BitmapManager.release(rootBitmap);
 
             final ViewState viewState = task.viewState;
-            final float pageWidth = vuPage.getWidth() * root.croppedBounds.width();
-            final float pageHeight = vuPage.getHeight() * root.croppedBounds.height();
+            final float pageWidth = vuPage.getWidth() * root.getCropping().width();
+            final float pageHeight = vuPage.getHeight() * root.getCropping().height();
 
             final PageIndex currentPage = viewState.book.getCurrentPage();
             final float offsetX = viewState.book.offsetX;
@@ -334,13 +334,12 @@ public class DecodeServiceBase implements DecodeService {
         }
 
         if (task.node != root) {
-            task.node.croppedBounds = PageTreeNode.evaluateCroppedPageSliceBounds(task.node.pageSliceBounds,
-                    task.node.parent);
+            task.node.evaluateCroppedPageSliceBounds();
         }
 
         if (LCTX.isDebugEnabled()) {
             LCTX.d(Thread.currentThread().getName() + ": Task " + task.id + ": cropping bounds for task node: "
-                    + task.node.croppedBounds);
+                    + task.node.getCropping());
         }
 
         return croppedPageBounds;

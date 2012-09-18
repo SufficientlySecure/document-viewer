@@ -151,7 +151,7 @@ public class Page {
 
     public RectF getPageRegion(final RectF pageBounds, final RectF sourceRect) {
         final BookSettings bs = base.getBookSettings();
-        final RectF cb = nodes.root.croppedBounds;
+        final RectF cb = nodes.root.getCropping();
         if (bs != null && bs.cropPages && cb != null) {
             final Matrix m = MatrixUtils.get();
             final RectF psb = nodes.root.pageSliceBounds;

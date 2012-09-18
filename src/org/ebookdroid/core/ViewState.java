@@ -129,11 +129,11 @@ public class ViewState {
 
             pos.x = (left - cpBounds.left) / cpBounds.width();
             pos.y = (top - cpBounds.top) / cpBounds.height();
-            if (page.nodes.root.croppedBounds != null) {
-                pos.x *= page.nodes.root.croppedBounds.width();
-                pos.x += page.nodes.root.croppedBounds.left;
-                pos.y *= page.nodes.root.croppedBounds.height();
-                pos.y += page.nodes.root.croppedBounds.top;
+            if (page.nodes.root.getCropping() != null) {
+                pos.x *= page.nodes.root.getCropping().width();
+                pos.x += page.nodes.root.getCropping().left;
+                pos.y *= page.nodes.root.getCropping().height();
+                pos.y += page.nodes.root.getCropping().top;
             } else {
                 if (page.type == PageType.RIGHT_PAGE) {
                     pos.x += 0.5;

@@ -3,9 +3,11 @@ package org.ebookdroid.ui.viewer.views;
 import org.ebookdroid.R;
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.Bitmaps;
+import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.core.AbstractViewController;
 import org.ebookdroid.core.EventPool;
 import org.ebookdroid.core.Page;
+import org.ebookdroid.core.ViewState;
 import org.ebookdroid.ui.viewer.IActivityController;
 import org.ebookdroid.ui.viewer.IViewController.InvalidateSizeReason;
 
@@ -60,6 +62,8 @@ public class ManualCropView extends View {
         if (page != null) {
 
             base.getZoomModel().setZoom(1.0f, true);
+
+            base.getBookSettings().pageAlign = PageAlign.AUTO;
 
             RectF oldCb = page.nodes.root.croppedBounds;
             if (oldCb != null) {
@@ -154,6 +158,24 @@ public class ManualCropView extends View {
 
     public void applyCropping() {
         System.out.println("ManualCropView.applyCropping()");
+        final Page page = base.getDocumentModel().getCurrentPageObject();
+        if (page != null) {
+            ViewState vs = new ViewState(base.getDocumentController());
+            PointF tl = vs.getPositionOnPage(page, (int)(Math.min(topLeft.x, bottomRight.x) * getWidth()), (int)(Math.min(topLeft.y, bottomRight.y) * getHeight()));
+            PointF br = vs.getPositionOnPage(page, (int)(Math.max(topLeft.x, bottomRight.x) * getWidth()), (int)(Math.max(topLeft.y, bottomRight.y) * getHeight()));
+
+            RectF cb = new RectF(tl.x, tl.y, br.x, br.y);
+
+            final List<Bitmaps> bitmapsToRecycle = new ArrayList<Bitmaps>();
+            page.nodes.recycleAll(bitmapsToRecycle, true);
+            BitmapManager.release(bitmapsToRecycle);
+
+            page.nodes.root.croppedBounds = cb;
+            page.setAspectRatio(cb.width() * page.cpi.width, cb.height() * page.cpi.height);
+
+            EventPool.newEventReset((AbstractViewController) base.getDocumentController(), InvalidateSizeReason.PAGE_LOADED, false).process();
+        }
+
         ViewEffects.toggleControls(this);
     }
 }

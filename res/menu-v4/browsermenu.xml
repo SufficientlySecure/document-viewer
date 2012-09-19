@@ -4,11 +4,11 @@
     <item
         android:id="@+id/mainmenu_settings"
         android:alphabeticShortcut="s"
-        android:icon="@drawable/settings"
+        android:icon="@drawable/common_menu_allsettings"
         android:title="@string/menu_settings"/>
     <item
         android:id="@+id/mainmenu_about"
-        android:icon="@drawable/about"
+        android:icon="@drawable/common_menu_about"
         android:title="@string/menu_about"/>
 
 </menu>

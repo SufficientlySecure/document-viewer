@@ -193,7 +193,7 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
     public void setCurrentDir(final File newDir) {
         final ImageView view = (ImageView) findViewById(R.id.browserupfolder);
         final boolean hasParent = newDir.getParentFile() != null;
-        view.setImageResource(hasParent ? R.drawable.arrowup_enabled : R.drawable.arrowup_disabled);
+        view.setImageResource(hasParent ? R.drawable.browser_actionbar_nav_up_enabled : R.drawable.browser_actionbar_nav_up_disabled);
 
         header.setText(newDir.getAbsolutePath());
         adapter.setCurrentDirectory(newDir);

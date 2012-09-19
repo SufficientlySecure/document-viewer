@@ -4,47 +4,47 @@
     <item
         android:id="@+id/mainmenu_bookmark"
         android:alphabeticShortcut="b"
-        android:icon="@drawable/bookmark"
+        android:icon="@drawable/viewer_menu_addbookmark"
         android:showAsAction="ifRoom"
         android:title="@string/menu_add_bookmark"/>
     <item
         android:id="@+id/mainmenu_goto_page"
         android:alphabeticShortcut="g"
-        android:icon="@drawable/gotopage"
+        android:icon="@drawable/viewer_menu_goto"
         android:showAsAction="ifRoom"
         android:title="@string/menu_goto_page"/>
     <item
         android:id="@+id/mainmenu_search"
         android:alphabeticShortcut="r"
-        android:icon="@drawable/search"
+        android:icon="@drawable/viewer_menu_searchtext"
         android:showAsAction="ifRoom"
         android:title="@string/menu_searchtext"/>
     <item
         android:id="@+id/mainmenu_outline"
         android:alphabeticShortcut="o"
-        android:icon="@drawable/outline"
+        android:icon="@drawable/viewer_menu_outline"
         android:title="@string/menu_outline"/>
     <item
         android:id="@+id/mainmenu_zoom"
         android:alphabeticShortcut="z"
-        android:icon="@drawable/zoomfit"
+        android:icon="@drawable/viewer_menu_zoom"
         android:title="@string/menu_zoom"/>
     <item
         android:id="@+id/mainmenu_nightmode"
         android:alphabeticShortcut="n"
-        android:icon="@drawable/daynight"
+        android:icon="@drawable/viewer_menu_daynight"
         android:showAsAction="ifRoom"
         android:title="@string/menu_nightmode"/>
     <item
         android:id="@+id/mainmenu_booksettings"
         android:alphabeticShortcut="t"
-        android:icon="@drawable/settings"
+        android:icon="@drawable/viewer_menu_booksettings"
         android:showAsAction="ifRoom"
         android:title="@string/menu_booksettings"/>
     <item
         android:id="@+id/mainmenu_settings"
         android:alphabeticShortcut="s"
-        android:icon="@drawable/settings"
+        android:icon="@drawable/common_menu_allsettings"
         android:showAsAction="ifRoom"
         android:title="@string/menu_settings"/>
     <item
@@ -59,16 +59,16 @@
     <item
         android:id="@+id/mainmenu_crop"
         android:alphabeticShortcut="c"
-        android:icon="@drawable/crop2"
+        android:icon="@drawable/viewer_menu_crop_manual"
         android:title="@string/menu_crop"/>
     <item
         android:id="@+id/mainmenu_about"
-        android:icon="@drawable/about"
+        android:icon="@drawable/common_menu_about"
         android:title="@string/menu_about"/>
     <item
         android:id="@+id/mainmenu_close"
         android:alphabeticShortcut="e"
-        android:icon="@drawable/close"
+        android:icon="@drawable/common_menu_close"
         android:title="@string/menu_close"/>
 
 </menu>

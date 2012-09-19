@@ -15,8 +15,7 @@
     android:layout_alignParentTop="true"
     android:layout_alignParentBottom="false"
     android:layout_marginRight="0dip"
-    android:contentDescription="@string/content_description_icon"
-    android:src="@drawable/book" />
+    android:src="@drawable/recent_item_book" />
   <TextView
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"

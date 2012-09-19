@@ -12,7 +12,7 @@
             style="@style/action_bar_icon"
             android:contentDescription="@string/content_description_home"
             android:onClick="onButtonClick"
-            android:src="@drawable/home" />
+            android:src="@drawable/browser_actionbar_nav_home" />
 
         <View style="@style/action_bar_separator" />
 
@@ -26,7 +26,7 @@
             style="@style/action_bar_action"
             android:contentDescription="@string/content_description_up"
             android:onClick="onButtonClick"
-            android:src="@drawable/arrowup_enabled" />
+            android:src="@drawable/browser_actionbar_nav_up_enabled" />
 
     </LinearLayout>
 

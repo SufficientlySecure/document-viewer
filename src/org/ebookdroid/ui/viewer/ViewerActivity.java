@@ -270,7 +270,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
     @Override
     public void onCreateContextMenu(final ContextMenu menu, final View v, final ContextMenuInfo menuInfo) {
         menu.setHeaderTitle(R.string.app_name);
-        menu.setHeaderIcon(R.drawable.icon);
+        menu.setHeaderIcon(R.drawable.application_icon);
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.mainmenu, menu);
     }

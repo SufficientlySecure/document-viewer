@@ -4,31 +4,31 @@
     <item
         android:id="@+id/recentmenu_cleanrecent"
         android:alphabeticShortcut="c"
-        android:icon="@drawable/clear"
+        android:icon="@drawable/recent_menu_clear"
         android:title="@string/menu_cleanrecent"/>
     <item
         android:id="@+id/recentmenu_searchBook"
         android:alphabeticShortcut="s"
-        android:icon="@drawable/search"
+        android:icon="@drawable/recent_menu_searchbook"
         android:title="@string/menu_searchbook"/>
     <item
         android:id="@+id/mainmenu_settings"
         android:alphabeticShortcut="t"
-        android:icon="@drawable/settings"
+        android:icon="@drawable/common_menu_allsettings"
         android:title="@string/menu_settings"/>
     <item
         android:id="@+id/recentmenu_backupsettings"
         android:alphabeticShortcut="b"
-        android:icon="@drawable/backup"
+        android:icon="@drawable/recent_menu_backup"
         android:title="@string/menu_backupsettings"/>
     <item
         android:id="@+id/mainmenu_about"
-        android:icon="@drawable/about"
+        android:icon="@drawable/common_menu_about"
         android:title="@string/menu_about"/>
     <item
         android:id="@+id/mainmenu_close"
         android:alphabeticShortcut="c"
-        android:icon="@drawable/close"
+        android:icon="@drawable/common_menu_close"
         android:title="@string/menu_close"/>
 
 </menu>

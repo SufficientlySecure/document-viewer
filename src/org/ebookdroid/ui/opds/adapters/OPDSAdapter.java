@@ -299,20 +299,20 @@ public class OPDSAdapter extends BaseExpandableListAdapter {
                 holder.info.setText("");
             }
             if (entry instanceof Feed) {
-                holder.imageView.setImageResource(R.drawable.folderopen);
+                holder.imageView.setImageResource(R.drawable.opds_item_feed);
             } else if (entry instanceof Book) {
                 final ThumbnailFile thumbnailFile = CacheManager.getThumbnailFile(entry.id);
                 if (thumbnailFile.exists()) {
                     holder.imageView.setImageBitmap(thumbnailFile.getRawImage());
                 } else {
-                    holder.imageView.setImageResource(R.drawable.book);
+                    holder.imageView.setImageResource(R.drawable.opds_item_book);
                 }
             }
         } else if (item instanceof Link) {
             final Link link = (Link) item;
             holder.textView.setText(link.type);
             holder.info.setText("");
-            holder.imageView.setImageResource(R.drawable.book);
+            holder.imageView.setImageResource(R.drawable.opds_item_book);
         }
 
         final MarginLayoutParams lp = (MarginLayoutParams) holder.imageView.getLayoutParams();

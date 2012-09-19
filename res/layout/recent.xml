@@ -9,8 +9,7 @@
 
         <ImageView
             style="@style/action_bar_icon"
-            android:contentDescription="@string/content_description_icon"
-            android:src="@drawable/icon" />
+            android:src="@drawable/application_icon" />
 
         <View style="@style/action_bar_separator" />
 
@@ -24,18 +23,16 @@
         <ImageView
             android:id="@+id/recent_showlibrary"
             style="@style/action_bar_action"
-            android:contentDescription="@string/content_description_library"
             android:onClick="onButtonClick"
-            android:src="@drawable/recent" />
+            android:src="@drawable/recent_actionbar_recent" />
 
         <View style="@style/action_bar_separator" />
 
         <ImageView
             android:id="@+id/recent_showbrowser"
             style="@style/action_bar_action"
-            android:contentDescription="@string/content_description_browser"
             android:onClick="onButtonClick"
-            android:src="@drawable/folderview" />
+            android:src="@drawable/recent_actionbar_filebrowser" />
     </LinearLayout>
 
     <ViewFlipper

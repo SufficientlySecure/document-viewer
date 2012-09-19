@@ -213,12 +213,12 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
         if (view == VIEW_LIBRARY) {
             viewflipper.setDisplayedChild(VIEW_LIBRARY);
             if (libraryButton != null) {
-                libraryButton.setImageResource(R.drawable.recent);
+                libraryButton.setImageResource(R.drawable.recent_actionbar_recent);
             }
         } else {
             viewflipper.setDisplayedChild(VIEW_RECENT);
             if (libraryButton != null) {
-                libraryButton.setImageResource(R.drawable.actionbar_library);
+                libraryButton.setImageResource(R.drawable.recent_actionbar_library);
             }
         }
     }
@@ -254,7 +254,7 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
         viewflipper.addView(bookcaseView, 0);
 
         if (libraryButton != null) {
-            libraryButton.setImageResource(R.drawable.actionbar_shelf);
+            libraryButton.setImageResource(R.drawable.recent_actionbar_library);
         }
     }
 
@@ -273,7 +273,7 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
         viewflipper.addView(libraryView, VIEW_LIBRARY);
 
         if (libraryButton != null) {
-            libraryButton.setImageResource(R.drawable.actionbar_library);
+            libraryButton.setImageResource(R.drawable.recent_actionbar_library);
         }
     }
 }

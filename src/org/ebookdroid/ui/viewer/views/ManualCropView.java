@@ -153,7 +153,7 @@ public class ManualCropView extends View {
         canvas.drawColor(0x00FFFFFF, Mode.CLEAR);
         canvas.restore();
 
-        final Drawable d = base.getContext().getResources().getDrawable(R.drawable.circle);
+        final Drawable d = base.getContext().getResources().getDrawable(R.drawable.components_cropper_circle);
         d.setBounds((int) (r.left - 25), (int) (r.top - 25), (int) (r.left + 25), (int) (r.top + 25));
         d.draw(canvas);
 

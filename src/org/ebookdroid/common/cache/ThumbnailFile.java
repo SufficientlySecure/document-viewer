@@ -126,9 +126,9 @@ public class ThumbnailFile extends File {
 
         final Canvas c = new Canvas(bmp);
 
-        final Bitmap cornerBmp = BitmapManager.getResource(R.drawable.bt_corner);
-        final Bitmap leftBmp = BitmapManager.getResource(R.drawable.bt_left);
-        final Bitmap topBmp = BitmapManager.getResource(R.drawable.bt_top);
+        final Bitmap cornerBmp = BitmapManager.getResource(R.drawable.components_thumbnail_corner);
+        final Bitmap leftBmp = BitmapManager.getResource(R.drawable.components_thumbnail_left);
+        final Bitmap topBmp = BitmapManager.getResource(R.drawable.components_thumbnail_top);
 
         c.drawBitmap(cornerBmp, null, new Rect(0, 0, left, top), null);
         c.drawBitmap(topBmp, null, new Rect(left, 0, width, top), null);

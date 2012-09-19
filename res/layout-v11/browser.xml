@@ -10,9 +10,8 @@
         <ImageView
             android:id="@+id/browserhome"
             style="@style/action_bar_icon"
-            android:contentDescription="@string/content_description_home"
             android:onClick="onButtonClick"
-            android:src="@drawable/home" />
+            android:src="@drawable/browser_actionbar_nav_home" />
 
         <View style="@style/action_bar_separator" />
 
@@ -23,27 +22,24 @@
         <ImageView
             android:id="@+id/browserupfolder"
             style="@style/action_bar_action"
-            android:contentDescription="@string/content_description_up"
             android:onClick="onButtonClick"
-            android:src="@drawable/arrowup_enabled" />
+            android:src="@drawable/browser_actionbar_nav_up_enabled" />
 
         <View style="@style/action_bar_separator" />
 
         <ImageView
             android:id="@+id/browserrecent"
             style="@style/action_bar_action"
-            android:contentDescription="@string/content_description_recent"
             android:onClick="onButtonClick"
-            android:src="@drawable/recent" />
+            android:src="@drawable/recent_actionbar_recent" />
 
         <View style="@style/action_bar_separator" />
 
         <ImageView
             android:id="@+id/mainmenu_settings"
             style="@style/action_bar_action"
-            android:contentDescription="@string/content_description_settings"
             android:onClick="onButtonClick"
-            android:src="@drawable/settings" />
+            android:src="@drawable/common_actionbar_allsettings" />
     </LinearLayout>
 
     <ViewFlipper

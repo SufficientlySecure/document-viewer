@@ -8,7 +8,7 @@
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">@dimen/actionbar_height</item>
         <item name="android:orientation">horizontal</item>
-        <item name="android:background">@drawable/gradient</item>
+        <item name="android:background">@drawable/common_actionbar_gradient</item>
     </style>
 
     <style name="action_bar_icon">
@@ -35,7 +35,7 @@
         <item name="android:layout_marginTop">4dip</item>
         <item name="android:layout_marginBottom">2dip</item>
         <item name="android:gravity">center</item>
-        <item name="android:background">@drawable/actionbar_separator</item>
+        <item name="android:background">@drawable/common_actionbar_separator</item>
     </style>
 
     <style name="action_bar_progress" parent="@android:style/Widget.ProgressBar.Small">

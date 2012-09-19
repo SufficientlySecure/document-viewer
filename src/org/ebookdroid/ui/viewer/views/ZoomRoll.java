@@ -37,10 +37,10 @@ public class ZoomRoll extends View implements ZoomListener {
         this.zoomModel = zoomModel;
         this.zoomModel.addListener(this);
 
-        left = BitmapManager.getResource(R.drawable.left);
-        right = BitmapManager.getResource(R.drawable.right);
-        center = BitmapManager.getResource(R.drawable.center);
-        serifs = BitmapManager.getResource(R.drawable.serifs);
+        left = BitmapManager.getResource(R.drawable.components_zoomroll_left);
+        right = BitmapManager.getResource(R.drawable.components_zoomroll_right);
+        center = BitmapManager.getResource(R.drawable.components_zoomroll_center);
+        serifs = BitmapManager.getResource(R.drawable.components_zoomroll_serifs);
 
         scroller = new Scroller(context);
         gestureDetector = new GestureDetector(getContext(), new GestureListener());

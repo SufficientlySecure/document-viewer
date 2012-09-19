@@ -8,7 +8,7 @@
         android:id="@+id/color_picke_preference_view"
         android:layout_width="40dp"
         android:layout_height="20dp"
-        android:background="@drawable/color_picke_preference_widget"
+        android:background="@drawable/components_colorpicker_background"
         />
 
 </LinearLayout>

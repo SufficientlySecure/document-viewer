@@ -68,7 +68,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
     @Override
     public void init() {
         super.init();
-        arrowsBitmap = BitmapFactory.decodeResource(view.getBase().getContext().getResources(), R.drawable.arrows);
+        arrowsBitmap = BitmapFactory.decodeResource(view.getBase().getContext().getResources(), R.drawable.components_curler_arrows);
 
         mMovement = new Vector2D(0, 0);
         mFinger = new Vector2D(0, 0);

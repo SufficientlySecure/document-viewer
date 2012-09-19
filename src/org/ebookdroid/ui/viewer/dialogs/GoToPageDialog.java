@@ -321,7 +321,7 @@ public class GoToPageDialog extends Dialog {
             if (itemView == null) {
                 itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.bookmark, parent, false);
                 final ProgressBar bar = (ProgressBar) itemView.findViewById(R.id.bookmarkPage);
-                bar.setProgressDrawable(base.getActivity().getResources().getDrawable(R.drawable.progress));
+                bar.setProgressDrawable(base.getActivity().getResources().getDrawable(R.drawable.viewer_goto_dlg_progress));
             }
 
             final Bookmark b = getBookmark(index);

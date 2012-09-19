@@ -52,7 +52,7 @@
 			android:layout_marginTop="10dp"
 			android:layout_marginRight="10dp"
 			android:layout_alignParentLeft="true"
-			android:background="@drawable/seekbar_pref_minus" />
+			android:background="@drawable/components_seekbar_minus" />
 		<LinearLayout
 			android:id="@+id/seekbar_plus"
 			android:layout_width="48.0px"
@@ -60,7 +60,7 @@
 			android:layout_marginTop="10dp"
 			android:layout_marginLeft="10dp"
 			android:layout_alignParentRight="true"
-			android:background="@drawable/seekbar_pref_plus" />
+			android:background="@drawable/components_seekbar_plus" />
 		<SeekBar
 			android:id="@+id/seekbar"
 			android:layout_width="fill_parent"
@@ -69,7 +69,7 @@
 			android:layout_marginLeft="4dip"
 			android:layout_marginRight="4dip"
 			android:layout_marginTop="8dip"
-			android:layout_marginBottom="4dip" 
+			android:layout_marginBottom="4dip"
 			android:layout_toLeftOf="@id/seekbar_plus"
 			android:layout_toRightOf="@id/seekbar_minus"
 			/>

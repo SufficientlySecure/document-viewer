@@ -83,27 +83,27 @@ public class BookshelfView extends GridView implements OnItemClickListener {
     }
 
     private void init(final Context context) {
-        final Bitmap shelfBackground = BitmapManager.getResource(R.drawable.shelf_panel1);
+        final Bitmap shelfBackground = BitmapManager.getResource(R.drawable.recent_bookcase_shelf_panel);
         if (shelfBackground != null) {
             mShelfWidth = shelfBackground.getWidth();
             mShelfHeight = shelfBackground.getHeight();
             mShelfBackground = shelfBackground;
         }
 
-        mShelfBackgroundLeft = BitmapManager.getResource(R.drawable.shelf_panel1_left);
-        mShelfBackgroundRight = BitmapManager.getResource(R.drawable.shelf_panel1_right);
+        mShelfBackgroundLeft = BitmapManager.getResource(R.drawable.recent_bookcase_shelf_panel_left);
+        mShelfBackgroundRight = BitmapManager.getResource(R.drawable.recent_bookcase_shelf_panel_right);
 
-        mWebLeft = BitmapManager.getResource(R.drawable.web_left);
-        mWebRight = BitmapManager.getResource(R.drawable.web_right);
+        mWebLeft = BitmapManager.getResource(R.drawable.recent_bookcase_web_left);
+        mWebRight = BitmapManager.getResource(R.drawable.recent_bookcase_web_right);
 
-        mPineLeft = BitmapManager.getResource(R.drawable.pine_left);
-        mPineRight = BitmapManager.getResource(R.drawable.pine_right);
+        mPineLeft = BitmapManager.getResource(R.drawable.recent_bookcase_pine_left);
+        mPineRight = BitmapManager.getResource(R.drawable.recent_bookcase_pine_right);
 
         final StateListDrawable drawable = new StateListDrawable();
 
         final SpotlightDrawable start = new SpotlightDrawable(context, this);
         start.disableOffset();
-        final SpotlightDrawable end = new SpotlightDrawable(context, this, R.drawable.spotlight_blue);
+        final SpotlightDrawable end = new SpotlightDrawable(context, this, R.drawable.components_spotlight_blue);
         end.disableOffset();
         final TransitionDrawable transition = new TransitionDrawable(start, end);
         drawable.addState(new int[] { android.R.attr.state_pressed }, transition);

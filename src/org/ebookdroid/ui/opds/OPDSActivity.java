@@ -19,6 +19,7 @@ import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.emdev.common.android.AndroidVersion;
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
 import org.emdev.ui.AbstractActionActivity;
@@ -127,8 +128,8 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActiv
             final int type = ExpandableListView.getPackedPositionType(cmi.packedPosition);
             final int groupPosition = ExpandableListView.getPackedPositionGroup(cmi.packedPosition);
             final int childPosition = ExpandableListView.getPackedPositionChild(cmi.packedPosition);
-//            System.out.println("OPDSActivity.onCreateContextMenu(): " + type + ", " + groupPosition + ", "
-//                    + childPosition);
+            // System.out.println("OPDSActivity.onCreateContextMenu(): " + type + ", " + groupPosition + ", "
+            // + childPosition);
             switch (type) {
                 case ExpandableListView.PACKED_POSITION_TYPE_NULL:
                     onCreateContextMenu(menu);
@@ -206,10 +207,21 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActiv
         final boolean canPrev = feed != null && feed.prev != null;
 
         if (menu != null) {
-            updateItem(menu, canUp, R.id.opdsupfolder, R.drawable.arrowup_enabled, R.drawable.arrowup_disabled);
-            updateItem(menu, canNext, R.id.opdsnextfolder, R.drawable.arrowright_enabled,
-                    R.drawable.arrowright_disabled);
-            updateItem(menu, canPrev, R.id.opdsprevfolder, R.drawable.arrowleft_enabled, R.drawable.arrowleft_disabled);
+            if (AndroidVersion.lessThan3x) {
+                updateItem(menu, canUp, R.id.opdsupfolder, R.drawable.opds_menu_nav_up_enabled,
+                        R.drawable.opds_menu_nav_up_disabled);
+                updateItem(menu, canNext, R.id.opdsnextfolder, R.drawable.opds_menu_nav_next_enabled,
+                        R.drawable.opds_menu_nav_next_disabled);
+                updateItem(menu, canPrev, R.id.opdsprevfolder, R.drawable.opds_menu_nav_prev_enabled,
+                        R.drawable.opds_menu_nav_prev_disabled);
+            } else {
+                updateItem(menu, canUp, R.id.opdsupfolder, R.drawable.opds_actionbar_nav_up_enabled,
+                        R.drawable.opds_actionbar_nav_up_disabled);
+                updateItem(menu, canNext, R.id.opdsnextfolder, R.drawable.opds_actionbar_nav_next_enabled,
+                        R.drawable.opds_actionbar_nav_next_disabled);
+                updateItem(menu, canPrev, R.id.opdsprevfolder, R.drawable.opds_actionbar_nav_prev_enabled,
+                        R.drawable.opds_actionbar_nav_prev_disabled);
+            }
         }
     }
 

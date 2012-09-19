@@ -4,37 +4,37 @@
     <item
         android:id="@+id/opdshome"
         android:alphabeticShortcut="h"
-        android:icon="@drawable/home"
+        android:icon="@drawable/opds_menu_nav_home"
         android:showAsAction="always"
         android:title="Home"/>
     <item
         android:id="@+id/opdsupfolder"
         android:alphabeticShortcut="u"
-        android:icon="@drawable/arrowup_enabled"
+        android:icon="@drawable/opds_menu_nav_up_enabled"
         android:showAsAction="always"
         android:title="Up"/>
     <item
         android:id="@+id/opdsprevfolder"
         android:alphabeticShortcut="p"
-        android:icon="@drawable/arrowleft_enabled"
+        android:icon="@drawable/opds_menu_nav_prev_enabled"
         android:showAsAction="ifRoom"
         android:title="Prev section"/>
     <item
         android:id="@+id/opdsnextfolder"
         android:alphabeticShortcut="n"
-        android:icon="@drawable/arrowright_enabled"
+        android:icon="@drawable/opds_menu_nav_next_enabled"
         android:showAsAction="ifRoom"
         android:title="Next section"/>
     <item
         android:id="@+id/opdsrefreshfolder"
         android:alphabeticShortcut="r"
-        android:icon="@drawable/refresh"
+        android:icon="@drawable/opds_menu_refresh"
         android:showAsAction="ifRoom"
         android:title="Refresh"/>
     <item
         android:id="@+id/opdsclose"
         android:alphabeticShortcut="c"
-        android:icon="@drawable/close"
+        android:icon="@drawable/common_menu_close"
         android:showAsAction="never"
         android:title="Close"/>
 

@@ -69,7 +69,7 @@ public class LibraryAdapter extends BaseExpandableListAdapter {
         final boolean wasRead = SettingsManager.getBookSettings(file.getAbsolutePath()) != null;
 
         holder.name.setText(book.name);
-        holder.image.setImageResource(wasRead ? R.drawable.bookwatched : R.drawable.book);
+        holder.image.setImageResource(wasRead ? R.drawable.recent_item_book_watched : R.drawable.recent_item_book);
         holder.info.setText(FileUtils.getFileDate(file.lastModified()));
         holder.fileSize.setText(FileUtils.getFileSize(file.length()));
 
@@ -86,7 +86,7 @@ public class LibraryAdapter extends BaseExpandableListAdapter {
         final BookShelfAdapter curr = getGroup(groupPosition);
 
         holder.name.setText(curr.name);
-        holder.image.setImageResource(R.drawable.folderopen);
+        holder.image.setImageResource(R.drawable.recent_item_folder_open);
         holder.info.setText(EBookDroidApp.context.getString(R.string.folder_books_count, curr.getCount()));
         holder.fileSize.setText("");
 

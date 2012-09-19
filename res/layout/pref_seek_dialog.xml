@@ -22,7 +22,7 @@
         android:layout_below="@id/pref_seek_current_value"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
-        android:background="@drawable/seekbar_pref_minus" />
+        android:background="@drawable/components_seekbar_minus" />
 
     <LinearLayout
         android:id="@+id/pref_seek_bar_plus"
@@ -32,7 +32,7 @@
         android:layout_below="@id/pref_seek_current_value"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
-        android:background="@drawable/seekbar_pref_plus" />
+        android:background="@drawable/components_seekbar_plus" />
 
     <SeekBar
         android:id="@+id/pref_seek_bar"

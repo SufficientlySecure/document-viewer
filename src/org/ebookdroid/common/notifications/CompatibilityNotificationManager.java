@@ -17,7 +17,7 @@ class CompatibilityNotificationManager extends AbstractNotificationManager {
         try {
             final NotificationCompat.Builder nb = new NotificationCompat.Builder(BaseDroidApp.context);
 
-            nb.setSmallIcon(R.drawable.icon);
+            nb.setSmallIcon(R.drawable.application_icon);
             nb.setAutoCancel(true);
             nb.setWhen(System.currentTimeMillis());
             nb.setDefaults(Notification.DEFAULT_ALL & (~Notification.DEFAULT_VIBRATE));

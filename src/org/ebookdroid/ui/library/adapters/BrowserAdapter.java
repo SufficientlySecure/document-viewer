@@ -59,11 +59,11 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
 
         if (file.isDirectory()) {
             final boolean watched = LibSettings.current().autoScanDirs.contains(file.getPath());
-            holder.imageView.setImageResource(watched ? R.drawable.folderwatched : R.drawable.folderopen);
+            holder.imageView.setImageResource(watched ? R.drawable.browser_item_folder_watched : R.drawable.browser_item_folder_open);
             holder.info.setText("");
             holder.fileSize.setText("");
         } else {
-            holder.imageView.setImageResource(R.drawable.book);
+            holder.imageView.setImageResource(R.drawable.browser_item_book);
             holder.info.setText(FileUtils.getFileDate(file.lastModified()));
             holder.fileSize.setText(FileUtils.getFileSize(file.length()));
         }

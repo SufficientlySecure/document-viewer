@@ -10,7 +10,7 @@
         <ImageView
             style="@style/action_bar_icon"
             android:contentDescription="@string/content_description_icon"
-            android:src="@drawable/icon" />
+            android:src="@drawable/application_icon" />
 
         <View style="@style/action_bar_separator" />
 
@@ -26,7 +26,7 @@
             style="@style/action_bar_action"
             android:contentDescription="@string/content_description_library"
             android:onClick="onButtonClick"
-            android:src="@drawable/actionbar_library" />
+            android:src="@drawable/recent_actionbar_library" />
 
         <View style="@style/action_bar_separator" />
 
@@ -35,14 +35,14 @@
             style="@style/action_bar_action"
             android:contentDescription="@string/content_description_browser"
             android:onClick="onButtonClick"
-            android:src="@drawable/folderview" />
+            android:src="@drawable/recent_actionbar_filebrowser" />
 
         <ImageView
             android:id="@+id/mainmenu_opds"
             style="@style/action_bar_action"
             android:contentDescription="@string/content_description_browser"
             android:onClick="onButtonClick"
-            android:src="@drawable/opds" />
+            android:src="@drawable/recent_actionbar_opdsbrowser" />
 
     </LinearLayout>
 

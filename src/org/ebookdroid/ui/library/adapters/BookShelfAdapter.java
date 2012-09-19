@@ -57,7 +57,7 @@ public class BookShelfAdapter extends BaseAdapter {
         final BookNode node = nodes.get(position);
 
         holder.textView.setText(StringUtils.cleanupTitle(node.name));
-        base.loadThumbnail(node.path, holder.imageView, R.drawable.book);
+        base.loadThumbnail(node.path, holder.imageView, R.drawable.recent_item_book);
 
         return holder.getView();
     }

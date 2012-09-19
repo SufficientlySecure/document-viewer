@@ -47,8 +47,8 @@ public class OutlineAdapter extends BaseAdapter {
 
         this.context = context;
         final Resources resources = context.getResources();
-        background = resources.getDrawable(R.drawable.outline_background);
-        selected = resources.getDrawable(R.drawable.outline_background_selected);
+        background = resources.getDrawable(R.drawable.viewer_outline_item_background);
+        selected = resources.getDrawable(R.drawable.viewer_outline_item_background_selected);
 
         this.objects = objects.toArray(new OutlineLink[objects.size()]);
         this.pageIndexes = new int[this.objects.length];
@@ -66,7 +66,7 @@ public class OutlineAdapter extends BaseAdapter {
             }
 
             Page page = model.getLinkTargetPage(this.objects[i].targetPage - 1, this.objects[i].targetRect, null);
-            this.pageIndexes[i] = page != null ? page.index.viewIndex  + 1: -1;
+            this.pageIndexes[i] = page != null ? page.index.viewIndex + 1 : -1;
         }
 
         currentId = current != null ? objects.indexOf(current) : -1;
@@ -128,7 +128,7 @@ public class OutlineAdapter extends BaseAdapter {
     public String getPageIndex(final int position) {
         final int id = mapping.get(position, -1);
         int index = id >= 0 && id < pageIndexes.length ? pageIndexes[id] : -1;
-        return index > 0 ? ""  + index : "";
+        return index > 0 ? "" + index : "";
     }
 
     @Override
@@ -194,8 +194,8 @@ public class OutlineAdapter extends BaseAdapter {
             btn.setBackgroundColor(Color.TRANSPARENT);
         } else {
             btn.setOnClickListener(collapseListener);
-            btn.setBackgroundResource(states[id] == OutlineItemState.EXPANDED ? R.drawable.triangle_down
-                    : R.drawable.triangle_right);
+            btn.setBackgroundResource(states[id] == OutlineItemState.EXPANDED ? R.drawable.viewer_outline_item_expanded
+                    : R.drawable.viewer_outline_item_collapsed);
         }
 
         return container;

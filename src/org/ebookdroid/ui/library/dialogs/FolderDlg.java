@@ -109,7 +109,7 @@ public class FolderDlg implements AdapterView.OnItemClickListener {
 
     public void setCurrentDir(final File newDir) {
         final boolean hasParent = newDir.getParentFile() != null;
-        upButton.setImageResource(hasParent ? R.drawable.arrowup_enabled : R.drawable.arrowup_disabled);
+        upButton.setImageResource(hasParent ? R.drawable.browser_actionbar_nav_up_enabled : R.drawable.browser_actionbar_nav_up_disabled);
 
         selected = newDir;
         header.setText(newDir.getAbsolutePath());

@@ -12,7 +12,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginRight="6dip"
         android:contentDescription="@string/content_description_icon"
-        android:src="@drawable/book" />
+        android:src="@drawable/browser_item_book" />
 
     <TextView
         android:id="@+id/browserItemText"

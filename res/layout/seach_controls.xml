@@ -11,8 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_marginRight="4dp"
-        android:background="@drawable/rounded_background"
-        android:src="@drawable/arrowright" />
+        android:background="@drawable/components_search_background"
+        android:src="@drawable/components_search_forward" />
 
     <ImageButton
         android:id="@+id/search_controls_prev"
@@ -20,8 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="2dp"
         android:layout_toLeftOf="@id/search_controls_next"
-        android:background="@drawable/rounded_background"
-        android:src="@drawable/arrowleft" />
+        android:background="@drawable/components_search_background"
+        android:src="@drawable/components_search_backward" />
 
     <EditText
         android:id="@+id/search_controls_edit"
@@ -33,7 +33,7 @@
         android:layout_marginLeft="4dp"
         android:layout_marginRight="2dp"
         android:layout_toLeftOf="@id/search_controls_prev"
-        android:background="@drawable/rounded_background"
+        android:background="@drawable/components_search_background"
         android:gravity="center"
         android:singleLine="true"
         android:textColor="@color/actionbar_white" />

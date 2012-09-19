@@ -13,7 +13,7 @@ class OldestNotificationManager extends AbstractNotificationManager {
     public int notify(final CharSequence title, final CharSequence message, final Intent intent) {
         final String text = title + ": " + message;
 
-        final Notification notification = new Notification(R.drawable.icon, text, System.currentTimeMillis());
+        final Notification notification = new Notification(R.drawable.application_icon, text, System.currentTimeMillis());
         final int id = SEQ.getAndIncrement();
 
         getManager().notify(id, notification);

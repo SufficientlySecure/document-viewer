@@ -17,7 +17,7 @@
         android:scaleType="centerInside"
         android:adjustViewBounds="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/book" />
+        android:src="@drawable/opds_item_book" />
 
     <TextView
         android:id="@+id/opdsItemText"

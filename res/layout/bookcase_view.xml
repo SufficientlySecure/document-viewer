@@ -8,7 +8,7 @@
         android:id="@+id/BookcaseCaption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/shelf_caption1"
+        android:background="@drawable/recent_bookcase_shelf_caption"
         android:orientation="horizontal" >
 
         <ImageButton
@@ -18,9 +18,8 @@
             android:layout_alignParentLeft="true"
             android:layout_gravity="center"
             android:background="@android:color/transparent"
-            android:contentDescription="@string/content_description_left"
             android:onClick="onButtonClick"
-            android:src="@drawable/arrowleft" />
+            android:src="@drawable/recent_bookcase_nav_prev" />
 
         <ImageButton
             android:id="@+id/ShelfRightButton"
@@ -29,9 +28,8 @@
             android:layout_alignParentRight="true"
             android:layout_gravity="center"
             android:background="@android:color/transparent"
-            android:contentDescription="@string/content_description_right"
             android:onClick="onButtonClick"
-            android:src="@drawable/arrowright" />
+            android:src="@drawable/recent_bookcase_nav_next" />
 
         <TextView
             android:id="@+id/ShelfCaption"

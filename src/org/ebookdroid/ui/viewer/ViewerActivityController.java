@@ -456,7 +456,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.ui.viewer.IActivityController#jumpToPage(int, float, float)
      */
     @Override
@@ -510,6 +510,16 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         SettingsManager.toggleNightMode(bookSettings);
     }
 
+    @ActionMethod(ids = R.id.mainmenu_splitpages)
+    public void toggleSplitPages(final ActionEx action) {
+        SettingsManager.toggleSplitPages(bookSettings);
+    }
+
+    @ActionMethod(ids = R.id.mainmenu_croppages)
+    public void toggleCropPages(final ActionEx action) {
+        SettingsManager.toggleCropPages(bookSettings);
+    }
+
     @ActionMethod(ids = R.id.mainmenu_thumbnail)
     public void setCurrentPageAsThumbnail(final ActionEx action) {
         final Page page = documentModel.getCurrentPageObject();
@@ -555,7 +565,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * Gets the zoom model.
-     * 
+     *
      * @return the zoom model
      */
     @Override
@@ -573,7 +583,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * Gets the decoding progress model.
-     * 
+     *
      * @return the decoding progress model
      */
     @Override
@@ -690,7 +700,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.common.settings.listeners.ISettingsChangeListener#onAppSettingsChanged(org.ebookdroid.common.settings.AppSettings,
      *      org.ebookdroid.common.settings.AppSettings, org.ebookdroid.common.settings.AppSettings.Diff)
      */
@@ -729,7 +739,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.common.settings.listeners.ISettingsChangeListener#onBookSettingsChanged(org.ebookdroid.common.settings.books.BookSettings,
      *      org.ebookdroid.common.settings.books.BookSettings, org.ebookdroid.common.settings.books.BookSettings.Diff,
      *      org.ebookdroid.common.settings.AppSettings.Diff)

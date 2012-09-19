@@ -143,7 +143,7 @@ public class SettingsManager {
         }
     }
 
-    public static void releaseBookSettings(long ownerId, BookSettings current) {
+    public static void releaseBookSettings(final long ownerId, final BookSettings current) {
         if (current == null || !current.persistent) {
             return;
         }
@@ -161,7 +161,7 @@ public class SettingsManager {
         lock.writeLock().lock();
         try {
             db.clearRecent();
-            for (BookSettings current : bookSettings.values()) {
+            for (final BookSettings current : bookSettings.values()) {
                 current.persistent = false;
             }
         } finally {
@@ -195,7 +195,7 @@ public class SettingsManager {
         lock.writeLock().lock();
         try {
             db.deleteAll();
-            for (BookSettings current : bookSettings.values()) {
+            for (final BookSettings current : bookSettings.values()) {
                 current.persistent = false;
             }
         } finally {
@@ -207,7 +207,7 @@ public class SettingsManager {
         lock.writeLock().lock();
         try {
             db.deleteAllBookmarks();
-            for (BookSettings current : bookSettings.values()) {
+            for (final BookSettings current : bookSettings.values()) {
                 current.bookmarks.clear();
             }
         } finally {
@@ -236,7 +236,7 @@ public class SettingsManager {
         }
     }
 
-    public static void toggleNightMode(BookSettings current) {
+    public static void toggleNightMode(final BookSettings current) {
         if (current == null) {
             return;
         }
@@ -252,7 +252,39 @@ public class SettingsManager {
         }
     }
 
-    public static void currentPageChanged(BookSettings current, final PageIndex oldIndex, final PageIndex newIndex) {
+    public static void toggleSplitPages(final BookSettings current) {
+        if (current == null) {
+            return;
+        }
+        lock.writeLock().lock();
+        try {
+            final BookSettings olds = new BookSettings(current);
+            current.splitPages = !current.splitPages;
+            current.lastChanged = System.currentTimeMillis();
+            db.storeBookSettings(current);
+            applyBookSettingsChanges(olds, current);
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    public static void toggleCropPages(final BookSettings current) {
+        if (current == null) {
+            return;
+        }
+        lock.writeLock().lock();
+        try {
+            final BookSettings olds = new BookSettings(current);
+            current.cropPages = !current.cropPages;
+            current.lastChanged = System.currentTimeMillis();
+            db.storeBookSettings(current);
+            applyBookSettingsChanges(olds, current);
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    public static void currentPageChanged(final BookSettings current, final PageIndex oldIndex, final PageIndex newIndex) {
         if (current == null) {
             return;
         }
@@ -264,7 +296,7 @@ public class SettingsManager {
         }
     }
 
-    public static void zoomChanged(BookSettings current, final float zoom, final boolean committed) {
+    public static void zoomChanged(final BookSettings current, final float zoom, final boolean committed) {
         if (current == null) {
             return;
         }
@@ -276,7 +308,7 @@ public class SettingsManager {
         }
     }
 
-    public static void positionChanged(BookSettings current, final float offsetX, final float offsetY) {
+    public static void positionChanged(final BookSettings current, final float offsetX, final float offsetY) {
         if (current == null) {
             return;
         }
@@ -337,7 +369,7 @@ public class SettingsManager {
         }
     }
 
-    public static void storeBookSettings(BookSettings current) {
+    public static void storeBookSettings(final BookSettings current) {
         if (current == null) {
             return;
         }
@@ -397,7 +429,7 @@ public class SettingsManager {
                 boolean stored = false;
                 lock.writeLock().lock();
                 try {
-                    for (BookSettings current : bookSettings.values()) {
+                    for (final BookSettings current : bookSettings.values()) {
                         if (current.persistent && current.lastUpdated < current.lastChanged) {
                             stored |= db.storeBookSettings(current);
                         }

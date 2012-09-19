@@ -1,7 +1,9 @@
 package org.ebookdroid.ui.viewer.adapters;
 
 import org.ebookdroid.R;
+import org.ebookdroid.core.Page;
 import org.ebookdroid.core.codec.OutlineLink;
+import org.ebookdroid.core.models.DocumentModel;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -35,17 +37,21 @@ public class OutlineAdapter extends BaseAdapter {
 
     private final Context context;
     private final OutlineLink[] objects;
+    private final int[] pageIndexes;
     private final OutlineItemState[] states;
     private final SparseIntArray mapping = new SparseIntArray();
     private final int currentId;
 
-    public OutlineAdapter(final Context context, final List<OutlineLink> objects, final OutlineLink current) {
+    public OutlineAdapter(final Context context, final DocumentModel model, final List<OutlineLink> objects,
+            final OutlineLink current) {
+
         this.context = context;
         final Resources resources = context.getResources();
         background = resources.getDrawable(R.drawable.outline_background);
         selected = resources.getDrawable(R.drawable.outline_background_selected);
 
         this.objects = objects.toArray(new OutlineLink[objects.size()]);
+        this.pageIndexes = new int[this.objects.length];
         this.states = new OutlineItemState[this.objects.length];
 
         boolean treeFound = false;
@@ -58,6 +64,9 @@ public class OutlineAdapter extends BaseAdapter {
             } else {
                 states[i] = OutlineItemState.LEAF;
             }
+
+            Page page = model.getLinkTargetPage(this.objects[i].targetPage - 1, this.objects[i].targetRect, null);
+            this.pageIndexes[i] = page != null ? page.index.viewIndex  + 1: -1;
         }
 
         currentId = current != null ? objects.indexOf(current) : -1;
@@ -116,6 +125,12 @@ public class OutlineAdapter extends BaseAdapter {
         return id >= 0 && id < objects.length ? objects[id] : null;
     }
 
+    public String getPageIndex(final int position) {
+        final int id = mapping.get(position, -1);
+        int index = id >= 0 && id < pageIndexes.length ? pageIndexes[id] : -1;
+        return index > 0 ? ""  + index : "";
+    }
+
     @Override
     public long getItemId(final int position) {
         return mapping.get(position, -1);
@@ -153,11 +168,13 @@ public class OutlineAdapter extends BaseAdapter {
         final TextView view = (TextView) container.findViewById(R.id.outline_title);
         final View btn = container.findViewById(R.id.outline_collapse);
         final View space = container.findViewById(R.id.outline_space);
+        final TextView pageIndex = (TextView) container.findViewById(R.id.outline_pageindex);
 
         final OutlineLink item = getItem(position);
         view.setText(item.title.trim());
         view.setTag(position);
         btn.setTag(position);
+        pageIndex.setText(getPageIndex(position));
 
         container.setBackgroundDrawable(id == currentId ? this.selected : this.background);
 
@@ -192,7 +209,7 @@ public class OutlineAdapter extends BaseAdapter {
 
         @Override
         public void onClick(final View v) {
-//            System.out.println("btn.OnClickListener()");
+            // System.out.println("btn.OnClickListener()");
             {
                 final int position = ((Integer) v.getTag()).intValue();
                 final int id = (int) getItemId(position);

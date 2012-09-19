@@ -25,6 +25,7 @@ import org.ebookdroid.core.events.CurrentPageListener;
 import org.ebookdroid.ui.viewer.IActivityController;
 import org.ebookdroid.ui.viewer.IView;
 
+import android.graphics.PointF;
 import android.graphics.RectF;
 
 import java.util.ArrayList;
@@ -124,6 +125,24 @@ public class DocumentModel extends ListenerProxy {
             }
         }
         return null;
+    }
+
+    public Page getLinkTargetPage(final int pageDocIndex, final RectF targetRect, final PointF linkPoint) {
+        Page target = getPageByDocIndex(pageDocIndex);
+        float offsetX = 0;
+        float offsetY = 0;
+        if (targetRect != null) {
+            offsetX = targetRect.left;
+            offsetY = targetRect.top;
+            if (target.type == PageType.LEFT_PAGE && offsetX >= 0.5f) {
+                target = getPageObject(target.index.viewIndex + 1);
+                offsetX -= 0.5f;
+            }
+        }
+        if (linkPoint != null) {
+            linkPoint.set(offsetX, offsetY);
+        }
+        return target;
     }
 
     /**
@@ -253,12 +272,12 @@ public class DocumentModel extends ListenerProxy {
     }
 
     public void updateAutoCropping(final Page page, final RectF r) {
-        PageInfo pageInfo = docInfo.getPageInfo(page);
+        final PageInfo pageInfo = docInfo.getPageInfo(page);
         pageInfo.autoCropping = new RectF(r);
     }
 
     public void updateManualCropping(final Page page, final RectF r) {
-        PageInfo pageInfo = docInfo.getPageInfo(page);
+        final PageInfo pageInfo = docInfo.getPageInfo(page);
         pageInfo.manualCropping = new RectF(r);
     }
 

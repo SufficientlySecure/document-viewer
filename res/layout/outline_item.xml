@@ -17,15 +17,25 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp"
         android:layout_toRightOf="@id/outline_space"
-        android:background="@drawable/seekbar_pref_minus" />
+        android:background="@drawable/triangle_down" />
+
+    <TextView
+        android:id="@+id/outline_pageindex"
+        android:layout_width="?android:attr/listPreferredItemHeight"
+        android:layout_height="fill_parent"
+        android:layout_alignParentRight="true"
+        android:ellipsize="marquee"
+        android:gravity="center"
+        android:text="101" />
 
     <TextView
         android:id="@+id/outline_title"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_alignParentRight="true"
         android:layout_toRightOf="@id/outline_collapse"
+        android:layout_toLeftOf="@id/outline_pageindex"
         android:ellipsize="marquee"
-        android:gravity="center_vertical" />
+        android:gravity="center_vertical"
+        android:text="Outline item text" />
 
 </RelativeLayout>

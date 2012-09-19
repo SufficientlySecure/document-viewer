@@ -7,7 +7,6 @@ import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
-import org.ebookdroid.common.settings.types.PageType;
 import org.ebookdroid.common.touch.DefaultGestureDetector;
 import org.ebookdroid.common.touch.IGestureDetector;
 import org.ebookdroid.common.touch.IMultiTouchListener;
@@ -581,22 +580,13 @@ public abstract class AbstractViewController extends AbstractComponentController
     @Override
     public void goToLink(final int pageDocIndex, final RectF targetRect, final boolean addToHistory) {
         if (pageDocIndex >= 0) {
-            Page target = model.getPageByDocIndex(pageDocIndex);
-            float offsetX = 0;
-            float offsetY = 0;
-            if (targetRect != null) {
-                offsetX = targetRect.left;
-                offsetY = targetRect.top;
-                if (target.type == PageType.LEFT_PAGE && offsetX >= 0.5f) {
-                    target = model.getPageObject(target.index.viewIndex + 1);
-                    offsetX -= 0.5f;
-                }
-            }
+            PointF linkPoint = new PointF();
+            Page target = model.getLinkTargetPage(pageDocIndex, targetRect, linkPoint);
             if (LCTX.isDebugEnabled()) {
                 LCTX.d("Target page found: " + target);
             }
             if (target != null) {
-                base.jumpToPage(target.index.viewIndex, offsetX, offsetY, addToHistory);
+                base.jumpToPage(target.index.viewIndex, linkPoint.x, linkPoint.y, addToHistory);
             }
         }
     }

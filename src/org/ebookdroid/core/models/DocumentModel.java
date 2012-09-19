@@ -98,6 +98,11 @@ public class DocumentModel extends ListenerProxy {
 
     private void recyclePages() {
         if (LengthUtils.isNotEmpty(pages)) {
+            final boolean cacheable = decodeService.isFeatureSupported(CodecFeatures.FEATURE_CACHABLE_PAGE_INFO);
+            if (cacheable) {
+                cacheFile.save(docInfo);
+            }
+
             final List<Bitmaps> bitmapsToRecycle = new ArrayList<Bitmaps>();
             for (final Page page : pages) {
                 page.recycle(bitmapsToRecycle);

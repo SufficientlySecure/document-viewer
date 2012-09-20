@@ -12,7 +12,6 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
@@ -208,29 +207,20 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActiv
 
         if (menu != null) {
             if (AndroidVersion.lessThan3x) {
-                updateItem(menu, canUp, R.id.opdsupfolder, R.drawable.opds_menu_nav_up_enabled,
+                setMenuItemEnabled(menu, canUp, R.id.opdsupfolder, R.drawable.opds_menu_nav_up_enabled,
                         R.drawable.opds_menu_nav_up_disabled);
-                updateItem(menu, canNext, R.id.opdsnextfolder, R.drawable.opds_menu_nav_next_enabled,
+                setMenuItemEnabled(menu, canNext, R.id.opdsnextfolder, R.drawable.opds_menu_nav_next_enabled,
                         R.drawable.opds_menu_nav_next_disabled);
-                updateItem(menu, canPrev, R.id.opdsprevfolder, R.drawable.opds_menu_nav_prev_enabled,
+                setMenuItemEnabled(menu, canPrev, R.id.opdsprevfolder, R.drawable.opds_menu_nav_prev_enabled,
                         R.drawable.opds_menu_nav_prev_disabled);
             } else {
-                updateItem(menu, canUp, R.id.opdsupfolder, R.drawable.opds_actionbar_nav_up_enabled,
+                setMenuItemEnabled(menu, canUp, R.id.opdsupfolder, R.drawable.opds_actionbar_nav_up_enabled,
                         R.drawable.opds_actionbar_nav_up_disabled);
-                updateItem(menu, canNext, R.id.opdsnextfolder, R.drawable.opds_actionbar_nav_next_enabled,
+                setMenuItemEnabled(menu, canNext, R.id.opdsnextfolder, R.drawable.opds_actionbar_nav_next_enabled,
                         R.drawable.opds_actionbar_nav_next_disabled);
-                updateItem(menu, canPrev, R.id.opdsprevfolder, R.drawable.opds_actionbar_nav_prev_enabled,
+                setMenuItemEnabled(menu, canPrev, R.id.opdsprevfolder, R.drawable.opds_actionbar_nav_prev_enabled,
                         R.drawable.opds_actionbar_nav_prev_disabled);
             }
-        }
-    }
-
-    protected void updateItem(final Menu menu, final boolean enabled, final int viewId, final int enabledResId,
-            final int disabledResId) {
-        final MenuItem v = menu.findItem(viewId);
-        if (v != null) {
-            v.setIcon(enabled ? enabledResId : disabledResId);
-            v.setEnabled(enabled);
         }
     }
 

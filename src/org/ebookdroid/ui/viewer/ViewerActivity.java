@@ -313,13 +313,13 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     protected void updateOptionsMenu(Menu menu) {
         BookSettings bs = getController().getBookSettings();
-        if(bs == null || menu == null) {
+        if (bs == null || menu == null) {
             return;
         }
-        MenuItem cpItem = menu.findItem(R.id.mainmenu_croppages);
-        cpItem.setIcon(bs.cropPages ? R.drawable.viewer_actionbar_crop_auto_on : R.drawable.viewer_actionbar_crop_auto);
-        MenuItem spItem = menu.findItem(R.id.mainmenu_splitpages);
-        spItem.setIcon(bs.splitPages ? R.drawable.viewer_actionbar_split_pages_on : R.drawable.viewer_actionbar_split_pages);
+        setMenuItemChecked(menu, bs.cropPages, R.id.mainmenu_croppages, R.drawable.viewer_actionbar_crop_auto_on,
+                R.drawable.viewer_actionbar_crop_auto);
+        setMenuItemChecked(menu, bs.splitPages, R.id.mainmenu_splitpages, R.drawable.viewer_actionbar_split_pages_on,
+                R.drawable.viewer_actionbar_split_pages);
     }
 
     /**

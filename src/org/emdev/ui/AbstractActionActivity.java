@@ -65,7 +65,7 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Actio
     protected void setMenuSource(final Menu menu, final Object source) {
         for (int i = 0, n = menu.size(); i < n; i++) {
             final MenuItem item = menu.getItem(i);
-            SubMenu subMenu = item.getSubMenu();
+            final SubMenu subMenu = item.getSubMenu();
             if (subMenu != null) {
                 setMenuSource(subMenu, source);
             } else {
@@ -78,16 +78,33 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Actio
     protected void setMenuParameters(final Menu menu, final IActionParameter... parameters) {
         for (int i = 0, n = menu.size(); i < n; i++) {
             final MenuItem item = menu.getItem(i);
-            SubMenu subMenu = item.getSubMenu();
+            final SubMenu subMenu = item.getSubMenu();
             if (subMenu != null) {
                 setMenuParameters(subMenu, parameters);
             } else {
                 final int itemId = item.getItemId();
-                ActionEx action = getController().getOrCreateAction(itemId);
-                for (IActionParameter p : parameters) {
+                final ActionEx action = getController().getOrCreateAction(itemId);
+                for (final IActionParameter p : parameters) {
                     action.addParameter(p);
                 }
             }
+        }
+    }
+
+    protected void setMenuItemEnabled(final Menu menu, final boolean enabled, final int viewId, final int enabledResId,
+            final int disabledResId) {
+        final MenuItem v = menu.findItem(viewId);
+        if (v != null) {
+            v.setIcon(enabled ? enabledResId : disabledResId);
+            v.setEnabled(enabled);
+        }
+    }
+
+    protected void setMenuItemChecked(final Menu menu, final boolean checked, final int viewId, final int checkedResId,
+            final int uncheckedResId) {
+        final MenuItem v = menu.findItem(viewId);
+        if (v != null) {
+            v.setIcon(checked ? checkedResId : uncheckedResId);
         }
     }
 

@@ -97,29 +97,60 @@ public class TextElement extends AbstractLineElement {
         return result;
     }
 
-    public int indexOf(final char[] charArray) {
+    public int indexOf(final char[] pattern) {
         int start1 = start;
-        if (charArray.length > 0) {
-            if (charArray.length + start1 - start > length) {
+        if (pattern.length > 0) {
+            if (pattern.length + start1 - start > length) {
                 return -1;
             }
             while (true) {
                 int i = start1;
                 boolean found = false;
                 for (; i < start + length; i++) {
-                    if (chars[i] == charArray[0]) {
+                    if (chars[i] == pattern[0]) {
                         found = true;
                         break;
                     }
                 }
-                if (!found || charArray.length + i - start > length) {
+                if (!found || pattern.length + i - start > length) {
                     return -1; // handles subCount > count || start >= count
                 }
                 int o1 = i, o2 = 0;
-                while (++o2 < charArray.length && chars[++o1] == charArray[o2]) {
+                while (++o2 < pattern.length && chars[++o1] == pattern[o2]) {
                     // Intentionally empty
                 }
-                if (o2 == charArray.length) {
+                if (o2 == pattern.length) {
+                    return i - start;
+                }
+                start1 = i + 1;
+            }
+        }
+        return (start1 < length || start1 == 0) ? start1 - start : length - start;
+    }
+
+    public int indexOfIgnoreCases(final char[] pattern) {
+        int start1 = start;
+        if (pattern.length > 0) {
+            if (pattern.length + start1 - start > length) {
+                return -1;
+            }
+            while (true) {
+                int i = start1;
+                boolean found = false;
+                for (; i < start + length; i++) {
+                    if (Character.toLowerCase(chars[i]) == pattern[0]) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found || pattern.length + i - start > length) {
+                    return -1; // handles subCount > count || start >= count
+                }
+                int o1 = i, o2 = 0;
+                while (++o2 < pattern.length && Character.toLowerCase(chars[++o1]) == pattern[o2]) {
+                    // Intentionally empty
+                }
+                if (o2 == pattern.length) {
                     return i - start;
                 }
                 start1 = i + 1;

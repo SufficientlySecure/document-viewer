@@ -22,7 +22,7 @@ import org.emdev.utils.collections.SparseArrayEx;
 
 public class SearchModel {
 
-    protected static final LogContext LCTX = LogManager.root().lctx("SearchModel", false);
+    protected static final LogContext LCTX = LogManager.root().lctx("SearchModel", true);
 
     private final IActivityController base;
     private String pattern;
@@ -41,13 +41,14 @@ public class SearchModel {
     }
 
     public void setPattern(final String pattern) {
-        if (!CompareUtils.equals(this.pattern, pattern)) {
+        final String p = pattern != null ? pattern.toLowerCase() : null;
+        if (!CompareUtils.equals(this.pattern, p)) {
             if (LCTX.isDebugEnabled()) {
-                LCTX.d("SearchModel.setPattern(" + pattern + ")");
+                LCTX.d("SearchModel.setPattern(" + p + ")");
             }
             lock.writeLock().lock();
             try {
-                this.pattern = pattern;
+                this.pattern = p;
                 for (final Matches ref : matches) {
                     final Matches m = ref;
                     if (m != null) {

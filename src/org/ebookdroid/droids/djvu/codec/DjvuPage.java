@@ -137,13 +137,12 @@ public class DjvuPage extends AbstractCodecPage {
 
     @Override
     public List<? extends RectF> searchText(final String pattern) {
-        final List<PageTextBox> list = getPageText(docHandle, pageNo, contextHandle, pattern.toLowerCase());
+        final List<PageTextBox> list = getPageText(docHandle, pageNo, contextHandle, pattern);
         if (LengthUtils.isNotEmpty(list)) {
             final float width = getWidth();
             final float height = getHeight();
             for (final PageTextBox ptb : list) {
                 normalizeTextBox(ptb, width, height);
-                // System.out.println("" + ptb);
             }
         }
         return list;

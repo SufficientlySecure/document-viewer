@@ -79,7 +79,7 @@ public class FB2Page extends AbstractCodecPage {
                 final float w = e.width + (e instanceof LineWhiteSpace ? line.spaceWidth : 0);
                 if (e instanceof TextElement) {
                     final TextElement textElement = (TextElement) e;
-                    if (textElement.indexOf(pattern) != -1) {
+                    if (textElement.indexOfIgnoreCases(pattern) != -1) {
                         final Rect bounds = new Rect();
                         textElement.getTextBounds(bounds);
 

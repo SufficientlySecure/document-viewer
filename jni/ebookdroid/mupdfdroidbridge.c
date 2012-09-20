@@ -815,10 +815,11 @@ static int textlen(fz_text_page *page)
     return len;
 }
 
-static int match(fz_text_page *page, const char *s, int n)
+static int match(CharacterHelper* ch, fz_text_page *page, const char *s, int n)
 {
     int orig = n;
     int c;
+
     while (*s)
     {
         s += fz_chartorune(&c, (char *) s);
@@ -831,7 +832,7 @@ static int match(fz_text_page *page, const char *s, int n)
         }
         else
         {
-            if (tolower(c) != tolower(charat(page, n)))
+            if (c != CharacterHelper_toLowerCase(ch, charat(page, n)))
             {
                 return 0;
             }
@@ -863,7 +864,9 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_search(JNIEnv * env, jobject th
 
     ArrayListHelper alh;
     PageTextBoxHelper ptbh;
-    if (!ArrayListHelper_init(&alh, env) || !PageTextBoxHelper_init(&ptbh, env))
+    CharacterHelper ch;
+
+    if (!ArrayListHelper_init(&alh, env) || !PageTextBoxHelper_init(&ptbh, env)|| !CharacterHelper_init(&ch, env))
     {
         DEBUG("search(): JNI helper initialization failed", pagehandle);
         return NULL;
@@ -911,7 +914,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_search(JNIEnv * env, jobject th
             fz_bbox rr = fz_empty_bbox;
             // DEBUG("MuPdfPage(%p).search(%p, %p): match %d", thiz, doc, page, pos);
 
-            n = match(pagetext, str, pos);
+            n = match(&ch, pagetext, str, pos);
             if (n > 0)
             {
                 DEBUG("MuPdfPage(%p).search(%p, %p): match found: %d, %d", thiz, doc, page, pos, n);

@@ -225,8 +225,34 @@ public:
 
 #else /* not __cplusplus */
 
+typedef struct CharacterHelper_s CharacterHelper;
 typedef struct ArrayListHelper_s ArrayListHelper;
 typedef struct PageTextBoxHelper_s PageTextBoxHelper;
+
+struct CharacterHelper_s
+{
+    JNIEnv* jenv;
+    jclass cls;
+    jmethodID midToLowerCase;
+    int valid;
+};
+
+int CharacterHelper_init(CharacterHelper* that, JNIEnv* env)
+{
+    that->jenv = env;
+    that->cls = (*(that->jenv))->FindClass(that->jenv, "java/lang/Character");
+    if (that->cls)
+    {
+        that->midToLowerCase = (*(that->jenv))->GetStaticMethodID(that->jenv, that->cls, "toLowerCase", "(C)C");
+    }
+    that->valid = that->cls && that->midToLowerCase;
+    return that->valid;
+}
+
+unsigned short CharacterHelper_toLowerCase(CharacterHelper* that, unsigned short ch)
+{
+    return that->valid ? (*(that->jenv))->CallStaticCharMethod(that->jenv, that->cls, that->midToLowerCase, ch) : ch;
+}
 
 struct ArrayListHelper_s
 {

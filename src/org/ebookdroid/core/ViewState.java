@@ -134,7 +134,7 @@ public class ViewState {
             pos.x = (left - cpBounds.left) / cpBounds.width();
             pos.y = (top - cpBounds.top) / cpBounds.height();
             RectF cropping = page.nodes.root.getCropping();
-            if (shouldCrop() && cropping != null) {
+            if ((shouldCrop() || page.nodes.root.isCroppingManual()) && cropping != null) {
                 pos.x *= cropping.width();
                 pos.x += cropping.left;
                 pos.y *= cropping.height();

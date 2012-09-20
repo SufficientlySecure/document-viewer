@@ -221,7 +221,7 @@ public class DecodeServiceBase implements DecodeService {
             }
 
             RectF cropping = task.node.getCropping();
-            final RectF actualSliceBounds = task.viewState.shouldCrop() && cropping != null ? cropping
+            final RectF actualSliceBounds = (task.viewState.shouldCrop() || task.node.isCroppingManual()) && cropping != null ? cropping
                     : task.node.pageSliceBounds;
             final IBitmapRef bitmap = vuPage.renderBitmap(task.viewState, r.width(), r.height(), actualSliceBounds);
 
@@ -272,11 +272,7 @@ public class DecodeServiceBase implements DecodeService {
 
     RectF checkCropping(final DecodeTask task, final CodecPage vuPage) {
         // Checks if cropping setting is not set
-        if (!task.viewState.shouldCrop()) {
-            return null;
-        }
-        // Checks if page has been cropped before
-        if (task.node.getCropping() != null) {
+        if (!task.viewState.shouldCrop() || task.node.getCropping() != null) {
             // Page size is actuall now
             return null;
         }

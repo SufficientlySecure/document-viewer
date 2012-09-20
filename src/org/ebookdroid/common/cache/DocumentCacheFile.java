@@ -38,28 +38,35 @@ public class DocumentCacheFile extends File {
             final DocumentInfo info = new DocumentInfo();
             final DataInputStream in = new DataInputStream(new FileInputStream(this));
             try {
-                final byte tag = in.readByte();
-                final byte id = (byte) (tag & 0x3F);
-                final boolean docPage = (tag & 0x80) == 0;
-                final boolean leftPage = (tag & 0x40) == 0;
+                while (true) {
+                    byte tag = -1;
+                    try {
+                        tag = in.readByte();
+                    } catch (EOFException ex) {
+                        return info;
+                    }
+                    final byte id = (byte) (tag & 0x3F);
+                    final boolean docPage = (tag & 0x80) == 0;
+                    final boolean leftPage = (tag & 0x40) == 0;
 
-                switch (id) {
-                    case TAG_PAGE_COUNTS:
-                        // Number of pages
-                        info.loadPageCounts(in);
-                        break;
-                    case TAG_CODEC_PAGE_INFO:
-                        // CodecPageInfo - only for docs
-                        info.loadCodePageInfo(in);
-                        break;
-                    case TAG_AUTO_CROPPING:
-                        // Auto cropping
-                        info.loadAutoCropping(in, docPage, leftPage);
-                        break;
-                    case TAG_MANUAL_CROPPING:
-                        // Manual cropping
-                        info.loadManualCropping(in, docPage, leftPage);
-                        break;
+                    switch (id) {
+                        case TAG_PAGE_COUNTS:
+                            // Number of pages
+                            info.loadPageCounts(in);
+                            break;
+                        case TAG_CODEC_PAGE_INFO:
+                            // CodecPageInfo - only for docs
+                            info.loadCodePageInfo(in);
+                            break;
+                        case TAG_AUTO_CROPPING:
+                            // Auto cropping
+                            info.loadAutoCropping(in, docPage, leftPage);
+                            break;
+                        case TAG_MANUAL_CROPPING:
+                            // Manual cropping
+                            info.loadManualCropping(in, docPage, leftPage);
+                            break;
+                    }
                 }
             } catch (final EOFException ex) {
                 LCTX.e("Loading document info failed: " + ex.getMessage());

@@ -21,7 +21,6 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -277,6 +276,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
         menu.setHeaderIcon(R.drawable.application_icon);
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.mainmenu, menu);
+        updateOptionsMenu(menu);
     }
 
     /**
@@ -312,14 +312,19 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
     }
 
     protected void updateOptionsMenu(Menu menu) {
-        BookSettings bs = getController().getBookSettings();
-        if (bs == null || menu == null) {
+        if (menu == null) {
             return;
         }
-        setMenuItemChecked(menu, bs.cropPages, R.id.mainmenu_croppages, R.drawable.viewer_actionbar_crop_auto_on,
-                R.drawable.viewer_actionbar_crop_auto);
-        setMenuItemChecked(menu, bs.splitPages, R.id.mainmenu_splitpages, R.drawable.viewer_actionbar_split_pages_on,
-                R.drawable.viewer_actionbar_split_pages);
+        setMenuItemChecked(menu, zoomControls.getVisibility() == View.VISIBLE, R.id.mainmenu_zoom);
+
+        BookSettings bs = getController().getBookSettings();
+        if (bs == null) {
+            return;
+        }
+
+        setMenuItemChecked(menu, bs.nightMode, R.id.mainmenu_nightmode);
+        setMenuItemChecked(menu, bs.cropPages, R.id.mainmenu_croppages);
+        setMenuItemChecked(menu, bs.splitPages, R.id.mainmenu_splitpages);
     }
 
     /**

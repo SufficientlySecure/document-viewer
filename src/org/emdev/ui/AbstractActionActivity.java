@@ -100,10 +100,18 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Actio
         }
     }
 
+    protected void setMenuItemChecked(final Menu menu, final boolean checked, final int viewId) {
+        final MenuItem v = menu.findItem(viewId);
+        if (v != null) {
+            v.setChecked(checked);
+        }
+    }
+
     protected void setMenuItemChecked(final Menu menu, final boolean checked, final int viewId, final int checkedResId,
             final int uncheckedResId) {
         final MenuItem v = menu.findItem(viewId);
         if (v != null) {
+            v.setChecked(checked);
             v.setIcon(checked ? checkedResId : uncheckedResId);
         }
     }

@@ -3,6 +3,7 @@ package org.ebookdroid.ui.viewer;
 import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
 import org.ebookdroid.common.settings.AppSettings;
+import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.ToastPosition;
 import org.ebookdroid.common.touch.TouchManagerView;
 import org.ebookdroid.ui.viewer.dialogs.GoToPageDialog;
@@ -20,6 +21,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -69,6 +71,8 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
     private boolean menuClosedCalled;
 
     private ManualCropView cropControls;
+
+    Menu optionsMenu;
 
     /**
      * Instantiates a new base viewer activity.
@@ -284,6 +288,10 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
     public boolean onCreateOptionsMenu(final Menu menu) {
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.mainmenu, menu);
+
+        this.optionsMenu = menu;
+        updateOptionsMenu(optionsMenu);
+
         return true;
     }
 
@@ -296,7 +304,22 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
     public boolean onMenuOpened(final int featureId, final Menu menu) {
         view.changeLayoutLock(true);
         IUIManager.instance.onMenuOpened(this);
+
+        this.optionsMenu = menu;
+        updateOptionsMenu(optionsMenu);
+
         return super.onMenuOpened(featureId, menu);
+    }
+
+    protected void updateOptionsMenu(Menu menu) {
+        BookSettings bs = getController().getBookSettings();
+        if(bs == null || menu == null) {
+            return;
+        }
+        MenuItem cpItem = menu.findItem(R.id.mainmenu_croppages);
+        cpItem.setIcon(bs.cropPages ? R.drawable.viewer_actionbar_crop_auto_on : R.drawable.viewer_actionbar_crop_auto);
+        MenuItem spItem = menu.findItem(R.id.mainmenu_splitpages);
+        spItem.setIcon(bs.splitPages ? R.drawable.viewer_actionbar_split_pages_on : R.drawable.viewer_actionbar_split_pages);
     }
 
     /**

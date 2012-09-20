@@ -80,8 +80,10 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
     public void setManualCropping(final RectF r, final boolean commit) {
         manualCropping = r;
-        if (commit && id == 0) {
-            page.base.getDocumentModel().updateManualCropping(page, r);
+        if (id == 0) {
+            if (commit) {
+                page.base.getDocumentModel().updateManualCropping(page, r);
+            }
             updateAspectRatio();
         }
     }

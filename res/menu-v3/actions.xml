@@ -32,4 +32,7 @@
    <item android:id="@+id/actions_doDeleteBook" />
 
     <item android:id="@+id/actions_selectShelf"/>
+
+    <item android:id="@+id/actions_applyCrop"/>
+
 </menu>

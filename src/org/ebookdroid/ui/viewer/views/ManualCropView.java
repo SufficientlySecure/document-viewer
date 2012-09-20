@@ -1,15 +1,11 @@
 package org.ebookdroid.ui.viewer.views;
 
 import org.ebookdroid.R;
-import org.ebookdroid.common.bitmaps.BitmapManager;
-import org.ebookdroid.common.bitmaps.Bitmaps;
 import org.ebookdroid.common.settings.types.PageAlign;
-import org.ebookdroid.core.AbstractViewController;
-import org.ebookdroid.core.EventPool;
+import org.ebookdroid.core.EventCrop;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.ViewState;
 import org.ebookdroid.ui.viewer.IActivityController;
-import org.ebookdroid.ui.viewer.IViewController.InvalidateSizeReason;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -25,11 +21,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.emdev.ui.actions.ActionController;
+import org.emdev.ui.actions.ActionDialogBuilder;
+import org.emdev.ui.actions.ActionEx;
+import org.emdev.ui.actions.ActionMethod;
+import org.emdev.ui.actions.ActionMethodDef;
+import org.emdev.ui.actions.ActionTarget;
+import org.emdev.ui.actions.IActionController;
 import org.emdev.utils.MathUtils;
 
+@ActionTarget(actions = { @ActionMethodDef(id = R.id.actions_applyCrop, method = "onApply") })
 public class ManualCropView extends View {
 
     private static final Paint PAINT = new Paint();
@@ -38,11 +39,15 @@ public class ManualCropView extends View {
 
     private final GestureDetector gestureDetector;
 
-    private PointF topLeft = new PointF(0.1f, 0.1f);
-    private PointF bottomRight = new PointF(0.9f, 0.9f);
+    private final ActionController<ManualCropView> controller = new ActionController<ManualCropView>(this);
+
+    private final PointF topLeft = new PointF(0.1f, 0.1f);
+    private final PointF bottomRight = new PointF(0.9f, 0.9f);
     private PointF currentPoint = null;
 
     private Page page;
+
+    private RectF result;
 
     public ManualCropView(final IActivityController base) {
         super(base.getContext());
@@ -70,19 +75,8 @@ public class ManualCropView extends View {
 
         final RectF oldCb = page.nodes.root.getCropping();
 
-        // System.out.println("ManualCropView.initControls(): " + oldCb);
-
         if (page.shouldCrop() && oldCb != null) {
-
-            final List<Bitmaps> bitmapsToRecycle = new ArrayList<Bitmaps>();
-            page.nodes.recycleAll(bitmapsToRecycle, true);
-            BitmapManager.release(bitmapsToRecycle);
-
-            page.nodes.root.setManualCropping(page.type.getInitialRect(), false);
-            page.setAspectRatio(page.cpi);
-
-            EventPool.newEventReset((AbstractViewController) base.getDocumentController(),
-                    InvalidateSizeReason.PAGE_LOADED, false).process();
+            new EventCrop(base.getDocumentController(), null, false).add(page).process();
         }
 
         if (oldCb == null) {
@@ -100,8 +94,6 @@ public class ManualCropView extends View {
             topLeft.set(left, top);
             bottomRight.set(right, bottom);
         }
-
-        // System.out.println("ManualCropView.initControls(): " + str(topLeft) + " " + str(bottomRight));
     }
 
     public void applyCropping() {
@@ -110,31 +102,62 @@ public class ManualCropView extends View {
             return;
         }
 
-        final RectF r = new RectF(Math.min(topLeft.x, bottomRight.x), Math.min(topLeft.y, bottomRight.y), Math.max(
-                topLeft.x, bottomRight.x), Math.max(topLeft.y, bottomRight.y));
+        result = new RectF(Math.min(topLeft.x, bottomRight.x), Math.min(topLeft.y, bottomRight.y), Math.max(topLeft.x,
+                bottomRight.x), Math.max(topLeft.y, bottomRight.y));
 
-        // System.out.println("ManualCropView.applyCropping(): vpc = " + r);
+        final ActionDialogBuilder builder = new ActionDialogBuilder(getContext(), controller);
+        builder.setTitle(R.string.manual_cropping_title);
+        builder.setItems(R.array.list_crop_actions, controller.getOrCreateAction(R.id.actions_applyCrop));
+        builder.setNegativeButton(R.string.manual_cropping_back);
+        builder.show();
+    }
 
-        final RectF cb = new RectF(page.type.getInitialRect());
-        final float irw = cb.width();
-        cb.left += r.left * irw;
-        cb.right -= (1 - r.right) * irw;
-        cb.top += r.top;
-        cb.bottom -= (1 - r.bottom);
+    @ActionMethod(ids = R.id.actions_applyCrop)
+    public void onApply(final ActionEx action) {
+        final Integer index = action.getParameter(IActionController.DIALOG_ITEM_PROPERTY);
+        if (index == null) {
+            return;
+        }
 
-        // System.out.println("ManualCropView.applyCropping(): dpc = " + cb);
-
-        final List<Bitmaps> bitmapsToRecycle = new ArrayList<Bitmaps>();
-        page.nodes.recycleAll(bitmapsToRecycle, true);
-        BitmapManager.release(bitmapsToRecycle);
-
-        page.nodes.root.setManualCropping(cb, true);
-
-        EventPool.newEventReset((AbstractViewController) base.getDocumentController(),
-                InvalidateSizeReason.PAGE_LOADED, false).process();
-
-        page = null;
         ViewEffects.toggleControls(this);
+
+        EventCrop event = null;
+
+        switch (index.intValue()) {
+            case 0:
+                // Apply to current only
+                event = new EventCrop(base.getDocumentController(), result, true);
+                event.add(page).process();
+                return;
+
+            case 1:
+                // Apply to even(odd)
+                event = new EventCrop(base.getDocumentController(), result, true);
+                event.addEvenOdd(page, true).process();
+                return;
+
+            case 2:
+                // Apply to even(odd) symmetrically
+                event = new EventCrop(base.getDocumentController(), result, true);
+                event.addEvenOdd(page, true).process();
+
+                final RectF symm = new RectF();
+                symm.left = 1 - result.right;
+                symm.top = result.top;
+                symm.right = 1 - result.left;
+                symm.bottom = result.bottom;
+
+                event = new EventCrop(base.getDocumentController(), result, true);
+                event.addEvenOdd(page, false).process();
+
+                return;
+
+            case 3:
+                // Apply to all
+                event = new EventCrop(base.getDocumentController(), result, true);
+                event.addAll().process();
+                return;
+        }
     }
 
     @Override

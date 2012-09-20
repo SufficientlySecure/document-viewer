@@ -205,7 +205,16 @@ public class DecodeServiceBase implements DecodeService {
                 return;
             }
 
-            croppedPageBounds = checkCropping(task, vuPage);
+            // Checks if cropping setting is set and node crop regionb is not set
+            if (task.node.page.shouldCrop() && task.node.getCropping() == null) {
+                if (LCTX.isDebugEnabled()) {
+                    LCTX.d(Thread.currentThread().getName() + ": Task " + task.id
+                            + ": no cropping bounds for task node");
+                }
+                // Calculate node cropping
+                croppedPageBounds = calculateNodeCropping(task, vuPage);
+            }
+
             if (executor.isTaskDead(task)) {
                 if (LCTX.isDebugEnabled()) {
                     LCTX.d(Thread.currentThread().getName() + ": Task " + task.id + ": Abort dead decode task for "
@@ -220,9 +229,8 @@ public class DecodeServiceBase implements DecodeService {
                 LCTX.d(Thread.currentThread().getName() + ": Task " + task.id + ": Rendering rect: " + r);
             }
 
-            RectF cropping = task.node.getCropping();
-            final RectF actualSliceBounds = (task.viewState.shouldCrop() || task.node.isCroppingManual()) && cropping != null ? cropping
-                    : task.node.pageSliceBounds;
+            RectF cropping = task.node.page.getCropping();
+            final RectF actualSliceBounds = cropping != null ? cropping : task.node.pageSliceBounds;
             final IBitmapRef bitmap = vuPage.renderBitmap(task.viewState, r.width(), r.height(), actualSliceBounds);
 
             if (executor.isTaskDead(task)) {
@@ -270,60 +278,17 @@ public class DecodeServiceBase implements DecodeService {
         }
     }
 
-    RectF checkCropping(final DecodeTask task, final CodecPage vuPage) {
-        // Checks if cropping setting is not set
-        if (!task.viewState.shouldCrop() || task.node.getCropping() != null) {
-            // Page size is actuall now
-            return null;
-        }
-
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d(Thread.currentThread().getName() + ": Task " + task.id + ": no cropping bounds for task node");
-        }
+    protected RectF calculateNodeCropping(final DecodeTask task, final CodecPage vuPage) {
+        final PageTreeNode root = task.node.page.nodes.root;
 
         RectF croppedPageBounds = null;
 
-        // Checks if page root node has been cropped before
-        final PageTreeNode root = task.node.page.nodes.root;
+        // Checks if page root node has not been cropped before
         if (root.getCropping() == null) {
             if (LCTX.isDebugEnabled()) {
                 LCTX.d(Thread.currentThread().getName() + ": Task " + task.id + ": Decode full page to crop");
             }
-            final Rect rootRect = new Rect(0, 0, PageCropper.BMP_SIZE, PageCropper.BMP_SIZE);
-            final RectF rootBounds = root.pageSliceBounds;
-
-            final IBitmapRef rootBitmap = vuPage.renderBitmap(task.viewState, rootRect.width(), rootRect.height(), rootBounds);
-            root.setAutoCropping(PageCropper.getCropBounds(rootBitmap, rootRect, root.pageSliceBounds), true);
-
-            if (LCTX.isDebugEnabled()) {
-                LCTX.d(Thread.currentThread().getName() + ": Task " + task.id + ": cropping root bounds: "
-                        + root.getCropping());
-            }
-
-            BitmapManager.release(rootBitmap);
-
-            final ViewState viewState = task.viewState;
-            final PageIndex currentPage = viewState.book.getCurrentPage();
-            final float offsetX = viewState.book.offsetX;
-            final float offsetY = viewState.book.offsetY;
-
-            viewState.ctrl.invalidatePageSizes(InvalidateSizeReason.PAGE_LOADED, task.node.page);
-
-            croppedPageBounds = root.page.getBounds(task.viewState.zoom);
-
-            if (LCTX.isDebugEnabled()) {
-                LCTX.d(Thread.currentThread().getName() + ": Task " + task.id + ": cropping page bounds: "
-                        + croppedPageBounds);
-            }
-
-            task.node.page.base.getActivity().runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    viewState.ctrl.goToPage(currentPage.viewIndex, offsetX, offsetY);
-                }
-            });
-
+            croppedPageBounds = calculateRootCropping(task, root, vuPage);
         }
 
         if (task.node != root) {
@@ -334,6 +299,45 @@ public class DecodeServiceBase implements DecodeService {
             LCTX.d(Thread.currentThread().getName() + ": Task " + task.id + ": cropping bounds for task node: "
                     + task.node.getCropping());
         }
+
+        return croppedPageBounds;
+    }
+
+    protected RectF calculateRootCropping(final DecodeTask task, final PageTreeNode root, final CodecPage vuPage) {
+        final Rect rootRect = new Rect(0, 0, PageCropper.BMP_SIZE, PageCropper.BMP_SIZE);
+        final RectF rootBounds = root.pageSliceBounds;
+
+        final IBitmapRef rootBitmap = vuPage.renderBitmap(task.viewState, rootRect.width(), rootRect.height(), rootBounds);
+        root.setAutoCropping(PageCropper.getCropBounds(rootBitmap, rootRect, root.pageSliceBounds), true);
+
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d(Thread.currentThread().getName() + ": Task " + task.id + ": cropping root bounds: "
+                    + root.getCropping());
+        }
+
+        BitmapManager.release(rootBitmap);
+
+        final ViewState viewState = task.viewState;
+        final PageIndex currentPage = viewState.book.getCurrentPage();
+        final float offsetX = viewState.book.offsetX;
+        final float offsetY = viewState.book.offsetY;
+
+        viewState.ctrl.invalidatePageSizes(InvalidateSizeReason.PAGE_LOADED, task.node.page);
+
+        RectF croppedPageBounds = root.page.getBounds(task.viewState.zoom);
+
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d(Thread.currentThread().getName() + ": Task " + task.id + ": cropping page bounds: "
+                    + croppedPageBounds);
+        }
+
+        task.node.page.base.getActivity().runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                viewState.ctrl.goToPage(currentPage.viewIndex, offsetX, offsetY);
+            }
+        });
 
         return croppedPageBounds;
     }
@@ -823,7 +827,8 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     @Override
-    public IBitmapRef createThumbnail(boolean useEmbeddedIfAvailable, int width, int height, final int pageNo, final RectF region) {
+    public IBitmapRef createThumbnail(boolean useEmbeddedIfAvailable, int width, int height, final int pageNo,
+            final RectF region) {
         if (document == null) {
             return null;
         }

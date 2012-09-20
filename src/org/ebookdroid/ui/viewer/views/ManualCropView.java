@@ -72,7 +72,7 @@ public class ManualCropView extends View {
 
         // System.out.println("ManualCropView.initControls(): " + oldCb);
 
-        if ((base.getBookSettings().cropPages || page.nodes.root.isCroppingManual()) && oldCb != null) {
+        if (page.shouldCrop() && oldCb != null) {
 
             final List<Bitmaps> bitmapsToRecycle = new ArrayList<Bitmaps>();
             page.nodes.recycleAll(bitmapsToRecycle, true);

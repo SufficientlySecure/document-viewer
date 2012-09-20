@@ -99,6 +99,18 @@ public class Page {
         }
     }
 
+    public boolean shouldCrop() {
+        final BookSettings bs = base.getBookSettings();
+        if (nodes.root.hasManualCropping()) {
+            return true;
+        }
+        return bs != null && bs.cropPages;
+    }
+
+    public RectF getCropping() {
+        return shouldCrop() ? nodes.root.getCropping() : null;
+    }
+
     public RectF getBounds(final float zoom) {
         // if (zoom != storedZoom) {
         // storedZoom = zoom;
@@ -150,9 +162,8 @@ public class Page {
     }
 
     public RectF getPageRegion(final RectF pageBounds, final RectF sourceRect) {
-        final BookSettings bs = base.getBookSettings();
-        final RectF cb = nodes.root.getCropping();
-        if (bs != null && (bs.cropPages || nodes.root.isCroppingManual()) && cb != null) {
+        final RectF cb = getCropping();
+        if (cb != null) {
             final Matrix m = MatrixUtils.get();
             final RectF psb = nodes.root.pageSliceBounds;
             m.postTranslate(psb.left - cb.left, psb.top - cb.top);
@@ -174,9 +185,9 @@ public class Page {
     protected RectF getColumn(final PointF pos) {
         final Rect rootRect = new Rect(0, 0, PageCropper.BMP_SIZE, PageCropper.BMP_SIZE);
 
-        DecodeService ds = base.getDecodeService();
-        final IBitmapRef pageImage = ds.createThumbnail(false, PageCropper.BMP_SIZE, PageCropper.BMP_SIZE, index.docIndex,
-                type.getInitialRect());
+        final DecodeService ds = base.getDecodeService();
+        final IBitmapRef pageImage = ds.createThumbnail(false, PageCropper.BMP_SIZE, PageCropper.BMP_SIZE,
+                index.docIndex, type.getInitialRect());
 
         final RectF column = PageCropper.getColumn(pageImage, rootRect, pos.x, pos.y);
         BitmapManager.release(pageImage);

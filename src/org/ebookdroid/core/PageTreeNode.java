@@ -50,9 +50,10 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         return manualCropping != null ? manualCropping : autoCropping;
     }
 
-    public boolean isCroppingManual () {
+    public boolean hasManualCropping() {
         return manualCropping != null;
     }
+
     public void setInitialCropping(final PageInfo pi) {
         if (id != 0) {
             return;
@@ -86,13 +87,11 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     }
 
     public void updateAspectRatio() {
-        if ((page.base.getBookSettings().cropPages || isCroppingManual())) {
-            final RectF cropping = getCropping();
-            if (cropping != null) {
-                final float pageWidth = page.cpi.width * cropping.width();
-                final float pageHeight = page.cpi.height * cropping.height();
-                page.setAspectRatio(pageWidth, pageHeight);
-            }
+        final RectF cropping = page.getCropping();
+        if (cropping != null) {
+            final float pageWidth = page.cpi.width * cropping.width();
+            final float pageHeight = page.cpi.height * cropping.height();
+            page.setAspectRatio(pageWidth, pageHeight);
         }
     }
 

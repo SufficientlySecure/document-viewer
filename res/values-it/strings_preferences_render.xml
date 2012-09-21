@@ -34,8 +34,8 @@
     <string name="pref_postprocessing_summary">"Effetti e correzioni applicati successivamente al rendering della pagina"</string>
     <string name="pref_nightmode_title">"Modalità notte"</string>
     <string name="pref_nightmode_summary">"Testo chiaro su sfondo scuro (negativo)"</string>
-	<string name="pref_posimages_in_nightmode_title">"Non invertire i colori delle immagini"</string>
-	<string name="pref_posimages_in_nightmode_summary">"In modalità notturna mostra una versione in scala di grigio delle immagini, senza invertirne i colori"</string>
+    <string name="pref_posimages_in_nightmode_title">"Non invertire i colori delle immagini"</string>
+    <string name="pref_posimages_in_nightmode_summary">"In modalità notturna mostra una versione in scala di grigio delle immagini, senza invertirne i colori"</string>
     <string name="pref_contrast_title">"Contrasto"</string>
     <string name="pref_contrast_summary">"Correzione del livello di contrasto (0 – 1000, default = 100 )"</string>
     <string name="pref_exposure_title">"Esposizione"</string>

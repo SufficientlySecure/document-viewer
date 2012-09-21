@@ -1,0 +1,33 @@
+/* CSS placed here is included on the file description page, also included on File-pages of Commons files on the local wikis */
+/* Note that there are many non-Wikimedia / non-Wikipedia local wikis as well that use Commons as their repository! */
+/* http://www.mediawiki.org/wiki/InstantCommons. Do not assume any language, direction, environment or Skin here. */
+
+/* Hide TOC on file-pages */
+.ns-6 #toc { display: none !important; }
+ 
+/* Make {{location}} look like part of the info template */
+
+/*{{location}} or {{Photo Information}} directly after {{information}}*/
+div.hproduct + .toccolours.vcard, div.hproduct + .toccolours.vevent,
+/*{{location}} after {{location}} after {{information}} (ie. object loc and camera loc)*/
+div.hproduct + .toccolours.vcard + .toccolours.vcard, 
+div.hproduct + .toccolours.vevent + .toccolours.vcard,
+div.hproduct + .toccolours.vcard + .toccolours.vevent,
+/*{{information}} directly after {{location}}*/
+.toccolours.vcard + div.hproduct > table.toccolours.vevent,
+.toccolours.vevent + div.hproduct > table.toccolours.vevent {
+ border-top: 0px;
+ padding-top: 0px;
+ margin-top: -8px;
+}
+
+/* Used in several license and collection info templates in the File namespace */
+/* such as [[Template:PermissionOTRS/layout]] */
+.messagebox {
+ border: 1px solid #aaa;
+ background: #f9f9f9;
+ width: 80%;
+ margin: 0 auto 1em;
+ padding: 0.2em;
+ text-align: justify;
+}

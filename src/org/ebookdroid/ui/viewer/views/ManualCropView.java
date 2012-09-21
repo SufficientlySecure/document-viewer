@@ -76,7 +76,7 @@ public class ManualCropView extends View {
         final RectF oldCb = page.nodes.root.getCropping();
 
         if (page.shouldCrop() && oldCb != null) {
-            new EventCrop(base.getDocumentController(), null, false).add(page).process();
+            new EventCrop(base.getDocumentController()).add(page).process();
         }
 
         if (oldCb == null) {
@@ -147,7 +147,7 @@ public class ManualCropView extends View {
                 symm.right = 1 - result.left;
                 symm.bottom = result.bottom;
 
-                event = new EventCrop(base.getDocumentController(), result, true);
+                event = new EventCrop(base.getDocumentController(), symm, true);
                 event.addEvenOdd(page, false).process();
 
                 return;
@@ -155,6 +155,16 @@ public class ManualCropView extends View {
             case 3:
                 // Apply to all
                 event = new EventCrop(base.getDocumentController(), result, true);
+                event.addAll().process();
+                return;
+            case 4:
+                // Remove manual cropping
+                event = new EventCrop(base.getDocumentController(), null, true);
+                event.add(page).process();
+                return;
+            case 5:
+                // Remove all manual cropping
+                event = new EventCrop(base.getDocumentController(), null, true);
                 event.addAll().process();
                 return;
         }

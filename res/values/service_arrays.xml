@@ -13,6 +13,8 @@
         <item>@string/manual_cropping_even</item>
         <item>@string/manual_cropping_even_symm</item>
         <item>@string/manual_cropping_all</item>
-    </string-array>
+        <item>@string/manual_cropping_remove_current</item>
+        <item>@string/manual_cropping_remove_all</item>
+        </string-array>
 
 </resources>

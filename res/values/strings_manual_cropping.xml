@@ -6,6 +6,8 @@
     <string name="manual_cropping_even">Apply to even(odd)</string>
     <string name="manual_cropping_even_symm">Apply to even(odd) symmetrically</string>
     <string name="manual_cropping_all">Apply to all</string>
+    <string name="manual_cropping_remove_current">Remove manual cropping</string>
+    <string name="manual_cropping_remove_all">Remove all manual croppings</string>
     <string name="manual_cropping_back">Back to cropping</string>
 
 </resources>

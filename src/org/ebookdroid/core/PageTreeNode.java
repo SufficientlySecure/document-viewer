@@ -94,6 +94,8 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             final float pageWidth = page.cpi.width * cropping.width();
             final float pageHeight = page.cpi.height * cropping.height();
             page.setAspectRatio(pageWidth, pageHeight);
+        } else {
+            page.setAspectRatio(page.cpi);
         }
     }
 

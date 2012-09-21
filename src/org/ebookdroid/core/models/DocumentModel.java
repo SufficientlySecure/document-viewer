@@ -273,12 +273,12 @@ public class DocumentModel extends ListenerProxy {
 
     public void updateAutoCropping(final Page page, final RectF r) {
         final PageInfo pageInfo = docInfo.getPageInfo(page);
-        pageInfo.autoCropping = new RectF(r);
+        pageInfo.autoCropping = r != null ? new RectF(r) : null;
     }
 
     public void updateManualCropping(final Page page, final RectF r) {
         final PageInfo pageInfo = docInfo.getPageInfo(page);
-        pageInfo.manualCropping = new RectF(r);
+        pageInfo.manualCropping = r != null ? new RectF(r) : null;
     }
 
     private DocumentInfo retrieveDocumentInfo(final IActivityController base, final BookSettings bs,

@@ -13,6 +13,7 @@ import java.util.List;
 
 public class EventCrop extends AbstractEvent {
 
+    private static final RectF FULL_PAGE_CROPPING = new RectF(0f,0f,1f,1f);
     protected final PageTreeLevel level;
     protected final InvalidateSizeReason reason = InvalidateSizeReason.PAGE_LOADED;
 
@@ -21,6 +22,10 @@ public class EventCrop extends AbstractEvent {
 
     protected final RectF[] croppings;
     protected boolean processAll;
+
+    public EventCrop(final IViewController ctrl) {
+        this(ctrl, FULL_PAGE_CROPPING, false);
+    }
 
     public EventCrop(final IViewController ctrl, final RectF cropping, final boolean commit) {
         this.viewState = new ViewState(ctrl);
@@ -32,8 +37,8 @@ public class EventCrop extends AbstractEvent {
         this.croppings = new RectF[types.length];
 
         for (final PageType type : types) {
-            final RectF actual = this.croppings[type.ordinal()] = new RectF(type.getInitialRect());
             if (cropping != null) {
+                final RectF actual = this.croppings[type.ordinal()] = new RectF(type.getInitialRect());
                 final float irw = actual.width();
                 actual.left += cropping.left * irw;
                 actual.right -= (1 - cropping.right) * irw;

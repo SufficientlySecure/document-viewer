@@ -8,12 +8,6 @@
         android:showAsAction="always"
         android:title="@string/menu_searchbook"/>
     <item
-        android:id="@+id/recentmenu_cleanrecent"
-        android:alphabeticShortcut="n"
-        android:icon="@drawable/recent_actionbar_clear"
-        android:showAsAction="always"
-        android:title="@string/menu_cleanrecent"/>
-    <item
         android:id="@+id/recent_showlibrary"
         android:alphabeticShortcut="l"
         android:icon="@drawable/recent_actionbar_library"
@@ -38,27 +32,33 @@
         android:showAsAction="always"
         android:title="@string/menu_opds"/>
     <item
+        android:id="@+id/recentmenu_cleanrecent"
+        android:alphabeticShortcut="n"
+        android:icon="@drawable/recent_actionbar_clear"
+        android:showAsAction="never"
+        android:title="@string/menu_cleanrecent"/>
+    <item
         android:id="@+id/mainmenu_settings"
         android:alphabeticShortcut="t"
         android:icon="@drawable/common_actionbar_allsettings"
-        android:showAsAction="always"
+        android:showAsAction="never"
         android:title="@string/menu_settings"/>
     <item
         android:id="@+id/recentmenu_backupsettings"
         android:alphabeticShortcut="b"
         android:icon="@drawable/recent_actionbar_backup"
-        android:showAsAction="always"
+        android:showAsAction="never"
         android:title="@string/menu_backupsettings"/>
     <item
         android:id="@+id/mainmenu_about"
         android:icon="@drawable/common_actionbar_about"
-        android:showAsAction="always"
+        android:showAsAction="never"
         android:title="@string/menu_about"/>
     <item
         android:id="@+id/mainmenu_close"
         android:alphabeticShortcut="c"
         android:icon="@drawable/common_actionbar_close"
-        android:showAsAction="always"
+        android:showAsAction="never"
         android:title="@string/menu_close"/>
 
 </menu>

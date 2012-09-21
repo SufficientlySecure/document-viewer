@@ -14,14 +14,14 @@
     <string name="msg_search_text_on_page">"Ricerca alla pagina %1$d…"</string>
     <string name="msg_no_text_found">"Testo non trovato"</string>
     <string name="dialog_title_goto_page">"Pagina"</string>
-    <string name="button_goto_page">"Vai a..."</string>
+    <string name="button_goto_page">"Vai"</string>
     <string name="text_page">"Pagina"</string>
     <string name="error_close">"Chiudi"</string>
     <string name="dialog_backup_name_hint">"Inserisci il nome del nuovo backup…"</string>
     <string name="dialog_backup_backup">"Salvataggio…"</string>
     <string name="dialog_backup_restore">"Ripristino…"</string>
     <string name="dialog_backup_remove">"Eliminazione…"</string>
-    <string name="add_bookmark_name">"Inserisci la descrizione del segnalibro"</string>
+    <string name="add_bookmark_name">"Inserisci la descrizione per questo segnalibro"</string>
     <string name="bookmark_start">"Inizio"</string>
     <string name="bookmark_end">"Fine"</string>
     <string name="bookmark_invalid_page">"Il numero di pagina è errato. Pagine accessibili: 1-"</string>

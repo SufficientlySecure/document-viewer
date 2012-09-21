@@ -10,8 +10,8 @@
     <string name="pref_splitpages_title">Split pages</string>
     <string name="pref_splitpages_summary">Split landscape pages into two portrait pages</string>
 
-    <string name="pref_croppages_title">Crop pages</string>
-    <string name="pref_croppages_summary">Crop page margins in order to maximize content magnification</string>
+    <string name="pref_croppages_title">Crop pages (auto)</string>
+    <string name="pref_croppages_summary">Automatically crop empty margins in order to maximize content magnification</string>
 
     <string name="pref_viewmode_title">Document view mode</string>
     <string name="pref_viewmode_summary">View document as single pages or as a continuous scroll</string>
@@ -48,7 +48,7 @@
     <string name="pref_nightmode_summary">White text on black background (negative image)</string>
 
     <string name="pref_posimages_in_nightmode_title">Positive images in night mode</string>
-    <string name="pref_posimages_in_nightmode_summary">Show positivy gray-scaled images in night mode</string>
+    <string name="pref_posimages_in_nightmode_summary">Show gray-scaled images in night mode (do not invert image colors)</string>
 
     <string name="pref_contrast_title">Contrast</string>
     <string name="pref_contrast_summary">Contrast correction level (0 &#8211; 1000, 100 by default)</string>

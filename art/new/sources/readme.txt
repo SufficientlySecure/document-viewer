@@ -14,14 +14,18 @@ See folder "External sources" for more information on the licences associated wi
 Notes
 ====================
 
-Sources are big to ensure no pixelation occur during creation. Pixel size of page are multiple of 8.
+Sources are big to ensure no pixelation occur during creation. Page sizes in pixels are multiple of 8.
 Sources folder contains png versions as previews to help finding the corresponding icon source (they share the same name).
 
-To create a button: create a copy of icontemplate.svg
+To create a button: 
+-------------------
+Create a copy of icontemplate.svg
 Open to edit, add content (by importing svg graphics or by editing them on the spot). 
 This will ensure the button outline will be the same for all icons.
 
-To create a variant of the folder icon, do the same starting with the foldertemplate.svg
+To create a variant of the folder icon:
+---------------------------------------
+Do the same starting with foldertemplate.svg
 This will make sure the baseline and overall position of the folder remain unchanged in all versions.
 
 
@@ -33,9 +37,8 @@ Add dark border to folders (they look a little pale)
 Align button content to a common baseline (for different items)
 Redo magnifying glass icons with current icontemplate and:
 	for quick zoom ---> add a ruler under the lens
-	for text search ---> add a "T" under the lens
-	for book search ---> add a book back under the lens
 Absolutely redo the triangles in outline view!!! They are too big and obtrusive.
+
 
 
 
@@ -43,6 +46,7 @@ Possible eyecandy enhancements
 ==============================
 
 Do we really need 'unframed' actionbar icons? What about making all icons framed?
+Would they be too small on small devices?
 
 Reversing gradient of action bar background. Right now (vers. 1.5.3 dev 1447) the gradient is such as to present a grey-whitish discontinuity near the top black bar of the screen and a fading to black toward Ebookdroid area. In this way the first black row in filebrowse mode looks bigger then the ones below.
 

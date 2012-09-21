@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="manual_cropping_title">Apply manual cropping</string>
-    <string name="manual_cropping_current">Apply to current only</string>
-    <string name="manual_cropping_even">Apply to even(odd)</string>
-    <string name="manual_cropping_even_symm">Apply to even(odd) symmetrically</string>
-    <string name="manual_cropping_all">Apply to all</string>
-    <string name="manual_cropping_remove_current">Remove manual cropping</string>
-    <string name="manual_cropping_remove_all">Remove all manual croppings</string>
-    <string name="manual_cropping_back">Back to cropping</string>
+    <string name="manual_cropping_title">Custom crop:</string>
+    <string name="manual_cropping_current">Current page only</string>
+    <string name="manual_cropping_even">All even (odd) pages</string>
+    <string name="manual_cropping_even_symm">Even and odd pages, symmetrically</string>
+    <string name="manual_cropping_all">All pages</string>
+    <string name="manual_cropping_remove_current">Do not crop current page(s)</string>
+    <string name="manual_cropping_remove_all">Do not crop any pages</string>
+    <string name="manual_cropping_back">Back to area selection</string>
 
 </resources>

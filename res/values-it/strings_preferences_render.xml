@@ -8,12 +8,12 @@
     <string name="pref_splitpages_title">"Spezza le pagine"</string>
     <string name="pref_splitpages_summary">"Se la pagina è in formato album, mostra mezza pagina alla volta"</string>
     <string name="pref_croppages_title">"Ritaglia i margini"</string>
-    <string name="pref_croppages_summary">"Rimuovi automaticamente i margini vuoti delle pagine (funzione sperimentale)"</string>
+    <string name="pref_croppages_summary">"Rimuovi automaticamente i margini vuoti delle pagine"</string>
     <string name="pref_viewmode_title">"Modalità di visualizzazione"</string>
-    <string name="pref_viewmode_summary">"Modalità di visualizzazione delle pagine"</string>
+    <string name="pref_viewmode_summary">"Modalità di visualizzazione del documento"</string>
     <string name="list_viewmode_vertical_scroll">"Pagine affiancate verticalmente"</string>
     <string name="list_viewmode_horizontal_scroll">"Pagine affiancate orizzontalmente"</string>
-    <string name="list_viewmode_single_page">"Una sola pagina"</string>
+    <string name="list_viewmode_single_page">"Una pagina alla volta"</string>
     <string name="pref_singlepage_category">"Modalità di visualizzazione della singola pagina"</string>
     <string name="pref_singlepage_category_summary">"Impostazioni delle modalità di visualizzazione della singola pagina"</string>
     <string name="pref_align_title">"Adattamento delle pagine"</string>

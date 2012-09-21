@@ -20,7 +20,7 @@
     <string name="msg_no_text_found">"Text not found"</string>
 
     <string name="dialog_title_goto_page">Go to...</string>
-    <string name="button_goto_page">Go to...</string>
+    <string name="button_goto_page">Go</string>
     <string name="text_page">Page</string>
     <string name="error_close">Close</string>
 

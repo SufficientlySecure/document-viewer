@@ -71,7 +71,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     private ManualCropView cropControls;
 
-    Menu optionsMenu;
+    private Menu optionsMenu;
 
     /**
      * Instantiates a new base viewer activity.

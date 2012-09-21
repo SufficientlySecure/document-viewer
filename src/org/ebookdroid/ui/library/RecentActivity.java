@@ -2,6 +2,7 @@ package org.ebookdroid.ui.library;
 
 import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
+import org.ebookdroid.common.settings.LibSettings;
 import org.ebookdroid.ui.library.adapters.BookNode;
 import org.ebookdroid.ui.library.adapters.BookShelfAdapter;
 import org.ebookdroid.ui.library.adapters.BooksAdapter;
@@ -58,6 +59,7 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
     BookcaseView bookcaseView;
     RecentBooksView recentBooksView;
     LibraryView libraryView;
+    Menu optionsMenu;
 
     public RecentActivity() {
         super();
@@ -117,6 +119,7 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
             LCTX.d("onResume()");
         }
         super.onResume();
+        updateOptionsMenu(optionsMenu);
         getController().onResume();
     }
 
@@ -149,7 +152,35 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
     public boolean onCreateOptionsMenu(final Menu menu) {
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.recentmenu, menu);
+
+        this.optionsMenu = menu;
+        updateOptionsMenu(optionsMenu);
+
         return true;
+    }
+
+    @Override
+    public boolean onMenuOpened(final int featureId, final Menu menu) {
+        this.optionsMenu = menu;
+        updateOptionsMenu(optionsMenu);
+
+        return super.onMenuOpened(featureId, menu);
+    }
+
+    protected void updateOptionsMenu(final Menu menu) {
+        if (menu == null) {
+            return;
+        }
+
+        if (!LibSettings.current().getUseBookcase()) {
+            final int viewMode = getViewMode();
+            final boolean showLibraryAvailable = viewMode == RecentActivity.VIEW_RECENT;
+            setMenuItemVisible(menu, showLibraryAvailable, R.id.recent_showlibrary);
+            setMenuItemVisible(menu, !showLibraryAvailable, R.id.recent_showrecent);
+        } else {
+            setMenuItemVisible(menu, false, R.id.recent_showlibrary);
+            setMenuItemVisible(menu, false, R.id.recent_showrecent);
+        }
     }
 
     @Override
@@ -221,6 +252,7 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
                 libraryButton.setImageResource(R.drawable.recent_actionbar_library);
             }
         }
+        updateOptionsMenu(optionsMenu);
     }
 
     int getViewMode() {

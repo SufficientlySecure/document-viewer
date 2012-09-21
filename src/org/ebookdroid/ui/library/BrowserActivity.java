@@ -30,6 +30,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.EditText;
@@ -56,6 +57,7 @@ import org.emdev.ui.actions.ActionMethodDef;
 import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.actions.params.Constant;
 import org.emdev.ui.actions.params.EditableValue;
+import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.utils.CompareUtils;
 import org.emdev.utils.FileUtils;
 import org.emdev.utils.LayoutUtils;
@@ -94,6 +96,7 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
 
     private ViewFlipper viewflipper;
     private TextView header;
+    private Menu optionsMenu;
 
     public BrowserActivity() {
         this.filter = new CompositeFilter(false, DirectoryFilter.NOT_HIDDEN, LibSettings.current().allowedFileTypes);
@@ -108,6 +111,7 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        IUIManager.instance.setTitleVisible(this, !AndroidVersion.lessThan3x);
         setContentView(R.layout.browser);
 
         adapter = new BrowserAdapter(filter);
@@ -137,13 +141,38 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
                 setCurrentDir(new File(absolutePath));
             }
         }
+
+        showProgress(false);
     }
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.browsermenu, menu);
+
+        this.optionsMenu = menu;
+        updateOptionsMenu(optionsMenu);
+
         return true;
+    }
+
+    @Override
+    public boolean onMenuOpened(int featureId, Menu menu) {
+        this.optionsMenu = menu;
+        updateOptionsMenu(optionsMenu);
+
+        return super.onMenuOpened(featureId, menu);
+    }
+
+    protected void updateOptionsMenu(Menu optionsMenu) {
+        if (optionsMenu == null) {
+            return;
+        }
+        final File dir = adapter.getCurrentDirectory();
+        final boolean hasParent = dir != null ? dir.getParentFile() != null : false;
+
+        setMenuItemEnabled(optionsMenu, hasParent, R.id.browserupfolder, R.drawable.browser_actionbar_nav_up_enabled,
+                R.drawable.browser_actionbar_nav_up_disabled);
     }
 
     @ActionMethod(ids = R.id.browserhome)
@@ -191,12 +220,20 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
 
     @Override
     public void setCurrentDir(final File newDir) {
-        final ImageView view = (ImageView) findViewById(R.id.browserupfolder);
-        final boolean hasParent = newDir.getParentFile() != null;
-        view.setImageResource(hasParent ? R.drawable.browser_actionbar_nav_up_enabled : R.drawable.browser_actionbar_nav_up_disabled);
-
-        header.setText(newDir.getAbsolutePath());
         adapter.setCurrentDirectory(newDir);
+
+        if (AndroidVersion.lessThan3x) {
+            header.setText(newDir.getAbsolutePath());
+            final ImageView view = (ImageView) findViewById(R.id.browserupfolder);
+            if (view != null) {
+                final boolean hasParent = newDir.getParentFile() != null;
+                view.setImageResource(hasParent ? R.drawable.browser_actionbar_nav_up_enabled
+                        : R.drawable.browser_actionbar_nav_up_disabled);
+            }
+        } else {
+            setTitle(newDir.getAbsolutePath());
+            updateOptionsMenu(optionsMenu);
+        }
     }
 
     @Override
@@ -232,6 +269,19 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
 
     @Override
     public void showProgress(final boolean show) {
+        if (!AndroidVersion.lessThan3x) {
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        setProgressBarIndeterminateVisibility(show);
+                        getWindow().setFeatureInt(Window.FEATURE_INDETERMINATE_PROGRESS, !show ? 10000 : 1);
+                    } catch (final Throwable e) {
+                    }
+                }
+            });
+        }
     }
 
     @Override

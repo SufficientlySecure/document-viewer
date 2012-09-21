@@ -91,6 +91,13 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Actio
         }
     }
 
+    protected void setMenuItemVisible(final Menu menu, final boolean visible, final int viewId) {
+        final MenuItem v = menu.findItem(viewId);
+        if (v != null) {
+            v.setVisible(visible);
+        }
+    }
+
     protected void setMenuItemEnabled(final Menu menu, final boolean enabled, final int viewId, final int enabledResId,
             final int disabledResId) {
         final MenuItem v = menu.findItem(viewId);

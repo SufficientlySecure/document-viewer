@@ -34,7 +34,7 @@
     <item
         android:id="@+id/opdsclose"
         android:alphabeticShortcut="c"
-        android:icon="@drawable/common_menu_close"
+        android:icon="@drawable/common_actionbar_recent_library"
         android:showAsAction="never"
         android:title="Close"/>
 

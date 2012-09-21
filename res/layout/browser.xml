@@ -8,17 +8,19 @@
     <LinearLayout style="@style/action_bar" >
 
         <ImageView
-            android:id="@+id/browserhome"
             style="@style/action_bar_icon"
-            android:onClick="onButtonClick"
-            android:src="@drawable/browser_actionbar_nav_home" />
-
-        <View style="@style/action_bar_separator" />
+            android:src="@drawable/application_icon" />
 
         <TextView
             android:id="@+id/browsertext"
             style="@style/action_bar_title"
             android:textSize="12sp" />
+
+        <ImageView
+            android:id="@+id/browserhome"
+            style="@style/action_bar_icon"
+            android:onClick="onButtonClick"
+            android:src="@drawable/browser_actionbar_nav_home" />
 
         <ImageView
             android:id="@+id/browserupfolder"

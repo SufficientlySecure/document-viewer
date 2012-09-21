@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/opdsrefreshfolder"
+        android:alphabeticShortcut="r"
+        android:icon="@drawable/opds_actionbar_refresh"
+        android:showAsAction="always"
+        android:title="Refresh"/>
+    <item
+        android:id="@+id/opdshome"
+        android:alphabeticShortcut="h"
+        android:icon="@drawable/opds_actionbar_nav_home"
+        android:showAsAction="always"
+        android:title="Home"/>
+    <item
+        android:id="@+id/opdsupfolder"
+        android:alphabeticShortcut="u"
+        android:icon="@drawable/opds_actionbar_nav_up_enabled"
+        android:showAsAction="always"
+        android:title="Up"/>
+    <item
+        android:id="@+id/opdsprevfolder"
+        android:alphabeticShortcut="p"
+        android:icon="@drawable/opds_actionbar_nav_prev_enabled"
+        android:showAsAction="always"
+        android:title="Prev section"/>
+    <item
+        android:id="@+id/opdsnextfolder"
+        android:alphabeticShortcut="n"
+        android:icon="@drawable/opds_actionbar_nav_next_enabled"
+        android:showAsAction="always"
+        android:title="Next section"/>
+    <item
+        android:id="@+id/opdsclose"
+        android:alphabeticShortcut="c"
+        android:icon="@drawable/common_actionbar_recent_library"
+        android:showAsAction="always"
+        android:title="Close"/>
+
+</menu>

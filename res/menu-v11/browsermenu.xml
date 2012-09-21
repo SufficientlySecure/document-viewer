@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/browserhome"
+        android:alphabeticShortcut="h"
+        android:icon="@drawable/browser_actionbar_nav_home"
+        android:showAsAction="always"
+        android:title="Home"/>
+    <item
+        android:id="@+id/browserupfolder"
+        android:alphabeticShortcut="u"
+        android:icon="@drawable/browser_actionbar_nav_home"
+        android:showAsAction="always"
+        android:title="Up"/>
+    <item
+        android:id="@+id/mainmenu_settings"
+        android:alphabeticShortcut="s"
+        android:icon="@drawable/common_actionbar_allsettings"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_settings"/>
+    <item
+        android:id="@+id/mainmenu_about"
+        android:icon="@drawable/common_actionbar_about"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_about"/>
+    <item
+        android:id="@+id/browserrecent"
+        android:icon="@drawable/common_actionbar_recent_library"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_close"/>
+
+</menu>

@@ -92,6 +92,7 @@ actions = {
         @ActionMethodDef(id = R.id.ShelfRightButton, method = "selectNextShelf"),
         @ActionMethodDef(id = R.id.recent_showbrowser, method = "goFileBrowser"),
         @ActionMethodDef(id = R.id.recent_showlibrary, method = "goLibrary"),
+        @ActionMethodDef(id = R.id.recent_showrecent, method = "goLibrary"),
         @ActionMethodDef(id = R.id.mainmenu_opds, method = "goOPDSBrowser"),
         @ActionMethodDef(id = R.id.recentmenu_backupsettings, method = "backupSettings"),
         @ActionMethodDef(id = R.id.mainmenu_close, method = "close")
@@ -525,7 +526,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         getManagedComponent().showNextBookshelf();
     }
 
-    @ActionMethod(ids = R.id.recent_showlibrary)
+    @ActionMethod(ids = { R.id.recent_showlibrary, R.id.recent_showrecent })
     public void goLibrary(final ActionEx action) {
         if (!LibSettings.current().getUseBookcase()) {
             final int viewMode = getManagedComponent().getViewMode();

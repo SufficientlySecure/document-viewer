@@ -5,43 +5,6 @@
     android:layout_height="fill_parent"
     android:layout_gravity="center" >
 
-    <LinearLayout style="@style/action_bar" >
-
-        <ImageView
-            android:id="@+id/browserhome"
-            style="@style/action_bar_icon"
-            android:onClick="onButtonClick"
-            android:src="@drawable/browser_actionbar_nav_home" />
-
-        <View style="@style/action_bar_separator" />
-
-        <TextView
-            android:id="@+id/browsertext"
-            style="@style/action_bar_title" />
-
-        <ImageView
-            android:id="@+id/browserupfolder"
-            style="@style/action_bar_action"
-            android:onClick="onButtonClick"
-            android:src="@drawable/browser_actionbar_nav_up_enabled" />
-
-        <View style="@style/action_bar_separator" />
-
-        <ImageView
-            android:id="@+id/browserrecent"
-            style="@style/action_bar_action"
-            android:onClick="onButtonClick"
-            android:src="@drawable/browser_actionbar_recent_library" />
-
-        <View style="@style/action_bar_separator" />
-
-        <ImageView
-            android:id="@+id/mainmenu_settings"
-            style="@style/action_bar_action"
-            android:onClick="onButtonClick"
-            android:src="@drawable/common_actionbar_allsettings" />
-    </LinearLayout>
-
     <ViewFlipper
         android:id="@+id/browserflip"
         android:layout_width="fill_parent"

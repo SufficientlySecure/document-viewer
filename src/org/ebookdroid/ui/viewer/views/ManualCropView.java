@@ -56,7 +56,7 @@ public class ManualCropView extends View {
         super.setVisibility(View.GONE);
         PAINT.setColor(Color.CYAN);
 
-        setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         setFocusable(true);
         setFocusableInTouchMode(true);
 

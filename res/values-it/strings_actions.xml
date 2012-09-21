@@ -4,6 +4,6 @@
     <string name="actions_verticalConfigScrollUp">"Scorri verso l'alto"</string>
     <string name="actions_verticalConfigScrollDown">"Scorri verso il basso"</string>
     <string name="actions_quickZoom">"Zoom rapido"</string>
-<!--<string name="actions_zoomToColumn">"Zoom to column"</string>-->
+	<string name="actions_zoomToColumn">"Ingrandisci colonna"</string>
 
 </resources>

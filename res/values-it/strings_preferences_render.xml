@@ -6,9 +6,9 @@
     <string name="pref_book_category">"Impostazioni per il libro corrente"</string>
     <string name="pref_book_category_summary">"Imposta le modalità di visualizzazione per il solo libro corrente. Queste impostazioni hanno la precedenza sulle impostazioni generali."</string>
     <string name="pref_splitpages_title">"Spezza le pagine"</string>
-    <string name="pref_splitpages_summary">"Dividi in due le pagine di grandi dimensioni"</string>
+    <string name="pref_splitpages_summary">"Se la pagina è in formato album, mostra mezza pagina alla volta"</string>
     <string name="pref_croppages_title">"Ritaglia i margini"</string>
-    <string name="pref_croppages_summary">"Rimuovi i margini vuoti delle pagine (funzione sperimentale)"</string>
+    <string name="pref_croppages_summary">"Rimuovi automaticamente i margini vuoti delle pagine (funzione sperimentale)"</string>
     <string name="pref_viewmode_title">"Modalità di visualizzazione"</string>
     <string name="pref_viewmode_summary">"Modalità di visualizzazione delle pagine"</string>
     <string name="list_viewmode_vertical_scroll">"Pagine affiancate verticalmente"</string>
@@ -33,9 +33,9 @@
     <string name="pref_postprocessing_category">"Effetti aggiuntivi"</string>
     <string name="pref_postprocessing_summary">"Effetti e correzioni applicati successivamente al rendering della pagina"</string>
     <string name="pref_nightmode_title">"Modalità notte"</string>
-    <string name="pref_nightmode_summary">"Testo bianco su sfondo nero"</string>
-<!--<string name="pref_posimages_in_nightmode_title">"Positive images in night mode"</string>-->
-<!--<string name="pref_posimages_in_nightmode_summary">"Show positivy gray-scaled images in night mode"</string>-->
+    <string name="pref_nightmode_summary">"Testo chiaro su sfondo scuro (negativo)"</string>
+	<string name="pref_posimages_in_nightmode_title">"Non invertire i colori delle immagini"</string>
+	<string name="pref_posimages_in_nightmode_summary">"In modalità notturna mostra una versione in scala di grigio delle immagini, senza invertirne i colori"</string>
     <string name="pref_contrast_title">"Contrasto"</string>
     <string name="pref_contrast_summary">"Correzione del livello di contrasto (0 – 1000, default = 100 )"</string>
     <string name="pref_exposure_title">"Esposizione"</string>

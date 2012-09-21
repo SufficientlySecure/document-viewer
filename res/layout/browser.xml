@@ -32,7 +32,7 @@
             android:id="@+id/browserrecent"
             style="@style/action_bar_action"
             android:onClick="onButtonClick"
-            android:src="@drawable/recent_actionbar_recent" />
+            android:src="@drawable/browser_actionbar_recent_library" />
     </LinearLayout>
 
     <ViewFlipper

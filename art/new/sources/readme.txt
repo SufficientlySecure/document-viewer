@@ -1,9 +1,9 @@
 All icons and icons templates are free to use according to the GPL license version 3 or older.
-Sources not directly created by the authour[1] are either in the public domain with no restrictions about the way they can be user or comply with GPL license.
+Sources not directly created by the author[1] are either in the public domain with no restrictions about the way they can be used or comply with GPL license.
 
 [1] At the moment they are
 
-	- The world globe, taken from wikipedia
+	- The world globe, taken from wikipedia and used for OPDS icons
 	   http://en.wikipedia.org/wiki/File:Blank_globe.svg
 	- ENDOFLIST
 
@@ -19,21 +19,29 @@ Sources folder contains png versions as previews to help finding the correspondi
 
 To create a button: 
 -------------------
-Create a copy of icontemplate.svg (yeah, I know, I should have called that "buttontemplate"...)
+Create a copy of icontemplate.svg (yeha, I know, I should have named that buttontemplate...)
 Open to edit, add content (by importing svg graphics or by editing them on the spot). 
-This will ensure the button outline will be the same for all icons.
+This will ensure the button outline will be the same for all buttons.
+
+foldertemplate_button.svg can be used to add content to folder buttons
+folder buttons use straight folders to maximaze real estate.
 
 To create a variant of the folder icon:
 ---------------------------------------
-Do the same starting with foldertemplate.svg
+Actionbar folder icons are now 3d slanted and darker.
+
+To create actionbar 3D folders, use 
 This will make sure the baseline and overall position of the folder remain unchanged in all versions.
+
+slanted Folders are slanted with 15 degress or 20 degrees in the y direction, according to type.
+foldertemplate.svg contains a bigger version.
+
 
 
 
 Things to do:
 ==============
 
-Add dark border to folders (they look a little pale)
 Align button content to a common baseline (for different items)
 Redo magnifying glass icons with current icontemplate and:
 	for quick zoom ---> add a ruler under the lens
@@ -49,3 +57,4 @@ Reversing gradient of action bar background. Right now (vers. 1.5.3 dev 1447) th
 
 As for the outline view: reducing the height and removing gradient coloring from the rows of the outline could greatly improve its appearance without noticeably hindering navigation (users will tap on text).
 A fully black text should appear as more 'elegant'.
+

@@ -19,7 +19,7 @@ Sources folder contains png versions as previews to help finding the correspondi
 
 To create a button: 
 -------------------
-Create a copy of icontemplate.svg
+Create a copy of icontemplate.svg (yeah, I know, I should have called that "buttontemplate"...)
 Open to edit, add content (by importing svg graphics or by editing them on the spot). 
 This will ensure the button outline will be the same for all icons.
 
@@ -45,11 +45,7 @@ Absolutely redo the triangles in outline view!!! They are too big and obtrusive.
 Possible eyecandy enhancements
 ==============================
 
-Do we really need 'unframed' actionbar icons? What about making all icons framed?
-Would they be too small on small devices?
-
 Reversing gradient of action bar background. Right now (vers. 1.5.3 dev 1447) the gradient is such as to present a grey-whitish discontinuity near the top black bar of the screen and a fading to black toward Ebookdroid area. In this way the first black row in filebrowse mode looks bigger then the ones below.
 
 As for the outline view: reducing the height and removing gradient coloring from the rows of the outline could greatly improve its appearance without noticeably hindering navigation (users will tap on text).
 A fully black text should appear as more 'elegant'.
-

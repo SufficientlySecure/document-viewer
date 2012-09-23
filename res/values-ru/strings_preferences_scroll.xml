@@ -4,7 +4,7 @@
     <string name="pref_scroll_category">"Нажатия и прокрутка"</string>
     <string name="pref_scroll_category_summary">"Настройки прокрутки"</string>
     <string name="pref_tapsenabled_title">"Разрешить нажатия"</string>
-    <string name="pref_tapsenabled_summary">"Используйте \'Настройку нажати\' для задания регионов и действий"</string>
+    <string name="pref_tapsenabled_summary">"Используйте пункт меню \'Настройка нажатий\' для задания регионов и действий"</string>
     <string name="pref_scroll_title">"Высота прокрутки"</string>
     <string name="pref_scroll_summary">"Установите высоту прокрутки"</string>
     <string name="pref_touchdelay_title">"Задержка обработки касаний"</string>

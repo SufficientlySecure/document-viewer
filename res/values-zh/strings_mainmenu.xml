@@ -19,5 +19,8 @@
     <string name="menu_show_options_menu">"显示菜单"</string>
     <string name="menu_backupsettings">"备份与恢复"</string>
 <!--<string name="menu_crop">"Manual crop"</string>-->
+<!--<string name="menu_navigation_menu">"Navigation..."</string>-->
+<!--<string name="menu_fastsettings_menu">"View..."</string>-->
+<!--<string name="menu_allsettings_menu">"Settings..."</string>-->
 
 </resources>

@@ -18,6 +18,9 @@
     <string name="menu_searchtext">"Поиск"</string>
     <string name="menu_show_options_menu">"Показать меню"</string>
     <string name="menu_backupsettings">"Сохранение и восстановление"</string>
-<!--<string name="menu_crop">"Manual crop"</string>-->
+    <string name="menu_crop">"Ручная обрезка страницы"</string>
+    <string name="menu_navigation_menu">"Навигация..."</string>
+    <string name="menu_fastsettings_menu">"Вид..."</string>
+    <string name="menu_allsettings_menu">"Настройки..."</string>
 
 </resources>

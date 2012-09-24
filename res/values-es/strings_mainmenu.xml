@@ -19,5 +19,8 @@
     <string name="menu_show_options_menu">"Mostrar menú de opciones"</string>
     <string name="menu_backupsettings">"Configuración de Copias de seguridad y Respaldo"</string>
 <!--<string name="menu_crop">"Manual crop"</string>-->
+<!--<string name="menu_navigation_menu">"Navigation..."</string>-->
+<!--<string name="menu_fastsettings_menu">"View..."</string>-->
+<!--<string name="menu_allsettings_menu">"Settings..."</string>-->
 
 </resources>

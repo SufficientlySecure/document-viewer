@@ -589,7 +589,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_getBounds(JNIEnv *env, jclass c
 JNIEXPORT void JNICALL
 Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPage(JNIEnv *env, jobject this, jlong dochandle, jlong pagehandle,
                                                         jintArray viewboxarray, jfloatArray matrixarray,
-                                                        jintArray bufferarray, jint nightmode)
+                                                        jintArray bufferarray, jint nightmode, jint slowcmyk)
 {
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
     renderpage_t *page = (renderpage_t*) (long) pagehandle;
@@ -630,6 +630,10 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPage(JNIEnv *env, jobject
     //add check for night mode and set global variable accordingly
     ctx->ebookdroid_nightmode = nightmode;
 
+    //add check for slowcmyk mode and set global variable accordingly
+    ctx->ebookdroid_slowcmyk = slowcmyk;
+
+
     fz_try(ctx)
     {
        pixmap = fz_new_pixmap_with_data(ctx, fz_device_bgr, viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0, (unsigned char*) buffer);
@@ -657,7 +661,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPage(JNIEnv *env, jobject
 JNIEXPORT jboolean JNICALL
 Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPageBitmap(JNIEnv *env, jobject this, jlong dochandle,
                                                               jlong pagehandle, jintArray viewboxarray,
-                                                              jfloatArray matrixarray, jobject bitmap, jint nightmode)
+                                                              jfloatArray matrixarray, jobject bitmap, jint nightmode, jint slowcmyk)
 {
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
     renderpage_t *page = (renderpage_t*) (long) pagehandle;
@@ -724,6 +728,9 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPageBitmap(JNIEnv *env, j
 
     //add check for night mode and set global variable accordingly
     ctx->ebookdroid_nightmode = nightmode;
+
+    //add check for slowcmyk mode and set global variable accordingly
+    ctx->ebookdroid_slowcmyk = slowcmyk;
 
     fz_try(ctx)
     {

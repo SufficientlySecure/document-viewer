@@ -211,6 +211,9 @@ public interface AppPreferences {
     StringPreferenceDefinition DINGBAT_FONT_PACK = new StringPreferenceDefinition(pref_dingbatfontpack_id,
             pref_dingbatfontpack_defvalue);
 
+    BooleanPreferenceDefinition PDF_SLOW_CMYK = new BooleanPreferenceDefinition(pref_slowcmyk_id,
+            pref_slowcmyk_defvalue);
+
     /* =============== FB2 Format-specific settings =============== */
 
     EnumPreferenceDefinition<FB2Parsers> FB2_XML_PARSER = new EnumPreferenceDefinition<FB2Parsers>(FB2Parsers.class,

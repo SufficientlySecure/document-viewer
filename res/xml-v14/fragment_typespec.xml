@@ -82,6 +82,12 @@
             android:title="@string/pref_dingbatfontpack_title"
             ebookdroid:fontFamily="dingbat" />
 
+        <org.emdev.ui.preference.SwitchPreferenceEx
+            android:defaultValue="@string/pref_slowcmyk_defvalue"
+            android:key="@string/pref_slowcmyk_id"
+            android:summary="@string/pref_slowcmyk_summary"
+            android:title="@string/pref_slowcmyk_title" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

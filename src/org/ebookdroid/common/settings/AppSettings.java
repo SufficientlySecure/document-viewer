@@ -165,6 +165,8 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     public final String dingbatFontPack;
 
+    public final boolean slowCMYK;
+
     /* =============== FB2 Format-specific settings =============== */
 
     public final FB2Parsers fb2XmlParser;
@@ -250,6 +252,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         serifFontPack = SERIF_FONT_PACK.getPreferenceValue(prefs);
         symbolFontPack = SYMBOL_FONT_PACK.getPreferenceValue(prefs);
         dingbatFontPack = DINGBAT_FONT_PACK.getPreferenceValue(prefs);
+        slowCMYK = PDF_SLOW_CMYK.getPreferenceValue(prefs);
         /* =============== FB2 Format-specific settings =============== */
         fb2XmlParser = FB2_XML_PARSER.getPreferenceValue(prefs);
         fb2FontPack = FB2_FONT_PACK.getPreferenceValue(prefs);

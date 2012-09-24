@@ -4,6 +4,7 @@ import org.ebookdroid.EBookDroidLibraryLoader;
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.common.settings.AppSettings;
+import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.core.ViewState;
 import org.ebookdroid.core.codec.AbstractCodecPage;
 import org.ebookdroid.core.codec.PageLink;
@@ -118,10 +119,11 @@ public class MuPdfPage extends AbstractCodecPage {
         final int width = viewbox.width();
         final int height = viewbox.height();
         final int nightmode = viewState != null && viewState.nightMode && viewState.positiveImagesInNightMode ? 1 : 0;
+        final int slowcmyk = AppSettings.current().slowCMYK ? 1 : 0;
 
         if (EBookDroidLibraryLoader.nativeGraphicsAvailable && AppSettings.current().useNativeGraphics) {
             final IBitmapRef bmp = BitmapManager.getBitmap("PDF page", width, height, MuPdfContext.NATIVE_BITMAP_CFG);
-            boolean res = renderPageBitmap(docHandle, pageHandle, mRect, ctm, bmp.getBitmap(), nightmode);
+            boolean res = renderPageBitmap(docHandle, pageHandle, mRect, ctm, bmp.getBitmap(), nightmode, slowcmyk);
             if (res) {
                 return bmp;
             }
@@ -130,7 +132,7 @@ public class MuPdfPage extends AbstractCodecPage {
         }
 
         final int[] bufferarray = new int[width * height];
-        renderPage(docHandle, pageHandle, mRect, ctm, bufferarray, nightmode);
+        renderPage(docHandle, pageHandle, mRect, ctm, bufferarray, nightmode, slowcmyk);
         final IBitmapRef b = BitmapManager.getBitmap("PDF page", width, height, MuPdfContext.BITMAP_CFG);
         b.setPixels(bufferarray, width, height);
         return b;
@@ -148,10 +150,10 @@ public class MuPdfPage extends AbstractCodecPage {
     private static native long open(long dochandle, int pageno);
 
     private static native void renderPage(long dochandle, long pagehandle, int[] viewboxarray, float[] matrixarray,
-            int[] bufferarray, int noghtmode);
+            int[] bufferarray, int noghtmode, int slowcmyk);
 
     private static native boolean renderPageBitmap(long dochandle, long pagehandle, int[] viewboxarray,
-            float[] matrixarray, Bitmap bitmap, int noghtmode);
+            float[] matrixarray, Bitmap bitmap, int noghtmode, int slowcmyk);
 
     private native static List<PageTextBox> search(long docHandle, long pageHandle, String pattern);
 

@@ -281,6 +281,7 @@ struct fz_context_s
 	fz_store *store;
 	fz_glyph_cache *glyph_cache;
 	int ebookdroid_nightmode;
+	int ebookdroid_slowcmyk;
 };
 
 /*

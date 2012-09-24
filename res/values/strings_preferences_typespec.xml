@@ -46,6 +46,9 @@
 
     <string name="pref_systemfontpack">Use default Android fonts</string>
 
+    <string name="pref_slowcmyk_title">Slow CMYK</string>
+    <string name="pref_slowcmyk_summary">Use slow but accurate CMYK to RGB algorithm</string>
+
     <string name="pref_brfiletypespecificfb2_title">FB2</string>
     <string name="pref_brfiletypespecificfb2_summary">FB2 format specific settings</string>
 

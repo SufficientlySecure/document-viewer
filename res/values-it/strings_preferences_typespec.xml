@@ -32,6 +32,8 @@
     <string name="pref_dingbatfontpack_title">"Famiglia di caratteri Dingbat"</string>
     <string name="pref_dingbatfontpack_summary">"Specifica il font-pack della famiglia di caratteri Dingbat"</string>
     <string name="pref_systemfontpack">"Caratteri di default di Android"</string>
+<!--<string name="pref_slowcmyk_title">"Slow CMYK"</string>-->
+<!--<string name="pref_slowcmyk_summary">"Use slow but accurate CMYK to RGB algorithm"</string>-->
 <!--<string name="pref_brfiletypespecificfb2_title">"FB2"</string>-->
     <string name="pref_brfiletypespecificfb2_summary">"Impostazioni specifiche del formato FB2"</string>
     <string name="pref_fb2_xmlparser_title">"Parser XML"</string>

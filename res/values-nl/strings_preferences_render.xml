@@ -35,7 +35,7 @@
     <string name="pref_nightmode_title">"Nacht modus"</string>
     <string name="pref_nightmode_summary">"Witte letterteken op zwarte achtergrond"</string>
 <!--<string name="pref_posimages_in_nightmode_title">"Positive images in night mode"</string>-->
-<!--<string name="pref_posimages_in_nightmode_summary">"Show positivy gray-scaled images in night mode"</string>-->
+<!--<string name="pref_posimages_in_nightmode_summary">"Show gray-scaled images in night mode (do not invert image colors)"</string>-->
 <!--<string name="pref_contrast_title">"Contrast"</string>-->
 <!--<string name="pref_contrast_summary">"Contrast correction level (0 – 1000, 100 by default)"</string>-->
 <!--<string name="pref_exposure_title">"Exposure"</string>-->

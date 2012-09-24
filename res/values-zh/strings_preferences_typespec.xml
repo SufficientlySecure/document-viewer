@@ -32,6 +32,8 @@
     <string name="pref_dingbatfontpack_title">"他的字体家族"</string>
     <string name="pref_dingbatfontpack_summary">"定义字体包使用图片字体"</string>
     <string name="pref_systemfontpack">"默认的字体"</string>
+<!--<string name="pref_slowcmyk_title">"Slow CMYK"</string>-->
+<!--<string name="pref_slowcmyk_summary">"Use slow but accurate CMYK to RGB algorithm"</string>-->
     <string name="pref_brfiletypespecificfb2_title" translatable="true">"FB2"</string>
     <string name="pref_brfiletypespecificfb2_summary">"FB2 特定格式设置"</string>
     <string name="pref_fb2_xmlparser_title">"XML解析器"</string>

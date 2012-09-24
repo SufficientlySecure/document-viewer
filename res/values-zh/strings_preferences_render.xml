@@ -35,7 +35,7 @@
     <string name="pref_nightmode_title">"夜间模式"</string>
     <string name="pref_nightmode_summary">"在黑色背景上使用白色符号"</string>
 <!--<string name="pref_posimages_in_nightmode_title">"Positive images in night mode"</string>-->
-<!--<string name="pref_posimages_in_nightmode_summary">"Show positivy gray-scaled images in night mode"</string>-->
+<!--<string name="pref_posimages_in_nightmode_summary">"Show gray-scaled images in night mode (do not invert image colors)"</string>-->
     <string name="pref_contrast_title">"对比"</string>
     <string name="pref_contrast_summary">"对比度校正极 (0——1000,默认为 100)：100&quot;"</string>
     <string name="pref_exposure_title">"曝光"</string>

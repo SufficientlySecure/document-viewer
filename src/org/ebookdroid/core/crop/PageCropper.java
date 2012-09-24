@@ -25,8 +25,6 @@ public class PageCropper {
     private static RawBitmap VLINE = new RawBitmap(V_LINE_SIZE, BMP_SIZE - 2 * LINE_MARGIN, false);
     private static RawBitmap HLINE = new RawBitmap(BMP_SIZE - 2 * LINE_MARGIN, H_LINE_SIZE, false);
 
-    private static RawBitmap CENTER = new RawBitmap(BMP_SIZE / 5, BMP_SIZE / 5, false);
-
     private static RawBitmap WHOLE = new RawBitmap(BMP_SIZE, BMP_SIZE, false);
 
     private static Bitmap BITMAP = Bitmap.createBitmap(BMP_SIZE, BMP_SIZE, Bitmap.Config.RGB_565);

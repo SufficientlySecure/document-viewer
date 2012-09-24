@@ -1,7 +1,5 @@
 package org.emdev.common.backup;
 
-import org.ebookdroid.common.settings.AppSettings;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;

@@ -15,8 +15,8 @@
    inkscape:version="0.48.1 "
    width="864"
    height="864"
-   sodipodi:docname="zoom.svg"
-   inkscape:export-filename="F:\DropDocs\Dropbox\Grafica\Ebookdroid resources\zoom.png"
+   sodipodi:docname="zoom_out.svg"
+   inkscape:export-filename="F:\DropDocs\Dropbox\Grafica\Ebookdroid resources\zoom_out.png"
    inkscape:export-xdpi="5"
    inkscape:export-ydpi="5">
   <metadata
@@ -678,7 +678,8 @@
      transform="matrix(1.37,0,0,1.41,-130.83986,-182.11542)" />
   <path
      style="fill:#e6e6e6;fill-opacity:1;fill-rule:evenodd;stroke:#030303;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-     d="m 291.15527,236.12445 0,84.91864 -84.9185,0 0,68.4044 84.9185,0 0,84.9541 68.4045,0 0,-84.9541 84.95399,0 0,-68.4044 -84.95399,0 0,-84.91864 -68.4045,0 z"
+     d="m 206.23677,321.04309 c 0,22.80147 0,45.60293 0,68.4044 -1.28448,4.79376 238.27699,0 238.27699,0 0,-22.80147 0,-45.60293 0,-68.4044 -79.42566,0 -158.85133,0 -238.27699,0 z"
      id="rect3829"
-     inkscape:connector-curvature="0" />
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccc" />
 </svg>

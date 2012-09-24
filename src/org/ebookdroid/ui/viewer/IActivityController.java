@@ -38,4 +38,6 @@ public interface IActivityController extends IActionController<ViewerActivity> {
 
     void jumpToPage(int viewIndex, float offsetX, float offsetY, boolean addToHistory);
 
+    void runOnUiThread(Runnable r);
+
 }

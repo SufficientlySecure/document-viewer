@@ -166,7 +166,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
         try {
             if (bitmap == null || bitmapBounds == null) {
-                page.base.getActivity().runOnUiThread(new Runnable() {
+                page.base.runOnUiThread(new Runnable() {
 
                     @Override
                     public void run() {
@@ -214,7 +214,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 }
             };
 
-            page.base.getActivity().runOnUiThread(r);
+            page.base.runOnUiThread(r);
         } catch (final OutOfMemoryError ex) {
             LCTX.e("No memory: ", ex);
             BitmapManager.clear("PageTreeNode OutOfMemoryError: ");

@@ -90,4 +90,8 @@ public class ActivityControllerStub extends ActionController<ViewerActivity> imp
     public SearchModel getSearchModel() {
         return SEARCH_STUB;
     }
+
+    @Override
+    public void runOnUiThread(final Runnable r) {
+    }
 }

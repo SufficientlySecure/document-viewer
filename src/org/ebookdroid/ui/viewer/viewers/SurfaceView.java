@@ -211,6 +211,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
      */
     @Override
     public final void scrollTo(final int x, final int y) {
+
         final Runnable r = new Runnable() {
 
             @Override
@@ -226,7 +227,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
             }
         };
 
-        base.getActivity().runOnUiThread(r);
+        base.runOnUiThread(r);
     }
 
     /**

@@ -57,6 +57,8 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -318,7 +320,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         }
     }
 
-    public void beforeDestroy(boolean finishing) {
+    public void beforeDestroy(final boolean finishing) {
         if (LCTX.isDebugEnabled()) {
             LCTX.d("beforeDestroy(): " + finishing);
         }
@@ -335,7 +337,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         }
     }
 
-    public void afterDestroy(boolean finishing) {
+    public void afterDestroy(final boolean finishing) {
         if (LCTX.isDebugEnabled()) {
             LCTX.d("afterDestroy()");
         }
@@ -396,12 +398,12 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     @Override
     public void decodingProgressChanged(final int currentlyDecoding) {
-        final ViewerActivity activity = getManagedComponent();
-        activity.runOnUiThread(new Runnable() {
+        runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
                 try {
+                    final ViewerActivity activity = getManagedComponent();
                     activity.setProgressBarIndeterminateVisibility(currentlyDecoding > 0);
                     activity.getWindow().setFeatureInt(Window.FEATURE_INDETERMINATE_PROGRESS,
                             currentlyDecoding == 0 ? 10000 : currentlyDecoding);
@@ -409,6 +411,22 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                 }
             }
         });
+    }
+
+    @Override
+    public void runOnUiThread(final Runnable r) {
+        final FutureTask<Object> task = new FutureTask<Object>(r, null);
+
+        try {
+            getActivity().runOnUiThread(task);
+            task.get();
+        } catch (final InterruptedException ex) {
+            Thread.interrupted();
+        } catch (final ExecutionException ex) {
+            ex.printStackTrace();
+        } catch (final Throwable th) {
+            th.printStackTrace();
+        }
     }
 
     @Override
@@ -658,7 +676,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         }
         ViewEffects.toggleControls(view);
         if (view instanceof ManualCropView) {
-            ManualCropView mcv = (ManualCropView) view;
+            final ManualCropView mcv = (ManualCropView) view;
             if (mcv.getVisibility() == View.VISIBLE) {
                 mcv.initControls();
             }
@@ -829,7 +847,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
             LCTX.d("BookLoadTask.doInBackground(): start");
             try {
                 if (intent.getScheme().equals("content")) {
-                    final File tempFile = CacheManager.createTempFile(intent.getData());
+                    final File tempFile = org.emdev.common.cache.CacheManager.createTempFile(intent.getData());
                     m_fileName = tempFile.getAbsolutePath();
                 }
                 getView().waitForInitialization();

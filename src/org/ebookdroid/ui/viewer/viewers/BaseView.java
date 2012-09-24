@@ -220,7 +220,7 @@ public final class BaseView extends View implements IView {
             }
         };
 
-        base.getActivity().runOnUiThread(r);
+        base.runOnUiThread(r);
     }
 
     /**

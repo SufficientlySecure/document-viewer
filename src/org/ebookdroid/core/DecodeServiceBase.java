@@ -331,7 +331,7 @@ public class DecodeServiceBase implements DecodeService {
                     + croppedPageBounds);
         }
 
-        task.node.page.base.getActivity().runOnUiThread(new Runnable() {
+        task.node.page.base.runOnUiThread(new Runnable() {
 
             @Override
             public void run() {

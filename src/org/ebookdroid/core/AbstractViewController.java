@@ -297,12 +297,14 @@ public abstract class AbstractViewController extends AbstractComponentController
 
         base.getZoomModel().setZoom(newZoom, true);
 
-        vs = new ViewState(AbstractViewController.this);
-        pb = vs.getBounds(page);
+        scrollToColumn(page, column, pos, screenHeight);
+    }
+
+    protected void scrollToColumn(Page page, final RectF column, PointF pos, final int screenHeight) {
+        final ViewState vs = new ViewState(AbstractViewController.this);
+        final RectF pb = vs.getBounds(page);
         final RectF columnRegion = page.getPageRegion(pb, new RectF(column));
         columnRegion.offset(-vs.viewBase.x, -vs.viewBase.y);
-
-        // System.out.println("AbstractViewController.zoomToColumn(): " + column + ", " + columnRegion);
 
         final float toX = columnRegion.left;
         final float toY = pb.top + pos.y * pb.height() - 0.5f * screenHeight;

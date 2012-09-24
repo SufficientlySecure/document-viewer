@@ -5,7 +5,7 @@
         android:id="@+id/mainmenu_nav_menu"
         android:icon="@drawable/viewer_actionbar_menu_navigation"
         android:showAsAction="always"
-        android:title="Navigation">
+        android:title="@string/menu_navigation_menu">
         <menu>
             <item
                 android:id="@+id/mainmenu_outline"
@@ -32,7 +32,7 @@
         android:id="@+id/mainmenu_fastsettings_menu"
         android:icon="@drawable/viewer_actionbar_menu_fastsettings"
         android:showAsAction="always"
-        android:title="Fast settings">
+        android:title="@string/menu_fastsettings_menu">
         <menu>
             <item
                 android:id="@+id/mainmenu_fullscreen"
@@ -80,7 +80,7 @@
         android:id="@+id/mainmenu_settings_menu"
         android:icon="@drawable/viewer_actionbar_menu_settings"
         android:showAsAction="always"
-        android:title="All settings">
+        android:title="@string/menu_allsettings_menu">
         <menu>
             <item
                 android:id="@+id/mainmenu_booksettings"

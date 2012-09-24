@@ -287,6 +287,30 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         }
     }
 
+    public static void toggleFullScreen() {
+        SettingsManager.lock.writeLock().lock();
+        try {
+            final Editor edit = SettingsManager.prefs.edit();
+            AppPreferences.FULLSCREEN.setPreferenceValue(edit, !current.fullScreen);
+            edit.commit();
+            onSettingsChanged();
+        } finally {
+            SettingsManager.lock.writeLock().unlock();
+        }
+    }
+
+    public static void toggleTitleVisibility() {
+        SettingsManager.lock.writeLock().lock();
+        try {
+            final Editor edit = SettingsManager.prefs.edit();
+            AppPreferences.SHOW_TITLE.setPreferenceValue(edit, !current.showTitle);
+            edit.commit();
+            onSettingsChanged();
+        } finally {
+            SettingsManager.lock.writeLock().unlock();
+        }
+    }
+
     public static void updateTapProfiles(final String profiles) {
         SettingsManager.lock.writeLock().lock();
         try {

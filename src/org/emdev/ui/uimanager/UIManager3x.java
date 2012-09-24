@@ -35,7 +35,7 @@ public class UIManager3x implements IUIManager {
     private static final Map<ComponentName, Data> data = new HashMap<ComponentName, Data>() {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = -6627308913610357179L;
 
@@ -52,17 +52,24 @@ public class UIManager3x implements IUIManager {
     };
 
     @Override
-    public void setTitleVisible(final Activity activity, final boolean visible) {
-        try {
-            final Window window = activity.getWindow();
-            if (!visible) {
-                window.requestFeature(Window.FEATURE_NO_TITLE);
-            } else {
+    public void setTitleVisible(final Activity activity, final boolean visible, final boolean firstTime) {
+        if (firstTime) {
+            try {
+                final Window window = activity.getWindow();
                 window.requestFeature(Window.FEATURE_ACTION_BAR);
                 window.requestFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
                 activity.setProgressBarIndeterminate(true);
                 activity.setProgressBarIndeterminateVisibility(true);
                 window.setFeatureInt(Window.FEATURE_INDETERMINATE_PROGRESS, 1);
+            } catch (final Throwable th) {
+                LCTX.e("Error on requestFeature call: " + th.getMessage());
+            }
+        }
+        try {
+            if (visible) {
+                activity.getActionBar().show();
+            } else {
+                activity.getActionBar().hide();
             }
             data.get(activity.getComponentName()).titleVisible = visible;
         } catch (final Throwable th) {

@@ -43,18 +43,24 @@ public class UIManager40x implements IUIManager {
     };
 
     @Override
-    public void setTitleVisible(final Activity activity, final boolean visible) {
-        try {
-            final Window window = activity.getWindow();
-            if (!visible) {
-                window.requestFeature(Window.FEATURE_NO_TITLE);
-                window.requestFeature(Window.FEATURE_ACTION_BAR);
-            } else {
+    public void setTitleVisible(final Activity activity, final boolean visible, final boolean firstTime) {
+        if (firstTime) {
+            try {
+                final Window window = activity.getWindow();
                 window.requestFeature(Window.FEATURE_ACTION_BAR);
                 window.requestFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
                 activity.setProgressBarIndeterminate(true);
                 activity.setProgressBarIndeterminateVisibility(true);
                 window.setFeatureInt(Window.FEATURE_INDETERMINATE_PROGRESS, 1);
+            } catch (final Throwable th) {
+                LCTX.e("Error on requestFeature call: " + th.getMessage());
+            }
+        }
+        try {
+            if (visible) {
+                activity.getActionBar().show();
+            } else {
+                activity.getActionBar().hide();
             }
             data.get(activity.getComponentName()).titleVisible = visible;
         } catch (final Throwable th) {

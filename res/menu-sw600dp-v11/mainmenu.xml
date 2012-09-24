@@ -9,24 +9,20 @@
         <menu>
             <item
                 android:id="@+id/mainmenu_outline"
-                android:alphabeticShortcut="o"
                 android:icon="@drawable/viewer_actionbar_outline"
                 android:title="@string/menu_outline"/>
             <item
                 android:id="@+id/mainmenu_search"
-                android:alphabeticShortcut="r"
                 android:icon="@drawable/viewer_actionbar_searchtext"
                 android:showAsAction="ifRoom"
                 android:title="Search"/>
             <item
                 android:id="@+id/mainmenu_bookmark"
-                android:alphabeticShortcut="b"
                 android:icon="@drawable/viewer_actionbar_addbookmark"
                 android:showAsAction="ifRoom"
                 android:title="@string/menu_add_bookmark"/>
             <item
                 android:id="@+id/mainmenu_goto_page"
-                android:alphabeticShortcut="g"
                 android:icon="@drawable/viewer_actionbar_goto"
                 android:showAsAction="ifRoom"
                 android:title="@string/menu_goto_page"/>
@@ -39,14 +35,19 @@
         android:title="Fast settings">
         <menu>
             <item
-                android:id="@+id/mainmenu_zoom"
-                android:alphabeticShortcut="z"
+                android:id="@+id/mainmenu_fullscreen"
                 android:checkable="true"
-                android:icon="@drawable/viewer_actionbar_zoom"
-                android:title="@string/menu_zoom"/>
+                android:icon="@drawable/viewer_actionbar_fullscreen"
+                android:showAsAction="ifRoom"
+                android:title="@string/pref_fullscreen_title"/>
+            <item
+                android:id="@+id/mainmenu_showtitle"
+                android:checkable="true"
+                android:icon="@drawable/viewer_actionbar_showtitle"
+                android:showAsAction="ifRoom"
+                android:title="@string/pref_title_title"/>
             <item
                 android:id="@+id/mainmenu_nightmode"
-                android:alphabeticShortcut="n"
                 android:checkable="true"
                 android:icon="@drawable/viewer_actionbar_daynight"
                 android:showAsAction="ifRoom"
@@ -54,24 +55,26 @@
             <item
                 android:id="@+id/mainmenu_splitpages"
                 android:checkable="true"
-                android:alphabeticShortcut="s"
                 android:icon="@drawable/viewer_actionbar_split_pages"
                 android:title="@string/pref_splitpages_title"/>
             <item
                 android:id="@+id/mainmenu_croppages"
-                android:alphabeticShortcut="c"
                 android:checkable="true"
                 android:icon="@drawable/viewer_actionbar_crop_auto"
                 android:title="@string/pref_croppages_title"/>
             <item
                 android:id="@+id/mainmenu_crop"
-                android:alphabeticShortcut="c"
                 android:icon="@drawable/viewer_actionbar_crop_manual"
                 android:title="@string/menu_crop"/>
             <item
                 android:id="@+id/mainmenu_thumbnail"
                 android:title="@string/menu_thumbnail"/>
-        </menu>
+            <item
+                android:id="@+id/mainmenu_zoom"
+                android:checkable="true"
+                android:icon="@drawable/viewer_actionbar_zoom"
+                android:title="@string/menu_zoom"/>
+            </menu>
     </item>
     <item
         android:id="@+id/mainmenu_settings_menu"
@@ -81,13 +84,11 @@
         <menu>
             <item
                 android:id="@+id/mainmenu_booksettings"
-                android:alphabeticShortcut="t"
                 android:icon="@drawable/viewer_actionbar_booksettings"
                 android:showAsAction="ifRoom"
                 android:title="@string/menu_booksettings"/>
             <item
                 android:id="@+id/mainmenu_settings"
-                android:alphabeticShortcut="s"
                 android:icon="@drawable/common_actionbar_allsettings"
                 android:title="@string/menu_settings"/>
             <item
@@ -105,7 +106,6 @@
         android:title="@string/menu_about"/>
     <item
         android:id="@+id/mainmenu_close"
-        android:alphabeticShortcut="e"
         android:icon="@drawable/common_actionbar_close"
         android:showAsAction="always"
         android:title="@string/menu_close"/>

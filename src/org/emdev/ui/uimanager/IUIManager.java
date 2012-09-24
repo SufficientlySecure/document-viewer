@@ -35,7 +35,7 @@ public interface IUIManager {
 
     void setFullScreenMode(Activity activity, View view, boolean fullScreen);
 
-    void setTitleVisible(Activity activity, boolean visible);
+    void setTitleVisible(Activity activity, boolean visible, boolean firstTime);
 
     boolean isTitleVisible(Activity activity);
 

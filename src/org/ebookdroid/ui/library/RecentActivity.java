@@ -86,7 +86,7 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
             return;
         }
 
-        IUIManager.instance.setTitleVisible(this, !AndroidVersion.lessThan3x);
+        IUIManager.instance.setTitleVisible(this, !AndroidVersion.lessThan3x, true);
 
         setContentView(R.layout.recent);
 

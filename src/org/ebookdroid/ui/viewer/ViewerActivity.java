@@ -311,13 +311,17 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
         return super.onMenuOpened(featureId, menu);
     }
 
-    protected void updateOptionsMenu(Menu menu) {
+    protected void updateOptionsMenu(final Menu menu) {
         if (menu == null) {
             return;
         }
+        final AppSettings as = AppSettings.current();
+
+        setMenuItemChecked(menu, as.fullScreen, R.id.mainmenu_fullscreen);
+        setMenuItemChecked(menu, as.showTitle, R.id.mainmenu_showtitle);
         setMenuItemChecked(menu, zoomControls.getVisibility() == View.VISIBLE, R.id.mainmenu_zoom);
 
-        BookSettings bs = getController().getBookSettings();
+        final BookSettings bs = getController().getBookSettings();
         if (bs == null) {
             return;
         }

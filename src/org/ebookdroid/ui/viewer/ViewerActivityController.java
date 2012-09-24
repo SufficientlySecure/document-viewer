@@ -61,6 +61,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.emdev.common.android.AndroidVersion;
 import org.emdev.common.backup.BackupManager;
 import org.emdev.common.filesystem.PathFromUri;
 import org.emdev.common.log.LogContext;
@@ -95,6 +96,8 @@ actions = {
         @ActionMethodDef(id = R.id.mainmenu_goto_page, method = "showDialog"),
         @ActionMethodDef(id = R.id.mainmenu_booksettings, method = "showBookSettings"),
         @ActionMethodDef(id = R.id.mainmenu_settings, method = "showAppSettings"),
+        @ActionMethodDef(id = R.id.mainmenu_fullscreen, method = "toggleFullScreen"),
+        @ActionMethodDef(id = R.id.mainmenu_showtitle, method = "toggleTitleVisibility"),
         @ActionMethodDef(id = R.id.mainmenu_nightmode, method = "toggleNightMode"),
         @ActionMethodDef(id = R.id.mainmenu_thumbnail, method = "setCurrentPageAsThumbnail"),
         @ActionMethodDef(id = R.id.mainmenu_bookmark, method = "showBookmarkDialog"),
@@ -172,7 +175,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         final AppSettings newSettings = AppSettings.current();
 
         activity.setRequestedOrientation(newSettings.rotation.getOrientation());
-        IUIManager.instance.setTitleVisible(activity, newSettings.showTitle);
+        IUIManager.instance.setTitleVisible(activity, newSettings.showTitle, true);
 
         TouchManager.loadFromSettings(newSettings);
         KeyBindingsManager.loadFromSettings(newSettings);
@@ -505,6 +508,20 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         SettingsUI.showAppSettings(getManagedComponent(), bookSettings.fileName);
     }
 
+    @ActionMethod(ids = R.id.mainmenu_fullscreen)
+    public void toggleFullScreen(final ActionEx action) {
+        if (!AndroidVersion.lessThan3x) {
+            AppSettings.toggleFullScreen();
+        }
+    }
+
+    @ActionMethod(ids = R.id.mainmenu_showtitle)
+    public void toggleTitleVisibility(final ActionEx action) {
+        if (!AndroidVersion.lessThan3x) {
+            AppSettings.toggleTitleVisibility();
+        }
+    }
+
     @ActionMethod(ids = R.id.mainmenu_nightmode)
     public void toggleNightMode(final ActionEx action) {
         SettingsManager.toggleNightMode(bookSettings);
@@ -718,6 +735,10 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
         if (diff.isFullScreenChanged()) {
             IUIManager.instance.setFullScreenMode(activity, activity.view.getView(), newSettings.fullScreen);
+        }
+
+        if (!diff.isFirstTime() && diff.isShowTitleChanged()) {
+            IUIManager.instance.setTitleVisible(activity, newSettings.showTitle, false);
         }
 
         if (diff.isKeepScreenOnChanged()) {

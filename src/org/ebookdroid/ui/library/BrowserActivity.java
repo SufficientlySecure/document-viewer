@@ -111,7 +111,7 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        IUIManager.instance.setTitleVisible(this, !AndroidVersion.lessThan3x);
+        IUIManager.instance.setTitleVisible(this, !AndroidVersion.lessThan3x, true);
         setContentView(R.layout.browser);
 
         adapter = new BrowserAdapter(filter);

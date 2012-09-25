@@ -40,7 +40,7 @@ public class OPDSTaskExecutor {
 
     public void startLoadThumbnails(final Feed feed) {
         if (background != null) {
-            background.cancel(true);
+            background.stop();
         }
         background = new LoadThumbnailTask(adapter);
         executor.execute(background, feed);

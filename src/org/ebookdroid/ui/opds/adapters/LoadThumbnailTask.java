@@ -14,13 +14,20 @@ import java.io.FileInputStream;
 
 import org.emdev.ui.tasks.AsyncTask;
 import org.emdev.utils.LengthUtils;
+import org.emdev.utils.concurrent.Flag;
 
 final class LoadThumbnailTask extends AsyncTask<Feed, Book, String> {
 
     private final OPDSAdapter adapter;
 
+    private final Flag stopped = new Flag();
+
     LoadThumbnailTask(OPDSAdapter adapter) {
         this.adapter = adapter;
+    }
+
+    public void stop() {
+        stopped.set();
     }
 
     @Override
@@ -33,7 +40,7 @@ final class LoadThumbnailTask extends AsyncTask<Feed, Book, String> {
                 continue;
             }
             for (final Book book : feed.books) {
-                if (isCancelled() || adapter.currentFeed != book.parent) {
+                if (stopped.get() || adapter.currentFeed != book.parent) {
                     return null;
                 }
                 loadBookThumbnail(book);

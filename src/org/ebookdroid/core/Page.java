@@ -111,6 +111,21 @@ public class Page {
         return shouldCrop() ? nodes.root.getCropping() : null;
     }
 
+    public RectF getCropping(PageTreeNode node) {
+        return shouldCrop() ? node.getCropping() : null;
+    }
+
+    protected void updateAspectRatio() {
+        final RectF cropping = getCropping();
+        if (cropping != null) {
+            final float pageWidth = cpi.width * cropping.width();
+            final float pageHeight = cpi.height * cropping.height();
+            setAspectRatio(pageWidth, pageHeight);
+        } else {
+            setAspectRatio(cpi);
+        }
+    }
+
     public RectF getBounds(final float zoom) {
         // if (zoom != storedZoom) {
         // storedZoom = zoom;

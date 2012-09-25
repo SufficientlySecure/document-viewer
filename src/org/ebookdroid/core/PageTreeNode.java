@@ -67,14 +67,16 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             manualCropping = null;
         }
 
-        updateAspectRatio();
+        page.updateAspectRatio();
     }
 
     public void setAutoCropping(final RectF r, final boolean commit) {
         autoCropping = r;
-        if (commit && id == 0) {
-            page.base.getDocumentModel().updateAutoCropping(page, r);
-            updateAspectRatio();
+        if (id == 0) {
+            if (commit) {
+                page.base.getDocumentModel().updateAutoCropping(page, r);
+            }
+            page.updateAspectRatio();
         }
     }
 
@@ -84,18 +86,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             if (commit) {
                 page.base.getDocumentModel().updateManualCropping(page, r);
             }
-            updateAspectRatio();
-        }
-    }
-
-    public void updateAspectRatio() {
-        final RectF cropping = page.getCropping();
-        if (cropping != null) {
-            final float pageWidth = page.cpi.width * cropping.width();
-            final float pageHeight = page.cpi.height * cropping.height();
-            page.setAspectRatio(pageWidth, pageHeight);
-        } else {
-            page.setAspectRatio(page.cpi);
+            page.updateAspectRatio();
         }
     }
 
@@ -110,6 +101,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         this.fullId = page.index + ":0";
         this.pageSliceBounds = page.type.getInitialRect();
         this.autoCropping = null;
+        this.manualCropping = null;
     }
 
     PageTreeNode(final Page page, final PageTreeNode parent, final int id, final RectF localPageSliceBounds) {

@@ -205,7 +205,7 @@ public class DecodeServiceBase implements DecodeService {
                 return;
             }
 
-            // Checks if cropping setting is set and node crop regionb is not set
+            // Checks if cropping setting is set and node crop region is not set
             if (task.node.page.shouldCrop() && task.node.getCropping() == null) {
                 if (LCTX.isDebugEnabled()) {
                     LCTX.d(Thread.currentThread().getName() + ": Task " + task.id
@@ -229,7 +229,7 @@ public class DecodeServiceBase implements DecodeService {
                 LCTX.d(Thread.currentThread().getName() + ": Task " + task.id + ": Rendering rect: " + r);
             }
 
-            RectF cropping = task.node.page.getCropping();
+            RectF cropping = task.node.page.getCropping(task.node);
             final RectF actualSliceBounds = cropping != null ? cropping : task.node.pageSliceBounds;
             final IBitmapRef bitmap = vuPage.renderBitmap(task.viewState, r.width(), r.height(), actualSliceBounds);
 

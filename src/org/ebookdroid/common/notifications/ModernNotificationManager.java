@@ -26,7 +26,7 @@ class ModernNotificationManager extends AbstractNotificationManager {
         nb.setTicker(message);
         nb.setContentText(message);
 
-        final Notification notification = nb.build();
+        final Notification notification = nb.getNotification();
         final int id = SEQ.getAndIncrement();
         getManager().notify(id, notification);
 

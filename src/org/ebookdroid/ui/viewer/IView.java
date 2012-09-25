@@ -66,4 +66,6 @@ public interface IView {
     PointF getBase(RectF viewRect);
 
     void checkFullScreenMode();
+
+    boolean post(Runnable r);
 }

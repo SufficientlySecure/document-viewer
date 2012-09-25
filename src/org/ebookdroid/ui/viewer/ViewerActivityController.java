@@ -293,7 +293,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
     }
 
     public void startDecoding(final String fileName, final String password) {
-        getManagedComponent().view.getView().post(new BookLoadTask(fileName, password));
+        getManagedComponent().view.post(new BookLoadTask(fileName, password));
     }
 
     public void beforeResume() {

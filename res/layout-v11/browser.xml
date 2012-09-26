@@ -9,7 +9,6 @@
         android:id="@+id/browserflip"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/actionbar_height"
         android:gravity="center"
         android:orientation="vertical" />
 

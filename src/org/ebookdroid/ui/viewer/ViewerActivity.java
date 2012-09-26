@@ -328,7 +328,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
         setMenuItemChecked(menu, bs.nightMode, R.id.mainmenu_nightmode);
         setMenuItemChecked(menu, bs.cropPages, R.id.mainmenu_croppages);
-        setMenuItemChecked(menu, bs.splitPages, R.id.mainmenu_splitpages);
+        setMenuItemChecked(menu, bs.splitPages, R.id.mainmenu_splitpages, R.drawable.viewer_menu_split_pages, R.drawable.viewer_menu_split_pages_off);
     }
 
     /**

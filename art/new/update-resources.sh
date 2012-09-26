@@ -46,24 +46,28 @@ do
 	if [ "$TYPE" == "ACTIONBAR" ];
 	then
 #    	rsvg-convert -w 48 -h 48 -o "$XDPI_DIR/$NAME.png" $i
-    	inkscape -w 48 -h 48 -e "$XDPI_DIR/$NAME.png" $i
-    	inkscape -w 36 -h 36 -e "$HDPI_DIR/$NAME.png" $i
-    	inkscape -w 24 -h 24 -e "$MDPI_DIR/$NAME.png" $i
-    	inkscape -w 18 -h 18 -e "$LDPI_DIR/$NAME.png" $i
+#    	inkscape -w 48 -h 48 -e "$XDPI_DIR/$NAME.png" $i
+    	inkscape -w 48 -h 48 -e "$HDPI_DIR/$NAME.png" $i
+    	inkscape -w 36 -h 36 -e "$MDPI_DIR/$NAME.png" $i
+    	inkscape -w 24 -h 24 -e "$LDPI_DIR/$NAME.png" $i
 
-    	inkscape -w 48 -h 48 -e "$XL_HDPI_DIR/$NAME.png" $i
-    	inkscape -w 36 -h 36 -e "$XL_MDPI_DIR/$NAME.png" $i
-
-    	rm -f "$TARGET_DIR/$NAME.png"
-	fi
-	if [ "$TYPE" == "MENU" ];
+    	cat "$MDPI_DIR/$NAME.png" > "$TARGET_DIR/$NAME.png"
+	elif [ "$TYPE" == "MENU" ];
 	then
-    	inkscape -w 48 -h 48 -e "$XDPI_DIR/$NAME.png" $i
+#    	inkscape -w 48 -h 48 -e "$XDPI_DIR/$NAME.png" $i
     	inkscape -w 48 -h 48 -e "$HDPI_DIR/$NAME.png" $i
     	inkscape -w 32 -h 32 -e "$MDPI_DIR/$NAME.png" $i
     	inkscape -w 24 -h 24 -e "$LDPI_DIR/$NAME.png" $i
 
-    	rm -f "$TARGET_DIR/$NAME.png"
+    	cat "$MDPI_DIR/$NAME.png" > "$TARGET_DIR/$NAME.png"
+	else
+#    	inkscape -w 48 -h 48 -e "$XDPI_DIR/$NAME.png" $i
+    	inkscape -w 48 -h 48 -e "$HDPI_DIR/$NAME.png" $i
+    	inkscape -w 32 -h 32 -e "$MDPI_DIR/$NAME.png" $i
+    	inkscape -w 24 -h 24 -e "$LDPI_DIR/$NAME.png" $i
+
+    	cat "$MDPI_DIR/$NAME.png" > "$TARGET_DIR/$NAME.png"
 	fi
+
 done
 

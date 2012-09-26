@@ -24,13 +24,13 @@ Open to edit, add content (by importing svg graphics or by editing them on the s
 This will ensure the button outline will be the same for all buttons.
 
 foldertemplate_button.svg can be used to add content to folder buttons
-folder buttons use straight folders to maximaze real estate.
+folder buttons use flat 2D folders to maximaze real estate.
 
-To create a variant of the folder icon:
----------------------------------------
+To create a variant of the actionbar folder icon:
+-------------------------------------------------
 Actionbar folder icons are now 3d slanted and darker.
 
-To create actionbar 3D folders, use 
+To create actionbar 3D folders, use foldertemplate_actionbar.svg (it is the same as actionbar_open.svg)
 This will make sure the baseline and overall position of the folder remain unchanged in all versions.
 
 slanted Folders are slanted with 15 degress or 20 degrees in the y direction, according to type.
@@ -41,11 +41,10 @@ foldertemplate.svg contains a bigger version.
 
 Things to do:
 ==============
-
-Align button content to a common baseline (for different items)
-Redo magnifying glass icons with current icontemplate and:
-	for quick zoom ---> add a ruler under the lens
-Absolutely redo the triangles in outline view!!! They are too big and obtrusive.
+- Redo the remaining icons in order to have script-resizable SVG sources.
+- Align button content to a common baseline (for different items)
+- Quick zoom ---> add a ruler under the lens instead of the plus (+) symbol.
+- Absolutely redo the triangles in outline view!!! They are too big and obtrusive.
 
 
 
@@ -54,7 +53,12 @@ Possible eyecandy enhancements
 ==============================
 
 Reversing gradient of action bar background. Right now (vers. 1.5.3 dev 1447) the gradient is such as to present a grey-whitish discontinuity near the top black bar of the screen and a fading to black toward Ebookdroid area. In this way the first black row in filebrowse mode looks bigger then the ones below.
+Reversing the gradient, or removing it could fix this asymmetry.
 
-As for the outline view: reducing the height and removing gradient coloring from the rows of the outline could greatly improve its appearance without noticeably hindering navigation (users will tap on text).
-A fully black text should appear as more 'elegant'.
+Outline view: 
+reducing the size of the triangles, most notably their height, using an aspectratio = goldenration for both triangles.
+Also, removing gradient coloring from the rows of the outline could greatly improve its appearance without noticeably hindering navigation (users will tap on text).
+A fully black (or other uniform color) background should appear as more 'elegant'.
+
+If possible, add a line under each first level section, once opened.
 

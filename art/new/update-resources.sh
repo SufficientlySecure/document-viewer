@@ -11,27 +11,33 @@ XL_HDPI_DIR=../../res/drawable-xlarge-hdpi
 
 echo "Remove old resources..."
 
-rm -f $TARGET_DIR/*
+rm -f $TARGET_DIR/*.png $TARGET_DIR/*.xml
 
 echo "Copy XML resources..."
 
 for i in `find . -depth -name "*.xml" -type f`
 do
 	NAME=`basename $i`
-	cp $i $TARGET_DIR/$NAME
+	cp $i "$TARGET_DIR/$NAME"
 done
 
 echo "Copy PNG resources..."
 
+for i in `find . -maxdepth 1 -name "*.png" -type f`
+do
+	NAME=`basename $i`
+	cp $i "$TARGET_DIR/$NAME"
+done
+
 for i in `find activities -depth -name "*.png" -type f`
 do
 	NAME=`basename $i`
-	cp "$i" $TARGET_DIR/$NAME
+	cp "$i" "$TARGET_DIR/$NAME"
 done
 for i in `find components -depth -name "*.png" -type f`
 do
     NAME=`basename $i`
-	cp "$i" $TARGET_DIR/$NAME
+	cp "$i" "$TARGET_DIR/$NAME"
 done
 
 echo "Convert SVG actionbar and menu resources to PNG..."
@@ -45,8 +51,6 @@ do
 
 	if [ "$TYPE" == "ACTIONBAR" ];
 	then
-#		rsvg-convert -w 48 -h 48 -o "$XDPI_DIR/$NAME.png" $i
-#		inkscape -w 48 -h 48 -e "$XDPI_DIR/$NAME.png" $i
 		if [ "$HDPI_DIR/$NAME.png" -ot "$i" ];
 		then
 			inkscape -w 48 -h 48 -e "$HDPI_DIR/$NAME.png" $i
@@ -54,16 +58,16 @@ do
 		if [ "$MDPI_DIR/$NAME.png" -ot "$i" ];
 		then
 			inkscape -w 36 -h 36 -e "$MDPI_DIR/$NAME.png" $i
-			cat "$MDPI_DIR/$NAME.png" > "$TARGET_DIR/$NAME.png"
 		fi
 		if [ "$LDPI_DIR/$NAME.png" -ot "$i" ];
 		then
 		inkscape -w 24 -h 24 -e "$LDPI_DIR/$NAME.png" $i
 		fi
 
+		cp "$MDPI_DIR/$NAME.png" "$TARGET_DIR/$NAME.png"
+
 	elif [ "$TYPE" == "MENU" ];
 	then
-#		inkscape -w 48 -h 48 -e "$XDPI_DIR/$NAME.png" $i
 		if [ "$HDPI_DIR/$NAME.png" -ot "$i" ];
 		then
 			inkscape -w 48 -h 48 -e "$HDPI_DIR/$NAME.png" $i
@@ -71,15 +75,15 @@ do
 		if [ "$MDPI_DIR/$NAME.png" -ot "$i" ];
 		then
 			inkscape -w 32 -h 32 -e "$MDPI_DIR/$NAME.png" $i
-			cat "$MDPI_DIR/$NAME.png" > "$TARGET_DIR/$NAME.png"
 		fi
 		if [ "$LDPI_DIR/$NAME.png" -ot "$i" ];
 		then
 			inkscape -w 24 -h 24 -e "$LDPI_DIR/$NAME.png" $i
 		fi
+
+		cp "$MDPI_DIR/$NAME.png" "$TARGET_DIR/$NAME.png"
 
 	else
-#		inkscape -w 48 -h 48 -e "$XDPI_DIR/$NAME.png" $i
 		if [ "$HDPI_DIR/$NAME.png" -ot "$i" ];
 		then
 			inkscape -w 48 -h 48 -e "$HDPI_DIR/$NAME.png" $i
@@ -87,13 +91,13 @@ do
 		if [ "$MDPI_DIR/$NAME.png" -ot "$i" ];
 		then
 			inkscape -w 32 -h 32 -e "$MDPI_DIR/$NAME.png" $i
-			cat "$MDPI_DIR/$NAME.png" > "$TARGET_DIR/$NAME.png"
 		fi
 		if [ "$LDPI_DIR/$NAME.png" -ot "$i" ];
 		then
 			inkscape -w 24 -h 24 -e "$LDPI_DIR/$NAME.png" $i
 		fi
 
+		cp "$MDPI_DIR/$NAME.png" "$TARGET_DIR/$NAME.png"
 	fi
 
 done

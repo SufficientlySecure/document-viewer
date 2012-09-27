@@ -1,27 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="30dip"
-    android:layout_marginBottom="2dip"
-    android:layout_marginTop="2dip" >
+    android:layout_height="52dip" >
 
-    <ProgressBar
-        android:id="@+id/bookmarkPage"
-        style="?android:attr/progressBarStyleHorizontal"
+    <FrameLayout
         android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:ellipsize="marquee"
-        android:gravity="center_vertical"
-        android:max="100"
-        android:progress="50" />
+        android:layout_height="48dip"
+        android:layout_marginBottom="2dip"
+        android:layout_marginTop="2dip"
+        android:layout_weight="1.0" >
 
-    <TextView
-        android:id="@+id/bookmarkName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:ellipsize="marquee"
-        android:gravity="center_vertical"
-        android:singleLine="true" />
+        <ProgressBar
+            android:id="@+id/bookmarkPage"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:ellipsize="marquee"
+            android:gravity="center_vertical"
+            android:max="100"
+            android:progress="50" />
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/bookmarkName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ellipsize="marquee"
+            android:gravity="center_vertical"
+            android:singleLine="true" />
+    </FrameLayout>
+
+    <View
+        android:id="@+id/bookmark_remove"
+        android:layout_width="48dip"
+        android:layout_height="48dip"
+        android:layout_marginBottom="2dip"
+        android:layout_marginLeft="8dip"
+        android:layout_marginRight="2dip"
+        android:layout_marginTop="2dip"
+        android:background="@drawable/viewer_goto_dlg_bookmark_remove" />
+
+</LinearLayout>

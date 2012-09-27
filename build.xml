@@ -31,6 +31,7 @@
     <property name="out.absolute.dir" location="${out.dir}" />
 
     <xpath input="AndroidManifest.xml" expression="/manifest/@android:versionName" output="manifest.version" />
+    <xpath input="AndroidManifest.xml" expression="/manifest/@android:versionCode" output="manifest.code" />
 
     <property name="out.debug.file" location="${out.absolute.dir}/${ant.project.name}-${debug.version}.apk" />
     <property name="out.release.file" location="${out.absolute.dir}/${ant.project.name}-release.apk" />
@@ -100,6 +101,16 @@
     </target>
 
     <target name="EBookDroid-release">
+
+        <condition property="legal.version.code">
+            <matches string="${manifest.code}" pattern="^\d{3,}0$"/>
+        </condition>
+        <fail unless="legal.version.code" message="Release version code must contain at least 4 digits and ended with 0: ${manifest.code}" />
+
+        <condition property="legal.version.name">
+            <matches string="${manifest.version}" pattern="^\d[.\d]+\d$"/>
+        </condition>
+        <fail unless="legal.version.name" message="Release version name must contains only digits and dots: ${manifest.version}" />
 
         <svn javahl="false">
             <export srcurl="http://ebookdroid.googlecode.com/svn/wiki/ChangeLog.wiki" destpath="assets/about_changelog.wiki" />

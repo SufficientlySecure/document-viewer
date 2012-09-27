@@ -45,9 +45,9 @@ actions = {
         // start
         @ActionMethodDef(id = R.id.actions_gotoPage, method = "goToPageAndDismiss"),
         @ActionMethodDef(id = R.id.actions_setBookmarkedPage, method = "updateControls"),
-        @ActionMethodDef(id = R.id.actions_showDeleteBookmarkDlg, method = "showDeleteBookmarkDlg"),
+        @ActionMethodDef(id = R.id.bookmark_remove_all, method = "showDeleteBookmarkDlg"),
         @ActionMethodDef(id = R.id.actions_removeBookmark, method = "removeBookmark"),
-        @ActionMethodDef(id = R.id.mainmenu_bookmark, method = "showAddBookmarkDlg"),
+        @ActionMethodDef(id = R.id.bookmark_add, method = "showAddBookmarkDlg"),
         @ActionMethodDef(id = R.id.actions_addBookmark, method = "addBookmark"),
         @ActionMethodDef(id = R.id.actions_showDeleteAllBookmarksDlg, method = "showDeleteAllBookmarksDlg"),
         @ActionMethodDef(id = R.id.actions_deleteAllBookmarks, method = "deleteAllBookmarks")
@@ -74,8 +74,8 @@ public class GoToPageDialog extends Dialog {
         final SeekBar seekbar = (SeekBar) findViewById(R.id.seekbar);
         final EditText editText = (EditText) findViewById(R.id.pageNumberTextEdit);
 
-        actions.connectViewToActions(R.id.bookmarkHeader, R.id.mainmenu_bookmark,
-                R.id.actions_showDeleteAllBookmarksDlg);
+        actions.connectViewToAction(R.id.bookmark_add);
+        actions.connectViewToAction(R.id.bookmark_remove_all);
         actions.connectViewToAction(button, R.id.actions_gotoPage);
         actions.connectEditorToAction(editText, R.id.actions_gotoPage);
 
@@ -165,7 +165,7 @@ public class GoToPageDialog extends Dialog {
         adapter.remove(bookmark);
     }
 
-    @ActionMethod(ids = R.id.mainmenu_bookmark)
+    @ActionMethod(ids = R.id.bookmark_add)
     public void showAddBookmarkDlg(final ActionEx action) {
         final Context context = getContext();
 
@@ -194,7 +194,7 @@ public class GoToPageDialog extends Dialog {
         adapter.notifyDataSetChanged();
     }
 
-    @ActionMethod(ids = R.id.actions_showDeleteAllBookmarksDlg)
+    @ActionMethod(ids = R.id.bookmark_remove_all)
     public void showDeleteAllBookmarksDlg(final ActionEx action) {
         if (!adapter.hasUserBookmarks()) {
             return;
@@ -321,13 +321,13 @@ public class GoToPageDialog extends Dialog {
             if (itemView == null) {
                 itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.bookmark, parent, false);
                 final ProgressBar bar = (ProgressBar) itemView.findViewById(R.id.bookmarkPage);
-                bar.setProgressDrawable(base.getActivity().getResources().getDrawable(R.drawable.viewer_goto_dlg_progress));
+                bar.setProgressDrawable(base.getActivity().getResources()
+                        .getDrawable(R.drawable.viewer_goto_dlg_progress));
             }
 
             final Bookmark b = getBookmark(index);
             itemView.setTag(b);
             itemView.setOnClickListener(actions.getOrCreateAction(R.id.actions_setBookmarkedPage));
-            itemView.setOnLongClickListener(actions.getOrCreateAction(R.id.actions_showDeleteBookmarkDlg));
 
             final TextView text = (TextView) itemView.findViewById(R.id.bookmarkName);
             final ProgressBar bar = (ProgressBar) itemView.findViewById(R.id.bookmarkPage);
@@ -335,6 +335,15 @@ public class GoToPageDialog extends Dialog {
 
             bar.setMax(base.getDocumentModel().getPageCount() - 1);
             bar.setProgress(b.page.viewIndex);
+
+            final View btn = (View) itemView.findViewById(R.id.bookmark_remove);
+            if (b.service) {
+                btn.setVisibility(View.GONE);
+            } else {
+                btn.setVisibility(View.VISIBLE);
+                btn.setOnClickListener(actions.getOrCreateAction(R.id.actions_showDeleteBookmarkDlg));
+                btn.setTag(b);
+            }
 
             return itemView;
         }

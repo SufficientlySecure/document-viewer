@@ -8,8 +8,10 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="52dip"
         android:layout_gravity="center"
+        android:layout_marginBottom="8dip"
+        android:layout_marginTop="8dip"
         android:baselineAligned="true"
         android:gravity="top"
         android:orientation="horizontal" >
@@ -18,10 +20,9 @@
             android:id="@+id/pageNumberTextEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="2dip"
+            android:layout_gravity="center_vertical"
             android:layout_marginLeft="4dip"
             android:layout_marginRight="2dip"
-            android:layout_marginTop="4dip"
             android:layout_weight="1"
             android:inputType="number"
             android:minEms="4"
@@ -29,20 +30,34 @@
             android:textSize="24dip"
             android:textStyle="bold" />
 
-        <Button
+        <LinearLayout
             android:id="@+id/goToButton"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginBottom="2dip"
             android:layout_marginLeft="2dip"
             android:layout_marginRight="4dip"
-            android:layout_marginTop="4dip"
             android:layout_weight="1"
-            android:ellipsize="marquee"
-            android:gravity="center"
-            android:text="@string/button_goto_page"
-            android:textSize="24dip"
-            android:textStyle="bold" />
+            android:background="@drawable/viewer_goto_dlg_goto_background" >
+
+            <ImageView
+                android:layout_width="48dip"
+                android:layout_height="48dip"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="8dip"
+                android:src="@drawable/viewer_goto_dlg_goto" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="4dip"
+                android:layout_marginRight="8dip"
+                android:ellipsize="marquee"
+                android:gravity="center_vertical"
+                android:text="@string/button_goto_page"
+                android:textSize="24dip"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
 
     <RelativeLayout

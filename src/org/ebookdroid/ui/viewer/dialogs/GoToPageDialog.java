@@ -17,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -43,7 +42,7 @@ import org.emdev.utils.LayoutUtils;
 // action
 actions = {
         // start
-        @ActionMethodDef(id = R.id.actions_gotoPage, method = "goToPageAndDismiss"),
+        @ActionMethodDef(id = R.id.goToButton, method = "goToPageAndDismiss"),
         @ActionMethodDef(id = R.id.actions_setBookmarkedPage, method = "updateControls"),
         @ActionMethodDef(id = R.id.bookmark_remove_all, method = "showDeleteBookmarkDlg"),
         @ActionMethodDef(id = R.id.actions_removeBookmark, method = "removeBookmark"),
@@ -70,13 +69,12 @@ public class GoToPageDialog extends Dialog {
         setTitle(R.string.dialog_title_goto_page);
         setContentView(R.layout.gotopage);
 
-        final Button button = (Button) findViewById(R.id.goToButton);
         final SeekBar seekbar = (SeekBar) findViewById(R.id.seekbar);
         final EditText editText = (EditText) findViewById(R.id.pageNumberTextEdit);
 
         actions.connectViewToAction(R.id.bookmark_add);
         actions.connectViewToAction(R.id.bookmark_remove_all);
-        actions.connectViewToAction(button, R.id.actions_gotoPage);
+        actions.connectViewToAction(R.id.goToButton);
         actions.connectEditorToAction(editText, R.id.actions_gotoPage);
 
         seekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
@@ -127,7 +125,7 @@ public class GoToPageDialog extends Dialog {
         adapter = null;
     }
 
-    @ActionMethod(ids = R.id.actions_gotoPage)
+    @ActionMethod(ids = R.id.goToButton)
     public void goToPageAndDismiss(final ActionEx action) {
         navigateToPage();
         dismiss();

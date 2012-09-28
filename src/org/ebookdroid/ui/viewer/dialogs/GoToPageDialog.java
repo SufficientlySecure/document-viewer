@@ -25,6 +25,9 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Collections;
+import java.util.Comparator;
+
 import org.emdev.ui.actions.ActionDialogBuilder;
 import org.emdev.ui.actions.ActionEx;
 import org.emdev.ui.actions.ActionMethod;
@@ -36,6 +39,7 @@ import org.emdev.ui.actions.params.Constant;
 import org.emdev.ui.actions.params.EditableValue;
 import org.emdev.ui.widget.IViewContainer;
 import org.emdev.ui.widget.SeekBarIncrementHandler;
+import org.emdev.utils.CompareUtils;
 import org.emdev.utils.LayoutUtils;
 
 @ActionTarget(
@@ -249,7 +253,7 @@ public class GoToPageDialog extends Dialog {
         base.jumpToPage(pageNumber - 1, 0, 0, AppSettings.current().storeGotoHistory);
     }
 
-    private final class BookmarkAdapter extends BaseAdapter {
+    private final class BookmarkAdapter extends BaseAdapter implements Comparator<Bookmark> {
 
         final BookSettings bookSettings;
 
@@ -261,12 +265,15 @@ public class GoToPageDialog extends Dialog {
             this.start = new Bookmark(true, getContext().getString(R.string.bookmark_start), PageIndex.FIRST, 0, 0);
             this.end = new Bookmark(true, getContext().getString(R.string.bookmark_end),
                     lastPage != null ? lastPage.index : PageIndex.FIRST, 0, 0);
+
+            Collections.sort(bookSettings.bookmarks, this);
         }
 
         public void add(final Bookmark... bookmarks) {
             for (final Bookmark bookmark : bookmarks) {
                 bookSettings.bookmarks.add(bookmark);
             }
+            Collections.sort(bookSettings.bookmarks, this);
             SettingsManager.storeBookSettings(bookSettings);
             notifyDataSetChanged();
         }
@@ -334,7 +341,7 @@ public class GoToPageDialog extends Dialog {
             bar.setMax(base.getDocumentModel().getPageCount() - 1);
             bar.setProgress(b.page.viewIndex);
 
-            final View btn = (View) itemView.findViewById(R.id.bookmark_remove);
+            final View btn = itemView.findViewById(R.id.bookmark_remove);
             if (b.service) {
                 btn.setVisibility(View.GONE);
             } else {
@@ -344,6 +351,31 @@ public class GoToPageDialog extends Dialog {
             }
 
             return itemView;
+        }
+
+        @Override
+        public int compare(final Bookmark lhs, final Bookmark rhs) {
+            if (lhs == null && rhs == null) {
+                return 0;
+            }
+            if (lhs == null && rhs != null) {
+                return 1;
+            }
+            if (lhs != null && rhs == null) {
+                return -1;
+            }
+
+            int res = CompareUtils.compare(lhs.page.docIndex, rhs.page.docIndex);
+            if (res == 0) {
+                res = CompareUtils.compare(lhs.page.viewIndex, rhs.page.viewIndex);
+                if (res == 0) {
+                    res = CompareUtils.compare(lhs.offsetY, rhs.offsetY);
+                    if (res == 0) {
+                        res = CompareUtils.compare(lhs.offsetX, rhs.offsetX);
+                    }
+                }
+            }
+            return res;
         }
     }
 }

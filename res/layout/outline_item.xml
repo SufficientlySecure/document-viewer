@@ -5,17 +5,18 @@
     android:background="@drawable/viewer_outline_item_background"
     android:orientation="horizontal" >
 
-    <LinearLayout
+    <View
         android:id="@+id/outline_space"
-        android:layout_width="48.0px"
-        android:layout_height="48.0px" />
+        android:layout_width="48dip"
+        android:layout_height="48dip" />
 
-    <LinearLayout
+    <View
         android:id="@+id/outline_collapse"
-        android:layout_width="48.0px"
-        android:layout_height="48.0px"
+        android:layout_width="48dip"
+        android:layout_height="48dip"
         android:layout_centerVertical="true"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"
         android:layout_toRightOf="@id/outline_space"
         android:background="@drawable/viewer_outline_item_expanded" />
 

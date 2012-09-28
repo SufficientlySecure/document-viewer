@@ -42,6 +42,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
     protected boolean inTitle = false;
     protected boolean inCite = false;
     protected boolean noteFirstWord = true;
+    protected boolean parseNotesInParagraphs = false;
 
     protected boolean spaceNeeded = true;
 
@@ -70,6 +71,14 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
     }
 
     @Override
+    public boolean parseAttributes(final FB2Tag tag) {
+        if (tag == FB2Tag.P) {
+            return parseNotesInParagraphs && tag.attributes.length > 0;
+        }
+        return tag.attributes.length > 0;
+    }
+
+    @Override
     public void startElement(final FB2Tag tag, final String... attributes) {
         spaceNeeded = true;
         final ArrayList<MarkupElement> markupStream = parsedContent.getMarkupStream(currentStream);
@@ -88,6 +97,15 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
                         if (title.length() > 0) {
                             title.append(" ");
                         }
+                    }
+                } else if (parseNotesInParagraphs) {
+                    currentStream = attributes[0];
+                    if (currentStream != null) {
+                        final String n = getNoteId(currentStream, true);
+                        parsedContent.getMarkupStream(currentStream).add(
+                                text(n.toCharArray(), 0, n.length(), crs, true));
+                        parsedContent.getMarkupStream(currentStream).add(crs.paint.fixedSpace);
+                        noteFirstWord = true;
                     }
                 }
                 break;
@@ -126,15 +144,27 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
                     parsingNotes = true;
                     crs = new RenderingStyle(parsedContent, TextStyle.FOOTNOTE);
                 }
+                if ("footnotes".equals(attributes[0])) {
+                    if (documentStarted) {
+                        documentEnded = true;
+                        parsedContent.getMarkupStream(null).add(new MarkupEndDocument());
+                    }
+                    parsingNotes = true;
+                    parseNotesInParagraphs = true;
+                    crs = new RenderingStyle(parsedContent, TextStyle.FOOTNOTE);
+                }
                 break;
             case SECTION:
                 if (parsingNotes) {
-                    currentStream = attributes[0];
-                    if (currentStream != null) {
-                        final String n = getNoteId(currentStream, true);
-                        parsedContent.getMarkupStream(currentStream).add(
-                                text(n.toCharArray(), 0, n.length(), crs, true));
-                        parsedContent.getMarkupStream(currentStream).add(crs.paint.fixedSpace);
+                    if (!parseNotesInParagraphs) {
+                        currentStream = attributes[0];
+                        if (currentStream != null) {
+                            final String n = getNoteId(currentStream, true);
+                            parsedContent.getMarkupStream(currentStream).add(
+                                    text(n.toCharArray(), 0, n.length(), crs, true));
+                            parsedContent.getMarkupStream(currentStream).add(crs.paint.fixedSpace);
+                            noteFirstWord = true;
+                        }
                     }
                 } else {
                     sectionLevel++;
@@ -312,11 +342,11 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
             case BODY:
                 parsingNotes = false;
                 currentStream = null;
+                parseNotesInParagraphs = false;
                 break;
             case SECTION:
                 if (parsingNotes) {
                     noteId = -1;
-                    noteFirstWord = true;
                 } else {
                     if (isInSection()) {
                         markupStream.add(MarkupEndPage.E);
@@ -466,12 +496,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
                 if (parsingNotes) {
                     if (noteFirstWord) {
                         noteFirstWord = false;
-                        int id = -2;
-                        try {
-                            id = Integer.parseInt(new String(ch, st, len));
-                        } catch (final Exception e) {
-                            id = -2;
-                        }
+                        int id = getNoteId(ch, st, len);
                         if (id == noteId) {
                             continue;
                         }

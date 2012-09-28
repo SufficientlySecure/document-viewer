@@ -45,7 +45,7 @@ public class SaxParser extends DefaultHandler {
         final FB2Tag tag = FB2Tag.getTagByName(qName);
         stack[depth++] = tag;
 
-        if (tag.attributes.length > 0) {
+        if (handler.parseAttributes(tag)) {
             for (int i = 0; i < tag.attributes.length; i++) {
                 attrs[i] = attributes.getValue(tag.attributes[i]);
             }

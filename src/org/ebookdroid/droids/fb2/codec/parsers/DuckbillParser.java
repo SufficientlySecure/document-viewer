@@ -50,11 +50,11 @@ public class DuckbillParser {
                 final FB2Tag tag = FB2Tag.getTagByName1(r.XmlDoc, tagNameStart, r.XmlOffset - tagNameStart);
 
                 // Process tag attributes
-                if (tag.attributes.length == 0) {
-                    handler.startElement(tag);
-                } else {
+                if (handler.parseAttributes(tag)) {
                     final String[] attributes = r.fillAttributes(tag);
                     handler.startElement(tag, attributes);
+                } else {
+                    handler.startElement(tag);
                 }
                 r.skipToEndTag();
 

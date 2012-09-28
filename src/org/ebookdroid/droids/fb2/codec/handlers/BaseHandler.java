@@ -126,6 +126,22 @@ public abstract class BaseHandler implements IContentHandler {
         return n;
     }
 
+    protected int getNoteId(final char[] ch, final int st, final int len) {
+        int id = -2;
+        try {
+            int last = len - 1;
+            final char lc = ch[st + last];
+            if (lc == '.' || lc == ')') {
+                last--;
+            }
+            final String fw = new String(ch, st, last + 1);
+            id = Integer.parseInt(fw);
+        } catch (final Exception e) {
+            id = -2;
+        }
+        return id;
+    }
+
     @Override
     public boolean skipCharacters() {
         return false;

@@ -10,7 +10,7 @@ public enum FB2Tag {
     /** **/
     UNKNOWN("unknown", FB2TagId.UNKNOWN, true, false),
     /** **/
-    P("p", FB2TagId.P, true, true),
+    P("p", FB2TagId.P, true, true, "id"),
     /** **/
     V("v", FB2TagId.V, true, true),
     /** **/

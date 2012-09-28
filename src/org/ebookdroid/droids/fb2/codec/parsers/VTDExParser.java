@@ -63,7 +63,8 @@ public class VTDExParser {
                     continue;
                 }
 
-                if (tag.attributes.length > 0) {
+                // Process tag attributes
+                if (handler.parseAttributes(tag)) {
                     ci = fillAtributes(nav, ci + 1, last, tag, tagAttrs);
                     handler.startElement(tag, tagAttrs);
                 } else {

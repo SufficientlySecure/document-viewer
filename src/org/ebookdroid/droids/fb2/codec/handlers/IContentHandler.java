@@ -4,6 +4,8 @@ import org.ebookdroid.droids.fb2.codec.FB2Tag;
 
 public interface IContentHandler {
 
+    boolean parseAttributes(FB2Tag tag);
+
     void startElement(final FB2Tag tag, final String... attributes);
 
     boolean skipCharacters();

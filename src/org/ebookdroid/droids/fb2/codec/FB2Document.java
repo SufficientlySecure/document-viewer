@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.emdev.common.archives.zip.ZipArchive;
@@ -84,11 +85,16 @@ public class FB2Document extends AbstractCodecDocument {
                 JustificationMode.Justify);
         createPages(documentLines);
 
-        content.clear();
-
-        System.gc();
         final long t4 = System.currentTimeMillis();
         System.out.println("Markup: " + (t4 - t3) + " ms");
+
+        final int removed = removeEmptyPages(true);
+        content.clear();
+
+        final long t5 = System.currentTimeMillis();
+        System.out.println("Cleanup: " + (t5 - t4) + " ms, removed: " + removed);
+
+        System.gc();
     }
 
     private void createPages(final List<Line> documentLines) {
@@ -135,6 +141,31 @@ public class FB2Document extends AbstractCodecDocument {
                 }
             }
         }
+    }
+
+    private int removeEmptyPages(final boolean all) {
+        int count = 0;
+        final ListIterator<FB2Page> i = pages.listIterator(pages.size());
+        if (all) {
+            while (i.hasPrevious()) {
+                final FB2Page p = i.previous();
+                if (p.isEmpty()) {
+                    i.remove();
+                    count++;
+                }
+            }
+        } else {
+            while (i.hasPrevious()) {
+                final FB2Page p = i.previous();
+                if (p.isEmpty()) {
+                    i.remove();
+                    count++;
+                } else {
+                    break;
+                }
+            }
+        }
+        return count;
     }
 
     private void parseWithSax(final String fileName) {

@@ -1,13 +1,11 @@
 package org.emdev.common.textmarkup;
 
-
 import org.ebookdroid.droids.fb2.codec.FB2Page;
 import org.ebookdroid.droids.fb2.codec.LineCreationParams;
 
 import java.util.ArrayList;
 
 import org.emdev.common.textmarkup.line.Line;
-
 
 public class MarkupEndPage extends Line implements MarkupElement {
 
@@ -18,7 +16,10 @@ public class MarkupEndPage extends Line implements MarkupElement {
     }
 
     @Override
-    public void publishToLines(ArrayList<Line> lines, LineCreationParams params) {
+    public void publishToLines(final ArrayList<Line> lines, final LineCreationParams params) {
+        if (!lines.isEmpty() && lines.get(lines.size() - 1) == E) {
+            return;
+        }
         lines.add(this);
     }
 
@@ -31,6 +32,5 @@ public class MarkupEndPage extends Line implements MarkupElement {
     public boolean appendable() {
         return false;
     }
-
 
 }

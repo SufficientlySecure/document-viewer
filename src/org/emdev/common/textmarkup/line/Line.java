@@ -163,4 +163,17 @@ public class Line {
         return this.title;
     }
 
+    public boolean isEmpty() {
+        if (LengthUtils.isEmpty(elements)) {
+            return true;
+        }
+        for (AbstractLineElement e : elements) {
+            if (e instanceof LineFixedWhiteSpace || e instanceof LineWhiteSpace) {
+                continue;
+            }
+            return false;
+        }
+        return true;
+    }
+
 }

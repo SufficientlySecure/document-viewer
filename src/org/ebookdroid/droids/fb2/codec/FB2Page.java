@@ -24,6 +24,7 @@ import org.emdev.common.textmarkup.line.Line;
 import org.emdev.common.textmarkup.line.LineFixedWhiteSpace;
 import org.emdev.common.textmarkup.line.LineWhiteSpace;
 import org.emdev.common.textmarkup.line.TextElement;
+import org.emdev.utils.LengthUtils;
 import org.emdev.utils.MatrixUtils;
 
 public class FB2Page extends AbstractCodecPage {
@@ -186,5 +187,22 @@ public class FB2Page extends AbstractCodecPage {
     @Override
     public boolean isRecycled() {
         return false;
+    }
+
+    public boolean isEmpty() {
+        if (LengthUtils.isEmpty(lines) && LengthUtils.isEmpty(noteLines)) {
+            return true;
+        }
+        for(Line l : lines) {
+            if (!l.isEmpty()) {
+                return false;
+            }
+        }
+        for(Line l : noteLines) {
+            if (!l.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 }

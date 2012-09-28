@@ -14,6 +14,7 @@ LOCAL_CFLAGS :=
 LOCAL_SRC_FILES := \
 	ebookdroidjni.c \
 	DjvuDroidBridge.cpp \
+	fb2droid.cpp \
 	cbdroidbridge.c \
 	mupdfdroidbridge.c \
 	jni_concurrent.c \

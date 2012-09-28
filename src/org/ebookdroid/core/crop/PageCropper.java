@@ -56,11 +56,25 @@ public class PageCropper {
     public static synchronized RectF getColumn(IBitmapRef bitmap, Rect bitmapBounds, float x, float y) {
         Canvas c = new Canvas(BITMAP);
         bitmap.draw(c, bitmapBounds, RECT, null);
-        final float avgLum = calculateAvgLum();
+        final float avgLum = calculateAvgLum(x, y);
         final float left = getLeftBound(avgLum, x, y);
         final float right = getRightBound(avgLum, x, y);
 
         return new RectF(left, 0, right, 1);
+    }
+
+    private static float calculateAvgLum(float x, float y) {
+        int pointX = (int) (BMP_SIZE * x);
+        int pointY = (int) (BMP_SIZE * y);
+        int top = Math.max(0, pointY - COLUMN_HALF_HEIGHT);
+        int bottom = Math.min(BMP_SIZE - 1, pointY + COLUMN_HALF_HEIGHT);
+        int left = Math.max(0, pointX - COLUMN_HALF_HEIGHT);
+        int right = Math.min(BMP_SIZE - 1, pointX + COLUMN_HALF_HEIGHT);
+
+        RawBitmap sample = new RawBitmap(right - left, bottom - top, false);
+        sample.retrieve(BITMAP, left, top);
+
+        return sample.getAvgLum();
     }
 
     private static float getLeftBound(float avgLum, float x, float y) {

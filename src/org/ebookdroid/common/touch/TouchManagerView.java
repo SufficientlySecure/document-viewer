@@ -88,10 +88,7 @@ public class TouchManagerView extends View {
         final float yStep = height / GRID_Y;
 
         int cIndex = 0;
-        final ListIterator<Region> regions = profile.regions();
-        while (regions.hasNext()) {
-            regions.next();
-        }
+        ListIterator<Region> regions = profile.regions(false);
         while (regions.hasPrevious()) {
             final Region region = regions.previous();
             final RectF r = region.getActualRect(width, height);
@@ -106,9 +103,7 @@ public class TouchManagerView extends View {
         drawGrid(canvas, xStep, yStep);
 
         cIndex = 0;
-        while (regions.hasNext()) {
-            regions.next();
-        }
+        regions = profile.regions(false);
         while (regions.hasPrevious()) {
             final Region region = regions.previous();
             final RectF r = region.getActualRect(width, height);

@@ -180,8 +180,8 @@ public class TouchManager {
             this.name = name;
         }
 
-        public ListIterator<Region> regions() {
-            return regions.listIterator();
+        public ListIterator<Region> regions(boolean forward) {
+            return forward ? regions.listIterator() : regions.listIterator(regions.size());
         }
 
         public void clear() {

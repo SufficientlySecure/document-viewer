@@ -168,11 +168,11 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
         if (optionsMenu == null) {
             return;
         }
-//        final File dir = adapter.getCurrentDirectory();
-//        final boolean hasParent = dir != null ? dir.getParentFile() != null : false;
+        final File dir = adapter.getCurrentDirectory();
+        final boolean hasParent = dir != null ? dir.getParentFile() != null : false;
 
-//        setMenuItemEnabled(optionsMenu, hasParent, R.id.browserupfolder, R.drawable.browser_actionbar_nav_up_enabled,
-//                R.drawable.browser_actionbar_nav_up_disabled);
+        setMenuItemEnabled(optionsMenu, hasParent, R.id.browserupfolder, R.drawable.browser_actionbar_nav_up_enabled,
+                R.drawable.browser_actionbar_nav_up_disabled);
     }
 
     @ActionMethod(ids = R.id.browserhome)
@@ -226,9 +226,9 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
             header.setText(newDir.getAbsolutePath());
             final ImageView view = (ImageView) findViewById(R.id.browserupfolder);
             if (view != null) {
-//                final boolean hasParent = newDir.getParentFile() != null;
-//                view.setImageResource(hasParent ? R.drawable.browser_actionbar_nav_up_enabled
-//                        : R.drawable.browser_actionbar_nav_up_disabled);
+                // final boolean hasParent = newDir.getParentFile() != null;
+                // view.setImageResource(hasParent ? R.drawable.browser_actionbar_nav_up_enabled
+                // : R.drawable.browser_actionbar_nav_up_disabled);
             }
         } else {
             setTitle(newDir.getAbsolutePath());

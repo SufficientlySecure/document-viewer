@@ -9,19 +9,19 @@
         <menu>
             <item
                 android:id="@+id/mainmenu_outline"
-                android:icon="@drawable/viewer_actionbar_outline"
+                android:icon="@drawable/viewer_menu_outline"
                 android:title="@string/menu_outline"/>
             <item
                 android:id="@+id/mainmenu_search"
-                android:icon="@drawable/viewer_actionbar_searchtext"
+                android:icon="@drawable/viewer_menu_searchtext"
                 android:title="Search"/>
             <item
                 android:id="@+id/mainmenu_bookmark"
-                android:icon="@drawable/viewer_actionbar_bookmark_add"
+                android:icon="@drawable/viewer_menu_bookmark_add"
                 android:title="@string/menu_add_bookmark"/>
             <item
                 android:id="@+id/mainmenu_goto_page"
-                android:icon="@drawable/viewer_actionbar_goto"
+                android:icon="@drawable/viewer_menu_goto"
                 android:title="@string/menu_goto_page"/>
         </menu>
     </item>
@@ -34,61 +34,64 @@
             <item
                 android:id="@+id/mainmenu_fullscreen"
                 android:checkable="true"
-                android:icon="@drawable/viewer_actionbar_fullscreen"
+                android:icon="@drawable/viewer_menu_fullscreen"
                 android:showAsAction="ifRoom"
                 android:title="@string/pref_fullscreen_title"/>
             <item
                 android:id="@+id/mainmenu_showtitle"
                 android:checkable="true"
-                android:icon="@drawable/viewer_actionbar_showtitle"
+                android:icon="@drawable/viewer_menu_showtitle"
                 android:showAsAction="ifRoom"
                 android:title="@string/pref_title_title"/>
             <item
                 android:id="@+id/mainmenu_nightmode"
                 android:checkable="true"
-                android:icon="@drawable/viewer_actionbar_daynight"
+                android:icon="@drawable/viewer_menu_daynight"
                 android:showAsAction="ifRoom"
                 android:title="@string/menu_nightmode"/>
             <item
                 android:id="@+id/mainmenu_splitpages"
                 android:checkable="true"
-                android:icon="@drawable/viewer_actionbar_split_pages"
+                android:icon="@drawable/viewer_menu_split_pages"
                 android:title="@string/pref_splitpages_title"/>
             <item
                 android:id="@+id/mainmenu_croppages"
                 android:checkable="true"
-                android:icon="@drawable/viewer_actionbar_crop_auto"
+                android:icon="@drawable/viewer_menu_crop_auto"
                 android:title="@string/pref_croppages_title"/>
             <item
                 android:id="@+id/mainmenu_crop"
-                android:icon="@drawable/viewer_actionbar_crop_manual"
+                android:icon="@drawable/viewer_menu_crop_manual"
                 android:title="@string/menu_crop"/>
             <item
                 android:id="@+id/mainmenu_thumbnail"
+                android:icon="@drawable/viewer_menu_thumbnail"
                 android:title="@string/menu_thumbnail"/>
             <item
                 android:id="@+id/mainmenu_zoom"
                 android:checkable="true"
-                android:icon="@drawable/viewer_actionbar_zoom"
+                android:icon="@drawable/viewer_menu_zoom"
                 android:title="@string/menu_zoom"/>
         </menu>
     </item>
     <item
         android:id="@+id/mainmenu_booksettings"
-        android:icon="@drawable/viewer_actionbar_booksettings"
+        android:icon="@drawable/viewer_menu_booksettings"
         android:showAsAction="never"
         android:title="@string/menu_booksettings"/>
     <item
         android:id="@+id/mainmenu_settings"
-        android:icon="@drawable/common_actionbar_allsettings"
+        android:icon="@drawable/common_menu_allsettings"
         android:showAsAction="never"
         android:title="@string/menu_settings"/>
     <item
         android:id="@+id/actions_toggleTouchManagerView"
+        android:icon="@drawable/viewer_menu_tapconfig"
         android:showAsAction="never"
         android:title="@string/menu_tap_configuration"/>
     <item
         android:id="@+id/actions_keyBindings"
+        android:icon="@drawable/viewer_menu_keybindings"
         android:showAsAction="never"
         android:title="@string/menu_key_bindings"/>
     <item

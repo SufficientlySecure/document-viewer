@@ -12,11 +12,11 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.2 r9819"
+   inkscape:version="0.48.1 "
    width="864"
    height="864"
-   sodipodi:docname="actionbar_uplevel.svg"
-   inkscape:export-filename="D:\DocData\Doc3\Dropbox\Grafica\Ebookdroid resources\actionbar_uplevel.png"
+   sodipodi:docname="actionbar_uplevel_disabled.svg"
+   inkscape:export-filename="F:\DropDocs\Dropbox\Grafica\Ebookdroid resources\actionbar_uplevel_disabled.png"
    inkscape:export-xdpi="5"
    inkscape:export-ydpi="5">
   <metadata
@@ -1596,19 +1596,35 @@
     </linearGradient>
     <filter
        inkscape:collect="always"
-       id="filter3981">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="17.787833"
-         id="feGaussianBlur3983" />
-    </filter>
-    <filter
-       inkscape:collect="always"
        id="filter4005">
       <feGaussianBlur
          inkscape:collect="always"
          stdDeviation="8.3009887"
          id="feGaussianBlur4007" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter3961"
+       x="-0.034969325"
+       width="1.0699386"
+       y="-0.21111112"
+       height="1.4222222">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="7.0161633"
+         id="feGaussianBlur3963" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter3981"
+       x="-0.024478527"
+       width="1.0489571"
+       y="-0.14777778"
+       height="1.2955556">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="4.9113143"
+         id="feGaussianBlur3983" />
     </filter>
   </defs>
   <sodipodi:namedview
@@ -1620,8 +1636,8 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1024"
-     inkscape:window-height="1263"
+     inkscape:window-width="1280"
+     inkscape:window-height="782"
      id="namedview4"
      showgrid="false"
      fit-margin-top="0"
@@ -1630,9 +1646,9 @@
      fit-margin-bottom="0"
      inkscape:zoom="0.6770082"
      inkscape:cx="426.83612"
-     inkscape:cy="421.86511"
-     inkscape:window-x="-4"
-     inkscape:window-y="-4"
+     inkscape:cy="644.83268"
+     inkscape:window-x="-6"
+     inkscape:window-y="-6"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg2" />
   <g
@@ -1735,5 +1751,23 @@
          d="m 522.641,369.9784 -73.08774,47.66532 0.69098,-0.72724 c 0,0 -185.58774,41.56473 -210.71117,47.19144 -21.24248,4.9385 -35.89672,14.93557 -43.98179,35.18186 -10.17715,26.71892 -99.83704,252.04741 -105.047755,265.14995 -8.751443,21.91499 0.04801,26.33747 24.586855,20.84169 7.66162,-1.71592 456.93699,-102.33684 479.3203,-107.34986 32.11455,-7.05141 46.80227,-16.29305 55.63166,-38.40323 6.86474,-17.19039 104.46257,-261.59072 104.46257,-261.59072 l 0.14837,-0.0332 c 0,0 8.75481,-21.92344 13.13222,-32.88516 12.49243,-27.68654 -4.18569,-28.71723 -30.41941,-23.13123 C 718.77331,326.05208 522.641,369.9784 522.641,369.9784 z"
          style="fill:url(#linearGradient3896);fill-opacity:1;fill-rule:evenodd;stroke:#888888;stroke-opacity:1" />
     </g>
+  </g>
+  <g
+     id="g3985">
+    <rect
+       transform="matrix(1.019592,0,0,1.019592,-7.3046912,-5.5638947)"
+       style="fill:#f9f9f9;fill-opacity:1;fill-rule:evenodd;stroke:none;filter:url(#filter3981)"
+       id="rect3959"
+       width="481.53036"
+       height="79.762695"
+       x="132.0753"
+       y="39.941765" />
+    <rect
+       y="39.941765"
+       x="132.0753"
+       height="79.762695"
+       width="481.53036"
+       id="rect3189"
+       style="fill:#8d8d8d;fill-opacity:1;fill-rule:evenodd;stroke:none" />
   </g>
 </svg>

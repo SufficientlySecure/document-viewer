@@ -20,7 +20,7 @@
     <string name="menu_backupsettings">"Backup e Ripristino"</string>
     <string name="menu_crop">"Ritaglia pagina"</string>
     <string name="menu_navigation_menu">"Navigazione..."</string>
-	<string name="menu_fastsettings_menu">"Vista..."</string>
+    <string name="menu_fastsettings_menu">"Vista..."</string>
     <string name="menu_allsettings_menu">"Impostazioni..."</string>
 
 </resources>

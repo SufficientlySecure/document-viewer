@@ -13,7 +13,7 @@
     <string name="msg_unexpected_error">"Si é verificato un errore imprevisto:\n%s"</string>
     <string name="msg_search_text_on_page">"Ricerca alla pagina %1$d…"</string>
     <string name="msg_no_text_found">"Testo non trovato"</string>
-    <string name="dialog_title_goto_page">"Pagina"</string>
+    <string name="dialog_title_goto_page">"Vai..."</string>
     <string name="button_goto_page">"Vai"</string>
     <string name="text_page">"Pagina"</string>
     <string name="error_close">"Chiudi"</string>
@@ -21,7 +21,7 @@
     <string name="dialog_backup_backup">"Salvataggio…"</string>
     <string name="dialog_backup_restore">"Ripristino…"</string>
     <string name="dialog_backup_remove">"Eliminazione…"</string>
-    <string name="add_bookmark_name">"Inserisci la descrizione per questo segnalibro"</string>
+    <string name="add_bookmark_name">"Testo associato a questo segnalibro"</string>
     <string name="bookmark_start">"Inizio"</string>
     <string name="bookmark_end">"Fine"</string>
     <string name="bookmark_invalid_page">"Il numero di pagina è errato. Pagine accessibili: 1-"</string>
@@ -71,7 +71,7 @@
 <!--<string name="opds_authfeed_username">"Username:"</string>-->
 <!--<string name="opds_authfeed_password">"Password:"</string>-->
 <!--<string name="opds_authfeed_ok">"Login"</string>-->
-<!--<string name="opds_error_title">"OPDS Error"</string>-->
+    <string name="opds_error_title">"Errore OPDS"</string>-->
 <!--<string name="opds_error_msg">"%s"</string>-->
     <string name="opds_retry_download">"Nuovo tentativo"</string>
     <string name="book_copy_start">"Copia libro…"</string>

@@ -24,7 +24,6 @@
         android:layout_height="134dip"
         android:layout_below="@id/thumbnailText"
         android:layout_gravity="bottom|center_horizontal"
-        android:contentDescription="@string/content_description_thumb"
         android:scaleType="fitEnd" >
     </ImageView>
 

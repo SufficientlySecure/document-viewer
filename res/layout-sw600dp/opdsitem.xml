@@ -12,7 +12,6 @@
         android:layout_alignParentBottom="false"
         android:layout_alignParentTop="true"
         android:layout_margin="8dip"
-        android:contentDescription="@string/content_description_icon"
         android:maxHeight="150dip"
         android:scaleType="centerInside"
         android:adjustViewBounds="true"

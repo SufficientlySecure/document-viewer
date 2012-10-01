@@ -9,10 +9,10 @@
     <string name="pref_brautoscandir_summary">"Каталог для автоматического сканирования"</string>
     <string name="pref_brbrfiletypesscreen_title">"Типы файлов"</string>
     <string name="pref_brbrfiletypesscreen_summary">"типы файлов для отображения"</string>
-<!--<string name="pref_cachelocation_title">"Cache location"</string>-->
-<!--<string name="pref_cachelocation_summary">"Location of a file cache"</string>-->
-<!--<string name="list_cachelocation_system">"System app cache"</string>-->
-<!--<string name="list_cachelocation_custom">"Sdcard app cache"</string>-->
+    <string name="pref_cachelocation_title">"Расположение кеша"</string>
+    <string name="pref_cachelocation_summary">"Расположение файлового кеша"</string>
+    <string name="list_cachelocation_system">"В памяти устройства"</string>
+    <string name="list_cachelocation_custom">"На карте памяти"</string>
 <!--<string name="pref_brfiletypedjvu_title">".djvu"</string>-->
     <string name="pref_brfiletypedjvu_summary">"Показывать DjVu файлы"</string>
 <!--<string name="pref_brfiletypedjv_title">".djv"</string>-->

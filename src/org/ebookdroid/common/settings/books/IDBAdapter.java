@@ -12,7 +12,7 @@ import org.emdev.common.log.LogManager;
 
 interface IDBAdapter {
 
-    LogContext LCTX = LogManager.root().lctx("DBAdapter");
+    LogContext LCTX = LogManager.root().lctx("DBAdapter", false);
 
     void onCreate(final SQLiteDatabase db);
 

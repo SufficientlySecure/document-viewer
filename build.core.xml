@@ -1,0 +1,117 @@
+<project basedir=".">
+
+    <property file="build.${user.name}.properties" />
+    <property file="build.properties" />
+    <property file="project.properties" />
+
+    <property name="aapt" value="${sdk.dir}/platform-tools/aapt" />
+    <property name="dx" value="${sdk.dir}/platform-tools/dx" />
+    <property name="android.jar" value="${sdk.dir}/platforms/${target}/android.jar" />
+
+    <path id="android.antlibs">
+        <pathelement path="${sdk.dir}/tools/lib/anttasks.jar" />
+    </path>
+    <path id="svnant.classpath">
+        <fileset dir="${svnant.dir}/lib">
+            <include name="**/*.jar" />
+        </fileset>
+    </path>
+    <path id="ant-contrib.classpath">
+        <fileset dir="${ant-contrib.dir}/lib">
+            <include name="**/*.jar" />
+        </fileset>
+    </path>
+
+    <typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svnant.classpath" />
+    <taskdef name="var" classname="net.sf.antcontrib.property.Variable" classpathref="ant-contrib.classpath"/>
+    <taskdef name="math" classname="net.sf.antcontrib.math.MathTask" classpathref="ant-contrib.classpath"/>
+    <taskdef name="xpath" classname="com.android.ant.XPathTask" classpathref="android.antlibs" />
+
+    <import file="${sdk.dir}/tools/ant/build.xml" />
+
+    <target name="-make-release">
+
+        <delete dir="${out.absolute.dir}" />
+        <mkdir dir="${out.absolute.dir}" />
+
+        <delete dir="obj" />
+        <mkdir dir="obj" />
+
+        <delete dir="libs/armeabi" />
+        <delete dir="libs/armeabi-v7a" />
+        <delete dir="libs/mips" />
+
+        <delete file="assets/unrar/unrar" />
+        <copy file="unrars/unrar.${unrar.arch}" tofile="assets/unrar/unrar" />
+
+        <echo>${mk}</echo>
+        <loadfile property="mk.content" srcfile="${mk}"></loadfile>
+        <echo>${mk.content}</echo>
+
+        <exec executable="${ndk.dir}/ndk-build" failonerror="true">
+            <arg value="NDK_DEBUG=0" />
+            <arg value="NDK_APPLICATION_MK=${mk}" />
+            <arg value="-j32" />
+        </exec>
+
+        <antcall target="release" />
+
+        <rename src="${out.release.file}" dest="${apk}" />
+
+        <echo>Finish ${version.name} (${version.code}) : ${apk}</echo>
+    </target>
+
+    <target name="-svn-force-update">
+        <exec executable="svn" failonerror="true">
+            <arg value="update" />
+            <arg value="." />
+            <arg value="-r" />
+            <arg value="HEAD" />
+            <arg value="--force" />
+        </exec>
+    </target>
+
+    <target name="-svn-get-revision">
+        <svn javahl="false">
+            <info target="." />
+        </svn>
+        <echo>Revision: ${svn.info.rev}</echo>
+    </target>
+
+    <target name="-svn-checkout-changelog">
+        <svn javahl="false">
+            <export srcurl="http://ebookdroid.googlecode.com/svn/wiki/ChangeLog.wiki" destpath="assets/about_changelog.wiki" />
+        </svn>
+    </target>
+
+    <target name="-check-release-version">
+        <condition property="legal.version.code">
+            <matches string="${package.version.code}" pattern="^\d{3,}0$"/>
+        </condition>
+        <fail unless="legal.version.code" message="Release version code must be ended with 0" />
+
+        <condition property="legal.version.name">
+            <matches string="${package.version.name}" pattern="^\d[.\d]+\d$"/>
+        </condition>
+        <fail unless="legal.version.name" message="Release version name must contains only digits and points" />
+    </target>
+
+    <target name="-check-dev-version">
+        <condition property="legal.version.code">
+            <matches string="${package.version.code}" pattern="^\d{3,}9$"/>
+        </condition>
+        <fail unless="legal.version.code" message="Development version code must be ended with 9" />
+
+        <condition property="legal.version.name">
+            <matches string="${package.version.name}" pattern="^\d[.\d]+\d-dev$"/>
+        </condition>
+        <fail unless="legal.version.name" message="Development version name must contains digits and points ended with -dev suffix" />
+    </target>
+
+    <target name="-prepare-dev" depends="-check-dev-version, -svn-force-update, -svn-get-revision, -svn-checkout-changelog">
+    </target>
+
+    <target name="-prepare-release" depends="-check-release-version, -svn-force-update, -svn-checkout-changelog">
+    </target>
+
+</project>

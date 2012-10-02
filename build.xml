@@ -1,43 +1,19 @@
 <project name="EBookDroid" basedir="." default="EBookDroid-dev">
 
-    <property file="build.${user.name}.properties" />
-    <property file="build.properties" />
-    <property file="project.properties" />
-
     <tstamp>
         <format property="debug.version" pattern="yyyyMMdd.HHmmss" />
     </tstamp>
-
-    <path id="svnant.classpath">
-        <fileset dir="${svnant.dir}/lib">
-            <include name="**/*.jar" />
-        </fileset>
-    </path>
-    <path id="ant-contrib.classpath">
-        <fileset dir="${ant-contrib.dir}/lib">
-            <include name="**/*.jar" />
-        </fileset>
-    </path>
-
-    <typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svnant.classpath" />
-	<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="ant-contrib.classpath"/>
-
-    <path id="android.antlibs">
-        <pathelement path="${sdk.dir}/tools/lib/anttasks.jar" />
-    </path>
-
-    <taskdef name="xpath" classname="com.android.ant.XPathTask" classpathref="android.antlibs" />
-
-    <property name="aapt" value="${sdk.dir}/platform-tools/aapt" />
-    <property name="dx" value="${sdk.dir}/platform-tools/dx" />
-
-    <property name="android.jar" value="${sdk.dir}/platforms/${target}/android.jar" />
 
     <property name="out.dir" value="target" />
     <property name="out.absolute.dir" location="${out.dir}" />
 
     <property name="out.debug.file" location="${out.absolute.dir}/${ant.project.name}-${debug.version}.apk" />
     <property name="out.release.file" location="${out.absolute.dir}/${ant.project.name}-release.apk" />
+
+    <path id="project.libraries.jars" />
+    <path id="project.libraries.libs" />
+
+    <import file="${basedir}/build.core.xml" />
 
     <property name="arm.mk" location="jni/Application.mk" />
     <property name="arm7.mk" location="jni/Application.arm7.mk" />
@@ -57,80 +33,9 @@
     <property name="mips.apk" value="apk/${package.name}-mips-${package.version.name}.apk" />
     <property name="x86.apk" value="apk/${package.name}-x86-${package.version.name}.apk" />
 
-    <path id="project.libraries.jars" />
-    <path id="project.libraries.libs" />
-
-    <path id="android.target.classpath">
-        <fileset dir="${sdk.dir}/platforms/${target}/">
-            <include name="android.jar" />
-        </fileset>
-    </path>
-
-    <import file="${sdk.dir}/tools/ant/build.xml" />
-
     <mkdir dir="apk" />
 
-    <target name="-make-release">
-
-        <delete dir="${out.absolute.dir}" />
-        <mkdir dir="${out.absolute.dir}" />
-
-        <delete dir="obj" />
-        <mkdir dir="obj" />
-
-        <delete dir="libs/armeabi" />
-        <delete dir="libs/armeabi-v7a" />
-        <delete dir="libs/mips" />
-
-        <delete file="assets/unrar/unrar" />
-        <copy file="unrars/unrar.${unrar.arch}" tofile="assets/unrar/unrar" />
-
-        <echo>${mk}</echo>
-        <loadfile property="mk.content" srcfile="${mk}"></loadfile>
-        <echo>${mk.content}</echo>
-        <exec executable="${ndk.dir}/ndk-build" failonerror="true">
-            <arg value="NDK_DEBUG=0" />
-            <arg value="NDK_APPLICATION_MK=${mk}" />
-            <arg value="-j32" />
-        </exec>
-
-        <antcall target="release" />
-
-        <rename src="${out.release.file}" dest="${apk}" />
-
-        <echo>Finish ${version.name} (${version.code}) : ${apk}</echo>
-    </target>
-
-	<target name="-check-release-version">
-        <condition property="legal.version.code">
-            <matches string="${package.version.code}" pattern="^\d{3,}0$"/>
-        </condition>
-        <fail unless="legal.version.code" message="Release version code must be ended with 0" />
-
-        <condition property="legal.version.name">
-            <matches string="${package.version.name}" pattern="^\d[.\d]+\d$"/>
-        </condition>
-        <fail unless="legal.version.name" message="Release version name must contains only digits and points" />
-	</target>
-
-	<target name="-check-dev-version">
-        <condition property="legal.version.code">
-            <matches string="${package.version.code}" pattern="^\d{3,}9$"/>
-        </condition>
-        <fail unless="legal.version.code" message="Development version code must be ended with 9" />
-
-        <condition property="legal.version.name">
-            <matches string="${package.version.name}" pattern="^\d[.\d]+\d-dev$"/>
-        </condition>
-        <fail unless="legal.version.name" message="Development version name must contains digits and points ended with -dev suffix" />
-	</target>
-
-    <target name="EBookDroid-release" depends="-check-release-version">
-
-        <svn javahl="false">
-            <export srcurl="http://ebookdroid.googlecode.com/svn/wiki/ChangeLog.wiki" destpath="assets/about_changelog.wiki" />
-        </svn>
-
+    <target name="EBookDroid-release" depends="-prepare-release">
         <var name="target.version.code" value="${package.version.code}" />
         <var name="target.version.name" value="${package.version.name}" />
 
@@ -228,18 +133,9 @@
         </antcall>
     </target>
 
-    <target name="EBookDroid-dev" depends="-check-dev-version">
-        <svn javahl="false">
-            <info target="." />
-        </svn>
-        <echo>Revision: ${svn.info.rev}</echo>
-
+    <target name="EBookDroid-dev" depends="-prepare-dev">
         <property name="target.apk" location="apk/${package.name}-${package.version.name}-r${svn.info.rev}.apk" />
         <echo>Target: ${target.apk}</echo>
-
-        <svn javahl="false">
-            <export srcurl="http://ebookdroid.googlecode.com/svn/wiki/ChangeLog.wiki" destpath="assets/about_changelog.wiki" />
-        </svn>
 
         <antcall target="-make-release">
             <param name="mk" value="${arm.mk}" />
@@ -251,20 +147,7 @@
         </antcall>
     </target>
 
-    <target name="EBookDroid-dev-all" depends="-check-dev-version">
-
-        <svn javahl="false">
-            <info target="." />
-        </svn>
-        <echo>Revision: ${svn.info.rev}</echo>
-
-        <property name="target.apk" location="apk/${package.name}-${package.version.name}-r${svn.info.rev}.apk" />
-        <echo>Target: ${target.apk}</echo>
-
-        <svn javahl="false">
-            <export srcurl="http://ebookdroid.googlecode.com/svn/wiki/ChangeLog.wiki" destpath="assets/about_changelog.wiki" />
-        </svn>
-
+    <target name="EBookDroid-dev-all" depends="-prepare-dev">
         <antcall target="-make-release" inheritall="true">
             <param name="mk" value="${arm.mk}" />
             <param name="apk" value="apk/${package.name}-${package.version.name}-r${svn.info.rev}.apk" />
@@ -332,18 +215,9 @@
 
     </target>
 
-    <target name="EBookDroid-Iconia-dev" depends="-check-dev-version">
-        <svn javahl="false">
-            <info target="." />
-        </svn>
-        <echo>Revision: ${svn.info.rev}</echo>
-
+    <target name="EBookDroid-Iconia-dev" depends="-prepare-dev">
         <property name="target.apk" location="apk/${package.name}-acer.iconia-${package.version.name}-r${svn.info.rev}.apk" />
         <echo>Target: ${target.apk}</echo>
-
-        <svn javahl="false">
-            <export srcurl="http://ebookdroid.googlecode.com/svn/wiki/ChangeLog.wiki" destpath="assets/about_changelog.wiki" />
-        </svn>
 
         <antcall target="-make-release">
             <param name="mk" value="${cortex.a9.mk}" />
@@ -355,18 +229,9 @@
         </antcall>
     </target>
 
-    <target name="EBookDroid-Prime-dev" depends="-check-dev-version">
-        <svn javahl="false">
-            <info target="." />
-        </svn>
-        <echo>Revision: ${svn.info.rev}</echo>
-
+    <target name="EBookDroid-Prime-dev" depends="-prepare-dev">
         <property name="target.apk" location="apk/${package.name}-asus.prime-${package.version.name}-r${svn.info.rev}.apk" />
         <echo>Target: ${target.apk}</echo>
-
-        <svn javahl="false">
-            <export srcurl="http://ebookdroid.googlecode.com/svn/wiki/ChangeLog.wiki" destpath="assets/about_changelog.wiki" />
-        </svn>
 
         <antcall target="-make-release">
             <param name="mk" value="${cortex.a9.neon.mk}" />
@@ -378,18 +243,9 @@
         </antcall>
     </target>
 
-    <target name="EBookDroid-MIPS-dev" depends="-check-dev-version">
-        <svn javahl="false">
-            <info target="." />
-        </svn>
-        <echo>Revision: ${svn.info.rev}</echo>
-
+    <target name="EBookDroid-MIPS-dev" depends="-prepare-dev">
         <property name="target.apk" location="apk/${package.name}-mips-${package.version.name}-r${svn.info.rev}.apk" />
         <echo>Target: ${target.apk}</echo>
-
-        <svn javahl="false">
-            <export srcurl="http://ebookdroid.googlecode.com/svn/wiki/ChangeLog.wiki" destpath="assets/about_changelog.wiki" />
-        </svn>
 
         <antcall target="-make-release">
             <param name="mk" value="${mips.mk}" />

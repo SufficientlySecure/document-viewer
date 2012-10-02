@@ -431,13 +431,19 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     @Override
     public void currentPageChanged(final PageIndex oldIndex, final PageIndex newIndex) {
-        final int pageCount = documentModel.getPageCount();
-        String pageText = "";
-        if (pageCount > 0) {
-            pageText = (newIndex.viewIndex + 1) + "/" + pageCount;
-        }
-        getManagedComponent().currentPageChanged(pageText, bookTitle);
-        SettingsManager.currentPageChanged(bookSettings, oldIndex, newIndex);
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                final int pageCount = documentModel.getPageCount();
+                String pageText = "";
+                if (pageCount > 0) {
+                    pageText = (newIndex.viewIndex + 1) + "/" + pageCount;
+                }
+                getManagedComponent().currentPageChanged(pageText, bookTitle);
+                SettingsManager.currentPageChanged(bookSettings, oldIndex, newIndex);
+            }
+        });
     }
 
     public void setWindowTitle() {

@@ -50,6 +50,7 @@ public class DrawThread extends Thread {
             return;
         }
         Canvas canvas = null;
+        //long t1 = System.currentTimeMillis();
         try {
             canvas = surfaceHolder.lockCanvas(null);
             EventPool.newEventDraw(viewState, canvas).process();
@@ -60,6 +61,8 @@ public class DrawThread extends Thread {
                 surfaceHolder.unlockCanvasAndPost(canvas);
             }
         }
+        //long t2 = System.currentTimeMillis();
+        //System.out.println("DrawThread.draw(): " + (t2 - t1) + " ms");
     }
 
     public ViewState takeTask(final long timeout, final TimeUnit unit, final boolean useLastState) {

@@ -37,6 +37,8 @@ public final class BaseView extends View implements IView {
 
     protected DrawThread drawThread;
 
+    protected ScrollEventThread scrollThread;
+
     protected boolean layoutLocked;
 
     protected final AtomicReference<Rect> layout = new AtomicReference<Rect>();
@@ -123,7 +125,7 @@ public final class BaseView extends View implements IView {
     @Override
     public void startPageScroll(final int dx, final int dy) {
         scroller.startScroll(getScrollX(), getScrollY(), dx, dy);
-        redrawView();
+        // redrawView();
     }
 
     /**
@@ -170,7 +172,12 @@ public final class BaseView extends View implements IView {
     protected final void onScrollChanged(final int curX, final int curY, final int oldX, final int oldY) {
         super.onScrollChanged(curX, curY, oldX, oldY);
 
-        base.getDocumentController().onScrollChanged(curX - oldX, curY - oldY);
+        if (scrollThread == null || !scrollThread.isAlive()) {
+            scrollThread = new ScrollEventThread(base);
+            scrollThread.start();
+        }
+
+        scrollThread.onScrollChanged(curX, curY, oldX, oldY);
     }
 
     /**

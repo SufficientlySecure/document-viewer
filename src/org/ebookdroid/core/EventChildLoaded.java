@@ -46,7 +46,7 @@ public class EventChildLoaded extends AbstractEvent {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.AbstractEvent#process()
      */
     @Override
@@ -64,7 +64,10 @@ public class EventChildLoaded extends AbstractEvent {
             recycleChildren();
 
             ctrl.pageUpdated(viewState, page);
-            ctrl.redrawView(viewState);
+
+            if (viewState.isNodeVisible(child, viewState.getBounds(page))) {
+                ctrl.redrawView(viewState);
+            }
 
             return viewState;
         } finally {

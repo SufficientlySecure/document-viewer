@@ -33,6 +33,8 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
     protected DrawThread drawThread;
 
+    protected ScrollEventThread scrollThread;
+
     protected boolean layoutLocked;
 
     protected final AtomicReference<Rect> layout = new AtomicReference<Rect>();
@@ -127,7 +129,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
     @Override
     public void startPageScroll(final int dx, final int dy) {
         scroller.startScroll(getScrollX(), getScrollY(), dx, dy);
-        redrawView();
+        // redrawView();
     }
 
     /**
@@ -174,7 +176,12 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
     protected final void onScrollChanged(final int curX, final int curY, final int oldX, final int oldY) {
         super.onScrollChanged(curX, curY, oldX, oldY);
 
-        base.getDocumentController().onScrollChanged(curX - oldX, curY - oldY);
+        if (scrollThread == null || !scrollThread.isAlive()) {
+            scrollThread = new ScrollEventThread(base);
+            scrollThread.start();
+        }
+
+        scrollThread.onScrollChanged(curX, curY, oldX, oldY);
     }
 
     /**
@@ -361,7 +368,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
     public final void surfaceCreated(final SurfaceHolder holder) {
         drawThread = new DrawThread(getHolder());
 
-        int drawThreadPriority = AppSettings.current().drawThreadPriority;
+        final int drawThreadPriority = AppSettings.current().drawThreadPriority;
         LCTX.i("Draw thread priority: " + drawThreadPriority);
         drawThread.setPriority(drawThreadPriority);
 

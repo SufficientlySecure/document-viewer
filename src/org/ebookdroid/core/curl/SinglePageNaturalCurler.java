@@ -36,6 +36,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.FloatMath;
 
+import org.emdev.utils.FastMath;
 import org.emdev.utils.MatrixUtils;
 
 /**
@@ -177,9 +178,9 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
             m.postTranslate((int) mA.x - cornerX, (int) mA.y + cornerY);
             final float angle;
             if (cornerY == 0) {
-                angle = -180 / 3.1416f * (float) Math.atan2((int) mA.x - cornerX, (int) mA.y - y1);
+                angle = -180 / 3.1416f * (float) FastMath.atan2((int) mA.x - cornerX, (int) mA.y - y1);
             } else {
-                angle = 180 - 180 / 3.1416f * (float) Math.atan2((int) mA.x - cornerX, (int) mA.y - y1);
+                angle = 180 - 180 / 3.1416f * (float) FastMath.atan2((int) mA.x - cornerX, (int) mA.y - y1);
             }
             m.postRotate(angle, (int) mA.x, (int) mA.y);
             fgBitmap.draw(canvas, m, backPaint);

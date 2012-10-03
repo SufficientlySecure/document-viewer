@@ -25,8 +25,8 @@
     <string name="pref_brightnessnightmodeonly_summary">"Applica le impostazioni di luminosità solo alla modalità notte"</string>
     <string name="pref_keepscreenon_title">"Non spegnere lo schermo"</string>
     <string name="pref_keepscreenon_summary">"Non passare al regime di ibernazione"</string>
-    <string name="pref_rotation_title">"Modalità di rotazione"</string>
-    <string name="pref_rotation_summary">"Quale modalità adottare per la rotazione dello schermo"</string>
+    <string name="pref_rotation_title">"Orientamento"</string>
+    <string name="pref_rotation_summary">"Specifica la modalità di rotazione dello schermo"</string>
     <string name="list_rotation_unspecified">"Non specificata"</string>
     <string name="list_rotation_land">"Forza modalità album"</string>
     <string name="list_rotation_port">"Forza modalità ritratto"</string>

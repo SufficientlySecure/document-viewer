@@ -50,7 +50,6 @@ Things to do:
 	configuretaps (a fingerprint will do)
 	keybinding
 
-- Try a darker border on the folders, 2D and 3D. Add an opaque background under the backside of the folder
 - Align button content to a common baseline (for different items)
 - Quick zoom ---> add a ruler under the lens instead of the plus (+) symbol.
 - Create a 3D version of the bookshelf icon, for actionbar.

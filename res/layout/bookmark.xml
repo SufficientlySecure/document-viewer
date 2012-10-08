@@ -20,15 +20,20 @@
             android:max="100"
             android:progress="50" />
 
-        <TextView
+        <org.ebookdroid.ui.viewer.views.BookmarkView
             android:id="@+id/bookmarkName"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="18dip"
+            android:layout_gravity="fill_horizontal|center_vertical"
+            android:clickable="true"
             android:ellipsize="marquee"
-            android:gravity="center_vertical"
-            android:singleLine="true" />
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:textSize="18dip" />
     </FrameLayout>
 
     <View

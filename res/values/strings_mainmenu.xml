@@ -10,6 +10,7 @@
     <string name="menu_booksettings">Book Settings</string>
     <string name="menu_cleanrecent">Clear Recent</string>
     <string name="menu_add_bookmark">Add bookmark</string>
+    <string name="menu_edit_bookmark">Edit bookmark</string>
     <string name="menu_thumbnail">Set as thumbnail</string>
     <string name="menu_about">About</string>
     <string name="menu_tap_configuration">Configure taps</string>

@@ -10,6 +10,7 @@
     <string name="menu_booksettings">"Configuración del libro"</string>
     <string name="menu_cleanrecent">"Borrar los datos"</string>
     <string name="menu_add_bookmark">"Añadir marcador"</string>
+<!--<string name="menu_edit_bookmark">"Edit bookmark"</string>-->
     <string name="menu_thumbnail">"Colocar como miniatura"</string>
     <string name="menu_about">"Acerca de"</string>
     <string name="menu_tap_configuration">"Configurar toque"</string>

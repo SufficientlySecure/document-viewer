@@ -10,6 +10,7 @@
     <string name="menu_booksettings">"阅读设置"</string>
     <string name="menu_cleanrecent">"清空数据"</string>
     <string name="menu_add_bookmark">"添加书签"</string>
+<!--<string name="menu_edit_bookmark">"Edit bookmark"</string>-->
     <string name="menu_thumbnail">"设置缩略图"</string>
     <string name="menu_about">"关于"</string>
     <string name="menu_tap_configuration">"感应器设置"</string>

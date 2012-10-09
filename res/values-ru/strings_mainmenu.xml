@@ -2,7 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="menu_close">"Закрыть"</string>
-    <string name="menu_goto_page">"Страница"</string>
+    <string name="menu_goto_page">"Перейти к..."</string>
     <string name="menu_outline">"Оглавление"</string>
     <string name="menu_zoom">"Увеличение"</string>
     <string name="menu_nightmode">"День/Ночь"</string>
@@ -10,6 +10,7 @@
     <string name="menu_booksettings">"Настройки книги"</string>
     <string name="menu_cleanrecent">"Очистить данные"</string>
     <string name="menu_add_bookmark">"Добавить закладку"</string>
+    <string name="menu_edit_bookmark">"Изменить закладку"</string>
     <string name="menu_thumbnail">"Поставить обложкой"</string>
     <string name="menu_about">"О программе"</string>
     <string name="menu_tap_configuration">"Настройка нажатий"</string>

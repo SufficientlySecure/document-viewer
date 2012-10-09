@@ -10,6 +10,7 @@
     <string name="menu_booksettings">"Impostazioni libro"</string>
     <string name="menu_cleanrecent">"Svuota lista recenti"</string>
     <string name="menu_add_bookmark">"Inserisci segnalibro"</string>
+<!--<string name="menu_edit_bookmark">"Edit bookmark"</string>-->
     <string name="menu_thumbnail">"Usa come copertina"</string>
     <string name="menu_about">"Info su EBookDroid"</string>
     <string name="menu_tap_configuration">"Configura gesti"</string>

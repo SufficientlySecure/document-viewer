@@ -76,7 +76,7 @@ public class CacheManager extends org.emdev.common.cache.CacheManager {
         final String md5 = StringUtils.md5(path);
         thumbmails.remove(md5);
 
-        final String[] files = s_cacheDir.list(new FilePrefixFilter(md5 + "."));
+        final String[] files = s_cacheDir != null ? s_cacheDir.list(new FilePrefixFilter(md5 + ".")) : null;
         if (LengthUtils.isNotEmpty(files)) {
             for (final String file : files) {
                 new File(s_cacheDir, file).delete();

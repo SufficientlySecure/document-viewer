@@ -28,19 +28,18 @@ public class CacheManager {
     public static void init(final Context context) {
         s_context = context;
         s_cacheDir = context.getFilesDir();
-        LCTX.i("Default app cache dir: " + s_cacheDir.getAbsolutePath());
-        ;
+        LCTX.i("Default app cache dir: " + FileUtils.getAbsolutePath(s_cacheDir));
     }
 
     public static File getCacheDir() {
         return s_cacheDir;
     }
 
-    public static boolean setCacheDir(final File newCache, final boolean moveFiles, IProgressIndicator progress) {
+    public static boolean setCacheDir(final File newCache, final boolean moveFiles, final IProgressIndicator progress) {
         final File oldCache = s_cacheDir;
         s_cacheDir = newCache;
 
-        if (s_cacheDir.equals(oldCache)) {
+        if (s_cacheDir == null || s_cacheDir.equals(oldCache)) {
             return false;
         }
 
@@ -90,7 +89,7 @@ public class CacheManager {
     }
 
     public static void clear() {
-        final String[] files = s_cacheDir.list();
+        final String[] files = s_cacheDir != null ? s_cacheDir.list() : null;
         if (LengthUtils.isNotEmpty(files)) {
             for (final String file : files) {
                 new File(s_cacheDir, file).delete();
@@ -99,7 +98,8 @@ public class CacheManager {
     }
 
     public static void copy(final String sourcePath, final String targetPath, final boolean deleteSource) {
-        final String[] files = s_cacheDir.list(new FilePrefixFilter(StringUtils.md5(sourcePath) + "."));
+        final FilePrefixFilter filter = new FilePrefixFilter(StringUtils.md5(sourcePath) + ".");
+        final String[] files = s_cacheDir != null ? s_cacheDir.list(filter) : null;
         if (LengthUtils.isEmpty(files)) {
             return;
         }

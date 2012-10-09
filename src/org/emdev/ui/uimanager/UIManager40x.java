@@ -62,6 +62,7 @@ public class UIManager40x implements IUIManager {
             } else {
                 activity.getActionBar().hide();
             }
+            activity.invalidateOptionsMenu();
             data.get(activity.getComponentName()).titleVisible = visible;
         } catch (final Throwable th) {
             LCTX.e("Error on requestFeature call: " + th.getMessage());

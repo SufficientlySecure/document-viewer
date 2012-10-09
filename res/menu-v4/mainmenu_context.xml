@@ -4,7 +4,6 @@
     <item
         android:id="@+id/mainmenu_nav_menu"
         android:icon="@drawable/viewer_actionbar_menu_navigation"
-        android:showAsAction="always"
         android:title="@string/menu_navigation_menu">
         <menu>
             <item
@@ -28,7 +27,6 @@
     <item
         android:id="@+id/mainmenu_fastsettings_menu"
         android:icon="@drawable/viewer_actionbar_menu_fastsettings"
-        android:showAsAction="ifRoom"
         android:title="@string/menu_fastsettings_menu">
         <menu>
             <item
@@ -69,37 +67,38 @@
                 android:checkable="true"
                 android:icon="@drawable/viewer_menu_zoom"
                 android:title="@string/menu_zoom"/>
+            </menu>
+    </item>
+    <item
+        android:id="@+id/mainmenu_settings_menu"
+        android:icon="@drawable/viewer_actionbar_menu_settings"
+        android:title="@string/menu_allsettings_menu">
+        <menu>
+            <item
+                android:id="@+id/mainmenu_booksettings"
+                android:icon="@drawable/viewer_menu_booksettings"
+                android:title="@string/menu_booksettings"/>
+            <item
+                android:id="@+id/mainmenu_settings"
+                android:icon="@drawable/common_menu_allsettings"
+                android:title="@string/menu_settings"/>
+            <item
+                android:id="@+id/actions_toggleTouchManagerView"
+                android:icon="@drawable/viewer_menu_tapconfig"
+                android:title="@string/menu_tap_configuration"/>
+            <item
+                android:id="@+id/actions_keyBindings"
+                android:icon="@drawable/viewer_menu_keybindings"
+                android:title="@string/menu_key_bindings"/>
         </menu>
     </item>
     <item
-        android:id="@+id/mainmenu_booksettings"
-        android:icon="@drawable/viewer_menu_booksettings"
-        android:showAsAction="never"
-        android:title="@string/menu_booksettings"/>
-    <item
-        android:id="@+id/mainmenu_settings"
-        android:icon="@drawable/common_menu_allsettings"
-        android:showAsAction="never"
-        android:title="@string/menu_settings"/>
-    <item
-        android:id="@+id/actions_toggleTouchManagerView"
-        android:icon="@drawable/viewer_menu_tapconfig"
-        android:showAsAction="never"
-        android:title="@string/menu_tap_configuration"/>
-    <item
-        android:id="@+id/actions_keyBindings"
-        android:icon="@drawable/viewer_menu_keybindings"
-        android:showAsAction="never"
-        android:title="@string/menu_key_bindings"/>
-    <item
         android:id="@+id/mainmenu_about"
         android:icon="@drawable/common_actionbar_about"
-        android:showAsAction="never"
         android:title="@string/menu_about"/>
     <item
         android:id="@+id/mainmenu_close"
         android:icon="@drawable/common_actionbar_close"
-        android:showAsAction="never"
         android:title="@string/menu_close"/>
 
 </menu>

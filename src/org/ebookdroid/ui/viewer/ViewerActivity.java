@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.emdev.common.android.AndroidVersion;
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
 import org.emdev.ui.AbstractActionActivity;
@@ -272,10 +273,11 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     @Override
     public void onCreateContextMenu(final ContextMenu menu, final View v, final ContextMenuInfo menuInfo) {
+        menu.clear();
         menu.setHeaderTitle(R.string.app_name);
         menu.setHeaderIcon(R.drawable.application_icon);
         final MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.mainmenu, menu);
+        inflater.inflate(R.menu.mainmenu_context, menu);
         updateOptionsMenu(menu);
     }
 
@@ -286,13 +288,24 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
      */
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
+        menu.clear();
+
         final MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.mainmenu, menu);
+
+        if (hasNormalMenu()) {
+            inflater.inflate(R.menu.mainmenu, menu);
+        } else {
+            inflater.inflate(R.menu.mainmenu_context, menu);
+        }
 
         this.optionsMenu = menu;
         updateOptionsMenu(optionsMenu);
 
         return true;
+    }
+
+    protected boolean hasNormalMenu() {
+        return AndroidVersion.lessThan4x || IUIManager.instance.isTabletUi(this) || AppSettings.current().showTitle;
     }
 
     /**
@@ -319,7 +332,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
         setMenuItemChecked(menu, as.fullScreen, R.id.mainmenu_fullscreen);
         setMenuItemChecked(menu, as.showTitle, R.id.mainmenu_showtitle);
-        setMenuItemChecked(menu, zoomControls.getVisibility() == View.VISIBLE, R.id.mainmenu_zoom);
+        setMenuItemChecked(menu, getZoomControls().getVisibility() == View.VISIBLE, R.id.mainmenu_zoom);
 
         final BookSettings bs = getController().getBookSettings();
         if (bs == null) {
@@ -328,7 +341,8 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
         setMenuItemChecked(menu, bs.nightMode, R.id.mainmenu_nightmode);
         setMenuItemChecked(menu, bs.cropPages, R.id.mainmenu_croppages);
-        setMenuItemChecked(menu, bs.splitPages, R.id.mainmenu_splitpages, R.drawable.viewer_menu_split_pages, R.drawable.viewer_menu_split_pages_off);
+        setMenuItemChecked(menu, bs.splitPages, R.id.mainmenu_splitpages, R.drawable.viewer_menu_split_pages,
+                R.drawable.viewer_menu_split_pages_off);
     }
 
     /**
@@ -369,6 +383,13 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
     @Override
     public final boolean dispatchKeyEvent(final KeyEvent event) {
         view.checkFullScreenMode();
+        if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_MENU) {
+            if (!hasNormalMenu()) {
+                getController().getOrCreateAction(R.id.actions_openOptionsMenu).run();
+                return true;
+            }
+        }
+
         if (getController().dispatchKeyEvent(event)) {
             return true;
         }

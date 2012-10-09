@@ -404,7 +404,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
     public final boolean cancel(final boolean mayInterruptIfRunning) {
         try {
             return mFuture.cancel(mayInterruptIfRunning);
-        } catch (NetworkOnMainThreadException ex) {
+        } catch (RuntimeException ex) {
             return false;
         }
     }

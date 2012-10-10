@@ -4,6 +4,8 @@ import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.Bitmaps;
 import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.common.settings.books.BookSettings;
+import org.ebookdroid.common.settings.types.DocumentViewMode;
+import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.common.settings.types.PageType;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.codec.PageLink;
@@ -127,12 +129,13 @@ public class Page {
     }
 
     public RectF getBounds(final float zoom) {
-        // if (zoom != storedZoom) {
-        // storedZoom = zoom;
-        // zoomedBounds = MathUtils.zoom(bounds, zoom);
-        // }
-        // return zoomedBounds;
-        return MathUtils.zoom(bounds, zoom);
+        final BookSettings bs = base.getBookSettings();
+
+        final RectF zb = MathUtils.zoom(bounds, zoom);
+        if (bs != null && bs.viewMode == DocumentViewMode.SINGLE_PAGE && bounds.left > 0) {
+            zb.offset((bounds.left + bounds.right)*(1 - zoom)/2, 0);
+        }
+        return zb;
     }
 
     public float getTargetRectScale() {

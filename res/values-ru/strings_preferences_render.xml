@@ -30,6 +30,7 @@
     <string name="list_animation_slider">"Сдвиг"</string>
     <string name="list_animation_fader">"Проявление"</string>
     <string name="list_animation_squeezer">"Сжатие"</string>
+<!--<string name="list_animation_slider2">"Another Slider"</string>-->
     <string name="pref_postprocessing_category">"Дополнительная обработка изображения"</string>
     <string name="pref_postprocessing_summary">"Дополнительная обработка изображения"</string>
     <string name="pref_nightmode_title">"Ночной режим"</string>

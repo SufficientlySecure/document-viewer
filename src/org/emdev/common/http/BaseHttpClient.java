@@ -88,7 +88,8 @@ public class BaseHttpClient {
                 if (LengthUtils.isEmpty(location)) {
                     break;
                 }
-                uri = new URI(location);
+                uri = uri.resolve(new URI(location));
+
                 uriRef.set(uri);
                 LCTX.d(Thread.currentThread().getName() + ": Location: " + uri);
 

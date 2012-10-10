@@ -18,6 +18,8 @@ public enum PageAnimationType implements ResourceConstant {
 
     SLIDER(R.string.pref_animation_type_slider, true),
 
+    SLIDER2(R.string.pref_animation_type_slider2, true),
+
     FADER(R.string.pref_animation_type_fader, true),
 
     SQUEEZER(R.string.pref_animation_type_squeezer, true);
@@ -62,6 +64,8 @@ public enum PageAnimationType implements ResourceConstant {
                     return new SinglePageNaturalCurler(singlePageDocumentView);
                 case SLIDER:
                     return new SinglePageSlider(singlePageDocumentView);
+                case SLIDER2:
+                    return new SinglePageSlider2(singlePageDocumentView);
                 case FADER:
                     return new SinglePageFader(singlePageDocumentView);
                 case SQUEEZER:

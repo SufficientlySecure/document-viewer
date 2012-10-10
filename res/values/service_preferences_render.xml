@@ -68,6 +68,7 @@
     <string translatable="false" name="pref_animation_type_slider">Slider</string>
     <string translatable="false" name="pref_animation_type_fader">Fade in</string>
     <string translatable="false" name="pref_animation_type_squeezer">Squeeze</string>
+    <string translatable="false" name="pref_animation_type_slider2">Another Slider</string>
 
     <string-array name="pref_animation_type_entries" translatable="false">
         <item>@string/list_animation_none</item>
@@ -77,6 +78,7 @@
         <item>@string/list_animation_slider</item>
         <item>@string/list_animation_fader</item>
         <item>@string/list_animation_squeezer</item>
+        <item>@string/list_animation_slider2</item>
     </string-array>
 
     <string-array name="pref_animation_type_values" translatable="false">
@@ -87,6 +89,7 @@
         <item>@string/pref_animation_type_slider</item>
         <item>@string/pref_animation_type_fader</item>
         <item>@string/pref_animation_type_squeezer</item>
+        <item>@string/pref_animation_type_slider2</item>
     </string-array>
 
 </resources>

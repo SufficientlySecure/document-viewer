@@ -54,7 +54,8 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
     public static final int VIEW_RECENT = 0;
     public static final int VIEW_LIBRARY = 1;
 
-    ViewFlipper viewflipper;
+    private ViewFlipper viewflipper;
+
     ImageView libraryButton;
     BookcaseView bookcaseView;
     RecentBooksView recentBooksView;
@@ -94,8 +95,6 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
             // Old layout with custom title bar
             libraryButton = (ImageView) findViewById(R.id.recent_showlibrary);
         }
-
-        viewflipper = (ViewFlipper) findViewById(R.id.recentflip);
 
         final RecentActivityController c = restoreController();
         if (c != null) {
@@ -241,13 +240,14 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
     }
 
     void changeLibraryView(final int view) {
+        final ViewFlipper vf = getViewflipper();
         if (view == VIEW_LIBRARY) {
-            viewflipper.setDisplayedChild(VIEW_LIBRARY);
+            vf.setDisplayedChild(VIEW_LIBRARY);
             if (libraryButton != null) {
                 libraryButton.setImageResource(R.drawable.recent_actionbar_recent);
             }
         } else {
-            viewflipper.setDisplayedChild(VIEW_RECENT);
+            vf.setDisplayedChild(VIEW_RECENT);
             if (libraryButton != null) {
                 libraryButton.setImageResource(R.drawable.recent_actionbar_library);
             }
@@ -256,7 +256,8 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
     }
 
     int getViewMode() {
-        return viewflipper.getDisplayedChild();
+        final ViewFlipper vf = getViewflipper();
+        return vf != null ? vf.getDisplayedChild() : VIEW_RECENT;
     }
 
     void showBookshelf(final int shelfIndex) {
@@ -278,12 +279,13 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
     }
 
     void showBookcase(final BooksAdapter bookshelfAdapter, final RecentAdapter recentAdapter) {
-        viewflipper.removeAllViews();
+        final ViewFlipper vf = getViewflipper();
+        vf.removeAllViews();
         if (bookcaseView == null) {
-            bookcaseView = (BookcaseView) LayoutInflater.from(this).inflate(R.layout.bookcase_view, viewflipper, false);
+            bookcaseView = (BookcaseView) LayoutInflater.from(this).inflate(R.layout.bookcase_view, vf, false);
             bookcaseView.init(bookshelfAdapter);
         }
-        viewflipper.addView(bookcaseView, 0);
+        vf.addView(bookcaseView, 0);
 
         if (libraryButton != null) {
             libraryButton.setImageResource(R.drawable.recent_actionbar_library);
@@ -300,12 +302,21 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
             registerForContextMenu(libraryView);
         }
 
-        viewflipper.removeAllViews();
-        viewflipper.addView(recentBooksView, VIEW_RECENT);
-        viewflipper.addView(libraryView, VIEW_LIBRARY);
+        final ViewFlipper vf = getViewflipper();
+        vf.removeAllViews();
+        vf.addView(recentBooksView, VIEW_RECENT);
+        vf.addView(libraryView, VIEW_LIBRARY);
 
         if (libraryButton != null) {
             libraryButton.setImageResource(R.drawable.recent_actionbar_library);
         }
+    }
+
+    ViewFlipper getViewflipper() {
+        if (viewflipper == null) {
+            viewflipper = (ViewFlipper) findViewById(R.id.recentflip);
+        }
+
+        return viewflipper;
     }
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="actions_verticalConfigScrollUp">"Scorri verso l'alto"</string>
-    <string name="actions_verticalConfigScrollDown">"Scorri verso il basso"</string>
+    <string name="actions_verticalConfigScrollUp">"Scorri indietro"</string>
+    <string name="actions_verticalConfigScrollDown">"Scorri avanti"</string>
     <string name="actions_quickZoom">"Zoom rapido"</string>
-    <string name="actions_zoomToColumn">"Ingrandisci colonna"</string>
+    <string name="actions_zoomToColumn">"Adatta a larghezza colonna"</string>
 
 </resources>

@@ -14,22 +14,22 @@
     <string name="list_cachelocation_system">"Cache dell'app nella memoria di sistema"</string>
     <string name="list_cachelocation_custom">"Cache dell'app sulla Sdcard esterna"</string>
 <!--<string name="pref_brfiletypedjvu_title">".djvu"</string>-->
-    <string name="pref_brfiletypedjvu_summary">"Visualizza file DjVu"</string>
+    <string name="pref_brfiletypedjvu_summary">"Visualizza i file DjVu"</string>
 <!--<string name="pref_brfiletypedjv_title">".djv"</string>-->
-    <string name="pref_brfiletypedjv_summary">"Visualizza file DjVu "</string>
+    <string name="pref_brfiletypedjv_summary">"Visualizza i file DjV "</string>
 <!--<string name="pref_brfiletypepdf_title">".pdf"</string>-->
-    <string name="pref_brfiletypepdf_summary">" Visualizza file PDF"</string>
+    <string name="pref_brfiletypepdf_summary">" Visualizza i file PDF"</string>
 <!--<string name="pref_brfiletypexps_title">".xps"</string>-->
-    <string name="pref_brfiletypexps_summary">" Visualizza file XPS"</string>
+    <string name="pref_brfiletypexps_summary">" Visualizza i file XPS"</string>
 <!--<string name="pref_brfiletypeoxps_title">".oxps"</string>-->
-    <string name="pref_brfiletypeoxps_summary">" Visualizza file OXPS"</string>
+    <string name="pref_brfiletypeoxps_summary">" Visualizza i file OXPS"</string>
 <!--<string name="pref_brfiletypecbz_title">".cbz"</string>-->
-    <string name="pref_brfiletypecbz_summary">" Visualizza file CBZ"</string>
+    <string name="pref_brfiletypecbz_summary">" Visualizza i file CBZ"</string>
 <!--<string name="pref_brfiletypecbr_title">".cbr"</string>-->
-    <string name="pref_brfiletypecbr_summary">" Visualizza file CBR"</string>
+    <string name="pref_brfiletypecbr_summary">" Visualizza i file CBR"</string>
 <!--<string name="pref_brfiletypefb2_title">".fb2"</string>-->
-    <string name="pref_brfiletypefb2_summary">" Visualizza file FB2"</string>
+    <string name="pref_brfiletypefb2_summary">" Visualizza i file FB2"</string>
 <!--<string name="pref_brfiletypefb2.zip_title">".fb2.zip"</string>-->
-    <string name="pref_brfiletypefb2.zip_summary">" Visualizza file FB2.ZIP"</string>
+    <string name="pref_brfiletypefb2.zip_summary">" Visualizza i file FB2.ZIP"</string>
 
 </resources>

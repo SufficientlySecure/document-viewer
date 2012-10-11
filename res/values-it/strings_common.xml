@@ -21,9 +21,9 @@
     <string name="dialog_backup_backup">"Salvataggio…"</string>
     <string name="dialog_backup_restore">"Ripristino…"</string>
     <string name="dialog_backup_remove">"Eliminazione…"</string>
-    <string name="add_bookmark_name">"Testo associato a questo segnalibro"</string>
-    <string name="bookmark_start">"Inizio"</string>
-    <string name="bookmark_end">"Fine"</string>
+    <string name="add_bookmark_name">"Immetti un nome per questo segnalibro"</string>
+    <string name="bookmark_start">"Prima pagina"</string>
+    <string name="bookmark_end">"Ultima pagina"</string>
     <string name="bookmark_invalid_page">"Il numero di pagina è errato. Pagine accessibili: 1-"</string>
     <string name="bookmarks_title">"Segnalibri"</string>
     <string name="clear_bookmarks_title">"Elimina tutti i segnalibri"</string>
@@ -61,16 +61,16 @@
     <string name="opds_addfeed_url" translatable="true">"URL:"</string>
     <string name="opds_addfeed_auth">"Autorizzazione richiesta"</string>
     <string name="opds_editfeed_title">"Modifica catalogo"</string>
-    <string name="opds_editfeed_msg">"Inserire alias e URL per il catalogo"</string>
+    <string name="opds_editfeed_msg">"Inserire alias e URL di questo catalogo"</string>
     <string name="opds_editfeed_ok">"Salva"</string>
     <string name="opds_deletefeed_title">"Elimina catalogo"</string>
-    <string name="opds_deletefeed_msg">"Vuoi davvero cancellare il catalogo?"</string>
+    <string name="opds_deletefeed_msg">"Vuoi davvero cancellare questo catalogo?"</string>
     <string name="opds_deletefeed_ok">"Elimina"</string>
     <string name="opds_authfeed_title">"Autorizzazione"</string>
-    <string name="opds_authfeed_msg">"Inserire username e password per il catalogo"</string>
-<!--<string name="opds_authfeed_username">"Username:"</string>-->
-<!--<string name="opds_authfeed_password">"Password:"</string>-->
-<!--<string name="opds_authfeed_ok">"Login"</string>-->
+    <string name="opds_authfeed_msg">"Inserire il nome utente e la password per questo catalogo"</string>
+    <string name="opds_authfeed_username">"Nome utente:"</string>
+    <string name="opds_authfeed_password">"Password:"</string>
+    <string name="opds_authfeed_ok">"Login"</string>
     <string name="opds_error_title">"Errore OPDS"</string>
 <!--<string name="opds_error_msg">"%s"</string>-->
     <string name="opds_retry_download">"Nuovo tentativo"</string>
@@ -103,7 +103,7 @@
     <string name="folder_books_count">"Libri: %1$d"</string>
     <string name="copy_book_to_dlg_title">"Copia libro in…"</string>
     <string name="move_book_to_dlg_title">"Sposta libro in…"</string>
-    <string name="opds_downloading_type_dlg_title">"Specifica quale formato di libro da scaricare"</string>
+    <string name="opds_downloading_type_dlg_title">"Specifica il formato dei libri da scaricare"</string>
     <string name="opds_downloading_dlg_title">"Libro scaricato come…"</string>
 <!--<string name="opds_downloading_dlg_raw_type">"Raw type"</string>-->
     <string name="notification_file_add">"File aggiunto alla libreria"</string>

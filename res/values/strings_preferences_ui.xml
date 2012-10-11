@@ -53,7 +53,7 @@
     <string name="pref_fullscreen_summary">Hide status bar</string>
 
     <string name="pref_title_title">Show Title</string>
-    <string name="pref_title_summary">Show document title (needs document reopen)</string>
+    <string name="pref_title_summary">Show document title (requires reopening the document)</string>
 
     <string name="pref_pageintitle_title">Page in title</string>
     <string name="pref_pageintitle_summary">Show page number in title bar</string>
@@ -72,15 +72,15 @@
     <string name="list_toastposition_righbottom">Right bottom corner</string>
 
     <string name="pref_showanimicon_title">Show animation icon</string>
-    <string name="pref_showanimicon_summary">Show animation or dragging icon if animation or dragging enabled</string>
+    <string name="pref_showanimicon_summary">Show animation or dragging icon when animations or dragging are enabled</string>
 
-    <string name="pref_link_highlight_summary">"Choose color for link highlight"</string>
+    <string name="pref_link_highlight_summary">"Selected color for link highlight"</string>
     <string name="pref_link_highlight_title">"Link highlight"</string>
 
-    <string name="pref_search_highlight_summary">"Choose color for search result highlight"</string>
+    <string name="pref_search_highlight_summary">"Selected color for search result highlight"</string>
     <string name="pref_search_highlight_title">"Search highlight"</string>
 
-    <string name="pref_current_search_highlight_summary">"Choose color for current search result highlight"</string>
+    <string name="pref_current_search_highlight_summary">"Selected color for current search result highlight"</string>
     <string name="pref_current_search_highlight_title">"Current search highlight"</string>
 
     <string name="pref_storeGotoHistory_title">Store goto page in navigation history</string>

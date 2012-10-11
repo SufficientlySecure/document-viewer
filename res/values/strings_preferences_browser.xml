@@ -22,7 +22,7 @@
     <string name="pref_brfiletypedjvu_summary">Show DjVu files</string>
 
     <string name="pref_brfiletypedjv_title">.djv</string>
-    <string name="pref_brfiletypedjv_summary">Show DjVu files</string>
+    <string name="pref_brfiletypedjv_summary">Show DjV files</string>
 
     <string name="pref_brfiletypepdf_title">.pdf</string>
     <string name="pref_brfiletypepdf_summary">Show PDF files</string>

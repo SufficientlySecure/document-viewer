@@ -8,7 +8,7 @@
     <string name="pref_backuponexit_summary">Automatically backup preferences on application exit</string>
 
     <string name="pref_backuponbookclose_title">Auto backup on book close</string>
-    <string name="pref_backuponbookclose_summary">Automatically backup preferences on book close</string>
+    <string name="pref_backuponbookclose_summary">Automatically backup preferences when a document is closed</string>
 
     <string name="pref_maxnumberofautobackups_title">Number of auto backups</string>
     <string name="pref_maxnumberofautobackups_summary">Max number of automatic backups to be kept</string>

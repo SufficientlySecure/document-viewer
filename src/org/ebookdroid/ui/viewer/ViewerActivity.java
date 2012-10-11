@@ -72,8 +72,6 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     private ManualCropView cropControls;
 
-    private Menu optionsMenu;
-
     /**
      * Instantiates a new base viewer activity.
      */
@@ -278,7 +276,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
         menu.setHeaderIcon(R.drawable.application_icon);
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.mainmenu_context, menu);
-        updateOptionsMenu(menu);
+        updateMenuItems(menu);
     }
 
     /**
@@ -298,9 +296,6 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
             inflater.inflate(R.menu.mainmenu_context, menu);
         }
 
-        this.optionsMenu = menu;
-        updateOptionsMenu(optionsMenu);
-
         return true;
     }
 
@@ -317,17 +312,11 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
     public boolean onMenuOpened(final int featureId, final Menu menu) {
         view.changeLayoutLock(true);
         IUIManager.instance.onMenuOpened(this);
-
-        this.optionsMenu = menu;
-        updateOptionsMenu(optionsMenu);
-
         return super.onMenuOpened(featureId, menu);
     }
 
-    protected void updateOptionsMenu(final Menu menu) {
-        if (menu == null) {
-            return;
-        }
+    @Override
+    protected void updateMenuItems(final Menu menu) {
         final AppSettings as = AppSettings.current();
 
         setMenuItemChecked(menu, as.fullScreen, R.id.mainmenu_fullscreen);

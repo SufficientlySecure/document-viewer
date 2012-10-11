@@ -1,7 +1,6 @@
 package org.ebookdroid.ui.library;
 
 import org.ebookdroid.CodecType;
-import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.settings.LibSettings;
@@ -23,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.text.Editable;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -44,6 +44,7 @@ import android.widget.ViewFlipper;
 import java.io.File;
 import java.io.FileFilter;
 
+import org.emdev.BaseDroidApp;
 import org.emdev.common.android.AndroidVersion;
 import org.emdev.common.filesystem.CompositeFilter;
 import org.emdev.common.filesystem.DirectoryFilter;
@@ -96,7 +97,6 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
 
     private ViewFlipper viewflipper;
     private TextView header;
-    private Menu optionsMenu;
 
     public BrowserActivity() {
         this.filter = new CompositeFilter(false, DirectoryFilter.NOT_HIDDEN, LibSettings.current().allowedFileTypes);
@@ -132,7 +132,7 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
 
         goHome(null);
 
-        Uri data = getIntent().getData();
+        final Uri data = getIntent().getData();
         if (data != null) {
             setCurrentDir(new File(PathFromUri.retrieve(getContentResolver(), data)));
         } else if (savedInstanceState != null) {
@@ -149,25 +149,11 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
     public boolean onCreateOptionsMenu(final Menu menu) {
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.browsermenu, menu);
-
-        this.optionsMenu = menu;
-        updateOptionsMenu(optionsMenu);
-
         return true;
     }
 
     @Override
-    public boolean onMenuOpened(int featureId, Menu menu) {
-        this.optionsMenu = menu;
-        updateOptionsMenu(optionsMenu);
-
-        return super.onMenuOpened(featureId, menu);
-    }
-
-    protected void updateOptionsMenu(Menu optionsMenu) {
-        if (optionsMenu == null) {
-            return;
-        }
+    protected void updateMenuItems(final Menu optionsMenu) {
         final File dir = adapter.getCurrentDirectory();
         final boolean hasParent = dir != null ? dir.getParentFile() != null : false;
 
@@ -177,8 +163,8 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
 
     @ActionMethod(ids = R.id.browserhome)
     public void goHome(final ActionEx action) {
-        if (EBookDroidApp.EXT_STORAGE.exists()) {
-            setCurrentDir(EBookDroidApp.EXT_STORAGE);
+        if (BaseDroidApp.EXT_STORAGE.exists()) {
+            setCurrentDir(BaseDroidApp.EXT_STORAGE);
         } else {
             setCurrentDir(new File("/"));
         }
@@ -226,13 +212,13 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
             header.setText(newDir.getAbsolutePath());
             final ImageView view = (ImageView) findViewById(R.id.browserupfolder);
             if (view != null) {
-                // final boolean hasParent = newDir.getParentFile() != null;
-                // view.setImageResource(hasParent ? R.drawable.browser_actionbar_nav_up_enabled
-                // : R.drawable.browser_actionbar_nav_up_disabled);
+                final boolean hasParent = newDir.getParentFile() != null;
+                view.setImageResource(hasParent ? R.drawable.browser_actionbar_nav_up_enabled
+                        : R.drawable.browser_actionbar_nav_up_disabled);
             }
         } else {
             setTitle(newDir.getAbsolutePath());
-            updateOptionsMenu(optionsMenu);
+            ActivityCompat.invalidateOptionsMenu(this);
         }
     }
 

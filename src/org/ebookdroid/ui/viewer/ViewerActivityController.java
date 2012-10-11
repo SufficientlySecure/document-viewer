@@ -47,6 +47,7 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.text.Editable;
 import android.text.InputType;
 import android.view.KeyEvent;
@@ -687,6 +688,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                 mcv.initControls();
             }
         }
+        ActivityCompat.invalidateOptionsMenu(getManagedComponent());
     }
 
     public final boolean dispatchKeyEvent(final KeyEvent event) {
@@ -780,6 +782,8 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         if (diff.isPagesInMemoryChanged()) {
             getDocumentController().updateMemorySettings();
         }
+
+        ActivityCompat.invalidateOptionsMenu(getManagedComponent());
     }
 
     /**
@@ -830,6 +834,8 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         }
 
         currentPageChanged(PageIndex.NULL, documentModel.getCurrentIndex());
+
+        ActivityCompat.invalidateOptionsMenu(getManagedComponent());
     }
 
     final class BookLoadTask extends BaseAsyncTask<String, Throwable> implements IProgressIndicator, Runnable {

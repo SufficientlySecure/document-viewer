@@ -52,6 +52,18 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Actio
     protected abstract C createController();
 
     @Override
+    public final boolean onPrepareOptionsMenu(final Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        if (menu != null) {
+            updateMenuItems(menu);
+        }
+        return true;
+    }
+
+    protected void updateMenuItems(final Menu menu) {
+    }
+
+    @Override
     public final boolean onOptionsItemSelected(final MenuItem item) {
         final int actionId = item.getItemId();
         final ActionEx action = getController().getOrCreateAction(actionId);

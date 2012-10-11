@@ -13,6 +13,7 @@ import org.ebookdroid.ui.library.views.LibraryView;
 import org.ebookdroid.ui.library.views.RecentBooksView;
 
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -60,7 +61,6 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
     BookcaseView bookcaseView;
     RecentBooksView recentBooksView;
     LibraryView libraryView;
-    Menu optionsMenu;
 
     public RecentActivity() {
         super();
@@ -118,7 +118,7 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
             LCTX.d("onResume()");
         }
         super.onResume();
-        updateOptionsMenu(optionsMenu);
+        ActivityCompat.invalidateOptionsMenu(this);
         getController().onResume();
     }
 
@@ -151,26 +151,10 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
     public boolean onCreateOptionsMenu(final Menu menu) {
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.recentmenu, menu);
-
-        this.optionsMenu = menu;
-        updateOptionsMenu(optionsMenu);
-
         return true;
     }
 
-    @Override
-    public boolean onMenuOpened(final int featureId, final Menu menu) {
-        this.optionsMenu = menu;
-        updateOptionsMenu(optionsMenu);
-
-        return super.onMenuOpened(featureId, menu);
-    }
-
-    protected void updateOptionsMenu(final Menu menu) {
-        if (menu == null) {
-            return;
-        }
-
+    protected void updateMenuItems(final Menu menu) {
         if (!LibSettings.current().getUseBookcase()) {
             final int viewMode = getViewMode();
             final boolean showLibraryAvailable = viewMode == RecentActivity.VIEW_RECENT;
@@ -252,7 +236,7 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
                 libraryButton.setImageResource(R.drawable.recent_actionbar_library);
             }
         }
-        updateOptionsMenu(optionsMenu);
+        ActivityCompat.invalidateOptionsMenu(this);
     }
 
     int getViewMode() {

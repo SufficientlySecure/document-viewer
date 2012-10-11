@@ -7,6 +7,7 @@ import org.ebookdroid.opds.model.Feed;
 import org.ebookdroid.opds.model.Link;
 
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -31,8 +32,6 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActiv
     private static final AtomicLong SEQ = new AtomicLong();
 
     ExpandableListView list;
-
-    Menu optionsMenu;
 
     public OPDSActivity() {
         LCTX = LogManager.root().lctx(this.getClass().getSimpleName(), true).lctx("" + SEQ.getAndIncrement(), true);
@@ -107,17 +106,7 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActiv
     public boolean onCreateOptionsMenu(final Menu menu) {
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.opdsmenu, menu);
-
-        this.optionsMenu = menu;
-        updateNavigation(optionsMenu, getController().adapter.getCurrentFeed());
         return true;
-    }
-
-    @Override
-    public boolean onMenuOpened(final int featureId, final Menu menu) {
-        this.optionsMenu = menu;
-        updateNavigation(optionsMenu, getController().adapter.getCurrentFeed());
-        return super.onMenuOpened(featureId, menu);
     }
 
     @Override
@@ -161,7 +150,7 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActiv
 
         final Feed feed = getController().adapter.getCurrentFeed();
         menu.setHeaderTitle(getFeedTitle(feed));
-        updateNavigation(menu, feed);
+        updateMenuItems(menu, feed);
     }
 
     protected void onCreateFeedContextMenu(final ContextMenu menu, final Feed feed) {
@@ -169,7 +158,7 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActiv
         inflater.inflate(R.menu.opds_feedmenu, menu);
 
         menu.setHeaderTitle(getFeedTitle(feed));
-        updateNavigation(menu, feed.parent);
+        updateMenuItems(menu, feed.parent);
 
         setMenuParameters(menu, new Constant("feed", feed));
     }
@@ -179,7 +168,7 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActiv
         inflater.inflate(R.menu.opds_facetmenu, menu);
 
         menu.setHeaderTitle(getFeedTitle(facet));
-        updateNavigation(menu, feed.parent);
+        updateMenuItems(menu, feed.parent);
 
         setMenuParameters(menu, new Constant("feed", facet));
     }
@@ -200,7 +189,11 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActiv
         setMenuParameters(menu, new Constant("book", book), new Constant("link", link));
     }
 
-    protected void updateNavigation(final Menu menu, final Feed feed) {
+    protected void updateMenuItems(final Menu menu) {
+        updateMenuItems(menu, getController().adapter.getCurrentFeed());
+    }
+
+    protected void updateMenuItems(final Menu menu, final Feed feed) {
         final boolean canUp = feed != null;
         final boolean canNext = feed != null && feed.next != null;
         final boolean canPrev = feed != null && feed.prev != null;
@@ -229,12 +222,12 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActiv
     }
 
     protected void onCurrrentFeedChanged(final Feed feed) {
-        updateNavigation(optionsMenu, feed);
+        ActivityCompat.invalidateOptionsMenu(this);
         setTitle(getFeedTitle(feed));
         findViewById(R.id.opdsaddfeed).setVisibility(feed != null ? View.GONE : View.VISIBLE);
     }
 
     protected void onFeedLoaded(final Feed feed) {
-        updateNavigation(optionsMenu, feed);
+        ActivityCompat.invalidateOptionsMenu(this);
     }
 }

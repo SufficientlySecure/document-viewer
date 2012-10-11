@@ -1,0 +1,22 @@
+book dress (realistic)
+---------------------
+270x380 - 
+make realistic leather, old style, add a bit of shadow
+
+possible future expansion:
+
+can be made in different colors (for different file types - for example golden back for favorites)
+
+can be made in different thicknesses (from small, normal, huge books - it helps to differentiate them, more or less as it happens in real life "no, it's the big one!")
+
+the upper (and lateral) part can be made in three versions too: vanilla, with bookmark (if the book has bookmarks) and with note (if the book has notes - possible future enhancement).
+
+
+
+Arrows
+------
+They will be in the same wooden texture as the bookshelf, just carved in (or bulging out)
+
+Bookshelf
+--------
+can be made in different colors (oak, cherry, fir) for different bookshelf contents (favorites, searches and recent, folders)

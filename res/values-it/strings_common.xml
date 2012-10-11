@@ -15,7 +15,7 @@
     <string name="msg_no_text_found">"Testo non trovato"</string>
     <string name="dialog_title_goto_page">"Vai alla pagina o al segnalibro"</string>
     <string name="button_goto_page">"Vai"</string>
-    <string name="text_page">"Vai..."</string>
+    <string name="text_page">"Pagina"</string>
     <string name="error_close">"Chiudi"</string>
     <string name="dialog_backup_name_hint">"Inserisci il nome del nuovo backup…"</string>
     <string name="dialog_backup_backup">"Salvataggio…"</string>

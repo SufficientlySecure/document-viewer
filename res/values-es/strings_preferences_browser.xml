@@ -9,10 +9,10 @@
     <string name="pref_brautoscandir_summary">"Directorio para búsqueda automática de archivos"</string>
     <string name="pref_brbrfiletypesscreen_title">"Tipos de Archivo"</string>
     <string name="pref_brbrfiletypesscreen_summary">"Tipos de Archivo a mostrar en la biblioteca"</string>
-<!--<string name="pref_cachelocation_title">"Cache location"</string>-->
-<!--<string name="pref_cachelocation_summary">"Location of a file cache"</string>-->
-<!--<string name="list_cachelocation_system">"System app cache"</string>-->
-<!--<string name="list_cachelocation_custom">"Sdcard app cache"</string>-->
+    <string name="pref_cachelocation_title">"Localización de la caché"</string>
+    <string name="pref_cachelocation_summary">"Localización del aarchivo de caché"</string>
+    <string name="list_cachelocation_system">"En System"</string>
+    <string name="list_cachelocation_custom">"En Sdcard"</string>
 <!--<string name="pref_brfiletypedjvu_title">".djvu"</string>-->
     <string name="pref_brfiletypedjvu_summary">"Mostrar los archivos DjVu"</string>
 <!--<string name="pref_brfiletypedjv_title">".djv"</string>-->

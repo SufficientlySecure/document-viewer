@@ -37,8 +37,8 @@
     <string name="pref_bitmapfilering_enabled_summary">"Activar filtrado de texturas bilinear"</string>
     <string name="pref_texturereuse_title">"Reutilizar las texturas"</string>
     <string name="pref_texturereuse_summary">"Reutilizar las texturas cuando una parte de la página de decodifica de nuevo"</string>
-<!--<string name="pref_usenativetextures_title">"Store textures in native memory"</string>-->
-<!--<string name="pref_usenativetextures_summary">"Store textures in native memory"</string>-->
+    <string name="pref_usenativetextures_title">"Almacenar texturas en la memoria nativa"</string>
+    <string name="pref_usenativetextures_summary">"Almacenar texturas en la memoria nativa"</string>
     <string name="pref_bitmaphack_title">"Truco de localización de Bitmaps"</string>
     <string name="pref_bitmaphack_summary">"Usar el truco del seguimiento de localización de Bitmaps"</string>
     <string name="pref_earlyrecycling_title">"Reciclado temprano de texturas"</string>

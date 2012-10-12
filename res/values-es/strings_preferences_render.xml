@@ -30,13 +30,13 @@
     <string name="list_animation_slider">"Desplazamiento"</string>
     <string name="list_animation_fader">"Fundido"</string>
     <string name="list_animation_squeezer">"Compresión"</string>
-<!--<string name="list_animation_slider2">"Another Slider"</string>-->
+    <string name="list_animation_slider2">"Otro desplazamiento"</string>
     <string name="pref_postprocessing_category">"Efectos post–proceso"</string>
     <string name="pref_postprocessing_summary">"Efectos de post–procesado"</string>
     <string name="pref_nightmode_title">"Modo nocturno"</string>
     <string name="pref_nightmode_summary">"Letras blancas sobre fondo negro"</string>
-<!--<string name="pref_posimages_in_nightmode_title">"Positive images in night mode"</string>-->
-<!--<string name="pref_posimages_in_nightmode_summary">"Show gray-scaled images in night mode (do not invert image colors)"</string>-->
+    <string name="pref_posimages_in_nightmode_title">"Imágenes positivas en modo nocturno"</string>
+    <string name="pref_posimages_in_nightmode_summary">"Mostrar las imágenes en escala de grises en modo nocturno (no invertir los colores de la imagen)"</string>
     <string name="pref_contrast_title">"Contraste"</string>
     <string name="pref_contrast_summary">"Nivel de corrección de contraste (0 – 1000, 100 por defecto)"</string>
     <string name="pref_exposure_title">"Exposición"</string>

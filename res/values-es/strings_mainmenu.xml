@@ -10,7 +10,7 @@
     <string name="menu_booksettings">"Configuración del libro"</string>
     <string name="menu_cleanrecent">"Borrar los datos"</string>
     <string name="menu_add_bookmark">"Añadir marcador"</string>
-<!--<string name="menu_edit_bookmark">"Edit bookmark"</string>-->
+    <string name="menu_edit_bookmark">"Modificar marcador"</string>
     <string name="menu_thumbnail">"Colocar como miniatura"</string>
     <string name="menu_about">"Acerca de"</string>
     <string name="menu_tap_configuration">"Configurar toque"</string>
@@ -19,9 +19,9 @@
     <string name="menu_searchtext">"Buscar"</string>
     <string name="menu_show_options_menu">"Mostrar menú de opciones"</string>
     <string name="menu_backupsettings">"Configuración de Copias de seguridad y Respaldo"</string>
-<!--<string name="menu_crop">"Manual crop"</string>-->
-<!--<string name="menu_navigation_menu">"Navigation..."</string>-->
-<!--<string name="menu_fastsettings_menu">"View..."</string>-->
-<!--<string name="menu_allsettings_menu">"Settings..."</string>-->
+    <string name="menu_crop">"Ajuste manual"</string>
+    <string name="menu_navigation_menu">"Navegación..."</string>
+    <string name="menu_fastsettings_menu">"Ver..."</string>
+    <string name="menu_allsettings_menu">"Ajuster..."</string>
 
 </resources>

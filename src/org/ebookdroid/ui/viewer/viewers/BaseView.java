@@ -125,7 +125,7 @@ public final class BaseView extends View implements IView {
     @Override
     public void startPageScroll(final int dx, final int dy) {
         scroller.startScroll(getScrollX(), getScrollY(), dx, dy);
-        // redrawView();
+        redrawView();
     }
 
     /**

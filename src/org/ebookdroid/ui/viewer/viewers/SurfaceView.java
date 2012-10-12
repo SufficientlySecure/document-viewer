@@ -129,7 +129,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
     @Override
     public void startPageScroll(final int dx, final int dy) {
         scroller.startScroll(getScrollX(), getScrollY(), dx, dy);
-        // redrawView();
+        redrawView();
     }
 
     /**

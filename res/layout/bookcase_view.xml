@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/BookcaseCaption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,29 +15,21 @@
             android:id="@+id/ShelfLeftButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/recent_bookcase_title_margin"
+            android:layout_marginTop="@dimen/recent_bookcase_title_margin"
             android:background="@android:color/transparent"
             android:onClick="onButtonClick"
             android:src="@drawable/recent_bookcase_nav_prev" />
-
-        <ImageButton
-            android:id="@+id/ShelfRightButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_gravity="center"
-            android:background="@android:color/transparent"
-            android:onClick="onButtonClick"
-            android:src="@drawable/recent_bookcase_nav_next" />
 
         <TextView
             android:id="@+id/ShelfCaption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="fill_horizontal"
-            android:layout_toLeftOf="@id/ShelfRightButton"
-            android:layout_toRightOf="@id/ShelfLeftButton"
+            android:layout_marginBottom="@dimen/recent_bookcase_title_margin"
+            android:layout_marginTop="@dimen/recent_bookcase_title_margin"
+            android:layout_weight="1"
             android:background="@android:color/transparent"
             android:clickable="true"
             android:ellipsize="marquee"
@@ -54,7 +46,18 @@
             android:text="Recent books"
             android:textColor="#DDD"
             android:textSize="40dp" />
-    </RelativeLayout>
+
+        <ImageButton
+            android:id="@+id/ShelfRightButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/recent_bookcase_title_margin"
+            android:layout_marginTop="@dimen/recent_bookcase_title_margin"
+            android:background="@android:color/transparent"
+            android:onClick="onButtonClick"
+            android:src="@drawable/recent_bookcase_nav_next" />
+    </LinearLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/Shelves"

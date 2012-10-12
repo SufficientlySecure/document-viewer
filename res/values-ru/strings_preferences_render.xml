@@ -27,10 +27,10 @@
     <string name="list_animation_curler_simple">"Простое перелистывание"</string>
     <string name="list_animation_curler_dynamic">"Динамическое перелистывание"</string>
     <string name="list_animation_curler_natural">"Естественное перелистывание"</string>
-    <string name="list_animation_slider">"Сдвиг"</string>
+    <string name="list_animation_slider">"Сдвиг рулона"</string>
     <string name="list_animation_fader">"Проявление"</string>
     <string name="list_animation_squeezer">"Сжатие"</string>
-<!--<string name="list_animation_slider2">"Another Slider"</string>-->
+    <string name="list_animation_slider2">"Сдвиг пачки"</string>
     <string name="pref_postprocessing_category">"Дополнительная обработка изображения"</string>
     <string name="pref_postprocessing_summary">"Дополнительная обработка изображения"</string>
     <string name="pref_nightmode_title">"Ночной режим"</string>

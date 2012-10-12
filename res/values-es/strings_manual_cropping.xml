@@ -3,8 +3,8 @@
 
     <string name="manual_cropping_title">"Ajustar opciones de recorte:"</string>
     <string name="manual_cropping_current">"Recortar sólo la página actual"</string>
-    <string name="manual_cropping_even">"Recortas todas las páginas pares (impares)"</string>-->
-    <string name="manual_cropping_even_symm">"Recortar páginas pares e impares simétricamente"</string>-->
+    <string name="manual_cropping_even">"Recortas todas las páginas pares (impares)"</string>
+    <string name="manual_cropping_even_symm">"Recortar páginas pares e impares simétricamente"</string>
     <string name="manual_cropping_all">"Recortar todas las páginas"</string>
     <string name="manual_cropping_remove_current">"Eliminar los ajustes de recorte para la página(s) actual"</string>
     <string name="manual_cropping_remove_all">"Eliminar todos los ajustes de recorte"</string>

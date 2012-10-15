@@ -40,7 +40,7 @@
     <string name="list_animation_slider">Slider</string>
     <string name="list_animation_fader">Fade in</string>
     <string name="list_animation_squeezer">Squeeze</string>
-    <string name="list_animation_slider2">Another Slider</string>
+    <string name="list_animation_slider2">Slide over</string>
 
     <string name="pref_postprocessing_category" >Post&#8211;processing effects</string>
     <string name="pref_postprocessing_summary">Additional effects to enhance page viewing</string>

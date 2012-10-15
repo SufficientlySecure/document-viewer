@@ -8,7 +8,7 @@
     <string name="pref_tapsenabled_summary">Use Tap Configuration to define tap regions and actions</string>
 
     <string name="pref_scroll_title">Scroll height</string>
-    <string name="pref_scroll_summary">Set height for scroll</string>
+    <string name="pref_scroll_summary">Set scrolling height for pages that do not fit the screen (default: 50%)</string>
 
     <string name="pref_touchdelay_title">Touch processing delay</string>
     <string name="pref_touchdelay_summary">Touch processing delay (in milliseconds)</string>

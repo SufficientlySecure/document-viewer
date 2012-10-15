@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="manual_cropping_title">"Ritaglia su misura:"</string>
+    <string name="manual_cropping_title">"Ritaglia su misura (richiede pagina singola):"</string>
     <string name="manual_cropping_current">"Solo questa pagina"</string>
     <string name="manual_cropping_even">"Tutte le pagine pari (dispari)"</string>
     <string name="manual_cropping_even_symm">"Pagine pari e dispari in maniera simmetrica"</string>

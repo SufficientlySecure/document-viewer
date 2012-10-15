@@ -5,8 +5,8 @@
     <string name="pref_scroll_category_summary">"Definisce in che modo sfogliare le pagine attraverso l'interfaccia tattile"</string>
     <string name="pref_tapsenabled_title">"Rileva i tocchi"</string>
     <string name="pref_tapsenabled_summary">"Utilizza la configurazione dei tocchi (tap) per definire le aree attive e le rispettive azioni"</string>
-    <string name="pref_scroll_title">"Altezza dell'area di trascinamento"</string>
-    <string name="pref_scroll_summary">"Imposta l’altezza dell'area attiva per il trascinamento delle pagine"</string>
+    <string name="pref_scroll_title">"Ampiezza dello scorrimento"</string>
+    <string name="pref_scroll_summary">"Specifica la massima ampiezza dello scorrimento per le pagine non interamente contenute nello schermo (per default è il 50%)"</string>
     <string name="pref_touchdelay_title">"Ritardo di elaborazione del tocco"</string>
     <string name="pref_touchdelay_summary">"Ritardo (in millisecondi) nell'elaborazione del tocco"</string>
     <string name="pref_animate_scrolling_title">"Animazione del trascinamento"</string>

@@ -30,7 +30,7 @@
     <string name="list_animation_slider">"Scorri"</string>
     <string name="list_animation_fader">"Dissolvi"</string>
     <string name="list_animation_squeezer">"Comprimi"</string>
-    <string name="list_animation_slider2">"Scorri (2)"</string>
+    <string name="list_animation_slider2">"Scorri sopra"</string>
     <string name="pref_postprocessing_category">"Effetti aggiuntivi"</string>
     <string name="pref_postprocessing_summary">"Effetti e correzioni applicati successivamente al rendering della pagina"</string>
     <string name="pref_nightmode_title">"Modalità notte"</string>

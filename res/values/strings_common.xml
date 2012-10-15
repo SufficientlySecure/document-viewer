@@ -145,4 +145,5 @@
     <string name="cache_moving_text">Moving cached files&#8230;</string>
     <string name="cache_moving_progress">Moving cached files %1$d/%2$d</string>
 
+    <string name="error_invalid_view_mode">This action is only available in view mode %1$s</string>
 </resources>

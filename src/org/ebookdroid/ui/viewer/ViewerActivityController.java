@@ -679,6 +679,12 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         final View view = action.getParameter("view");
         final DocumentViewMode mode = action.getParameter("mode");
         if (mode != null && bookSettings != null && bookSettings.viewMode != mode) {
+
+            final ActionDialogBuilder builder = new ActionDialogBuilder(getContext(), this);
+            builder.setTitle(android.R.string.dialog_alert_title);
+            builder.setMessage(R.string.error_invalid_view_mode, mode.getResValue());
+            builder.setNegativeButton();
+            builder.show();
             return;
         }
         ViewEffects.toggleControls(view);

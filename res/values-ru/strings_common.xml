@@ -112,5 +112,5 @@
     <string name="font_reminder">"Начиная с версии 1.5 из программы удалены встроенные шрифты, которые использовались для отображения книг в форматах PDF и FB2. Теперь вместо них используются стандартные шрифты Андроида. Если вы хотите вернуть старые шрифты или установить новые, скачайте пакеты шрифтов с Google Play Market: &lt;ul&gt;&lt;li&gt;&lt;a href=&quot;market://details?id=org.ebookdroid.fontpack.legacy&quot;&gt;Старые шрифты&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;"</string>
     <string name="cache_moving_text">"Перенос кэшированных файлов…"</string>
     <string name="cache_moving_progress">"Перенос кэшированных файлов %1$d/%2$d"</string>
-
+    <string name="error_invalid_view_mode">Это действие доступно только в режиме просмотра %1$s</string>
 </resources>

@@ -16,7 +16,10 @@ public class NavigationHistory {
     }
 
     public void update() {
-        history.addFirst(new Position(base.getBookSettings()));
+        final BookSettings bs = base.getBookSettings();
+        if (bs != null) {
+            history.addFirst(new Position(bs));
+        }
     }
 
     public boolean goBack() {

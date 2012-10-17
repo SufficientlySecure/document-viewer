@@ -99,10 +99,7 @@ public class DocumentModel extends ListenerProxy {
 
     private void recyclePages() {
         if (LengthUtils.isNotEmpty(pages)) {
-            final boolean cacheable = decodeService.isFeatureSupported(CodecFeatures.FEATURE_CACHABLE_PAGE_INFO);
-            if (cacheable) {
-                cacheFile.save(docInfo);
-            }
+            saveDocumentInfo();
 
             final List<Bitmaps> bitmapsToRecycle = new ArrayList<Bitmaps>();
             for (final Page page : pages) {
@@ -112,6 +109,13 @@ public class DocumentModel extends ListenerProxy {
             BitmapManager.release();
         }
         pages = EMPTY_PAGES;
+    }
+
+    public void saveDocumentInfo() {
+        final boolean cacheable = decodeService.isFeatureSupported(CodecFeatures.FEATURE_CACHABLE_PAGE_INFO);
+        if (cacheable) {
+            cacheFile.save(docInfo);
+        }
     }
 
     public Page getPageObject(final int viewIndex) {
@@ -129,18 +133,20 @@ public class DocumentModel extends ListenerProxy {
 
     public Page getLinkTargetPage(final int pageDocIndex, final RectF targetRect, final PointF linkPoint) {
         Page target = getPageByDocIndex(pageDocIndex);
-        float offsetX = 0;
-        float offsetY = 0;
-        if (targetRect != null) {
-            offsetX = targetRect.left;
-            offsetY = targetRect.top;
-            if (target.type == PageType.LEFT_PAGE && offsetX >= 0.5f) {
-                target = getPageObject(target.index.viewIndex + 1);
-                offsetX -= 0.5f;
+        if (target != null) {
+            float offsetX = 0;
+            float offsetY = 0;
+            if (targetRect != null) {
+                offsetX = targetRect.left;
+                offsetY = targetRect.top;
+                if (target.type == PageType.LEFT_PAGE && offsetX >= 0.5f) {
+                    target = getPageObject(target.index.viewIndex + 1);
+                    offsetX -= 0.5f;
+                }
             }
-        }
-        if (linkPoint != null) {
-            linkPoint.set(offsetX, offsetY);
+            if (linkPoint != null) {
+                linkPoint.set(offsetX, offsetY);
+            }
         }
         return target;
     }

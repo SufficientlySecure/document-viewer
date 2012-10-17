@@ -340,8 +340,6 @@ public class RecentActivityController extends ActionController<RecentActivity> i
 
     @ActionMethod(ids = R.id.mainmenu_settings)
     public void showSettings(final ActionEx action) {
-        libraryAdapter.stopScan();
-        bookshelfAdapter.stopScan();
         SettingsUI.showAppSettings(getManagedComponent(), null);
     }
 
@@ -492,8 +490,6 @@ public class RecentActivityController extends ActionController<RecentActivity> i
 
     @Override
     public void showDocument(final Uri uri) {
-        libraryAdapter.stopScan();
-        bookshelfAdapter.stopScan();
         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         intent.setClass(getManagedComponent(), ViewerActivity.class);
         getManagedComponent().startActivity(intent);

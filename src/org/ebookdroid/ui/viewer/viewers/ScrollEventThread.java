@@ -22,11 +22,16 @@ final class ScrollEventThread extends Thread {
 
     @Override
     public void run() {
+        Thread.currentThread().setPriority(MAX_PRIORITY);
         try {
             while (true) {
                 final OnScrollEvent event = queue.poll(1, TimeUnit.SECONDS);
                 if (event == null) {
                     continue;
+                }
+                for(OnScrollEvent event1 = queue.poll();event1 != null; event1 = queue.poll()) {
+                    event.reuse(event1.m_curX, event1.m_curY, event.m_oldX, event.m_oldY);
+                    pool.add(event1);
                 }
                 process(event);
             }

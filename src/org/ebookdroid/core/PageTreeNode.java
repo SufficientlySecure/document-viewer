@@ -158,13 +158,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
         try {
             if (bitmap == null || bitmapBounds == null) {
-                page.base.runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        stopDecodingThisNode(null);
-                    }
-                });
+                stopDecodingThisNode(null);
                 return;
             }
 
@@ -190,33 +184,18 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
             final Bitmaps bitmaps = holder.reuse(fullId, bitmap, bitmapBounds);
 
-            final Runnable r = new Runnable() {
+            holder.setBitmap(bitmaps);
+            stopDecodingThisNode(null);
 
-                @Override
-                public void run() {
-                    // long t0 = System.currentTimeMillis();
-                    holder.setBitmap(bitmaps);
-                    stopDecodingThisNode(null);
+            final IViewController dc = page.base.getDocumentController();
+            if (dc instanceof AbstractViewController) {
+                EventPool.newEventChildLoaded((AbstractViewController) dc, PageTreeNode.this, bitmapBounds).process();
+            }
 
-                    final IViewController dc = page.base.getDocumentController();
-                    if (dc instanceof AbstractViewController) {
-                        EventPool.newEventChildLoaded((AbstractViewController) dc, PageTreeNode.this, bitmapBounds)
-                                .process();
-                    }
-                }
-            };
-
-            page.base.runOnUiThread(r);
         } catch (final OutOfMemoryError ex) {
             LCTX.e("No memory: ", ex);
             BitmapManager.clear("PageTreeNode OutOfMemoryError: ");
-            page.base.getActivity().runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    stopDecodingThisNode(null);
-                }
-            });
+            stopDecodingThisNode(null);
         } finally {
             BitmapManager.release(bitmap);
         }

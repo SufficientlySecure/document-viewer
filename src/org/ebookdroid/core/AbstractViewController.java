@@ -644,7 +644,7 @@ public abstract class AbstractViewController extends AbstractComponentController
                 LCTX.d("onFling(" + x + ", " + y + ")");
             }
             getView().startFling(x, y, l);
-            // getView().redrawView();
+            getView().redrawView();
             return true;
         }
 

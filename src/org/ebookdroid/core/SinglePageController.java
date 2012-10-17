@@ -199,6 +199,7 @@ public class SinglePageController extends AbstractViewController {
     @Override
     public void drawView(final EventDraw eventDraw) {
         curler.draw(eventDraw);
+        getView().continueScroll();
     }
 
     public final ViewState invalidatePages(final ViewState oldState, final Page... pages) {

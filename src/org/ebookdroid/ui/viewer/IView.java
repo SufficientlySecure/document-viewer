@@ -37,6 +37,10 @@ public interface IView {
 
     void scrollTo(final int x, final int y);
 
+    void _scrollTo(final int x, final int y);
+
+    void onScrollChanged(final int curX, final int curY, final int oldX, final int oldY);
+
     RectF getViewRect();
 
     void changeLayoutLock(final boolean lock);

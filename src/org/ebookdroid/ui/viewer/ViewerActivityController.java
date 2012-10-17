@@ -399,7 +399,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     @Override
     public void decodingProgressChanged(final int currentlyDecoding) {
-        runOnUiThread(new Runnable() {
+        final Runnable r = new Runnable() {
 
             @Override
             public void run() {
@@ -411,7 +411,28 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                 } catch (final Throwable e) {
                 }
             }
-        });
+        };
+
+        getView().post(r);
+    }
+
+    @Override
+    public void currentPageChanged(final PageIndex oldIndex, final PageIndex newIndex) {
+        final Runnable r = new Runnable() {
+
+            @Override
+            public void run() {
+                final int pageCount = documentModel.getPageCount();
+                String pageText = "";
+                if (pageCount > 0) {
+                    pageText = (newIndex.viewIndex + 1) + "/" + pageCount;
+                }
+                getManagedComponent().currentPageChanged(pageText, bookTitle);
+                SettingsManager.currentPageChanged(bookSettings, oldIndex, newIndex);
+            }
+        };
+
+        getView().post(r);
     }
 
     @Override
@@ -428,23 +449,6 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         } catch (final Throwable th) {
             th.printStackTrace();
         }
-    }
-
-    @Override
-    public void currentPageChanged(final PageIndex oldIndex, final PageIndex newIndex) {
-        runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-                final int pageCount = documentModel.getPageCount();
-                String pageText = "";
-                if (pageCount > 0) {
-                    pageText = (newIndex.viewIndex + 1) + "/" + pageCount;
-                }
-                getManagedComponent().currentPageChanged(pageText, bookTitle);
-                SettingsManager.currentPageChanged(bookSettings, oldIndex, newIndex);
-            }
-        });
     }
 
     public void setWindowTitle() {

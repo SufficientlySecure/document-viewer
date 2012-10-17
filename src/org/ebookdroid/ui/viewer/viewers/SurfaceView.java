@@ -7,7 +7,6 @@ import org.ebookdroid.core.Page;
 import org.ebookdroid.core.ViewState;
 import org.ebookdroid.ui.viewer.IActivityController;
 import org.ebookdroid.ui.viewer.IView;
-import org.ebookdroid.ui.viewer.IViewController;
 
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -20,7 +19,6 @@ import android.widget.Scroller;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.emdev.utils.MathUtils;
 import org.emdev.utils.concurrent.Flag;
 
 public final class SurfaceView extends android.view.SurfaceView implements IView, SurfaceHolder.Callback {
@@ -54,6 +52,9 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
 
         getHolder().addCallback(this);
         fullScreenCallback = FullScreenCallback.get(baseActivity.getActivity(), this);
+
+        scrollThread = new ScrollEventThread(base, this);
+        scrollThread.start();
     }
 
     /**
@@ -173,14 +174,8 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
      * @see android.view.View#onScrollChanged(int, int, int, int)
      */
     @Override
-    protected final void onScrollChanged(final int curX, final int curY, final int oldX, final int oldY) {
+    public void onScrollChanged(final int curX, final int curY, final int oldX, final int oldY) {
         super.onScrollChanged(curX, curY, oldX, oldY);
-
-        if (scrollThread == null || !scrollThread.isAlive()) {
-            scrollThread = new ScrollEventThread(base);
-            scrollThread.start();
-        }
-
         scrollThread.onScrollChanged(curX, curY, oldX, oldY);
     }
 
@@ -218,23 +213,12 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
      */
     @Override
     public final void scrollTo(final int x, final int y) {
+        scrollThread.scrollTo(x, y);
+    }
 
-        final Runnable r = new Runnable() {
-
-            @Override
-            public void run() {
-                final IViewController dc = base.getDocumentController();
-                final Rect l = dc.getScrollLimits();
-                final int xx = MathUtils.adjust(x, l.left, l.right);
-                final int yy = MathUtils.adjust(y, l.top, l.bottom);
-                // if (LCTX.isDebugEnabled()) {
-                // LCTX.d("scrollTo(" + x + ", " + y + "): " + xx + ", " + yy);
-                // }
-                SurfaceView.super.scrollTo(xx, yy);
-            }
-        };
-
-        base.runOnUiThread(r);
+    @Override
+    public void _scrollTo(int x, int y) {
+        super.scrollTo(x, y);
     }
 
     /**
@@ -311,6 +295,8 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
     @Override
     public void onDestroy() {
         layoutFlag.set();
+        scrollThread.finish();
+        drawThread.finish();
     }
 
     /**

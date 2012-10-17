@@ -6,10 +6,8 @@ import org.ebookdroid.core.DecodeService;
 import org.ebookdroid.core.EventPool;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.ViewState;
-import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.ui.viewer.IActivityController;
 import org.ebookdroid.ui.viewer.IView;
-import org.ebookdroid.ui.viewer.IViewController;
 
 import android.graphics.Canvas;
 import android.graphics.PointF;
@@ -22,7 +20,6 @@ import android.widget.Scroller;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.emdev.utils.MathUtils;
 import org.emdev.utils.concurrent.Flag;
 
 public final class BaseView extends View implements IView {
@@ -58,6 +55,9 @@ public final class BaseView extends View implements IView {
 
         drawThread = new DrawThread(null);
         fullScreenCallback = FullScreenCallback.get(baseActivity.getActivity(), this);
+
+        scrollThread = new ScrollEventThread(base, this);
+        scrollThread.start();
     }
 
     /**
@@ -169,14 +169,8 @@ public final class BaseView extends View implements IView {
      * @see android.view.View#onScrollChanged(int, int, int, int)
      */
     @Override
-    protected final void onScrollChanged(final int curX, final int curY, final int oldX, final int oldY) {
+    public final void onScrollChanged(final int curX, final int curY, final int oldX, final int oldY) {
         super.onScrollChanged(curX, curY, oldX, oldY);
-
-        if (scrollThread == null || !scrollThread.isAlive()) {
-            scrollThread = new ScrollEventThread(base);
-            scrollThread.start();
-        }
-
         scrollThread.onScrollChanged(curX, curY, oldX, oldY);
     }
 
@@ -214,20 +208,12 @@ public final class BaseView extends View implements IView {
      */
     @Override
     public final void scrollTo(final int x, final int y) {
-        final Runnable r = new Runnable() {
+        scrollThread.scrollTo(x, y);
+    }
 
-            @Override
-            public void run() {
-                final IViewController dc = base.getDocumentController();
-                final DocumentModel dm = base.getDocumentModel();
-                if (dc != null && dm != null) {
-                    final Rect l = dc.getScrollLimits();
-                    BaseView.super.scrollTo(MathUtils.adjust(x, l.left, l.right), MathUtils.adjust(y, l.top, l.bottom));
-                }
-            }
-        };
-
-        base.runOnUiThread(r);
+    @Override
+    public void _scrollTo(int x, int y) {
+        super.scrollTo(x, y);
     }
 
     /**
@@ -304,6 +290,7 @@ public final class BaseView extends View implements IView {
     @Override
     public void onDestroy() {
         layoutFlag.set();
+        scrollThread.finish();
     }
 
     /**

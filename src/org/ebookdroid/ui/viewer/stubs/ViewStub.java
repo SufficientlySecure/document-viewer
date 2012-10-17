@@ -62,6 +62,14 @@ public class ViewStub implements IView {
     }
 
     @Override
+    public void _scrollTo(int x, int y) {
+    }
+
+    @Override
+    public void onScrollChanged(int curX, int curY, int oldX, int oldY) {
+    }
+
+    @Override
     public RectF getViewRect() {
         return new RectF(0, 0, 0, 0);
     }

@@ -49,7 +49,9 @@ public class FullScreenCallback implements Runnable {
             // Only adds delayed message
             this.time = System.currentTimeMillis();
             // System.out.println("fullScreenCallback: postDelayed(): " + TIMEOUT);
-            view.getHandler().postDelayed(this, TIMEOUT);
+            if (view != null) {
+                view.getHandler().postDelayed(this, TIMEOUT);
+            }
             return;
         }
 

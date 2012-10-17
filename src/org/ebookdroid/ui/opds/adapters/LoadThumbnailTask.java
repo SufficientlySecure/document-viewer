@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory.Options;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ConcurrentModificationException;
 
 import org.emdev.ui.tasks.AsyncTask;
 import org.emdev.utils.LengthUtils;
@@ -39,12 +40,22 @@ final class LoadThumbnailTask extends AsyncTask<Feed, Book, String> {
             if (feed == null) {
                 continue;
             }
-            for (final Book book : feed.books) {
-                if (stopped.get() || adapter.currentFeed != book.parent) {
-                    return null;
+            while (true) {
+                try {
+                    for (final Book book : feed.books) {
+                        if (stopped.get() || adapter.currentFeed != feed) {
+                            return null;
+                        }
+                        loadBookThumbnail(book);
+                        publishProgress(book);
+                    }
+                    break;
+                } catch (ConcurrentModificationException ex) {
+                    if (stopped.get() || adapter.currentFeed != feed) {
+                        return null;
+                    }
+                    // else repeat scanning
                 }
-                loadBookThumbnail(book);
-                publishProgress(book);
             }
         }
         return null;

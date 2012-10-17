@@ -22,7 +22,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.text.Editable;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -218,7 +217,7 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
             }
         } else {
             setTitle(newDir.getAbsolutePath());
-            ActivityCompat.invalidateOptionsMenu(this);
+            IUIManager.instance.invalidateOptionsMenu(this);
         }
     }
 

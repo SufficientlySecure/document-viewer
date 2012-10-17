@@ -110,6 +110,11 @@ public class UIManager3x implements IUIManager {
     }
 
     @Override
+    public void invalidateOptionsMenu(final Activity activity) {
+        activity.invalidateOptionsMenu();
+    }
+
+    @Override
     public void onMenuOpened(final Activity activity) {
         if (data.get(activity.getComponentName()).fullScreen
                 && data.get(activity.getComponentName()).fullScreenState.get()) {

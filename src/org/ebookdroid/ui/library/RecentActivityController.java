@@ -30,7 +30,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.support.v4.app.ActivityCompat;
 import android.text.Editable;
 import android.view.View;
 import android.view.Window;
@@ -59,6 +58,7 @@ import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.actions.IActionController;
 import org.emdev.ui.actions.params.Constant;
 import org.emdev.ui.actions.params.EditableValue;
+import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.utils.CompareUtils;
 import org.emdev.utils.FileUtils;
 import org.emdev.utils.LengthUtils;
@@ -635,7 +635,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
                 libraryAdapter.startScan();
             }
         }
-        ActivityCompat.invalidateOptionsMenu(getManagedComponent());
+        IUIManager.instance.invalidateOptionsMenu(getManagedComponent());
     }
 
     @Override

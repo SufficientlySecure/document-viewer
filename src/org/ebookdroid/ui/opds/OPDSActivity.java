@@ -7,7 +7,6 @@ import org.ebookdroid.opds.model.Feed;
 import org.ebookdroid.opds.model.Link;
 
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -24,6 +23,7 @@ import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
 import org.emdev.ui.AbstractActionActivity;
 import org.emdev.ui.actions.params.Constant;
+import org.emdev.ui.uimanager.IUIManager;
 
 public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActivityController> {
 
@@ -222,12 +222,12 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActiv
     }
 
     protected void onCurrrentFeedChanged(final Feed feed) {
-        ActivityCompat.invalidateOptionsMenu(this);
+        IUIManager.instance.invalidateOptionsMenu(this);
         setTitle(getFeedTitle(feed));
         findViewById(R.id.opdsaddfeed).setVisibility(feed != null ? View.GONE : View.VISIBLE);
     }
 
     protected void onFeedLoaded(final Feed feed) {
-        ActivityCompat.invalidateOptionsMenu(this);
+        IUIManager.instance.invalidateOptionsMenu(this);
     }
 }

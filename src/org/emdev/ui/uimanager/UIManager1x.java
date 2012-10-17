@@ -82,6 +82,10 @@ public class UIManager1x implements IUIManager {
     }
 
     @Override
+    public void invalidateOptionsMenu(final Activity activity) {
+    }
+
+    @Override
     public void onMenuOpened(final Activity activity) {
         if (data.get(activity.getComponentName()).fullScreen) {
             activity.getWindow().clearFlags(FLAG_FULLSCREEN);
@@ -108,7 +112,7 @@ public class UIManager1x implements IUIManager {
     }
 
     @Override
-    public boolean isTabletUi(Activity activity) {
+    public boolean isTabletUi(final Activity activity) {
         return false;
     }
 

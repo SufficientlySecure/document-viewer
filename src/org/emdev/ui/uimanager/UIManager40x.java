@@ -122,6 +122,11 @@ public class UIManager40x implements IUIManager {
     }
 
     @Override
+    public void invalidateOptionsMenu(final Activity activity) {
+        activity.invalidateOptionsMenu();
+    }
+
+    @Override
     public void onMenuOpened(final Activity activity) {
         if (!isTabletUi(activity)) {
             if (data.get(activity.getComponentName()).statusBarHidden) {

@@ -45,6 +45,8 @@ public interface IUIManager {
 
     void openOptionsMenu(final Activity activity, final View view);
 
+    void invalidateOptionsMenu(final Activity activity);
+
     void onMenuOpened(Activity activity);
 
     void onMenuClosed(Activity activity);

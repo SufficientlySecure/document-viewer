@@ -13,7 +13,6 @@ import org.ebookdroid.ui.library.views.LibraryView;
 import org.ebookdroid.ui.library.views.RecentBooksView;
 
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -118,7 +117,7 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
             LCTX.d("onResume()");
         }
         super.onResume();
-        ActivityCompat.invalidateOptionsMenu(this);
+        IUIManager.instance.invalidateOptionsMenu(this);
         getController().onResume();
     }
 
@@ -236,7 +235,6 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
                 libraryButton.setImageResource(R.drawable.recent_actionbar_library);
             }
         }
-        ActivityCompat.invalidateOptionsMenu(this);
     }
 
     int getViewMode() {

@@ -3,6 +3,7 @@ package org.ebookdroid.core;
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.Bitmaps;
 import org.ebookdroid.common.settings.types.PageType;
+import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.ui.viewer.IViewController;
 import org.ebookdroid.ui.viewer.IViewController.InvalidateSizeReason;
 
@@ -89,6 +90,9 @@ public class EventCrop extends AbstractEvent {
                     page.nodes.root.setManualCropping(croppings[page.type.ordinal()], commit);
                 }
             }
+
+            DocumentModel dm = ctrl.getBase().getDocumentModel();
+            dm.saveDocumentInfo();
 
             BitmapManager.release(bitmapsToRecycle);
 

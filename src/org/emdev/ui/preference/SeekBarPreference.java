@@ -11,6 +11,8 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
+import java.util.IllegalFormatException;
+
 import org.emdev.ui.widget.IViewContainer;
 import org.emdev.ui.widget.SeekBarIncrementHandler;
 import org.emdev.utils.LengthUtils;
@@ -105,7 +107,12 @@ public final class SeekBarPreference extends DialogPreference implements OnSeekB
             value = Integer.parseInt(getPersistedString(Integer.toString(defaultValue)));
         } catch (NumberFormatException ex) {
         }
-        return String.format(summary, value);
+        try {
+            return String.format(summary, value);
+        } catch (IllegalFormatException ex) {
+            System.err.println("Error on summary formatting for " + getKey()+": " + ex.getMessage());
+        }
+        return summary;
     }
 
     @Override

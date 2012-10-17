@@ -29,6 +29,7 @@ import org.ebookdroid.core.models.SearchModel;
 import org.ebookdroid.core.models.ZoomModel;
 import org.ebookdroid.droids.mupdf.codec.exceptions.MuPdfPasswordException;
 import org.ebookdroid.ui.settings.SettingsUI;
+import org.ebookdroid.ui.viewer.dialogs.GoToPageDialog;
 import org.ebookdroid.ui.viewer.dialogs.OutlineDialog;
 import org.ebookdroid.ui.viewer.stubs.ActivityControllerStub;
 import org.ebookdroid.ui.viewer.stubs.ViewContollerStub;
@@ -95,7 +96,7 @@ actions = {
         @ActionMethodDef(id = R.id.mainmenu_outline, method = "showOutline"),
         @ActionMethodDef(id = R.id.actions_doSearch, method = "doSearch"),
         @ActionMethodDef(id = R.id.actions_doSearchBack, method = "doSearch"),
-        @ActionMethodDef(id = R.id.mainmenu_goto_page, method = "showDialog"),
+        @ActionMethodDef(id = R.id.mainmenu_goto_page, method = "showGotoDialog"),
         @ActionMethodDef(id = R.id.mainmenu_booksettings, method = "showBookSettings"),
         @ActionMethodDef(id = R.id.mainmenu_settings, method = "showAppSettings"),
         @ActionMethodDef(id = R.id.mainmenu_fullscreen, method = "toggleFullScreen"),
@@ -116,8 +117,6 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         DecodingProgressListener, CurrentPageListener, IAppSettingsChangeListener, IBookSettingsChangeListener {
 
     private static final String E_MAIL_ATTACHMENT = "[E-mail Attachment]";
-
-    private static final int DIALOG_GOTO = 0;
 
     private static final AtomicLong SEQ = new AtomicLong();
 
@@ -193,7 +192,6 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
         IUIManager.instance.setFullScreenMode(activity, getManagedComponent().view.getView(), appSettings.fullScreen);
 
-        createAction(R.id.mainmenu_goto_page, new Constant("dialogId", DIALOG_GOTO));
         createAction(R.id.mainmenu_crop).putValue("view", activity.getManualCropControls()).putValue("mode",
                 DocumentViewMode.SINGLE_PAGE);
         createAction(R.id.mainmenu_zoom).putValue("view", activity.getZoomControls());
@@ -519,11 +517,10 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         new SearchTask().execute(newPattern, oldPattern, (String) action.getParameter("forward"));
     }
 
-    @SuppressWarnings("deprecation")
     @ActionMethod(ids = R.id.mainmenu_goto_page)
-    public void showDialog(final ActionEx action) {
-        final Integer dialogId = action.getParameter("dialogId");
-        getManagedComponent().showDialog(dialogId);
+    public void showGotoDialog(final ActionEx action) {
+        GoToPageDialog dlg = new GoToPageDialog(this);
+        dlg.show();
     }
 
     @ActionMethod(ids = R.id.mainmenu_booksettings)

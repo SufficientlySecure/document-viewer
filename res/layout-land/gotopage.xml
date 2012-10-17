@@ -4,23 +4,26 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_gravity="center"
-    android:orientation="vertical" >
+    android:orientation="horizontal" >
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_height="fill_parent"
+        android:layout_gravity="top"
+        android:layout_weight="1"
         android:orientation="vertical" >
-        <include layout="@layout/gotopage_pages"/>
+
+        <include layout="@layout/gotopage_pages" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="top"
+        android:layout_weight="1"
         android:orientation="vertical" >
-        <include layout="@layout/gotopage_bookmarks"/>
-    </LinearLayout>
 
+        <include layout="@layout/gotopage_bookmarks" />
+    </LinearLayout>
 
 </LinearLayout>

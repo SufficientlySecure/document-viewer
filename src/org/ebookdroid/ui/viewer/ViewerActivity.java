@@ -6,12 +6,10 @@ import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.ToastPosition;
 import org.ebookdroid.common.touch.TouchManagerView;
-import org.ebookdroid.ui.viewer.dialogs.GoToPageDialog;
 import org.ebookdroid.ui.viewer.views.ManualCropView;
 import org.ebookdroid.ui.viewer.views.PageViewZoomControls;
 import org.ebookdroid.ui.viewer.views.SearchControls;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -45,8 +43,6 @@ actions = {
 // finish
 })
 public class ViewerActivity extends AbstractActionActivity<ViewerActivity, ViewerActivityController> {
-
-    private static final int DIALOG_GOTO = 0;
 
     public static final DisplayMetrics DM = new DisplayMetrics();
 
@@ -358,15 +354,6 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
         menuClosedCalled = true;
         IUIManager.instance.onMenuClosed(this);
         view.changeLayoutLock(false);
-    }
-
-    @Override
-    protected Dialog onCreateDialog(final int id) {
-        switch (id) {
-            case DIALOG_GOTO:
-                return new GoToPageDialog(getController());
-        }
-        return null;
     }
 
     @Override

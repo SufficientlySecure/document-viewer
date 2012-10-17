@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tab_pages"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="center"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="52dip"
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dip"
+        android:layout_marginTop="8dip"
+        android:baselineAligned="true"
+        android:gravity="top"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/pageNumberTextEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="4dip"
+            android:layout_marginRight="2dip"
+            android:layout_weight="1"
+            android:inputType="number"
+            android:minEms="4"
+            android:numeric="integer"
+            android:textSize="24dip"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/goToButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="2dip"
+            android:layout_marginRight="4dip"
+            android:layout_weight="1"
+            android:background="@drawable/viewer_goto_dlg_goto_background" >
+
+            <ImageView
+                android:layout_width="48dip"
+                android:layout_height="48dip"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="8dip"
+                android:src="@drawable/viewer_goto_dlg_goto" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="4dip"
+                android:layout_marginRight="8dip"
+                android:ellipsize="marquee"
+                android:gravity="center_vertical"
+                android:text="@string/button_goto_page"
+                android:textSize="24dip"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dip"
+        android:layout_marginTop="20dip"
+        android:baselineAligned="true"
+        android:gravity="top"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:id="@+id/seekbar_minus"
+            android:layout_width="48dip"
+            android:layout_height="48dip"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dip"
+            android:background="@drawable/components_seekbar_minus" />
+
+        <LinearLayout
+            android:id="@+id/seekbar_plus"
+            android:layout_width="48dip"
+            android:layout_height="48dip"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="4dip"
+            android:layout_marginRight="4dip"
+            android:background="@drawable/components_seekbar_plus" />
+
+        <SeekBar
+            android:id="@+id/seekbar"
+            android:layout_width="fill_parent"
+            android:layout_height="48dip"
+            android:layout_marginLeft="16dip"
+            android:layout_marginRight="16dip"
+            android:layout_toLeftOf="@id/seekbar_plus"
+            android:layout_toRightOf="@id/seekbar_minus"
+            android:gravity="center"
+            android:maxHeight="48dip"
+            android:minHeight="48dip" />
+    </RelativeLayout>
+
+</LinearLayout>

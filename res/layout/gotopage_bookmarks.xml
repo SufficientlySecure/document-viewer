@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tab_bookmarks"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="center"
+    android:orientation="vertical" >
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tab_bookmarks"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="center"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dip"
+        android:layout_marginTop="8dip"
+        android:orientation="horizontal" >
+
+        <View
+            android:id="@+id/bookmark_add"
+            android:layout_width="48dip"
+            android:layout_height="48dip"
+            android:layout_marginLeft="4dip"
+            android:layout_marginRight="2dip"
+            android:background="@drawable/viewer_goto_dlg_bookmark_add" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="48dip"
+            android:layout_gravity="center"
+            android:layout_marginLeft="2dip"
+            android:layout_marginRight="2dip"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/bookmarks_title"
+            android:textSize="24dip"
+            android:textStyle="bold" />
+
+        <View
+            android:id="@+id/bookmark_remove_all"
+            android:layout_width="48dip"
+            android:layout_height="48dip"
+            android:layout_marginLeft="2dip"
+            android:layout_marginRight="4dip"
+            android:background="@drawable/viewer_goto_dlg_bookmark_remove_all" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/bookmarks"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="4dip"
+        android:layout_marginLeft="4dip"
+        android:layout_marginRight="4dip"
+        android:layout_marginTop="2dip" />
+
+</LinearLayout>
+</LinearLayout>

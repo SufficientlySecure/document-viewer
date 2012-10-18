@@ -1,35 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
-  xmlns:android="http://schemas.android.com/apk/res/android">
-   <item android:id="@+id/actions_redecodingWithPassword" />
-   <item android:id="@+id/actions_gotoOutlineItem" />
-   <item android:id="@+id/actions_addBookmark" />
-   <item android:id="@+id/actions_doSearch" />
-   <item android:id="@+id/actions_doSearchBack" />
-   <item android:id="@+id/actions_no_action" />
-   <item android:id="@+id/actions_toggleTouchManagerView" />
-   <item android:id="@+id/actions_openOptionsMenu" />
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-   <item android:id="@+id/actions_verticalConfigScrollUp" />
-   <item android:id="@+id/actions_verticalConfigScrollDown" />
-   <item android:id="@+id/actions_quickZoom" />
-   <item android:id="@+id/actions_zoomToColumn" />
+    <item android:id="@+id/actions_redecodingWithPassword"/>
+    <item android:id="@+id/actions_gotoOutlineItem"/>
+    <item android:id="@+id/actions_addBookmark"/>
+    <item android:id="@+id/actions_doSearch"/>
+    <item android:id="@+id/actions_doSearchBack"/>
+    <item android:id="@+id/actions_no_action"/>
+    <item android:id="@+id/actions_toggleTouchManagerView"/>
+    <item android:id="@+id/actions_openOptionsMenu"/>
 
-   <item android:id="@+id/actions_clearRecent" />
-   <item android:id="@+id/actions_searchBook" />
+    <item android:id="@+id/actions_verticalConfigScrollUp"/>
+    <item android:id="@+id/actions_verticalConfigScrollDown"/>
+    <item android:id="@+id/actions_quickZoom"/>
+    <item android:id="@+id/actions_zoomToColumn"/>
 
-   <item android:id="@+id/actions_downloadBook" />
-   <item android:id="@+id/actions_retryDownloadBook" />
-   <item android:id="@+id/actions_addFeed" />
-   <item android:id="@+id/actions_editFeed" />
-   <item android:id="@+id/actions_deleteFeed" />
-   <item android:id="@+id/actions_setFeedAuth" />
+    <item android:id="@+id/actions_leftTopCorner"/>
+    <item android:id="@+id/actions_rightTopCorner"/>
+    <item android:id="@+id/actions_leftBottomCorner"/>
+    <item android:id="@+id/actions_rightBottomCorner"/>
 
-   <item android:id="@+id/actions_doCopyBook" />
-   <item android:id="@+id/actions_doMoveBook" />
+    <item android:id="@+id/actions_clearRecent"/>
+    <item android:id="@+id/actions_searchBook"/>
+    <item android:id="@+id/actions_downloadBook"/>
+    <item android:id="@+id/actions_retryDownloadBook"/>
+    <item android:id="@+id/actions_addFeed"/>
+    <item android:id="@+id/actions_editFeed"/>
+    <item android:id="@+id/actions_deleteFeed"/>
+    <item android:id="@+id/actions_setFeedAuth"/>
 
-   <item android:id="@+id/actions_doRenameBook" />
-   <item android:id="@+id/actions_doDeleteBook" />
+    <item android:id="@+id/actions_doCopyBook"/>
+    <item android:id="@+id/actions_doMoveBook"/>
+    <item android:id="@+id/actions_doRenameBook"/>
+    <item android:id="@+id/actions_doDeleteBook"/>
 
     <item android:id="@+id/actions_selectShelf"/>
 

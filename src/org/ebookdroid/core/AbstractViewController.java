@@ -100,6 +100,10 @@ public abstract class AbstractViewController extends AbstractComponentController
 
         createAction(R.id.actions_verticalConfigScrollUp, new Constant("direction", -1));
         createAction(R.id.actions_verticalConfigScrollDown, new Constant("direction", +1));
+        createAction(R.id.actions_leftTopCorner, new Constant("offsetX", 0), new Constant("offsetY", 0));
+        createAction(R.id.actions_leftBottomCorner, new Constant("offsetX", 0), new Constant("offsetY", 1));
+        createAction(R.id.actions_rightTopCorner, new Constant("offsetX", 1), new Constant("offsetY", 0));
+        createAction(R.id.actions_rightBottomCorner, new Constant("offsetX", 1), new Constant("offsetY", 1));
     }
 
     protected List<IGestureDetector> getGestureDetectors() {
@@ -309,6 +313,18 @@ public abstract class AbstractViewController extends AbstractComponentController
         final float toX = columnRegion.left;
         final float toY = pb.top + pos.y * pb.height() - 0.5f * screenHeight;
         getView().scrollTo((int) toX, (int) toY);
+    }
+
+    @ActionMethod(ids = { R.id.actions_leftTopCorner, R.id.actions_leftBottomCorner, R.id.actions_rightTopCorner,
+            R.id.actions_rightBottomCorner })
+    public void scrollToCorner(ActionEx action) {
+        final Integer offX = action.getParameter("offsetX");
+        final Integer offY = action.getParameter("offsetY");
+
+        final float offsetX = offX != null ? offX.floatValue() : 0;
+        final float offsetY = offY != null ? offY.floatValue() : 0;
+
+        new EventGotoPageCorner(this, offsetX, offsetY).process();
     }
 
     /**

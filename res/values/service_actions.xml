@@ -20,6 +20,10 @@
         <item>actions_verticalConfigScrollDown</item>
         <item>actions_quickZoom</item>
         <item>actions_zoomToColumn</item>
+        <item>actions_leftTopCorner</item>
+        <item>actions_rightTopCorner</item>
+        <item>actions_leftBottomCorner</item>
+        <item>actions_rightBottomCorner</item>
         </string-array>
 
     <string-array name="list_actions_labels" translatable="false">
@@ -41,6 +45,10 @@
         <item>@string/actions_verticalConfigScrollDown</item>
         <item>@string/actions_quickZoom</item>
         <item>@string/actions_zoomToColumn</item>
+        <item>@string/actions_leftTopCorner</item>
+        <item>@string/actions_rightTopCorner</item>
+        <item>@string/actions_leftBottomCorner</item>
+        <item>@string/actions_rightBottomCorner</item>
         </string-array>
 
 </resources>

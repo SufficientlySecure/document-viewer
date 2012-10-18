@@ -34,7 +34,7 @@ public enum FB2Tag {
     /** **/
     COVERPAGE("coverpage", FB2TagId.COVERPAGE, true, true),
     /** **/
-    A("a", FB2TagId.A, true, true, "type", "href"),
+    A("a", FB2TagId.A, true, true, "href", "type"),
     /** **/
     EMPTY_LINE("empty-line", FB2TagId.EMPTY_LINE, true, true),
     /** **/

@@ -251,4 +251,50 @@ public class StringUtils {
         }
     }
 
+
+    public static int parseInt(char[]string, int start, int length, int radix) throws NumberFormatException {
+        if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX) {
+            throw new NumberFormatException("Invalid radix: " + radix);
+        }
+        if (string == null) {
+            throw new NumberFormatException(new String(string, start, length));
+        }
+        int i = 0;
+        if (length == 0) {
+            throw new NumberFormatException(new String(string, start, length));
+        }
+        boolean negative = string[start+i] == '-';
+        if (negative && ++i == length) {
+            throw new NumberFormatException(new String(string, start, length));
+        }
+
+        return parse(string, start, length, i, radix, negative);
+    }
+
+    private static int parse(char[]string, int start, int length, int offset, int radix, boolean negative) throws NumberFormatException {
+        int max = Integer.MIN_VALUE / radix;
+        int result = 0;
+        while (offset < length) {
+            int digit = Character.digit(string[start+(offset++)], radix);
+            if (digit == -1) {
+                throw new NumberFormatException(new String(string, start, length));
+            }
+            if (max > result) {
+                throw new NumberFormatException(new String(string, start, length));
+            }
+            int next = result * radix - digit;
+            if (next > result) {
+                throw new NumberFormatException(new String(string, start, length));
+            }
+            result = next;
+        }
+        if (!negative) {
+            result = -result;
+            if (result < 0) {
+                throw new NumberFormatException(new String(string, start, length));
+            }
+        }
+        return result;
+    }
+
 }

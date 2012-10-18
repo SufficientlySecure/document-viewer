@@ -6,6 +6,7 @@ import android.util.SparseArray;
 
 import org.emdev.common.fonts.data.FontStyle;
 import org.emdev.common.fonts.typeface.TypefaceEx;
+import org.emdev.common.textmarkup.RenderingStyle.Script;
 import org.emdev.common.textmarkup.line.TextElement;
 
 public class RenderingStyle {
@@ -34,7 +35,8 @@ public class RenderingStyle {
     }
 
     public RenderingStyle(final RenderingStyle old, final Script script) {
-        this.textSize = script != null ? old.textSize / 2 : old.textSize;
+        this.textSize = ((script == null) || (script != null && old.script != null)) ? old.textSize
+                : old.textSize / 2;
         this.jm = old.jm;
         this.face = old.face;
         this.paint = getTextPaint(face, textSize);

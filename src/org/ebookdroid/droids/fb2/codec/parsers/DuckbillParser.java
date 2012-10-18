@@ -5,6 +5,8 @@ import org.ebookdroid.droids.fb2.codec.handlers.IContentHandler;
 
 import java.util.Arrays;
 
+import org.emdev.utils.StringUtils;
+
 public class DuckbillParser {
 
     public void parse(final char[] xmlChars, final int length, final IContentHandler handler) throws Exception {
@@ -78,25 +80,44 @@ public class DuckbillParser {
                         final int startOfEntity = r.XmlOffset;
 
                         char entity = (char) -1;
-                        final String string = new String(r.XmlDoc, r.XmlOffset + 1, endOfEntity - r.XmlOffset - 1);
 
                         if (r.skipChar('#')) {
                             if (r.skipChar('x') || r.skipChar('X')) {
-                                entity = (char) Integer.parseInt(string, 16);
+                                entity = (char) StringUtils.parseInt(r.XmlDoc, r.XmlOffset, endOfEntity - r.XmlOffset, 16);
                             } else {
-                                entity = (char) Integer.parseInt(string, 10);
+                                entity = (char) StringUtils.parseInt(r.XmlDoc, r.XmlOffset, endOfEntity - r.XmlOffset, 10);
                             }
                         } else {
-                            final String e = string;
-                            if ("qout".equals(e)) {
+                            int idx = r.XmlOffset + 1;
+                            if (r.XmlDoc[idx] == 'q' &&
+                                    r.XmlDoc[idx+1] == 'o' &&
+                                    r.XmlDoc[idx+2] == 'u' &&
+                                    r.XmlDoc[idx+3] == 't' &&
+                                    r.XmlDoc[idx+4] == ';') {
+                                // quot
                                 entity = 34;
-                            } else if ("amp".equals(e)) {
+                            } else if (r.XmlDoc[idx] == 'a' &&
+                                    r.XmlDoc[idx+1] == 'm' &&
+                                    r.XmlDoc[idx+2] == 'p' &&
+                                    r.XmlDoc[idx+3] == ';') {
+                                //amp
                                 entity = 38;
-                            } else if ("apos".equals(e)) {
+                            } else if (r.XmlDoc[idx] == 'a' &&
+                                    r.XmlDoc[idx+1] == 'p' &&
+                                    r.XmlDoc[idx+2] == 'o' &&
+                                    r.XmlDoc[idx+3] == 's' &&
+                                    r.XmlDoc[idx+4] == ';') {
+                                //apos
                                 entity = 39;
-                            } else if ("lt".equals(e)) {
+                            } else if (r.XmlDoc[idx] == 'l' &&
+                                    r.XmlDoc[idx+1] == 't' &&
+                                    r.XmlDoc[idx+2] == ';') {
+                                //lt
                                 entity = 60;
-                            } else if ("gt".equals(e)) {
+                            } else if (r.XmlDoc[idx] == 'g' &&
+                                    r.XmlDoc[idx+1] == 't' &&
+                                    r.XmlDoc[idx+2] == ';') {
+                                //gt
                                 entity = 62;
                             }
                         }

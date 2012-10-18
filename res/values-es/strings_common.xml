@@ -112,5 +112,6 @@
     <string name="font_reminder">"A partir de la versión 1.5, las fuentes de PDF y FB2 ya no están incluidas en la aplicación. Se usarán las fuentes estándar del sistema. Si quieres restablecer las fuentes antiguas o instalar otras, utiliza por favor los paquetes de instalación de fuentes de la Play Store: &lt;ul&gt;&lt;li&gt;&lt;a href=&quot;market://details?id=org.ebookdroid.fontpack.legacy&quot;&gt;Fuentes antiguas&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;"</string>
     <string name="cache_moving_text">"Moviendo los archivos en memoria…"</string>
     <string name="cache_moving_progress">"Moviendo los archivos en memoria %1$d/%2$d"</string>
+<!--<string name="error_invalid_view_mode">"This action is only available in view mode %1$s"</string>-->
 
 </resources>

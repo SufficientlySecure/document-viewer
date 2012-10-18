@@ -30,7 +30,7 @@
     <string name="list_animation_slider">"Verschiebung"</string>
     <string name="list_animation_fader">"Entwicklung"</string>
     <string name="list_animation_squeezer">"Kompression"</string>
-<!--<string name="list_animation_slider2">"Another Slider"</string>-->
+<!--<string name="list_animation_slider2">"Slide over"</string>-->
 <!--<string name="pref_postprocessing_category">"Post–processing effects"</string>-->
 <!--<string name="pref_postprocessing_summary">"Additional effects to enhance page viewing"</string>-->
     <string name="pref_nightmode_title">"Nachtmodus"</string>

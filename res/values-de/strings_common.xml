@@ -112,5 +112,6 @@
 <!--<string name="font_reminder">"Starting with version 1.5, PDF and FB2 fonts are no longer embedded in the application. Standard Android fonts are used instead. If you wish to restore legacy fonts or install custom fonts, please use font package installers from Google Play Market: &lt;ul&gt;&lt;li&gt;&lt;a href=&quot;market://details?id=org.ebookdroid.fontpack.legacy&quot;&gt;Legacy fonts&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;"</string>-->
 <!--<string name="cache_moving_text">"Moving cached files…"</string>-->
 <!--<string name="cache_moving_progress">"Moving cached files %1$d/%2$d"</string>-->
+<!--<string name="error_invalid_view_mode">"This action is only available in view mode %1$s"</string>-->
 
 </resources>

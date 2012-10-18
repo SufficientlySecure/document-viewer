@@ -5,5 +5,9 @@
     <string name="actions_verticalConfigScrollDown">"Прокрутить вниз"</string>
     <string name="actions_quickZoom">"Быстрое увеличение"</string>
     <string name="actions_zoomToColumn">"Увеличить колонку"</string>
+    <string name="actions_leftTopCorner">"Прокрутить к левому верхнему углу страницы"</string>
+    <string name="actions_rightTopCorner">"Прокрутить к правому верхнему углу страницы"</string>
+    <string name="actions_leftBottomCorner">"Прокрутить к левому нижнему углу страницы"</string>
+    <string name="actions_rightBottomCorner">"Прокрутить к правому нижнему углу страницы"</string>
 
 </resources>

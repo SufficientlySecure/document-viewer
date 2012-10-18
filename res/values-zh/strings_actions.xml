@@ -5,5 +5,9 @@
     <string name="actions_verticalConfigScrollDown">"向下滚动"</string>
     <string name="actions_quickZoom">"缩放"</string>
     <string name="actions_zoomToColumn">"缩放到列"</string>
+<!--<string name="actions_leftTopCorner">"Scroll to left top page corner"</string>-->
+<!--<string name="actions_rightTopCorner">"Scroll to right top page corner"</string>-->
+<!--<string name="actions_leftBottomCorner">"Scroll to left bottom page corner"</string>-->
+<!--<string name="actions_rightBottomCorner">"Scroll to right bottom page corner"</string>-->
 
 </resources>

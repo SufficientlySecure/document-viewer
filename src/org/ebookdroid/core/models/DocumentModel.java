@@ -131,7 +131,8 @@ public class DocumentModel extends ListenerProxy {
         return null;
     }
 
-    public Page getLinkTargetPage(final int pageDocIndex, final RectF targetRect, final PointF linkPoint) {
+    public Page getLinkTargetPage(final int pageDocIndex, final RectF targetRect, final PointF linkPoint,
+            final boolean splitRTL) {
         Page target = getPageByDocIndex(pageDocIndex);
         if (target != null) {
             float offsetX = 0;
@@ -140,7 +141,7 @@ public class DocumentModel extends ListenerProxy {
                 offsetX = targetRect.left;
                 offsetY = targetRect.top;
                 if (target.type == PageType.LEFT_PAGE && offsetX >= 0.5f) {
-                    target = getPageObject(target.index.viewIndex + 1);
+                    target = getPageObject(target.index.viewIndex + (splitRTL ? -1 : +1));
                     offsetX -= 0.5f;
                 }
             }
@@ -230,18 +231,15 @@ public class DocumentModel extends ListenerProxy {
                 final PageInfo pi = docInfo.docPages.get(docIndex, null);
                 final CodecPageInfo info = pi != null ? pi.info : null;
                 if (!bs.splitPages || info == null || (info.width < info.height)) {
-                    final Page page = new Page(base, new PageIndex(docIndex, viewIndex++), PageType.FULL_PAGE,
-                            info != null ? info : defCpi);
-                    list.add(page);
-                    page.nodes.root.setInitialCropping(pi);
+                    viewIndex = createFullPage(base, docIndex, viewIndex, defCpi, info, pi, list);
                 } else {
-                    final Page left = new Page(base, new PageIndex(docIndex, viewIndex++), PageType.LEFT_PAGE, info);
-                    left.nodes.root.setInitialCropping(docInfo.leftPages.get(docIndex, null));
-                    list.add(left);
-
-                    final Page right = new Page(base, new PageIndex(docIndex, viewIndex++), PageType.RIGHT_PAGE, info);
-                    right.nodes.root.setInitialCropping(docInfo.rightPages.get(docIndex, null));
-                    list.add(right);
+                    if (bs.splitRTL) {
+                        viewIndex = createRightPage(base, docIndex, viewIndex, info, list);
+                        viewIndex = createLeftPage(base, docIndex, viewIndex, info, list);
+                    } else {
+                        viewIndex = createLeftPage(base, docIndex, viewIndex, info, list);
+                        viewIndex = createRightPage(base, docIndex, viewIndex, info, list);
+                    }
                 }
             }
             pages = list.toArray(new Page[list.size()]);
@@ -251,6 +249,33 @@ public class DocumentModel extends ListenerProxy {
         } finally {
             LCTX.d("Loading page info: " + (System.currentTimeMillis() - start) + " ms");
         }
+    }
+
+    protected int createFullPage(final IActivityController base, final int docIndex, final int viewIndex,
+            final CodecPageInfo defCpi, final CodecPageInfo info, final PageInfo pi, final ArrayList<Page> list) {
+        final PageIndex index = new PageIndex(docIndex, viewIndex);
+        final Page page = new Page(base, index, PageType.FULL_PAGE, info != null ? info : defCpi);
+        list.add(page);
+        page.nodes.root.setInitialCropping(pi);
+        return index.viewIndex + 1;
+    }
+
+    protected int createLeftPage(final IActivityController base, final int docIndex, final int viewIndex,
+            final CodecPageInfo info, final ArrayList<Page> list) {
+        final PageIndex index = new PageIndex(docIndex, viewIndex);
+        final Page left = new Page(base, index, PageType.LEFT_PAGE, info);
+        left.nodes.root.setInitialCropping(docInfo.leftPages.get(docIndex, null));
+        list.add(left);
+        return index.viewIndex + 1;
+    }
+
+    protected int createRightPage(final IActivityController base, final int docIndex, final int viewIndex,
+            final CodecPageInfo info, final ArrayList<Page> list) {
+        final PageIndex index = new PageIndex(docIndex, viewIndex);
+        final Page right = new Page(base, index, PageType.RIGHT_PAGE, info);
+        right.nodes.root.setInitialCropping(docInfo.rightPages.get(docIndex, null));
+        list.add(right);
+        return index.viewIndex + 1;
     }
 
     public void createBookThumbnail(final BookSettings bs, final Page page, final boolean override,

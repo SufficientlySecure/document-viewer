@@ -11,6 +11,13 @@
             android:title="@string/pref_splitpages_title" />
 
     <CheckBoxPreference
+            android:defaultValue="@string/pref_splitpages_rtl_defvalue"
+            android:dependency="@string/pref_splitpages_id"
+            android:key="@string/pref_splitpages_rtl_id"
+            android:summary="@string/pref_splitpages_rtl_summary"
+            android:title="@string/pref_splitpages_rtl_title" />
+
+    <CheckBoxPreference
             android:defaultValue="@string/pref_croppages_defvalue"
             android:key="@string/pref_croppages_id"
             android:summary="@string/pref_croppages_summary"

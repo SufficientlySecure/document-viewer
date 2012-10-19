@@ -4,6 +4,7 @@ import org.ebookdroid.R;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.codec.OutlineLink;
 import org.ebookdroid.core.models.DocumentModel;
+import org.ebookdroid.ui.viewer.IActivityController;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -42,7 +43,7 @@ public class OutlineAdapter extends BaseAdapter {
     private final SparseIntArray mapping = new SparseIntArray();
     private final int currentId;
 
-    public OutlineAdapter(final Context context, final DocumentModel model, final List<OutlineLink> objects,
+    public OutlineAdapter(final Context context, final IActivityController base, final List<OutlineLink> objects,
             final OutlineLink current) {
 
         this.context = context;
@@ -54,6 +55,7 @@ public class OutlineAdapter extends BaseAdapter {
         this.pageIndexes = new int[this.objects.length];
         this.states = new OutlineItemState[this.objects.length];
 
+        DocumentModel model = base.getDocumentModel();
         boolean treeFound = false;
         for (int i = 0; i < this.objects.length; i++) {
             mapping.put(i, i);
@@ -65,7 +67,7 @@ public class OutlineAdapter extends BaseAdapter {
                 states[i] = OutlineItemState.LEAF;
             }
 
-            Page page = model.getLinkTargetPage(this.objects[i].targetPage - 1, this.objects[i].targetRect, null);
+            Page page = model.getLinkTargetPage(this.objects[i].targetPage - 1, this.objects[i].targetRect, null, base.getBookSettings().splitRTL);
             this.pageIndexes[i] = page != null ? page.index.viewIndex + 1 : -1;
         }
 

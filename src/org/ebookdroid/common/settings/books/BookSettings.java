@@ -35,6 +35,8 @@ public class BookSettings implements CurrentPageListener {
 
     public boolean splitPages;
 
+    public boolean splitRTL;
+
     public BookRotationType rotation;
 
     public DocumentViewMode viewMode;
@@ -70,6 +72,7 @@ public class BookSettings implements CurrentPageListener {
         this.currentPage = current.currentPage;
         this.zoom = current.zoom;
         this.splitPages = current.splitPages;
+        this.splitRTL = current.splitRTL;
         this.rotation = current.rotation;
         this.viewMode = current.viewMode;
         this.pageAlign = current.pageAlign;
@@ -94,6 +97,7 @@ public class BookSettings implements CurrentPageListener {
         this.currentPage = current.currentPage;
         this.zoom = current.zoom;
         this.splitPages = current.splitPages;
+        this.splitRTL = current.splitRTL;
         this.rotation = current.rotation;
         this.viewMode = current.viewMode;
         this.pageAlign = current.pageAlign;
@@ -126,6 +130,7 @@ public class BookSettings implements CurrentPageListener {
         this.currentPage = new PageIndex(object.getJSONObject("currentPage"));
         this.zoom = object.getInt("zoom");
         this.splitPages = object.getBoolean("splitPages");
+        this.splitRTL = object.optBoolean("splitRTL", false);
         this.rotation = EnumUtils.getByName(BookRotationType.class, object.optString("rotation"),
                 BookRotationType.UNSPECIFIED);
         this.viewMode = EnumUtils.getByName(DocumentViewMode.class, object.getString("viewMode"),
@@ -158,6 +163,7 @@ public class BookSettings implements CurrentPageListener {
         obj.put("currentPage", currentPage != null ? currentPage.toJSON() : null);
         obj.put("zoom", zoom);
         obj.put("splitPages", splitPages);
+        obj.put("splitRTL", splitRTL);
         obj.put("rotation", rotation != null ? rotation.name() : null);
         obj.put("viewMode", viewMode != null ? viewMode.name() : null);
         obj.put("pageAlign", pageAlign != null ? pageAlign.name() : null);
@@ -237,7 +243,7 @@ public class BookSettings implements CurrentPageListener {
             if (firstTime) {
                 mask = (short) 0xFFFF;
             } else if (news != null) {
-                if (olds.splitPages != news.splitPages) {
+                if (olds.splitPages != news.splitPages || olds.splitRTL != news.splitRTL) {
                     mask |= D_SplitPages;
                 }
                 if (olds.cropPages != news.cropPages) {

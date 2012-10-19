@@ -25,6 +25,8 @@ class DBAdapterV6 extends DBAdapterV5 {
 
     public static final long F_ROTAION_LAND = 1 << 6;
 
+    public static final long F_SPLIT_RTL = 1 << 7;
+
     public static final String DB_BOOK_CREATE = "create table book_settings ("
     // Book file path
             + "book varchar(1024) primary key, "
@@ -163,7 +165,10 @@ class DBAdapterV6 extends DBAdapterV5 {
         /* Positive image flag */
         (bs.positiveImagesInNightMode ? F_NIGHT_MODE_POS_IMAGES : 0) |
         /* Rotation flags */
-        getRotationFlags(bs);
+        getRotationFlags(bs) |
+        /* Positive image flag */
+        (bs.splitRTL ? F_SPLIT_RTL : 0);
+
     }
 
     protected long getRotationFlags(final BookSettings bs) {
@@ -185,5 +190,7 @@ class DBAdapterV6 extends DBAdapterV5 {
         } else {
             bs.rotation = BookRotationType.UNSPECIFIED;
         }
+
+        bs.splitRTL = (flags & F_SPLIT_RTL) != 0;
     }
 }

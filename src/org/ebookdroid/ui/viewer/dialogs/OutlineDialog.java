@@ -56,7 +56,7 @@ public class OutlineDialog extends Dialog implements OnItemClickListener {
             }
         }
 
-        final OutlineAdapter adapter = new OutlineAdapter(getContext(), base.getDocumentModel(), outline, current);
+        final OutlineAdapter adapter = new OutlineAdapter(getContext(), base, outline, current);
 
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);

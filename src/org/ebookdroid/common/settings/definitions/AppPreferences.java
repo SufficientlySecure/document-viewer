@@ -169,6 +169,9 @@ public interface AppPreferences {
     BooleanPreferenceDefinition SPLIT_PAGES = new BooleanPreferenceDefinition(pref_splitpages_id,
             pref_splitpages_defvalue);
 
+    BooleanPreferenceDefinition SPLIT_RTL = new BooleanPreferenceDefinition(pref_splitpages_rtl_id,
+            pref_splitpages_rtl_defvalue);
+
     BooleanPreferenceDefinition CROP_PAGES = new BooleanPreferenceDefinition(pref_croppages_id, pref_croppages_defvalue);
 
     EnumPreferenceDefinition<DocumentViewMode> VIEW_MODE = new EnumPreferenceDefinition<DocumentViewMode>(

@@ -10,6 +10,9 @@
     <string name="pref_splitpages_title">Split pages</string>
     <string name="pref_splitpages_summary">Split landscape pages into two portrait pages</string>
 
+    <string name="pref_splitpages_rtl_title">Split pages right-to-left</string>
+    <string name="pref_splitpages_rtl_summary">Split landscape pages into two portrait pages right-to-left</string>
+
     <string name="pref_croppages_title">Crop pages (auto)</string>
     <string name="pref_croppages_summary">Automatically crop empty margins in order to maximize content magnification</string>
 

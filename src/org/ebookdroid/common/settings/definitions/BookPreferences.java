@@ -14,6 +14,7 @@ import static org.ebookdroid.R.string.pref_book_nightmode_id;
 import static org.ebookdroid.R.string.pref_book_posimages_in_nightmode_id;
 import static org.ebookdroid.R.string.pref_book_rotation_id;
 import static org.ebookdroid.R.string.pref_book_splitpages_id;
+import static org.ebookdroid.R.string.pref_book_splitpages_rtl_id;
 import static org.ebookdroid.R.string.pref_book_viewmode_id;
 import static org.ebookdroid.R.string.pref_contrast_defvalue;
 import static org.ebookdroid.R.string.pref_contrast_maxvalue;
@@ -26,6 +27,7 @@ import static org.ebookdroid.R.string.pref_nightmode_defvalue;
 import static org.ebookdroid.R.string.pref_posimages_in_nightmode_defvalue;
 import static org.ebookdroid.R.string.pref_rotation_unspecified;
 import static org.ebookdroid.R.string.pref_splitpages_defvalue;
+import static org.ebookdroid.R.string.pref_splitpages_rtl_defvalue;
 import static org.ebookdroid.R.string.pref_viewmode_vertical_scroll;
 
 import org.ebookdroid.common.settings.types.BookRotationType;
@@ -58,6 +60,9 @@ public interface BookPreferences {
 
     BooleanPreferenceDefinition BOOK_SPLIT_PAGES = new BooleanPreferenceDefinition(pref_book_splitpages_id,
             pref_splitpages_defvalue);
+
+    BooleanPreferenceDefinition BOOK_SPLIT_RTL = new BooleanPreferenceDefinition(pref_book_splitpages_rtl_id,
+            pref_splitpages_rtl_defvalue);
 
     BooleanPreferenceDefinition BOOK_CROP_PAGES = new BooleanPreferenceDefinition(pref_book_croppages_id,
             pref_croppages_defvalue);

@@ -135,6 +135,8 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     final boolean splitPages;
 
+    final boolean splitRTL;
+
     final boolean cropPages;
 
     public final DocumentViewMode viewMode;
@@ -237,6 +239,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         exposure = EXPOSURE.getPreferenceValue(prefs);
         autoLevels = AUTO_LEVELS.getPreferenceValue(prefs);
         splitPages = SPLIT_PAGES.getPreferenceValue(prefs);
+        splitRTL = SPLIT_RTL.getPreferenceValue(prefs);
         cropPages = CROP_PAGES.getPreferenceValue(prefs);
         viewMode = VIEW_MODE.getPreferenceValue(prefs);
         pageAlign = PAGE_ALIGN.getPreferenceValue(prefs);
@@ -347,6 +350,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         bs.exposure = current.exposure;
         bs.autoLevels = current.autoLevels;
         bs.splitPages = current.splitPages;
+        bs.splitRTL = current.splitRTL;
         bs.cropPages = current.cropPages;
         bs.viewMode = current.viewMode;
         bs.pageAlign = current.pageAlign;
@@ -361,6 +365,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         bs.exposure = BOOK_EXPOSURE.getPreferenceValue(prefs, current.exposure);
         bs.autoLevels = BOOK_AUTO_LEVELS.getPreferenceValue(prefs, current.autoLevels);
         bs.splitPages = BOOK_SPLIT_PAGES.getPreferenceValue(prefs, current.splitPages);
+        bs.splitRTL = BOOK_SPLIT_RTL.getPreferenceValue(prefs, current.splitRTL);
         bs.cropPages = BOOK_CROP_PAGES.getPreferenceValue(prefs, current.cropPages);
         bs.rotation = BOOK_ROTATION.getPreferenceValue(prefs, BookRotationType.UNSPECIFIED);
         bs.viewMode = BOOK_VIEW_MODE.getPreferenceValue(prefs, current.viewMode);
@@ -378,6 +383,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         edit.remove(BOOK_EXPOSURE.key);
         edit.remove(BOOK_AUTO_LEVELS.key);
         edit.remove(BOOK_SPLIT_PAGES.key);
+        edit.remove(BOOK_SPLIT_RTL.key);
         edit.remove(BOOK_CROP_PAGES.key);
         edit.remove(BOOK_ROTATION.key);
         edit.remove(BOOK_VIEW_MODE.key);
@@ -396,6 +402,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         BOOK_EXPOSURE.setPreferenceValue(edit, bs.exposure);
         BOOK_AUTO_LEVELS.setPreferenceValue(edit, bs.autoLevels);
         BOOK_SPLIT_PAGES.setPreferenceValue(edit, bs.splitPages);
+        BOOK_SPLIT_RTL.setPreferenceValue(edit, bs.splitRTL);
         BOOK_CROP_PAGES.setPreferenceValue(edit, bs.cropPages);
         BOOK_ROTATION.setPreferenceValue(edit, bs.rotation);
         BOOK_VIEW_MODE.setPreferenceValue(edit, bs.viewMode);

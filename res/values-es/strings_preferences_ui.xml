@@ -15,6 +15,7 @@
     <string name="list_lang_ru">"Ruso"</string>
     <string name="list_lang_uk">"Ukraniano"</string>
     <string name="list_lang_zh">"Chino"</string>
+<!--<string name="list_lang_iw">"Hebrew"</string>-->
     <string name="pref_loadrecent_title">"Abrir reciente"</string>
     <string name="pref_loadrecent_summary">"Al arrancar, abrir automáticamente el último libro"</string>
     <string name="pref_confirmclose_title">"Confirmar cerrar"</string>

@@ -78,6 +78,7 @@ public class DuckbillParser {
                         final int endOfEntity = r.XmlOffset;
                         r.pop();
                         final int startOfEntity = r.XmlOffset;
+                        r.XmlOffset++;
 
                         char entity = (char) -1;
 
@@ -121,6 +122,7 @@ public class DuckbillParser {
                                 entity = 62;
                             }
                         }
+
                         if (entity != -1) {
                             r.XmlDoc[startOfEntity] = entity;
                             for (int i = startOfEntity + 1; i <= endOfEntity; i++) {

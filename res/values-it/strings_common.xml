@@ -24,7 +24,7 @@
     <string name="add_bookmark_name">"Immetti un nome per questo segnalibro"</string>
     <string name="bookmark_start">"Prima pagina"</string>
     <string name="bookmark_end">"Ultima pagina"</string>
-    <string name="bookmark_invalid_page">"Il numero di pagina è errato. Pagine accessibili: 1-"</string>
+    <string name="bookmark_invalid_page">"Il numero di pagina è errato. Pagine accessibili: %1$d-%2$d"</string>
     <string name="bookmarks_title">"Segnalibri"</string>
     <string name="clear_bookmarks_title">"Elimina tutti i segnalibri"</string>
     <string name="clear_bookmarks_text">"Vuoi davvero cancellare tutti i segnalibri?"</string>

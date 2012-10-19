@@ -24,7 +24,7 @@
     <string name="add_bookmark_name">"Geben Sie eine Beschreibung des Lesezeichens ein"</string>
     <string name="bookmark_start">"Anfang"</string>
     <string name="bookmark_end">"Ende"</string>
-    <string name="bookmark_invalid_page">"Falsche Seitennummer. Zugängliche Seiten: 1-"</string>
+    <string name="bookmark_invalid_page">"Falsche Seitennummer. Zugängliche Seiten: %1$d-%2$d"</string>
     <string name="bookmarks_title">"Lesezeichen"</string>
     <string name="clear_bookmarks_title">"Alle Lesezeichen löschen"</string>
     <string name="clear_bookmarks_text">"Wollen Sie wirklich alle Lesezeichen löschen?"</string>

@@ -1,6 +1,5 @@
 package org.ebookdroid.core;
 
-import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.core.codec.PageLink;
@@ -16,6 +15,7 @@ import android.text.TextPaint;
 import java.util.List;
 import java.util.Queue;
 
+import org.emdev.BaseDroidApp;
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
 import org.emdev.utils.LengthUtils;
@@ -155,7 +155,8 @@ public class EventDraw implements IEvent {
         final TextPaint textPaint = viewState.paint.textPaint;
         textPaint.setTextSize(24 * viewState.zoom);
 
-        final String text = EBookDroidApp.context.getString(R.string.text_page) + " " + (page.index.viewIndex + 1);
+        final int offset = viewState.book != null ? viewState.book.firstPageOffset : 1;
+        final String text = BaseDroidApp.context.getString(R.string.text_page) + " " + (page.index.viewIndex + offset);
         canvas.drawText(text, fixedPageBounds.centerX(), fixedPageBounds.centerY(), textPaint);
     }
 

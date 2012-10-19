@@ -6,6 +6,14 @@
 	android:summary="@string/pref_book_category_summary"
 	android:title="@string/pref_book_category">
 
+    <EditTextPreference
+            android:maxLength="4"
+            android:numeric="integer"
+            android:defaultValue="@string/pref_book_firstpageoffset_defvalue"
+            android:key="@string/pref_book_firstpageoffset_id"
+            android:summary="@string/pref_firstpageoffset_summary"
+            android:title="@string/pref_firstpageoffset_title" />
+
     <ListPreference
             android:defaultValue="@string/pref_rotation_unspecified"
             android:entries="@array/pref_book_rotation_entries"

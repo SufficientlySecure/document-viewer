@@ -3,6 +3,11 @@
 
     <string translatable="false" name="pref_book_id">book</string>
 
+    <string translatable="false" name="pref_book_firstpageoffset_id">book_firstpageoffset</string>
+    <string translatable="false" name="pref_book_firstpageoffset_defvalue">1</string>
+    <string translatable="false" name="pref_book_firstpageoffset_minvalue">1</string>
+    <string translatable="false" name="pref_book_firstpageoffset_maxvalue">2147483647</string>
+
     <string translatable="false" name="pref_book_nightmode_id">book_nightmode</string>
 
     <string translatable="false" name="pref_book_posimages_in_nightmode_id">book-posimages-in-nightmode</string>

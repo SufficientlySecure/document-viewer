@@ -422,7 +422,12 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                 final int pageCount = documentModel.getPageCount();
                 String pageText = "";
                 if (pageCount > 0) {
-                    pageText = (newIndex.viewIndex + 1) + "/" + pageCount;
+                    final int offset = bookSettings != null ? bookSettings.firstPageOffset : 1;
+                    if (offset == 1) {
+                        pageText = (newIndex.viewIndex + 1) + "/" + pageCount;
+                    } else {
+                        pageText = offset + "/" + (newIndex.viewIndex + offset) + "/" + (pageCount - 1 + offset);
+                    }
                 }
                 getManagedComponent().currentPageChanged(pageText, bookTitle);
                 SettingsManager.currentPageChanged(bookSettings, oldIndex, newIndex);
@@ -519,7 +524,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     @ActionMethod(ids = R.id.mainmenu_goto_page)
     public void showGotoDialog(final ActionEx action) {
-        GoToPageDialog dlg = new GoToPageDialog(this);
+        final GoToPageDialog dlg = new GoToPageDialog(this);
         dlg.show();
     }
 
@@ -577,7 +582,10 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         final String message = getManagedComponent().getString(R.string.add_bookmark_name);
 
         final EditText input = new EditText(getManagedComponent());
-        input.setText(getManagedComponent().getString(R.string.text_page) + " " + (page + 1));
+
+        final BookSettings bs = getBookSettings();
+        final int offset = bs != null ? bs.firstPageOffset : 1;
+        input.setText(getManagedComponent().getString(R.string.text_page) + " " + (page + offset));
         input.selectAll();
 
         final ActionDialogBuilder builder = new ActionDialogBuilder(getManagedComponent(), this);
@@ -946,8 +954,9 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
         @Override
         public void searchStarted(final int pageIndex) {
+            final int offset = bookSettings != null ? bookSettings.firstPageOffset : 1;
             publishProgress(getManagedComponent().getResources().getString(R.string.msg_search_text_on_page,
-                    pageIndex + 1));
+                    pageIndex + offset));
         }
 
         @Override

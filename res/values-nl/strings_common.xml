@@ -24,7 +24,7 @@
     <string name="add_bookmark_name">"Geef een beschrijving van de bladwijzer "</string>
     <string name="bookmark_start">"Begin plaats van bladwijzer"</string>
     <string name="bookmark_end">"Eind plaats van bladwijzer"</string>
-    <string name="bookmark_invalid_page">"Verkeerd paginanummer. Beschikbare pagina's 1 -"</string>
+    <string name="bookmark_invalid_page">"Verkeerd paginanummer. Beschikbare pagina's %1$d-%2$d"</string>
     <string name="bookmarks_title">"Bladwijzers"</string>
     <string name="clear_bookmarks_title">"Bladwijzer verwijderen"</string>
     <string name="clear_bookmarks_text">"Wil je alle bladwijzers verwijderen?"</string>

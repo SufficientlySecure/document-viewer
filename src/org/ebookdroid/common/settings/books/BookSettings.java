@@ -29,6 +29,8 @@ public class BookSettings implements CurrentPageListener {
 
     public long lastUpdated;
 
+    public int firstPageOffset = 1;
+
     public PageIndex currentPage;
 
     public int zoom = 100;
@@ -63,12 +65,15 @@ public class BookSettings implements CurrentPageListener {
 
     public boolean autoLevels;
 
+    public JSONObject typeSpecific;
+
     public BookSettings(final BookSettings current) {
         this.persistent = current.persistent;
         this.lastChanged = current.lastChanged;
         this.fileName = current.fileName;
         this.lastUpdated = current.lastUpdated;
 
+        this.firstPageOffset = current.firstPageOffset;
         this.currentPage = current.currentPage;
         this.zoom = current.zoom;
         this.splitPages = current.splitPages;
@@ -86,6 +91,10 @@ public class BookSettings implements CurrentPageListener {
         this.contrast = current.contrast;
         this.exposure = current.exposure;
         this.autoLevels = current.autoLevels;
+        try {
+            this.typeSpecific = current.typeSpecific != null ? new JSONObject(current.typeSpecific.toString()) : null;
+        } catch (JSONException e) {
+        }
     }
 
     public BookSettings(final String fileName, final BookSettings current) {
@@ -94,6 +103,7 @@ public class BookSettings implements CurrentPageListener {
         this.fileName = fileName;
         this.lastUpdated = current.lastUpdated;
 
+        this.firstPageOffset = current.firstPageOffset;
         this.currentPage = current.currentPage;
         this.zoom = current.zoom;
         this.splitPages = current.splitPages;
@@ -111,6 +121,10 @@ public class BookSettings implements CurrentPageListener {
         this.contrast = current.contrast;
         this.exposure = current.exposure;
         this.autoLevels = current.autoLevels;
+        try {
+            this.typeSpecific = current.typeSpecific != null ? new JSONObject(current.typeSpecific.toString()) : null;
+        } catch (JSONException e) {
+        }
     }
 
     public BookSettings(final String fileName) {
@@ -127,17 +141,15 @@ public class BookSettings implements CurrentPageListener {
         this.fileName = object.getString("fileName");
         this.lastUpdated = object.getLong("lastUpdated");
 
+        this.firstPageOffset = object.optInt("firstPageOffset", 1);
         this.currentPage = new PageIndex(object.getJSONObject("currentPage"));
         this.zoom = object.getInt("zoom");
         this.splitPages = object.getBoolean("splitPages");
         this.splitRTL = object.optBoolean("splitRTL", false);
-        this.rotation = EnumUtils.getByName(BookRotationType.class, object.optString("rotation"),
-                BookRotationType.UNSPECIFIED);
-        this.viewMode = EnumUtils.getByName(DocumentViewMode.class, object.getString("viewMode"),
-                DocumentViewMode.VERTICALL_SCROLL);
-        this.pageAlign = EnumUtils.getByName(PageAlign.class, object.getString("pageAlign"), PageAlign.AUTO);
-        this.animationType = EnumUtils.getByName(PageAnimationType.class, object.getString("animationType"),
-                PageAnimationType.NONE);
+        this.rotation = EnumUtils.getByName(BookRotationType.class, object, "rotation", BookRotationType.UNSPECIFIED);
+        this.viewMode = EnumUtils.getByName(DocumentViewMode.class, object, "viewMode", DocumentViewMode.VERTICALL_SCROLL);
+        this.pageAlign = EnumUtils.getByName(PageAlign.class, object, "pageAlign", PageAlign.AUTO);
+        this.animationType = EnumUtils.getByName(PageAnimationType.class, object, "animationType", PageAnimationType.NONE);
         this.cropPages = object.getBoolean("cropPages");
         this.offsetX = (float) object.getDouble("offsetX");
         this.offsetY = (float) object.getDouble("offsetY");
@@ -154,12 +166,16 @@ public class BookSettings implements CurrentPageListener {
                 this.bookmarks.add(new Bookmark(obj));
             }
         }
+
+        this.typeSpecific = object.optJSONObject("typeSpecific");
+
     }
 
     JSONObject toJSON() throws JSONException {
         final JSONObject obj = new JSONObject();
         obj.put("fileName", fileName);
         obj.put("lastUpdated", lastUpdated);
+        obj.put("firstPageOffset", firstPageOffset);
         obj.put("currentPage", currentPage != null ? currentPage.toJSON() : null);
         obj.put("zoom", zoom);
         obj.put("splitPages", splitPages);
@@ -182,6 +198,8 @@ public class BookSettings implements CurrentPageListener {
         for (final Bookmark b : this.bookmarks) {
             bookmarks.put(b.toJSON());
         }
+
+        obj.putOpt("typeSpecific", typeSpecific);
 
         return obj;
     }

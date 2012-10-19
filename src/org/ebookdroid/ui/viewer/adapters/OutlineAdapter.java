@@ -1,6 +1,7 @@
 package org.ebookdroid.ui.viewer.adapters;
 
 import org.ebookdroid.R;
+import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.codec.OutlineLink;
 import org.ebookdroid.core.models.DocumentModel;
@@ -42,20 +43,25 @@ public class OutlineAdapter extends BaseAdapter {
     private final OutlineItemState[] states;
     private final SparseIntArray mapping = new SparseIntArray();
     private final int currentId;
+    private final int offset;
 
     public OutlineAdapter(final Context context, final IActivityController base, final List<OutlineLink> objects,
             final OutlineLink current) {
 
         this.context = context;
+
+        final BookSettings bs = base.getBookSettings();
+        final DocumentModel model = base.getDocumentModel();
         final Resources resources = context.getResources();
+
         background = resources.getDrawable(R.drawable.viewer_outline_item_background);
         selected = resources.getDrawable(R.drawable.viewer_outline_item_background_selected);
 
+        this.offset = bs != null ? bs.firstPageOffset : 1;
         this.objects = objects.toArray(new OutlineLink[objects.size()]);
         this.pageIndexes = new int[this.objects.length];
         this.states = new OutlineItemState[this.objects.length];
 
-        DocumentModel model = base.getDocumentModel();
         boolean treeFound = false;
         for (int i = 0; i < this.objects.length; i++) {
             mapping.put(i, i);
@@ -67,7 +73,7 @@ public class OutlineAdapter extends BaseAdapter {
                 states[i] = OutlineItemState.LEAF;
             }
 
-            Page page = model.getLinkTargetPage(this.objects[i].targetPage - 1, this.objects[i].targetRect, null, base.getBookSettings().splitRTL);
+            final Page page = model.getLinkTargetPage(this.objects[i].targetPage - 1, this.objects[i].targetRect, null, bs.splitRTL);
             this.pageIndexes[i] = page != null ? page.index.viewIndex + 1 : -1;
         }
 
@@ -129,8 +135,8 @@ public class OutlineAdapter extends BaseAdapter {
 
     public String getPageIndex(final int position) {
         final int id = mapping.get(position, -1);
-        int index = id >= 0 && id < pageIndexes.length ? pageIndexes[id] : -1;
-        return index > 0 ? "" + index : "";
+        final int index = id >= 0 && id < pageIndexes.length ? pageIndexes[id] : -1;
+        return index > 0 ? "" + (index - 1 + offset) : "";
     }
 
     @Override

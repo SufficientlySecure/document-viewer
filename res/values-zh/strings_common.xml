@@ -24,7 +24,7 @@
     <string name="add_bookmark_name">"输入书签描述"</string>
     <string name="bookmark_start">"启动"</string>
     <string name="bookmark_end">"结束"</string>
-    <string name="bookmark_invalid_page">"页码超出范围"</string>
+<!--<string name="bookmark_invalid_page">Page number out of range. Valid range: %1$d-%2$d</string>-->
     <string name="bookmarks_title">"书签"</string>
     <string name="clear_bookmarks_title">"删除书签"</string>
     <string name="clear_bookmarks_text">"确定删除所有书签?"</string>

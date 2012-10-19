@@ -9,6 +9,10 @@ import static org.ebookdroid.R.string.pref_book_autolevels_id;
 import static org.ebookdroid.R.string.pref_book_contrast_id;
 import static org.ebookdroid.R.string.pref_book_croppages_id;
 import static org.ebookdroid.R.string.pref_book_exposure_id;
+import static org.ebookdroid.R.string.pref_book_firstpageoffset_defvalue;
+import static org.ebookdroid.R.string.pref_book_firstpageoffset_id;
+import static org.ebookdroid.R.string.pref_book_firstpageoffset_maxvalue;
+import static org.ebookdroid.R.string.pref_book_firstpageoffset_minvalue;
 import static org.ebookdroid.R.string.pref_book_id;
 import static org.ebookdroid.R.string.pref_book_nightmode_id;
 import static org.ebookdroid.R.string.pref_book_posimages_in_nightmode_id;
@@ -45,6 +49,9 @@ public interface BookPreferences {
     /* =============== Book rendering settings =============== */
 
     StringPreferenceDefinition BOOK = new StringPreferenceDefinition(pref_book_id, 0);
+
+    IntegerPreferenceDefinition BOOK_FIRST_PAGE_OFFSET = new IntegerPreferenceDefinition(pref_book_firstpageoffset_id,
+            pref_book_firstpageoffset_defvalue, pref_book_firstpageoffset_minvalue, pref_book_firstpageoffset_maxvalue);
 
     BooleanPreferenceDefinition BOOK_NIGHT_MODE = new BooleanPreferenceDefinition(pref_book_nightmode_id, pref_nightmode_defvalue);
 

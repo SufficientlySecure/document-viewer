@@ -24,7 +24,7 @@
     <string name="add_bookmark_name">"Introduzca una descripción para el marcador"</string>
     <string name="bookmark_start">"Inicio"</string>
     <string name="bookmark_end">"Fin"</string>
-    <string name="bookmark_invalid_page">"Número de página inválido. Rango: 1-"</string>
+    <string name="bookmark_invalid_page">"Número de página inválido. Rango: %1$d-%2$d"</string>
     <string name="bookmarks_title">"Marcadores"</string>
     <string name="clear_bookmarks_title">"Eliminar los marcadores"</string>
     <string name="clear_bookmarks_text">"¿Está seguro de querer eliminar todos los marcadores?"</string>

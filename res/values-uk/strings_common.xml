@@ -24,7 +24,7 @@
     <string name="add_bookmark_name">"Введіть опис закладки"</string>
     <string name="bookmark_start">"Початок"</string>
     <string name="bookmark_end">"Кінець"</string>
-    <string name="bookmark_invalid_page">"Помилковий номер сторінки. Доступні сторінки: 1-"</string>
+    <string name="bookmark_invalid_page">"Помилковий номер сторінки. Доступні сторінки: %1$d-%2$d"</string>
     <string name="bookmarks_title">"Закладки"</string>
     <string name="clear_bookmarks_title">"Стерти закладки"</string>
     <string name="clear_bookmarks_text">"Ви дійсно хочете стерти всі закладки?"</string>

@@ -7,6 +7,9 @@
     <string name="pref_book_category">Book settings</string>
     <string name="pref_book_category_summary">Current book settings</string>
 
+    <string name="pref_firstpageoffset_title">First page offset</string>
+    <string name="pref_firstpageoffset_summary">Index of first page shown to user</string>
+
     <string name="pref_splitpages_title">Split pages</string>
     <string name="pref_splitpages_summary">Split landscape pages into two portrait pages</string>
 

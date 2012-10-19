@@ -2,6 +2,7 @@ package org.ebookdroid.ui.viewer.dialogs;
 
 import org.ebookdroid.R;
 import org.ebookdroid.common.settings.AppSettings;
+import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.books.Bookmark;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.models.DocumentModel;
@@ -52,12 +53,16 @@ public class GoToPageDialog extends Dialog {
     BookmarkAdapter adapter;
     Bookmark current;
     DialogController<GoToPageDialog> actions;
+    int offset;
 
     public GoToPageDialog(final IActivityController base) {
         super(base.getContext());
         this.base = base;
         this.actions = new DialogController<GoToPageDialog>(this);
         this.handler = new SeekBarIncrementHandler();
+
+        final BookSettings bs = base.getBookSettings();
+        this.offset  = bs != null ? bs.firstPageOffset : 1;
 
         setTitle(R.string.dialog_title_goto_page);
         setContentView(R.layout.gotopage);
@@ -120,8 +125,9 @@ public class GoToPageDialog extends Dialog {
 
     @ActionMethod(ids = R.id.goToButton)
     public void goToPageAndDismiss(final ActionEx action) {
-        navigateToPage();
-        dismiss();
+        if (navigateToPage()) {
+            dismiss();
+        }
     }
 
     @ActionMethod(ids = R.id.actions_setBookmarkedPage)
@@ -171,9 +177,9 @@ public class GoToPageDialog extends Dialog {
             builder.setTitle(R.string.menu_add_bookmark);
 
             final SeekBar seekbar = (SeekBar) findViewById(R.id.seekbar);
-            int viewIndex = seekbar.getProgress();
+            final int viewIndex = seekbar.getProgress();
 
-            input.setText(context.getString(R.string.text_page) + " " + (viewIndex + 1));
+            input.setText(context.getString(R.string.text_page) + " " + (viewIndex + offset));
             input.selectAll();
 
             builder.setPositiveButton(R.id.actions_addBookmark, new EditableValue("input", input), new Constant(
@@ -228,7 +234,7 @@ public class GoToPageDialog extends Dialog {
         final SeekBar seekbar = (SeekBar) findViewById(R.id.seekbar);
         final EditText editText = (EditText) findViewById(R.id.pageNumberTextEdit);
 
-        editText.setText("" + (viewIndex + 1));
+        editText.setText("" + (viewIndex + offset));
         editText.selectAll();
 
         if (updateBar) {
@@ -238,28 +244,33 @@ public class GoToPageDialog extends Dialog {
         current = null;
     }
 
-    private void navigateToPage() {
+    private boolean navigateToPage() {
         if (current != null) {
             final Page actualPage = current.page.getActualPage(base.getDocumentModel(), adapter.bookSettings);
             if (actualPage != null) {
                 base.jumpToPage(actualPage.index.viewIndex, current.offsetX, current.offsetY,
                         AppSettings.current().storeGotoHistory);
+                return true;
             }
-            return;
+            return false;
         }
         final EditText text = (EditText) findViewById(R.id.pageNumberTextEdit);
-        int pageNumber = 1;
-        try {
-            pageNumber = Integer.parseInt(text.getText().toString());
-        } catch (final Exception e) {
-            pageNumber = 1;
-        }
+        final int pageNumber = getEnteredPageIndex(text);
         final int pageCount = base.getDocumentModel().getPageCount();
-        if (pageNumber < 1 || pageNumber > pageCount) {
-            final String msg = base.getContext().getString(R.string.bookmark_invalid_page) + pageCount;
+        if (pageNumber < 0 || pageNumber >= pageCount) {
+            final String msg = base.getContext().getString(R.string.bookmark_invalid_page, offset, pageCount -1 + offset);
             Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
-            return;
+            return false;
         }
-        base.jumpToPage(pageNumber - 1, 0, 0, AppSettings.current().storeGotoHistory);
+        base.jumpToPage(pageNumber, 0, 0, AppSettings.current().storeGotoHistory);
+        return true;
+    }
+
+    private int getEnteredPageIndex(final EditText text) {
+        try {
+            return Integer.parseInt(text.getText().toString()) - offset;
+        } catch (final Exception e) {
+        }
+        return -1;
     }
 }

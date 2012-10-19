@@ -1,6 +1,7 @@
 package org.emdev.utils.enums;
 
 import org.emdev.utils.LengthUtils;
+import org.json.JSONObject;
 
 public final class EnumUtils {
 
@@ -19,7 +20,7 @@ public final class EnumUtils {
         }
         return defValue;
     }
-    
+
     public static <E extends Enum<E>> E getByName(final Class<E> enumClass, final String resValue, final E defValue) {
 
         if (LengthUtils.isNotEmpty(resValue)) {
@@ -31,5 +32,11 @@ public final class EnumUtils {
         }
         return defValue;
     }
-    
+
+    public static <E extends Enum<E>> E getByName(final Class<E> enumClass, final JSONObject object,
+            final String property, final E defValue) {
+        final String value = object.optString(property);
+        return getByName(enumClass, value, defValue);
+    }
+
 }

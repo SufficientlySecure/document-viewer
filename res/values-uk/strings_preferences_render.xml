@@ -7,6 +7,8 @@
     <string name="pref_book_category_summary">"Налаштування вимальовування для поточної книги"</string>
     <string name="pref_splitpages_title">"Ділити розвороти"</string>
     <string name="pref_splitpages_summary">"Ділити розвороти на дві сторінки"</string>
+<!--<string name="pref_splitpages_rtl_title">"Split pages right-to-left"</string>-->
+<!--<string name="pref_splitpages_rtl_summary">"Split landscape pages into two portrait pages right-to-left"</string>-->
     <string name="pref_croppages_title">"Обрізати сторінки"</string>
     <string name="pref_croppages_summary">"Обрізати поля сторінок (експериментально)"</string>
     <string name="pref_viewmode_title">"Режим перегляду"</string>

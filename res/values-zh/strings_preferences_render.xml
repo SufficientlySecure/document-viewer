@@ -7,6 +7,8 @@
     <string name="pref_book_category_summary">"当前阅读的文件设置"</string>
     <string name="pref_splitpages_title">"拆分页"</string>
     <string name="pref_splitpages_summary">"将两个纵向页面拆分为横向页面"</string>
+<!--<string name="pref_splitpages_rtl_title">"Split pages right-to-left"</string>-->
+<!--<string name="pref_splitpages_rtl_summary">"Split landscape pages into two portrait pages right-to-left"</string>-->
     <string name="pref_croppages_title">"裁剪页面"</string>
     <string name="pref_croppages_summary">"裁剪页面边框"</string>
     <string name="pref_viewmode_title">"页面视图模式"</string>

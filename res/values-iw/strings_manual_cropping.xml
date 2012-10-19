@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+<!--<string name="manual_cropping_title">"Custom crop options (requires single page):"</string>-->
+<!--<string name="manual_cropping_current">"Crop current page only"</string>-->
+<!--<string name="manual_cropping_even">"Crop all even (odd) pages"</string>-->
+<!--<string name="manual_cropping_even_symm">"Crop even and odd pages, symmetrically"</string>-->
+<!--<string name="manual_cropping_all">"Crop all pages"</string>-->
+<!--<string name="manual_cropping_remove_current">"Remove crop settings from current page(s)"</string>-->
+<!--<string name="manual_cropping_remove_all">"Remove all crop setting"</string>-->
+<!--<string name="manual_cropping_back">"Return to area selection"</string>-->
+
+</resources>

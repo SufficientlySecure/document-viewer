@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_opds_category">"OPDS הגדרות"</string>
+    <string name="pref_opds_category_summary">"הגדרות OPDS קטלוג"</string>
+    <string name="pref_opds_downloaddir_title">"תיקייה להורדה"</string>
+    <string name="pref_opds_downloaddir_summary">"הורדה ב"</string>
+    <string name="pref_opds_filterbooktypes_title">"סוגי מסננים של ספרים"</string>
+    <string name="pref_opds_filterbooktypes_summary">"הצג פורמטים נתמכים בלבד"</string>
+    <string name="pref_opds_downloadarchives_title">"הורדה ספרים דחוסים"</string>
+    <string name="pref_opds_downloadarchives_summary">"הורדה ספרים דחוסים"</string>
+    <string name="pref_opds_unpackarchives_title">"פתח ספרים דחוסים"</string>
+    <string name="pref_opds_unpackarchives_summary">"פתח ספרים דחוסים לאחר ההורדה"</string>
+    <string name="pref_opds_deletearchives_title">"הסר ספרים דחוסים"</string>
+    <string name="pref_opds_deletearchives_summary">"מחיקת קבצים דחוסים אחרי שפתיחה"</string>
+
+</resources>

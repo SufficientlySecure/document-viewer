@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_render_category">"כוח ציור"</string>
+    <string name="pref_render_category_summary">"הגדרות של כוח ציור"</string>
+    <string name="pref_book_category">"הגדרות הספר"</string>
+    <string name="pref_book_category_summary">"הגדרות כוח הציור לספר הנוכחי"</string>
+    <string name="pref_splitpages_title">"פיצול הדפים"</string>
+    <string name="pref_splitpages_summary">"פיצול הדפים לשני העמודים"</string>
+    <string name="pref_croppages_title">"חיתוך הדף"</string>
+    <string name="pref_croppages_summary">"חיתוך של שולי העמוד (ניסיוני)"</string>
+    <string name="pref_viewmode_title">"מצב הקריאה"</string>
+    <string name="pref_viewmode_summary">"תצוגת עמודי המסמך"</string>
+    <string name="list_viewmode_vertical_scroll">"גלילה אנכית"</string>
+    <string name="list_viewmode_horizontal_scroll">"גלילה אופקית"</string>
+    <string name="list_viewmode_single_page">"מצב דף בודד"</string>
+    <string name="pref_singlepage_category">"מצב דף בודד"</string>
+    <string name="pref_singlepage_category_summary">"ההגדרות למצב דף בודד"</string>
+    <string name="pref_align_title">"מצב יישור הדפים "</string>
+    <string name="pref_align_summary">"לאיזה צד של הדף כדאי ליישר"</string>
+    <string name="list_align_by_width">"התאמה לרוחב"</string>
+    <string name="list_align_by_height">"התאמה לגובה"</string>
+    <string name="list_align_auto">"באופן אוטומטי"</string>
+    <string name="pref_animationtype_title">"הנפשה"</string>
+    <string name="pref_animationtype_summary">"בחר את הסוג של אנימציה לדפדוף"</string>
+    <string name="list_animation_none">"כבוי"</string>
+    <string name="list_animation_curler_simple">"דפדוף פשוט"</string>
+    <string name="list_animation_curler_dynamic">"דפדוף דינמי"</string>
+    <string name="list_animation_curler_natural">"דפדוף טבעי"</string>
+    <string name="list_animation_slider">"סמן הדפדוף"</string>
+    <string name="list_animation_fader">"ביטוי הדפדוף"</string>
+    <string name="list_animation_squeezer">"דחיסת הדפדוף"</string>
+<!--<string name="list_animation_slider2">"Slide over"</string>-->
+    <string name="pref_postprocessing_category">"עיבוד תמונה נוסף"</string>
+    <string name="pref_postprocessing_summary">"עיבוד תמונה נוסף"</string>
+    <string name="pref_nightmode_title">"מצב לילה"</string>
+    <string name="pref_nightmode_summary">"אותיות לבנות על רקע שחור"</string>
+<!--<string name="pref_posimages_in_nightmode_title">"Positive images in night mode"</string>-->
+<!--<string name="pref_posimages_in_nightmode_summary">"Show gray-scaled images in night mode (do not invert image colors)"</string>-->
+    <string name="pref_contrast_title">"הניגודיות"</string>
+    <string name="pref_contrast_summary">"תיקון הניגודיות (0 - 1000, 100 כברירת מחדל)"</string>
+    <string name="pref_exposure_title">"חשיפה"</string>
+    <string name="pref_exposure_summary">"תיקון החשיפה (0 - 200, 100 כברירת מחדל)"</string>
+    <string name="pref_autolevels_title">"רמות אוטומטיות"</string>
+    <string name="pref_autolevels_summary">"תיקון המבוסס על ההיסטוגרמה"</string>
+
+</resources>

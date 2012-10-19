@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="opdsupfolder">"למעלה"</string>
+    <string name="opdsrefreshfolder">"לעדכן"</string>
+    <string name="opdsprevfolder">"בחזרה"</string>
+    <string name="opdsnextfolder">"נוסף"</string>
+    <string name="opds_feed_add">"להוסיף"</string>
+    <string name="opdsclose">"לסגור"</string>
+    <string name="opds_book_download">"הורד"</string>
+    <string name="opdsgoto">"לפתוח"</string>
+    <string name="opds_feed_edit">"לערוך"</string>
+    <string name="opds_feed_delete">"להסיר"</string>
+
+</resources>

@@ -13,20 +13,21 @@
     <string name="pref_lang_ru" translatable="false">"ru"</string>
     <string name="pref_lang_uk" translatable="false">"uk"</string>
     <string name="pref_lang_zh" translatable="false">"zh"</string>
+    <string name="pref_lang_iw" translatable="false">"iw"</string>
 
 <!--
 Order according to application statistics from Market:
 
-Russian (Russia)			126,116	59.53 %
-English (United States)		29,025	13.70 %
-English (United Kingdom)	9,911	4.68 %
-German (Germany)			4,609	2.18 %
-Spanish (Spain)				3,962	1.87 %
-French (France)				2,602	1.23 %
-Russian (Ukraine)			2,429	1.15 %
-Portuguese (Brazil)			2,370	1.12 %
-Italian (Italy)				1,965	0.93 %
-Others						28,880	13.63 %
+Russian (Russia)			159,948	61.66 %
+English (United States)		33,542	12.93 %
+English (United Kingdom)	11,447	4.41 %
+German (Germany)			5,256	2.03 %
+Spanish (Spain)				4,500	1.73 %
+French (France)				3,101	1.20 %
+Russian (Ukraine)			2,807	1.08 %
+Portuguese (Brazil)			2,642	1.02 %
+Japanese (Japan)			2,434	0.94 %
+Others						33,711	13.00 %
  -->
 
     <string-array name="pref_lang_entries" translatable="false">
@@ -40,7 +41,8 @@ Others						28,880	13.63 %
         <item>@string/list_lang_it</item>
         <item>@string/list_lang_nl</item>
         <item>@string/list_lang_zh</item>
-        </string-array>
+        <item>@string/list_lang_iw</item>
+    </string-array>
 
     <string-array name="pref_lang_values" translatable="false">
         <item>@string/pref_lang_default</item>
@@ -53,7 +55,8 @@ Others						28,880	13.63 %
         <item>@string/pref_lang_it</item>
         <item>@string/pref_lang_nl</item>
         <item>@string/pref_lang_zh</item>
-        </string-array>
+        <item>@string/pref_lang_iw</item>
+    </string-array>
 
     <string translatable="false" name="pref_loadrecent_id">loadrecent</string>
     <string translatable="false" name="pref_loadrecent_defvalue">false</string>

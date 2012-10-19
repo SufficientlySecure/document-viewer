@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="menu_close">"לסגור"</string>
+    <string name="menu_goto_page">"עמוד"</string>
+    <string name="menu_outline">"תוכן העניינים"</string>
+    <string name="menu_zoom">"להגדיל"</string>
+    <string name="menu_nightmode">"יום / לילה"</string>
+    <string name="menu_settings">"כל ההגדרות"</string>
+    <string name="menu_booksettings">"הגדרות הספר"</string>
+    <string name="menu_cleanrecent">"ניקוי נתונים"</string>
+    <string name="menu_add_bookmark">"הוספת סימנייה"</string>
+<!--<string name="menu_edit_bookmark">"Edit bookmark"</string>-->
+    <string name="menu_thumbnail">"קבע כעמוד ראשי"</string>
+    <string name="menu_about">"על התכנית"</string>
+    <string name="menu_tap_configuration">"הגדרות אזורי מגעה"</string>
+    <string name="menu_key_bindings">"הגדרות הלחצנים"</string>
+    <string name="menu_searchbook">"לחפש"</string>
+    <string name="menu_searchtext">"לחפש"</string>
+    <string name="menu_show_options_menu">"הצג תפריט"</string>
+    <string name="menu_backupsettings">"שמירה ושחזור"</string>
+<!--<string name="menu_crop">"Manual crop"</string>-->
+<!--<string name="menu_navigation_menu">"Navigation..."</string>-->
+<!--<string name="menu_fastsettings_menu">"View..."</string>-->
+<!--<string name="menu_allsettings_menu">"Settings..."</string>-->
+
+</resources>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_browser_category">"הצגת קבצים"</string>
+    <string name="pref_browser_category_summary">"הגדרות דפדפן וסוגי קבצים נתמכים"</string>
+    <string name="pref_usebookcase_title">"השתמש בארון"</string>
+    <string name="pref_usebookcase_summary">"השתמש בארון עם תמונת עטיפה במקום רשימות"</string>
+    <string name="pref_brautoscandir_title">"תיקייה לסריקה"</string>
+    <string name="pref_brautoscandir_summary">"תיקייה לסריקה אוטומטית"</string>
+    <string name="pref_brbrfiletypesscreen_title">"סוגי קבצים"</string>
+    <string name="pref_brbrfiletypesscreen_summary">"סוגים של קבצים לתצוגה"</string>
+<!--<string name="pref_cachelocation_title">"Cache location"</string>-->
+<!--<string name="pref_cachelocation_summary">"Location of a file cache"</string>-->
+<!--<string name="list_cachelocation_system">"System app cache"</string>-->
+<!--<string name="list_cachelocation_custom">"Sdcard app cache"</string>-->
+<!--<string name="pref_brfiletypedjvu_title">".djvu"</string>-->
+    <string name="pref_brfiletypedjvu_summary">"הצג קבצי DjVu"</string>
+<!--<string name="pref_brfiletypedjv_title">".djv"</string>-->
+    <string name="pref_brfiletypedjv_summary">"הצג קבצי DjVu"</string>
+<!--<string name="pref_brfiletypepdf_title">".pdf"</string>-->
+    <string name="pref_brfiletypepdf_summary">"הצג קבצי PDF"</string>
+<!--<string name="pref_brfiletypexps_title">".xps"</string>-->
+    <string name="pref_brfiletypexps_summary">"הצג קבצי XPS"</string>
+<!--<string name="pref_brfiletypeoxps_title">".oxps"</string>-->
+    <string name="pref_brfiletypeoxps_summary">"הצג קבצי OXPS"</string>
+<!--<string name="pref_brfiletypecbz_title">".cbz"</string>-->
+    <string name="pref_brfiletypecbz_summary">"הצג קבצי cbz"</string>
+<!--<string name="pref_brfiletypecbr_title">".cbr"</string>-->
+    <string name="pref_brfiletypecbr_summary">"הצג קבצי CBR"</string>
+<!--<string name="pref_brfiletypefb2_title">".fb2"</string>-->
+    <string name="pref_brfiletypefb2_summary">"הצג fb2 קבצים"</string>
+<!--<string name="pref_brfiletypefb2.zip_title">".fb2.zip"</string>-->
+    <string name="pref_brfiletypefb2.zip_summary">"הצג קבצי FB2.ZIP"</string>
+
+</resources>

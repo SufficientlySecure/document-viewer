@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_backup_category">"שמירה ושחזור"</string>
+    <string name="pref_backup_category_summary">"שמירה ושחזור הגדרות"</string>
+    <string name="pref_backuponexit_title">"לשמור ביציאה"</string>
+    <string name="pref_backuponexit_summary">"שמירה אוטומטית של הגדרות ביציאה"</string>
+    <string name="pref_backuponbookclose_title">"שמור בעת הסגירה"</string>
+    <string name="pref_backuponbookclose_summary">"שמירה אוטומטית של הגדרות בעת הסגירה"</string>
+    <string name="pref_maxnumberofautobackups_title">"המספר הגיבויים אוטומטיים"</string>
+    <string name="pref_maxnumberofautobackups_summary">"מספר גיבויים אוטומטיים-מאוחסנים"</string>
+    <string name="pref_bookbackuptype_title">"שמירת ההגדרות של ספרים"</string>
+    <string name="pref_bookbackuptype_summary">"שמירת ההגדרות של ספרים"</string>
+    <string name="list_bookbackuptype_none">"אל תשמור"</string>
+    <string name="list_bookbackuptype_recent">"האחרון בלבד"</string>
+    <string name="list_bookbackuptype_all">"כולם."</string>
+
+</resources>

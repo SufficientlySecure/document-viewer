@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="actions_verticalConfigScrollUp">"לגלול מעלה"</string>
+    <string name="actions_verticalConfigScrollDown">"לגלול למטה"</string>
+    <string name="actions_quickZoom">"הגדלה מהירה"</string>
+    <string name="actions_zoomToColumn">"הגדל עמודה"</string>
+<!--<string name="actions_leftTopCorner">"Scroll to left top page corner"</string>-->
+<!--<string name="actions_rightTopCorner">"Scroll to right top page corner"</string>-->
+<!--<string name="actions_leftBottomCorner">"Scroll to left bottom page corner"</string>-->
+<!--<string name="actions_rightBottomCorner">"Scroll to right bottom page corner"</string>-->
+
+</resources>

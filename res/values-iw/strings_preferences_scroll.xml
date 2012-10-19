@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_scroll_category">"לחיצה וגלילה"</string>
+    <string name="pref_scroll_category_summary">"הגדרות גלילה"</string>
+    <string name="pref_tapsenabled_title">"אפשר לחיצה"</string>
+    <string name="pref_tapsenabled_summary">"השתמש בגדרות אזורי נגיעה כדי להגדיר את הפעולות"</string>
+    <string name="pref_scroll_title">"גובה הגלילה "</string>
+    <string name="pref_scroll_summary">"הגדר את הגובה הגלילה"</string>
+    <string name="pref_touchdelay_title">"עיכוב בעיבוד נגיעות"</string>
+    <string name="pref_touchdelay_summary">"עיכוב בעיבוד נגיעות (באלפיות שנייה)"</string>
+    <string name="pref_animate_scrolling_title">"הנפשת הגלילה"</string>
+    <string name="pref_animate_scrolling_summary">"הנפשת הגלילה במצב מגילה"</string>
+
+</resources>

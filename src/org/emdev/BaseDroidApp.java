@@ -58,7 +58,7 @@ public class BaseDroidApp extends Application {
         context = getApplicationContext();
 
         final Configuration config = context.getResources().getConfiguration();
-        defLocale = config.locale;
+        appLocale = defLocale = config.locale;
 
         BUILD_PROPS = new Properties();
         try {
@@ -125,20 +125,15 @@ public class BaseDroidApp extends Application {
     }
 
     public static void setAppLocale(final String lang) {
-        if (LengthUtils.isNotEmpty(lang) && !getAppLocale().getLanguage().equals(lang)) {
-            final Configuration config = context.getResources().getConfiguration();
-            appLocale = new Locale(lang);
-            setAppLocale(config);
-        }
-    }
-
-    public static Locale getAppLocale() {
-        return appLocale != null ? appLocale : defLocale;
+        final Configuration config = context.getResources().getConfiguration();
+        appLocale = LengthUtils.isNotEmpty(lang) ? new Locale(lang) : defLocale;
+        setAppLocale(config);
     }
 
     protected static void setAppLocale(final Configuration config) {
         Locale.setDefault(appLocale);
         config.locale = appLocale;
         context.getResources().updateConfiguration(config, context.getResources().getDisplayMetrics());
+        Log.i(APP_NAME, "UI Locale: " + appLocale);
     }
 }

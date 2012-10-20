@@ -6,9 +6,9 @@
     <string name="pref_book_category">"Impostazioni per il libro corrente"</string>
     <string name="pref_book_category_summary">"Imposta le modalità di visualizzazione per il solo libro corrente. Queste impostazioni hanno la precedenza sulle impostazioni generali."</string>
     <string name="pref_splitpages_title">"Spezza le doppie pagine"</string>
-    <string name="pref_splitpages_summary">"Se la pagina è in formato album, mostra mezza pagina alla volta"</string>
-<!--<string name="pref_splitpages_rtl_title">"Split pages right-to-left"</string>-->
-<!--<string name="pref_splitpages_rtl_summary">"Split landscape pages into two portrait pages right-to-left"</string>-->
+    <string name="pref_splitpages_summary">"Se la pagina è in formato album, mostra mezza pagina alla volta (seguendo l'ordine sinistra-destra)"</string>
+    <string name="pref_splitpages_rtl_title">"Spezza le doppie pagine (da destra verso sinistra)"</string>
+    <string name="pref_splitpages_rtl_summary">"Se la pagina è in formato album, mostra mezza pagina alla volta, prima la metà a destra e poi quella a sinistra"</string>
     <string name="pref_croppages_title">"Ritaglia i margini"</string>
     <string name="pref_croppages_summary">"Rimuovi automaticamente i margini vuoti delle pagine"</string>
     <string name="pref_viewmode_title">"Modalità di visualizzazione"</string>

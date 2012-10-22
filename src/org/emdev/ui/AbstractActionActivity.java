@@ -5,10 +5,13 @@ import org.ebookdroid.ui.about.AboutActivity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+
+import java.io.Serializable;
 
 import org.emdev.ui.actions.ActionController;
 import org.emdev.ui.actions.ActionEx;
@@ -68,6 +71,14 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Actio
         final int actionId = item.getItemId();
         final ActionEx action = getController().getOrCreateAction(actionId);
         if (action.getMethod().isValid()) {
+            final Intent intent = item.getIntent();
+            if (intent != null) {
+                final Bundle extras = intent.getExtras();
+                for (final String key : extras.keySet()) {
+                    final ExtraWrapper w = (ExtraWrapper) extras.getSerializable(key);
+                    action.putValue(key, w != null ? w.data : null);
+                }
+            }
             action.run();
             return true;
         }
@@ -81,10 +92,23 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Actio
             if (subMenu != null) {
                 setMenuSource(subMenu, source);
             } else {
-                final int itemId = item.getItemId();
-                getController().getOrCreateAction(itemId).putValue(MENU_ITEM_SOURCE, source);
+                setMenuItemSource(item, source);
             }
         }
+    }
+
+    protected void setMenuItemSource(final MenuItem item, final Object source) {
+        final int itemId = item.getItemId();
+        getController().getOrCreateAction(itemId).putValue(MENU_ITEM_SOURCE, source);
+    }
+
+    protected void setMenuItemExtra(final MenuItem item, final String name, final Object data) {
+        Intent intent = item.getIntent();
+        if (intent == null) {
+            intent = new Intent();
+            item.setIntent(intent);
+        }
+        intent.putExtra(name, new ExtraWrapper(data));
     }
 
     protected void setMenuParameters(final Menu menu, final IActionParameter... parameters) {
@@ -180,5 +204,20 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Actio
     public void showAbout(final ActionEx action) {
         final Intent i = new Intent(this, AboutActivity.class);
         startActivity(i);
+    }
+
+    private static final class ExtraWrapper implements Serializable {
+
+        /**
+         * Serial version UID
+         */
+        private static final long serialVersionUID = -5109930164496309305L;
+
+        public Object data;
+
+        private ExtraWrapper(final Object data) {
+            super();
+            this.data = data;
+        }
     }
 }

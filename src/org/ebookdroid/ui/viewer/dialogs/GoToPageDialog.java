@@ -28,6 +28,7 @@ import org.emdev.ui.actions.DialogController;
 import org.emdev.ui.actions.IActionController;
 import org.emdev.ui.actions.params.Constant;
 import org.emdev.ui.actions.params.EditableValue;
+import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.ui.widget.IViewContainer;
 import org.emdev.ui.widget.SeekBarIncrementHandler;
 import org.emdev.utils.LayoutUtils;
@@ -121,6 +122,7 @@ public class GoToPageDialog extends Dialog {
         final ListView bookmarks = (ListView) findViewById(R.id.bookmarks);
         bookmarks.setAdapter(null);
         adapter = null;
+        IUIManager.instance.invalidateOptionsMenu(base.getManagedComponent());
     }
 
     @ActionMethod(ids = R.id.goToButton)

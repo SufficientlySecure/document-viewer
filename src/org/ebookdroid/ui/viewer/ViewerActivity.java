@@ -4,6 +4,7 @@ import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.books.BookSettings;
+import org.ebookdroid.common.settings.books.Bookmark;
 import org.ebookdroid.common.settings.types.ToastPosition;
 import org.ebookdroid.common.touch.TouchManagerView;
 import org.ebookdroid.ui.viewer.views.ManualCropView;
@@ -19,6 +20,8 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -328,6 +331,19 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
         setMenuItemChecked(menu, bs.cropPages, R.id.mainmenu_croppages);
         setMenuItemChecked(menu, bs.splitPages, R.id.mainmenu_splitpages, R.drawable.viewer_menu_split_pages,
                 R.drawable.viewer_menu_split_pages_off);
+
+        final MenuItem navMenu = menu.findItem(R.id.mainmenu_nav_menu);
+        if (navMenu != null) {
+            final SubMenu subMenu = navMenu.getSubMenu();
+            subMenu.removeGroup(R.id.actions_goToBookmarkGroup);
+            if (LengthUtils.isNotEmpty(bs.bookmarks)) {
+                for (final Bookmark b : bs.bookmarks) {
+                    final MenuItem bmi = subMenu.add(R.id.actions_goToBookmarkGroup, R.id.actions_goToBookmark,
+                            Menu.NONE, b.name);
+                    setMenuItemExtra(bmi, "bookmark", b);
+                }
+            }
+        }
     }
 
     /**

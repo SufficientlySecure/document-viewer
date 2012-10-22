@@ -57,6 +57,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -603,7 +604,21 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
             final ViewState state = new ViewState(getDocumentController());
             final PointF pos = state.getPositionOnPage(page);
             bookSettings.bookmarks.add(new Bookmark(name, documentModel.getCurrentIndex(), pos.x, pos.y));
+            Collections.sort(bookSettings.bookmarks);
             SettingsManager.storeBookSettings(bookSettings);
+            IUIManager.instance.invalidateOptionsMenu(getManagedComponent());
+        }
+    }
+
+    @ActionMethod(ids = R.id.actions_goToBookmark)
+    public void goToBookmark(final ActionEx action) {
+        final Bookmark b = action.getParameter("bookmark");
+        if (b == null) {
+            return;
+        }
+        final Page actualPage = b.page.getActualPage(getDocumentModel(), bookSettings);
+        if (actualPage != null) {
+            jumpToPage(actualPage.index.viewIndex, b.offsetX, b.offsetY, AppSettings.current().storeGotoHistory);
         }
     }
 

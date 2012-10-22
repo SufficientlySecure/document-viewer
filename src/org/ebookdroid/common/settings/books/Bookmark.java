@@ -2,10 +2,11 @@ package org.ebookdroid.common.settings.books;
 
 import org.ebookdroid.core.PageIndex;
 
+import org.emdev.utils.CompareUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Bookmark {
+public class Bookmark implements Comparable<Bookmark> {
 
     public boolean service;
     public String name;
@@ -54,4 +55,24 @@ public class Bookmark {
     public String toString() {
         return name;
     }
+
+    @Override
+    public int compareTo(final Bookmark that) {
+        if (that == null) {
+            return -1;
+        }
+
+        int res = CompareUtils.compare(this.page.docIndex, that.page.docIndex);
+        if (res == 0) {
+            res = CompareUtils.compare(this.page.viewIndex, that.page.viewIndex);
+            if (res == 0) {
+                res = CompareUtils.compare(this.offsetY, that.offsetY);
+                if (res == 0) {
+                    res = CompareUtils.compare(this.offsetX, that.offsetX);
+                }
+            }
+        }
+        return res;
+    }
+
 }

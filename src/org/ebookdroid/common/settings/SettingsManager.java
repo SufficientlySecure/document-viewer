@@ -105,10 +105,15 @@ public class SettingsManager {
                 current.nightMode = Boolean.parseBoolean(LengthUtils.safeString(intent.getStringExtra("nightMode"),
                         Boolean.toString(current.nightMode)));
 
-                final int pageIndex = Integer.parseInt(LengthUtils.safeString(intent.getStringExtra("pageIndex"),
-                        Integer.toString(current.currentPage.viewIndex)));
-                current.currentPage = new PageIndex(current.splitPages ? current.currentPage.docIndex : pageIndex,
-                        pageIndex);
+                if (intent.hasExtra("pageIndex")) {
+                    final int pageIndex = Integer.parseInt(LengthUtils.safeString(intent.getStringExtra("pageIndex"),
+                            Integer.toString(current.currentPage.viewIndex)));
+                    current.currentPage = new PageIndex(current.splitPages ? current.currentPage.docIndex : pageIndex,
+                            pageIndex);
+
+                    current.offsetX = intent.getFloatExtra("offsetX", 0);
+                    current.offsetY = intent.getFloatExtra("offsetY", 0);
+                }
             }
 
             if (created && current.persistent) {

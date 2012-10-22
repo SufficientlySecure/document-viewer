@@ -17,12 +17,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.Collections;
-import java.util.Comparator;
 
 import org.emdev.ui.actions.IActionController;
-import org.emdev.utils.CompareUtils;
 
-public final class BookmarkAdapter extends BaseAdapter implements Comparator<Bookmark> {
+public final class BookmarkAdapter extends BaseAdapter {
 
     public final BookSettings bookSettings;
     final IActionController<?> actions;
@@ -43,20 +41,20 @@ public final class BookmarkAdapter extends BaseAdapter implements Comparator<Boo
         this.end = new Bookmark(true, context.getString(R.string.bookmark_end), lastPage != null ? lastPage.index
                 : PageIndex.FIRST, 0, 0);
 
-        Collections.sort(bookSettings.bookmarks, this);
+        Collections.sort(bookSettings.bookmarks);
     }
 
     public void add(final Bookmark... bookmarks) {
         for (final Bookmark bookmark : bookmarks) {
             bookSettings.bookmarks.add(bookmark);
         }
-        Collections.sort(bookSettings.bookmarks, this);
+        Collections.sort(bookSettings.bookmarks);
         SettingsManager.storeBookSettings(bookSettings);
         notifyDataSetChanged();
     }
 
     public void update(Bookmark b) {
-        Collections.sort(bookSettings.bookmarks, this);
+        Collections.sort(bookSettings.bookmarks);
         SettingsManager.storeBookSettings(bookSettings);
         notifyDataSetInvalidated();
     }
@@ -136,30 +134,5 @@ public final class BookmarkAdapter extends BaseAdapter implements Comparator<Boo
         }
 
         return itemView;
-    }
-
-    @Override
-    public int compare(final Bookmark lhs, final Bookmark rhs) {
-        if (lhs == null && rhs == null) {
-            return 0;
-        }
-        if (lhs == null && rhs != null) {
-            return 1;
-        }
-        if (lhs != null && rhs == null) {
-            return -1;
-        }
-
-        int res = CompareUtils.compare(lhs.page.docIndex, rhs.page.docIndex);
-        if (res == 0) {
-            res = CompareUtils.compare(lhs.page.viewIndex, rhs.page.viewIndex);
-            if (res == 0) {
-                res = CompareUtils.compare(lhs.offsetY, rhs.offsetY);
-                if (res == 0) {
-                    res = CompareUtils.compare(lhs.offsetX, rhs.offsetX);
-                }
-            }
-        }
-        return res;
     }
 }

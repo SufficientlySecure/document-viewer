@@ -1,17 +1,22 @@
+/* Copyright (C) 2001-2012 Artifex Software, Inc.
+   All Rights Reserved.
+
+   This software is provided AS-IS with no warranty, either express or
+   implied.
+
+   This software is distributed under license and may not be copied,
+   modified or distributed except as expressly authorized under the terms
+   of the license contained in the file LICENSE in this distribution.
+
+   Refer to licensing information at http://www.artifex.com or contact
+   Artifex Software, Inc.,  7 Mt. Lassen Drive - Suite A-134, San Rafael,
+   CA  94903, U.S.A., +1(415)492-9861, for further information.
+*/
+
 /*
     jbig2dec
-
-    Copyright (C) 2003 Artifex Software, Inc.
-
-    This software is distributed under license and may not
-    be copied, modified or distributed except as expressly
-    authorized under the terms of the license contained in
-    the file LICENSE in this distribution.
-
-    For further licensing information refer to http://artifex.com/ or
-    contact Artifex Software, Inc., 7 Mt. Lassen Drive - Suite A-134,
-    San Rafael, CA  94903, U.S.A., +1(415)492-9861.
 */
+
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -87,7 +92,7 @@ int jbig2_metadata_add(Jbig2Ctx *ctx, Jbig2Metadata *md,
 
     /* grow the array if necessary */
     if (md->entries == md->max_entries) {
-        md->max_entries >>= 2;
+        md->max_entries <<= 1;
         keys = jbig2_renew(ctx, md->keys, char*, md->max_entries);
         values = jbig2_renew(ctx, md->values, char*, md->max_entries);
         if (keys == NULL || values == NULL) {

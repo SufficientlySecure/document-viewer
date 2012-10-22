@@ -17,6 +17,7 @@
 #include <limits.h>	/* INT_MAX & co */
 #include <float.h> /* FLT_EPSILON, FLT_MAX & co */
 #include <fcntl.h> /* O_RDONLY & co */
+#include <time.h>
 
 #include <setjmp.h>
 
@@ -29,6 +30,7 @@
 #endif
 
 #ifdef __ANDROID__
+// EBD: undef option
 #undef HAVE_SIGSETJMP
 #include <android/log.h>
 #define LOG_TAG "libmupdf"
@@ -120,6 +122,11 @@ int gettimeofday(struct timeval *tv, struct timezone *tz);
 #define __printflike(fmtarg, firstvararg)
 #endif
 #endif
+
+/*
+	Shut the compiler up about unused variables
+*/
+#define UNUSED(x) do { x = x; } while (0)
 
 /*
 	Some standard math functions, done as static inlines for speed.
@@ -238,8 +245,8 @@ void fz_var_imp(void *);
 */
 
 #define fz_try(ctx) \
-	if (fz_push_try(ctx->error), \
-		(ctx->error->stack[ctx->error->top].code = fz_setjmp(ctx->error->stack[ctx->error->top].buffer)) == 0) \
+	if (fz_push_try(ctx->error) && \
+		((ctx->error->stack[ctx->error->top].code = fz_setjmp(ctx->error->stack[ctx->error->top].buffer)) == 0))\
 	{ do {
 
 #define fz_always(ctx) \
@@ -252,7 +259,7 @@ void fz_var_imp(void *);
 	} \
 	if (ctx->error->stack[ctx->error->top--].code)
 
-void fz_push_try(fz_error_context *ex);
+int fz_push_try(fz_error_context *ex);
 void fz_throw(fz_context *, char *, ...) __printflike(2, 3);
 void fz_rethrow(fz_context *);
 void fz_warn(fz_context *ctx, char *fmt, ...) __printflike(2, 3);
@@ -280,8 +287,10 @@ struct fz_context_s
 	fz_aa_context *aa;
 	fz_store *store;
 	fz_glyph_cache *glyph_cache;
+	// EBD: context flags >>>
 	int ebookdroid_nightmode;
 	int ebookdroid_slowcmyk;
+	// EBD: context flags <<<
 };
 
 /*
@@ -2118,6 +2127,53 @@ void fz_print_outline(fz_context *ctx, FILE *out, fz_outline *outline);
 */
 void fz_free_outline(fz_context *ctx, fz_outline *outline);
 
+/* Transition support */
+typedef struct fz_transition_s fz_transition;
+
+enum {
+	FZ_TRANSITION_NONE = 0, /* aka 'R' or 'REPLACE' */
+	FZ_TRANSITION_SPLIT,
+	FZ_TRANSITION_BLINDS,
+	FZ_TRANSITION_BOX,
+	FZ_TRANSITION_WIPE,
+	FZ_TRANSITION_DISSOLVE,
+	FZ_TRANSITION_GLITTER,
+	FZ_TRANSITION_FLY,
+	FZ_TRANSITION_PUSH,
+	FZ_TRANSITION_COVER,
+	FZ_TRANSITION_UNCOVER,
+	FZ_TRANSITION_FADE
+};
+
+struct fz_transition_s
+{
+	int type;
+	float duration; /* Effect duration (seconds) */
+
+	/* Parameters controlling the effect */
+	int vertical; /* 0 or 1 */
+	int outwards; /* 0 or 1 */
+	int direction; /* Degrees */
+	/* Potentially more to come */
+
+	/* State variables for use of the transition code */
+	int state0;
+	int state1;
+};
+
+/*
+	fz_generate_transition: Generate a frame of a transition.
+
+	tpix: Target pixmap
+	opix: Old pixmap
+	npix: New pixmap
+	time: Position within the transition (0 to 256)
+	trans: Transition details
+
+	Returns 1 if successfully generated a frame.
+*/
+int fz_generate_transition(fz_pixmap *tpix, fz_pixmap *opix, fz_pixmap *npix, int time, fz_transition *trans);
+
 /*
 	Document interface
 */
@@ -2139,6 +2195,16 @@ typedef struct fz_page_s fz_page;
 	filename: a path to a file as it would be given to open(2).
 */
 fz_document *fz_open_document(fz_context *ctx, char *filename);
+
+/*
+	fz_open_document_with_stream: Open a PDF, XPS or CBZ document.
+
+	Open a document using the specified stream object rather than
+	opening a file on disk.
+
+	magic: a string used to detect document type; either a file name or mime-type.
+*/
+fz_document *fz_open_document_with_stream(fz_context *ctx, char *magic, fz_stream *stream);
 
 /*
 	fz_close_document: Close and free an open document.
@@ -2213,6 +2279,32 @@ fz_link *fz_load_links(fz_document *doc, fz_page *page);
 	Does not throw exceptions.
 */
 fz_rect fz_bound_page(fz_document *doc, fz_page *page);
+
+/*
+	fz_annot: opaque pointer to annotation details.
+*/
+typedef struct fz_annot_s fz_annot;
+
+/*
+	fz_first_annot: Return a pointer to the first annotation on a page.
+
+	Does not throw exceptions.
+*/
+fz_annot *fz_first_annot(fz_document *doc, fz_page *page);
+
+/*
+	fz_next_annot: Return a pointer to the next annotation on a page.
+
+	Does not throw exceptions.
+*/
+fz_annot *fz_next_annot(fz_document *doc, fz_annot *annot);
+
+/*
+	fz_bound_annot: Return the bounding rectangle of the annotation.
+
+	Does not throw exceptions.
+*/
+fz_rect fz_bound_annot(fz_document *doc, fz_annot *annot);
 
 /*
 	fz_run_page: Run a page through a device.
@@ -2313,6 +2405,385 @@ enum
 	*/
 	FZ_META_INFO = 4,
 };
+
+/*
+	fz_page_presentation: Get the presentation details for a given page.
+
+	duration: NULL, or a pointer to a place to set the page duration in
+	seconds. (Will be set to 0 if unspecified).
+
+	Returns: a pointer to a transition structure, or NULL if there isn't
+	one.
+
+	Does not throw exceptions.
+*/
+fz_transition *fz_page_presentation(fz_document *doc, fz_page *page, float *duration);
+
+/* Interactive features */
+
+/* Types of widget */
+enum
+{
+	FZ_WIDGET_TYPE_PUSHBUTTON,
+	FZ_WIDGET_TYPE_CHECKBOX,
+	FZ_WIDGET_TYPE_RADIOBUTTON,
+	FZ_WIDGET_TYPE_TEXT,
+	FZ_WIDGET_TYPE_LISTBOX,
+	FZ_WIDGET_TYPE_COMBOBOX
+};
+
+/* Types of text widget content */
+enum
+{
+	FZ_WIDGET_CONTENT_UNRESTRAINED,
+	FZ_WIDGET_CONTENT_NUMBER,
+	FZ_WIDGET_CONTENT_SPECIAL,
+	FZ_WIDGET_CONTENT_DATE,
+	FZ_WIDGET_CONTENT_TIME
+};
+
+/* Types of UI event */
+enum
+{
+	FZ_EVENT_TYPE_POINTER,
+};
+
+/* Types of pointer event */
+enum
+{
+	FZ_POINTER_DOWN,
+	FZ_POINTER_UP,
+};
+
+/*
+	Interface supported by some types of documents,
+	via which interactions (such as filling in forms)
+	can be achieved.
+*/
+typedef struct fz_interactive_s fz_interactive;
+
+/*
+	UI events that can be passed to an interactive document.
+*/
+typedef struct fz_ui_event_s
+{
+	int etype;
+	union
+	{
+		struct
+		{
+			int   ptype;
+			fz_point pt;
+		} pointer;
+	} event;
+} fz_ui_event;
+
+/*
+	Widgets that may appear in PDF forms
+*/
+typedef struct fz_widget_s fz_widget;
+
+/*
+	Obtain an interface for interaction from a document.
+	For document types that don't support interaction, NULL
+	is returned.
+*/
+fz_interactive *fz_interact(fz_document *doc);
+
+/*
+	Determine whether changes have been made since the
+	document was opened or last saved.
+*/
+int fz_has_unsaved_changes(fz_interactive *idoc);
+
+/*
+	fz_pass_event: Pass a UI event to an interactive
+	document.
+
+	Returns a boolean indication of whether the ui_event was
+	handled. Example of use for the return value: when considering
+	passing the events that make up a drag, if the down event isn't
+	accepted then don't send the move events or the up event.
+*/
+int fz_pass_event(fz_interactive *idoc, fz_page *page, fz_ui_event *ui_event);
+
+/*
+	fz_init_ui_pointer_event: Set up a pointer event
+*/
+void fz_init_ui_pointer_event(fz_ui_event *event, int type, float x, float y);
+
+/*
+	fz_poll_screen_update: Get the bounding box of an area needing
+	update because of a visual change.
+
+	After a sequence of interactions with a document that may cause
+	it to change in appearance - such as passing ui events - this
+	method should be called repeatedly until it returns NULL, to
+	enumerate the changed areas for which screen updates are
+	needed.
+*/
+fz_rect *fz_poll_screen_update(fz_interactive *idoc);
+
+/*
+	fz_focused_widget: returns the currently focussed widget
+
+	Widgets can become focussed as a result of passing in ui events.
+	NULL is returned if there is no currently focussed widget. An
+	app may wish to create a native representative of the focussed
+	widget, e.g., to collect the text for a text widget, rather than
+	routing key strokes through fz_pass_event.
+*/
+fz_widget *fz_focused_widget(fz_interactive *idoc);
+
+/*
+	fz_first_widget: get first widget when enumerating
+*/
+fz_widget *fz_first_widget(fz_interactive *idoc, fz_page *page);
+
+/*
+	fz_next_widget: get next widget when enumerating
+*/
+fz_widget *fz_next_widget(fz_interactive *idoc, fz_widget *previous);
+
+/*
+	fz_widget_get_type: find out the type of a widget.
+
+	The type determines what widget subclass the widget
+	can safely be cast to.
+*/
+int fz_widget_get_type(fz_widget *widget);
+
+/*
+	fz_widget_bbox: get the bounding box of a widget.
+*/
+fz_rect *fz_widget_bbox(fz_widget *widget);
+
+/*
+	fz_text_widget_text: Get the text currently displayed in
+	a text widget.
+*/
+char *fz_text_widget_text(fz_interactive *idoc, fz_widget *tw);
+
+/*
+	fz_widget_text_max_len: get the maximum number of
+	characters permitted in a text widget
+*/
+int fz_text_widget_max_len(fz_interactive *idoc, fz_widget *tw);
+
+/*
+	fz_text_widget_content_type: get the type of content
+	required by a text widget
+*/
+int fz_text_widget_content_type(fz_interactive *idoc, fz_widget *tw);
+
+/*
+	fz_text_widget_set_text: Update the text of a text widget.
+	The text is first validated and accepted only if it passes. The
+	function returns whether validation passed.
+*/
+int fz_text_widget_set_text(fz_interactive *idoc, fz_widget *tw, char *text);
+
+/*
+	fz_choice_widget_options: get the list of options for a list
+	box or combo box. Returns the number of options and fills in their
+	names within the supplied array. Should first be called with a
+	NULL array to find out how big the array should be.
+*/
+int fz_choice_widget_options(fz_interactive *idoc, fz_widget *tw, char *opts[]);
+
+/*
+	fz_choice_widget_is_multiselect: returns whether a list box or
+	combo box supports selection of multiple options
+*/
+int fz_choice_widget_is_multiselect(fz_interactive *idoc, fz_widget *tw);
+
+/*
+	fz_choice_widget_value: get the value of a choice widget.
+	Returns the number of options curently selected and fills in
+	the supplied array with their strings. Should first be called
+	with NULL as the array to find out how big the array need to
+	be. The filled in elements should not be freed by the caller.
+*/
+int fz_choice_widget_value(fz_interactive *idoc, fz_widget *tw, char *opts[]);
+
+/*
+	fz_widget_set_value: set the value of a choice widget. The
+	caller should pass the number of options selected and an
+	array of their names
+*/
+void fz_choice_widget_set_value(fz_interactive *idoc, fz_widget *tw, int n, char *opts[]);
+
+
+/*
+	Document events: the objects via which MuPDF informs the calling app
+	of occurrences emanating from the document, possibly from user interaction
+	or javascript execution. MuPDF informs the app of document events via a
+	callback.
+*/
+
+/*
+	Document event structures are mostly opaque to the app. Only the type
+	is visible to the app.
+*/
+typedef struct fz_doc_event_s fz_doc_event;
+
+struct fz_doc_event_s
+{
+	int type;
+};
+
+/*
+	The various types of document events
+*/
+enum
+{
+	FZ_DOCUMENT_EVENT_ALERT,
+	FZ_DOCUMENT_EVENT_PRINT,
+	FZ_DOCUMENT_EVENT_LAUNCH_URL,
+	FZ_DOCUMENT_EVENT_MAIL_DOC,
+	FZ_DOCUMENT_EVENT_SUBMIT,
+	FZ_DOCUMENT_EVENT_EXEC_MENU_ITEM,
+	FZ_DOCUMENT_EVENT_EXEC_DIALOG
+};
+
+/*
+	fz_doc_event_cb: the type of function via which the app receives
+	document events.
+*/
+typedef void (fz_doc_event_cb)(fz_doc_event *event, void *data);
+
+/*
+	fz_set_doc_event_callback: set the function via which to receive
+	document events.
+*/
+void fz_set_doc_event_callback(fz_interactive *idoc, fz_doc_event_cb *fn, void *data);
+
+/*
+	fz_alert_event: details of an alert event. In response the app should
+	display an alert dialog with the bittons specified by "button_type_group".
+	If "check_box_message" is non-NULL, a checkbox should be displayed in
+	the lower-left corned along with the messsage.
+
+	"finally_checked" and "button_pressed" should be set by the app
+	before returning from the callback. "finally_checked" need be set
+	only if "check_box_message" is non-NULL.
+*/
+typedef struct
+{
+	char *message;
+	int icon_type;
+	int button_group_type;
+	char *title;
+	char *check_box_message;
+	int initially_checked;
+	int finally_checked;
+	int button_pressed;
+} fz_alert_event;
+
+/* Possible values of icon_type */
+enum
+{
+	FZ_ALERT_ICON_ERROR,
+	FZ_ALERT_ICON_WARNING,
+	FZ_ALERT_ICON_QUESTION,
+	FZ_ALERT_ICON_STATUS
+};
+
+/* Possible values of button_group_type */
+enum
+{
+	FZ_ALERT_BUTTON_GROUP_OK,
+	FZ_ALERT_BUTTON_GROUP_OK_CANCEL,
+	FZ_ALERT_BUTTON_GROUP_YES_NO,
+	FZ_ALERT_BUTTON_GROUP_YES_NO_CANCEL
+};
+
+/* Possible values of button_pressed */
+enum
+{
+	FZ_ALERT_BUTTON_NONE,
+	FZ_ALERT_BUTTON_OK,
+	FZ_ALERT_BUTTON_CANCEL,
+	FZ_ALERT_BUTTON_NO,
+	FZ_ALERT_BUTTON_YES
+};
+
+/*
+	fz_access_alert_event: access the details of an alert event
+	The returned pointer and all the data referred to by the
+	structire are owned by mupdf and need not be freed by the
+	caller.
+*/
+fz_alert_event *fz_access_alert_event(fz_doc_event *event);
+
+/*
+	fz_access_exec_menu_item_event: access the details of am execMenuItem
+	event, which consists of just the name of the menu item
+*/
+char *fz_access_exec_menu_item_event(fz_doc_event *event);
+
+/*
+	fz_submit_event: details of a submit event. The app should submit
+	the specified data to the specified url. "get" determines whether
+	to use the GET or POST method.
+*/
+typedef struct
+{
+	char *url;
+	char *data;
+	int data_len;
+	int get;
+} fz_submit_event;
+
+/*
+	fz_access_submit_event: access the details of a submit event
+	The returned pointer and all data referred to by the structure are
+	owned by mupdf and need not be freed by the caller.
+*/
+fz_submit_event *fz_access_submit_event(fz_doc_event *event);
+
+/*
+	fz_launch_url_event: details of a launch-url event. The app should
+	open the url, either in a new frame or in the current window.
+*/
+typedef struct
+{
+	char *url;
+	int new_frame;
+} fz_launch_url_event;
+
+/*
+	fz_access_launch_url_event: access the details of a launch-url
+	event. The returned pointer and all data referred to by the structure
+	are owned by mupdf and need not be freed by the caller.
+*/
+fz_launch_url_event *fz_access_launch_url_event(fz_doc_event *event);
+
+/*
+	fz_mail_doc_event: details of a mail_doc event. The app should save
+	the current state of the document and email it using the specified
+	parameters.
+*/
+typedef struct
+{
+	int ask_user;
+	char *to;
+	char *cc;
+	char *bcc;
+	char *subject;
+	char *message;
+} fz_mail_doc_event;
+
+/*
+	fz_acccess_mail_doc_event: access the details of a mail-doc event.
+*/
+fz_mail_doc_event *fz_access_mail_doc_event(fz_doc_event *event);
+
+/*
+	fz_javascript_supported: test whether a version of mupdf with
+	a javascript engine is in use.
+*/
+int fz_javascript_supported();
 
 typedef struct fz_write_options_s fz_write_options;
 

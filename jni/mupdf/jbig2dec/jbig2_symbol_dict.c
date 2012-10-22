@@ -1,17 +1,22 @@
+/* Copyright (C) 2001-2012 Artifex Software, Inc.
+   All Rights Reserved.
+
+   This software is provided AS-IS with no warranty, either express or
+   implied.
+
+   This software is distributed under license and may not be copied,
+   modified or distributed except as expressly authorized under the terms
+   of the license contained in the file LICENSE in this distribution.
+
+   Refer to licensing information at http://www.artifex.com or contact
+   Artifex Software, Inc.,  7 Mt. Lassen Drive - Suite A-134, San Rafael,
+   CA  94903, U.S.A., +1(415)492-9861, for further information.
+*/
+
 /*
     jbig2dec
-
-    Copyright (C) 2001-2005 Artifex Software, Inc.
-
-    This software is distributed under license and may not
-    be copied, modified or distributed except as expressly
-    authorized under the terms of the license contained in
-    the file LICENSE in this distribution.
-
-    For further licensing information refer to http://artifex.com/ or
-    contact Artifex Software, Inc., 7 Mt. Lassen Drive - Suite A-134,
-    San Rafael, CA  94903, U.S.A., +1(415)492-9861.
 */
+
 
 /* symbol dictionary segment decode and support */
 
@@ -43,7 +48,7 @@
 typedef struct {
   bool SDHUFF;
   bool SDREFAGG;
-  int32_t SDNUMINSYMS;
+  uint32_t SDNUMINSYMS;
   Jbig2SymbolDict *SDINSYMS;
   uint32_t SDNUMNEWSYMS;
   uint32_t SDNUMEXSYMS;
@@ -228,9 +233,9 @@ jbig2_decode_symbol_dict(Jbig2Ctx *ctx,
 {
   Jbig2SymbolDict *SDNEWSYMS = NULL;
   Jbig2SymbolDict *SDEXSYMS = NULL;
-  int32_t HCHEIGHT;
+  uint32_t HCHEIGHT;
   uint32_t NSYMSDECODED;
-  int32_t SYMWIDTH, TOTWIDTH;
+  uint32_t SYMWIDTH, TOTWIDTH;
   uint32_t HCFIRSTSYM;
   uint32_t *SDNEWSYMWIDTHS = NULL;
   int SBSYMCODELEN = 0;
@@ -285,7 +290,7 @@ jbig2_decode_symbol_dict(Jbig2Ctx *ctx,
           goto cleanup1;
       }
       if (params->SDREFAGG) {
-          int tmp = params->SDINSYMS->n_symbols + params->SDNUMNEWSYMS;
+          int64_t tmp = params->SDNUMINSYMS + params->SDNUMNEWSYMS;
           for (SBSYMCODELEN = 0; (1 << SBSYMCODELEN) < tmp; SBSYMCODELEN++);
           IAID = jbig2_arith_iaid_ctx_new(ctx, SBSYMCODELEN);
           IARDX = jbig2_arith_int_ctx_new(ctx);
@@ -313,7 +318,8 @@ jbig2_decode_symbol_dict(Jbig2Ctx *ctx,
 	  SDNEWSYMWIDTHS = jbig2_new(ctx, uint32_t, params->SDNUMNEWSYMS);
 	  if (SDNEWSYMWIDTHS == NULL) {
 	    jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
-            "could not allocate storage for symbol widths");
+              "could not allocate storage for (%u) symbol widths",
+              params->SDNUMNEWSYMS);
 	    goto cleanup2;
 	  }
       }
@@ -322,7 +328,8 @@ jbig2_decode_symbol_dict(Jbig2Ctx *ctx,
   SDNEWSYMS = jbig2_sd_new(ctx, params->SDNUMNEWSYMS);
   if (SDNEWSYMS == NULL) {
       jbig2_error(ctx, JBIG2_SEVERITY_WARNING, segment->number,
-          "could not allocate storage for symbols");
+          "could not allocate storage for (%u) new symbols",
+          params->SDNUMNEWSYMS);
       goto cleanup2;
   }
 
@@ -361,20 +368,13 @@ jbig2_decode_symbol_dict(Jbig2Ctx *ctx,
         "decoding height class %d with %d syms decoded", HCHEIGHT, NSYMSDECODED);
 
       for (;;) {
-	  /* check for broken symbol table */
- 	  if (NSYMSDECODED > params->SDNUMNEWSYMS)
-      {
-          jbig2_error(ctx, JBIG2_SEVERITY_WARNING, segment->number,
-              "No OOB signalling end of height class %d", HCHEIGHT);
-	      goto cleanup4;
-      }
 	  /* 6.5.7 */
 	  if (params->SDHUFF) {
 	      DW = jbig2_huffman_get(hs, params->SDHUFFDW, &code);
 	  } else {
 	      code = jbig2_arith_int_decode(IADW, as, &DW);
-          if (code < 0) goto cleanup4;
 	  }
+          if (code < 0) goto cleanup4;
 
 	  /* 6.5.5 (4c.i) */
 	  if (code == 1) {
@@ -382,6 +382,15 @@ jbig2_decode_symbol_dict(Jbig2Ctx *ctx,
 	    " OOB signals end of height class %d", HCHEIGHT);
 	    break;
 	  }
+
+	  /* check for broken symbol table */
+          if (NSYMSDECODED >= params->SDNUMNEWSYMS)
+          {
+              jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
+                  "No OOB signalling end of height class %d", HCHEIGHT);
+              goto cleanup4;
+          }
+
 	  SYMWIDTH = SYMWIDTH + DW;
 	  TOTWIDTH = TOTWIDTH + SYMWIDTH;
 	  if (SYMWIDTH < 0) {
@@ -529,7 +538,7 @@ jbig2_decode_symbol_dict(Jbig2Ctx *ctx,
 
 		      /* multiple symbols are handled as a text region */
 		      jbig2_decode_text_region(ctx, segment, tparams, (const Jbig2SymbolDict * const *)refagg_dicts,
-			  n_refagg_dicts, image, data, size, GR_stats, as, as ? NULL : ws);
+			  n_refagg_dicts, image, data, size, GR_stats, as, ws);
 
 		      SDNEWSYMS->glyphs[NSYMSDECODED] = image;
 		      refagg_dicts[0]->glyphs[params->SDNUMINSYMS + NSYMSDECODED] = jbig2_image_clone(ctx, SDNEWSYMS->glyphs[NSYMSDECODED]);
@@ -541,7 +550,7 @@ jbig2_decode_symbol_dict(Jbig2Ctx *ctx,
 		      uint32_t ID;
 		      int32_t RDX, RDY;
 		      int BMSIZE = 0;
-		      int ninsyms = params->SDINSYMS->n_symbols;
+		      int ninsyms = params->SDNUMINSYMS;
 		      int code1 = 0;
 		      int code2 = 0;
 		      int code3 = 0;
@@ -626,13 +635,13 @@ jbig2_decode_symbol_dict(Jbig2Ctx *ctx,
 	    SDNEWSYMWIDTHS[NSYMSDECODED] = SYMWIDTH;
 	  }
 
+          /* 6.5.5 (4c.iv) */
+          NSYMSDECODED = NSYMSDECODED + 1;
+
 	  jbig2_error(ctx, JBIG2_SEVERITY_DEBUG, segment->number,
-            "decoded symbol %d of %d (%dx%d)",
+            "decoded symbol %u of %u (%ux%u)",
 		NSYMSDECODED, params->SDNUMNEWSYMS,
 		SYMWIDTH, HCHEIGHT);
-
-	  /* 6.5.5 (4c.iv) */
-	  NSYMSDECODED = NSYMSDECODED + 1;
 
       } /* end height class decode loop */
 
@@ -690,6 +699,7 @@ jbig2_decode_symbol_dict(Jbig2Ctx *ctx,
 	  if (code) {
 	    jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
 	      "error decoding MMR bitmap image!");
+	    jbig2_image_release(ctx, image);
 	    goto cleanup4;
 	  }
 	}
@@ -706,6 +716,7 @@ jbig2_decode_symbol_dict(Jbig2Ctx *ctx,
       {
           jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
               "failed to copy the collective bitmap into symbol dictionary");
+          jbig2_image_release(ctx, image);
           goto cleanup4;
       }
 	  jbig2_image_compose(ctx, glyph, image, -x, 0, JBIG2_COMPOSE_REPLACE);
@@ -729,33 +740,34 @@ jbig2_decode_symbol_dict(Jbig2Ctx *ctx,
   {
     int i = 0;
     int j = 0;
-    int k, m, exflag = 0;
+    int k;
+    int exflag = 0;
+    int64_t limit = params->SDNUMINSYMS + params->SDNUMNEWSYMS;
     int32_t exrunlength;
 
-    if (params->SDINSYMS != NULL)
-      m = params->SDINSYMS->n_symbols;
-    else
-      m = 0;
-    while (j < params->SDNUMEXSYMS) {
+    while (i < limit) {
       if (params->SDHUFF)
-      	/* FIXME: implement reading from huff table B.1 */
-        exrunlength = exflag ? params->SDNUMEXSYMS : 0;
+        exrunlength = jbig2_huffman_get(hs, SBHUFFRSIZE, &code);
       else
         code = jbig2_arith_int_decode(IAEX, as, &exrunlength);
-      if (exflag && exrunlength > params->SDNUMEXSYMS - j) {
-        jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
-          "runlength too large in export symbol table (%d > %d - %d)\n",
-          exrunlength, params->SDNUMEXSYMS, j);
-        jbig2_sd_release(ctx, SDEXSYMS);
+      if (code || (exrunlength > limit - i)) {
+        if (code)
+          jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
+            "failed to decode exrunlength for exported symbols");
+        else
+          jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
+            "runlength too large in export symbol table (%d > %d - %d)\n",
+            exrunlength, params->SDNUMEXSYMS, j);
         /* skip to the cleanup code and return SDEXSYMS = NULL */
+        jbig2_sd_release(ctx, SDEXSYMS);
         SDEXSYMS = NULL;
         break;
       }
       for(k = 0; k < exrunlength; k++) {
         if (exflag) {
-          SDEXSYMS->glyphs[j++] = (i < m) ?
+          SDEXSYMS->glyphs[j++] = (i < params->SDNUMINSYMS) ?
             jbig2_image_clone(ctx, params->SDINSYMS->glyphs[i]) :
-            jbig2_image_clone(ctx, SDNEWSYMS->glyphs[i-m]);
+            jbig2_image_clone(ctx, SDNEWSYMS->glyphs[i-params->SDNUMINSYMS]);
         }
         i++;
       }
@@ -796,11 +808,13 @@ cleanup4:
       jbig2_sd_release(ctx, refagg_dicts[0]);
       jbig2_free(ctx->allocator, refagg_dicts);
   }
-  jbig2_free(ctx->allocator, GB_stats);
 
 cleanup2:
   jbig2_sd_release(ctx, SDNEWSYMS);
-  jbig2_free(ctx->allocator, SDNEWSYMWIDTHS);
+  if (params->SDHUFF && !params->SDREFAGG)
+  {
+      jbig2_free(ctx->allocator, SDNEWSYMWIDTHS);
+  }
   jbig2_release_huffman_table(ctx, SDHUFFRDX);
   jbig2_release_huffman_table(ctx, SBHUFFRSIZE);
   jbig2_huffman_free(ctx, hs);
@@ -954,18 +968,21 @@ jbig2_symbol_dictionary(Jbig2Ctx *ctx, Jbig2Segment *segment,
   /* maybe #ifdef CONFORMANCE and a separate routine */
   if (!params.SDHUFF) {
     if (flags & 0x000c) {
-      jbig2_error(ctx, JBIG2_SEVERITY_WARNING, segment->number,
+      jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
 		  "SDHUFF is zero, but contrary to spec SDHUFFDH is not.");
+      goto cleanup;
     }
     if (flags & 0x0030) {
-      jbig2_error(ctx, JBIG2_SEVERITY_WARNING, segment->number,
+      jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
 		  "SDHUFF is zero, but contrary to spec SDHUFFDW is not.");
+      goto cleanup;
     }
   }
 
   if (flags & 0x0080) {
-      jbig2_error(ctx, JBIG2_SEVERITY_WARNING, segment->number,
+      jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
         "bitmap coding context is used (NYI) symbol data likely to be garbage!");
+      goto cleanup;
   }
 
   /* 7.4.2.1.2 */
@@ -991,7 +1008,7 @@ jbig2_symbol_dictionary(Jbig2Ctx *ctx, Jbig2Segment *segment,
   offset += 8;
 
   jbig2_error(ctx, JBIG2_SEVERITY_INFO, segment->number,
-	      "symbol dictionary, flags=%04x, %d exported syms, %d new syms",
+	      "symbol dictionary, flags=%04x, %u exported syms, %u new syms",
 	      flags, params.SDNUMEXSYMS, params.SDNUMNEWSYMS);
 
   /* 7.4.2.2 (2) */
@@ -1012,9 +1029,10 @@ jbig2_symbol_dictionary(Jbig2Ctx *ctx, Jbig2Segment *segment,
       {
           jbig2_error(ctx, JBIG2_SEVERITY_WARNING, segment->number,
               "failed to allocate symbol array in symbol dictionary");
-          jbig2_sd_release(ctx, *dicts);
+          jbig2_free(ctx->allocator, dicts);
           goto cleanup;
       }
+      jbig2_free(ctx->allocator, dicts);
     }
     if (params.SDINSYMS != NULL) {
       params.SDNUMINSYMS = params.SDINSYMS->n_symbols;
@@ -1063,10 +1081,13 @@ jbig2_symbol_dictionary(Jbig2Ctx *ctx, Jbig2Segment *segment,
   /* 7.4.2.2 (7) */
   if (flags & 0x0200) {
       /* todo: retain GB_stats, GR_stats */
+      jbig2_free(ctx->allocator, GR_stats);
+      jbig2_free(ctx->allocator, GB_stats);
       jbig2_error(ctx, JBIG2_SEVERITY_WARNING, segment->number,
           "segment marks bitmap coding context as retained (NYI)");
   } else {
-      /* todo: free GB_stats, GR_stats */
+      jbig2_free(ctx->allocator, GR_stats);
+      jbig2_free(ctx->allocator, GB_stats);
   }
 
 cleanup:
@@ -1076,6 +1097,7 @@ cleanup:
       jbig2_release_huffman_table(ctx, params.SDHUFFBMSIZE);
       jbig2_release_huffman_table(ctx, params.SDHUFFAGGINST);
   }
+  jbig2_sd_release(ctx, params.SDINSYMS);
 
   return (segment->result != NULL) ? 0 : -1;
 

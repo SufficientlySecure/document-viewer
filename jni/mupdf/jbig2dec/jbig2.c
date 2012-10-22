@@ -1,20 +1,22 @@
+/* Copyright (C) 2001-2012 Artifex Software, Inc.
+   All Rights Reserved.
+
+   This software is provided AS-IS with no warranty, either express or
+   implied.
+
+   This software is distributed under license and may not be copied,
+   modified or distributed except as expressly authorized under the terms
+   of the license contained in the file LICENSE in this distribution.
+
+   Refer to licensing information at http://www.artifex.com or contact
+   Artifex Software, Inc.,  7 Mt. Lassen Drive - Suite A-134, San Rafael,
+   CA  94903, U.S.A., +1(415)492-9861, for further information.
+*/
+
 /*
     jbig2dec
-
-    Copyright (C) 2002-2005 Artifex Software, Inc.
-
-    This software is provided AS-IS with no warranty,
-    either express or implied.
-
-    This software is distributed under license and may not
-    be copied, modified or distributed except as expressly
-    authorized under the terms of the license contained in
-    the file LICENSE in this distribution.
-
-    For further licensing information refer to http://artifex.com/ or
-    contact Artifex Software, Inc., 7 Mt. Lassen Drive - Suite A-134,
-    San Rafael, CA  94903, U.S.A., +1(415)492-9861.
 */
+
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -55,9 +57,14 @@ static Jbig2Allocator jbig2_default_allocator =
 };
 
 void *
-jbig2_alloc (Jbig2Allocator *allocator, size_t size)
+jbig2_alloc (Jbig2Allocator *allocator, size_t size, size_t num)
 {
-  return allocator->alloc (allocator, size);
+  /* check for integer multiplication overflow */
+  int64_t check = ((int64_t)num)*((int64_t)size);
+  if (check != (int)check)
+    return NULL;
+  else
+    return allocator->alloc (allocator, (int)check);
 }
 
 void
@@ -67,9 +74,14 @@ jbig2_free (Jbig2Allocator *allocator, void *p)
 }
 
 void *
-jbig2_realloc (Jbig2Allocator *allocator, void *p, size_t size)
+jbig2_realloc (Jbig2Allocator *allocator, void *p, size_t size, size_t num)
 {
-  return allocator->realloc (allocator, p, size);
+  /* check for integer multiplication overflow */
+  int64_t check = ((int64_t)num)*((int64_t)size);
+  if (check != (int)check)
+    return NULL;
+  else
+    return allocator->realloc (allocator, p, (int)check);
 }
 
 static int
@@ -121,7 +133,7 @@ jbig2_ctx_new (Jbig2Allocator *allocator,
   if (error_callback == NULL)
       error_callback = &jbig2_default_error;
 
-  result = (Jbig2Ctx*)jbig2_alloc(allocator, sizeof(Jbig2Ctx));
+  result = (Jbig2Ctx*)jbig2_alloc(allocator, sizeof(Jbig2Ctx), 1);
   if (result == NULL) {
     error_callback(error_callback_data, "initial context allocation failed!",
                     JBIG2_SEVERITY_FATAL, -1);
@@ -301,7 +313,7 @@ jbig2_data_in (Jbig2Ctx *ctx, const unsigned char *data, size_t size)
 	    {
 	      if (ctx->buf_wr_ix - ctx->buf_rd_ix < 13)
 		return 0;
-	      ctx->n_pages = jbig2_get_int32(ctx->buf + ctx->buf_rd_ix + 9);
+	      ctx->n_pages = jbig2_get_uint32(ctx->buf + ctx->buf_rd_ix + 9);
 	      ctx->buf_rd_ix += 13;
               if (ctx->n_pages == 1)
                 jbig2_error(ctx, JBIG2_SEVERITY_INFO, -1, "file header indicates a single page document");

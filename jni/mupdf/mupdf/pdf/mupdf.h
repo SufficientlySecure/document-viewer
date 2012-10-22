@@ -17,8 +17,8 @@ pdf_obj *pdf_new_null(fz_context *ctx);
 pdf_obj *pdf_new_bool(fz_context *ctx, int b);
 pdf_obj *pdf_new_int(fz_context *ctx, int i);
 pdf_obj *pdf_new_real(fz_context *ctx, float f);
-pdf_obj *fz_new_name(fz_context *ctx, char *str);
-pdf_obj *pdf_new_string(fz_context *ctx, char *str, int len);
+pdf_obj *pdf_new_name(fz_context *ctx, const char *str);
+pdf_obj *pdf_new_string(fz_context *ctx, const char *str, int len);
 pdf_obj *pdf_new_indirect(fz_context *ctx, int num, int gen, void *doc);
 pdf_obj *pdf_new_array(fz_context *ctx, int initialcap);
 pdf_obj *pdf_new_dict(fz_context *ctx, int initialcap);
@@ -71,14 +71,15 @@ int pdf_dict_len(pdf_obj *dict);
 pdf_obj *pdf_dict_get_key(pdf_obj *dict, int idx);
 pdf_obj *pdf_dict_get_val(pdf_obj *dict, int idx);
 pdf_obj *pdf_dict_get(pdf_obj *dict, pdf_obj *key);
-pdf_obj *pdf_dict_gets(pdf_obj *dict, char *key);
-pdf_obj *pdf_dict_getp(pdf_obj *dict, char *key);
-pdf_obj *pdf_dict_getsa(pdf_obj *dict, char *key, char *abbrev);
+pdf_obj *pdf_dict_gets(pdf_obj *dict, const char *key);
+pdf_obj *pdf_dict_getp(pdf_obj *dict, const char *key);
+pdf_obj *pdf_dict_getsa(pdf_obj *dict, const char *key, const char *abbrev);
 void pdf_dict_put(pdf_obj *dict, pdf_obj *key, pdf_obj *val);
-void pdf_dict_puts(pdf_obj *dict, char *key, pdf_obj *val);
-void pdf_dict_putp(pdf_obj *dict, char *key, pdf_obj *val);
+void pdf_dict_puts(pdf_obj *dict, const char *key, pdf_obj *val);
+void pdf_dict_puts_drop(pdf_obj *dict, const char *key, pdf_obj *val);
+void pdf_dict_putp(pdf_obj *dict, const char *key, pdf_obj *val);
 void pdf_dict_del(pdf_obj *dict, pdf_obj *key);
-void pdf_dict_dels(pdf_obj *dict, char *key);
+void pdf_dict_dels(pdf_obj *dict, const char *key);
 void pdf_sort_dict(pdf_obj *dict);
 
 int pdf_fprint_obj(FILE *fp, pdf_obj *obj, int tight);
@@ -88,10 +89,10 @@ void pdf_print_obj(pdf_obj *obj);
 void pdf_print_ref(pdf_obj *obj);
 #endif
 
-char *pdf_to_utf8(fz_context *ctx, pdf_obj *src);
-unsigned short *pdf_to_ucs2(fz_context *ctx, pdf_obj *src); /* sumatrapdf */
-pdf_obj *pdf_to_utf8_name(fz_context *ctx, pdf_obj *src);
-char *pdf_from_ucs2(fz_context *ctx, unsigned short *str);
+char *pdf_to_utf8(pdf_document *xref, pdf_obj *src);
+unsigned short *pdf_to_ucs2(pdf_document *xref, pdf_obj *src); /* sumatrapdf */
+pdf_obj *pdf_to_utf8_name(pdf_document *xref, pdf_obj *src);
+char *pdf_from_ucs2(pdf_document *xref, unsigned short *str);
 
 fz_rect pdf_to_rect(fz_context *ctx, pdf_obj *array);
 fz_matrix pdf_to_matrix(fz_context *ctx, pdf_obj *array);
@@ -167,7 +168,7 @@ pdf_document *pdf_open_document(fz_context *ctx, const char *filename);
 	fz_open_file_w or fz_open_fd for opening a stream, and
 	fz_close for closing an open stream.
 */
-pdf_document *pdf_open_document_with_stream(fz_stream *file);
+pdf_document *pdf_open_document_with_stream(fz_context *ctx, fz_stream *file);
 
 /*
 	pdf_close_document: Closes and frees an opened PDF document.
@@ -235,6 +236,29 @@ fz_rect pdf_bound_page(pdf_document *doc, pdf_page *page);
 */
 void pdf_free_page(pdf_document *doc, pdf_page *page);
 
+typedef struct pdf_annot_s pdf_annot;
+
+/*
+	pdf_first_annot: Return the first annotation on a page.
+
+	Does not throw exceptions.
+*/
+pdf_annot *pdf_first_annot(pdf_document *doc, pdf_page *page);
+
+/*
+	pdf_next_annot: Return the next annotation on a page.
+
+	Does not throw exceptions.
+*/
+pdf_annot *pdf_next_annot(pdf_document *doc, pdf_annot *annot);
+
+/*
+	pdf_bound_annot: Return the rectangle for an annotation on a page.
+
+	Does not throw exceptions.
+*/
+fz_rect pdf_bound_annot(pdf_document *doc, pdf_annot *annot);
+
 /*
 	pdf_run_page: Interpret a loaded page and render it on a device.
 
@@ -253,5 +277,10 @@ void pdf_run_page_with_usage(pdf_document *doc, pdf_page *page, fz_device *dev, 
 	Metadata interface.
 */
 int pdf_meta(pdf_document *doc, int key, void *ptr, int size);
+
+/*
+	Presentation interface.
+*/
+fz_transition *pdf_page_presentation(pdf_document *doc, pdf_page *page, float *duration);
 
 #endif

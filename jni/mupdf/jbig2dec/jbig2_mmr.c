@@ -1,20 +1,22 @@
+/* Copyright (C) 2001-2012 Artifex Software, Inc.
+   All Rights Reserved.
+
+   This software is provided AS-IS with no warranty, either express or
+   implied.
+
+   This software is distributed under license and may not be copied,
+   modified or distributed except as expressly authorized under the terms
+   of the license contained in the file LICENSE in this distribution.
+
+   Refer to licensing information at http://www.artifex.com or contact
+   Artifex Software, Inc.,  7 Mt. Lassen Drive - Suite A-134, San Rafael,
+   CA  94903, U.S.A., +1(415)492-9861, for further information.
+*/
+
 /*
     jbig2dec
-
-    Copyright (C) 2001-2002 Artifex Software, Inc.
-
-    This software is provided AS-IS with no warranty,
-    either express or implied.
-
-    This software is distributed under license and may not
-    be copied, modified or distributed except as expressly
-    authorized under the terms of the license contained in
-    the file LICENSE in this distribution.
-
-    For further licensing information refer to http://artifex.com/ or
-    contact Artifex Software, Inc., 7 Mt. Lassen Drive - Suite A-134,
-    San Rafael, CA  94903, U.S.A., +1(415)492-9861.
 */
+
 
 /* An implementation of MMR decoding. This is based on the
    implementation in Fitz, which in turn is based on the one
@@ -790,7 +792,7 @@ jbig2_set_bits(byte *line, int x0, int x1)
 		line[a0] |= lm[b0];
 		for (a = a0 + 1; a < a1; a++)
 			line[a] = 0xFF;
-		line[a1] |= rm[b1];
+		if (b1) line[a1] |= rm[b1];
 	}
 }
 
@@ -829,14 +831,12 @@ jbig2_decode_get_run(Jbig2MmrCtx *mmr, const mmr_table_node *table, int initial_
 	return result;
 }
 
-static void
+static int
 jbig2_decode_mmr_line(Jbig2MmrCtx *mmr, const byte *ref, byte *dst)
 {
-	int a0, a1, a2, b1, b2;
-	int c;
-
-	a0 = -1;
-	c = 0;		/* 0 is white, black is 1 */
+	int a0 = -1;
+	int a1, a2, b1, b2;
+	int c = 0;		/* 0 is white, black is 1 */
 
 	while (1)
 	{
@@ -862,6 +862,7 @@ jbig2_decode_mmr_line(Jbig2MmrCtx *mmr, const byte *ref, byte *dst)
 				a2 = a1 + black_run;
 				if (a1 > mmr->width) a1 = mmr->width;
 				if (a2 > mmr->width) a2 = mmr->width;
+				if (a2 < a1) return -1;
 				jbig2_set_bits(dst, a1, a2);
 				a0 = a2;
 				/* printf ("H %d %d\n", white_run, black_run); */
@@ -874,6 +875,7 @@ jbig2_decode_mmr_line(Jbig2MmrCtx *mmr, const byte *ref, byte *dst)
 				a2 = a1 + white_run;
 				if (a1 > mmr->width) a1 = mmr->width;
 				if (a2 > mmr->width) a2 = mmr->width;
+				if (a1 < a0) return -1;
 				jbig2_set_bits(dst, a0, a1);
 				a0 = a2;
 				/* printf ("H %d %d\n", black_run, white_run); */
@@ -886,7 +888,11 @@ jbig2_decode_mmr_line(Jbig2MmrCtx *mmr, const byte *ref, byte *dst)
 			jbig2_decode_mmr_consume(mmr, 4);
 			b1 = jbig2_find_changing_element_of_color(ref, a0, mmr->width, !c);
 			b2 = jbig2_find_changing_element(ref, b1, mmr->width);
-			if (c) jbig2_set_bits(dst, a0, b2);
+			if (c)
+			{
+				if (b2 < a0) return -1;
+				jbig2_set_bits(dst, a0, b2);
+			}
 			a0 = b2;
 		}
 
@@ -895,7 +901,11 @@ jbig2_decode_mmr_line(Jbig2MmrCtx *mmr, const byte *ref, byte *dst)
 			/* printf ("V(0)\n"); */
 			jbig2_decode_mmr_consume(mmr, 1);
 			b1 = jbig2_find_changing_element_of_color(ref, a0, mmr->width, !c);
-			if (c) jbig2_set_bits(dst, a0, b1);
+			if (c)
+			{
+				if (b1 < a0) return -1;
+				jbig2_set_bits(dst, a0, b1);
+			}
 			a0 = b1;
 			c = !c;
 		}
@@ -906,7 +916,11 @@ jbig2_decode_mmr_line(Jbig2MmrCtx *mmr, const byte *ref, byte *dst)
 			jbig2_decode_mmr_consume(mmr, 3);
 			b1 = jbig2_find_changing_element_of_color(ref, a0, mmr->width, !c);
 			if (b1 + 1 > mmr->width) break;
-			if (c) jbig2_set_bits(dst, a0, b1 + 1);
+			if (c)
+			{
+				if (b1 + 1 < a0) return -1;
+				jbig2_set_bits(dst, a0, b1 + 1);
+			}
 			a0 = b1 + 1;
 			c = !c;
 		}
@@ -917,7 +931,11 @@ jbig2_decode_mmr_line(Jbig2MmrCtx *mmr, const byte *ref, byte *dst)
 			jbig2_decode_mmr_consume(mmr, 6);
 			b1 = jbig2_find_changing_element_of_color(ref, a0, mmr->width, !c);
 			if (b1 + 2 > mmr->width) break;
-			if (c) jbig2_set_bits(dst, a0, b1 + 2);
+			if (c)
+			{
+				if (b1 + 2 < a0) return -1;
+				jbig2_set_bits(dst, a0, b1 + 2);
+			}
 			a0 = b1 + 2;
 			c = !c;
 		}
@@ -928,7 +946,11 @@ jbig2_decode_mmr_line(Jbig2MmrCtx *mmr, const byte *ref, byte *dst)
 			jbig2_decode_mmr_consume(mmr, 7);
 			b1 = jbig2_find_changing_element_of_color(ref, a0, mmr->width, !c);
 			if (b1 + 3 > mmr->width) break;
-			if (c) jbig2_set_bits(dst, a0, b1 + 3);
+			if (c)
+			{
+				if (b1 + 3 < a0) return -1;
+				jbig2_set_bits(dst, a0, b1 + 3);
+			}
 			a0 = b1 + 3;
 			c = !c;
 		}
@@ -939,7 +961,11 @@ jbig2_decode_mmr_line(Jbig2MmrCtx *mmr, const byte *ref, byte *dst)
 			jbig2_decode_mmr_consume(mmr, 3);
 			b1 = jbig2_find_changing_element_of_color(ref, a0, mmr->width, !c);
 			if (b1 - 1 < 0) break;
-			if (c) jbig2_set_bits(dst, a0, b1 - 1);
+			if (c)
+			{
+				if (b1 - 1 < a0) return -1;
+				jbig2_set_bits(dst, a0, b1 - 1);
+			}
 			a0 = b1 - 1;
 			c = !c;
 		}
@@ -950,7 +976,11 @@ jbig2_decode_mmr_line(Jbig2MmrCtx *mmr, const byte *ref, byte *dst)
 			jbig2_decode_mmr_consume(mmr, 6);
 			b1 = jbig2_find_changing_element_of_color(ref, a0, mmr->width, !c);
 			if (b1 - 2 < 0) break;
-			if (c) jbig2_set_bits(dst, a0, b1 - 2);
+			if (c)
+			{
+				if (b1 - 2 < a0) return -1;
+				jbig2_set_bits(dst, a0, b1 - 2);
+			}
 			a0 = b1 - 2;
 			c = !c;
 		}
@@ -961,7 +991,11 @@ jbig2_decode_mmr_line(Jbig2MmrCtx *mmr, const byte *ref, byte *dst)
 			jbig2_decode_mmr_consume(mmr, 7);
 			b1 = jbig2_find_changing_element_of_color(ref, a0, mmr->width, !c);
 			if (b1 - 3 < 0) break;
-			if (c) jbig2_set_bits(dst, a0, b1 - 3);
+			if (c)
+			{
+				if (b1 - 3 < a0) return -1;
+				jbig2_set_bits(dst, a0, b1 - 3);
+			}
 			a0 = b1 - 3;
 			c = !c;
 		}
@@ -969,6 +1003,8 @@ jbig2_decode_mmr_line(Jbig2MmrCtx *mmr, const byte *ref, byte *dst)
 		else
 			break;
 	}
+
+	return 0;
 }
 
 int
@@ -983,17 +1019,19 @@ jbig2_decode_generic_mmr(Jbig2Ctx *ctx,
 	byte *dst = image->data;
 	byte *ref = NULL;
 	int y;
+	int code = 0;
 
 	jbig2_decode_mmr_init(&mmr, image->width, image->height, data, size);
 
 	for (y = 0; y < image->height; y++) {
 		memset(dst, 0, rowstride);
-		jbig2_decode_mmr_line(&mmr, ref, dst);
+		code = jbig2_decode_mmr_line(&mmr, ref, dst);
+		if (code < 0) return code;
 		ref = dst;
 		dst += rowstride;
 	}
 
-	return 0;
+	return code;
 }
 
 /**
@@ -1021,13 +1059,15 @@ jbig2_decode_halftone_mmr(Jbig2Ctx *ctx,
 	byte *dst = image->data;
 	byte *ref = NULL;
 	int y;
+        int code = 0;
 	const uint32_t EOFB = 0x001001;
 
 	jbig2_decode_mmr_init(&mmr, image->width, image->height, data, size);
 
 	for (y = 0; y < image->height; y++) {
 		memset(dst, 0, rowstride);
-		jbig2_decode_mmr_line(&mmr, ref, dst);
+		code = jbig2_decode_mmr_line(&mmr, ref, dst);
+               if (code < 0) return code;
 		ref = dst;
 		dst += rowstride;
 	}
@@ -1039,5 +1079,5 @@ jbig2_decode_halftone_mmr(Jbig2Ctx *ctx,
 
 	*consumed_bytes += mmr.data_index + (mmr.bit_index >> 3) + 
                        (mmr.bit_index > 0 ? 1 : 0);
-	return 0;
+	return code;
 }

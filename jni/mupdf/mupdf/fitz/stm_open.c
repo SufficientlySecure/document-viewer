@@ -42,7 +42,8 @@ fz_new_stream(fz_context *ctx, void *state,
 fz_stream *
 fz_keep_stream(fz_stream *stm)
 {
-	stm->refs ++;
+	if (stm)
+		stm->refs ++;
 	return stm;
 }
 
@@ -140,7 +141,7 @@ fz_open_file_w(fz_context *ctx, const wchar_t *name)
 {
 	int fd = _wopen(name, O_BINARY | O_RDONLY, 0);
 	if (fd == -1)
-		return NULL;
+		fz_throw(ctx, "cannot open file %Ls", name);
 	return fz_open_fd(ctx, fd);
 }
 #endif

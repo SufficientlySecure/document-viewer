@@ -12,14 +12,17 @@ CFLAGS += -Wall -Imupdf/fitz -Imupdf/pdf -Imupdf/scripts
 ifeq "$(verbose)" ""
 QUIET_AR = @ echo ' ' ' ' AR $@ ;
 QUIET_CC = @ echo ' ' ' ' CC $@ ;
+QUIET_CXX = @ echo ' ' ' ' CXX $@ ;
 QUIET_GEN = @ echo ' ' ' ' GEN $@ ;
 QUIET_LINK = @ echo ' ' ' ' LINK $@ ;
 QUIET_MKDIR = @ echo ' ' ' ' MKDIR $@ ;
 endif
 
 CC_CMD = $(QUIET_CC) $(CC) $(CFLAGS) -o $@ -c $<
+CXX_CMD = $(QUIET_CXX) $(CXX) $(CFLAGS) -o $@ -c $<
 AR_CMD = $(QUIET_AR) $(AR) cru $@ $^
 LINK_CMD = $(QUIET_LINK) $(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+LINK_V8_CMD = $(QUIET_LINK) $(CXX) $(LDFLAGS) -o $@ $^ $(LIBS_V8)
 MKDIR_CMD = $(QUIET_MKDIR) mkdir -p $@
 
 # --- Rules ---

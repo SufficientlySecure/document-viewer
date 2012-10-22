@@ -1,16 +1,20 @@
+/* Copyright (C) 2001-2012 Artifex Software, Inc.
+   All Rights Reserved.
+
+   This software is provided AS-IS with no warranty, either express or
+   implied.
+
+   This software is distributed under license and may not be copied,
+   modified or distributed except as expressly authorized under the terms
+   of the license contained in the file LICENSE in this distribution.
+
+   Refer to licensing information at http://www.artifex.com or contact
+   Artifex Software, Inc.,  7 Mt. Lassen Drive - Suite A-134, San Rafael,
+   CA  94903, U.S.A., +1(415)492-9861, for further information.
+*/
+
 /*
     jbig2dec
-
-    Copyright (C) 2002-2008 Artifex Software, Inc.
-
-    This software is distributed under license and may not
-    be copied, modified or distributed except as expressly
-    authorized under the terms of the license contained in
-    the file LICENSE in this distribution.
-
-    For further licensing information refer to http://artifex.com/ or
-    contact Artifex Software, Inc., 7 Mt. Lassen Drive - Suite A-134,
-    San Rafael, CA  94903, U.S.A., +1(415)492-9861.
 */
 
 #ifdef HAVE_CONFIG_H
@@ -212,8 +216,8 @@ cleanup1:
         STRIPT = jbig2_huffman_get(hs, params->SBHUFFDT, &code);
     } else {
         code = jbig2_arith_int_decode(params->IADT, as, &STRIPT);
-        if (code < 0) goto cleanup2;
     }
+    if (code < 0) goto cleanup2;
 
     /* 6.4.5 (2) */
     STRIPT *= -(params->SBSTRIPS);
@@ -227,8 +231,8 @@ cleanup1:
             DT = jbig2_huffman_get(hs, params->SBHUFFDT, &code);
         } else {
             code = jbig2_arith_int_decode(params->IADT, as, &DT);
-            if (code < 0) goto cleanup2;
         }
+        if (code < 0) goto cleanup2;
         DT *= params->SBSTRIPS;
         STRIPT += DT;
 
@@ -242,13 +246,17 @@ cleanup1:
 		    DFS = jbig2_huffman_get(hs, params->SBHUFFFS, &code);
 		} else {
 		    code = jbig2_arith_int_decode(params->IAFS, as, &DFS);
-            if (code < 0) goto cleanup2;
 		}
+                if (code < 0) goto cleanup2;
 		FIRSTS += DFS;
 		CURS = FIRSTS;
 		first_symbol = FALSE;
-
 	    } else {
+                if (NINSTANCES > params->SBNUMINSTANCES) {
+                    code = jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
+                        "too many NINSTANCES (%d) decoded", NINSTANCES);
+                    break;
+		}
 		/* (3c.ii) / 6.4.8 */
 		if (params->SBHUFF) {
 		    IDS = jbig2_huffman_get(hs, params->SBHUFFDS, &code);
@@ -256,6 +264,7 @@ cleanup1:
 		    code = jbig2_arith_int_decode(params->IADS, as, &IDS);
 		}
 		if (code) {
+                    /* decoded an OOB, reached end of strip */
 		    break;
 		}
 		CURS += IDS + params->SBDSOFFSET;
@@ -268,7 +277,7 @@ cleanup1:
 		CURT = jbig2_huffman_get_bits(hs, params->LOGSBSTRIPS);
 	    } else {
 		code = jbig2_arith_int_decode(params->IAIT, as, &CURT);
-        if (code < 0) goto cleanup2;
+                if (code < 0) goto cleanup2;
 	    }
 	    T = STRIPT + CURT;
 
@@ -277,11 +286,12 @@ cleanup1:
 		ID = jbig2_huffman_get(hs, SBSYMCODES, &code);
 	    } else {
 		code = jbig2_arith_iaid_decode(params->IAID, as, (int *)&ID);
-        if (code < 0) goto cleanup2;
 	    }
+            if (code < 0) goto cleanup2;
 	    if (ID >= SBNUMSYMS) {
-		return jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
-                    "symbol id out of range! (%d/%d)", ID, SBNUMSYMS);
+            code = jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
+                "symbol id out of range! (%d/%d)", ID, SBNUMSYMS);
+            goto cleanup2;
 	    }
 
 	    /* (3c.v) / 6.4.11 - look up the symbol bitmap IB */
@@ -405,7 +415,8 @@ cleanup1:
 			ID, IB->width, IB->height, x, y, NINSTANCES + 1,
 			params->SBNUMINSTANCES);
 #endif
-	    jbig2_image_compose(ctx, image, IB, x, y, params->SBCOMBOP);
+	    code = jbig2_image_compose(ctx, image, IB, x, y, params->SBCOMBOP);
+            if (code < 0) goto cleanup2;
 
 	    /* (3c.x) */
 	    if ((!params->TRANSPOSED) && (params->REFCORNER < 2)) {
@@ -835,10 +846,18 @@ jbig2_text_region(Jbig2Ctx *ctx, Jbig2Segment *segment, const byte *segment_data
     if (ws == NULL)
     {
         code = jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
-            "couldn't allocate text region image");
-        jbig2_image_release(ctx, image);
+            "couldn't allocate ws in text region image");
         goto cleanup2;
     }
+
+    as = jbig2_arith_new(ctx, ws);
+    if (as == NULL)
+    {
+        code = jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
+            "couldn't allocate as in text region image");
+        goto cleanup2;
+    }
+
     if (!params.SBHUFF) {
 	int SBSYMCODELEN, index;
         int SBNUMSYMS = 0;
@@ -846,12 +865,11 @@ jbig2_text_region(Jbig2Ctx *ctx, Jbig2Segment *segment, const byte *segment_data
 	    SBNUMSYMS += dicts[index]->n_symbols;
 	}
 
-	as = jbig2_arith_new(ctx, ws);
     params.IADT = jbig2_arith_int_ctx_new(ctx);
     params.IAFS = jbig2_arith_int_ctx_new(ctx);
     params.IADS = jbig2_arith_int_ctx_new(ctx);
     params.IAIT = jbig2_arith_int_ctx_new(ctx);
-    if ((as == NULL) || (params.IADT == NULL) || (params.IAFS == NULL) ||
+    if ((params.IADT == NULL) || (params.IAFS == NULL) ||
         (params.IADS == NULL) || (params.IAIT == NULL))
     {
         code = jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
@@ -880,18 +898,17 @@ jbig2_text_region(Jbig2Ctx *ctx, Jbig2Segment *segment, const byte *segment_data
     code = jbig2_decode_text_region(ctx, segment, &params,
         (const Jbig2SymbolDict * const *)dicts, n_dicts, image,
         segment_data + offset, segment->data_length - offset,
-		GR_stats, as, as ? NULL : ws);
+		GR_stats, as, ws);
     if (code < 0)
     {
         jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
             "failed to decode text region image data");
-        jbig2_image_release(ctx, image);
         goto cleanup4;
     }
 
     if ((segment->flags & 63) == 4) {
         /* we have an intermediate region here. save it for later */
-        segment->result = image;
+        segment->result = jbig2_image_clone(ctx, image);
     } else {
         /* otherwise composite onto the page */
         jbig2_error(ctx, JBIG2_SEVERITY_DEBUG, segment->number,
@@ -899,7 +916,6 @@ jbig2_text_region(Jbig2Ctx *ctx, Jbig2Segment *segment, const byte *segment_data
             region_info.width, region_info.height, region_info.x, region_info.y);
         jbig2_page_add_result(ctx, &ctx->pages[ctx->current_page], image,
             region_info.x, region_info.y, region_info.op);
-        jbig2_image_release(ctx, image);
     }
 
 cleanup4:
@@ -918,14 +934,15 @@ cleanup3:
         jbig2_arith_int_ctx_free(ctx, params.IAFS);
         jbig2_arith_int_ctx_free(ctx, params.IADS);
         jbig2_arith_int_ctx_free(ctx, params.IAIT);
-        jbig2_free(ctx->allocator, as);
     }
+    jbig2_free(ctx->allocator, as);
     jbig2_word_stream_buf_free(ctx, ws);
 
 cleanup2:
     if (!params.SBHUFF && params.SBREFINE) {
         jbig2_free(ctx->allocator, GR_stats);
     }
+    jbig2_image_release(ctx, image);
 
 cleanup1:
     if (params.SBHUFF) {

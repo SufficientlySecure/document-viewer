@@ -115,11 +115,10 @@ load_separation(pdf_document *xref, pdf_obj *array)
 		fz_throw(ctx, "too many components in colorspace");
 
 	base = pdf_load_colorspace(xref, baseobj);
-	/* RJW: "cannot load base colorspace (%d %d R)", pdf_to_num(baseobj), pdf_to_gen(baseobj) */
 
 	fz_try(ctx)
 	{
-		tint = pdf_load_function(xref, tintobj);
+		tint = pdf_load_function(xref, tintobj, n, base->n);
 		/* RJW: fz_drop_colorspace(ctx, base);
 		 * "cannot load tint function (%d %d R)", pdf_to_num(tintobj), pdf_to_gen(tintobj) */
 
@@ -234,7 +233,6 @@ load_indexed(pdf_document *xref, pdf_obj *array)
 	fz_try(ctx)
 	{
 		base = pdf_load_colorspace(xref, baseobj);
-		/* "cannot load base colorspace (%d %d R)", pdf_to_num(baseobj), pdf_to_gen(baseobj) */
 
 		idx = fz_malloc_struct(ctx, struct indexed);
 		idx->lookup = NULL;
@@ -340,7 +338,6 @@ pdf_load_colorspace_imp(pdf_document *xref, pdf_obj *obj)
 				}
 
 				return pdf_load_colorspace(xref, obj);
-				/* RJW: "cannot load pattern (%d %d R)", pdf_to_num(obj), pdf_to_gen(obj) */
 			}
 
 			else if (!strcmp(pdf_to_name(name), "G"))
@@ -399,7 +396,6 @@ pdf_load_colorspace(pdf_document *xref, pdf_obj *obj)
 	}
 
 	cs = pdf_load_colorspace_imp(xref, obj);
-	/* RJW: "cannot load colorspace (%d %d R)", pdf_to_num(obj), pdf_to_gen(obj) */
 
 	pdf_store_item(ctx, obj, cs, cs->size);
 

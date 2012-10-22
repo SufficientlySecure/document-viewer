@@ -20,10 +20,8 @@ pdf_free_xobject_imp(fz_context *ctx, fz_storable *xobj_)
 
 	if (xobj->colorspace)
 		fz_drop_colorspace(ctx, xobj->colorspace);
-	if (xobj->resources)
-		pdf_drop_obj(xobj->resources);
-	if (xobj->contents)
-		pdf_drop_obj(xobj->contents);
+	pdf_drop_obj(xobj->resources);
+	pdf_drop_obj(xobj->contents);
 	pdf_drop_obj(xobj->me);
 	fz_free(ctx, xobj);
 }
@@ -155,11 +153,11 @@ pdf_new_xobject(pdf_document *xref, fz_rect *bbox, fz_matrix *mat)
 
 		res = pdf_new_dict(ctx, 0);
 		procset = pdf_new_array(ctx, 2);
-		obj = fz_new_name(ctx, "PDF");
+		obj = pdf_new_name(ctx, "PDF");
 		pdf_array_push(procset, obj);
 		pdf_drop_obj(obj);
 		obj = NULL;
-		obj = fz_new_name(ctx, "Text");
+		obj = pdf_new_name(ctx, "Text");
 		pdf_array_push(procset, obj);
 		pdf_drop_obj(obj);
 		obj = NULL;
@@ -168,12 +166,12 @@ pdf_new_xobject(pdf_document *xref, fz_rect *bbox, fz_matrix *mat)
 		procset = NULL;
 		pdf_dict_puts(dict, "Resources", res);
 
-		obj = fz_new_name(ctx, "Form");
+		obj = pdf_new_name(ctx, "Form");
 		pdf_dict_puts(dict, "Subtype", obj);
 		pdf_drop_obj(obj);
 		obj = NULL;
 
-		obj = fz_new_name(ctx, "XObject");
+		obj = pdf_new_name(ctx, "XObject");
 		pdf_dict_puts(dict, "Type", obj);
 		pdf_drop_obj(obj);
 		obj = NULL;
@@ -187,7 +185,7 @@ pdf_new_xobject(pdf_document *xref, fz_rect *bbox, fz_matrix *mat)
 
 		form->bbox = *bbox;
 
-		form->matrix = fz_identity;
+		form->matrix = *mat;
 
 		form->isolated = 0;
 		form->knockout = 0;
@@ -226,6 +224,24 @@ pdf_new_xobject(pdf_document *xref, fz_rect *bbox, fz_matrix *mat)
 
 void pdf_update_xobject_contents(pdf_document *xref, pdf_xobject *form, fz_buffer *buffer)
 {
-	pdf_dict_dels(form->contents, "Filter");
-	pdf_update_stream(xref, pdf_to_num(form->contents), buffer);
+	fz_context *ctx = xref->ctx;
+	pdf_obj *len = NULL;
+
+	fz_var(len);
+
+	fz_try(ctx)
+	{
+		len = pdf_new_int(ctx, buffer->len);
+		pdf_dict_dels(form->contents, "Filter");
+		pdf_dict_puts(form->contents, "Length", len);
+		pdf_update_stream(xref, pdf_to_num(form->contents), buffer);
+	}
+	fz_always(ctx)
+	{
+		pdf_drop_obj(len);
+	}
+	fz_catch(ctx)
+	{
+		fz_rethrow(ctx);
+	}
 }

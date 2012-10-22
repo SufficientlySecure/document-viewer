@@ -1,17 +1,22 @@
+/* Copyright (C) 2001-2012 Artifex Software, Inc.
+   All Rights Reserved.
+
+   This software is provided AS-IS with no warranty, either express or
+   implied.
+
+   This software is distributed under license and may not be copied,
+   modified or distributed except as expressly authorized under the terms
+   of the license contained in the file LICENSE in this distribution.
+
+   Refer to licensing information at http://www.artifex.com or contact
+   Artifex Software, Inc.,  7 Mt. Lassen Drive - Suite A-134, San Rafael,
+   CA  94903, U.S.A., +1(415)492-9861, for further information.
+*/
+
 /*
     jbig2dec
-
-    Copyright (C) 2005 Artifex Software, Inc.
-
-    This software is distributed under license and may not
-    be copied, modified or distributed except as expressly
-    authorized under the terms of the license contained in
-    the file LICENSE in this distribution.
-
-    For further licensing information refer to http://artifex.com/ or
-    contact Artifex Software, Inc., 7 Mt. Lassen Drive - Suite A-134,
-    San Rafael, CA  94903, U.S.A., +1(415)492-9861.
 */
+
 
 /* JBIG2 Pattern Dictionary and Halftone Region decoding */
 
@@ -142,7 +147,7 @@ jbig2_decode_pattern_dict(Jbig2Ctx *ctx, Jbig2Segment *segment,
   rparams.GBTEMPLATE = params->HDTEMPLATE;
   rparams.TPGDON = 0;	/* not used if HDMMR = 1 */
   rparams.USESKIP = 0;
-  rparams.gbat[0] = -params->HDPW;
+  rparams.gbat[0] = -(int8_t)params->HDPW;
   rparams.gbat[1] = 0;
   rparams.gbat[2] = -3;
   rparams.gbat[3] = -1;
@@ -179,7 +184,7 @@ jbig2_decode_pattern_dict(Jbig2Ctx *ctx, Jbig2Segment *segment,
     }
   }
 
-  hd = jbig2_hd_new(ctx, params, image);
+  if (code == 0) hd = jbig2_hd_new(ctx, params, image);
   jbig2_image_release(ctx, image);
 
   return hd;
@@ -245,7 +250,7 @@ jbig2_pattern_dictionary(Jbig2Ctx *ctx, Jbig2Segment *segment,
     jbig2_free(ctx->allocator, GB_stats);
   }
 
-  return (segment->result != NULL) ? 0 : 1;
+  return (segment->result != NULL) ? 0 : -1;
 }
 
 /**
@@ -277,7 +282,7 @@ jbig2_decode_gray_scale_image(Jbig2Ctx *ctx, Jbig2Segment* segment,
                               Jbig2Image *GSKIP, int GSTEMPLATE,
                               Jbig2ArithCx *GB_stats)
 {
-  uint8_t **GSVALS;
+  uint8_t **GSVALS = NULL;
   size_t consumed_bytes = 0;
   int i, j, code, stride;
   int x, y;
@@ -289,7 +294,7 @@ jbig2_decode_gray_scale_image(Jbig2Ctx *ctx, Jbig2Segment* segment,
   /* allocate GSPLANES */
   GSPLANES = jbig2_new(ctx, Jbig2Image*, GSBPP);
   if (GSPLANES == NULL) {
-    jbig2_error(ctx, JBIG2_SEVERITY_FATAL, -1, 
+    jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
                 "failed to allocate %d bytes for GSPLANES", GSBPP);
     return NULL;
   }
@@ -297,7 +302,7 @@ jbig2_decode_gray_scale_image(Jbig2Ctx *ctx, Jbig2Segment* segment,
   for (i = 0; i < GSBPP; ++i) {
     GSPLANES[i] = jbig2_image_new(ctx, GSW, GSH);
     if (GSPLANES[i] == NULL) {
-      jbig2_error(ctx, JBIG2_SEVERITY_FATAL, -1,
+      jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
                   "failed to allocate %dx%d image for GSPLANES", GSW, GSH);
       /* free already allocated */
       for (j = i-1; j >= 0; --j) {
@@ -328,15 +333,29 @@ jbig2_decode_gray_scale_image(Jbig2Ctx *ctx, Jbig2Segment* segment,
                                      GSPLANES[GSBPP-1], &consumed_bytes);
   } else {
     ws = jbig2_word_stream_buf_new(ctx, data, size);
+    if (ws == NULL)
+    {
+      jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
+        "failed to allocate ws in jbig2_decode_gray_scale_image");
+      goto cleanup;
+    }
+
     as = jbig2_arith_new(ctx, ws);
+    if (as == NULL)
+    {
+      jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
+        "failed to allocate as in jbig2_decode_gray_scale_image");
+      goto cleanup;
+    }
 
     code = jbig2_decode_generic_region(ctx, segment, &rparams, as,
                                        GSPLANES[GSBPP-1], GB_stats);
 
   }
   if (code != 0) {
-    jbig2_error(ctx, JBIG2_SEVERITY_WARNING, segment->number,
+    jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
                 "error decoding GSPLANES for halftone image");
+    goto cleanup;
   }
 
   /* C.5 step 2. Set j = GSBPP-2 */ 
@@ -353,8 +372,9 @@ jbig2_decode_gray_scale_image(Jbig2Ctx *ctx, Jbig2Segment* segment,
                                          GSPLANES[j], GB_stats);
     }
     if (code != 0) {
-      jbig2_error(ctx, JBIG2_SEVERITY_WARNING, segment->number,
+      jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
                   "error decoding GSPLANES for halftone image");
+      goto cleanup;
     }
 
     /* C.5 step 3. (b):
@@ -371,16 +391,22 @@ jbig2_decode_gray_scale_image(Jbig2Ctx *ctx, Jbig2Segment* segment,
   /* allocate GSVALS */
   GSVALS = jbig2_new(ctx, uint8_t* , GSW);
   if (GSVALS == NULL) {
-    jbig2_error(ctx, JBIG2_SEVERITY_FATAL, -1,
+    jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
                 "failed to allocate GSVALS: %d bytes", GSW);
-    return NULL;
+    goto cleanup;
   }
   for (i=0; i<GSW; ++i) {
     GSVALS[i] = jbig2_new(ctx, uint8_t , GSH);
     if (GSVALS[i] == NULL) {
-      jbig2_error(ctx, JBIG2_SEVERITY_FATAL, -1,
+      jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
                   "failed to allocate GSVALS: %d bytes", GSH * GSW);
-      return NULL;
+      /* free already allocated */
+      for (j = i-1; j >= 0; --j) {
+        jbig2_free(ctx->allocator, GSVALS[j]);
+      }
+      jbig2_free(ctx->allocator, GSVALS);
+      GSVALS = NULL;
+      goto cleanup;
     }
   }
 
@@ -394,6 +420,7 @@ jbig2_decode_gray_scale_image(Jbig2Ctx *ctx, Jbig2Segment* segment,
     }
   }
 
+cleanup:
   /* free memory */
   if (!GSMMR) {
     jbig2_free(ctx->allocator, as);

@@ -198,6 +198,8 @@ pdf_parse_action(pdf_document *xref, pdf_obj *action)
 	pdf_obj *obj, *dest;
 	fz_context *ctx = xref->ctx;
 
+	UNUSED(ctx);
+
 	ld.kind = FZ_LINK_NONE;
 
 	if (!action)
@@ -213,7 +215,7 @@ pdf_parse_action(pdf_document *xref, pdf_obj *action)
 	{
 		ld.kind = FZ_LINK_URI;
 		ld.ld.uri.is_map = pdf_to_bool(pdf_dict_gets(action, "IsMap"));
-		ld.ld.uri.uri = pdf_to_utf8(ctx, pdf_dict_gets(action, "URI"));
+		ld.ld.uri.uri = pdf_to_utf8(xref, pdf_dict_gets(action, "URI"));
 	}
 	else if (!strcmp(pdf_to_name(obj), "Launch"))
 	{
@@ -221,20 +223,20 @@ pdf_parse_action(pdf_document *xref, pdf_obj *action)
 		ld.kind = FZ_LINK_LAUNCH;
 		if (pdf_is_dict(dest))
 			dest = pdf_dict_gets(dest, "F");
-		ld.ld.launch.file_spec = pdf_to_utf8(ctx, dest);
+		ld.ld.launch.file_spec = pdf_to_utf8(xref, dest);
 		ld.ld.launch.new_window = pdf_to_int(pdf_dict_gets(action, "NewWindow"));
 	}
 	else if (!strcmp(pdf_to_name(obj), "Named"))
 	{
 		ld.kind = FZ_LINK_NAMED;
-		ld.ld.named.named = pdf_to_utf8(ctx, pdf_dict_gets(action, "N"));
+		ld.ld.named.named = pdf_to_utf8(xref, pdf_dict_gets(action, "N"));
 	}
 	else if (!strcmp(pdf_to_name(obj), "GoToR"))
 	{
 		dest = pdf_dict_gets(action, "D");
 		ld = pdf_parse_link_dest(xref, dest);
 		ld.kind = FZ_LINK_GOTOR;
-		ld.ld.gotor.file_spec = pdf_to_utf8(ctx, pdf_dict_gets(action, "F"));
+		ld.ld.gotor.file_spec = pdf_to_utf8(xref, pdf_dict_gets(action, "F"));
 		ld.ld.gotor.new_window = pdf_to_int(pdf_dict_gets(action, "NewWindow"));
 	}
 	return ld;
@@ -320,8 +322,7 @@ pdf_free_annot(fz_context *ctx, pdf_annot *annot)
 		next = annot->next;
 		if (annot->ap)
 			pdf_drop_xobject(ctx, annot->ap);
-		if (annot->obj)
-			pdf_drop_obj(annot->obj);
+		pdf_drop_obj(annot->obj);
 		fz_free(ctx, annot);
 		annot = next;
 	}
@@ -352,12 +353,13 @@ pdf_transform_annot(pdf_annot *annot)
 }
 
 pdf_annot *
-pdf_load_annots(pdf_document *xref, pdf_obj *annots)
+pdf_load_annots(pdf_document *xref, pdf_obj *annots, fz_matrix page_ctm)
 {
 	pdf_annot *annot, *head, *tail;
-	pdf_obj *obj, *ap, *as, *n, *rect;
-	pdf_xobject *form;
+	pdf_obj *obj, *ap, *as, *n, *d, *c, *rect;
 	int i, len;
+	int mouse_states;
+	int has_states = 0;
 	fz_context *ctx = xref->ctx;
 
 	head = tail = NULL;
@@ -368,47 +370,189 @@ pdf_load_annots(pdf_document *xref, pdf_obj *annots)
 	{
 		obj = pdf_array_get(annots, i);
 
+		pdf_update_appearance(xref, obj);
+
 		rect = pdf_dict_gets(obj, "Rect");
 		ap = pdf_dict_gets(obj, "AP");
 		as = pdf_dict_gets(obj, "AS");
+
 		if (pdf_is_dict(ap))
 		{
+			pdf_hotspot *hp = &xref->hotspot;
+
 			n = pdf_dict_gets(ap, "N"); /* normal state */
+			d = pdf_dict_gets(ap, "D"); /* down state */
+
+			if (n && d)
+			{
+				if (hp->num == pdf_to_num(obj)
+					&& hp->gen == pdf_to_gen(obj)
+					&& (hp->state & HOTSPOT_POINTER_DOWN))
+				{
+					/* Use the down appearance, but as we also have
+					 * a normal appearance, it is suitable only for mouse
+					 * down */
+					c = d;
+					mouse_states = MOUSE_DOWN_APPEARANCE;
+				}
+				else
+				{
+					/* Use the normal appearance, but as we also have
+					 * a down appearance, it is suitable only for mouse
+					 * up */
+					c = n;
+					mouse_states = MOUSE_UP_APPEARANCE;
+				}
+			}
+			else
+			{
+				/* Use whichever appearance we have for both states */
+				c = n?n:d;
+				mouse_states = MOUSE_UP_APPEARANCE|MOUSE_DOWN_APPEARANCE;
+			}
+
 
 			/* lookup current state in sub-dictionary */
-			if (!pdf_is_stream(xref, pdf_to_num(n), pdf_to_gen(n)))
-				n = pdf_dict_get(n, as);
+			if (!pdf_is_stream(xref, pdf_to_num(c), pdf_to_gen(c)))
+			{
+				has_states = 1;
+				c = pdf_dict_get(c, as);
+			}
 
-			if (pdf_is_stream(xref, pdf_to_num(n), pdf_to_gen(n)))
+
+			annot = fz_malloc_struct(ctx, pdf_annot);
+			annot->obj = pdf_keep_obj(obj);
+			annot->rect = pdf_to_rect(ctx, rect);
+			annot->pagerect = fz_transform_rect(page_ctm, annot->rect);
+			annot->ap = NULL;
+			annot->type = pdf_field_type(xref, obj);
+			annot->mouse_states = mouse_states;
+			annot->has_states = has_states;
+
+			if (pdf_is_stream(xref, pdf_to_num(c), pdf_to_gen(c)))
 			{
 				fz_try(ctx)
 				{
-					form = pdf_load_xobject(xref, n);
+					annot->ap = pdf_load_xobject(xref, c);
+					pdf_transform_annot(annot);
 				}
 				fz_catch(ctx)
 				{
 					fz_warn(ctx, "ignoring broken annotation");
-					continue;
 				}
+			}
 
-				annot = fz_malloc_struct(ctx, pdf_annot);
-				annot->obj = pdf_keep_obj(obj);
-				annot->rect = pdf_to_rect(ctx, rect);
-				annot->ap = form;
-				annot->next = NULL;
+			annot->next = NULL;
 
-				pdf_transform_annot(annot);
+			if (obj == xref->focus_obj)
+				xref->focus = annot;
 
-				if (!head)
-					head = tail = annot;
-				else
-				{
-					tail->next = annot;
-					tail = annot;
-				}
+			if (!head)
+				head = tail = annot;
+			else
+			{
+				tail->next = annot;
+				tail = annot;
 			}
 		}
 	}
 
 	return head;
+}
+
+void
+pdf_update_annot(pdf_document *xref, pdf_annot *annot)
+{
+	pdf_obj *obj, *ap, *as, *n, *d, *c;
+	fz_context *ctx = xref->ctx;
+	int suitable;
+	int mouse_states;
+	pdf_hotspot *hp = &xref->hotspot;
+
+	obj = annot->obj;
+
+	if (hp->num == pdf_to_num(obj)
+		&& hp->gen == pdf_to_gen(obj)
+		&& (hp->state & HOTSPOT_POINTER_DOWN))
+	{
+		mouse_states = MOUSE_DOWN_APPEARANCE;
+	}
+	else
+	{
+		mouse_states = MOUSE_UP_APPEARANCE;
+	}
+
+	suitable = (annot->mouse_states & mouse_states);
+
+	if (pdf_update_appearance(xref, obj) || !suitable || annot->has_states)
+	{
+		ap = pdf_dict_gets(obj, "AP");
+		as = pdf_dict_gets(obj, "AS");
+
+		if (pdf_is_dict(ap))
+		{
+			pdf_hotspot *hp = &xref->hotspot;
+
+			n = pdf_dict_gets(ap, "N"); /* normal state */
+			d = pdf_dict_gets(ap, "D"); /* down state */
+
+			if (mouse_states == MOUSE_DOWN_APPEARANCE)
+				c = d?d:n;
+			else
+				c = n?n:d;
+
+			annot->has_states = 0;
+
+			/* lookup current state in sub-dictionary */
+			if (!pdf_is_stream(xref, pdf_to_num(c), pdf_to_gen(c)))
+			{
+				annot->has_states = 1;
+				c = pdf_dict_get(c, as);
+			}
+
+			/* This test is important to avoid losing the knowledge
+			 * that an appearance stream is for both mouse states */
+			if (!suitable)
+				annot->mouse_states = mouse_states;
+
+			pdf_drop_xobject(ctx, annot->ap);
+			annot->ap = NULL;
+
+			if (pdf_is_stream(xref, pdf_to_num(c), pdf_to_gen(c)))
+			{
+				fz_try(ctx)
+				{
+					annot->ap = pdf_load_xobject(xref, c);
+					pdf_transform_annot(annot);
+				}
+				fz_catch(ctx)
+				{
+					fz_warn(ctx, "ignoring broken annotation");
+				}
+			}
+
+			if (obj == xref->focus_obj)
+				xref->focus = annot;
+		}
+	}
+}
+
+pdf_annot *
+pdf_first_annot(pdf_document *doc, pdf_page *page)
+{
+	return page ? page->annots : NULL;
+}
+
+pdf_annot *
+pdf_next_annot(pdf_document *doc, pdf_annot *annot)
+{
+	return annot ? annot->next : NULL;
+}
+
+fz_rect
+pdf_bound_annot(pdf_document *doc, pdf_annot *annot)
+{
+	if (annot)
+		return annot->pagerect;
+	return fz_empty_rect;
 }

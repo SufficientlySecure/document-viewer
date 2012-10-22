@@ -103,7 +103,7 @@ pdf_new_real(fz_context *ctx, float f)
 }
 
 pdf_obj *
-pdf_new_string(fz_context *ctx, char *str, int len)
+pdf_new_string(fz_context *ctx, const char *str, int len)
 {
 	pdf_obj *obj;
 	obj = Memento_label(fz_malloc(ctx, offsetof(pdf_obj, u.s.buf) + len + 1), "pdf_obj(string)");
@@ -117,7 +117,7 @@ pdf_new_string(fz_context *ctx, char *str, int len)
 }
 
 pdf_obj *
-fz_new_name(fz_context *ctx, char *str)
+pdf_new_name(fz_context *ctx, const char *str)
 {
 	pdf_obj *obj;
 	obj = Memento_label(fz_malloc(ctx, offsetof(pdf_obj, u.n) + strlen(str) + 1), "pdf_obj(name)");
@@ -512,8 +512,7 @@ pdf_array_put(pdf_obj *obj, int i, pdf_obj *item)
 		fz_warn(obj->ctx, "assert: index %d > length %d", i, obj->u.a.len);
 	else
 	{
-		if (obj->u.a.items[i])
-			pdf_drop_obj(obj->u.a.items[i]);
+		pdf_drop_obj(obj->u.a.items[i]);
 		obj->u.a.items[i] = pdf_keep_obj(item);
 	}
 }
@@ -589,12 +588,12 @@ pdf_obj *pdf_new_rect(fz_context *ctx, fz_rect *rect)
 		pdf_drop_obj(item);
 		item = NULL;
 
-		item = pdf_new_real(ctx, rect->x1 - rect->x0);
+		item = pdf_new_real(ctx, rect->x1);
 		pdf_array_push(arr, item);
 		pdf_drop_obj(item);
 		item = NULL;
 
-		item = pdf_new_real(ctx, rect->y1 - rect->y0);
+		item = pdf_new_real(ctx, rect->y1);
 		pdf_array_push(arr, item);
 		pdf_drop_obj(item);
 		item = NULL;
@@ -775,7 +774,7 @@ pdf_dict_get_val(pdf_obj *obj, int i)
 }
 
 static int
-pdf_dict_finds(pdf_obj *obj, char *key, int *location)
+pdf_dict_finds(pdf_obj *obj, const char *key, int *location)
 {
 	if (obj->u.d.sorted && obj->u.d.len > 0)
 	{
@@ -820,7 +819,7 @@ pdf_dict_finds(pdf_obj *obj, char *key, int *location)
 }
 
 pdf_obj *
-pdf_dict_gets(pdf_obj *obj, char *key)
+pdf_dict_gets(pdf_obj *obj, const char *key)
 {
 	int i;
 
@@ -836,7 +835,7 @@ pdf_dict_gets(pdf_obj *obj, char *key)
 }
 
 pdf_obj *
-pdf_dict_getp(pdf_obj *obj, char *keys)
+pdf_dict_getp(pdf_obj *obj, const char *keys)
 {
 	char buf[256];
 	char *k, *e;
@@ -874,7 +873,7 @@ pdf_dict_get(pdf_obj *obj, pdf_obj *key)
 }
 
 pdf_obj *
-pdf_dict_getsa(pdf_obj *obj, char *key, char *abbrev)
+pdf_dict_getsa(pdf_obj *obj, const char *key, const char *abbrev)
 {
 	pdf_obj *v;
 	v = pdf_dict_gets(obj, key);
@@ -944,15 +943,51 @@ pdf_dict_put(pdf_obj *obj, pdf_obj *key, pdf_obj *val)
 }
 
 void
-pdf_dict_puts(pdf_obj *obj, char *key, pdf_obj *val)
+pdf_dict_puts(pdf_obj *obj, const char *key, pdf_obj *val)
 {
-	pdf_obj *keyobj = fz_new_name(obj->ctx, key);
-	pdf_dict_put(obj, keyobj, val);
-	pdf_drop_obj(keyobj);
+	fz_context *ctx = obj->ctx;
+	pdf_obj *keyobj = pdf_new_name(ctx, key);
+
+	fz_try(ctx)
+	{
+		pdf_dict_put(obj, keyobj, val);
+	}
+	fz_always(ctx)
+	{
+		pdf_drop_obj(keyobj);
+	}
+	fz_catch(ctx)
+	{
+		fz_rethrow(ctx);
+	}
 }
 
 void
-pdf_dict_putp(pdf_obj *obj, char *keys, pdf_obj *val)
+pdf_dict_puts_drop(pdf_obj *obj, const char *key, pdf_obj *val)
+{
+	fz_context *ctx = obj->ctx;
+	pdf_obj *keyobj = NULL;
+
+	fz_var(keyobj);
+
+	fz_try(ctx)
+	{
+		keyobj = pdf_new_name(ctx, key);
+		pdf_dict_put(obj, keyobj, val);
+	}
+	fz_always(ctx)
+	{
+		pdf_drop_obj(keyobj);
+		pdf_drop_obj(val);
+	}
+	fz_catch(ctx)
+	{
+		fz_rethrow(ctx);
+	}
+}
+
+void
+pdf_dict_putp(pdf_obj *obj, const char *keys, pdf_obj *val)
 {
 	fz_context *ctx = obj->ctx;
 	char buf[256];
@@ -1009,7 +1044,7 @@ pdf_dict_putp(pdf_obj *obj, char *keys, pdf_obj *val)
 }
 
 void
-pdf_dict_dels(pdf_obj *obj, char *key)
+pdf_dict_dels(pdf_obj *obj, const char *key)
 {
 	RESOLVE(obj);
 
@@ -1090,8 +1125,7 @@ pdf_free_array(pdf_obj *obj)
 	int i;
 
 	for (i = 0; i < obj->u.a.len; i++)
-		if (obj->u.a.items[i])
-			pdf_drop_obj(obj->u.a.items[i]);
+		pdf_drop_obj(obj->u.a.items[i]);
 
 	fz_free(obj->ctx, obj->u.a.items);
 	fz_free(obj->ctx, obj);
@@ -1103,10 +1137,8 @@ pdf_free_dict(pdf_obj *obj)
 	int i;
 
 	for (i = 0; i < obj->u.d.len; i++) {
-		if (obj->u.d.items[i].k)
-			pdf_drop_obj(obj->u.d.items[i].k);
-		if (obj->u.d.items[i].v)
-			pdf_drop_obj(obj->u.d.items[i].v);
+		pdf_drop_obj(obj->u.d.items[i].k);
+		pdf_drop_obj(obj->u.d.items[i].v);
 	}
 
 	fz_free(obj->ctx, obj->u.d.items);
@@ -1230,6 +1262,8 @@ static void fmt_str(struct fmt *fmt, pdf_obj *obj)
 			fmt_puts(fmt, "\\(");
 		else if (c == ')')
 			fmt_puts(fmt, "\\)");
+		else if (c == '\\')
+			fmt_puts(fmt, "\\\\");
 		else if (c < 32 || c >= 127) {
 			char buf[16];
 			fmt_putc(fmt, '\\');

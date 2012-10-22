@@ -1,5 +1,9 @@
 #include "fitz-internal.h"
 
+// EBD: context flag used instead >>>
+//#define SLOWCMYK
+// EBD: context flag used instead <<<
+
 void
 fz_free_colorspace_imp(fz_context *ctx, fz_storable *cs_)
 {
@@ -77,7 +81,9 @@ static void rgb_to_bgr(fz_context *ctx, fz_colorspace *cs, float *rgb, float *bg
 
 static void cmyk_to_rgb(fz_context *ctx, fz_colorspace *cs, float *cmyk, float *rgb)
 {
+	// EBD: context flag used instead >>>
 	if (ctx->ebookdroid_slowcmyk) {
+	// EBD: context flag used instead <<<
 	float c = cmyk[0], m = cmyk[1], y = cmyk[2], k = cmyk[3];
 	float c1 = 1 - c, m1 = 1 - m, y1 = 1 - y, k1 = 1 - k;
 	float r, g, b, x;
@@ -131,11 +137,15 @@ static void cmyk_to_rgb(fz_context *ctx, fz_colorspace *cs, float *cmyk, float *
 	rgb[0] = fz_clamp(r, 0, 1);
 	rgb[1] = fz_clamp(g, 0, 1);
 	rgb[2] = fz_clamp(b, 0, 1);
+	// EBD: context flag used instead >>>
 	}else{
+	// EBD: context flag used instead <<<
 	rgb[0] = 1 - fz_min(1, cmyk[0] + cmyk[3]);
 	rgb[1] = 1 - fz_min(1, cmyk[1] + cmyk[3]);
 	rgb[2] = 1 - fz_min(1, cmyk[2] + cmyk[3]);
+	// EBD: context flag used instead >>>
 	}
+	// EBD: context flag used instead <<<
 }
 
 static void rgb_to_cmyk(fz_context *ctx, fz_colorspace *cs, float *rgb, float *cmyk)
@@ -305,7 +315,9 @@ static void fast_cmyk_to_rgb(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
 	int n = src->w * src->h;
 	while (n--)
 	{
+	// EBD: context flag used instead >>>
 	if (ctx->ebookdroid_slowcmyk) {
+	// EBD: context flag used instead <<<
 		float cmyk[4], rgb[3];
 		cmyk[0] = s[0] / 255.0f;
 		cmyk[1] = s[1] / 255.0f;
@@ -315,11 +327,15 @@ static void fast_cmyk_to_rgb(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
 		d[0] = rgb[0] * 255;
 		d[1] = rgb[1] * 255;
 		d[2] = rgb[2] * 255;
+	// EBD: context flag used instead >>>
 	} else {
+	// EBD: context flag used instead <<<
 		d[0] = 255 - (unsigned char)fz_mini(s[0] + s[3], 255);
 		d[1] = 255 - (unsigned char)fz_mini(s[1] + s[3], 255);
 		d[2] = 255 - (unsigned char)fz_mini(s[2] + s[3], 255);
+	// EBD: context flag used instead >>>
 	}
+	// EBD: context flag used instead <<<
 		d[3] = s[4];
 		s += 5;
 		d += 4;
@@ -333,7 +349,9 @@ static void fast_cmyk_to_bgr(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
 	int n = src->w * src->h;
 	while (n--)
 	{
+	// EBD: context flag used instead >>>
 	if (ctx->ebookdroid_slowcmyk) {
+	// EBD: context flag used instead <<<
 		float cmyk[4], rgb[3];
 		cmyk[0] = s[0] / 255.0f;
 		cmyk[1] = s[1] / 255.0f;
@@ -343,11 +361,15 @@ static void fast_cmyk_to_bgr(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
 		d[0] = rgb[2] * 255;
 		d[1] = rgb[1] * 255;
 		d[2] = rgb[0] * 255;
+	// EBD: context flag used instead >>>
 	} else {
+	// EBD: context flag used instead <<<
 		d[0] = 255 - (unsigned char)fz_mini(s[2] + s[3], 255);
 		d[1] = 255 - (unsigned char)fz_mini(s[1] + s[3], 255);
 		d[2] = 255 - (unsigned char)fz_mini(s[0] + s[3], 255);
+	// EBD: context flag used instead >>>
 	}
+	// EBD: context flag used instead <<<
 		d[3] = s[4];
 		s += 5;
 		d += 4;
@@ -651,27 +673,39 @@ fz_convert_color(fz_context *ctx, fz_colorspace *ds, float *dv, fz_colorspace *s
 		}
 		else if (ds == fz_device_rgb)
 		{
+		// EBD: context flag used instead >>>
 		if (ctx->ebookdroid_slowcmyk) {
+		// EBD: context flag used instead <<<
 			cmyk_to_rgb(ctx, NULL, sv, dv);
+		// EBD: context flag used instead >>>
 		} else {
+		// EBD: context flag used instead <<<
 			dv[0] = 1 - fz_min(sv[0] + sv[3], 1);
 			dv[1] = 1 - fz_min(sv[1] + sv[3], 1);
 			dv[2] = 1 - fz_min(sv[2] + sv[3], 1);
+		// EBD: context flag used instead >>>
 		}
+		// EBD: context flag used instead <<<
 		}
 		else if (ds == fz_device_bgr)
 		{
+		// EBD: context flag used instead >>>
 		if (ctx->ebookdroid_slowcmyk) {
+		// EBD: context flag used instead <<<
 			float rgb[3];
 			cmyk_to_rgb(ctx, NULL, sv, rgb);
 			dv[0] = rgb[2];
 			dv[1] = rgb[1];
 			dv[2] = rgb[0];
+		// EBD: context flag used instead >>>
 		} else {
+		// EBD: context flag used instead <<<
 			dv[0] = 1 - fz_min(sv[2] + sv[3], 1);
 			dv[1] = 1 - fz_min(sv[1] + sv[3], 1);
 			dv[2] = 1 - fz_min(sv[0] + sv[3], 1);
+		// EBD: context flag used instead >>>
 		}
+		// EBD: context flag used instead <<<
 		}
 		else
 			fz_std_conv_color(ctx, ss, sv, ds, dv);

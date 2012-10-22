@@ -1,20 +1,22 @@
+/* Copyright (C) 2001-2012 Artifex Software, Inc.
+   All Rights Reserved.
+
+   This software is provided AS-IS with no warranty, either express or
+   implied.
+
+   This software is distributed under license and may not be copied,
+   modified or distributed except as expressly authorized under the terms
+   of the license contained in the file LICENSE in this distribution.
+
+   Refer to licensing information at http://www.artifex.com or contact
+   Artifex Software, Inc.,  7 Mt. Lassen Drive - Suite A-134, San Rafael,
+   CA  94903, U.S.A., +1(415)492-9861, for further information.
+*/
+
 /*
     jbig2dec
-
-    Copyright (C) 2004 Artifex Software, Inc.
-
-    This software is provided AS-IS with no warranty,
-    either express or implied.
-
-    This software is distributed under license and may not
-    be copied, modified or distributed except as expressly
-    authorized under the terms of the license contained in
-    the file LICENSE in this distribution.
-
-    For further licensing information refer to http://artifex.com/ or
-    contact Artifex Software, Inc., 7 Mt. Lassen Drive - Suite A-134,
-    San Rafael, CA  94903, U.S.A., +1(415)492-9861.
 */
+
 
 /**
  * Generic Refinement region handlers.
@@ -372,10 +374,8 @@ jbig2_decode_refinement_region(Jbig2Ctx *ctx,
 {
   {
     jbig2_error(ctx, JBIG2_SEVERITY_DEBUG, segment->number,
-      "decoding generic refinement region with offset %d,%x,\n"
-      "  GRTEMPLATE=%d, TPGRON=%d, RA1=(%d,%d) RA2=(%d,%d)\n",
-      params->DX, params->DY, params->GRTEMPLATE, params->TPGRON,
-      params->grat[0], params->grat[1], params->grat[2], params->grat[3]);
+      "decoding generic refinement region with offset %d,%x, GRTEMPLATE=%d, TPGRON=%d",
+      params->DX, params->DY, params->GRTEMPLATE, params->TPGRON);
   }
 
   if (params->TPGRON)
@@ -435,6 +435,7 @@ jbig2_refinement_region(Jbig2Ctx *ctx, Jbig2Segment *segment,
   Jbig2RegionSegmentInfo rsi;
   int offset = 0;
   byte seg_flags;
+  int code = 0;
 
   /* 7.4.7 */
   if (segment->data_length < 18)
@@ -509,12 +510,14 @@ jbig2_refinement_region(Jbig2Ctx *ctx, Jbig2Segment *segment,
     Jbig2ArithCx *GR_stats = NULL;
     int stats_size;
     Jbig2Image *image = NULL;
-    int code;
 
     image = jbig2_image_new(ctx, rsi.width, rsi.height);
     if (image == NULL)
-      return jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
-               "unable to allocate refinement image");
+    {
+        code = jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
+            "unable to allocate refinement image");
+        goto cleanup;
+    }
     jbig2_error(ctx, JBIG2_SEVERITY_DEBUG, segment->number,
       "allocated %d x %d image buffer for region decode results",
           rsi.width, rsi.height);
@@ -523,7 +526,7 @@ jbig2_refinement_region(Jbig2Ctx *ctx, Jbig2Segment *segment,
     GR_stats = jbig2_new(ctx, Jbig2ArithCx, stats_size);
     if (GR_stats == NULL)
     {
-        jbig2_error(ctx, JBIG2_SEVERITY_FATAL, -1,
+        code = jbig2_error(ctx, JBIG2_SEVERITY_FATAL, -1,
             "failed to allocate GR-stats in jbig2_refinement_region");
         goto cleanup;
     }
@@ -533,7 +536,7 @@ jbig2_refinement_region(Jbig2Ctx *ctx, Jbig2Segment *segment,
            segment->data_length - offset);
     if (ws == NULL)
     {
-        jbig2_error(ctx, JBIG2_SEVERITY_FATAL, -1,
+        code = jbig2_error(ctx, JBIG2_SEVERITY_FATAL, -1,
             "failed to allocate ws in jbig2_refinement_region");
         goto cleanup;
     }
@@ -541,7 +544,7 @@ jbig2_refinement_region(Jbig2Ctx *ctx, Jbig2Segment *segment,
     as = jbig2_arith_new(ctx, ws);
     if (as == NULL)
     {
-        jbig2_error(ctx, JBIG2_SEVERITY_FATAL, -1,
+        code = jbig2_error(ctx, JBIG2_SEVERITY_FATAL, -1,
             "failed to allocate as in jbig2_refinement_region");
         goto cleanup;
     }
@@ -551,7 +554,7 @@ jbig2_refinement_region(Jbig2Ctx *ctx, Jbig2Segment *segment,
 
     if ((segment->flags & 63) == 40) {
         /* intermediate region. save the result for later */
-	segment->result = image;
+        segment->result = jbig2_image_clone(ctx, image);
     } else {
 	/* immediate region. composite onto the page */
         jbig2_error(ctx, JBIG2_SEVERITY_DEBUG, segment->number,
@@ -559,14 +562,15 @@ jbig2_refinement_region(Jbig2Ctx *ctx, Jbig2Segment *segment,
             rsi.width, rsi.height, rsi.x, rsi.y);
 	jbig2_page_add_result(ctx, &ctx->pages[ctx->current_page],
           image, rsi.x, rsi.y, rsi.op);
-        jbig2_image_release(ctx, image);
     }
 
 cleanup:
+    jbig2_image_release(ctx, image);
+    jbig2_image_release(ctx, params.reference);
     jbig2_free(ctx->allocator, as);
     jbig2_word_stream_buf_free(ctx, ws);
     jbig2_free(ctx->allocator, GR_stats);
   }
 
-  return 0;
+  return code;
 }

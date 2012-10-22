@@ -1,17 +1,22 @@
+/* Copyright (C) 2001-2012 Artifex Software, Inc.
+   All Rights Reserved.
+
+   This software is provided AS-IS with no warranty, either express or
+   implied.
+
+   This software is distributed under license and may not be copied,
+   modified or distributed except as expressly authorized under the terms
+   of the license contained in the file LICENSE in this distribution.
+
+   Refer to licensing information at http://www.artifex.com or contact
+   Artifex Software, Inc.,  7 Mt. Lassen Drive - Suite A-134, San Rafael,
+   CA  94903, U.S.A., +1(415)492-9861, for further information.
+*/
+
 /*
     jbig2dec
-
-    Copyright (C) 2001-2005 Artifex Software, Inc.
-
-    This software is distributed under license and may not
-    be copied, modified or distributed except as expressly
-    authorized under the terms of the license contained in
-    the file LICENSE in this distribution.
-
-    For further licensing information refer to http://artifex.com/ or
-    contact Artifex Software, Inc., 7 Mt. Lassen Drive - Suite A-134,
-    San Rafael, CA  94903, U.S.A., +1(415)492-9861.
 */
+
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -145,7 +150,7 @@ jbig2_page_info (Jbig2Ctx *ctx, Jbig2Segment *segment, const uint8_t *segment_da
         page->image = jbig2_image_new(ctx, page->width, page->height);
     }
     if (page->image == NULL) {
-        return jbig2_error(ctx, JBIG2_SEVERITY_WARNING, segment->number,
+        return jbig2_error(ctx, JBIG2_SEVERITY_FATAL, segment->number,
             "failed to allocate buffer for page image");
     } else {
 	/* 8.2 (3) fill the page with the default pixel value */
@@ -259,6 +264,14 @@ int
 jbig2_page_add_result(Jbig2Ctx *ctx, Jbig2Page *page, Jbig2Image *image,
 		      int x, int y, Jbig2ComposeOp op)
 {
+    /* ensure image exists first */
+    if (page->image == NULL)
+    {
+        jbig2_error(ctx, JBIG2_SEVERITY_WARNING, -1,
+            "page info possibly missing, no image defined");
+        return 0;
+    }
+
     /* grow the page to accomodate a new stripe if necessary */
     if (page->striped) {
 	int new_height = y + image->height + page->end_row;

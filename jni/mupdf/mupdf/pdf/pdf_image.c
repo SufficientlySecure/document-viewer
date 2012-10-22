@@ -234,7 +234,7 @@ pdf_free_image(fz_context *ctx, fz_storable *image_)
 	if (image == NULL)
 		return;
 	fz_drop_pixmap(ctx, image->tile);
-	fz_drop_buffer(ctx, image->buffer);
+	fz_free_compressed_buffer(ctx, image->buffer);
 	fz_drop_colorspace(ctx, image->base.colorspace);
 	fz_drop_image(ctx, image->base.mask);
 	fz_free(ctx, image);
@@ -284,7 +284,7 @@ pdf_image_get_pixmap(fz_context *ctx, fz_image *image_, int w, int h)
 	while (key.factor > 0);
 
 	/* We need to make a new one. */
-	stm = pdf_open_image_decomp_stream(ctx, image->buffer, &image->params, &factor);
+	stm = fz_open_image_decomp_stream(ctx, image->buffer, &factor);
 
 	return decomp_image_from_stream(ctx, stm, image, 0, 0, factor, 1);
 }
@@ -300,7 +300,7 @@ pdf_load_image_imp(pdf_document *xref, pdf_obj *rdb, pdf_obj *dict, fz_stream *c
 	int imagemask;
 	int interpolate;
 	int indexed;
-	fz_image *mask = NULL; /* explicit mask/softmask image */
+	fz_image *mask = NULL; /* explicit mask/soft mask image */
 	int usecolorkey;
 
 	int i;
@@ -317,12 +317,12 @@ pdf_load_image_imp(pdf_document *xref, pdf_obj *rdb, pdf_obj *dict, fz_stream *c
 		if (pdf_is_jpx_image(ctx, dict))
 		{
 			pdf_load_jpx(xref, dict, image);
-			/* RJW: "cannot load jpx image" */
+
 			if (forcemask)
 			{
 				fz_pixmap *mask_pixmap;
 				if (image->n != 2)
-					fz_throw(ctx, "softmask must be grayscale");
+					fz_throw(ctx, "soft mask must be grayscale");
 				mask_pixmap = fz_alpha_from_gray(ctx, image->tile, 1);
 				fz_drop_pixmap(ctx, image->tile);
 				image->tile = mask_pixmap;
@@ -368,7 +368,6 @@ pdf_load_image_imp(pdf_document *xref, pdf_obj *rdb, pdf_obj *dict, fz_stream *c
 			}
 
 			image->base.colorspace = pdf_load_colorspace(xref, obj);
-			/* RJW: "cannot load image colorspace" */
 
 			if (!strcmp(image->base.colorspace->name, "Indexed"))
 				indexed = 1;
@@ -396,12 +395,13 @@ pdf_load_image_imp(pdf_document *xref, pdf_obj *rdb, pdf_obj *dict, fz_stream *c
 		obj = pdf_dict_getsa(dict, "SMask", "Mask");
 		if (pdf_is_dict(obj))
 		{
-			/* Not allowed for inline images */
-			if (!cstm)
-			{
+			/* Not allowed for inline images or soft masks */
+			if (cstm)
+				fz_warn(ctx, "Ignoring invalid inline image soft mask");
+			else if (forcemask)
+				fz_warn(ctx, "Ignoring recursive image soft mask");
+			else
 				mask = (fz_image *)pdf_load_image_imp(xref, rdb, obj, NULL, 1);
-				/* RJW: "cannot load image mask/softmask" */
-			}
 		}
 		else if (pdf_is_array(obj))
 		{
@@ -418,7 +418,6 @@ pdf_load_image_imp(pdf_document *xref, pdf_obj *rdb, pdf_obj *dict, fz_stream *c
 		}
 
 		/* Now, do we load a ref, or do we load the actual thing? */
-		image->params.type = PDF_IMAGE_RAW;
 		FZ_INIT_STORABLE(&image->base, 1, pdf_free_image);
 		image->base.get_pixmap = pdf_image_get_pixmap;
 		image->base.w = w;
@@ -429,14 +428,13 @@ pdf_load_image_imp(pdf_document *xref, pdf_obj *rdb, pdf_obj *dict, fz_stream *c
 		image->imagemask = imagemask;
 		image->usecolorkey = usecolorkey;
 		image->base.mask = mask;
-		image->params.colorspace = image->base.colorspace; /* Uses the same ref as for the base one */
 		if (!indexed && !cstm)
 		{
 			/* Just load the compressed image data now and we can
 			 * decode it on demand. */
 			int num = pdf_to_num(dict);
 			int gen = pdf_to_gen(dict);
-			image->buffer = pdf_load_image_stream(xref, num, gen, num, gen, &image->params);
+			image->buffer = pdf_load_compressed_stream(xref, num, gen);
 			break; /* Out of fz_try */
 		}
 
@@ -449,14 +447,13 @@ pdf_load_image_imp(pdf_document *xref, pdf_obj *rdb, pdf_obj *dict, fz_stream *c
 		else
 		{
 			stm = pdf_open_stream(xref, pdf_to_num(dict), pdf_to_gen(dict));
-			/* RJW: "cannot open image data stream (%d 0 R)", pdf_to_num(dict) */
 		}
 
 		image->tile = decomp_image_from_stream(ctx, stm, image, cstm != NULL, indexed, 1, 0);
 	}
 	fz_catch(ctx)
 	{
-		fz_drop_image(ctx, &image->base);
+		pdf_free_image(ctx, (fz_storable *) image);
 		fz_rethrow(ctx);
 	}
 	return image;
@@ -466,7 +463,6 @@ fz_image *
 pdf_load_inline_image(pdf_document *xref, pdf_obj *rdb, pdf_obj *dict, fz_stream *file)
 {
 	return (fz_image *)pdf_load_image_imp(xref, rdb, dict, file, 0);
-	/* RJW: "cannot load inline image" */
 }
 
 int
@@ -500,7 +496,6 @@ pdf_load_jpx(pdf_document *xref, pdf_obj *dict, pdf_image *image)
 	fz_var(colorspace);
 
 	buf = pdf_load_stream(xref, pdf_to_num(dict), pdf_to_gen(dict));
-	/* RJW: "cannot load jpx image data" */
 
 	/* FIXME: We can't handle decode arrays for indexed images currently */
 	fz_try(ctx)
@@ -509,12 +504,10 @@ pdf_load_jpx(pdf_document *xref, pdf_obj *dict, pdf_image *image)
 		if (obj)
 		{
 			colorspace = pdf_load_colorspace(xref, obj);
-			/* RJW: "cannot load image colorspace" */
 			indexed = !strcmp(colorspace->name, "Indexed");
 		}
 
 		img = fz_load_jpx(ctx, buf->data, buf->len, colorspace, indexed);
-		/* RJW: "cannot load jpx image" */
 
 		if (img && colorspace == NULL)
 			colorspace = fz_keep_colorspace(ctx, img->colorspace);
@@ -526,7 +519,6 @@ pdf_load_jpx(pdf_document *xref, pdf_obj *dict, pdf_image *image)
 		if (pdf_is_dict(obj))
 		{
 			image->base.mask = (fz_image *)pdf_load_image_imp(xref, NULL, obj, NULL, 1);
-			/* RJW: "cannot load image mask/softmask" */
 		}
 
 		obj = pdf_dict_getsa(dict, "Decode", "D");
@@ -549,19 +541,18 @@ pdf_load_jpx(pdf_document *xref, pdf_obj *dict, pdf_image *image)
 		fz_drop_pixmap(ctx, img);
 		fz_rethrow(ctx);
 	}
-	image->params.type = PDF_IMAGE_RAW;
 	FZ_INIT_STORABLE(&image->base, 1, pdf_free_image);
 	image->base.get_pixmap = pdf_image_get_pixmap;
 	image->base.w = img->w;
 	image->base.h = img->h;
 	image->base.colorspace = colorspace;
+	image->buffer = NULL;
 	image->tile = img;
 	image->n = img->n;
 	image->bpc = 8;
 	image->interpolate = 0;
 	image->imagemask = 0;
 	image->usecolorkey = 0;
-	image->params.colorspace = colorspace; /* Uses the same ref as for the base one */
 }
 
 static int
@@ -569,7 +560,7 @@ pdf_image_size(fz_context *ctx, pdf_image *im)
 {
 	if (im == NULL)
 		return 0;
-	return sizeof(*im) + fz_pixmap_size(ctx, im->tile) + (im->buffer ? im->buffer->cap : 0);
+	return sizeof(*im) + fz_pixmap_size(ctx, im->tile) + (im->buffer && im->buffer->buffer ? im->buffer->buffer->cap : 0);
 }
 
 fz_image *
@@ -584,7 +575,6 @@ pdf_load_image(pdf_document *xref, pdf_obj *dict)
 	}
 
 	image = pdf_load_image_imp(xref, NULL, dict, NULL, 0);
-	/* RJW: "cannot load image (%d 0 R)", pdf_to_num(dict) */
 
 	pdf_store_item(ctx, dict, image, pdf_image_size(ctx, image));
 

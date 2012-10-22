@@ -1,16 +1,20 @@
+/* Copyright (C) 2001-2012 Artifex Software, Inc.
+   All Rights Reserved.
+
+   This software is provided AS-IS with no warranty, either express or
+   implied.
+
+   This software is distributed under license and may not be copied,
+   modified or distributed except as expressly authorized under the terms
+   of the license contained in the file LICENSE in this distribution.
+
+   Refer to licensing information at http://www.artifex.com or contact
+   Artifex Software, Inc.,  7 Mt. Lassen Drive - Suite A-134, San Rafael,
+   CA  94903, U.S.A., +1(415)492-9861, for further information.
+*/
+
 /*
     jbig2dec
-
-    Copyright (C) 2003 Artifex Software, Inc.
-
-    This software is distributed under license and may not
-    be copied, modified or distributed except as expressly
-    authorized under the terms of the license contained in
-    the file LICENSE in this distribution.
-
-    For further licensing information refer to http://artifex.com/ or
-    contact Artifex Software, Inc., 7 Mt. Lassen Drive - Suite A-134,
-    San Rafael, CA  94903, U.S.A., +1(415)492-9861.
 */
 
 /*
@@ -40,6 +44,14 @@
 # include "config_types.h"
 #elif defined(_WIN32) || defined(__WIN32__)
 # include "config_win32.h"
+#elif defined (STD_INT_USE_SYS_TYPES_H)
+# include <sys/types.h>
+#elif defined (STD_INT_USE_INTTYPES_H)
+# include <inttypes.h>
+#elif defined (STD_INT_USE_SYS_INTTYPES_H)
+# include <sys/inttypes.h>
+#elif defined (STD_INT_USE_SYS_INT_TYPES_H)
+# include <sys/int_types.h>
 #elif !defined(HAVE_STDINT_H)
    typedef unsigned char  uint8_t;
    typedef unsigned short uint16_t;

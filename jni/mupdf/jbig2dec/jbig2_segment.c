@@ -1,17 +1,22 @@
+/* Copyright (C) 2001-2012 Artifex Software, Inc.
+   All Rights Reserved.
+
+   This software is provided AS-IS with no warranty, either express or
+   implied.
+
+   This software is distributed under license and may not be copied,
+   modified or distributed except as expressly authorized under the terms
+   of the license contained in the file LICENSE in this distribution.
+
+   Refer to licensing information at http://www.artifex.com or contact
+   Artifex Software, Inc.,  7 Mt. Lassen Drive - Suite A-134, San Rafael,
+   CA  94903, U.S.A., +1(415)492-9861, for further information.
+*/
+
 /*
     jbig2dec
-
-    Copyright (C) 2002-2005 Artifex Software, Inc.
-
-    This software is distributed under license and may not
-    be copied, modified or distributed except as expressly
-    authorized under the terms of the license contained in
-    the file LICENSE in this distribution.
-
-    For further licensing information refer to http://artifex.com/ or
-    contact Artifex Software, Inc., 7 Mt. Lassen Drive - Suite A-134,
-    San Rafael, CA  94903, U.S.A., +1(415)492-9861.
 */
+
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -25,6 +30,8 @@
 #include "jbig2_huffman.h"
 #include "jbig2_symbol_dict.h"
 #include "jbig2_metadata.h"
+#include "jbig2_arith.h"
+#include "jbig2_halftone.h"
 
 Jbig2Segment *
 jbig2_parse_segment_header (Jbig2Ctx *ctx, uint8_t *buf, size_t buf_size,
@@ -156,6 +163,10 @@ jbig2_free_segment (Jbig2Ctx *ctx, Jbig2Segment *segment)
 	  if (segment->result != NULL)
 	    jbig2_image_release(ctx, (Jbig2Image*)segment->result);
 	  break;
+	case 16: /* pattern dictionary */
+      if (segment->result != NULL)
+        jbig2_hd_release(ctx, (Jbig2PatternDict*)segment->result);
+      break;
 	case 53: /* user-supplied huffman table */
 	  if (segment->result != NULL)
 		jbig2_table_free(ctx, (Jbig2HuffmanParams*)segment->result);

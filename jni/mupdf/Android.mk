@@ -94,7 +94,8 @@ MY_JBIG2DEC_SRC_FILES := \
 	jbig2dec/jbig2_symbol_dict.c \
 	jbig2dec/jbig2_text.c \
 	jbig2dec/jbig2dec.c \
-	jbig2dec/sha1.c
+	jbig2dec/sha1.c \
+	jbig2dec/memento.c
 
 #	jbig2dec/getopt.c
 #	jbig2dec/getopt1.c
@@ -165,11 +166,14 @@ MY_MUPDF_SRC_FILES := \
 	mupdf/pdf/pdf_colorspace.c \
 	mupdf/pdf/pdf_crypt.c \
 	mupdf/pdf/pdf_encoding.c \
+	mupdf/pdf/pdf_event.c \
 	mupdf/pdf/pdf_font.c \
 	mupdf/pdf/pdf_fontfile.c \
+	mupdf/pdf/pdf_form.c \
 	mupdf/pdf/pdf_function.c \
 	mupdf/pdf/pdf_image.c \
 	mupdf/pdf/pdf_interpret.c \
+	mupdf/pdf/pdf_js_none.c \
 	mupdf/pdf/pdf_lex.c \
 	mupdf/pdf/pdf_metrics.c \
 	mupdf/pdf/pdf_nametree.c \
@@ -216,6 +220,7 @@ MY_MUPDF_SRC_FILES := \
 	mupdf/fitz/base_memory.c \
 	mupdf/fitz/base_string.c \
 	mupdf/fitz/base_geometry.c \
+	mupdf/fitz/base_trans.c \
 	mupdf/fitz/crypt_aes.c \
 	mupdf/fitz/crypt_arc4.c \
 	mupdf/fitz/crypt_md5.c \
@@ -224,6 +229,7 @@ MY_MUPDF_SRC_FILES := \
 	mupdf/fitz/doc_outline.c \
 	mupdf/fitz/doc_link.c \
 	mupdf/fitz/stm_buffer.c \
+	mupdf/fitz/stm_comp_buf.c \
 	mupdf/fitz/stm_open.c \
 	mupdf/fitz/stm_read.c \
 	mupdf/fitz/filt_basic.c \

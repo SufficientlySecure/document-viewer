@@ -1,13 +1,22 @@
 #include "fitz-internal.h"
 #include "mupdf-internal.h"
 
+// EBD: >>>
+//#ifndef NOCJK
+// EBD: <<<
 #include "../generated/cmap_cns.h"
 #include "../generated/cmap_gb.h"
 #include "../generated/cmap_japan.h"
 #include "../generated/cmap_korea.h"
+// EBD: >>>
+//#endif
+// EBD: <<<
 
 static const struct { char *name; pdf_cmap *cmap; } cmap_table[] =
 {
+// EBD: >>>
+//#ifndef NOCJK
+// EBD: <<<
 	{"78-EUC-H",&cmap_78_EUC_H},
 	{"78-EUC-V",&cmap_78_EUC_V},
 	{"78-H",&cmap_78_H},
@@ -158,6 +167,9 @@ static const struct { char *name; pdf_cmap *cmap; } cmap_table[] =
 	{"UniKS-UTF16-V",&cmap_UniKS_UTF16_V},
 	{"V",&cmap_V},
 	{"WP-Symbol",&cmap_WP_Symbol},
+// EBD: >>>
+//#endif
+// EBD: <<<
 };
 
 pdf_cmap *

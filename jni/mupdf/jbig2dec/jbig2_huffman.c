@@ -1,17 +1,22 @@
+/* Copyright (C) 2001-2012 Artifex Software, Inc.
+   All Rights Reserved.
+
+   This software is provided AS-IS with no warranty, either express or
+   implied.
+
+   This software is distributed under license and may not be copied,
+   modified or distributed except as expressly authorized under the terms
+   of the license contained in the file LICENSE in this distribution.
+
+   Refer to licensing information at http://www.artifex.com or contact
+   Artifex Software, Inc.,  7 Mt. Lassen Drive - Suite A-134, San Rafael,
+   CA  94903, U.S.A., +1(415)492-9861, for further information.
+*/
+
 /*
     jbig2dec
-
-    Copyright (C) 2001-2005 Artifex Software, Inc.
-
-    This software is distributed under license and may not
-    be copied, modified or distributed except as expressly
-    authorized under the terms of the license contained in
-    the file LICENSE in this distribution.
-
-    For further licensing information refer to http://artifex.com/ or
-    contact Artifex Software, Inc., 7 Mt. Lassen Drive - Suite A-134,
-    San Rafael, CA  94903, U.S.A., +1(415)492-9861.
 */
+
 
 /* Huffman table decoding procedures
     -- See Annex B of the JBIG2 specification */
@@ -253,6 +258,12 @@ jbig2_huffman_get (Jbig2HuffmanState *hs,
       entry = &table->entries[this_word >> (32 - log_table_size)];
       flags = entry->flags;
       PREFLEN = entry->PREFLEN;
+      if ((flags == (byte)-1) && (PREFLEN == (byte)-1) && (entry->u.RANGELOW == -1))
+      {
+          if (oob)
+              *oob = -1;
+          return -1;
+      }
 
       next_word = hs->next_word;
       offset_bits += PREFLEN;
@@ -386,6 +397,8 @@ jbig2_build_huffman_table (Jbig2Ctx *ctx, const Jbig2HuffmanParams *params)
         "couldn't allocate entries storage in jbig2_build_huffman_table");
     return NULL;
   }
+  /* fill now to catch missing JBIG2Globals later */
+  memset(entries, 0xFF, sizeof(Jbig2HuffmanEntry)*max_j);
   result->entries = entries;
 
   LENCOUNT[0] = 0;

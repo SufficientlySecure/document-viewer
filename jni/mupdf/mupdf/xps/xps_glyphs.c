@@ -46,7 +46,7 @@ xps_encode_font_char(fz_font *font, int code)
 {
 	FT_Face face = font->ft_face;
 	int gid = FT_Get_Char_Index(face, code);
-	if (gid == 0 && face->charmap->platform_id == 3 && face->charmap->encoding_id == 0)
+	if (gid == 0 && face->charmap && face->charmap->platform_id == 3 && face->charmap->encoding_id == 0)
 		gid = FT_Get_Char_Index(face, 0xF000 | code);
 	return gid;
 }
@@ -332,6 +332,9 @@ xps_parse_glyphs_imp(xps_document *doc, fz_matrix ctm,
 			else
 				advance = mtx.hadv * 100;
 
+			if (font->ft_bold)
+				advance *= 1.02f;
+
 			if (is && *is)
 			{
 				is = xps_parse_glyph_metrics(is, &advance, &u_offset, &v_offset);
@@ -517,7 +520,7 @@ xps_parse_glyphs(xps_document *doc, fz_matrix ctm,
 
 		fz_try(doc->ctx)
 		{
-			font = fz_new_font_from_memory(doc->ctx, part->data, part->size, subfontid, 1);
+			font = fz_new_font_from_memory(doc->ctx, NULL, part->data, part->size, subfontid, 1);
 		}
 		fz_catch(doc->ctx)
 		{

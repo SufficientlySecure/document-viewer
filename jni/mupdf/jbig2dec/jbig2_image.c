@@ -1,17 +1,22 @@
+/* Copyright (C) 2001-2012 Artifex Software, Inc.
+   All Rights Reserved.
+
+   This software is provided AS-IS with no warranty, either express or
+   implied.
+
+   This software is distributed under license and may not be copied,
+   modified or distributed except as expressly authorized under the terms
+   of the license contained in the file LICENSE in this distribution.
+
+   Refer to licensing information at http://www.artifex.com or contact
+   Artifex Software, Inc.,  7 Mt. Lassen Drive - Suite A-134, San Rafael,
+   CA  94903, U.S.A., +1(415)492-9861, for further information.
+*/
+
 /*
     jbig2dec
-
-    Copyright (C) 2001-2005 Artifex Software, Inc.
-
-    This software is distributed under license and may not
-    be copied, modified or distributed except as expressly
-    authorized under the terms of the license contained in
-    the file LICENSE in this distribution.
-
-    For further licensing information refer to http://artifex.com/ or
-    contact Artifex Software, Inc., 7 Mt. Lassen Drive - Suite A-134,
-    San Rafael, CA  94903, U.S.A., +1(415)492-9861.
 */
+
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -32,6 +37,7 @@ Jbig2Image* jbig2_image_new(Jbig2Ctx *ctx, int width, int height)
 {
 	Jbig2Image	*image;
 	int		stride;
+        int64_t         check;
 
 	image = jbig2_new(ctx, Jbig2Image, 1);
 	if (image == NULL) {
@@ -41,10 +47,21 @@ Jbig2Image* jbig2_image_new(Jbig2Ctx *ctx, int width, int height)
 	}
 
 	stride = ((width - 1) >> 3) + 1; /* generate a byte-aligned stride */
-	image->data = jbig2_new(ctx, uint8_t, stride*height);
+        /* check for integer multiplication overflow */
+        check = ((int64_t)stride)*((int64_t)height);
+        if (check != (int)check)
+        {
+            jbig2_error(ctx, JBIG2_SEVERITY_FATAL, -1,
+                "integer multiplication overflow from stride(%d)*height(%d)",
+                stride, height);
+            jbig2_free(ctx->allocator, image);
+            return NULL;
+        }
+        image->data = jbig2_new(ctx, uint8_t, (int)check);
 	if (image->data == NULL) {
         jbig2_error(ctx, JBIG2_SEVERITY_FATAL, -1,
-            "could not allocate image data buffer! [%d bytes]\n", stride*height);
+            "could not allocate image data buffer! [stride(%d)*height(%d) bytes]",
+                stride, height);
 		jbig2_free(ctx->allocator, image);
 		return NULL;
 	}
@@ -87,8 +104,17 @@ Jbig2Image *jbig2_image_resize(Jbig2Ctx *ctx, Jbig2Image *image,
 				int width, int height)
 {
 	if (width == image->width) {
+            /* check for integer multiplication overflow */
+            int64_t check = ((int64_t)image->stride)*((int64_t)height);
+            if (check != (int)check)
+            {
+                jbig2_error(ctx, JBIG2_SEVERITY_FATAL, -1,
+                    "integer multiplication overflow during resize stride(%d)*height(%d)",
+                    image->stride, height);
+                return NULL;
+            }
 	    /* use the same stride, just change the length */
-	    image->data = jbig2_renew(ctx, image->data, uint8_t, image->stride*height);
+	    image->data = jbig2_renew(ctx, image->data, uint8_t, (int)check);
             if (image->data == NULL) {
                 jbig2_error(ctx, JBIG2_SEVERITY_FATAL, -1,
                     "could not resize image buffer!");
@@ -229,6 +255,9 @@ int jbig2_image_compose(Jbig2Ctx *ctx, Jbig2Image *dst, Jbig2Image *src,
 #endif
 
     leftbyte = x >> 3;
+    if (leftbyte > dst->height * dst->stride)
+        return jbig2_error(ctx, JBIG2_SEVERITY_FATAL, -1,
+            "preventing heap overflow in jbig2_image_compose");
     rightbyte = (x + w - 1) >> 3;
     shift = x & 7;
 

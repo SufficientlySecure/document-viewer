@@ -49,8 +49,9 @@ public class FullScreenCallback implements Runnable {
             // Only adds delayed message
             this.time = System.currentTimeMillis();
             // System.out.println("fullScreenCallback: postDelayed(): " + TIMEOUT);
-            if (view != null) {
-                view.getHandler().postDelayed(this, TIMEOUT);
+            final Handler handler = view != null ? view.getHandler() : null;
+            if (handler != null) {
+                handler.postDelayed(this, TIMEOUT);
             }
             return;
         }
@@ -66,15 +67,13 @@ public class FullScreenCallback implements Runnable {
             return;
         }
 
-        if (view != null) {
-            final Handler handler = view.getHandler();
-            if (handler != null) {
-                added.set(true);
-                final long delta = expected - now;
-                // System.out.println("fullScreenCallback: postDelayed(): " + delta);
-                handler.postDelayed(this, delta);
-                return;
-            }
+        final Handler handler = view != null ? view.getHandler() : null;
+        if (handler != null) {
+            added.set(true);
+            final long delta = expected - now;
+            // System.out.println("fullScreenCallback: postDelayed(): " + delta);
+            handler.postDelayed(this, delta);
+            return;
         }
 
         added.set(false);

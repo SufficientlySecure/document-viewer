@@ -7,13 +7,13 @@
     <string name="pref_lang_summary">"Idioma para la interfaz de usuario (necesario reiniciar)"</string>
     <string name="list_lang_default">"Sistema"</string>
     <string name="list_lang_en">"Inglés (English)"</string>
-    <string name="list_lang_de">"Alemán (Deutsche)"</string>
+    <string name="list_lang_de">"Alemán (Deutsch)"</string>
     <string name="list_lang_es">"Español"</string>
     <string name="list_lang_fr">"Francés (Française)"</string>
     <string name="list_lang_it">"Italiano (Italiano)"</string>
     <string name="list_lang_nl">"Holandés (Nederlands)"</string>
     <string name="list_lang_ru">"Ruso (Русский)"</string>
-    <string name="list_lang_uk">"Ukraniano"</string>
+    <string name="list_lang_uk">"Ukraniano (Український)"</string>
     <string name="list_lang_zh">"Chino (中文简体)"</string>
 <!--<string name="list_lang_iw">"Hebrew (עברית)"</string>-->
     <string name="pref_loadrecent_title">"Abrir reciente"</string>

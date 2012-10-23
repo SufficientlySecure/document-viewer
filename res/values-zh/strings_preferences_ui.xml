@@ -7,13 +7,13 @@
     <string name="pref_lang_summary">"用户界面语言 (需要重启)"</string>
     <string name="list_lang_default">"系统默认"</string>
     <string name="list_lang_en">"英语 (English)"</string>
-    <string name="list_lang_de">"德语 (Deutsche)"</string>
+    <string name="list_lang_de">"德语 (Deutsch)"</string>
     <string name="list_lang_es">"西班牙语 (Español)"</string>
     <string name="list_lang_fr">"法语 (Française)"</string>
     <string name="list_lang_it">"意大利语 (Italiano)"</string>
     <string name="list_lang_nl">"荷兰语 (Nederlands)"</string>
     <string name="list_lang_ru">"俄语 (Русский)"</string>
-    <string name="list_lang_uk">"乌克兰语"</string>
+    <string name="list_lang_uk">"乌克兰语 (Український)"</string>
     <string name="list_lang_zh">"中文简体"</string>
 <!--<string name="list_lang_iw">"Hebrew (עברית)"</string>-->
     <string name="pref_loadrecent_title">"最近加载"</string>

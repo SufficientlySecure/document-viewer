@@ -113,6 +113,6 @@
     <string name="font_reminder">"A partire dalla versione 1.5 i font PDF e FB2 incorporati nell'applicazione sono stati rimossi e sostituiti con i font standard di Android. Se si vogliono ripristinare i vecchi font o installarne di nuovi, si prega di utilizzare gli appositi installer presenti su Google Play Market: &lt;ul&gt;&lt;li&gt;&lt;a href=&quot;market://details?id=org.ebookdroid.fontpack.legacy&quot;&gt;Legacy fonts&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;"</string>
     <string name="cache_moving_text">"Trasferimento dei file della cache…"</string>
     <string name="cache_moving_progress">"Trasferimento file cache %1$d/%2$d"</string>
-<!--<string name="error_invalid_view_mode">"This action is only available in view mode %1$s"</string>-->
+    <string name="error_invalid_view_mode">"Questa azione è disponibile solo nella modalità %1$s"</string>
 
 </resources>

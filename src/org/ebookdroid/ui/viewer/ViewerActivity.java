@@ -338,12 +338,15 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
             subMenu.removeGroup(R.id.actions_goToBookmarkGroup);
             if (LengthUtils.isNotEmpty(bs.bookmarks)) {
                 for (final Bookmark b : bs.bookmarks) {
-                    final MenuItem bmi = subMenu.add(R.id.actions_goToBookmarkGroup, R.id.actions_goToBookmark,
-                            Menu.NONE, b.name);
-                    setMenuItemExtra(bmi, "bookmark", b);
+                    addBookmarkMenuItem(subMenu, b);
                 }
             }
         }
+    }
+
+    protected void addBookmarkMenuItem(final Menu menu, final Bookmark b) {
+        final MenuItem bmi = menu.add(R.id.actions_goToBookmarkGroup, R.id.actions_goToBookmark, Menu.NONE, b.name);
+        setMenuItemExtra(bmi, "bookmark", b);
     }
 
     /**

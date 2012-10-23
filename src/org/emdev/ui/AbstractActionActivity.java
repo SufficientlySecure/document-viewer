@@ -68,21 +68,40 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Actio
 
     @Override
     public final boolean onOptionsItemSelected(final MenuItem item) {
-        final int actionId = item.getItemId();
-        final ActionEx action = getController().getOrCreateAction(actionId);
-        if (action.getMethod().isValid()) {
-            final Intent intent = item.getIntent();
-            if (intent != null) {
-                final Bundle extras = intent.getExtras();
-                for (final String key : extras.keySet()) {
-                    final ExtraWrapper w = (ExtraWrapper) extras.getSerializable(key);
-                    action.putValue(key, w != null ? w.data : null);
-                }
-            }
-            action.run();
+        if (onMenuItemSelected(item)) {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onContextItemSelected(final MenuItem item) {
+        if (onMenuItemSelected(item)) {
+            return true;
+        }
+        return super.onContextItemSelected(item);
+    }
+
+    protected boolean onMenuItemSelected(final MenuItem item) {
+        final int actionId = item.getItemId();
+        final ActionEx action = getController().getOrCreateAction(actionId);
+        if (action.getMethod().isValid()) {
+            setActionParameters(item, action);
+            action.run();
+            return true;
+        }
+        return false;
+    }
+
+    protected void setActionParameters(final MenuItem item, final ActionEx action) {
+        final Intent intent = item.getIntent();
+        final Bundle extras = intent != null ? intent.getExtras() : null;
+        if (extras != null) {
+            for (final String key : extras.keySet()) {
+                final ExtraWrapper w = (ExtraWrapper) extras.getSerializable(key);
+                action.putValue(key, w != null ? w.data : null);
+            }
+        }
     }
 
     protected void setMenuSource(final Menu menu, final Object source) {
@@ -157,17 +176,6 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Actio
             v.setChecked(checked);
             v.setIcon(checked ? checkedResId : uncheckedResId);
         }
-    }
-
-    @Override
-    public boolean onContextItemSelected(final MenuItem item) {
-        final int actionId = item.getItemId();
-        final ActionEx action = getController().getOrCreateAction(actionId);
-        if (action.getMethod().isValid()) {
-            action.run();
-            return true;
-        }
-        return super.onContextItemSelected(item);
     }
 
     public final void onButtonClick(final View view) {

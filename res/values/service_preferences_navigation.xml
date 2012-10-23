@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string translatable="false" name="pref_showbookmarksmenu_id">showbookmarksmenu</string>
+    <string translatable="false" name="pref_showbookmarksmenu_defvalue">false</string>
+
+    <string translatable="false" name="pref_link_highlight_id">link_highlight</string>
+    <string translatable="false" name="pref_link_highlight_defvalue">0x80FFFF00</string>
+
+    <string translatable="false" name="pref_search_highlight_id">search_highlight</string>
+    <string translatable="false" name="pref_search_highlight_defvalue">0x3F00FF00</string>
+
+    <string translatable="false" name="pref_current_search_highlight_id">current_search_highlight</string>
+    <string translatable="false" name="pref_current_search_highlight_defvalue">0x7F007F00</string>
+
+    <string translatable="false" name="pref_storeGotoHistory_id">store_goto_history</string>
+    <string translatable="false" name="pref_storeGotoHistory_defvalue">true</string>
+
+    <string translatable="false" name="pref_storeLinkGotoHistory_id">store_link_goto_history</string>
+    <string translatable="false" name="pref_storeLinkGotoHistory_defvalue">true</string>
+
+    <string translatable="false" name="pref_storeOutlineGotoHistory_id">store_outline_goto_history</string>
+    <string translatable="false" name="pref_storeOutlineGotoHistory_defvalue">true</string>
+
+    <string translatable="false" name="pref_storeSearchGotoHistory_id">store_search_goto_history</string>
+    <string translatable="false" name="pref_storeSearchGotoHistory_defvalue">false</string>
+
+</resources>

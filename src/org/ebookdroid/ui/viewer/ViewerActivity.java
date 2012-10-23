@@ -336,16 +336,18 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
         if (navMenu != null) {
             final SubMenu subMenu = navMenu.getSubMenu();
             subMenu.removeGroup(R.id.actions_goToBookmarkGroup);
-            if (LengthUtils.isNotEmpty(bs.bookmarks)) {
+            if (AppSettings.current().showBookmarksInMenu && LengthUtils.isNotEmpty(bs.bookmarks)) {
                 for (final Bookmark b : bs.bookmarks) {
                     addBookmarkMenuItem(subMenu, b);
                 }
             }
         }
+
     }
 
     protected void addBookmarkMenuItem(final Menu menu, final Bookmark b) {
         final MenuItem bmi = menu.add(R.id.actions_goToBookmarkGroup, R.id.actions_goToBookmark, Menu.NONE, b.name);
+        bmi.setIcon(R.drawable.viewer_menu_bookmark);
         setMenuItemExtra(bmi, "bookmark", b);
     }
 

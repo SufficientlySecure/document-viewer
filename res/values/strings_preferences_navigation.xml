@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_navigation_category">Navigation &amp; history</string>
+    <string name="pref_navigation_category_summary">Navigation &amp; history settings</string>
+
+    <string name="pref_showbookmarksmenu_summary">Show bookmarks in menu</string>
+    <string name="pref_showbookmarksmenu_title">Show bookmarks in navigation menu</string>
+
+    <string name="pref_link_highlight_summary">"Selected color for link highlight"</string>
+    <string name="pref_link_highlight_title">"Link highlight"</string>
+
+    <string name="pref_search_highlight_summary">"Selected color for search result highlight"</string>
+    <string name="pref_search_highlight_title">"Search highlight"</string>
+
+    <string name="pref_current_search_highlight_summary">"Selected color for current search result highlight"</string>
+    <string name="pref_current_search_highlight_title">"Current search highlight"</string>
+
+    <string name="pref_storeGotoHistory_title">Store goto page in navigation history</string>
+    <string name="pref_storeGotoHistory_summary"></string>
+
+    <string name="pref_storeLinkGotoHistory_title">Store goto link in navigation history</string>
+    <string name="pref_storeLinkGotoHistory_summary"></string>
+
+    <string name="pref_storeOutlineGotoHistory_title">Store goto outline link in navigation history</string>
+    <string name="pref_storeOutlineGotoHistory_summary"></string>
+
+    <string name="pref_storeSearchGotoHistory_title">Store goto search result in navigation history</string>
+    <string name="pref_storeSearchGotoHistory_summary"></string>
+
+</resources>

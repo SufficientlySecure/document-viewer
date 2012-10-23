@@ -57,6 +57,8 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     public final boolean showAnimIcon;
 
+    public final boolean showBookmarksInMenu;
+
     public final int linkHighlightColor;
 
     public final int searchHighlightColor;
@@ -200,6 +202,13 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         pageNumberToastPosition = PAGE_NUMBER_TOAST_POSITION.getPreferenceValue(prefs);
         zoomToastPosition = ZOOM_TOAST_POSITION.getPreferenceValue(prefs);
         showAnimIcon = SHOW_ANIM_ICON.getPreferenceValue(prefs);
+        /* =============== Tap & Scroll settings =============== */
+        tapsEnabled = TAPS_ENABLED.getPreferenceValue(prefs);
+        scrollHeight = SCROLL_HEIGHT.getPreferenceValue(prefs);
+        touchProcessingDelay = TOUCH_DELAY.getPreferenceValue(prefs);
+        animateScrolling = ANIMATE_SCROLLING.getPreferenceValue(prefs);
+        /* =============== Navigation & History settings =============== */
+        showBookmarksInMenu = SHOW_BOOKMARKs_MENU.getPreferenceValue(prefs);
         linkHighlightColor = LINK_HIGHLIGHT_COLOR.getPreferenceValue(prefs);
         searchHighlightColor = SEARCH_HIGHLIGHT_COLOR.getPreferenceValue(prefs);
         currentSearchHighlightColor = CURRENT_SEARCH_HIGHLIGHT_COLOR.getPreferenceValue(prefs);
@@ -207,11 +216,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         storeLinkGotoHistory = STORE_LINK_GOTO_HISTORY.getPreferenceValue(prefs);
         storeOutlineGotoHistory = STORE_OUTLINE_GOTO_HISTORY.getPreferenceValue(prefs);
         storeSearchGotoHistory = STORE_SEARCH_GOTO_HISTORY.getPreferenceValue(prefs);
-        /* =============== Tap & Scroll settings =============== */
-        tapsEnabled = TAPS_ENABLED.getPreferenceValue(prefs);
-        scrollHeight = SCROLL_HEIGHT.getPreferenceValue(prefs);
-        touchProcessingDelay = TOUCH_DELAY.getPreferenceValue(prefs);
-        animateScrolling = ANIMATE_SCROLLING.getPreferenceValue(prefs);
         /* =============== Tap & Keyboard settings =============== */
         tapProfiles = TAP_PROFILES.getPreferenceValue(prefs);
         keysBinding = KEY_BINDINGS.getPreferenceValue(prefs);

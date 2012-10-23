@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ebookdroid="http://ebookdroid.org"
+    android:summary="@string/pref_navigation_category_summary"
+    android:title="@string/pref_navigation_category" >
+
+    <org.emdev.ui.preference.SwitchPreferenceEx
+            android:defaultValue="@string/pref_showbookmarksmenu_defvalue"
+            android:key="@string/pref_showbookmarksmenu_id"
+            android:summary="@string/pref_showbookmarksmenu_summary"
+            android:title="@string/pref_showbookmarksmenu_title" />
+
+    <org.emdev.ui.preference.ColorPickerPreference
+            android:key="link_highlight"
+            android:summary="@string/pref_link_highlight_summary"
+            android:title="@string/pref_link_highlight_title" />
+
+    <org.emdev.ui.preference.ColorPickerPreference
+            android:key="search_highlight"
+            android:summary="@string/pref_search_highlight_summary"
+            android:title="@string/pref_search_highlight_title" />
+
+    <org.emdev.ui.preference.ColorPickerPreference
+            android:key="current_search_highlight"
+            android:summary="@string/pref_current_search_highlight_summary"
+            android:title="@string/pref_current_search_highlight_title" />
+
+    <org.emdev.ui.preference.SwitchPreferenceEx
+            android:defaultValue="@string/pref_storeGotoHistory_defvalue"
+            android:key="@string/pref_storeGotoHistory_id"
+            android:summary="@string/pref_storeGotoHistory_summary"
+            android:title="@string/pref_storeGotoHistory_title" />
+
+    <org.emdev.ui.preference.SwitchPreferenceEx
+            android:defaultValue="@string/pref_storeLinkGotoHistory_defvalue"
+            android:key="@string/pref_storeLinkGotoHistory_id"
+            android:summary="@string/pref_storeLinkGotoHistory_summary"
+            android:title="@string/pref_storeLinkGotoHistory_title" />
+
+    <org.emdev.ui.preference.SwitchPreferenceEx
+            android:defaultValue="@string/pref_storeOutlineGotoHistory_defvalue"
+            android:key="@string/pref_storeOutlineGotoHistory_id"
+            android:summary="@string/pref_storeOutlineGotoHistory_summary"
+            android:title="@string/pref_storeOutlineGotoHistory_title" />
+
+    <org.emdev.ui.preference.SwitchPreferenceEx
+            android:defaultValue="@string/pref_storeSearchGotoHistory_defvalue"
+            android:key="@string/pref_storeSearchGotoHistory_id"
+            android:summary="@string/pref_storeSearchGotoHistory_summary"
+            android:title="@string/pref_storeSearchGotoHistory_title" />
+
+</PreferenceScreen>

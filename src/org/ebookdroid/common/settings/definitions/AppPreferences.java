@@ -20,8 +20,7 @@ public interface AppPreferences {
 
     /* =============== UI settings =============== */
 
-    StringPreferenceDefinition LANG = new StringPreferenceDefinition(pref_lang_id,
-            pref_lang_defvalue);
+    StringPreferenceDefinition LANG = new StringPreferenceDefinition(pref_lang_id, pref_lang_defvalue);
 
     BooleanPreferenceDefinition LOAD_RECENT = new BooleanPreferenceDefinition(pref_loadrecent_id,
             pref_loadrecent_defvalue);
@@ -58,6 +57,25 @@ public interface AppPreferences {
     BooleanPreferenceDefinition SHOW_ANIM_ICON = new BooleanPreferenceDefinition(pref_showanimicon_id,
             pref_showanimicon_defvalue);
 
+    /* =============== Tap & Scroll settings =============== */
+
+    BooleanPreferenceDefinition TAPS_ENABLED = new BooleanPreferenceDefinition(pref_tapsenabled_id,
+            pref_tapsenabled_defvalue);
+
+    IntegerPreferenceDefinition SCROLL_HEIGHT = new IntegerPreferenceDefinition(pref_scrollheight_id,
+            pref_scrollheight_defvalue, pref_scrollheight_minvalue, pref_scrollheight_maxvalue);
+
+    IntegerPreferenceDefinition TOUCH_DELAY = new IntegerPreferenceDefinition(pref_touchdelay_id,
+            pref_touchdelay_defvalue, pref_touchdelay_minvalue, pref_touchdelay_maxvalue);
+
+    BooleanPreferenceDefinition ANIMATE_SCROLLING = new BooleanPreferenceDefinition(pref_animate_scrolling_id,
+            pref_animate_scrolling_defvalue);
+
+    /* =============== Navigation & history settings =============== */
+
+    BooleanPreferenceDefinition SHOW_BOOKMARKs_MENU = new BooleanPreferenceDefinition(pref_showbookmarksmenu_id,
+            pref_showbookmarksmenu_defvalue);
+
     IntegerPreferenceDefinition LINK_HIGHLIGHT_COLOR = new IntegerPreferenceDefinition(pref_link_highlight_id,
             pref_link_highlight_defvalue);
 
@@ -78,20 +96,6 @@ public interface AppPreferences {
 
     BooleanPreferenceDefinition STORE_SEARCH_GOTO_HISTORY = new BooleanPreferenceDefinition(
             pref_storeSearchGotoHistory_id, pref_storeSearchGotoHistory_defvalue);
-
-    /* =============== Tap & Scroll settings =============== */
-
-    BooleanPreferenceDefinition TAPS_ENABLED = new BooleanPreferenceDefinition(pref_tapsenabled_id,
-            pref_tapsenabled_defvalue);
-
-    IntegerPreferenceDefinition SCROLL_HEIGHT = new IntegerPreferenceDefinition(pref_scrollheight_id,
-            pref_scrollheight_defvalue, pref_scrollheight_minvalue, pref_scrollheight_maxvalue);
-
-    IntegerPreferenceDefinition TOUCH_DELAY = new IntegerPreferenceDefinition(pref_touchdelay_id,
-            pref_touchdelay_defvalue, pref_touchdelay_minvalue, pref_touchdelay_maxvalue);
-
-    BooleanPreferenceDefinition ANIMATE_SCROLLING = new BooleanPreferenceDefinition(pref_animate_scrolling_id,
-            pref_animate_scrolling_defvalue);
 
     /* =============== Tap & Keys settings =============== */
 
@@ -155,7 +159,8 @@ public interface AppPreferences {
 
     BooleanPreferenceDefinition NIGHT_MODE = new BooleanPreferenceDefinition(pref_nightmode_id, pref_nightmode_defvalue);
 
-    BooleanPreferenceDefinition NIGHT_MODE_POS_IMAGES = new BooleanPreferenceDefinition(pref_posimages_in_nightmode_id, pref_posimages_in_nightmode_defvalue);
+    BooleanPreferenceDefinition NIGHT_MODE_POS_IMAGES = new BooleanPreferenceDefinition(pref_posimages_in_nightmode_id,
+            pref_posimages_in_nightmode_defvalue);
 
     IntegerPreferenceDefinition CONTRAST = new IntegerPreferenceDefinition(pref_contrast_id, pref_contrast_defvalue,
             pref_contrast_minvalue, pref_contrast_maxvalue);

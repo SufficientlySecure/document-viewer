@@ -15,9 +15,9 @@
     <string name="list_lang_it">Italian (Italiano)</string>
     <string name="list_lang_nl">Dutch (Nederlands)</string>
     <string name="list_lang_ru">Russian (Русский)</string>
-    <string name="list_lang_uk">Ukrainian</string>
+    <string name="list_lang_uk">Ukrainian (Український)</string>
     <string name="list_lang_zh">Chinese (中文简体)</string>
-    <string name="list_lang_iw">Hebrew</string>
+    <string name="list_lang_iw">Hebrew (עברית)</string>
 
     <string name="pref_loadrecent_title">Load recent</string>
     <string name="pref_loadrecent_summary">On app start, load last opened book</string>

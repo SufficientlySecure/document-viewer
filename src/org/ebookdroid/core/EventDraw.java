@@ -210,7 +210,7 @@ public class EventDraw implements IEvent {
 
         final float offX = viewState.viewBase.x;
         final float offY = viewState.viewBase.y;
-        canvas.drawRect(nodeRect.left - offX, nodeRect.top - offY, nodeRect.right - offX, nodeRect.bottom - offY,
+        canvas.drawRect(nodeRect.left - offX, nodeRect.top - offY, nodeRect.right - offX + 1, nodeRect.bottom - offY + 1,
                 brightnessFilter);
     }
 }

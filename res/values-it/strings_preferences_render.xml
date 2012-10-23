@@ -5,6 +5,8 @@
     <string name="pref_render_category_summary">"Imposta le modalità generali di visualizzazione della pagina e del testo"</string>
     <string name="pref_book_category">"Impostazioni per il libro corrente"</string>
     <string name="pref_book_category_summary">"Imposta le modalità di visualizzazione per il solo libro corrente. Queste impostazioni hanno la precedenza sulle impostazioni generali."</string>
+<!--<string name="pref_firstpageoffset_title">"First page offset"</string>-->
+<!--<string name="pref_firstpageoffset_summary">"Index of first page shown to user"</string>-->
     <string name="pref_splitpages_title">"Spezza le doppie pagine"</string>
     <string name="pref_splitpages_summary">"Se la pagina è in formato album, mostra mezza pagina alla volta (seguendo l'ordine sinistra-destra)"</string>
     <string name="pref_splitpages_rtl_title">"Spezza le doppie pagine (da destra verso sinistra)"</string>

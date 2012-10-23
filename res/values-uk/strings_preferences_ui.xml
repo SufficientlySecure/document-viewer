@@ -7,15 +7,15 @@
 <!--<string name="pref_lang_summary">"User interface language (restart required)"</string>-->
 <!--<string name="list_lang_default">"System"</string>-->
 <!--<string name="list_lang_en">"English"</string>-->
-<!--<string name="list_lang_de">"German"</string>-->
-<!--<string name="list_lang_es">"Spanish"</string>-->
-<!--<string name="list_lang_fr">"French"</string>-->
-<!--<string name="list_lang_it">"Italian"</string>-->
-<!--<string name="list_lang_nl">"Dutch"</string>-->
-<!--<string name="list_lang_ru">"Russian"</string>-->
-<!--<string name="list_lang_uk">"Ukrainian"</string>-->
-<!--<string name="list_lang_zh">"Chinese"</string>-->
-<!--<string name="list_lang_iw">"Hebrew"</string>-->
+<!--<string name="list_lang_de">"German (Deutsche)"</string>-->
+<!--<string name="list_lang_es">"Spanish (Español)"</string>-->
+<!--<string name="list_lang_fr">"French (Française)"</string>-->
+<!--<string name="list_lang_it">"Italian (Italiano)"</string>-->
+<!--<string name="list_lang_nl">"Dutch (Nederlands)"</string>-->
+<!--<string name="list_lang_ru">"Russian (Русский)"</string>-->
+<!--<string name="list_lang_uk">"Ukrainian (Український)"</string>-->
+<!--<string name="list_lang_zh">"Chinese (中文简体)"</string>-->
+<!--<string name="list_lang_iw">"Hebrew (עברית)"</string>-->
     <string name="pref_loadrecent_title">"Відкривати останнє"</string>
     <string name="pref_loadrecent_summary">"На старті автоматично відкривати останню книгу"</string>
 <!--<string name="pref_confirmclose_title">"Confirm closing"</string>-->
@@ -58,19 +58,5 @@
 <!--<string name="list_toastposition_righbottom">"Right bottom corner"</string>-->
     <string name="pref_showanimicon_title">"Показувати тип анімації"</string>
     <string name="pref_showanimicon_summary">"Показувати тип анімації, якщо анімація або перетягування можливі"</string>
-<!--<string name="pref_link_highlight_summary">"Selected color for link highlight"</string>-->
-<!--<string name="pref_link_highlight_title">"Link highlight"</string>-->
-<!--<string name="pref_search_highlight_summary">"Selected color for search result highlight"</string>-->
-<!--<string name="pref_search_highlight_title">"Search highlight"</string>-->
-<!--<string name="pref_current_search_highlight_summary">"Selected color for current search result highlight"</string>-->
-<!--<string name="pref_current_search_highlight_title">"Current search highlight"</string>-->
-<!--<string name="pref_storeGotoHistory_title">"Store goto page in navigation history"</string>-->
-<!--<string name="pref_storeGotoHistory_summary">""</string>-->
-<!--<string name="pref_storeLinkGotoHistory_title">"Store goto link in navigation history"</string>-->
-<!--<string name="pref_storeLinkGotoHistory_summary">""</string>-->
-<!--<string name="pref_storeOutlineGotoHistory_title">"Store goto outline link in navigation history"</string>-->
-<!--<string name="pref_storeOutlineGotoHistory_summary">""</string>-->
-<!--<string name="pref_storeSearchGotoHistory_title">"Store goto search result in navigation history"</string>-->
-<!--<string name="pref_storeSearchGotoHistory_summary">""</string>-->
 
 </resources>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+<!--<string name="pref_navigation_category">"Navigation &amp; history"</string>-->
+<!--<string name="pref_navigation_category_summary">"Navigation &amp; history settings"</string>-->
+<!--<string name="pref_showbookmarksmenu_summary">"Show bookmarks in menu"</string>-->
+<!--<string name="pref_showbookmarksmenu_title">"Show bookmarks in navigation menu"</string>-->
+    <string name="pref_link_highlight_summary">"选择颜色环节突出"</string>
+    <string name="pref_link_highlight_title">"链接突出"</string>
+    <string name="pref_search_highlight_summary">"选择颜色的搜索结果突出"</string>
+    <string name="pref_search_highlight_title">"搜索突出"</string>
+    <string name="pref_current_search_highlight_summary">"选择颜色突出当前搜索结果"</string>
+    <string name="pref_current_search_highlight_title">"搜索当前突出"</string>
+    <string name="pref_storeGotoHistory_title">"转到页面导航历史记录中的商店"</string>
+<!--<string name="pref_storeGotoHistory_summary">""</string>-->
+    <string name="pref_storeLinkGotoHistory_title">"转到链接存储在导航历史记录"</string>
+<!--<string name="pref_storeLinkGotoHistory_summary">""</string>-->
+    <string name="pref_storeOutlineGotoHistory_title">"商店转到大纲环节在导航历史记录"</string>
+<!--<string name="pref_storeOutlineGotoHistory_summary">""</string>-->
+    <string name="pref_storeSearchGotoHistory_title">"到商店去搜索结果中的导航历史记录"</string>
+<!--<string name="pref_storeSearchGotoHistory_summary">""</string>-->
+
+</resources>

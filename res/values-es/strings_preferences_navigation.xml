@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+<!--<string name="pref_navigation_category">"Navigation &amp; history"</string>-->
+<!--<string name="pref_navigation_category_summary">"Navigation &amp; history settings"</string>-->
+<!--<string name="pref_showbookmarksmenu_summary">"Show bookmarks in menu"</string>-->
+<!--<string name="pref_showbookmarksmenu_title">"Show bookmarks in navigation menu"</string>-->
+    <string name="pref_link_highlight_summary">"Elige color para el resalte de los enlaces"</string>
+    <string name="pref_link_highlight_title">"Resaltar enlaces"</string>
+    <string name="pref_search_highlight_summary">"Seleccionar color para el resalte de la búsqueda"</string>
+    <string name="pref_search_highlight_title">"Resaltar búsqueda"</string>
+    <string name="pref_current_search_highlight_summary">"Selecciona el color para resaltar la búsqueda actual"</string>
+    <string name="pref_current_search_highlight_title">"Resaltar búsqueda actual"</string>
+    <string name="pref_storeGotoHistory_title">"Almacenar la página destino en el historial de navegación"</string>
+<!--<string name="pref_storeGotoHistory_summary">""</string>-->
+    <string name="pref_storeLinkGotoHistory_title">"Almacenar enlace destino en el historial de navegación"</string>
+<!--<string name="pref_storeLinkGotoHistory_summary">""</string>-->
+<!--<string name="pref_storeOutlineGotoHistory_title">"Store goto outline link in navigation history"</string>-->
+<!--<string name="pref_storeOutlineGotoHistory_summary">""</string>-->
+    <string name="pref_storeSearchGotoHistory_title">"Almacenar la búsqueda destino en el historial de navegación"</string>
+<!--<string name="pref_storeSearchGotoHistory_summary">""</string>-->
+
+</resources>

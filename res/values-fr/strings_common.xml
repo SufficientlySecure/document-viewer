@@ -23,6 +23,7 @@
 <!--<string name="dialog_backup_remove">"Remove…"</string>-->
     <string name="add_bookmark_name">"Entrez la description du signet"</string>
     <string name="bookmark_start">"Début"</string>
+<!--<string name="bookmark_current">"Current position"</string>-->
     <string name="bookmark_end">"Fin"</string>
     <string name="bookmark_invalid_page">"Numéro de incorrect. Pages disponibles : %1$d-%2$d"</string>
     <string name="bookmarks_title">"Signets"</string>

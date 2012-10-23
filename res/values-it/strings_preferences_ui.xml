@@ -58,19 +58,5 @@
     <string name="list_toastposition_righbottom">"In basso a destra"</string>
     <string name="pref_showanimicon_title">"Visualizza simbolo animazione"</string>
     <string name="pref_showanimicon_summary">"Se l'animazione o il trascinamento sono possibili, visualizza un simbolo del tipo di animazione selezionata"</string>
-    <string name="pref_link_highlight_summary">"Imposta il colore con cui evidenziare i collegamenti (link)"</string>
-    <string name="pref_link_highlight_title">"Evidenziatore Collegamenti"</string>
-    <string name="pref_search_highlight_summary">"Imposta il colore con cui evidenziare i risultati di ricerca"</string>
-    <string name="pref_search_highlight_title">"Evidenziatore Ricerche"</string>
-    <string name="pref_current_search_highlight_summary">"Imposta il colore con cui evidenziare i risultati dell'ultima ricerca"</string>
-    <string name="pref_current_search_highlight_title">"Evidenziatore ultima ricerca"</string>
-    <string name="pref_storeGotoHistory_title">"Ricorda i salti alla pagina"</string>
-    <string name="pref_storeGotoHistory_summary">"Salva nella cronologia di navigazione i salti alla pagina"</string>
-    <string name="pref_storeLinkGotoHistory_title">"Ricorda i salti ai collegamenti"</string>
-    <string name="pref_storeLinkGotoHistory_summary">"Salva nella cronologia di navigazione i salti ai collegamenti"</string>
-    <string name="pref_storeOutlineGotoHistory_title">"Ricorda i salti alle voci dell'indice"</string>
-    <string name="pref_storeOutlineGotoHistory_summary">"Salva nella cronologia di navigazione i salti alle voci dell'indice"</string>
-    <string name="pref_storeSearchGotoHistory_title">"Ricorda i salti ai risultati di ricerca"</string>
-    <string name="pref_storeSearchGotoHistory_summary">"Salva nella cronologia di navigazione i salti ai risultati di ricerca"</string>
 
 </resources>

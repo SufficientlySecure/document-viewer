@@ -5,6 +5,8 @@
     <string name="pref_render_category_summary">"Einstellungen der Abzeichnung"</string>
     <string name="pref_book_category">"Bucheinstellungen"</string>
     <string name="pref_book_category_summary">"Abzeichnungseinstellungen für das laufende Buch"</string>
+<!--<string name="pref_firstpageoffset_title">"First page offset"</string>-->
+<!--<string name="pref_firstpageoffset_summary">"Index of first page shown to user"</string>-->
     <string name="pref_splitpages_title">"Seitenpaare teilen"</string>
     <string name="pref_splitpages_summary">"Seitenpaare auf zwei Seiten teilen"</string>
 <!--<string name="pref_splitpages_rtl_title">"Split pages right-to-left"</string>-->

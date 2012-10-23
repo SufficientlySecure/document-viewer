@@ -23,6 +23,7 @@
     <string name="dialog_backup_remove">"Удалить…"</string>
     <string name="add_bookmark_name">"Введите описание закладки"</string>
     <string name="bookmark_start">"Начало"</string>
+<!--<string name="bookmark_current">"Current position"</string>-->
     <string name="bookmark_end">"Конец"</string>
     <string name="bookmark_invalid_page">"Ошибочный номер страницы. Доступные страницы: %1$d-%2$d"</string>
     <string name="bookmarks_title">"Закладки"</string>

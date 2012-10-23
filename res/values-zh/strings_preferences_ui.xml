@@ -15,7 +15,7 @@
     <string name="list_lang_ru">"俄语 (Русский)"</string>
     <string name="list_lang_uk">"乌克兰语"</string>
     <string name="list_lang_zh">"中文简体"</string>
-<!--<string name="list_lang_iw">"Hebrew"</string>-->
+<!--<string name="list_lang_iw">"Hebrew (עברית)"</string>-->
     <string name="pref_loadrecent_title">"最近加载"</string>
     <string name="pref_loadrecent_summary">"在应用程序上启动自动加载上次打开的书"</string>
     <string name="pref_confirmclose_title">"确认关闭"</string>
@@ -58,19 +58,5 @@
     <string name="list_toastposition_righbottom">"右下角"</string>
     <string name="pref_showanimicon_title">"显示动画图标"</string>
     <string name="pref_showanimicon_summary">"如果启用动画或拖动，显示动画或拖动图标"</string>
-    <string name="pref_link_highlight_summary">"选择颜色环节突出"</string>
-    <string name="pref_link_highlight_title">"链接突出"</string>
-    <string name="pref_search_highlight_summary">"选择颜色的搜索结果突出"</string>
-    <string name="pref_search_highlight_title">"搜索突出"</string>
-    <string name="pref_current_search_highlight_summary">"选择颜色突出当前搜索结果"</string>
-    <string name="pref_current_search_highlight_title">"搜索当前突出"</string>
-    <string name="pref_storeGotoHistory_title">"转到页面导航历史记录中的商店"</string>
-<!--<string name="pref_storeGotoHistory_summary">""</string>-->
-    <string name="pref_storeLinkGotoHistory_title">"转到链接存储在导航历史记录"</string>
-<!--<string name="pref_storeLinkGotoHistory_summary">""</string>-->
-    <string name="pref_storeOutlineGotoHistory_title">"商店转到大纲环节在导航历史记录"</string>
-<!--<string name="pref_storeOutlineGotoHistory_summary">""</string>-->
-    <string name="pref_storeSearchGotoHistory_title">"到商店去搜索结果中的导航历史记录"</string>
-<!--<string name="pref_storeSearchGotoHistory_summary">""</string>-->
 
 </resources>

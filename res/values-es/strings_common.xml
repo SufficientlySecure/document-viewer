@@ -23,6 +23,7 @@
     <string name="dialog_backup_remove">"Eliminar…"</string>
     <string name="add_bookmark_name">"Introduzca una descripción para el marcador"</string>
     <string name="bookmark_start">"Inicio"</string>
+<!--<string name="bookmark_current">"Current position"</string>-->
     <string name="bookmark_end">"Fin"</string>
     <string name="bookmark_invalid_page">"Número de página inválido. Rango: %1$d-%2$d"</string>
     <string name="bookmarks_title">"Marcadores"</string>

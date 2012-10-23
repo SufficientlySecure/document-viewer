@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+<!--<string name="pref_navigation_category">"Navigation &amp; history"</string>-->
+<!--<string name="pref_navigation_category_summary">"Navigation &amp; history settings"</string>-->
+<!--<string name="pref_showbookmarksmenu_summary">"Show bookmarks in menu"</string>-->
+<!--<string name="pref_showbookmarksmenu_title">"Show bookmarks in navigation menu"</string>-->
+    <string name="pref_link_highlight_summary">"בחרו צבע סימון קישורים"</string>
+    <string name="pref_link_highlight_title">"סימון קישורים"</string>
+    <string name="pref_search_highlight_summary">"בחר את צבע סימון לתוצאות חיפוש "</string>
+    <string name="pref_search_highlight_title">"סימון לתוצאות חיפוש"</string>
+    <string name="pref_current_search_highlight_summary">"בחר את צבע לסימון של תוצאות החיפוש הנוכחיות "</string>
+    <string name="pref_current_search_highlight_title">"סימון של תוצאות החיפוש הנוכחיות"</string>
+    <string name="pref_storeGotoHistory_title">"היסטורית ניווט דפים"</string>
+    <string name="pref_storeGotoHistory_summary">"שמור בהיסטורית ניווט דפים כל הניווט"</string>
+    <string name="pref_storeLinkGotoHistory_title">"כניסות לקישורים"</string>
+    <string name="pref_storeLinkGotoHistory_summary">"שמור בהיסטורית ניווט כניסות לקישורים"</string>
+    <string name="pref_storeOutlineGotoHistory_title">"ניווט של תוכן עניינים"</string>
+    <string name="pref_storeOutlineGotoHistory_summary">"שמור בהיסטורית ניווט - ניווט של תוכן עניינים"</string>
+    <string name="pref_storeSearchGotoHistory_title">"ניווט בחיפוש"</string>
+    <string name="pref_storeSearchGotoHistory_summary">"שמור בהיסטורית ניווט - ניווט בחיפוש"</string>
+
+</resources>

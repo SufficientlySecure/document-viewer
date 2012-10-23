@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="bookmenu_open">"Открыть книгу"</string>
+    <string name="bookmenu_open">"Открыть книгу…"</string>
     <string name="bookmenu_settings">"Показать настройки книги"</string>
     <string name="bookmenu_openbookshelf">"Показать полку книги"</string>
     <string name="bookmenu_openbookfolder">"Показать папку книги"</string>

@@ -38,8 +38,7 @@ public final class BookmarkAdapter extends BaseAdapter {
         this.bookSettings = bookSettings;
 
         this.start = new Bookmark(true, context.getString(R.string.bookmark_start), PageIndex.FIRST, 0, 0);
-        this.end = new Bookmark(true, context.getString(R.string.bookmark_end), lastPage != null ? lastPage.index
-                : PageIndex.FIRST, 0, 0);
+        this.end = new Bookmark(true, context.getString(R.string.bookmark_end), PageIndex.LAST, 0, 1);
 
         Collections.sort(bookSettings.bookmarks);
     }

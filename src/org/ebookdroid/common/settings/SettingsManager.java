@@ -26,6 +26,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
+import org.emdev.utils.FileUtils;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.listeners.ListenerProxy;
 
@@ -74,19 +75,16 @@ public class SettingsManager {
         lock.writeLock().lock();
         try {
             boolean created = false;
-            BookSettings current = bookSettings.get(fileName);
+            BookSettings current = getBookSettingsImpl(fileName);
             if (current == null) {
-                current = db.getBookSettings(fileName);
-                if (current == null) {
-                    created = true;
-                    current = new BookSettings(fileName);
-                    AppSettings.setDefaultSettings(current);
-                    if (temporaryBook) {
-                        current.persistent = false;
-                    }
+                created = true;
+                current = new BookSettings(fileName);
+                AppSettings.setDefaultSettings(current);
+                if (temporaryBook) {
+                    current.persistent = false;
                 }
-                bookSettings.put(fileName, current);
             }
+            bookSettings.put(current.fileName, current);
 
             if (intent != null) {
                 current.persistent = Boolean.parseBoolean(LengthUtils.safeString(intent.getStringExtra("persistent"),
@@ -111,8 +109,8 @@ public class SettingsManager {
                     current.currentPage = new PageIndex(current.splitPages ? current.currentPage.docIndex : pageIndex,
                             pageIndex);
 
-                    current.offsetX = intent.getFloatExtra("offsetX", 0);
-                    current.offsetY = intent.getFloatExtra("offsetY", 0);
+                    current.offsetX = Float.parseFloat(LengthUtils.safeString(intent.getStringExtra("offsetX"), "0"));
+                    current.offsetY = Float.parseFloat(LengthUtils.safeString(intent.getStringExtra("offsetY"), "0"));
                 }
             }
 
@@ -138,14 +136,30 @@ public class SettingsManager {
     public static BookSettings getBookSettings(final String fileName) {
         lock.writeLock().lock();
         try {
-            BookSettings bs = bookSettings.get(fileName);
-            if (bs == null) {
-                bs = db.getBookSettings(fileName);
-            }
-            return bs;
+            return getBookSettingsImpl(fileName);
         } finally {
             lock.writeLock().unlock();
         }
+    }
+
+    private static BookSettings getBookSettingsImpl(final String fileName) {
+        BookSettings bs = loadBookSettingsImpl(fileName);
+        if (bs == null) {
+            String mpath = FileUtils.invertMountPrefix(fileName);
+            final File f = mpath != null ? new File(mpath) : null;
+            if (f != null && f.exists()) {
+                bs = loadBookSettingsImpl(mpath);
+            }
+        }
+        return bs;
+    }
+
+    private static BookSettings loadBookSettingsImpl(final String fileName) {
+        BookSettings bs = bookSettings.get(fileName);
+        if (bs == null) {
+            bs = db.getBookSettings(fileName);
+        }
+        return bs;
     }
 
     public static void releaseBookSettings(final long ownerId, final BookSettings current) {

@@ -32,7 +32,7 @@ public class LibraryView extends ExpandableListView implements ExpandableListVie
         final BookNode book = adapter.getChild(groupPosition, childPosition);
         final File file = new File(book.path);
         if (!file.isDirectory()) {
-            base.showDocument(Uri.fromFile(file));
+            base.showDocument(Uri.fromFile(file), null);
         }
         return false;
     }

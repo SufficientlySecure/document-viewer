@@ -30,6 +30,6 @@ public class RecentBooksView extends android.widget.ListView implements AdapterV
     @Override
     public void onItemClick(final AdapterView<?> adapterView, final View view, final int i, final long l) {
         final BookNode bs = adapter.getItem(i);
-        base.showDocument(Uri.fromFile(new File(bs.path)));
+        base.showDocument(Uri.fromFile(new File(bs.path)), null);
     }
 }

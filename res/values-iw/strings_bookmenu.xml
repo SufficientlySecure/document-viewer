@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="bookmenu_open">"לפתוח ספר "</string>
     <string name="bookmenu_settings">"הגדרות תצוגה של הספר"</string>
     <string name="bookmenu_openbookshelf">"הצג מדף הספר"</string>
     <string name="bookmenu_openbookfolder">"הצג תיקייה הספר "</string>

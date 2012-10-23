@@ -31,6 +31,7 @@
 
     <string name="add_bookmark_name">Enter bookmark description</string>
     <string name="bookmark_start">Start</string>
+    <string name="bookmark_current">Current position</string>
     <string name="bookmark_end">End</string>
     <string name="bookmark_invalid_page">Page number out of range. Valid range: %1$d-%2$d</string>
 

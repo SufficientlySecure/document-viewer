@@ -1,5 +1,7 @@
 package org.ebookdroid.ui.library;
 
+import org.ebookdroid.common.settings.books.Bookmark;
+
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
@@ -17,7 +19,7 @@ public interface IBrowserActivity extends FileSystemScanner.ProgressListener {
 
     void setCurrentDir(File newDir);
 
-    void showDocument(Uri uri);
+    void showDocument(Uri uri, Bookmark b);
 
     void loadThumbnail(String path, ImageView imageView, int defaultResID);
 }

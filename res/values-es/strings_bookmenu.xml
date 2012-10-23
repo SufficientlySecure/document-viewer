@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="bookmenu_open">"Abrir libro"</string>
     <string name="bookmenu_settings">"Mostrar configuraciones de libro"</string>
     <string name="bookmenu_openbookshelf">"Mostrar estantería"</string>
     <string name="bookmenu_openbookfolder">"Mostrar carpeta de libro"</string>

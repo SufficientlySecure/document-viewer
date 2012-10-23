@@ -3,7 +3,9 @@
 
     <item
         android:id="@+id/bookmenu_open"
-        android:title="@string/bookmenu_open"/>
+        android:title="@string/bookmenu_open">
+        <menu />
+    </item>
     <item
         android:id="@+id/bookmenu_settings"
         android:title="@string/bookmenu_settings"/>

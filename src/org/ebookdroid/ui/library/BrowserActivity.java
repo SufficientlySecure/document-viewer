@@ -6,6 +6,8 @@ import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.settings.LibSettings;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
+import org.ebookdroid.common.settings.books.Bookmark;
+import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.ui.library.adapters.BookNode;
 import org.ebookdroid.ui.library.adapters.BrowserAdapter;
 import org.ebookdroid.ui.library.dialogs.FolderDlg;
@@ -28,6 +30,8 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.Window;
 import android.widget.AbsListView;
@@ -42,6 +46,9 @@ import android.widget.ViewFlipper;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.emdev.BaseDroidApp;
 import org.emdev.common.android.AndroidVersion;
@@ -61,6 +68,7 @@ import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.utils.CompareUtils;
 import org.emdev.utils.FileUtils;
 import org.emdev.utils.LayoutUtils;
+import org.emdev.utils.LengthUtils;
 
 @ActionTarget(
 // action list
@@ -72,7 +80,7 @@ actions = {
         @ActionMethodDef(id = R.id.mainmenu_about, method = "showAbout"),
         @ActionMethodDef(id = R.id.browserrecent, method = "goRecent"),
         @ActionMethodDef(id = R.id.mainmenu_opds, method = "goOPDSBrowser"),
-        @ActionMethodDef(id = R.id.bookmenu_open, method = "openBook"),
+        @ActionMethodDef(id = R.id.actions_goToBookmark, method = "openBook"),
         @ActionMethodDef(id = R.id.bookmenu_removefromrecent, method = "removeBookFromRecents"),
         @ActionMethodDef(id = R.id.bookmenu_cleardata, method = "removeCachedBookFiles"),
         @ActionMethodDef(id = R.id.bookmenu_deletesettings, method = "removeBookSettings"),
@@ -197,9 +205,14 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
     }
 
     @Override
-    public void showDocument(final Uri uri) {
+    public void showDocument(final Uri uri, final Bookmark b) {
         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         intent.setClass(this, ViewerActivity.class);
+        if (b != null) {
+            intent.putExtra("pageIndex", "" + b.page.viewIndex);
+            intent.putExtra("offsetX", "" + b.offsetX);
+            intent.putExtra("offsetY", "" + b.offsetY);
+        }
         startActivity(intent);
     }
 
@@ -276,6 +289,23 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
 
     @Override
     public void onCreateContextMenu(final ContextMenu menu, final View v, final ContextMenuInfo menuInfo) {
+        final Object source = getContextMenuSource(v, menuInfo);
+
+        if (source instanceof File) {
+            final File node = (File) source;
+            final String path = node.getAbsolutePath();
+
+            if (node.isDirectory()) {
+                createFolderMenu(menu, path);
+            } else {
+                createFileMenu(menu, path);
+            }
+        }
+
+        setMenuSource(menu, source);
+    }
+
+    protected Object getContextMenuSource(final View v, final ContextMenuInfo menuInfo) {
         Object source = null;
 
         if (menuInfo instanceof AdapterContextMenuInfo) {
@@ -295,33 +325,59 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
                 source = adapter.getGroup(group);
             }
         }
-
-        if (source instanceof File) {
-            final MenuInflater inflater = getMenuInflater();
-            final File node = (File) source;
-            final String path = node.getAbsolutePath();
-
-            if (node.isDirectory()) {
-                inflater.inflate(R.menu.library_menu, menu);
-                menu.setHeaderTitle(path);
-            } else {
-                final BookSettings bs = SettingsManager.getBookSettings(path);
-                inflater.inflate(R.menu.book_menu, menu);
-                menu.setHeaderTitle(path);
-                menu.findItem(R.id.bookmenu_recentgroup).setVisible(bs != null);
-                menu.findItem(R.id.bookmenu_openbookshelf).setVisible(false);
-                menu.findItem(R.id.bookmenu_openbookfolder).setVisible(false);
-            }
-        }
-
-        setMenuSource(menu, source);
+        return source;
     }
 
-    @ActionMethod(ids = R.id.bookmenu_open)
+    protected void createFileMenu(final ContextMenu menu, final String path) {
+        final BookSettings bs = SettingsManager.getBookSettings(path);
+        final MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.book_menu, menu);
+        menu.setHeaderTitle(path);
+        menu.findItem(R.id.bookmenu_recentgroup).setVisible(bs != null);
+        menu.findItem(R.id.bookmenu_openbookshelf).setVisible(false);
+        menu.findItem(R.id.bookmenu_openbookfolder).setVisible(false);
+
+        final MenuItem om = menu.findItem(R.id.bookmenu_open);
+        final SubMenu osm = om != null ? om.getSubMenu() : null;
+        if (osm == null) {
+            return;
+        }
+        osm.clear();
+
+        final List<Bookmark> list = new ArrayList<Bookmark>();
+        list.add(new Bookmark(true, getString(R.string.bookmark_start), PageIndex.FIRST, 0, 0));
+        list.add(new Bookmark(true, getString(R.string.bookmark_end), PageIndex.LAST, 0, 1));
+        if (bs != null) {
+            if (LengthUtils.isNotEmpty(bs.bookmarks)) {
+                list.addAll(bs.bookmarks);
+            }
+            list.add(new Bookmark(true, getString(R.string.bookmark_current), bs.currentPage, bs.offsetX, bs.offsetY));
+        }
+
+        Collections.sort(list);
+        for (final Bookmark b : list) {
+            addBookmarkMenuItem(osm, b);
+        }
+    }
+
+    protected void addBookmarkMenuItem(final Menu menu, final Bookmark b) {
+        final MenuItem bmi = menu.add(R.id.actions_goToBookmarkGroup, R.id.actions_goToBookmark, Menu.NONE, b.name);
+        bmi.setIcon(R.drawable.viewer_menu_bookmark);
+        setMenuItemExtra(bmi, "bookmark", b);
+    }
+
+    protected void createFolderMenu(final ContextMenu menu, final String path) {
+        final MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.library_menu, menu);
+        menu.setHeaderTitle(path);
+    }
+
+    @ActionMethod(ids = R.id.actions_goToBookmark)
     public void openBook(final ActionEx action) {
         final File file = action.getParameter(AbstractActionActivity.MENU_ITEM_SOURCE);
         if (!file.isDirectory()) {
-            showDocument(Uri.fromFile(file));
+            final Bookmark b = action.getParameter("bookmark");
+            showDocument(Uri.fromFile(file), b);
         }
     }
 

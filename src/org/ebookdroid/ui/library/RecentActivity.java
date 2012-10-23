@@ -3,6 +3,9 @@ package org.ebookdroid.ui.library;
 import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
 import org.ebookdroid.common.settings.LibSettings;
+import org.ebookdroid.common.settings.books.BookSettings;
+import org.ebookdroid.common.settings.books.Bookmark;
+import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.ui.library.adapters.BookNode;
 import org.ebookdroid.ui.library.adapters.BookShelfAdapter;
 import org.ebookdroid.ui.library.adapters.BooksAdapter;
@@ -19,6 +22,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -28,6 +33,9 @@ import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 import android.widget.ImageView;
 import android.widget.ViewFlipper;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.emdev.common.android.AndroidVersion;
@@ -37,6 +45,7 @@ import org.emdev.ui.AbstractActionActivity;
 import org.emdev.ui.actions.ActionMethodDef;
 import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.uimanager.IUIManager;
+import org.emdev.utils.LengthUtils;
 
 @ActionTarget(
 // actions
@@ -153,6 +162,7 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
         return true;
     }
 
+    @Override
     protected void updateMenuItems(final Menu menu) {
         if (!LibSettings.current().getUseBookcase()) {
             final int viewMode = getViewMode();
@@ -167,8 +177,19 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
 
     @Override
     public void onCreateContextMenu(final ContextMenu menu, final View v, final ContextMenuInfo menuInfo) {
-        Object source = null;
+        final Object source = getContextMenuSource(v, menuInfo);
 
+        if (source instanceof BookNode) {
+            onCreateBookMenu(menu, (BookNode) source);
+        } else if (source instanceof BookShelfAdapter) {
+            onCreateShelfMenu(menu, (BookShelfAdapter) source);
+        }
+
+        setMenuSource(menu, source);
+    }
+
+    protected Object getContextMenuSource(final View v, final ContextMenuInfo menuInfo) {
+        Object source = null;
         if (menuInfo instanceof AdapterContextMenuInfo) {
             final AbsListView list = (AbsListView) v;
             final AdapterContextMenuInfo mi = (AdapterContextMenuInfo) menuInfo;
@@ -186,31 +207,56 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
                 source = adapter.getGroup(group);
             }
         }
+        return source;
+    }
 
-        if (source instanceof BookNode) {
-            final BookNode node = (BookNode) source;
+    protected void onCreateBookMenu(final ContextMenu menu, final BookNode node) {
+        final BookSettings bs = node.settings;
+        final MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.book_menu, menu);
 
-            final MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.book_menu, menu);
+        menu.setHeaderTitle(node.path);
+        menu.findItem(R.id.bookmenu_recentgroup).setVisible(bs != null);
 
-            menu.setHeaderTitle(node.path);
-            menu.findItem(R.id.bookmenu_recentgroup).setVisible(node.settings != null);
+        final BookShelfAdapter bookShelf = getController().getBookShelf(node);
+        final BookShelfAdapter current = bookcaseView != null ? getController().getBookShelf(
+                bookcaseView.getCurrentList()) : null;
+        menu.findItem(R.id.bookmenu_openbookshelf).setVisible(
+                bookShelf != null && current != null && bookShelf != current);
 
-            final BookShelfAdapter bookShelf = getController().getBookShelf(node);
-            final BookShelfAdapter current = bookcaseView != null ? getController().getBookShelf(
-                    bookcaseView.getCurrentList()) : null;
-            menu.findItem(R.id.bookmenu_openbookshelf).setVisible(
-                    bookShelf != null && current != null && bookShelf != current);
-        } else if (source instanceof BookShelfAdapter) {
-            final BookShelfAdapter a = (BookShelfAdapter) source;
+        final MenuItem om = menu.findItem(R.id.bookmenu_open);
+        final SubMenu osm = om != null ? om.getSubMenu() : null;
+        if (osm == null) {
+            return;
+        }
+        osm.clear();
 
-            final MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.library_menu, menu);
-
-            menu.setHeaderTitle(a.name);
+        final List<Bookmark> list = new ArrayList<Bookmark>();
+        list.add(new Bookmark(true, getString(R.string.bookmark_start), PageIndex.FIRST, 0, 0));
+        list.add(new Bookmark(true, getString(R.string.bookmark_end), PageIndex.LAST, 0, 1));
+        if (bs != null) {
+            if (LengthUtils.isNotEmpty(bs.bookmarks)) {
+                list.addAll(bs.bookmarks);
+            }
+            list.add(new Bookmark(true, getString(R.string.bookmark_current), bs.currentPage, bs.offsetX, bs.offsetY));
         }
 
-        setMenuSource(menu, source);
+        Collections.sort(list);
+        for (final Bookmark b : list) {
+            addBookmarkMenuItem(osm, b);
+        }
+    }
+
+    protected void addBookmarkMenuItem(final Menu menu, final Bookmark b) {
+        final MenuItem bmi = menu.add(R.id.actions_goToBookmarkGroup, R.id.actions_goToBookmark, Menu.NONE, b.name);
+        bmi.setIcon(R.drawable.viewer_menu_bookmark);
+        setMenuItemExtra(bmi, "bookmark", b);
+    }
+
+    protected void onCreateShelfMenu(final ContextMenu menu, final BookShelfAdapter a) {
+        final MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.library_menu, menu);
+        menu.setHeaderTitle(a.name);
     }
 
     @Override

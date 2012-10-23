@@ -2,6 +2,7 @@ package org.ebookdroid.ui.library.adapters;
 
 import org.ebookdroid.R;
 import org.ebookdroid.common.settings.LibSettings;
+import org.ebookdroid.common.settings.SettingsManager;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 import org.emdev.ui.adapters.BaseViewHolder;
 import org.emdev.utils.FileUtils;
@@ -54,16 +56,20 @@ public class BrowserAdapter extends BaseAdapter implements Comparator<File> {
                 parent);
 
         final File file = getItem(i);
+        String ap = file.getAbsolutePath();
 
         holder.textView.setText(file.getName());
 
         if (file.isDirectory()) {
-            final boolean watched = LibSettings.current().autoScanDirs.contains(file.getPath());
+            Set<String> autoScanDirs = LibSettings.current().autoScanDirs;
+            String mp = FileUtils.invertMountPrefix(ap);
+            final boolean watched = autoScanDirs.contains(ap) || (mp != null && autoScanDirs.contains(mp));
             holder.imageView.setImageResource(watched ? R.drawable.browser_item_folder_watched : R.drawable.browser_item_folder_open);
             holder.info.setText("");
             holder.fileSize.setText("");
         } else {
-            holder.imageView.setImageResource(R.drawable.browser_item_book);
+            final boolean wasRead = SettingsManager.getBookSettings(ap) != null;
+            holder.imageView.setImageResource(wasRead ? R.drawable.recent_item_book_watched : R.drawable.browser_item_book);
             holder.info.setText(FileUtils.getFileDate(file.lastModified()));
             holder.fileSize.setText(FileUtils.getFileSize(file.length()));
         }

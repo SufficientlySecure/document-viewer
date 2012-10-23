@@ -9,6 +9,7 @@ import org.ebookdroid.common.settings.BackupSettings;
 import org.ebookdroid.common.settings.LibSettings;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
+import org.ebookdroid.common.settings.books.Bookmark;
 import org.ebookdroid.common.settings.listeners.ILibSettingsChangeListener;
 import org.ebookdroid.common.settings.listeners.IRecentBooksChangedListener;
 import org.ebookdroid.ui.library.adapters.BookNode;
@@ -83,7 +84,7 @@ actions = {
         @ActionMethodDef(id = R.id.actions_doRenameBook, method = "doRenameBook"),
         @ActionMethodDef(id = R.id.bookmenu_delete, method = "deleteBook"),
         @ActionMethodDef(id = R.id.actions_doDeleteBook, method = "doDeleteBook"),
-        @ActionMethodDef(id = R.id.bookmenu_open, method = "openBook"),
+        @ActionMethodDef(id = R.id.actions_goToBookmark, method = "openBook"),
         @ActionMethodDef(id = R.id.bookmenu_settings, method = "openBookSettings"),
         @ActionMethodDef(id = R.id.bookmenu_openbookshelf, method = "openBookShelf"),
         @ActionMethodDef(id = R.id.bookmenu_openbookfolder, method = "openBookFolder"),
@@ -155,7 +156,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
 
             if (shouldLoad && found) {
                 changeLibraryView(RecentActivity.VIEW_RECENT);
-                showDocument(Uri.fromFile(file));
+                showDocument(Uri.fromFile(file), null);
                 return;
             }
         }
@@ -454,12 +455,13 @@ public class RecentActivityController extends ActionController<RecentActivity> i
     public void setCurrentDir(final File newDir) {
     }
 
-    @ActionMethod(ids = R.id.bookmenu_open)
+    @ActionMethod(ids = { R.id.actions_goToBookmark })
     public void openBook(final ActionEx action) {
         final BookNode book = action.getParameter(AbstractActionActivity.MENU_ITEM_SOURCE);
         final File file = new File(book.path);
         if (!file.isDirectory()) {
-            showDocument(Uri.fromFile(file));
+            final Bookmark b = action.getParameter("bookmark");
+            showDocument(Uri.fromFile(file), b);
         }
     }
 
@@ -489,9 +491,14 @@ public class RecentActivityController extends ActionController<RecentActivity> i
     }
 
     @Override
-    public void showDocument(final Uri uri) {
+    public void showDocument(final Uri uri, final Bookmark b) {
         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         intent.setClass(getManagedComponent(), ViewerActivity.class);
+        if (b != null) {
+            intent.putExtra("pageIndex", "" + b.page.viewIndex);
+            intent.putExtra("offsetX", "" + b.offsetX);
+            intent.putExtra("offsetY", "" + b.offsetY);
+        }
         getManagedComponent().startActivity(intent);
     }
 

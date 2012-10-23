@@ -35,7 +35,7 @@ public class FileBrowserView extends ListView implements AdapterView.OnItemClick
         if (selected.isDirectory()) {
             base.setCurrentDir(selected);
         } else {
-            base.showDocument(Uri.fromFile(selected));
+            base.showDocument(Uri.fromFile(selected), null);
         }
     }
 }

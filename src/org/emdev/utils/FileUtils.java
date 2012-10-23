@@ -12,10 +12,32 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.emdev.ui.progress.IProgressIndicator;
 
 public final class FileUtils {
+
+    private static Map<String, String> aliasToMountEQ = new HashMap<String, String>();
+    private static Map<String, String> aliasToMountPR = new HashMap<String, String>();
+
+    static {
+        for (final File f : new File("/").listFiles()) {
+            if (f.isDirectory()) {
+                try {
+                    final String cp = f.getCanonicalPath();
+                    final String ap = f.getAbsolutePath();
+                    if (!cp.equals(ap)) {
+                        aliasToMountEQ.put(ap, cp);
+                        aliasToMountPR.put(ap + "/", cp + "/");
+                    }
+                } catch (final IOException ex) {
+                    System.err.println(ex.getMessage());
+                }
+            }
+        }
+    }
 
     private FileUtils() {
     }
@@ -39,6 +61,38 @@ public final class FileUtils {
 
     public static final String getAbsolutePath(final File file) {
         return file != null ? file.getAbsolutePath() : null;
+    }
+
+    public static final String getCanonicalPath(final File file) {
+        try {
+            return file != null ? file.getCanonicalPath() : null;
+        } catch (final IOException ex) {
+            return null;
+        }
+    }
+
+    public static final String invertMountPrefix(final String fileName) {
+        for (final Map.Entry<String, String> entry : aliasToMountEQ.entrySet()) {
+            final String alias = entry.getKey();
+            final String mount = entry.getValue();
+            if (fileName.equals(alias)) {
+                return mount;
+            }
+            if (fileName.equals(mount)) {
+                return alias;
+            }
+        }
+        for (final Map.Entry<String, String> entry : aliasToMountPR.entrySet()) {
+            final String alias = entry.getKey();
+            final String mount = entry.getValue();
+            if (fileName.startsWith(alias)) {
+                return mount + fileName.substring(alias.length());
+            }
+            if (fileName.startsWith(mount)) {
+                return alias + fileName.substring(mount.length());
+            }
+        }
+        return null;
     }
 
     public static final String getExtensionWithDot(final File file) {

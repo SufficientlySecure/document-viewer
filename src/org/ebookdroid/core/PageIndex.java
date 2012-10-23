@@ -12,6 +12,8 @@ public class PageIndex {
 
     public static final PageIndex FIRST = new PageIndex(0, 0);
 
+    public static final PageIndex LAST = new PageIndex(Integer.MAX_VALUE, Integer.MAX_VALUE);
+
     public final int docIndex;
     public final int viewIndex;
 
@@ -33,6 +35,12 @@ public class PageIndex {
     }
 
     public Page getActualPage(final DocumentModel dm, final BookSettings bs) {
+        if (this == FIRST) {
+            return dm.getPageObject(0);
+        }
+        if (this == LAST) {
+            return dm.getLastPageObject();
+        }
         // If now page splitting is switched off:
         // The document index is valid in all cases
         if (!bs.splitPages) {

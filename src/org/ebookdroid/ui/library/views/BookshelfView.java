@@ -174,7 +174,7 @@ public class BookshelfView extends GridView implements OnItemClickListener {
         if (node != null) {
             final File file = new File(node.path);
             if (!file.isDirectory()) {
-                base.showDocument(Uri.fromFile(file));
+                base.showDocument(Uri.fromFile(file), null);
             }
         }
     }

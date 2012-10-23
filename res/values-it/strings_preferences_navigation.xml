@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-<!--<string name="pref_navigation_category">"Navigation &amp; history"</string>-->
-<!--<string name="pref_navigation_category_summary">"Navigation &amp; history settings"</string>-->
-<!--<string name="pref_showbookmarksmenu_summary">"Show bookmarks in menu"</string>-->
-<!--<string name="pref_showbookmarksmenu_title">"Show bookmarks in navigation menu"</string>-->
+    <string name="pref_navigation_category">"Navigazione e Cronologia"</string>
+    <string name="pref_navigation_category_summary">"Imposta le preferenze di navigazione e cronologia"</string>
+    <string name="pref_showbookmarksmenu_summary">"Mostra segnalibri nel menu"</string>-->
+    <string name="pref_showbookmarksmenu_title">"Mostra i segnalibri nel menu di navigazione"</string>
     <string name="pref_link_highlight_summary">"Imposta il colore con cui evidenziare i collegamenti (link)"</string>
     <string name="pref_link_highlight_title">"Evidenziatore Collegamenti"</string>
     <string name="pref_search_highlight_summary">"Imposta il colore con cui evidenziare i risultati di ricerca"</string>

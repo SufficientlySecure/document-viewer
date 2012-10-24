@@ -14,7 +14,7 @@
     <string name="list_lang_nl">"הולנדי (Nederlands)"</string>
     <string name="list_lang_ru">"רוסי (Русский)"</string>
     <string name="list_lang_uk">"אוקראיני (Український)"</string>
-<!---<string name="list_lang_zh">"Chinese (中文简体)"</string>-->
+<!--<string name="list_lang_zh">"Chinese (中文简体)"</string>-->
     <string name="list_lang_iw">"עברית"</string>
     <string name="pref_loadrecent_title">"פתח אחרונים"</string>
     <string name="pref_loadrecent_summary">"בהפעלה, באופן אוטומטי לפתוח את הספר האחרון"</string>

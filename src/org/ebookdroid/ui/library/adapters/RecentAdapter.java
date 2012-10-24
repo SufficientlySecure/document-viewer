@@ -47,10 +47,6 @@ public class RecentAdapter extends BaseAdapter {
         return i;
     }
 
-    public BookNode getNode(final String path) {
-        return nodes.get(path);
-    }
-
     @Override
     public View getView(final int i, final View view, final ViewGroup parent) {
         final ViewHolder holder = BaseViewHolder.getOrCreateViewHolder(ViewHolder.class, R.layout.recentitem, view,
@@ -75,30 +71,59 @@ public class RecentAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public BookNode getNode(final String path) {
+        final BookNode n = nodes.get(path);
+        if (n != null) {
+            return n;
+        }
+        final String mpath = FileUtils.invertMountPrefix(path);
+        return mpath != null ? nodes.get(mpath) : null;
+    }
+
     public void setBooks(final Collection<BookSettings> books, final FileExtensionFilter filter) {
         this.books.clear();
         this.nodes.clear();
         for (final BookSettings bs : books) {
             if (filter == null || filter.accept(bs.fileName)) {
                 final BookNode node = new BookNode(bs);
-                this.books.add(node);
-                nodes.put(node.path, node);
+                addNode(node);
             }
         }
         notifyDataSetChanged();
     }
 
+    public void addNode(final BookNode node) {
+        this.books.add(node);
+        nodes.put(node.path, node);
+        if (node.mpath != null) {
+            nodes.put(node.mpath, node);
+        }
+    }
+
     public void replaceBook(final BookNode origin, final BookSettings target) {
         if (origin != null) {
-            final BookNode oldNode = nodes.remove(origin.path);
-            books.remove(oldNode != null ? oldNode : origin);
+            final BookNode oldNode1 = nodes.remove(origin.path);
+            final BookNode oldNode2 = origin.mpath != null ? nodes.remove(origin.mpath) : null;
+            if (oldNode1 != null) {
+                books.remove(oldNode1);
+            }
+            if (oldNode2 != null) {
+                books.remove(oldNode2);
+            }
+            books.remove(origin);
         }
 
         final BookNode newNode = new BookNode(target);
-        final BookNode prevNode = nodes.put(newNode.path, newNode);
-        if (prevNode != null) {
-            books.remove(prevNode);
+        final BookNode prevNode1 = nodes.put(newNode.path, newNode);
+        final BookNode prevNode2 = newNode.mpath != null ? nodes.put(newNode.mpath, newNode) : null;
+
+        if (prevNode1 != null) {
+            books.remove(prevNode1);
         }
+        if (prevNode2 != null) {
+            books.remove(prevNode2);
+        }
+
         books.add(0, newNode);
         notifyDataSetChanged();
     }
@@ -106,6 +131,9 @@ public class RecentAdapter extends BaseAdapter {
     public void removeBook(final BookNode book) {
         if (books.remove(book)) {
             nodes.remove(book.path);
+            if (book.mpath != null) {
+                nodes.remove(book.mpath);
+            }
             notifyDataSetChanged();
         }
     }

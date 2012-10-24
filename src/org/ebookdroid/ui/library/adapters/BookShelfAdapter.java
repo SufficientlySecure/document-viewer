@@ -14,6 +14,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 
 import org.emdev.ui.adapters.BaseViewHolder;
+import org.emdev.utils.FileUtils;
 import org.emdev.utils.StringUtils;
 
 public class BookShelfAdapter extends BaseAdapter {
@@ -24,6 +25,7 @@ public class BookShelfAdapter extends BaseAdapter {
     public final int id;
     public final String name;
     public final String path;
+    public final String mpath;
 
     final List<BookNode> nodes = new ArrayList<BookNode>();
 
@@ -32,6 +34,7 @@ public class BookShelfAdapter extends BaseAdapter {
         this.id = index;
         this.name = name;
         this.path = path;
+        this.mpath = FileUtils.invertMountPrefix(path);
     }
 
     @Override

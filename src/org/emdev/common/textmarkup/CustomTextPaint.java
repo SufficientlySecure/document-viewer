@@ -10,6 +10,8 @@ import org.emdev.common.textmarkup.line.LineWhiteSpace;
 
 public class CustomTextPaint extends TextPaint {
 
+    private static final ThreadLocal<char[]> chars = new ThreadLocal<char[]>();
+
     public final int key;
 
     public final LineWhiteSpace space;
@@ -84,12 +86,11 @@ public class CustomTextPaint extends TextPaint {
         }
     }
 
-    private final char[] temp = new char[256];
-
     @Override
     public float measureText(final char[] text, final int index, final int count) {
         float sum = 0;
         int tempIndex = 0;
+        char[] temp = chars.get();
         for (int i = index, n = 0; n < count; i++, n++) {
             final char ch = text[i];
             final int code = ch;
@@ -108,6 +109,10 @@ public class CustomTextPaint extends TextPaint {
                     sum += punct[code & 0x00FF];
                     break;
                 default:
+                    if (temp == null) {
+                        temp = new char[256];
+                        chars.set(temp);
+                    }
                     if (tempIndex < temp.length) {
                         temp[tempIndex++] = ch;
                     } else {

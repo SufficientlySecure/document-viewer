@@ -16,7 +16,7 @@ import org.emdev.utils.MathUtils;
 
 class BitmapRef extends AbstractBitmapRef {
 
-    private Bitmap bitmap;
+    private volatile Bitmap bitmap;
     private boolean hacked;
 
     BitmapRef(final Bitmap bitmap, final long generation) {
@@ -27,22 +27,26 @@ class BitmapRef extends AbstractBitmapRef {
         }
     }
 
+    @Override
     public Canvas getCanvas() {
         return new Canvas(bitmap);
     }
 
+    @Override
     public Bitmap getBitmap() {
         return bitmap;
     }
 
+    @Override
     public void draw(final Canvas canvas, final PagePaint paint, final Rect src, final RectF r) {
         src.set(0, 0, this.width, this.height);
-        RectF dst = MathUtils.round(r);
-        Paint p = paint.bitmapPaint;
+        final RectF dst = MathUtils.round(r);
+        final Paint p = paint.bitmapPaint;
         draw(canvas, src, dst, p);
     }
 
-    public void draw(final Canvas canvas, final Rect src, RectF dst, Paint p) {
+    @Override
+    public void draw(final Canvas canvas, final Rect src, final RectF dst, final Paint p) {
         if (this.bitmap != null) {
             try {
                 if (!canvas.quickReject(dst, EdgeType.BW)) {
@@ -54,7 +58,8 @@ class BitmapRef extends AbstractBitmapRef {
         }
     }
 
-    public void draw(final Canvas canvas, final Rect src, Rect dst, Paint p) {
+    @Override
+    public void draw(final Canvas canvas, final Rect src, final Rect dst, final Paint p) {
         if (this.bitmap != null) {
             try {
                 canvas.drawBitmap(this.bitmap, src, dst, p);
@@ -64,28 +69,34 @@ class BitmapRef extends AbstractBitmapRef {
         }
     }
 
+    @Override
     public void getPixels(final RawBitmap slice, final int left, final int top, final int width, final int height) {
         slice.width = width;
         slice.height = height;
         bitmap.getPixels(slice.pixels, 0, width, left, top, width, height);
     }
 
-    public void getPixels(int[] pixels, int width, int height) {
+    @Override
+    public void getPixels(final int[] pixels, final int width, final int height) {
         bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
     }
 
-    public void setPixels(int[] pixels, int width, int height) {
+    @Override
+    public void setPixels(final int[] pixels, final int width, final int height) {
         bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
     }
 
+    @Override
     public void setPixels(final RawBitmap raw) {
         bitmap.setPixels(raw.pixels, 0, raw.width, 0, 0, raw.width, raw.height);
     }
 
+    @Override
     public void eraseColor(final int color) {
         bitmap.eraseColor(color);
     }
 
+    @Override
     public int getAverageColor() {
         final int w = Math.min(bitmap.getWidth(), 7);
         final int h = Math.min(bitmap.getHeight(), 7);
@@ -106,6 +117,7 @@ class BitmapRef extends AbstractBitmapRef {
         return Color.rgb((int) (r & 0xFF), (int) (g & 0xFF), (int) (b & 0xFF));
     }
 
+    @Override
     public boolean isRecycled() {
         if (bitmap != null) {
             if (!bitmap.isRecycled()) {
@@ -120,16 +132,18 @@ class BitmapRef extends AbstractBitmapRef {
         return true;
     }
 
+    @Override
     void recycle() {
-        if (bitmap != null) {
+        final Bitmap b = bitmap;
+        bitmap = null;
+        if (b != null) {
             if (BitmapManager.useEarlyRecycling) {
-                bitmap.recycle();
+                b.recycle();
             }
             if (hacked) {
                 hacked = false;
                 VMRuntimeHack.trackAlloc(size);
             }
-            bitmap = null;
         }
     }
 
@@ -139,11 +153,13 @@ class BitmapRef extends AbstractBitmapRef {
                 + "]";
     }
 
-    public void draw(Canvas canvas, int left, int top, Paint paint) {
+    @Override
+    public void draw(final Canvas canvas, final int left, final int top, final Paint paint) {
         canvas.drawBitmap(bitmap, left, top, paint);
     }
 
-    public void draw(Canvas canvas, Matrix matrix, Paint paint) {
+    @Override
+    public void draw(final Canvas canvas, final Matrix matrix, final Paint paint) {
         canvas.drawBitmap(bitmap, matrix, paint);
     }
 }

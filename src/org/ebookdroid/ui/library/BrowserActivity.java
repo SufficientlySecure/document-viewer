@@ -3,6 +3,7 @@ package org.ebookdroid.ui.library;
 import org.ebookdroid.CodecType;
 import org.ebookdroid.R;
 import org.ebookdroid.common.cache.CacheManager;
+import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.LibSettings;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
@@ -49,6 +50,7 @@ import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.emdev.BaseDroidApp;
 import org.emdev.common.android.AndroidVersion;
@@ -146,6 +148,11 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
             final String absolutePath = savedInstanceState.getString(CURRENT_DIRECTORY);
             if (absolutePath != null) {
                 setCurrentDir(new File(absolutePath));
+            }
+        } else {
+            final Set<String> dirs = LibSettings.current().autoScanDirs;
+            if (LengthUtils.isNotEmpty(dirs)) {
+                setCurrentDir(new File(dirs.iterator().next()));
             }
         }
 

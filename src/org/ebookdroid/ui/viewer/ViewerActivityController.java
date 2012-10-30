@@ -51,6 +51,7 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputType;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -582,10 +583,10 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
         final String message = getManagedComponent().getString(R.string.add_bookmark_name);
 
-        final EditText input = new EditText(getManagedComponent());
-
         final BookSettings bs = getBookSettings();
         final int offset = bs != null ? bs.firstPageOffset : 1;
+
+        final EditText input = (EditText) LayoutInflater.from(getManagedComponent()).inflate(R.layout.bookmark_edit, null);
         input.setText(getManagedComponent().getString(R.string.text_page) + " " + (page + offset));
         input.selectAll();
 

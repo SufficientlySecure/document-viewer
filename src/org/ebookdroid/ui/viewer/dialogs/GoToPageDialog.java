@@ -12,6 +12,7 @@ import org.ebookdroid.ui.viewer.adapters.BookmarkAdapter;
 import android.app.Dialog;
 import android.content.Context;
 import android.text.Editable;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -170,7 +171,7 @@ public class GoToPageDialog extends Dialog {
         final View view = action.getParameter(IActionController.VIEW_PROPERTY);
         final Bookmark bookmark = (Bookmark) view.getTag();
 
-        final EditText input = new EditText(context);
+        final EditText input = (EditText) LayoutInflater.from(getContext()).inflate(R.layout.bookmark_edit, null);
         final ActionDialogBuilder builder = new ActionDialogBuilder(getContext(), actions);
         builder.setMessage(R.string.add_bookmark_name);
         builder.setView(input);

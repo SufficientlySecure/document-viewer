@@ -12,9 +12,9 @@ import org.emdev.utils.HyphenationUtils;
 
 public class TextElement extends AbstractLineElement {
 
-    private static final int[] starts = new int[100];
-    private static final int[] lengths = new int[100];
-    private static final float[] parts = new float[100];
+    protected static final int[] starts = new int[100];
+    protected static final int[] lengths = new int[100];
+    protected static final float[] parts = new float[100];
 
     public final char[] chars;
     public final int start;

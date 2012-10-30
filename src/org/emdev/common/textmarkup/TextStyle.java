@@ -26,7 +26,13 @@ public enum TextStyle {
     /**
      *
      */
-    FOOTNOTE(0.84f);
+    FOOTNOTE(0.84f),
+
+    /**
+    *
+    */
+    PREFORMATTED(0.75f),
+    ;
 
     public static final int TEXT_SIZE = 24;
 

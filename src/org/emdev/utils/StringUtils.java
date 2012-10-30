@@ -199,7 +199,7 @@ public class StringUtils {
         return NFC;
     }
 
-    public static int split(char[] str, int begin, int len, int[] outStart, int[] outLength) {
+    public static int split(char[] str, int begin, int len, int[] outStart, int[] outLength, boolean lineBreaksOnly) {
         if (str == null) {
             return 0;
         }
@@ -210,7 +210,7 @@ public class StringUtils {
         int index = 0;
         boolean match = false;
         while (i < begin + len) {
-            if (str[i] == 0x20 || str[i] == 0x0D || str[i] == 0x0A || str[i] == 0x09) {
+            if ((lineBreaksOnly && (str[i] == 0x0D || str[i] == 0x0A)) || (!lineBreaksOnly && (str[i] == 0x20 || str[i] == 0x0D || str[i] == 0x0A || str[i] == 0x09))) {
                 if (match) {
                     outStart[index] = start;
                     outLength[index] = i - start;

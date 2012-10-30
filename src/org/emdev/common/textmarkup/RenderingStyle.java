@@ -34,6 +34,17 @@ public class RenderingStyle {
         this.defis = new TextElement(new char[] { '-' }, 0, 1, this);
     }
 
+    public RenderingStyle(final ParsedContent content, final TypefaceEx face, final TextStyle text) {
+        this.textSize = text.getFontSize();
+        this.jm = JustificationMode.Justify;
+        this.face = face;
+        this.paint = getTextPaint(face, this.textSize);
+        this.script = null;
+        this.strike = null;
+
+        this.defis = new TextElement(new char[] { '-' }, 0, 1, this);
+    }
+
     public RenderingStyle(final RenderingStyle old, final Script script) {
         this.textSize = ((script == null) || (script != null && old.script != null)) ? old.textSize
                 : old.textSize / 2;

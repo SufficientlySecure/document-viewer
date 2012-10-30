@@ -106,6 +106,12 @@ public abstract class BaseHandler implements IContentHandler {
         return crs;
     }
 
+    protected final RenderingStyle setPreformatted() {
+        renderingStates.addFirst(crs);
+        crs = new RenderingStyle(parsedContent, parsedContent.mono, TextStyle.PREFORMATTED);
+        return crs;
+    }
+
     protected MarkupElement emptyLine(final int textSize) {
         return crs.paint.emptyLine;
     }

@@ -17,10 +17,13 @@ import org.emdev.ui.tasks.BaseAsyncTask;
 import org.emdev.utils.FileUtils;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.StringUtils;
+import org.emdev.utils.listeners.ListenerProxy;
 
 public class CacheManager extends org.emdev.common.cache.CacheManager {
 
     private static final Map<String, SoftReference<ThumbnailFile>> thumbmails = new HashMap<String, SoftReference<ThumbnailFile>>();
+
+    public static final ListenerProxy listeners = new ListenerProxy(ICacheListener.class);
 
     public static void setCacheLocation(final CacheLocation cacheLocation, final boolean moveFiles) {
         File cacheDir = s_context.getFilesDir();
@@ -62,9 +65,9 @@ public class CacheManager extends org.emdev.common.cache.CacheManager {
             return file;
         }
 
-        file = new ThumbnailFile(s_cacheDir, amd5 + ".thumbnail");
+        file = new ThumbnailFile(path, s_cacheDir, amd5 + ".thumbnail");
         if (!file.exists()) {
-            final ThumbnailFile f = new ThumbnailFile(s_cacheDir, mmd5 + ".thumbnail");
+            final ThumbnailFile f = new ThumbnailFile(path, s_cacheDir, mmd5 + ".thumbnail");
             file = f.exists() ? f : file;
         }
 
@@ -158,5 +161,11 @@ public class CacheManager extends org.emdev.common.cache.CacheManager {
             final String text = context.getResources().getString(R.string.cache_moving_progress, args);
             publishProgress(text);
         }
+    }
+
+    public static interface ICacheListener {
+
+        void onThumbnailChanged(ThumbnailFile tf);
+
     }
 }

@@ -2,6 +2,7 @@ package org.ebookdroid.common.cache;
 
 import org.ebookdroid.R;
 import org.ebookdroid.common.bitmaps.BitmapManager;
+import org.ebookdroid.common.cache.CacheManager.ICacheListener;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,14 +24,17 @@ public class ThumbnailFile extends File {
 
     private static final AsyncTaskExecutor executor = new AsyncTaskExecutor(256, 1, 5, 1, "ThumbnailLoader");
 
+    public final String book;
+
     private static Bitmap defaultImage;
 
     private final AtomicReference<Bitmap> ref = new AtomicReference<Bitmap>();
 
     private ImageLoadingListener listener;
 
-    ThumbnailFile(final File dir, final String name) {
+    ThumbnailFile(final String book, final File dir, final String name) {
         super(dir, name);
+        this.book = book;
     }
 
     public Bitmap getImage() {
@@ -83,6 +87,8 @@ public class ThumbnailFile extends File {
         } else {
             this.delete();
         }
+        final ICacheListener l = CacheManager.listeners.getListener();
+        l.onThumbnailChanged(this);
     }
 
     private Bitmap load(final boolean raw) {

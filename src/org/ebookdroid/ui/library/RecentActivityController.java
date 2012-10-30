@@ -3,6 +3,7 @@ package org.ebookdroid.ui.library;
 import org.ebookdroid.CodecType;
 import org.ebookdroid.R;
 import org.ebookdroid.common.cache.CacheManager;
+import org.ebookdroid.common.cache.CacheManager.ICacheListener;
 import org.ebookdroid.common.cache.ThumbnailFile;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.BackupSettings;
@@ -101,7 +102,7 @@ actions = {
 // finish
 })
 public class RecentActivityController extends ActionController<RecentActivity> implements IBrowserActivity,
-        ILibSettingsChangeListener, IRecentBooksChangedListener {
+        ILibSettingsChangeListener, IRecentBooksChangedListener, ICacheListener {
 
     public static final AtomicBoolean working = new AtomicBoolean();
 
@@ -132,6 +133,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         if (LCTX.isDebugEnabled()) {
             LCTX.d("onCreate(): " + getManagedComponent());
         }
+        CacheManager.listeners.addListener(this);
 
         recentAdapter = new RecentAdapter(this);
         bookshelfAdapter = new BooksAdapter(this, recentAdapter);
@@ -240,6 +242,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         }
         if (finishing) {
             working.set(false);
+            CacheManager.listeners.removeListener(this);
         }
     }
 
@@ -590,12 +593,27 @@ public class RecentActivityController extends ActionController<RecentActivity> i
     }
 
     @Override
+    public void onThumbnailChanged(final ThumbnailFile tf) {
+        getManagedComponent().runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                final BookNode node = recentAdapter.getNode(tf.book);
+                if (node != null) {
+                    System.out.println("RecentActivityController.onThumbnailChanged(...).new Runnable() {...}.run()");
+                    recentAdapter.notifyDataSetInvalidated();
+                    final BookShelfAdapter bookShelf = getBookShelf(node);
+                    if (bookShelf != null) {
+                        bookShelf.notifyDataSetInvalidated();
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
     public void loadThumbnail(final String path, final ImageView imageView, final int defaultResID) {
-        final ThumbnailFile oldTF = (ThumbnailFile) imageView.getTag();
         final ThumbnailFile newTF = CacheManager.getThumbnailFile(path);
-        if (oldTF == newTF) {
-            return;
-        }
         imageView.setTag(newTF);
 
         final Bitmap defImage = def.getImage();

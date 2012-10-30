@@ -465,7 +465,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
                 break;
             case CODE:
                 setPrevStyle();
-                parsingPreformatted  = false;
+                parsingPreformatted = false;
                 parsingPreformattedLevel = -1;
                 if (!paragraphParsing) {
                     markupStream.add(MarkupParagraphEnd.E);
@@ -529,7 +529,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
                     if (parsingNotes) {
                         if (noteFirstWord) {
                             noteFirstWord = false;
-                            int id = getNoteId(ch, st, len);
+                            final int id = getNoteId(ch, st, len);
                             if (id == noteId) {
                                 continue;
                             }
@@ -582,7 +582,9 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
         if (persistent) {
             return new TextPreElement(ch, st, len, style);
         }
-        return null;
+        final char[] chars = new char[len];
+        System.arraycopy(ch, st, chars, 0, len);
+        return new TextPreElement(chars, 0, len, style);
     }
 
 }

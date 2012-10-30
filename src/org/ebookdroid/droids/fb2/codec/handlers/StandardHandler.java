@@ -110,8 +110,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
                     currentStream = attributes[0];
                     if (currentStream != null) {
                         final String n = getNoteId(currentStream, true);
-                        parsedContent.getMarkupStream(currentStream).add(
-                                text(n.toCharArray(), 0, n.length(), crs, true));
+                        parsedContent.getMarkupStream(currentStream).add(text(n.toCharArray(), 0, n.length(), crs, true));
                         parsedContent.getMarkupStream(currentStream).add(crs.paint.fixedSpace);
                         noteFirstWord = true;
                     }
@@ -167,8 +166,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
                         currentStream = attributes[0];
                         if (currentStream != null) {
                             final String n = getNoteId(currentStream, true);
-                            parsedContent.getMarkupStream(currentStream).add(
-                                    text(n.toCharArray(), 0, n.length(), crs, true));
+                            parsedContent.getMarkupStream(currentStream).add(text(n.toCharArray(), 0, n.length(), crs, true));
                             parsedContent.getMarkupStream(currentStream).add(crs.paint.fixedSpace);
                             noteFirstWord = true;
                         }

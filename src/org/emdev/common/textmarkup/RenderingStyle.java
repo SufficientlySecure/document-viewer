@@ -6,7 +6,6 @@ import android.util.SparseArray;
 
 import org.emdev.common.fonts.data.FontStyle;
 import org.emdev.common.fonts.typeface.TypefaceEx;
-import org.emdev.common.textmarkup.RenderingStyle.Script;
 import org.emdev.common.textmarkup.line.TextElement;
 
 public class RenderingStyle {

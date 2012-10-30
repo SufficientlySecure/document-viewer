@@ -28,6 +28,7 @@ public class BookShelfAdapter extends BaseAdapter {
     public final String mpath;
 
     final List<BookNode> nodes = new ArrayList<BookNode>();
+    public boolean measuring = false;
 
     public BookShelfAdapter(final IBrowserActivity base, final int index, final String name, final String path) {
         this.base = base;
@@ -59,8 +60,10 @@ public class BookShelfAdapter extends BaseAdapter {
 
         final BookNode node = nodes.get(position);
 
-        holder.textView.setText(StringUtils.cleanupTitle(node.name));
-        base.loadThumbnail(node.path, holder.imageView, R.drawable.recent_item_book);
+        if (!measuring) {
+            holder.textView.setText(StringUtils.cleanupTitle(node.name));
+            base.loadThumbnail(node.path, holder.imageView, R.drawable.recent_item_book);
+        }
 
         return holder.getView();
     }

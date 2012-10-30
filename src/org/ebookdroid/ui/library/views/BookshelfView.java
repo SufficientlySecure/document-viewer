@@ -178,4 +178,17 @@ public class BookshelfView extends GridView implements OnItemClickListener {
             }
         }
     }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (adapter != null) {
+            adapter.measuring = true;
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        if (adapter != null) {
+            adapter.measuring = false;
+        }
+    }
+
+
 }

@@ -89,7 +89,7 @@ public class DuckbillParser {
                                 entity = (char) StringUtils.parseInt(r.XmlDoc, r.XmlOffset, endOfEntity - r.XmlOffset, 10);
                             }
                         } else {
-                            int idx = r.XmlOffset + 1;
+                            int idx = r.XmlOffset;
                             if (r.XmlDoc[idx] == 'q' &&
                                     r.XmlDoc[idx+1] == 'o' &&
                                     r.XmlDoc[idx+2] == 'u' &&

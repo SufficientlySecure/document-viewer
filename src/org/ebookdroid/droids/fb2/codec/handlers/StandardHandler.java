@@ -122,8 +122,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
                 break;
             case V:
                 paragraphParsing = true;
-                markupStream.add(crs.paint.pOffset);
-                markupStream.add(crs.paint.vOffset);
+                markupStream.add(new MarkupExtraSpace((int) (crs.paint.pOffset.width + crs.paint.vOffset.width)));
                 break;
             case BINARY:
                 tmpBinaryName = attributes[0];
@@ -320,7 +319,14 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
             case LI:
                 markupStream.add(new MarkupExtraSpace(-(int) (crs.paint.pOffset.width * ulLevel)));
             case P:
+                if (!skipContent) {
+                    markupStream.add(MarkupParagraphEnd.E);
+                }
+                paragraphParsing = false;
+                break;
             case V:
+                markupStream.add(new MarkupExtraSpace(-(int) (crs.paint.pOffset.width + crs.paint.vOffset.width)));
+
                 if (!skipContent) {
                     markupStream.add(MarkupParagraphEnd.E);
                 }

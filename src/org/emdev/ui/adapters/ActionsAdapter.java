@@ -32,13 +32,15 @@ public class ActionsAdapter extends BaseAdapter {
     public long getItemId(final int position) {
         return position;
     }
-    
+
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent)
     {
         final ViewHolder holder = BaseViewHolder.getOrCreateViewHolder(ViewHolder.class, R.layout.list_dropdown_item,
                 convertView, parent);
 
+        holder.textView.setSingleLine();
+        holder.textView.setMarqueeRepeatLimit(-1);
         holder.textView.setText(getItem(position));
 
         return holder.getView();

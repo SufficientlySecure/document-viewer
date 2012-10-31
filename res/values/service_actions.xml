@@ -3,52 +3,78 @@
 
     <string-array name="list_actions_ids" translatable="false">
         <item></item>
+
+        <item>actions_openOptionsMenu</item>
+
+        <item>mainmenu_outline</item>
+        <item>mainmenu_search</item>
         <item>mainmenu_bookmark</item>
         <item>mainmenu_goto_page</item>
-        <item>mainmenu_search</item>
-        <item>mainmenu_outline</item>
-        <item>mainmenu_zoom</item>
+
+        <item>mainmenu_fullscreen</item>
+        <item>mainmenu_showtitle</item>
         <item>mainmenu_nightmode</item>
-        <item>mainmenu_booksettings</item>
-        <item>mainmenu_settings</item>
+        <item>mainmenu_splitpages</item>
+        <item>mainmenu_croppages</item>
+        <item>mainmenu_crop</item>
         <item>mainmenu_thumbnail</item>
-        <item>mainmenu_about</item>
-        <item>mainmenu_close</item>
-        <item>actions_toggleTouchManagerView</item>
-        <item>actions_openOptionsMenu</item>
-        <item>actions_verticalConfigScrollUp</item>
-        <item>actions_verticalConfigScrollDown</item>
+        <item>mainmenu_zoom</item>
         <item>actions_quickZoom</item>
         <item>actions_zoomToColumn</item>
+
+        <item>mainmenu_booksettings</item>
+        <item>mainmenu_settings</item>
+        <item>actions_toggleTouchManagerView</item>
+        <item>actions_keyBindings</item>
+
+        <item>actions_verticalConfigScrollUp</item>
+        <item>actions_verticalConfigScrollDown</item>
         <item>actions_leftTopCorner</item>
         <item>actions_rightTopCorner</item>
         <item>actions_leftBottomCorner</item>
         <item>actions_rightBottomCorner</item>
-        </string-array>
+
+        <item>mainmenu_about</item>
+        <item>mainmenu_close</item>
+
+    </string-array>
 
     <string-array name="list_actions_labels" translatable="false">
         <item></item>
+
+        <item>@string/menu_show_options_menu</item>
+
+        <item>@string/menu_outline</item>
+        <item>@string/menu_searchtext</item>
         <item>@string/menu_add_bookmark</item>
         <item>@string/menu_goto_page</item>
-        <item>@string/menu_searchtext</item>
-        <item>@string/menu_outline</item>
-        <item>@string/menu_zoom</item>
+
+        <item>@string/pref_fullscreen_title</item>
+        <item>@string/pref_title_title</item>
         <item>@string/menu_nightmode</item>
-        <item>@string/menu_booksettings</item>
-        <item>@string/menu_settings</item>
+        <item>@string/pref_splitpages_title</item>
+        <item>@string/pref_croppages_title</item>
+        <item>@string/menu_crop</item>
         <item>@string/menu_thumbnail</item>
-        <item>@string/menu_about</item>
-        <item>@string/menu_close</item>
-        <item>@string/menu_tap_configuration</item>
-        <item>@string/menu_show_options_menu</item>
-        <item>@string/actions_verticalConfigScrollUp</item>
-        <item>@string/actions_verticalConfigScrollDown</item>
+        <item>@string/menu_zoom</item>
         <item>@string/actions_quickZoom</item>
         <item>@string/actions_zoomToColumn</item>
+
+        <item>@string/menu_booksettings</item>
+        <item>@string/menu_settings</item>
+        <item>@string/menu_tap_configuration</item>
+        <item>@string/menu_key_bindings</item>
+
+        <item>@string/actions_verticalConfigScrollUp</item>
+        <item>@string/actions_verticalConfigScrollDown</item>
         <item>@string/actions_leftTopCorner</item>
         <item>@string/actions_rightTopCorner</item>
         <item>@string/actions_leftBottomCorner</item>
         <item>@string/actions_rightBottomCorner</item>
-        </string-array>
+
+        <item>@string/menu_about</item>
+        <item>@string/menu_close</item>
+
+    </string-array>
 
 </resources>

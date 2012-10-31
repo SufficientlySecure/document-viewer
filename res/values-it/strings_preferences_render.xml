@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
+    <string name="pref_rotation_title">"Orientamento"</string>
+    <string name="pref_rotation_summary">"Specifica la modalità di rotazione dello schermo"</string>
+    <string name="list_rotation_unspecified">"Non specificata"</string>
+    <string name="list_rotation_land">"Forza modalità album"</string>
+    <string name="list_rotation_port">"Forza modalità ritratto"</string>
+    <string name="list_rotation_user">"Specificata dall'utente"</string>
+    <string name="list_rotation_behind">"Ereditata dall'app sottostante"</string>
+    <string name="list_rotation_auto">"Automatica"</string>
+    <string name="list_rotation_nosensor">"Manuale (senza sensore)"</string>
+    <string name="list_rotation_sensor_landscape">"Modalità album con sensore per inversione"</string>
+    <string name="list_rotation_sensor_portrait">"Modalità ritratto con sensore per inversione"</string>
+    <string name="list_rotation_reverse_landscape">"Forza modalità album invertito"</string>
+    <string name="list_rotation_reverse_portrait">"Forza modalità ritratto invertito"</string>
+    <string name="list_rotation_full_sensor">"Gestita dal sensore"</string>
     <string name="pref_render_category">"Impostazioni generali di visualizzazione"</string>
     <string name="pref_render_category_summary">"Imposta le modalità generali di visualizzazione della pagina e del testo"</string>
     <string name="pref_book_category">"Impostazioni per il libro corrente"</string>

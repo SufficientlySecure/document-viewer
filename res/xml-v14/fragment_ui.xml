@@ -45,14 +45,6 @@
             android:summary="@string/pref_keepscreenon_summary"
             android:title="@string/pref_keepscreenon_title" />
 
-    <ListPreference
-            android:defaultValue="@string/pref_rotation_auto"
-            android:entries="@array/pref_rotation_entries_10"
-            android:entryValues="@array/pref_rotation_values_10"
-            android:key="@string/pref_rotation_id"
-            android:summary="@string/pref_rotation_summary"
-            android:title="@string/pref_rotation_title" />
-
     <org.emdev.ui.preference.SwitchPreferenceEx
             android:defaultValue="@string/pref_fullscreen_defvalue"
             android:key="@string/pref_fullscreen_id"

@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
+    <string name="pref_rotation_title">"Режим поворота"</string>
+    <string name="pref_rotation_summary">"Какой режим использовать"</string>
+    <string name="list_rotation_unspecified">"Как есть"</string>
+    <string name="list_rotation_land">"Форсировать альбом"</string>
+    <string name="list_rotation_port">"Форсировать портрет"</string>
+    <string name="list_rotation_user">"Пользовательский"</string>
+    <string name="list_rotation_behind">"Фоновый"</string>
+    <string name="list_rotation_auto">"Автоматически"</string>
+    <string name="list_rotation_nosensor">"Без сенсора"</string>
+    <string name="list_rotation_sensor_landscape">"Сенсор ландшафт"</string>
+    <string name="list_rotation_sensor_portrait">"Сенсор портрет"</string>
+    <string name="list_rotation_reverse_landscape">"Обратный ландшафт"</string>
+    <string name="list_rotation_reverse_portrait">"Обратный портрет"</string>
+    <string name="list_rotation_full_sensor">"Полный сенсор"</string>
     <string name="pref_render_category">"Отрисовка"</string>
     <string name="pref_render_category_summary">"Настройки отрисовки"</string>
     <string name="pref_book_category">"Настройки книги"</string>

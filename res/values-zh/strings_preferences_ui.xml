@@ -26,20 +26,6 @@
     <string name="pref_brightnessnightmodeonly_summary">"亮度设置在夜间模式中应用"</string>
     <string name="pref_keepscreenon_title">"保持屏幕"</string>
     <string name="pref_keepscreenon_summary">"始终保持屏幕"</string>
-    <string name="pref_rotation_title">"旋转模式"</string>
-    <string name="pref_rotation_summary">"如何改变旋转"</string>
-    <string name="list_rotation_unspecified" translatable="true">"Unspecified"</string>
-    <string name="list_rotation_land" translatable="true">"Force landscape"</string>
-    <string name="list_rotation_port" translatable="true">"Force portrait"</string>
-    <string name="list_rotation_user" translatable="true">"User"</string>
-    <string name="list_rotation_behind" translatable="true">"Behind"</string>
-    <string name="list_rotation_auto" translatable="true">"Automatic"</string>
-    <string name="list_rotation_nosensor" translatable="true">"No sensor"</string>
-    <string name="list_rotation_sensor_landscape" translatable="true">"Sensor landscape"</string>
-    <string name="list_rotation_sensor_portrait" translatable="true">"Sensor portrait"</string>
-    <string name="list_rotation_reverse_landscape" translatable="true">"Reverse landscape"</string>
-    <string name="list_rotation_reverse_portrait" translatable="true">"Reverse portrait"</string>
-    <string name="list_rotation_full_sensor" translatable="true">"Full sensor"</string>
     <string name="pref_fullscreen_title">"全屏幕"</string>
     <string name="pref_fullscreen_summary">"隐藏状态栏。"</string>
     <string name="pref_title_title">"显示标题"</string>

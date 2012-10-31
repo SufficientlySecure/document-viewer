@@ -47,14 +47,6 @@
             android:summary="@string/pref_keepscreenon_summary"
             android:title="@string/pref_keepscreenon_title" />
 
-    <ListPreference
-            android:defaultValue="@string/pref_rotation_auto"
-            android:entries="@array/pref_rotation_entries_3"
-            android:entryValues="@array/pref_rotation_values_3"
-            android:key="@string/pref_rotation_id"
-            android:summary="@string/pref_rotation_summary"
-            android:title="@string/pref_rotation_title" />
-
     <CheckBoxPreference
             android:defaultValue="@string/pref_fullscreen_defvalue"
             android:key="@string/pref_fullscreen_id"

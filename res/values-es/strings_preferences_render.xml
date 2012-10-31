@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
+    <string name="pref_rotation_title">"Modo de rotación"</string>
+    <string name="pref_rotation_summary">"Cómo actúa la rotación"</string>
+    <string name="list_rotation_unspecified">"Sin especificar"</string>
+    <string name="list_rotation_land">"Forzar apaisado"</string>
+    <string name="list_rotation_port">"Forzar retrato"</string>
+    <string name="list_rotation_user">"Usuario"</string>
+<!--<string name="list_rotation_behind">"Inherit from background"</string>-->
+    <string name="list_rotation_auto">"Automático"</string>
+    <string name="list_rotation_nosensor">"Pasar de sensores"</string>
+    <string name="list_rotation_sensor_landscape">"Sensor apaisado"</string>
+    <string name="list_rotation_sensor_portrait">"Sensor retrato"</string>
+    <string name="list_rotation_reverse_landscape">"Modo apaisado invertido"</string>
+    <string name="list_rotation_reverse_portrait">"Modo retrato invertido"</string>
+    <string name="list_rotation_full_sensor">"Sensor completo"</string>
     <string name="pref_render_category">"Representación"</string>
     <string name="pref_render_category_summary">"Configuración de la Representación"</string>
     <string name="pref_book_category">"Configuración del libro"</string>

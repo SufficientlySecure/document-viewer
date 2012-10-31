@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
+    <string name="pref_rotation_title">"מצב סיבוב"</string>
+    <string name="pref_rotation_summary">"באיזה מצב להשתמש"</string>
+    <string name="list_rotation_unspecified">"כמו שהוא"</string>
+    <string name="list_rotation_land">"לאלץ את מסך לרוחב"</string>
+    <string name="list_rotation_port">"לאלץ את מסך לגובה"</string>
+    <string name="list_rotation_user">"של משתמש"</string>
+    <string name="list_rotation_behind">"ברקע"</string>
+    <string name="list_rotation_auto">"באופן אוטומטי"</string>
+    <string name="list_rotation_nosensor">"בלי חיישן"</string>
+    <string name="list_rotation_sensor_landscape">"חיישן לרוחב"</string>
+    <string name="list_rotation_sensor_portrait">"חיישן לגובה"</string>
+    <string name="list_rotation_reverse_landscape">"לרוחב הפוך"</string>
+    <string name="list_rotation_reverse_portrait">"לרוחב הפוך"</string>
+    <string name="list_rotation_full_sensor">"חיישן מלא"</string>
     <string name="pref_render_category">"כוח ציור"</string>
     <string name="pref_render_category_summary">"הגדרות של כוח ציור"</string>
     <string name="pref_book_category">"הגדרות הספר"</string>

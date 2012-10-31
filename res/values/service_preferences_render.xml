@@ -1,6 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
+    <string translatable="false" name="pref_rotation_id">rotation</string>
+    <string translatable="false" name="pref_rotation_unspecified">Unspecified</string>
+    <string translatable="false" name="pref_rotation_land">Force landscape</string>
+    <string translatable="false" name="pref_rotation_port">Force portrait</string>
+    <string translatable="false" name="pref_rotation_user">User</string>
+    <string translatable="false" name="pref_rotation_behind">Behind</string>
+    <string translatable="false" name="pref_rotation_auto">Automatic</string>
+    <string translatable="false" name="pref_rotation_nosensor">No sensor</string>
+    <string translatable="false" name="pref_rotation_sensor_landscape">Sensor landscape</string>
+    <string translatable="false" name="pref_rotation_sensor_portrait">Sensor portrait</string>
+    <string translatable="false" name="pref_rotation_reverse_landscape">Reverse landscape</string>
+    <string translatable="false" name="pref_rotation_reverse_portrait">Reverse portrait</string>
+    <string translatable="false" name="pref_rotation_full_sensor">Full sensor</string>
+
+    <string-array name="pref_rotation_entries_3" translatable="false">
+        <item>@string/list_rotation_unspecified</item>
+        <item>@string/list_rotation_land</item>
+        <item>@string/list_rotation_port</item>
+        <item>@string/list_rotation_user</item>
+        <item>@string/list_rotation_behind</item>
+        <item>@string/list_rotation_auto</item>
+        <item>@string/list_rotation_nosensor</item>
+    </string-array>
+
+    <string-array name="pref_rotation_values_3" translatable="false">
+        <item>@string/pref_rotation_unspecified</item>
+        <item>@string/pref_rotation_land</item>
+        <item>@string/pref_rotation_port</item>
+        <item>@string/pref_rotation_user</item>
+        <item>@string/pref_rotation_behind</item>
+        <item>@string/pref_rotation_auto</item>
+        <item>@string/pref_rotation_nosensor</item>
+    </string-array>
+
+    <string-array name="pref_rotation_entries_10" translatable="false">
+        <item>@string/list_rotation_unspecified</item>
+        <item>@string/list_rotation_land</item>
+        <item>@string/list_rotation_port</item>
+        <item>@string/list_rotation_user</item>
+        <item>@string/list_rotation_behind</item>
+        <item>@string/list_rotation_auto</item>
+        <item>@string/list_rotation_nosensor</item>
+        <item>@string/list_rotation_sensor_landscape</item>
+        <item>@string/list_rotation_sensor_portrait</item>
+        <item>@string/list_rotation_reverse_landscape</item>
+        <item>@string/list_rotation_reverse_portrait</item>
+        <item>@string/list_rotation_full_sensor</item>
+    </string-array>
+
+    <string-array name="pref_rotation_values_10" translatable="false">
+        <item>@string/pref_rotation_unspecified</item>
+        <item>@string/pref_rotation_land</item>
+        <item>@string/pref_rotation_port</item>
+        <item>@string/pref_rotation_user</item>
+        <item>@string/pref_rotation_behind</item>
+        <item>@string/pref_rotation_auto</item>
+        <item>@string/pref_rotation_nosensor</item>
+        <item>@string/pref_rotation_sensor_landscape</item>
+        <item>@string/pref_rotation_sensor_portrait</item>
+        <item>@string/pref_rotation_reverse_landscape</item>
+        <item>@string/pref_rotation_reverse_portrait</item>
+        <item>@string/pref_rotation_full_sensor</item>
+    </string-array>
+
     <string translatable="false" name="pref_nightmode_id">nightmode</string>
     <string translatable="false" name="pref_nightmode_defvalue">false</string>
 

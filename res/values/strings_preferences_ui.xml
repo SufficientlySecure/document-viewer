@@ -34,22 +34,6 @@
     <string name="pref_keepscreenon_title">Keep screen On</string>
     <string name="pref_keepscreenon_summary">Do not turn screen off when reading (do not hibernate)</string>
 
-    <string name="pref_rotation_title">Rotation mode</string>
-    <string name="pref_rotation_summary">How to change rotation</string>
-
-    <string name="list_rotation_unspecified">Unspecified</string>
-    <string name="list_rotation_land">Force landscape</string>
-    <string name="list_rotation_port">Force portrait</string>
-    <string name="list_rotation_user">User</string>
-    <string name="list_rotation_behind">Inherit from background</string>
-    <string name="list_rotation_auto">Automatic</string>
-    <string name="list_rotation_nosensor">No sensor</string>
-    <string name="list_rotation_sensor_landscape">Force landscape but sense flipping</string>
-    <string name="list_rotation_sensor_portrait">Force portrait but sense flipping</string>
-    <string name="list_rotation_reverse_landscape">Force reverse landscape</string>
-    <string name="list_rotation_reverse_portrait">Force reverse portrait</string>
-    <string name="list_rotation_full_sensor">Full sensor</string>
-
     <string name="pref_fullscreen_title">Full screen</string>
     <string name="pref_fullscreen_summary">Hide status bar</string>
 

@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
+    <string name="pref_rotation_title">"Mode rotation"</string>
+    <string name="pref_rotation_summary">"Quel mode utiliser"</string>
+<!--<string name="list_rotation_unspecified">"Unspecified"</string>-->
+    <string name="list_rotation_land">"Orientation album"</string>
+    <string name="list_rotation_port">"Orientation portrait"</string>
+<!--<string name="list_rotation_user">"User"</string>-->
+<!--<string name="list_rotation_behind">"Inherit from background"</string>-->
+    <string name="list_rotation_auto">"Automatique"</string>
+<!--<string name="list_rotation_nosensor">"No sensor"</string>-->
+<!--<string name="list_rotation_sensor_landscape">"Force landscape but sense flipping"</string>-->
+<!--<string name="list_rotation_sensor_portrait">"Force portrait but sense flipping"</string>-->
+<!--<string name="list_rotation_reverse_landscape">"Force reverse landscape"</string>-->
+<!--<string name="list_rotation_reverse_portrait">"Force reverse portrait"</string>-->
+<!--<string name="list_rotation_full_sensor">"Full sensor"</string>-->
     <string name="pref_render_category">"Dessin"</string>
     <string name="pref_render_category_summary">"Paramètre du dessin"</string>
     <string name="pref_book_category">"Paramètres du livre"</string>

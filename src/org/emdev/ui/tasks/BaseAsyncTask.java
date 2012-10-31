@@ -1,6 +1,6 @@
 package org.emdev.ui.tasks;
 
-import android.app.ProgressDialog;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -16,7 +16,7 @@ public abstract class BaseAsyncTask<Params, Result> extends AsyncTask<Params, St
     protected final int startProgressStringId;
     protected final boolean cancellable;
     protected final AtomicBoolean continueFlag = new AtomicBoolean(true);
-    protected ProgressDialog progressDialog;
+    protected AlertDialog progressDialog;
 
     public BaseAsyncTask(Context context, int startProgressStringId, boolean cancellable) {
         this.context = context;
@@ -60,11 +60,14 @@ public abstract class BaseAsyncTask<Params, Result> extends AsyncTask<Params, St
         }
         final String last = values[length - 1];
         if (progressDialog == null || !progressDialog.isShowing()) {
-            progressDialog = ProgressDialog.show(context, "", last, true);
+            progressDialog = new AlertDialog.Builder(context).setMessage(last).show();
             if (cancellable) {
                 progressDialog.setCancelable(true);
                 progressDialog.setCanceledOnTouchOutside(true);
                 progressDialog.setOnCancelListener(this);
+            } else {
+                progressDialog.setCancelable(false);
+                progressDialog.setCanceledOnTouchOutside(false);
             }
         } else {
             progressDialog.setMessage(last);

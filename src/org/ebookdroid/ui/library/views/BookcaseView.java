@@ -7,6 +7,7 @@ import android.content.Context;
 import android.database.DataSetObserver;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -14,6 +15,8 @@ public class BookcaseView extends RelativeLayout {
 
     private TextView shelfCaption;
     private ViewPager shelves;
+    private View prevShelf;
+    private View nextShelf;
     private BooksAdapter adapter;
 
     public BookcaseView(final Context context) {
@@ -32,6 +35,8 @@ public class BookcaseView extends RelativeLayout {
         this.adapter = adapter;
         this.shelfCaption = (TextView) findViewById(R.id.ShelfCaption);
         this.shelves = (ViewPager) findViewById(R.id.Shelves);
+        this.prevShelf = findViewById(R.id.ShelfLeftButton);
+        this.nextShelf = findViewById(R.id.ShelfRightButton);
 
         shelves.setAdapter(adapter);
 
@@ -40,14 +45,14 @@ public class BookcaseView extends RelativeLayout {
             @Override
             public void onChanged() {
                 super.onChanged();
-                int count = BookcaseView.this.adapter.getCount();
+                final int count = BookcaseView.this.adapter.getCount();
                 int currentItem = shelves.getCurrentItem();
                 if (currentItem >= count) {
                     currentItem = count - 1;
                     shelves.setCurrentItem(currentItem);
                     return;
                 }
-                String listName = BookcaseView.this.adapter.getListName(currentItem);
+                final String listName = BookcaseView.this.adapter.getListName(currentItem);
                 shelfCaption.setText(listName);
             }
         });
@@ -55,39 +60,34 @@ public class BookcaseView extends RelativeLayout {
         shelves.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 
             @Override
-            public void onPageSelected(final int arg0) {
-                shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentItem()));
+            public void onPageSelected(final int shelf) {
+                updateShelfCaption(shelf);
             }
         });
 
-        shelfCaption.setText(BookcaseView.this.adapter.getListName(0));
+        updateShelfCaption(0);
     }
 
     public int getCurrentList() {
         return shelves.getCurrentItem();
     }
 
-    public void setCurrentList(final int item) {
-        shelves.setCurrentItem(item);
+    public void setCurrentList(final int shelf) {
+        shelves.setCurrentItem(shelf);
+    }
+
+    public void updateShelfCaption(final int shelf) {
         shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentItem()));
+        prevShelf.setVisibility(shelf == 0 ? View.GONE : View.VISIBLE);
+        nextShelf.setVisibility(shelf >= adapter.getCount() - 1 ? View.GONE : View.VISIBLE);
     }
 
     public void prevList() {
-        int shelf = shelves.getCurrentItem() - 1;
-        if (shelf < 0) {
-            shelf = 0;
-        }
-        shelves.setCurrentItem(shelf);
-        shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentItem()));
+        setCurrentList(Math.max(0, shelves.getCurrentItem() - 1));
     }
 
     public void nextList() {
-        int shelf = shelves.getCurrentItem() + 1;
-        if (shelf > adapter.getListCount() - 1) {
-            shelf = adapter.getListCount() - 1;
-        }
-        shelves.setCurrentItem(shelf);
-        shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentItem()));
+        setCurrentList(Math.min(shelves.getCurrentItem() + 1, adapter.getListCount() - 1));
     }
 
 }

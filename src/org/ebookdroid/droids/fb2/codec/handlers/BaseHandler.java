@@ -95,14 +95,14 @@ public abstract class BaseHandler implements IContentHandler {
 
     protected final RenderingStyle setTextAuthorStyle(final boolean italic) {
         renderingStates.addFirst(crs);
-        crs = new RenderingStyle(parsedContent, crs, TextStyle.TEXT, JustificationMode.Right, italic ? FontStyle.ITALIC
+        crs = new RenderingStyle(parsedContent, crs, JustificationMode.Right, italic ? FontStyle.ITALIC
                 : FontStyle.REGULAR);
         return crs;
     }
 
     protected final RenderingStyle setPoemStyle() {
         renderingStates.addFirst(crs);
-        crs = new RenderingStyle(parsedContent, crs, TextStyle.TEXT, JustificationMode.Left, FontStyle.ITALIC);
+        crs = new RenderingStyle(parsedContent, crs, JustificationMode.Left, FontStyle.ITALIC);
         return crs;
     }
 

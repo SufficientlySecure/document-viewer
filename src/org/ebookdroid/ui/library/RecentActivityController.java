@@ -600,7 +600,6 @@ public class RecentActivityController extends ActionController<RecentActivity> i
             public void run() {
                 final BookNode node = recentAdapter.getNode(tf.book);
                 if (node != null) {
-                    System.out.println("RecentActivityController.onThumbnailChanged(...).new Runnable() {...}.run()");
                     recentAdapter.notifyDataSetInvalidated();
                     final BookShelfAdapter bookShelf = getBookShelf(node);
                     if (bookShelf != null) {

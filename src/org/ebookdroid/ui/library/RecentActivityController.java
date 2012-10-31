@@ -1,6 +1,7 @@
 package org.ebookdroid.ui.library;
 
 import org.ebookdroid.CodecType;
+import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.cache.CacheManager.ICacheListener;
@@ -146,46 +147,13 @@ public class RecentActivityController extends ActionController<RecentActivity> i
 
         final BookSettings recent = SettingsManager.getRecentBook();
 
-        if (firstResume) {
-            final boolean shouldLoad = AppSettings.current().loadRecent;
-            final File file = (recent != null && recent.fileName != null) ? new File(recent.fileName) : null;
-            final boolean found = file != null ? file.exists() && libSettings.allowedFileTypes.accept(file) : false;
-
-            if (LCTX.isDebugEnabled()) {
-                LCTX.d("Last book: " + (file != null ? file.getAbsolutePath() : "") + ", found: " + found
-                        + ", should load: " + shouldLoad);
-            }
-
-            if (shouldLoad && found) {
-                changeLibraryView(RecentActivity.VIEW_RECENT);
-                showDocument(Uri.fromFile(file), null);
-                return;
-            }
+        if (checkAutoLoad(libSettings, recent)) {
+            return;
         }
 
         changeLibraryView(recent != null ? RecentActivity.VIEW_RECENT : RecentActivity.VIEW_LIBRARY);
 
-        if (!FontManager.external.hasInstalled()) {
-            if (!SettingsManager.isInitialFlagsSet(SettingsManager.INITIAL_FONTS)) {
-                SettingsManager.setInitialFlags(SettingsManager.INITIAL_FONTS);
-
-                final ActionDialogBuilder b = new ActionDialogBuilder(getManagedComponent(), this);
-                final WebView view = new WebView(getManagedComponent());
-
-                final String content = getFontsReminderText();
-                view.loadDataWithBaseURL("file:///fake/not_used", content, "text/html", "UTF-8", "");
-
-                b.setTitle(R.string.font_reminder_title);
-                b.setView(view);
-                b.setPositiveButton(android.R.string.ok, R.id.actions_no_action);
-                b.show();
-            }
-        }
-    }
-
-    protected String getFontsReminderText() {
-        final String text = getManagedComponent().getResources().getString(R.string.font_reminder);
-        return "<html><body>" + text + "</body></html>";
+        EBookDroidApp.checkInstalledFonts(getManagedComponent());
     }
 
     public void onRestore(final RecentActivity activity) {
@@ -198,6 +166,24 @@ public class RecentActivityController extends ActionController<RecentActivity> i
 
         final BookSettings recent = SettingsManager.getRecentBook();
         changeLibraryView(recent != null ? RecentActivity.VIEW_RECENT : RecentActivity.VIEW_LIBRARY);
+    }
+
+    protected boolean checkAutoLoad(final LibSettings libSettings, final BookSettings recent) {
+        final boolean shouldLoad = AppSettings.current().loadRecent;
+        final File file = (recent != null && recent.fileName != null) ? new File(recent.fileName) : null;
+        final boolean found = file != null ? file.exists() && libSettings.allowedFileTypes.accept(file) : false;
+
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("Last book: " + (file != null ? file.getAbsolutePath() : "") + ", found: " + found
+                    + ", should load: " + shouldLoad);
+        }
+
+        if (shouldLoad && found) {
+            changeLibraryView(RecentActivity.VIEW_RECENT);
+            showDocument(Uri.fromFile(file), null);
+            return true;
+        }
+        return false;
     }
 
     protected void onResume() {

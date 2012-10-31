@@ -1,6 +1,7 @@
 package org.ebookdroid.ui.viewer;
 
 import org.ebookdroid.CodecType;
+import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.cache.CacheManager;
@@ -939,6 +940,10 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                     final String msg = result.getMessage();
                     LogManager.onUnexpectedError(result);
                     showErrorDlg(R.string.msg_unexpected_error, msg);
+                } else {
+                    if (codecType != null && codecType.useCustomFonts) {
+                        EBookDroidApp.checkInstalledFonts(getManagedComponent());
+                    }
                 }
             } catch (final Throwable th) {
                 LCTX.e("BookLoadTask.onPostExecute(): Unexpected error", th);

@@ -16,18 +16,18 @@ import java.util.Set;
 
 public enum CodecType {
 
-    PDF(PdfContext.class, Arrays.asList("pdf"), Arrays.asList("application/pdf")),
+    PDF(PdfContext.class, true, Arrays.asList("pdf"), Arrays.asList("application/pdf")),
 
-    DJVU(DjvuContext.class, Arrays.asList("djvu", "djv"), Arrays.asList("image/djvu", "image/vnd.djvu", "image/x-djvu")),
+    DJVU(DjvuContext.class, false, Arrays.asList("djvu", "djv"), Arrays.asList("image/djvu", "image/vnd.djvu", "image/x-djvu")),
 
-    XPS(XpsContext.class, Arrays.asList("xps", "oxps"), Arrays.asList("application/vnd.ms-xpsdocument",
+    XPS(XpsContext.class, true, Arrays.asList("xps", "oxps"), Arrays.asList("application/vnd.ms-xpsdocument",
             "application/oxps")),
 
-    CBZ(CbzContext.class, Arrays.asList("cbz"), Arrays.asList("application/x-cbz")),
+    CBZ(CbzContext.class, false, Arrays.asList("cbz"), Arrays.asList("application/x-cbz")),
 
-    CBR(CbrContext.class, Arrays.asList("cbr"), Arrays.asList("application/x-cbr")),
+    CBR(CbrContext.class, false, Arrays.asList("cbr"), Arrays.asList("application/x-cbr")),
 
-    FB2(FB2Context.class, Arrays.asList("fb2", "fb2.zip"), Arrays.asList("application/x-fb2"));
+    FB2(FB2Context.class, true, Arrays.asList("fb2", "fb2.zip"), Arrays.asList("application/x-fb2"));
 
     private final static Map<String, CodecType> extensionToActivity;
 
@@ -50,27 +50,22 @@ public enum CodecType {
 
     private final Class<? extends CodecContext> contextClass;
 
-    private final List<String> extensions;
+    public final boolean useCustomFonts;
 
-    private final List<String> mimeTypes;
+    public final List<String> extensions;
 
-    private CodecType(final Class<? extends CodecContext> contextClass, final List<String> extensions,
-            final List<String> mimeTypes) {
+    public final List<String> mimeTypes;
+
+    private CodecType(final Class<? extends CodecContext> contextClass, final boolean useCustomFonts,
+            final List<String> extensions, final List<String> mimeTypes) {
         this.contextClass = contextClass;
+        this.useCustomFonts = useCustomFonts;
         this.extensions = extensions;
         this.mimeTypes = mimeTypes;
     }
 
     public Class<? extends CodecContext> getContextClass() {
         return contextClass;
-    }
-
-    public List<String> getExtensions() {
-        return extensions;
-    }
-
-    public List<String> getMimeTypes() {
-        return mimeTypes;
     }
 
     public static Set<String> getAllExtensions() {

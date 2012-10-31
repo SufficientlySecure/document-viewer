@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-<!--<string name="pref_navigation_category">"Navigation &amp; history"</string>-->
-<!--<string name="pref_navigation_category_summary">"Navigation &amp; history settings"</string>-->
-<!--<string name="pref_showbookmarksmenu_summary">"Show bookmarks in menu"</string>-->
-<!--<string name="pref_showbookmarksmenu_title">"Show bookmarks in navigation menu"</string>-->
+    <string name="pref_navigation_category">"Навигация и история"</string>
+    <string name="pref_navigation_category_summary">"Настройки навигации и истори"</string>
+    <string name="pref_showbookmarksmenu_summary">"Показываеть закладки"</string>
+    <string name="pref_showbookmarksmenu_title">"Показывать закладки в меню навигации"</string>
     <string name="pref_link_highlight_summary">"Выберите цвет подсветки линков"</string>
     <string name="pref_link_highlight_title">"Посветка линков"</string>
     <string name="pref_search_highlight_summary">"Выберите цвет подсветки результатов поиска"</string>

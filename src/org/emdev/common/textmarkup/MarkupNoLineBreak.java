@@ -8,17 +8,17 @@ import java.util.ArrayList;
 import org.emdev.common.textmarkup.line.Line;
 
 
-public class MarkupNoSpace implements MarkupElement {
+public class MarkupNoLineBreak implements MarkupElement {
 
-    private MarkupNoSpace() {
+    private MarkupNoLineBreak() {
 
     }
 
-    public static final MarkupNoSpace E = new MarkupNoSpace();
+    public static final MarkupNoLineBreak _instance = new MarkupNoLineBreak();
 
     @Override
     public void publishToLines(ArrayList<Line> lines, LineCreationParams params) {
-        params.insertSpace = false;
+        params.noLineBreak = true;
     }
 
 }

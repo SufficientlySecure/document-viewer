@@ -22,7 +22,7 @@ public class MultiLineElement extends AbstractLineElement {
 
     public MultiLineElement(int cellWidth, int maxHeight, List<Line> cellLines, boolean hasBorder,
             boolean hasBackground) {
-        super(cellWidth, maxHeight);
+        super(cellWidth, maxHeight, false);
         this.lines = cellLines;
         this.hasBorder = hasBorder;
         this.hasBackground = hasBackground;

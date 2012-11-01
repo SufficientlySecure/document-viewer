@@ -141,6 +141,7 @@ public class FB2Document extends AbstractCodecDocument {
                 }
             }
         }
+        commitPage();
     }
 
     private int removeEmptyPages(final boolean all) {

@@ -11,7 +11,7 @@ public class HorizontalRule extends AbstractLineElement {
     private static Paint rulePaint;
 
     public HorizontalRule(final int width, final int height) {
-        super(width, height);
+        super(width, height, false);
         if (rulePaint == null) {
             rulePaint = new Paint();
             rulePaint.setColor(Color.BLACK);

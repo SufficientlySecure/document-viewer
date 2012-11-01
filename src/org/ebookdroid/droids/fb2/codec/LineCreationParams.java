@@ -9,4 +9,5 @@ public class LineCreationParams {
     public boolean insertSpace = true;
     public ParsedContent content;
     public int extraSpace = 0;
+    public boolean noLineBreak = false;
 }

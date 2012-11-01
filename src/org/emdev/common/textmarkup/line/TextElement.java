@@ -24,7 +24,7 @@ public class TextElement extends AbstractLineElement {
     public final RenderingStyle style;
 
     public TextElement(final char[] ch, final int st, final int len, final RenderingStyle style) {
-        super(style.paint.measureText(ch, st, len), style.script == Script.SUPER ? style.textSize * 5 / 2 : style.textSize);
+        super(style.paint.measureText(ch, st, len), style.script == Script.SUPER ? style.textSize * 5 / 2 : style.textSize, false);
         this.chars = ch;
         this.start = st;
         this.length = len;
@@ -34,7 +34,7 @@ public class TextElement extends AbstractLineElement {
     }
 
     TextElement(final TextElement original, final int st, final int len, final float width) {
-        super(width, original.style.textSize);
+        super(width, original.style.textSize, false);
         this.chars = original.chars;
         this.start = st;
         this.length = len;

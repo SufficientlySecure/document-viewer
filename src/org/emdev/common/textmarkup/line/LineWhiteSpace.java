@@ -7,7 +7,7 @@ import android.graphics.Canvas;
 public class LineWhiteSpace extends AbstractLineElement {
 
     public LineWhiteSpace(final float width, final int height) {
-        super(width, height);
+        super(width, height, true);
     }
 
     @Override

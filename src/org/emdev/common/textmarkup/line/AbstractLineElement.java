@@ -16,13 +16,16 @@ public abstract class AbstractLineElement implements LineElement {
     public final int height;
     public float width;
 
-    public AbstractLineElement(final float width, final int height) {
+    public final boolean isWhiteSpace;
+
+    public AbstractLineElement(final float width, final int height, final boolean isWS) {
         this.height = height;
         this.width = width;
+        this.isWhiteSpace = isWS;
     }
 
     public AbstractLineElement(final RectF rect) {
-        this(rect.width(), (int) rect.height());
+        this(rect.width(), (int) rect.height(), false);
     }
 
     @Override
@@ -30,7 +33,7 @@ public abstract class AbstractLineElement implements LineElement {
         Line line = Line.getLastLine(lines, params);
         final LineWhiteSpace space = RenderingStyle.getTextPaint(params.content, Math.max(line.getHeight(), height)).space;
         float remaining = params.maxLineWidth - (line.width + space.width);
-        if (remaining <= 0) {
+        if (remaining <= 0 && !params.noLineBreak) {
             line = new Line(params.maxLineWidth, params.jm);
             lines.add(line);
             remaining = params.maxLineWidth;
@@ -39,15 +42,15 @@ public abstract class AbstractLineElement implements LineElement {
             line.append(new LineFixedWhiteSpace(params.extraSpace, 0));
         }
 
-        if (this.width <= remaining) {
-            if (line.hasNonWhiteSpaces() && params.insertSpace) {
+        if (this.width <= remaining || params.noLineBreak) {
+            if (line.hasNonWhiteSpaces() && params.insertSpace && !isWhiteSpace) {
                 line.append(space);
             }
             line.append(this);
         } else {
             final AbstractLineElement[] splitted = split(remaining);
             if (splitted != null && splitted.length > 1) {
-                if (line.hasNonWhiteSpaces() && params.insertSpace) {
+                if (line.hasNonWhiteSpaces() && params.insertSpace && !isWhiteSpace) {
                     line.append(space);
                 }
                 for (int i = 0; i < splitted.length - 1; i++) {
@@ -67,7 +70,8 @@ public abstract class AbstractLineElement implements LineElement {
                 splitted[splitted.length - 1].publishToLines(lines, params);
             }
         }
-        params.insertSpace = true;
+        params.insertSpace = !isWhiteSpace;
+        params.noLineBreak = false;
     }
 
     public AbstractLineElement[] split(final float remaining) {

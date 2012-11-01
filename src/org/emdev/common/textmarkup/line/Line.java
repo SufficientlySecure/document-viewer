@@ -47,6 +47,9 @@ public class Line {
     }
 
     public Line append(final AbstractLineElement element) {
+        if (LengthUtils.isEmpty(elements) && element instanceof LineWhiteSpace) {
+            return this;
+        }
         elements.add(element);
         if (element.height > height) {
             height = element.height;

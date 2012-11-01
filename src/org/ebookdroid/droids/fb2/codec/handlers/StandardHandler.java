@@ -13,6 +13,7 @@ import org.emdev.common.textmarkup.MarkupEndDocument;
 import org.emdev.common.textmarkup.MarkupEndPage;
 import org.emdev.common.textmarkup.MarkupExtraSpace;
 import org.emdev.common.textmarkup.MarkupImageRef;
+import org.emdev.common.textmarkup.MarkupNoLineBreak;
 import org.emdev.common.textmarkup.MarkupNoSpace;
 import org.emdev.common.textmarkup.MarkupNote;
 import org.emdev.common.textmarkup.MarkupParagraphEnd;
@@ -24,6 +25,7 @@ import org.emdev.common.textmarkup.RenderingStyle.Script;
 import org.emdev.common.textmarkup.TextStyle;
 import org.emdev.common.textmarkup.Words;
 import org.emdev.common.textmarkup.line.LineFixedWhiteSpace;
+import org.emdev.common.textmarkup.line.LineWhiteSpace;
 import org.emdev.common.textmarkup.line.TextElement;
 import org.emdev.common.textmarkup.line.TextPreElement;
 import org.emdev.utils.StringUtils;
@@ -88,7 +90,6 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
     @Override
     public void startElement(final FB2Tag tag, final String... attributes) {
         tagLevel++;
-        spaceNeeded = true;
         final ArrayList<MarkupElement> markupStream = parsedContent.getMarkupStream(currentStream);
 
         if (tmpTagContent.length() > 0) {
@@ -125,7 +126,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
                 paragraphParsing = true;
                 markupStream.add(new MarkupExtraSpace((int) (crs.paint.pOffset.width * ulLevel)));
                 markupStream.add(new TextElement(BULLET, 0, BULLET.length, crs));
-                markupStream.add(MarkupNoSpace._instance);
+                markupStream.add(MarkupNoSpace.E);
                 break;
             case V:
                 paragraphParsing = true;
@@ -214,12 +215,16 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
             case A:
                 if (paragraphParsing) {
                     if ("note".equalsIgnoreCase(attributes[1])) {
+                        if (markupStream.get(markupStream.size() - 1) instanceof LineWhiteSpace) {
+                            markupStream.remove(markupStream.size() - 1);
+                        }
                         final String note = attributes[0];
-                        markupStream.add(new MarkupNote(note));
                         final String prettyNote = " " + getNoteId(note, false);
-                        markupStream.add(MarkupNoSpace._instance);
+                        markupStream.add(MarkupNoSpace.E);
+                        markupStream.add(MarkupNoLineBreak._instance);
                         markupStream.add(new TextElement(prettyNote.toCharArray(), 0, prettyNote.length(),
                                 new RenderingStyle(crs, Script.SUPER)));
+                        markupStream.add(new MarkupNote(note));
                         skipContent = true;
                     }
                 }
@@ -330,7 +335,6 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
         if (tmpTagContent.length() > 0) {
             processTagContent();
         }
-        spaceNeeded = true;
         final ArrayList<MarkupElement> markupStream = parsedContent.getMarkupStream(currentStream);
         switch (tag) {
             case LI:
@@ -517,7 +521,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
             if (count > 0) {
                 final ArrayList<MarkupElement> markupStream = parsedContent.getMarkupStream(currentStream);
                 if (!spaceNeeded && !Character.isWhitespace(ch[start])) {
-                    markupStream.add(MarkupNoSpace._instance);
+                    markupStream.add(MarkupNoSpace.E);
                 }
                 spaceNeeded = true;
 
@@ -535,11 +539,10 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
                     }
                     markupStream.add(text(ch, st, len, crs, persistent));
                     if (crs.script != null) {
-                        markupStream.add(MarkupNoSpace._instance);
+                        markupStream.add(MarkupNoSpace.E);
                     }
                 }
                 if (Character.isWhitespace(ch[start + length - 1])) {
-                    markupStream.add(MarkupNoSpace._instance);
                     markupStream.add(crs.paint.space);
                 }
                 spaceNeeded = false;

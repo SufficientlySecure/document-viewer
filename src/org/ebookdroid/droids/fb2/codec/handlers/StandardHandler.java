@@ -54,6 +54,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
 
     protected boolean spaceNeeded = true;
 
+    protected StrBuilder tmpBinaryContent = null;
     protected char[] tmpBinary = null;
     protected int tmpBinaryStart = 0;
     protected int tmpBinaryLength = 0;
@@ -140,6 +141,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
             case BINARY:
                 tmpBinaryName = attributes[0];
                 tmpBinary = null;
+                tmpBinaryContent = null;
                 parsingBinary = true;
                 break;
             case BODY:
@@ -367,6 +369,10 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
                     parsedContent.addImage(tmpBinaryName, tmpBinary, tmpBinaryStart, tmpBinaryLength);
                     tmpBinaryName = null;
                     tmpBinary = null;
+                } else if (tmpBinaryContent != null) {
+                    parsedContent.addImage(tmpBinaryName, tmpBinaryContent.shareValue(), 0, tmpBinaryContent.length());
+                    tmpBinaryName = null;
+                    tmpBinaryContent = null;
                 }
                 parsingBinary = false;
                 break;
@@ -503,16 +509,10 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
                     tmpBinaryLength += length;
                 }
             } else {
-                if (tmpBinary == null) {
-                    tmpBinary = new char[0];
-                    tmpBinaryLength = 0;
+                if (tmpBinaryContent == null) {
+                    tmpBinaryContent = new StrBuilder(length);
                 }
-                char[] tmp = new char[tmpBinaryLength + length];
-                System.arraycopy(tmpBinary, 0, tmp, 0, tmpBinaryLength);
-                System.arraycopy(text.chars, start, tmp, tmpBinaryLength, length);
-                tmpBinary = tmp;
-                tmpBinaryStart = 0;
-                tmpBinaryLength += length;
+                tmpBinaryContent.append(text.chars, start, length);
             }
 
         } else {

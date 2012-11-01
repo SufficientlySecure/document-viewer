@@ -205,6 +205,8 @@ public class TouchConfigDialog extends Dialog {
                 final Integer actionId = ActionEx.getActionId(actionsAdapter.getActionId(position));
                 if (actionId != null) {
                     wrapper.r.setAction((Touch) parent.getTag(), actionId, true);
+                } else {
+                    wrapper.r.clear((Touch) parent.getTag());
                 }
             }
         }

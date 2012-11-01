@@ -7,14 +7,19 @@ import android.util.SparseArray;
 import org.emdev.common.fonts.data.FontStyle;
 import org.emdev.common.fonts.typeface.TypefaceEx;
 import org.emdev.common.textmarkup.line.TextElement;
+import org.emdev.common.xml.TextProvider;
 
 public class RenderingStyle {
 
     private static final SparseArray<CustomTextPaint> paints = new SparseArray<CustomTextPaint>();
 
+    private static final TextProvider DEFIS = new TextProvider(true, '-');
+    private static final TextProvider BULLET = new TextProvider("\u2022 ");
+
     public final CustomTextPaint paint;
 
     public final TextElement defis;
+    public final TextElement bullet;
 
     public final int textSize;
     public final JustificationMode jm;
@@ -30,7 +35,8 @@ public class RenderingStyle {
         this.script = null;
         this.strike = null;
 
-        this.defis = new TextElement(new char[] { '-' }, 0, 1, this);
+        this.defis = new TextElement(DEFIS, this);
+        this.bullet = new TextElement(BULLET, this);
     }
 
     public RenderingStyle(final ParsedContent content, final TypefaceEx face, final TextStyle text) {
@@ -41,7 +47,8 @@ public class RenderingStyle {
         this.script = null;
         this.strike = null;
 
-        this.defis = new TextElement(new char[] { '-' }, 0, 1, this);
+        this.defis = new TextElement(DEFIS, this);
+        this.bullet = new TextElement(BULLET, this);
     }
 
     public RenderingStyle(final RenderingStyle old, final Script script) {
@@ -53,7 +60,8 @@ public class RenderingStyle {
         this.script = script;
         this.strike = null;
 
-        this.defis = new TextElement(new char[] { '-' }, 0, 1, this);
+        this.defis = new TextElement(DEFIS, this);
+        this.bullet = new TextElement(BULLET, this);
     }
 
     public RenderingStyle(final RenderingStyle old, final Strike strike) {
@@ -64,7 +72,8 @@ public class RenderingStyle {
         this.script = old.script;
         this.strike = strike;
 
-        this.defis = new TextElement(new char[] { '-' }, 0, 1, this);
+        this.defis = new TextElement(DEFIS, this);
+        this.bullet = new TextElement(BULLET, this);
     }
 
     public RenderingStyle(final RenderingStyle old, final TextStyle text, final JustificationMode jm) {
@@ -75,7 +84,8 @@ public class RenderingStyle {
         this.script = null;
         this.strike = null;
 
-        this.defis = new TextElement(new char[] { '-' }, 0, 1, this);
+        this.defis = new TextElement(DEFIS, this);
+        this.bullet = new TextElement(BULLET, this);
     }
 
     public RenderingStyle(final ParsedContent content, final RenderingStyle old, final TextStyle text, final JustificationMode jm, FontStyle style) {
@@ -86,7 +96,8 @@ public class RenderingStyle {
         this.script = null;
         this.strike = null;
 
-        this.defis = new TextElement(new char[] { '-' }, 0, 1, this);
+        this.defis = new TextElement(DEFIS, this);
+        this.bullet = new TextElement(BULLET, this);
     }
 
     public RenderingStyle(final ParsedContent content, final RenderingStyle old, final JustificationMode jm, FontStyle style) {
@@ -97,7 +108,8 @@ public class RenderingStyle {
         this.script = null;
         this.strike = null;
 
-        this.defis = new TextElement(new char[] { '-' }, 0, 1, this);
+        this.defis = new TextElement(DEFIS, this);
+        this.bullet = new TextElement(BULLET, this);
     }
 
     public RenderingStyle(final ParsedContent content, final RenderingStyle old, final boolean bold) {
@@ -108,7 +120,8 @@ public class RenderingStyle {
         this.script = null;
         this.strike = null;
 
-        this.defis = new TextElement(new char[] { '-' }, 0, 1, this);
+        this.defis = new TextElement(DEFIS, this);
+        this.bullet = new TextElement(BULLET, this);
     }
 
     public RenderingStyle(final ParsedContent content, final RenderingStyle old, final FontStyle style) {
@@ -119,7 +132,8 @@ public class RenderingStyle {
         this.script = null;
         this.strike = null;
 
-        this.defis = new TextElement(new char[] { '-' }, 0, 1, this);
+        this.defis = new TextElement(DEFIS, this);
+        this.bullet = new TextElement(BULLET, this);
     }
 
     public static CustomTextPaint getTextPaint(final ParsedContent content, final int textSize) {

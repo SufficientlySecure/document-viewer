@@ -75,8 +75,6 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
     private int parsingPreformattedLines = 0;
     protected int tagLevel = 0;
 
-    private static final char[] BULLET = "\u2022 ".toCharArray();
-
     public StandardHandler(final ParsedContent content) {
         this(content, true);
     }
@@ -132,7 +130,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
             case LI:
                 paragraphParsing = true;
                 markupStream.add(new MarkupExtraSpace((int) (crs.paint.pOffset.width * ulLevel)));
-                markupStream.add(new TextElement(BULLET, 0, BULLET.length, crs));
+                markupStream.add(crs.bullet);
                 markupStream.add(MarkupNoSpace.E);
                 break;
             case V:

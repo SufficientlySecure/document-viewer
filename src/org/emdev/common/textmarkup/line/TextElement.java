@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import org.emdev.common.textmarkup.RenderingStyle;
 import org.emdev.common.textmarkup.RenderingStyle.Script;
 import org.emdev.common.textmarkup.RenderingStyle.Strike;
+import org.emdev.common.xml.TextProvider;
 import org.emdev.utils.HyphenationUtils;
 
 public class TextElement extends AbstractLineElement {
@@ -22,6 +23,17 @@ public class TextElement extends AbstractLineElement {
     public final int offset;
 
     public final RenderingStyle style;
+
+    public TextElement(final TextProvider text, final RenderingStyle style) {
+        super(style.paint.measureText(text.chars, 0, text.size), style.script == Script.SUPER ? style.textSize * 5 / 2 : style.textSize, false);
+        this.chars = text.chars;
+        this.start = 0;
+        this.length = text.size;
+        this.style = style;
+        this.offset = style.script == Script.SUPER ? (-style.textSize)
+                : style.script == Script.SUB ? style.textSize / 2 : 0;
+    }
+
 
     public TextElement(final char[] ch, final int st, final int len, final RenderingStyle style) {
         super(style.paint.measureText(ch, st, len), style.script == Script.SUPER ? style.textSize * 5 / 2 : style.textSize, false);

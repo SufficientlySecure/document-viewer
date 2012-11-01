@@ -1,9 +1,11 @@
-package org.ebookdroid.droids.fb2.codec.parsers;
-
-import org.ebookdroid.droids.fb2.codec.FB2Tag;
-import org.ebookdroid.droids.fb2.codec.handlers.IContentHandler;
+package org.emdev.common.xml.parsers;
 
 import java.util.Arrays;
+
+import org.emdev.common.xml.IContentHandler;
+import org.emdev.common.xml.IXmlTagFactory;
+import org.emdev.common.xml.TextProvider;
+import org.emdev.common.xml.tags.XmlTag;
 
 import com.ximpleware.NavException;
 import com.ximpleware.VTDGenEx;
@@ -11,7 +13,7 @@ import com.ximpleware.VTDNavEx;
 
 public class VTDExParser {
 
-    public void parse(final VTDGenEx inStream, final IContentHandler handler) throws NavException {
+    public void parse(final VTDGenEx inStream, final IXmlTagFactory factory, final IContentHandler handler) throws NavException {
         final VTDNavEx nav = inStream.getNav();
 
         final boolean res = nav.toElement(VTDNavEx.ROOT);
@@ -19,14 +21,16 @@ public class VTDExParser {
             return;
         }
 
-        FB2Tag tag = FB2Tag.UNKNOWN;
+        TextProvider text = null;
+
+        XmlTag tag = XmlTag.UNKNOWN;
         int skipUntilSiblingOrParent = -1;
 
         final int first = nav.getCurrentIndex();
         final int last = nav.getTokenCount();
 
         final String[] tagAttrs = new String[2];
-        final FB2Tag[] tags = new FB2Tag[1024];
+        final XmlTag[] tags = new XmlTag[1024];
 
         final int[] range = new int[2];
 
@@ -46,7 +50,7 @@ public class VTDExParser {
 
             if (type == VTDNavEx.TOKEN_STARTING_TAG) {
                 final char[] buf = nav.toRawString(ci, range);
-                tag = FB2Tag.getTagByName3(buf, range[0], range[1]);
+                tag = factory.getTagByName(buf, range[0], range[1]);
 
                 for (int d = maxDepth; d >= depth; d--) {
                     if (tags[d] != null) {
@@ -57,7 +61,7 @@ public class VTDExParser {
                 tags[depth] = tag;
                 maxDepth = depth;
 
-                if (tag == FB2Tag.UNKNOWN) {
+                if (tag == XmlTag.UNKNOWN) {
                     skipUntilSiblingOrParent = depth;
                     ci++;
                     continue;
@@ -85,7 +89,10 @@ public class VTDExParser {
             if (type == VTDNavEx.TOKEN_CHARACTER_DATA || type == VTDNavEx.TOKEN_CDATA_VAL) {
                 if (tag.processText && !handler.skipCharacters()) {
                     final char[] buf = nav.toRawString(ci, range);
-                    handler.characters(buf, range[0], range[1], true);
+                    if (text ==null) {
+                        text = new TextProvider(true, buf);
+                    }
+                    handler.characters(text, range[0], range[1]);
                 }
                 ci++;
                 continue;
@@ -119,7 +126,7 @@ public class VTDExParser {
         return last;
     }
 
-    private int fillAtributes(final VTDNavEx nav, final int first, final int last, final FB2Tag tag,
+    private int fillAtributes(final VTDNavEx nav, final int first, final int last, final XmlTag tag,
             final String[] tagAttrs) throws NavException {
 
         final int[] range = new int[2];

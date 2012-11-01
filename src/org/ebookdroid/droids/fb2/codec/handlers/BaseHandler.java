@@ -12,7 +12,7 @@ import org.emdev.common.textmarkup.MarkupElement;
 import org.emdev.common.textmarkup.RenderingStyle;
 import org.emdev.common.textmarkup.TextStyle;
 
-public abstract class BaseHandler implements IContentHandler {
+public abstract class BaseHandler {
 
     protected static final Pattern notesPattern = Pattern.compile("n([0-9]+)|n_([0-9]+)|note_([0-9]+)|.*?([0-9]+)");
 
@@ -146,10 +146,5 @@ public abstract class BaseHandler implements IContentHandler {
             id = -2;
         }
         return id;
-    }
-
-    @Override
-    public boolean skipCharacters() {
-        return false;
     }
 }

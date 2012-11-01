@@ -1,4 +1,4 @@
-package org.ebookdroid.droids.fb2.codec;
+package org.ebookdroid.droids.fb2.codec.tags;
 
 public interface FB2TagId {
 

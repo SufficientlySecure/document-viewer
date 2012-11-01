@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import org.emdev.common.textmarkup.line.TextElement;
+import org.emdev.common.xml.TextProvider;
 
 public class Words {
 
@@ -15,31 +16,31 @@ public class Words {
 
     final Map<FB2Word, TextElement> all = new HashMap<FB2Word, TextElement>(32 * 1024);
 
-    final LinkedList<Buffer> buffers = new LinkedList<Buffer>();
+    final LinkedList<TextProvider> buffers = new LinkedList<TextProvider>();
 
-    public TextElement get(final char[] ch, final int st, final int len, final RenderingStyle style, boolean persistent) {
+    public TextElement get(final TextProvider text, final int st, final int len, final RenderingStyle style) {
         words++;
 
-        key.reuse(ch, st, len);
+        key.reuse(text.chars, st, len);
 
         TextElement e = all.get(key);
         if (e == null) {
             char[] arr = null;
             int index = 0;
-            if (persistent) {
-                arr = ch;
+            if (text.persistent) {
+                arr = text.chars;
                 index = st;
             } else {
                 if (!buffers.isEmpty()) {
-                    Buffer b = buffers.getFirst();
-                    index = b.append(ch, st, len);
+                    TextProvider b = buffers.getFirst();
+                    index = b.append(text.chars, st, len);
                     if (index != -1) {
                         arr = b.chars;
                     }
                 }
                 if (arr == null) {
-                    Buffer b = new Buffer();
-                    index = b.append(ch, st, len);
+                    TextProvider b = new TextProvider(4 * 1024);
+                    index = b.append(text.chars, st, len);
                     arr = b.chars;
                     buffers.addFirst(b);
                 }
@@ -55,8 +56,8 @@ public class Words {
     public void recycle() {
         all.clear();
 
-        for (Buffer b : buffers) {
-            b.chars = null;
+        for (TextProvider b : buffers) {
+            b.recycle();
         }
         buffers.clear();
     }
@@ -126,21 +127,4 @@ public class Words {
             return hash;
         }
     }
-
-    static class Buffer {
-
-        char[] chars = new char[4 * 1024];
-        int size;
-
-        public int append(char[] ch, int start, int len) {
-            if (len < chars.length - size) {
-                int index = size;
-                System.arraycopy(ch, start, chars, index, len);
-                size += len;
-                return index;
-            }
-            return -1;
-        }
-    }
-
 }

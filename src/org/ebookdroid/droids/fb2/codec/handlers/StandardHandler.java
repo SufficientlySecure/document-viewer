@@ -1,8 +1,9 @@
 package org.ebookdroid.droids.fb2.codec.handlers;
 
 import org.ebookdroid.droids.fb2.codec.FB2Page;
-import org.ebookdroid.droids.fb2.codec.FB2Tag;
 import org.ebookdroid.droids.fb2.codec.ParsedContent;
+import org.ebookdroid.droids.fb2.codec.tags.FB2Tag;
+import org.ebookdroid.droids.fb2.codec.tags.FB2TagId;
 
 import java.util.ArrayList;
 
@@ -28,9 +29,12 @@ import org.emdev.common.textmarkup.line.LineFixedWhiteSpace;
 import org.emdev.common.textmarkup.line.LineWhiteSpace;
 import org.emdev.common.textmarkup.line.TextElement;
 import org.emdev.common.textmarkup.line.TextPreElement;
+import org.emdev.common.xml.IContentHandler;
+import org.emdev.common.xml.TextProvider;
+import org.emdev.common.xml.tags.XmlTag;
 import org.emdev.utils.StringUtils;
 
-public class StandardHandler extends BaseHandler implements IContentHandler {
+public class StandardHandler extends BaseHandler implements IContentHandler, FB2TagId {
 
     protected boolean documentStarted = false, documentEnded = false;
 
@@ -80,15 +84,15 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
     }
 
     @Override
-    public boolean parseAttributes(final FB2Tag tag) {
-        if (tag == FB2Tag.P) {
+    public boolean parseAttributes(final XmlTag tag) {
+        if (tag == FB2Tag.P.tag) {
             return parseNotesInParagraphs && tag.attributes.length > 0;
         }
         return tag.attributes.length > 0;
     }
 
     @Override
-    public void startElement(final FB2Tag tag, final String... attributes) {
+    public void startElement(final XmlTag tag, final String... attributes) {
         tagLevel++;
         final ArrayList<MarkupElement> markupStream = parsedContent.getMarkupStream(currentStream);
 
@@ -96,7 +100,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
             processTagContent();
         }
 
-        switch (tag) {
+        switch (tag.tag) {
             case P:
                 paragraphParsing = true;
                 if (!parsingNotes) {
@@ -111,7 +115,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
                     currentStream = attributes[0];
                     if (currentStream != null) {
                         final String n = getNoteId(currentStream, true);
-                        parsedContent.getMarkupStream(currentStream).add(text(n.toCharArray(), 0, n.length(), crs, true));
+                        parsedContent.getMarkupStream(currentStream).add(text(new TextProvider(n), 0, n.length(), crs));
                         parsedContent.getMarkupStream(currentStream).add(crs.paint.fixedSpace);
                         noteFirstWord = true;
                     }
@@ -167,7 +171,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
                         currentStream = attributes[0];
                         if (currentStream != null) {
                             final String n = getNoteId(currentStream, true);
-                            parsedContent.getMarkupStream(currentStream).add(text(n.toCharArray(), 0, n.length(), crs, true));
+                            parsedContent.getMarkupStream(currentStream).add(text(new TextProvider(n), 0, n.length(), crs));
                             parsedContent.getMarkupStream(currentStream).add(crs.paint.fixedSpace);
                             noteFirstWord = true;
                         }
@@ -300,7 +304,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
                     final String streamId = currentTable.uuid + ":" + rowCount + ":"
                             + currentTable.getColCount(rowCount - 1);
                     c.stream = streamId;
-                    c.hasBackground = tag == FB2Tag.TH;
+                    c.hasBackground = tag == FB2Tag.TH.tag;
                     final String align = attributes[0];
                     if ("right".equals(align)) {
                         c.align = JustificationMode.Right;
@@ -330,13 +334,13 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
     }
 
     @Override
-    public void endElement(final FB2Tag tag) {
+    public void endElement(final XmlTag tag) {
         tagLevel--;
         if (tmpTagContent.length() > 0) {
             processTagContent();
         }
         final ArrayList<MarkupElement> markupStream = parsedContent.getMarkupStream(currentStream);
-        switch (tag) {
+        switch (tag.tag) {
             case LI:
                 markupStream.add(new MarkupExtraSpace(-(int) (crs.paint.pOffset.width * ulLevel)));
             case P:
@@ -488,14 +492,14 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
     }
 
     @Override
-    public void characters(final char[] ch, final int start, final int length, final boolean persistent) {
+    public void characters(final TextProvider text, final int start, final int length) {
         if (parsingBinary) {
-            tmpBinaryContents.append(ch, start, length);
+            tmpBinaryContents.append(text.chars, start, length);
         } else {
-            if (persistent) {
-                processText(ch, start, length, persistent);
+            if (text.persistent) {
+                processText(text, start, length);
             } else {
-                tmpTagContent.append(ch, start, length);
+                tmpTagContent.append(text.chars, start, length);
             }
         }
     }
@@ -506,21 +510,21 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
         final int start = 0;
         final char[] ch = tmpTagContent.getValue();
 
-        processText(ch, start, length, false);
+        processText(new TextProvider(false, ch), start, length);
 
         tmpTagContent.setLength(0);
     }
 
-    protected void processText(final char[] ch, final int start, final int length, final boolean persistent) {
+    protected void processText(final TextProvider text, final int start, final int length) {
         if (inTitle) {
-            title.append(ch, start, length);
+            title.append(text.chars, start, length);
         }
         if (!parsingPreformatted || tagLevel > parsingPreformattedLevel) {
-            final int count = StringUtils.split(ch, start, length, starts, lengths, false);
+            final int count = StringUtils.split(text.chars, start, length, starts, lengths, false);
 
             if (count > 0) {
                 final ArrayList<MarkupElement> markupStream = parsedContent.getMarkupStream(currentStream);
-                if (!spaceNeeded && !Character.isWhitespace(ch[start])) {
+                if (!spaceNeeded && !Character.isWhitespace(text.chars[start])) {
                     markupStream.add(MarkupNoSpace.E);
                 }
                 spaceNeeded = true;
@@ -531,24 +535,24 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
                     if (parsingNotes) {
                         if (noteFirstWord) {
                             noteFirstWord = false;
-                            final int id = getNoteId(ch, st, len);
+                            final int id = getNoteId(text.chars, st, len);
                             if (id == noteId) {
                                 continue;
                             }
                         }
                     }
-                    markupStream.add(text(ch, st, len, crs, persistent));
+                    markupStream.add(text(text, st, len, crs));
                     if (crs.script != null) {
                         markupStream.add(MarkupNoSpace.E);
                     }
                 }
-                if (Character.isWhitespace(ch[start + length - 1])) {
+                if (Character.isWhitespace(text.chars[start + length - 1])) {
                     markupStream.add(crs.paint.space);
                 }
                 spaceNeeded = false;
             }
         } else {
-            final int count = StringUtils.split(ch, start, length, starts, lengths, true);
+            final int count = StringUtils.split(text.chars, start, length, starts, lengths, true);
             if (count > 0) {
                 final ArrayList<MarkupElement> markupStream = parsedContent.getMarkupStream(currentStream);
                 for (int i = 0; i < count; i++) {
@@ -557,16 +561,15 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
                     if (!paragraphParsing || (parsingPreformattedLines++) > 0) {
                         markupStream.add(MarkupParagraphEnd.E);
                     }
-                    markupStream.add(textPre(ch, st, len, crs, persistent));
+                    markupStream.add(textPre(text, st, len, crs));
                 }
             }
         }
     }
 
-    protected TextElement text(final char[] ch, final int st, final int len, final RenderingStyle style,
-            final boolean persistent) {
-        if (!useUniqueTextElements && persistent) {
-            return new TextElement(ch, st, len, style);
+    protected TextElement text(final TextProvider text, final int st, final int len, final RenderingStyle style) {
+        if (!useUniqueTextElements && text.persistent) {
+            return new TextElement(text.chars, st, len, style);
         }
 
         Words w = parsedContent.words.get(style.paint.key);
@@ -574,17 +577,16 @@ public class StandardHandler extends BaseHandler implements IContentHandler {
             w = new Words();
             parsedContent.words.append(style.paint.key, w);
         }
-        return w.get(ch, st, len, style, persistent);
+        return w.get(text, st, len, style);
 
     }
 
-    protected TextElement textPre(final char[] ch, final int st, final int len, final RenderingStyle style,
-            final boolean persistent) {
-        if (persistent) {
-            return new TextPreElement(ch, st, len, style);
+    protected TextElement textPre(final TextProvider text, final int st, final int len, final RenderingStyle style) {
+        if (text.persistent) {
+            return new TextPreElement(text.chars, st, len, style);
         }
         final char[] chars = new char[len];
-        System.arraycopy(ch, st, chars, 0, len);
+        System.arraycopy(text.chars, st, chars, 0, len);
         return new TextPreElement(chars, 0, len, style);
     }
 

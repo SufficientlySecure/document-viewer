@@ -4,10 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 
-import java.io.IOException;
-
 import org.emdev.utils.base64.Base64;
-import org.emdev.utils.base64.Base64InputStream;
 
 public class MemoryImageData extends AbstractImageData {
 
@@ -40,14 +37,6 @@ public class MemoryImageData extends AbstractImageData {
     }
 
     protected Options getImageSize() {
-        final Options opts = new Options();
-        opts.inJustDecodeBounds = true;
-        final Base64InputStream stream = new Base64InputStream(new AsciiCharInputStream(encoded), Base64.DEFAULT);
-        BitmapFactory.decodeStream(stream, null, opts);
-        try {
-            stream.close();
-        } catch (final IOException ex) {
-        }
-        return opts;
+        return getImageSize(encoded);
     }
 }

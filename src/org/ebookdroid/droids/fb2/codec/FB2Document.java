@@ -11,9 +11,7 @@ import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.codec.OutlineLink;
 import org.ebookdroid.droids.fb2.codec.handlers.StandardHandler;
-import org.ebookdroid.droids.fb2.codec.parsers.DuckbillParser;
-import org.ebookdroid.droids.fb2.codec.parsers.SaxParser;
-import org.ebookdroid.droids.fb2.codec.parsers.VTDExParser;
+import org.ebookdroid.droids.fb2.codec.tags.FB2TagFactory;
 
 import android.graphics.Bitmap;
 import android.graphics.RectF;
@@ -43,6 +41,10 @@ import org.emdev.common.textmarkup.TextStyle;
 import org.emdev.common.textmarkup.Words;
 import org.emdev.common.textmarkup.line.HorizontalRule;
 import org.emdev.common.textmarkup.line.Line;
+import org.emdev.common.xml.TextProvider;
+import org.emdev.common.xml.parsers.DuckbillParser;
+import org.emdev.common.xml.parsers.SaxParser;
+import org.emdev.common.xml.parsers.VTDExParser;
 import org.emdev.utils.LengthUtils;
 
 import com.ximpleware.VTDGenEx;
@@ -186,7 +188,7 @@ public class FB2Document extends AbstractCodecDocument {
                 resources.add(isr);
 
                 final SaxParser p = new SaxParser();
-                p.parse(isr, h);
+                p.parse(isr, FB2TagFactory.instance, h);
             }
         } catch (final StopParsingException e) {
             // do nothing
@@ -217,20 +219,20 @@ public class FB2Document extends AbstractCodecDocument {
             final InputStream inStream = getInputStream(fileName, size, resources);
 
             if (inStream != null) {
-                final char[] chars = loadContent(inStream, size, resources);
+                final TextProvider text = loadContent(inStream, size, resources);
 
                 final long t2 = System.currentTimeMillis();
                 System.out.println("VTDEx  load: " + (t2 - t1) + " ms");
 
                 final VTDGenEx gen = new VTDGenEx();
-                gen.setDoc(chars, 0, (int) size.get());
+                gen.setDoc(text.chars, 0, text.size);
                 gen.parse(false);
 
                 final long t3 = System.currentTimeMillis();
                 System.out.println("VTDEx parse: " + (t3 - t2) + " ms");
 
                 final VTDExParser p = new VTDExParser();
-                p.parse(gen, h);
+                p.parse(gen, FB2TagFactory.instance, h);
 
                 final long t4 = System.currentTimeMillis();
                 System.out.println("VTDEx  scan: " + (t4 - t3) + " ms");
@@ -260,13 +262,13 @@ public class FB2Document extends AbstractCodecDocument {
             final InputStream inStream = getInputStream(fileName, size, resources);
 
             if (inStream != null) {
-                final char[] chars = loadContent(inStream, size, resources);
+                final TextProvider text = loadContent(inStream, size, resources);
 
                 final long t2 = System.currentTimeMillis();
                 System.out.println("DUCK  load: " + (t2 - t1) + " ms");
 
                 final DuckbillParser p = new DuckbillParser();
-                p.parse(chars, (int) size.get(), h);
+                p.parse(text, FB2TagFactory.instance, h);
 
                 final long t4 = System.currentTimeMillis();
                 System.out.println("DUCK  parse: " + (t4 - t2) + " ms");
@@ -286,7 +288,7 @@ public class FB2Document extends AbstractCodecDocument {
         }
     }
 
-    private char[] loadContent(final InputStream inStream, final AtomicLong size, final List<Closeable> resources)
+    private TextProvider loadContent(final InputStream inStream, final AtomicLong size, final List<Closeable> resources)
             throws IOException, UnsupportedEncodingException {
         final String encoding = getEncoding(inStream);
         final Reader isr = new InputStreamReader(inStream, encoding);
@@ -303,7 +305,7 @@ public class FB2Document extends AbstractCodecDocument {
             len -= n;
         }
         size.set(offset);
-        return chars;
+        return new TextProvider(chars, offset);
     }
 
     private String getEncoding(final InputStream inStream) throws IOException {

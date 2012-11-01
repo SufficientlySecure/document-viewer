@@ -1,19 +1,19 @@
-package org.ebookdroid.droids.fb2.codec.parsers;
-
-import org.ebookdroid.droids.fb2.codec.FB2Tag;
-import org.ebookdroid.droids.fb2.codec.handlers.IContentHandler;
+package org.emdev.common.xml.parsers;
 
 import java.util.Arrays;
 
-public class Duckbill2Parser {
+import org.emdev.common.xml.IContentHandler;
+import org.emdev.common.xml.IXmlTagFactory;
+import org.emdev.common.xml.TextProvider;
+import org.emdev.common.xml.tags.XmlTag;
+import org.emdev.utils.StringUtils;
 
-    public void parse(final char[] xmlChars, final int length, final IContentHandler handler) throws Exception {
-        nativeParse(xmlChars, length, handler);
-    }
+public class DuckbillParser {
 
-    private static native void nativeParse(final char[] xmlChars, final int length, final IContentHandler handler);
+    public void parse(final TextProvider text, final IXmlTagFactory factory, final IContentHandler handler) throws Exception {
+        final char[] xmlChars = text.chars;
+        final int length = text.size;
 
-  /*
         final XmlReader r = new XmlReader(xmlChars, length);
 
         int charsStart = -1;
@@ -24,7 +24,7 @@ public class Duckbill2Parser {
                 // Process text of parent element in case of START_TAG or current element in case of END_TAG
                 if (charsStart != -1) {
                     if (!handler.skipCharacters()) {
-                        handler.characters(r.XmlDoc, charsStart, r.XmlOffset - 1 - charsStart, true);
+                        handler.characters(text, charsStart, r.XmlOffset - 1 - charsStart);
                     }
                     charsStart = -1;
                 }
@@ -43,7 +43,7 @@ public class Duckbill2Parser {
                     // Process END_TAG token
                     final int tagNameStart = r.XmlOffset;
                     r.skipTagName();
-                    final FB2Tag tag = FB2Tag.getTagByName1(r.XmlDoc, tagNameStart, r.XmlOffset - tagNameStart);
+                    final XmlTag tag = factory.getTagByName(r.XmlDoc, tagNameStart, r.XmlOffset - tagNameStart);
                     handler.endElement(tag);
                     r.skipTo('>');
                     r.XmlOffset++;
@@ -53,14 +53,14 @@ public class Duckbill2Parser {
                 // Process START_TAG token
                 final int tagNameStart = r.XmlOffset;
                 r.skipTagName();
-                final FB2Tag tag = FB2Tag.getTagByName1(r.XmlDoc, tagNameStart, r.XmlOffset - tagNameStart);
+                final XmlTag tag = factory.getTagByName(r.XmlDoc, tagNameStart, r.XmlOffset - tagNameStart);
 
                 // Process tag attributes
-                if (tag.attributes.length == 0) {
-                    handler.startElement(tag);
-                } else {
+                if (handler.parseAttributes(tag)) {
                     final String[] attributes = r.fillAttributes(tag);
                     handler.startElement(tag, attributes);
+                } else {
+                    handler.startElement(tag);
                 }
                 r.skipToEndTag();
 
@@ -82,30 +82,51 @@ public class Duckbill2Parser {
                         final int endOfEntity = r.XmlOffset;
                         r.pop();
                         final int startOfEntity = r.XmlOffset;
+                        r.XmlOffset++;
 
                         char entity = (char) -1;
-                        final String string = new String(r.XmlDoc, r.XmlOffset + 1, endOfEntity - r.XmlOffset - 1);
 
                         if (r.skipChar('#')) {
                             if (r.skipChar('x') || r.skipChar('X')) {
-                                entity = (char) Integer.parseInt(string, 16);
+                                entity = (char) StringUtils.parseInt(r.XmlDoc, r.XmlOffset, endOfEntity - r.XmlOffset, 16);
                             } else {
-                                entity = (char) Integer.parseInt(string, 10);
+                                entity = (char) StringUtils.parseInt(r.XmlDoc, r.XmlOffset, endOfEntity - r.XmlOffset, 10);
                             }
                         } else {
-                            final String e = string;
-                            if ("qout".equals(e)) {
+                            int idx = r.XmlOffset;
+                            if (r.XmlDoc[idx] == 'q' &&
+                                    r.XmlDoc[idx+1] == 'o' &&
+                                    r.XmlDoc[idx+2] == 'u' &&
+                                    r.XmlDoc[idx+3] == 't' &&
+                                    r.XmlDoc[idx+4] == ';') {
+                                // quot
                                 entity = 34;
-                            } else if ("amp".equals(e)) {
+                            } else if (r.XmlDoc[idx] == 'a' &&
+                                    r.XmlDoc[idx+1] == 'm' &&
+                                    r.XmlDoc[idx+2] == 'p' &&
+                                    r.XmlDoc[idx+3] == ';') {
+                                //amp
                                 entity = 38;
-                            } else if ("apos".equals(e)) {
+                            } else if (r.XmlDoc[idx] == 'a' &&
+                                    r.XmlDoc[idx+1] == 'p' &&
+                                    r.XmlDoc[idx+2] == 'o' &&
+                                    r.XmlDoc[idx+3] == 's' &&
+                                    r.XmlDoc[idx+4] == ';') {
+                                //apos
                                 entity = 39;
-                            } else if ("lt".equals(e)) {
+                            } else if (r.XmlDoc[idx] == 'l' &&
+                                    r.XmlDoc[idx+1] == 't' &&
+                                    r.XmlDoc[idx+2] == ';') {
+                                //lt
                                 entity = 60;
-                            } else if ("gt".equals(e)) {
+                            } else if (r.XmlDoc[idx] == 'g' &&
+                                    r.XmlDoc[idx+1] == 't' &&
+                                    r.XmlDoc[idx+2] == ';') {
+                                //gt
                                 entity = 62;
                             }
                         }
+
                         if (entity != -1) {
                             r.XmlDoc[startOfEntity] = entity;
                             for (int i = startOfEntity + 1; i <= endOfEntity; i++) {
@@ -123,7 +144,7 @@ public class Duckbill2Parser {
             r.XmlOffset++;
         }
     }
-*/
+
     private class XmlReader {
 
         public final char[] XmlDoc;
@@ -193,7 +214,7 @@ public class Duckbill2Parser {
             }
         }
 
-        public String[] fillAttributes(final FB2Tag tag) {
+        public String[] fillAttributes(final XmlTag tag) {
             if (tag.attributes.length == 0) {
                 return null;
             }

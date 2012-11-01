@@ -52,7 +52,7 @@ public abstract class AbstractImageData implements IImageData {
     protected Options getImageSize(final String encoded) {
         final Options opts = new Options();
         opts.inJustDecodeBounds = true;
-        final Base64InputStream stream = new Base64InputStream(new AsciiCharInputStream(encoded), Base64.DEFAULT);
+        final Base64InputStream stream = new Base64InputStream(new AsciiCharStringInputStream(encoded), Base64.DEFAULT);
         BitmapFactory.decodeStream(stream, null, opts);
         try {
             stream.close();
@@ -61,13 +61,25 @@ public abstract class AbstractImageData implements IImageData {
         return opts;
     }
 
-    protected static class AsciiCharInputStream extends InputStream {
+    protected Options getImageSize(char[] ch, int start, int length) {
+        final Options opts = new Options();
+        opts.inJustDecodeBounds = true;
+        final Base64InputStream stream = new Base64InputStream(new AsciiCharInputStream(ch, start, length), Base64.DEFAULT);
+        BitmapFactory.decodeStream(stream, null, opts);
+        try {
+            stream.close();
+        } catch (final IOException ex) {
+        }
+        return opts;
+    }
+
+    protected static class AsciiCharStringInputStream extends InputStream {
 
         private final String str;
         private int index;
         private final int length;
 
-        public AsciiCharInputStream(final String str) {
+        public AsciiCharStringInputStream(final String str) {
             this.length = LengthUtils.length(str);
             this.str = str;
         }
@@ -91,6 +103,45 @@ public abstract class AbstractImageData implements IImageData {
             final int read = Math.min(available, length);
             for (int i = 0; i < read; i++) {
                 final int c = (0xFF & str.charAt(index++));
+                buffer[offset + i] = (byte) c;
+            }
+            return read;
+        }
+    }
+
+    protected static class AsciiCharInputStream extends InputStream {
+
+        private final char[] chars;
+        private int index;
+        private final int start;
+        private final int length;
+
+        public AsciiCharInputStream(char[] ch, int start, int length) {
+            this.length = length;
+            this.start = start;
+            this.chars = ch;
+            this.index = start;
+        }
+
+        @Override
+        public int read() throws IOException {
+            return index >= start + length ? -1 : (0xFF & chars[index++]);
+        }
+
+        @Override
+        public int available() throws IOException {
+            return start + length - index;
+        }
+
+        @Override
+        public int read(final byte[] buffer, final int offset, final int length) throws IOException {
+            final int available = available();
+            if (available <= 0) {
+                return -1;
+            }
+            final int read = Math.min(available, length);
+            for (int i = 0; i < read; i++) {
+                final int c = (0xFF & chars[index++]);
                 buffer[offset + i] = (byte) c;
             }
             return read;

@@ -54,7 +54,10 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
 
     protected boolean spaceNeeded = true;
 
-    protected final StringBuilder tmpBinaryContents = new StringBuilder(64 * 1024);
+    protected char[] tmpBinary = null;
+    protected int tmpBinaryStart = 0;
+    protected int tmpBinaryLength = 0;
+
     protected final StringBuilder title = new StringBuilder();
 
     protected final StrBuilder tmpTagContent = new StrBuilder(16 * 1024);
@@ -138,7 +141,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
                 break;
             case BINARY:
                 tmpBinaryName = attributes[0];
-                tmpBinaryContents.setLength(0);
+                tmpBinary = null;
                 parsingBinary = true;
                 break;
             case BODY:
@@ -171,7 +174,8 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
                         currentStream = attributes[0];
                         if (currentStream != null) {
                             final String n = getNoteId(currentStream, true);
-                            parsedContent.getMarkupStream(currentStream).add(text(new TextProvider(n), 0, n.length(), crs));
+                            parsedContent.getMarkupStream(currentStream).add(
+                                    text(new TextProvider(n), 0, n.length(), crs));
                             parsedContent.getMarkupStream(currentStream).add(crs.paint.fixedSpace);
                             noteFirstWord = true;
                         }
@@ -363,10 +367,10 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
                 markupStream.add(MarkupParagraphEnd.E);
                 break;
             case BINARY:
-                if (tmpBinaryContents.length() > 0) {
-                    parsedContent.addImage(tmpBinaryName, tmpBinaryContents.toString());
+                if (tmpBinary != null) {
+                    parsedContent.addImage(tmpBinaryName, tmpBinary, tmpBinaryStart, tmpBinaryLength);
                     tmpBinaryName = null;
-                    tmpBinaryContents.setLength(0);
+                    tmpBinary = null;
                 }
                 parsingBinary = false;
                 break;
@@ -494,7 +498,27 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
     @Override
     public void characters(final TextProvider text, final int start, final int length) {
         if (parsingBinary) {
-            tmpBinaryContents.append(text.chars, start, length);
+            if (text.persistent) {
+                if (tmpBinary == null) {
+                    tmpBinary = text.chars;
+                    tmpBinaryStart = start;
+                    tmpBinaryLength = length;
+                } else {
+                    tmpBinaryLength += length;
+                }
+            } else {
+                if (tmpBinary == null) {
+                    tmpBinary = new char[0];
+                    tmpBinaryLength = 0;
+                }
+                char[] tmp = new char[tmpBinaryLength + length];
+                System.arraycopy(tmpBinary, 0, tmp, 0, tmpBinaryLength);
+                System.arraycopy(text.chars, start, tmp, tmpBinaryLength, length);
+                tmpBinary = tmp;
+                tmpBinaryStart = 0;
+                tmpBinaryLength += length;
+            }
+
         } else {
             if (text.persistent) {
                 processText(text, start, length);

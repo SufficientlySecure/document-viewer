@@ -105,6 +105,17 @@ public class ParsedContent {
         }
     }
 
+    public void addImage(String tmpBinaryName, char[] tmpBinary, int tmpBinaryStart, int tmpBinaryLength) {
+        if (tmpBinaryName != null && tmpBinary != null && tmpBinaryLength > 0) {
+            IImageData data = new MemoryImageData(tmpBinary, tmpBinaryStart, tmpBinaryLength);
+            if (AppSettings.current().fb2CacheImagesOnDisk) {
+                data = new DiskImageData((MemoryImageData) data);
+            }
+            images.put("I" + tmpBinaryName, new Image(data, true));
+            images.put("O" + tmpBinaryName, new Image(data, false));
+        }
+    }
+
     public Image getImage(final String name, final boolean inline) {
         if (name == null) {
             return null;

@@ -17,6 +17,7 @@
 package org.emdev.utils.base64;
 
 import java.io.UnsupportedEncodingException;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Utilities for encoding and decoding the Base64 representation of
@@ -171,6 +172,17 @@ public class Base64 {
         byte[] temp = new byte[decoder.op];
         System.arraycopy(decoder.output, 0, temp, 0, decoder.op);
         return temp;
+    }
+
+    public static byte[] decode(char[] input, int offset, int len, int flags, AtomicLong outSize) {
+        Decoder decoder = new Decoder(flags, new byte[len*3/4]);
+
+        if (!decoder.process(input, offset, len, true)) {
+            throw new IllegalArgumentException("bad base-64");
+        }
+
+        outSize.set(decoder.op);
+        return decoder.output;
     }
 
     /* package */ static class Decoder extends Coder {
@@ -429,6 +441,140 @@ public class Base64 {
             case 5:
                 // Read all the padding '='s we expected and no more.
                 // Fine.
+                break;
+            }
+
+            this.state = state;
+            this.op = op;
+            return true;
+        }
+
+        /* Version of the above routine for char[] input*/
+        public boolean process(char[] input, int offset, int len, boolean finish) {
+            if (this.state == 6) return false;
+
+            int p = offset;
+            len += offset;
+
+            int state = this.state;
+            int value = this.value;
+            int op = 0;
+            final byte[] output = this.output;
+            final int[] alphabet = this.alphabet;
+
+            while (p < len) {
+                if (state == 0) {
+                    while (p+4 <= len &&
+                           (value = ((alphabet[input[p] & 0xff] << 18) |
+                                     (alphabet[input[p+1] & 0xff] << 12) |
+                                     (alphabet[input[p+2] & 0xff] << 6) |
+                                     (alphabet[input[p+3] & 0xff]))) >= 0) {
+                        output[op+2] = (byte) value;
+                        output[op+1] = (byte) (value >> 8);
+                        output[op] = (byte) (value >> 16);
+                        op += 3;
+                        p += 4;
+                    }
+                    if (p >= len) break;
+                }
+
+                int d = alphabet[input[p++] & 0xff];
+
+                switch (state) {
+                case 0:
+                    if (d >= 0) {
+                        value = d;
+                        ++state;
+                    } else if (d != SKIP) {
+                        this.state = 6;
+                        return false;
+                    }
+                    break;
+
+                case 1:
+                    if (d >= 0) {
+                        value = (value << 6) | d;
+                        ++state;
+                    } else if (d != SKIP) {
+                        this.state = 6;
+                        return false;
+                    }
+                    break;
+
+                case 2:
+                    if (d >= 0) {
+                        value = (value << 6) | d;
+                        ++state;
+                    } else if (d == EQUALS) {
+                        output[op++] = (byte) (value >> 4);
+                        state = 4;
+                    } else if (d != SKIP) {
+                        this.state = 6;
+                        return false;
+                    }
+                    break;
+
+                case 3:
+                    if (d >= 0) {
+                        value = (value << 6) | d;
+                        output[op+2] = (byte) value;
+                        output[op+1] = (byte) (value >> 8);
+                        output[op] = (byte) (value >> 16);
+                        op += 3;
+                        state = 0;
+                    } else if (d == EQUALS) {
+                        output[op+1] = (byte) (value >> 2);
+                        output[op] = (byte) (value >> 10);
+                        op += 2;
+                        state = 5;
+                    } else if (d != SKIP) {
+                        this.state = 6;
+                        return false;
+                    }
+                    break;
+
+                case 4:
+                    if (d == EQUALS) {
+                        ++state;
+                    } else if (d != SKIP) {
+                        this.state = 6;
+                        return false;
+                    }
+                    break;
+
+                case 5:
+                    if (d != SKIP) {
+                        this.state = 6;
+                        return false;
+                    }
+                    break;
+                }
+            }
+
+            if (!finish) {
+                this.state = state;
+                this.value = value;
+                this.op = op;
+                return true;
+            }
+
+            switch (state) {
+            case 0:
+                break;
+            case 1:
+                this.state = 6;
+                return false;
+            case 2:
+                output[op++] = (byte) (value >> 4);
+                break;
+            case 3:
+                output[op++] = (byte) (value >> 10);
+                output[op++] = (byte) (value >> 2);
+                break;
+            case 4:
+                this.state = 6;
+                return false;
+            case 5:
                 break;
             }
 

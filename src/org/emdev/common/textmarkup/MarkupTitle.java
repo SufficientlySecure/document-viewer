@@ -1,26 +1,20 @@
 package org.emdev.common.textmarkup;
 
-
-import org.ebookdroid.droids.fb2.codec.LineCreationParams;
-
-import java.util.ArrayList;
-
-import org.emdev.common.textmarkup.line.Line;
-
+import org.emdev.common.textmarkup.line.LineStream;
 
 public class MarkupTitle implements MarkupElement {
 
     public final String title;
     public final int level;
 
-    public MarkupTitle(final String string, int level) {
+    public MarkupTitle(final String string, final int level) {
         this.title = string;
         this.level = level;
     }
 
     @Override
-    public void publishToLines(ArrayList<Line> lines, LineCreationParams params) {
-        Line.getLastLine(lines, params).setTitle(this);
+    public void publishToLines(final LineStream lines) {
+        lines.tail().setTitle(this);
     }
 
 }

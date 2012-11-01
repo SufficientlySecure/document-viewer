@@ -36,11 +36,13 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.emdev.common.archives.zip.ZipArchive;
 import org.emdev.common.archives.zip.ZipArchiveEntry;
 import org.emdev.common.textmarkup.JustificationMode;
+import org.emdev.common.textmarkup.MarkupElement;
 import org.emdev.common.textmarkup.MarkupTitle;
 import org.emdev.common.textmarkup.TextStyle;
 import org.emdev.common.textmarkup.Words;
 import org.emdev.common.textmarkup.line.HorizontalRule;
 import org.emdev.common.textmarkup.line.Line;
+import org.emdev.common.textmarkup.line.LineStream;
 import org.emdev.common.xml.TextProvider;
 import org.emdev.common.xml.parsers.DuckbillParser;
 import org.emdev.common.xml.parsers.SaxParser;
@@ -83,7 +85,8 @@ public class FB2Document extends AbstractCodecDocument {
 
         final long t3 = System.currentTimeMillis();
 
-        final List<Line> documentLines = content.createLines(content.getMarkupStream(null), PAGE_WIDTH - 2 * MARGIN_X,
+        final ArrayList<MarkupElement> mainStream = content.getMarkupStream(null);
+        final LineStream documentLines = content.createLines(mainStream, PAGE_WIDTH - 2 * MARGIN_X,
                 JustificationMode.Justify);
         createPages(documentLines);
 
@@ -99,7 +102,7 @@ public class FB2Document extends AbstractCodecDocument {
         System.gc();
     }
 
-    private void createPages(final List<Line> documentLines) {
+    private void createPages(final LineStream documentLines) {
         pages.clear();
         if (LengthUtils.isEmpty(documentLines)) {
             return;
@@ -120,7 +123,7 @@ public class FB2Document extends AbstractCodecDocument {
                 addTitle(title);
             }
 
-            final List<Line> footnotes = line.getFootNotes();
+            final LineStream footnotes = line.getFootNotes();
             if (footnotes != null) {
                 final Iterator<Line> iterator = footnotes.iterator();
                 if (lastPage.noteLines.size() > 0 && iterator.hasNext()) {
@@ -134,7 +137,7 @@ public class FB2Document extends AbstractCodecDocument {
                         commitPage();
                         lastPage = new FB2Page();
                         pages.add(lastPage);
-                        final Line ruleLine = new Line(PAGE_WIDTH / 4, JustificationMode.Left);
+                        final Line ruleLine = new Line(content, PAGE_WIDTH / 4, JustificationMode.Left);
                         ruleLine.append(new HorizontalRule(PAGE_WIDTH / 4, TextStyle.FOOTNOTE.getFontSize()));
                         ruleLine.applyJustification(JustificationMode.Left);
                         lastPage.appendNoteLine(ruleLine);
@@ -413,7 +416,7 @@ public class FB2Document extends AbstractCodecDocument {
     }
 
     void commitPage() {
-        getLastPage().commit();
+        getLastPage().commit(content);
     }
 
     @Override

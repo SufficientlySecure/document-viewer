@@ -1,23 +1,18 @@
 package org.emdev.common.textmarkup;
 
-import org.ebookdroid.droids.fb2.codec.LineCreationParams;
-
-import java.util.ArrayList;
-
-import org.emdev.common.textmarkup.line.Line;
-
+import org.emdev.common.textmarkup.line.LineStream;
 
 public class MarkupExtraSpace implements MarkupElement {
 
     private final int extraSpace;
-    
-    public MarkupExtraSpace(int extraSpace) {
+
+    public MarkupExtraSpace(final int extraSpace) {
         this.extraSpace = extraSpace;
     }
-    
+
     @Override
-    public void publishToLines(ArrayList<Line> lines, LineCreationParams params) {
-        params.extraSpace += this.extraSpace;
+    public void publishToLines(final LineStream lines) {
+        lines.params.extraSpace += this.extraSpace;
     }
 
 }

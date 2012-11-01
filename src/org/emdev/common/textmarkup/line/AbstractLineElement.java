@@ -1,15 +1,8 @@
 package org.emdev.common.textmarkup.line;
 
-
-import org.ebookdroid.droids.fb2.codec.LineCreationParams;
-
 import android.graphics.RectF;
 
-import java.util.ArrayList;
-
 import org.emdev.common.textmarkup.RenderingStyle;
-import org.emdev.utils.LengthUtils;
-
 
 public abstract class AbstractLineElement implements LineElement {
 
@@ -29,28 +22,26 @@ public abstract class AbstractLineElement implements LineElement {
     }
 
     @Override
-    public final void publishToLines(ArrayList<Line> lines, LineCreationParams params) {
-        Line line = Line.getLastLine(lines, params);
-        final LineWhiteSpace space = RenderingStyle.getTextPaint(params.content, Math.max(line.getHeight(), height)).space;
-        float remaining = params.maxLineWidth - (line.width + space.width);
-        if (remaining <= 0 && !params.noLineBreak) {
-            line = new Line(params.maxLineWidth, params.jm);
-            lines.add(line);
-            remaining = params.maxLineWidth;
-        }
-        if (params.extraSpace > 0 && LengthUtils.isEmpty(line.elements)) {
-            line.append(new LineFixedWhiteSpace(params.extraSpace, 0));
+    public final void publishToLines(final LineStream lines) {
+        Line line = lines.tail();
+        final int h = Math.max(line.getHeight(), height);
+        final LineWhiteSpace space = RenderingStyle.getTextPaint(lines.params.content, h).space;
+        float remaining = lines.params.maxLineWidth - (line.width + (isWhiteSpace ? 0 : space.width));
+
+        if (remaining <= 0 && !lines.params.noLineBreak) {
+            line = lines.add();
+            remaining = lines.params.maxLineWidth;
         }
 
-        if (this.width <= remaining || params.noLineBreak) {
-            if (line.hasNonWhiteSpaces() && params.insertSpace && !isWhiteSpace) {
+        if (this.width <= remaining || lines.params.noLineBreak) {
+            if (line.hasNonWhiteSpaces() && lines.params.insertSpace && !isWhiteSpace) {
                 line.append(space);
             }
             line.append(this);
         } else {
             final AbstractLineElement[] splitted = split(remaining);
             if (splitted != null && splitted.length > 1) {
-                if (line.hasNonWhiteSpaces() && params.insertSpace && !isWhiteSpace) {
+                if (line.hasNonWhiteSpaces() && lines.params.insertSpace && !isWhiteSpace) {
                     line.append(space);
                 }
                 for (int i = 0; i < splitted.length - 1; i++) {
@@ -58,20 +49,16 @@ public abstract class AbstractLineElement implements LineElement {
                 }
             }
 
-            line = new Line(params.maxLineWidth, params.jm);
-            if (params.extraSpace > 0 && LengthUtils.isEmpty(line.elements)) {
-                line.append(new LineFixedWhiteSpace(params.extraSpace, 0));
-            }
-            lines.add(line);
+            line = lines.add();
 
             if (splitted == null) {
                 line.append(this);
             } else {
-                splitted[splitted.length - 1].publishToLines(lines, params);
+                splitted[splitted.length - 1].publishToLines(lines);
             }
         }
-        params.insertSpace = !isWhiteSpace;
-        params.noLineBreak = false;
+        lines.params.insertSpace = !isWhiteSpace;
+        lines.params.noLineBreak = false;
     }
 
     public AbstractLineElement[] split(final float remaining) {

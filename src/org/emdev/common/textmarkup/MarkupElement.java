@@ -1,11 +1,10 @@
 package org.emdev.common.textmarkup;
 
-import org.ebookdroid.droids.fb2.codec.LineCreationParams;
+import org.emdev.common.textmarkup.line.LineStream;
 
-import java.util.ArrayList;
-
-import org.emdev.common.textmarkup.line.Line;
 
 public interface MarkupElement {
-    void publishToLines(ArrayList<Line> lines, LineCreationParams params);
+
+    void publishToLines(LineStream lines);
+
 }

@@ -28,7 +28,7 @@ import org.emdev.common.textmarkup.image.DiskImageData;
 import org.emdev.common.textmarkup.image.IImageData;
 import org.emdev.common.textmarkup.image.MemoryImageData;
 import org.emdev.common.textmarkup.line.Image;
-import org.emdev.common.textmarkup.line.Line;
+import org.emdev.common.textmarkup.line.LineStream;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.collections.SparseArrayEx;
 
@@ -39,7 +39,7 @@ public class ParsedContent {
     final HashMap<String, ArrayList<MarkupElement>> streams = new HashMap<String, ArrayList<MarkupElement>>();
 
     private final TreeMap<String, Image> images = new TreeMap<String, Image>();
-    private final TreeMap<String, ArrayList<Line>> notes = new TreeMap<String, ArrayList<Line>>();
+    private final TreeMap<String, LineStream> notes = new TreeMap<String, LineStream>();
 
     public final SparseArrayEx<Words> words = new SparseArrayEx<Words>();
 
@@ -53,11 +53,12 @@ public class ParsedContent {
         fonts = new TypefaceEx[styles.length];
         for (final FontStyle style : styles) {
             final TypefaceEx font = FontManager.getFont(AppSettings.current().fb2FontPack, FontFamilyType.SERIF, style);
-            System.out.println("Preloaded: " + font);
             fonts[style.ordinal()] = font;
             RenderingStyle.getTextPaint(font, TextStyle.TEXT.getFontSize());
+            System.out.println("Preloaded: " + font);
         }
         mono = FontManager.getFont(SystemFontProvider.SYSTEM_FONT_PACK, FontFamilyType.MONO, FontStyle.REGULAR);
+        System.out.println("Preloaded: " + mono);
     }
 
     public void clear() {
@@ -127,8 +128,8 @@ public class ParsedContent {
         return img;
     }
 
-    public List<Line> getNote(final String noteName) {
-        ArrayList<Line> note = notes.get(noteName);
+    public LineStream getNote(final String noteName) {
+        LineStream note = notes.get(noteName);
         if (note != null) {
             return note;
         }
@@ -145,24 +146,20 @@ public class ParsedContent {
         return note;
     }
 
-    ArrayList<Line> createLines(final List<MarkupElement> markup, final int maxLineWidth, final JustificationMode jm) {
-        final ArrayList<Line> lines = new ArrayList<Line>();
+    LineStream createLines(final List<MarkupElement> markup, final int maxLineWidth, final JustificationMode jm) {
+        final LineStream lines = new LineStream(this, maxLineWidth, jm);
         if (LengthUtils.isNotEmpty(markup)) {
-            final LineCreationParams params = new LineCreationParams();
-            params.jm = jm;
-            params.maxLineWidth = maxLineWidth;
-            params.content = this;
             for (final MarkupElement me : markup) {
                 if (me instanceof MarkupEndDocument) {
                     break;
                 }
-                me.publishToLines(lines, params);
+                me.publishToLines(lines);
             }
         }
         return lines;
     }
 
-    public List<Line> getStreamLines(final String streamName, final int maxWidth, final JustificationMode jm) {
+    public LineStream getStreamLines(final String streamName, final int maxWidth, final JustificationMode jm) {
         final ArrayList<MarkupElement> stream = getMarkupStream(streamName);
         if (stream != null) {
             return createLines(stream, maxWidth, jm);

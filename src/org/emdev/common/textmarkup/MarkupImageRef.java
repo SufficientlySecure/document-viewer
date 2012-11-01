@@ -1,13 +1,8 @@
 package org.emdev.common.textmarkup;
 
-
-import org.ebookdroid.droids.fb2.codec.LineCreationParams;
-
-import java.util.ArrayList;
-
 import org.emdev.common.textmarkup.line.Image;
 import org.emdev.common.textmarkup.line.Line;
-
+import org.emdev.common.textmarkup.line.LineStream;
 
 public class MarkupImageRef implements MarkupElement {
 
@@ -20,16 +15,15 @@ public class MarkupImageRef implements MarkupElement {
     }
 
     @Override
-    public void publishToLines(ArrayList<Line> lines, LineCreationParams params) {
-        final Image image = params.content.getImage(ref, inline);
+    public void publishToLines(final LineStream lines) {
+        final Image image = lines.params.content.getImage(ref, inline);
         if (image != null) {
             if (!inline) {
-                final Line line = new Line(params.maxLineWidth, params.jm);
+                final Line line = lines.add();
                 line.append(image);
                 line.applyJustification(JustificationMode.Center);
-                lines.add(line);
             } else {
-                image.publishToLines(lines, params);
+                image.publishToLines(lines);
             }
         }
     }

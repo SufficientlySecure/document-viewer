@@ -229,7 +229,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
                         final String note = attributes[0];
                         final String prettyNote = " " + getNoteId(note, false);
                         markupStream.add(MarkupNoSpace.E);
-                        markupStream.add(MarkupNoLineBreak._instance);
+                        markupStream.add(MarkupNoLineBreak.E);
                         markupStream.add(new TextElement(prettyNote.toCharArray(), 0, prettyNote.length(),
                                 new RenderingStyle(crs, Script.SUPER)));
                         markupStream.add(new MarkupNote(note));
@@ -302,13 +302,11 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
             case TD:
             case TH:
                 if (currentTable != null) {
-                    final int rowCount = currentTable.getRowCount();
-                    final Cell c = currentTable.new Cell();
-                    currentTable.addCol(c);
-                    final String streamId = currentTable.uuid + ":" + rowCount + ":"
-                            + currentTable.getColCount(rowCount - 1);
-                    c.stream = streamId;
+                    paragraphParsing = true;
+
+                    final Cell c = currentTable.addCol();
                     c.hasBackground = tag == FB2Tag.TH.tag;
+
                     final String align = attributes[0];
                     if ("right".equals(align)) {
                         c.align = JustificationMode.Right;
@@ -316,9 +314,9 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
                     if ("center".equals(align)) {
                         c.align = JustificationMode.Center;
                     }
-                    paragraphParsing = true;
+
                     oldStream = currentStream;
-                    currentStream = streamId;
+                    currentStream = c.stream;
                 }
                 break;
             case CODE:

@@ -1,24 +1,17 @@
 package org.emdev.common.textmarkup;
 
-
-import org.ebookdroid.droids.fb2.codec.LineCreationParams;
-
-import java.util.ArrayList;
-
-import org.emdev.common.textmarkup.line.Line;
-
+import org.emdev.common.textmarkup.line.LineStream;
 
 public class MarkupNoLineBreak implements MarkupElement {
 
-    private MarkupNoLineBreak() {
+    public static final MarkupNoLineBreak E = new MarkupNoLineBreak();
 
+    private MarkupNoLineBreak() {
     }
 
-    public static final MarkupNoLineBreak _instance = new MarkupNoLineBreak();
-
     @Override
-    public void publishToLines(ArrayList<Line> lines, LineCreationParams params) {
-        params.noLineBreak = true;
+    public void publishToLines(final LineStream lines) {
+        lines.params.noLineBreak = true;
     }
 
 }

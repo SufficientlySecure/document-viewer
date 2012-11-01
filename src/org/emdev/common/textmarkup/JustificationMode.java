@@ -1,11 +1,7 @@
 package org.emdev.common.textmarkup;
 
 
-import org.ebookdroid.droids.fb2.codec.LineCreationParams;
-
-import java.util.ArrayList;
-
-import org.emdev.common.textmarkup.line.Line;
+import org.emdev.common.textmarkup.line.LineStream;
 
 
 public enum JustificationMode implements MarkupElement {
@@ -23,7 +19,7 @@ public enum JustificationMode implements MarkupElement {
     Justify;
 
     @Override
-    public void publishToLines(ArrayList<Line> lines, LineCreationParams params) {
-        params.jm = this;
+    public void publishToLines(LineStream lines) {
+        lines.params.jm = this;
     }
 }

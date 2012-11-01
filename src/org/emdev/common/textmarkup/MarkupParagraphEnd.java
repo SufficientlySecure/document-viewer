@@ -1,12 +1,6 @@
 package org.emdev.common.textmarkup;
 
-
-import org.ebookdroid.droids.fb2.codec.LineCreationParams;
-
-import java.util.ArrayList;
-
-import org.emdev.common.textmarkup.line.Line;
-import org.emdev.utils.LengthUtils;
+import org.emdev.common.textmarkup.line.LineStream;
 
 public class MarkupParagraphEnd implements MarkupElement {
 
@@ -16,19 +10,8 @@ public class MarkupParagraphEnd implements MarkupElement {
     }
 
     @Override
-    public void publishToLines(ArrayList<Line> lines, LineCreationParams params) {
-        if (LengthUtils.isEmpty(lines)) {
-            return;
-        }
-        final Line last = lines.get(lines.size() - 1);
-        final JustificationMode lastJm = params.jm == JustificationMode.Justify ? JustificationMode.Left : params.jm;
-        for (int i = lines.size() - 1; i >= 0; i--) {
-            Line l = lines.get(i);
-            if (l.committed) {
-                break;
-            }
-            l.applyJustification(l != last ? params.jm : lastJm);
-        }
+    public void publishToLines(final LineStream lines) {
+        lines.commitParagraph();
     }
 
 }

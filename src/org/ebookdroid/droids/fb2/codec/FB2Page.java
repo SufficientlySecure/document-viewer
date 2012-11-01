@@ -168,13 +168,13 @@ public class FB2Page extends AbstractCodecPage {
         contentHeight += line.getHeight();
     }
 
-    public void commit() {
+    public void commit(final ParsedContent content) {
         if (committed) {
             return;
         }
         final int h = FB2Page.PAGE_HEIGHT - contentHeight - 2 * FB2Page.MARGIN_Y;
         if (h > 0) {
-            lines.add(new Line(0, JustificationMode.Center).append(new LineFixedWhiteSpace(0, h)));
+            lines.add(new Line(content, 0, JustificationMode.Center).append(new LineFixedWhiteSpace(0, h)));
             contentHeight += h;
         }
         for (final Line line : noteLines) {
@@ -193,12 +193,12 @@ public class FB2Page extends AbstractCodecPage {
         if (LengthUtils.isEmpty(lines) && LengthUtils.isEmpty(noteLines)) {
             return true;
         }
-        for(Line l : lines) {
+        for (final Line l : lines) {
             if (!l.isEmpty()) {
                 return false;
             }
         }
-        for(Line l : noteLines) {
+        for (final Line l : noteLines) {
             if (!l.isEmpty()) {
                 return false;
             }

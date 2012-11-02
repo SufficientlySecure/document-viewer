@@ -46,7 +46,7 @@ import org.emdev.utils.LengthUtils;
 // action list
 actions = {
 // start
-@ActionMethodDef(id = R.id.mainmenu_about, method = "showAbout"),
+@ActionMethodDef(id = R.id.mainmenu_about, method = "showAbout")
 // finish
 })
 public class BrowserActivity extends AbstractActionActivity<BrowserActivity, BrowserActivityController> {

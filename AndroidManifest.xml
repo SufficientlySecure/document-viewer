@@ -47,7 +47,7 @@
         </activity>
         <activity android:name=".ui.opds.OPDSActivity" android:label="@string/opds" android:configChanges="keyboardHidden|orientation|screenSize" android:launchMode="singleTask" />
         <activity android:name=".ui.settings.SettingsActivity" android:configChanges="keyboardHidden|orientation|screenSize" />
-        <activity android:name=".ui.settings.FragmentedSettingsActivity" android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".ui.settings.FragmentedSettingsActivity"/>
         <activity android:name=".ui.settings.BookSettingsActivity" android:configChanges="keyboardHidden|orientation|screenSize" android:launchMode="singleTask"/>
         <activity android:name=".ui.library.BrowserActivity" android:configChanges="keyboardHidden|orientation|screenSize" android:launchMode="singleTask"/>
         <activity android:name=".ui.about.AboutActivity" android:icon="@drawable/application_icon" android:theme="@android:style/Theme.Dialog"/>

@@ -40,10 +40,11 @@ actions = {
         // start
         @ActionMethodDef(id = R.id.goToButton, method = "goToPageAndDismiss"),
         @ActionMethodDef(id = R.id.actions_setBookmarkedPage, method = "updateControls"),
-        @ActionMethodDef(id = R.id.bookmark_remove_all, method = "showDeleteBookmarkDlg"),
+        @ActionMethodDef(id = R.id.actions_showDeleteBookmarkDlg, method = "showDeleteBookmarkDlg"),
         @ActionMethodDef(id = R.id.actions_removeBookmark, method = "removeBookmark"),
         @ActionMethodDef(id = R.id.bookmark_add, method = "showAddBookmarkDlg"),
         @ActionMethodDef(id = R.id.actions_addBookmark, method = "addBookmark"),
+        @ActionMethodDef(id = R.id.bookmark_remove_all, method = "showDeleteAllBookmarksDlg"),
         @ActionMethodDef(id = R.id.actions_showDeleteAllBookmarksDlg, method = "showDeleteAllBookmarksDlg"),
         @ActionMethodDef(id = R.id.actions_deleteAllBookmarks, method = "deleteAllBookmarks")
 // finish
@@ -64,7 +65,7 @@ public class GoToPageDialog extends Dialog {
         this.handler = new SeekBarIncrementHandler();
 
         final BookSettings bs = base.getBookSettings();
-        this.offset  = bs != null ? bs.firstPageOffset : 1;
+        this.offset = bs != null ? bs.firstPageOffset : 1;
 
         setTitle(R.string.dialog_title_goto_page);
         setContentView(R.layout.gotopage);
@@ -74,6 +75,7 @@ public class GoToPageDialog extends Dialog {
 
         actions.connectViewToAction(R.id.bookmark_add);
         actions.connectViewToAction(R.id.bookmark_remove_all);
+        actions.connectViewToAction(R.id.bookmark_remove);
         actions.connectViewToAction(R.id.goToButton);
         actions.connectEditorToAction(editText, R.id.actions_gotoPage);
 
@@ -147,7 +149,7 @@ public class GoToPageDialog extends Dialog {
     @ActionMethod(ids = R.id.actions_showDeleteBookmarkDlg)
     public void showDeleteBookmarkDlg(final ActionEx action) {
         final View view = action.getParameter(IActionController.VIEW_PROPERTY);
-        final Bookmark bookmark = (Bookmark) view.getTag();
+        final Bookmark bookmark = view != null ? (Bookmark) view.getTag() : null;
         if (bookmark.service) {
             return;
         }
@@ -215,7 +217,7 @@ public class GoToPageDialog extends Dialog {
         }
     }
 
-    @ActionMethod(ids = R.id.bookmark_remove_all)
+    @ActionMethod(ids = { R.id.bookmark_remove_all, R.id.actions_showDeleteAllBookmarksDlg })
     public void showDeleteAllBookmarksDlg(final ActionEx action) {
         if (!adapter.hasUserBookmarks()) {
             return;
@@ -261,7 +263,7 @@ public class GoToPageDialog extends Dialog {
         final int pageNumber = getEnteredPageIndex(text);
         final int pageCount = base.getDocumentModel().getPageCount();
         if (pageNumber < 0 || pageNumber >= pageCount) {
-            final String msg = base.getContext().getString(R.string.bookmark_invalid_page, offset, pageCount -1 + offset);
+            final String msg = base.getContext().getString(R.string.bookmark_invalid_page, offset, pageCount - 1 + offset);
             Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
             return false;
         }

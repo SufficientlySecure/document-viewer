@@ -14,6 +14,7 @@ import org.ebookdroid.opds.model.Entry;
 import org.ebookdroid.opds.model.Feed;
 import org.ebookdroid.opds.model.Link;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -45,6 +46,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@TargetApi(8)
 public class OPDSAdapter extends BaseExpandableListAdapter {
 
     final Context context;

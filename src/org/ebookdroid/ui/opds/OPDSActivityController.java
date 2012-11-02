@@ -8,6 +8,7 @@ import org.ebookdroid.opds.model.Link;
 import org.ebookdroid.ui.opds.adapters.FeedListener;
 import org.ebookdroid.ui.opds.adapters.OPDSAdapter;
 
+import android.annotation.TargetApi;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -27,8 +28,6 @@ import org.emdev.ui.actions.ActionController;
 import org.emdev.ui.actions.ActionDialogBuilder;
 import org.emdev.ui.actions.ActionEx;
 import org.emdev.ui.actions.ActionMethod;
-import org.emdev.ui.actions.ActionMethodDef;
-import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.actions.IActionController;
 import org.emdev.ui.actions.params.CheckableValue;
 import org.emdev.ui.actions.params.Constant;
@@ -36,22 +35,7 @@ import org.emdev.ui.actions.params.EditableValue;
 import org.emdev.ui.actions.params.EditableValue.PasswordEditable;
 import org.emdev.utils.LengthUtils;
 
-@ActionTarget(
-// actions
-actions = {
-        // start
-        @ActionMethodDef(id = R.id.opdsaddfeed, method = "showAddFeedDlg"),
-        @ActionMethodDef(id = R.id.opds_feed_add, method = "showAddFeedDlg"),
-        @ActionMethodDef(id = R.id.opdsclose, method = "close"),
-        @ActionMethodDef(id = R.id.opdshome, method = "goHome"), @ActionMethodDef(id = R.id.opdsgoto, method = "goTo"),
-        @ActionMethodDef(id = R.id.opdsupfolder, method = "goUp"),
-        @ActionMethodDef(id = R.id.opdsnextfolder, method = "goNext"),
-        @ActionMethodDef(id = R.id.opdsprevfolder, method = "goPrev"),
-        @ActionMethodDef(id = R.id.opdsrefreshfolder, method = "refresh"),
-        @ActionMethodDef(id = R.id.opds_book_download, method = "showDownloadDlg"),
-        @ActionMethodDef(id = R.id.actions_downloadBook, method = "doDownload")
-// finish
-})
+@TargetApi(8)
 public class OPDSActivityController extends ActionController<OPDSActivity> implements
         ExpandableListView.OnGroupClickListener, ExpandableListView.OnChildClickListener, FeedListener {
 

@@ -319,7 +319,13 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
         final AppSettings as = AppSettings.current();
 
         setMenuItemChecked(menu, as.fullScreen, R.id.mainmenu_fullscreen);
-        setMenuItemChecked(menu, as.showTitle, R.id.mainmenu_showtitle);
+
+        if (!AndroidVersion.lessThan3x) {
+            setMenuItemChecked(menu, as.showTitle, R.id.mainmenu_showtitle);
+        } else {
+            setMenuItemVisible(menu, false, R.id.mainmenu_showtitle);
+        }
+
         setMenuItemChecked(menu, getZoomControls().getVisibility() == View.VISIBLE, R.id.mainmenu_zoom);
 
         final BookSettings bs = getController().getBookSettings();

@@ -48,6 +48,10 @@ actions = {
         // actions
         @ActionMethodDef(id = R.id.actions_verticalConfigScrollUp, method = "verticalConfigScroll"),
         @ActionMethodDef(id = R.id.actions_verticalConfigScrollDown, method = "verticalConfigScroll"),
+        @ActionMethodDef(id = R.id.actions_leftTopCorner, method = "scrollToCorner"),
+        @ActionMethodDef(id = R.id.actions_leftBottomCorner, method = "scrollToCorner"),
+        @ActionMethodDef(id = R.id.actions_rightTopCorner, method = "scrollToCorner"),
+        @ActionMethodDef(id = R.id.actions_rightBottomCorner, method = "scrollToCorner"),
         @ActionMethodDef(id = R.id.actions_quickZoom, method = "quickZoom"),
         @ActionMethodDef(id = R.id.actions_zoomToColumn, method = "zoomToColumn")
 // no more

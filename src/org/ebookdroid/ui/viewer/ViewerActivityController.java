@@ -105,9 +105,12 @@ actions = {
         @ActionMethodDef(id = R.id.mainmenu_fullscreen, method = "toggleFullScreen"),
         @ActionMethodDef(id = R.id.mainmenu_showtitle, method = "toggleTitleVisibility"),
         @ActionMethodDef(id = R.id.mainmenu_nightmode, method = "toggleNightMode"),
+        @ActionMethodDef(id = R.id.mainmenu_splitpages, method = "toggleSplitPages"),
+        @ActionMethodDef(id = R.id.mainmenu_croppages, method = "toggleCropPages"),
         @ActionMethodDef(id = R.id.mainmenu_thumbnail, method = "setCurrentPageAsThumbnail"),
         @ActionMethodDef(id = R.id.mainmenu_bookmark, method = "showBookmarkDialog"),
         @ActionMethodDef(id = R.id.actions_addBookmark, method = "addBookmark"),
+        @ActionMethodDef(id = R.id.actions_goToBookmark, method = "goToBookmark"),
         @ActionMethodDef(id = R.id.actions_keyBindings, method = "showKeyBindingsDialog"),
         @ActionMethodDef(id = R.id.mainmenu_zoom, method = "toggleControls"),
         @ActionMethodDef(id = R.id.mainmenu_crop, method = "toggleControls"),
@@ -543,9 +546,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     @ActionMethod(ids = R.id.mainmenu_fullscreen)
     public void toggleFullScreen(final ActionEx action) {
-        if (!AndroidVersion.lessThan3x) {
-            AppSettings.toggleFullScreen();
-        }
+        AppSettings.toggleFullScreen();
     }
 
     @ActionMethod(ids = R.id.mainmenu_showtitle)
@@ -587,7 +588,8 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         final BookSettings bs = getBookSettings();
         final int offset = bs != null ? bs.firstPageOffset : 1;
 
-        final EditText input = (EditText) LayoutInflater.from(getManagedComponent()).inflate(R.layout.bookmark_edit, null);
+        final EditText input = (EditText) LayoutInflater.from(getManagedComponent()).inflate(R.layout.bookmark_edit,
+                null);
         input.setText(getManagedComponent().getString(R.string.text_page) + " " + (page + offset));
         input.selectAll();
 

@@ -1,31 +1,13 @@
 package org.ebookdroid.ui.library;
 
-import org.ebookdroid.CodecType;
 import org.ebookdroid.R;
-import org.ebookdroid.common.cache.CacheManager;
-import org.ebookdroid.common.settings.AppSettings;
-import org.ebookdroid.common.settings.LibSettings;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.books.Bookmark;
 import org.ebookdroid.core.PageIndex;
-import org.ebookdroid.ui.library.adapters.BookNode;
-import org.ebookdroid.ui.library.adapters.BrowserAdapter;
-import org.ebookdroid.ui.library.dialogs.FolderDlg;
-import org.ebookdroid.ui.library.tasks.CopyBookTask;
-import org.ebookdroid.ui.library.tasks.MoveBookTask;
-import org.ebookdroid.ui.library.tasks.RenameBookTask;
 import org.ebookdroid.ui.library.views.FileBrowserView;
-import org.ebookdroid.ui.opds.OPDSActivity;
-import org.ebookdroid.ui.settings.SettingsUI;
-import org.ebookdroid.ui.viewer.ViewerActivity;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -37,7 +19,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.EditText;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
@@ -46,87 +27,69 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
-import org.emdev.BaseDroidApp;
 import org.emdev.common.android.AndroidVersion;
-import org.emdev.common.filesystem.CompositeFilter;
-import org.emdev.common.filesystem.DirectoryFilter;
-import org.emdev.common.filesystem.PathFromUri;
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.ui.AbstractActionActivity;
-import org.emdev.ui.actions.ActionController;
-import org.emdev.ui.actions.ActionDialogBuilder;
-import org.emdev.ui.actions.ActionEx;
-import org.emdev.ui.actions.ActionMethod;
 import org.emdev.ui.actions.ActionMethodDef;
 import org.emdev.ui.actions.ActionTarget;
-import org.emdev.ui.actions.params.Constant;
-import org.emdev.ui.actions.params.EditableValue;
 import org.emdev.ui.uimanager.IUIManager;
-import org.emdev.utils.CompareUtils;
-import org.emdev.utils.FileUtils;
 import org.emdev.utils.LayoutUtils;
 import org.emdev.utils.LengthUtils;
 
 @ActionTarget(
 // action list
 actions = {
-        // start
-        @ActionMethodDef(id = R.id.browserhome, method = "goHome"),
-        @ActionMethodDef(id = R.id.browserupfolder, method = "goUp"),
-        @ActionMethodDef(id = R.id.mainmenu_settings, method = "showSettings"),
-        @ActionMethodDef(id = R.id.mainmenu_about, method = "showAbout"),
-        @ActionMethodDef(id = R.id.browserrecent, method = "goRecent"),
-        @ActionMethodDef(id = R.id.mainmenu_opds, method = "goOPDSBrowser"),
-        @ActionMethodDef(id = R.id.actions_goToBookmark, method = "openBook"),
-        @ActionMethodDef(id = R.id.bookmenu_removefromrecent, method = "removeBookFromRecents"),
-        @ActionMethodDef(id = R.id.bookmenu_cleardata, method = "removeCachedBookFiles"),
-        @ActionMethodDef(id = R.id.bookmenu_deletesettings, method = "removeBookSettings"),
-        @ActionMethodDef(id = R.id.bookmenu_copy, method = "copyBook"),
-        @ActionMethodDef(id = R.id.bookmenu_move, method = "copyBook"),
-        @ActionMethodDef(id = R.id.actions_doCopyBook, method = "doCopyBook"),
-        @ActionMethodDef(id = R.id.actions_doMoveBook, method = "doMoveBook"),
-        @ActionMethodDef(id = R.id.bookmenu_rename, method = "renameBook"),
-        @ActionMethodDef(id = R.id.actions_doRenameBook, method = "doRenameBook"),
-        @ActionMethodDef(id = R.id.bookmenu_delete, method = "deleteBook"),
-        @ActionMethodDef(id = R.id.actions_doDeleteBook, method = "doDeleteBook")
-
+// start
+@ActionMethodDef(id = R.id.mainmenu_about, method = "showAbout"),
 // finish
 })
-public class BrowserActivity extends AbstractActionActivity<BrowserActivity, ActionController<BrowserActivity>>
-        implements IBrowserActivity {
+public class BrowserActivity extends AbstractActionActivity<BrowserActivity, BrowserActivityController> {
 
-    private BrowserAdapter adapter;
-    protected final FileFilter filter;
     private static final String CURRENT_DIRECTORY = "currentDirectory";
 
-    private ViewFlipper viewflipper;
-    private TextView header;
+    private static final AtomicLong SEQ = new AtomicLong();
+
+    public final LogContext LCTX;
+
+    ViewFlipper viewflipper;
+    TextView header;
 
     public BrowserActivity() {
-        this.filter = new CompositeFilter(false, DirectoryFilter.NOT_HIDDEN, LibSettings.current().allowedFileTypes);
+        super();
+        LCTX = LogManager.root().lctx(this.getClass().getSimpleName(), true).lctx("" + SEQ.getAndIncrement(), true);
     }
 
     @Override
-    protected ActionController<BrowserActivity> createController() {
-        return new ActionController<BrowserActivity>(this);
+    protected BrowserActivityController createController() {
+        return new BrowserActivityController(this);
     }
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("onCreate()");
+        }
+
         super.onCreate(savedInstanceState);
+
+        BrowserActivityController c = restoreController();
+        if (c == null) {
+            c = getController();
+            c.onCreate();
+        }
 
         IUIManager.instance.setTitleVisible(this, !AndroidVersion.lessThan3x, true);
         setContentView(R.layout.browser);
 
-        adapter = new BrowserAdapter(filter);
         header = (TextView) findViewById(R.id.browsertext);
         viewflipper = (ViewFlipper) findViewById(R.id.browserflip);
-        viewflipper.addView(LayoutUtils.fillInParent(viewflipper, new FileBrowserView(this, adapter)));
+        viewflipper.addView(LayoutUtils.fillInParent(viewflipper, new FileBrowserView(c, c.adapter)));
 
         if (AndroidVersion.VERSION == 3) {
             setActionForView(R.id.browserhome);
@@ -137,26 +100,12 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
 
     @Override
     protected void onPostCreate(final Bundle savedInstanceState) {
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("onPostCreate()");
+        }
         super.onPostCreate(savedInstanceState);
 
-        goHome(null);
-
-        final Uri data = getIntent().getData();
-        if (data != null) {
-            setCurrentDir(new File(PathFromUri.retrieve(getContentResolver(), data)));
-        } else if (savedInstanceState != null) {
-            final String absolutePath = savedInstanceState.getString(CURRENT_DIRECTORY);
-            if (absolutePath != null) {
-                setCurrentDir(new File(absolutePath));
-            }
-        } else {
-            final Set<String> dirs = LibSettings.current().autoScanDirs;
-            if (LengthUtils.isNotEmpty(dirs)) {
-                setCurrentDir(new File(dirs.iterator().next()));
-            }
-        }
-
-        showProgress(false);
+        getController().onPostCreate(savedInstanceState);
     }
 
     @Override
@@ -168,75 +117,27 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
 
     @Override
     protected void updateMenuItems(final Menu optionsMenu) {
-        final File dir = adapter.getCurrentDirectory();
+
+        final File dir = getController().adapter.getCurrentDirectory();
         final boolean hasParent = dir != null ? dir.getParentFile() != null : false;
 
         setMenuItemEnabled(optionsMenu, hasParent, R.id.browserupfolder, R.drawable.browser_actionbar_nav_up_enabled,
                 R.drawable.browser_actionbar_nav_up_disabled);
     }
 
-    @ActionMethod(ids = R.id.browserhome)
-    public void goHome(final ActionEx action) {
-        if (BaseDroidApp.EXT_STORAGE.exists()) {
-            setCurrentDir(BaseDroidApp.EXT_STORAGE);
-        } else {
-            setCurrentDir(new File("/"));
-        }
-    }
+    void setTitle(final File dir) {
 
-    @ActionMethod(ids = R.id.browserupfolder)
-    public void goUp(final ActionEx action) {
-        final File dir = adapter.getCurrentDirectory();
-        final File parent = dir != null ? dir.getParentFile() : null;
-        if (parent != null) {
-            setCurrentDir(parent);
-        }
-    }
-
-    @ActionMethod(ids = R.id.mainmenu_settings)
-    public void showSettings(final ActionEx action) {
-        SettingsUI.showAppSettings(this, null);
-    }
-
-    @ActionMethod(ids = R.id.browserrecent)
-    public void goRecent(final ActionEx action) {
-        final Intent myIntent = new Intent(BrowserActivity.this, RecentActivity.class);
-        startActivity(myIntent);
-        finish();
-    }
-
-    @ActionMethod(ids = R.id.mainmenu_opds)
-    public void goOPDSBrowser(final ActionEx action) {
-        final Intent myIntent = new Intent(BrowserActivity.this, OPDSActivity.class);
-        startActivity(myIntent);
-    }
-
-    @Override
-    public void showDocument(final Uri uri, final Bookmark b) {
-        final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-        intent.setClass(this, ViewerActivity.class);
-        if (b != null) {
-            intent.putExtra("pageIndex", "" + b.page.viewIndex);
-            intent.putExtra("offsetX", "" + b.offsetX);
-            intent.putExtra("offsetY", "" + b.offsetY);
-        }
-        startActivity(intent);
-    }
-
-    @Override
-    public void setCurrentDir(final File newDir) {
-        adapter.setCurrentDirectory(newDir);
-
+        String path = dir.getAbsolutePath();
         if (AndroidVersion.lessThan3x) {
-            header.setText(newDir.getAbsolutePath());
+            header.setText(path);
             final ImageView view = (ImageView) findViewById(R.id.browserupfolder);
             if (view != null) {
-                final boolean hasParent = newDir.getParentFile() != null;
+                final boolean hasParent = dir.getParentFile() != null;
                 view.setImageResource(hasParent ? R.drawable.browser_actionbar_nav_up_enabled
                         : R.drawable.browser_actionbar_nav_up_disabled);
             }
         } else {
-            setTitle(newDir.getAbsolutePath());
+            setTitle(path);
             IUIManager.instance.invalidateOptionsMenu(this);
         }
     }
@@ -244,35 +145,17 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
     @Override
     protected void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(CURRENT_DIRECTORY, adapter.getCurrentDirectory().getAbsolutePath());
+        outState.putString(CURRENT_DIRECTORY, getController().adapter.getCurrentDirectory().getAbsolutePath());
     }
 
     @Override
     public boolean onKeyDown(final int keyCode, final KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            final File dir = adapter.getCurrentDirectory();
-            final File parent = dir != null ? dir.getParentFile() : null;
-            if (parent != null) {
-                setCurrentDir(parent);
-            } else {
-                finish();
-            }
+        if (getController().onKeyDown(keyCode, event)) {
             return true;
         }
         return super.onKeyDown(keyCode, event);
     }
 
-    @Override
-    public Context getContext() {
-        return this;
-    }
-
-    @Override
-    public Activity getActivity() {
-        return this;
-    }
-
-    @Override
     public void showProgress(final boolean show) {
         if (!AndroidVersion.lessThan3x) {
             runOnUiThread(new Runnable() {
@@ -287,11 +170,6 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
                 }
             });
         }
-    }
-
-    @Override
-    public void loadThumbnail(final String path, final ImageView imageView, final int defaultResID) {
-        imageView.setImageResource(defaultResID);
     }
 
     @Override
@@ -377,154 +255,5 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Act
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.library_menu, menu);
         menu.setHeaderTitle(path);
-    }
-
-    @ActionMethod(ids = R.id.actions_goToBookmark)
-    public void openBook(final ActionEx action) {
-        final File file = action.getParameter(AbstractActionActivity.MENU_ITEM_SOURCE);
-        if (!file.isDirectory()) {
-            final Bookmark b = action.getParameter("bookmark");
-            showDocument(Uri.fromFile(file), b);
-        }
-    }
-
-    @ActionMethod(ids = R.id.bookmenu_removefromrecent)
-    public void removeBookFromRecents(final ActionEx action) {
-        final File file = action.getParameter(AbstractActionActivity.MENU_ITEM_SOURCE);
-        if (file != null) {
-            SettingsManager.removeBookFromRecents(file.getAbsolutePath());
-            adapter.notifyDataSetInvalidated();
-        }
-    }
-
-    @ActionMethod(ids = R.id.bookmenu_cleardata)
-    public void removeCachedBookFiles(final ActionEx action) {
-        final File file = action.getParameter(AbstractActionActivity.MENU_ITEM_SOURCE);
-        if (file != null) {
-            CacheManager.clear(file.getAbsolutePath());
-            adapter.notifyDataSetInvalidated();
-        }
-    }
-
-    @ActionMethod(ids = R.id.bookmenu_deletesettings)
-    public void removeBookSettings(final ActionEx action) {
-        final File file = action.getParameter(AbstractActionActivity.MENU_ITEM_SOURCE);
-        if (file != null) {
-            final BookSettings bs = SettingsManager.getBookSettings(file.getAbsolutePath());
-            if (bs != null) {
-                SettingsManager.deleteBookSettings(bs);
-                adapter.notifyDataSetInvalidated();
-            }
-        }
-    }
-
-    @ActionMethod(ids = { R.id.bookmenu_copy, R.id.bookmenu_move })
-    public void copyBook(final ActionEx action) {
-        final File file = action.getParameter("source");
-        if (file == null) {
-            return;
-        }
-        final boolean isCopy = action.id == R.id.bookmenu_copy;
-        final int titleId = isCopy ? R.string.copy_book_to_dlg_title : R.string.move_book_to_dlg_title;
-        final int id = isCopy ? R.id.actions_doCopyBook : R.id.actions_doMoveBook;
-
-        getController().getOrCreateAction(id).putValue("source", file);
-
-        final FolderDlg dlg = new FolderDlg(getController());
-        dlg.show(new File(file.getAbsolutePath()), titleId, id);
-    }
-
-    @ActionMethod(ids = R.id.actions_doCopyBook)
-    public void doCopyBook(final ActionEx action) {
-        final File targetFolder = action.getParameter(FolderDlg.SELECTED_FOLDER);
-        final File book = action.getParameter("source");
-        final BookNode node = new BookNode(book, SettingsManager.getBookSettings(book.getAbsolutePath()));
-
-        new CopyBookTask(this.getContext(), null, targetFolder).execute(node);
-    }
-
-    @ActionMethod(ids = R.id.actions_doMoveBook)
-    public void doMoveBook(final ActionEx action) {
-        final File targetFolder = action.getParameter(FolderDlg.SELECTED_FOLDER);
-        final File book = action.getParameter("source");
-        final BookNode node = new BookNode(book, SettingsManager.getBookSettings(book.getAbsolutePath()));
-
-        new MoveBookTask(this.getContext(), null, targetFolder) {
-
-            @Override
-            protected void processTargetFile(final File target) {
-                super.processTargetFile(target);
-                adapter.remove(origin);
-            }
-        }.execute(node);
-    }
-
-    @ActionMethod(ids = R.id.bookmenu_rename)
-    public void renameBook(final ActionEx action) {
-        final File file = action.getParameter("source");
-        if (file == null) {
-            return;
-        }
-
-        final FileUtils.FilePath path = FileUtils.parseFilePath(file.getAbsolutePath(), CodecType.getAllExtensions());
-        final EditText input = new EditText(this);
-        input.setSingleLine();
-        input.setText(path.name);
-        input.selectAll();
-
-        final ActionDialogBuilder builder = new ActionDialogBuilder(this, this.getController());
-        builder.setTitle(R.string.book_rename_title);
-        builder.setMessage(R.string.book_rename_msg);
-        builder.setView(input);
-        builder.setPositiveButton(R.id.actions_doRenameBook, new Constant("source", file), new Constant("file", path),
-                new EditableValue("input", input));
-        builder.setNegativeButton().show();
-    }
-
-    @ActionMethod(ids = R.id.actions_doRenameBook)
-    public void doRenameBook(final ActionEx action) {
-        final File book = action.getParameter("source");
-        final BookNode node = new BookNode(book, SettingsManager.getBookSettings(book.getAbsolutePath()));
-        final FileUtils.FilePath path = action.getParameter("file");
-        final Editable value = action.getParameter("input");
-        final String newName = value.toString();
-        if (!CompareUtils.equals(path.name, newName)) {
-            path.name = newName;
-            new RenameBookTask(this.getContext(), null, path) {
-
-                @Override
-                protected void processTargetFile(final File target) {
-                    super.processTargetFile(target);
-                    adapter.remove(origin);
-                }
-            }.execute(node);
-        }
-    }
-
-    @ActionMethod(ids = R.id.bookmenu_delete)
-    public void deleteBook(final ActionEx action) {
-        final File file = action.getParameter("source");
-        if (file == null) {
-            return;
-        }
-
-        final ActionDialogBuilder builder = new ActionDialogBuilder(getContext(), getController());
-        builder.setTitle(R.string.book_delete_title);
-        builder.setMessage(R.string.book_delete_msg);
-        builder.setPositiveButton(R.id.actions_doDeleteBook, new Constant("source", file));
-        builder.setNegativeButton().show();
-    }
-
-    @ActionMethod(ids = R.id.actions_doDeleteBook)
-    public void doDeleteBook(final ActionEx action) {
-        final File file = action.getParameter("source");
-        if (file == null) {
-            return;
-        }
-
-        if (file.delete()) {
-            CacheManager.clear(file.getAbsolutePath());
-            adapter.remove(file);
-        }
     }
 }

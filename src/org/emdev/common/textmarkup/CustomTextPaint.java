@@ -44,7 +44,7 @@ public class CustomTextPaint extends TextPaint {
     }
 
     private void initMeasures() {
-        initMeasures(0x0000, standard);
+        initMeasures(0x0000, standard, 0x20, 0xFF);
         initMeasures(0x0100, latin1);
         initMeasures(0x0400, rus);
         initMeasures(0x2000, punct, 0x00, 0x0B);
@@ -63,11 +63,6 @@ public class CustomTextPaint extends TextPaint {
             chars[i] = (char) (i + codepage);
         }
         this.getTextWidths(chars, 0, chars.length, widths);
-        for (int i = 0; i < chars.length; i++) {
-            if (widths[i] == 0) {
-                widths[i] = super.measureText(chars, i, 1);
-            }
-        }
     }
 
     private void initMeasures(final int codepage, final float[] widths, final int start, final int end) {
@@ -77,13 +72,8 @@ public class CustomTextPaint extends TextPaint {
             chars[i] = (char) (i + start + codepage);
         }
         final float[] w = new float[length];
-        this.getTextWidths(chars, 0, length, widths);
-        for (int i = 0; i < length; i++) {
-            if (w[i] == 0) {
-                w[i] = super.measureText(chars, i, 1);
-            }
-            widths[chars[i] - codepage] = w[i];
-        }
+        this.getTextWidths(chars, 0, length, w);
+        System.arraycopy(w, 0, widths, start, length);
     }
 
     @Override
@@ -106,7 +96,14 @@ public class CustomTextPaint extends TextPaint {
                     sum += rus[code & 0x00FF];
                     break;
                 case 0x2000:
-                    sum += punct[code & 0x00FF];
+                    float w = punct[code & 0x00FF];
+                    if (w == 0) {
+                        w = punct[code & 0x00FF] = super.measureText(text, i, 1);
+                        if (w == 0) {
+                            w = punct[code & 0x00FF] = standard[0x20];
+                        }
+                    }
+                    sum += w;
                     break;
                 default:
                     if (temp == null) {

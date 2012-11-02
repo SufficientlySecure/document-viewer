@@ -6,14 +6,14 @@ import org.emdev.utils.LengthUtils;
 
 public class Wiki {
 
-    public static CharSequence fromWiki(String text) {
-        StringBuilder buf = new StringBuilder("<html><body>");
+    public static CharSequence fromWiki(final String text) {
+        final StringBuilder buf = new StringBuilder("<html><body>");
 
-        StringTokenizer st = new StringTokenizer(text, "\n\r");
+        final StringTokenizer st = new StringTokenizer(text, "\n\r");
         int listLevel = 0;
         while (st.hasMoreElements()) {
-            String s = (String) st.nextElement();
-            String trimmed = s.trim();
+            final String s = (String) st.nextElement();
+            final String trimmed = s.trim();
             if (LengthUtils.isEmpty(trimmed)) {
                 if (listLevel > 0) {
                     do {
@@ -41,11 +41,11 @@ public class Wiki {
                     end = s.length();
                 }
                 buf.append("<h").append(count).append(">");
-                buf.append(s.substring(count, end).trim());
+                buf.append(replacePreformatted(s.substring(count, end).trim()));
                 buf.append("</h").append(count).append("/>");
                 buf.append("\n");
             } else if (trimmed.startsWith("*")) {
-                int count = s.indexOf("*");
+                final int count = s.indexOf("*");
                 if (count > listLevel) {
                     do {
                         buf.append("<ul>");
@@ -58,7 +58,7 @@ public class Wiki {
                     buf.append("\n");
                 }
                 buf.append("<li>");
-                buf.append(trimmed.substring(1).trim());
+                buf.append(replacePreformatted(trimmed.substring(1).trim()));
                 buf.append("</li>");
                 buf.append("\n");
             } else {
@@ -67,12 +67,25 @@ public class Wiki {
                     listLevel--;
                 }
                 buf.append("<br>");
-                buf.append(trimmed);
+                buf.append(replacePreformatted(trimmed));
             }
         }
 
-        String content = buf.append("</body></html>").toString();
-        // System.out.println(content);
+        final String content = buf.append("</body></html>").toString();
         return content;
+    }
+
+    private static String replacePreformatted(final String str) {
+        final int start = str.indexOf("{{{");
+        if (start == -1) {
+            return str;
+        }
+        final int end = str.indexOf("}}}");
+        if (end == -1) {
+            return str;
+        }
+        String s = str.substring(start + 3, end);
+        s = s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+        return str.substring(0, start) + s + str.substring(end + 3);
     }
 }

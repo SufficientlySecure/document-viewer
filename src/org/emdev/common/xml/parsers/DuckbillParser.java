@@ -10,7 +10,8 @@ import org.emdev.utils.StringUtils;
 
 public class DuckbillParser {
 
-    public void parse(final TextProvider text, final IXmlTagFactory factory, final IContentHandler handler) throws Exception {
+    public void parse(final TextProvider text, final IXmlTagFactory factory, final IContentHandler handler)
+            throws Exception {
         final char[] xmlChars = text.chars;
         final int length = text.size;
 
@@ -88,41 +89,31 @@ public class DuckbillParser {
 
                         if (r.skipChar('#')) {
                             if (r.skipChar('x') || r.skipChar('X')) {
-                                entity = (char) StringUtils.parseInt(r.XmlDoc, r.XmlOffset, endOfEntity - r.XmlOffset, 16);
+                                entity = (char) StringUtils.parseInt(r.XmlDoc, r.XmlOffset, endOfEntity - r.XmlOffset,
+                                        16);
                             } else {
-                                entity = (char) StringUtils.parseInt(r.XmlDoc, r.XmlOffset, endOfEntity - r.XmlOffset, 10);
+                                entity = (char) StringUtils.parseInt(r.XmlDoc, r.XmlOffset, endOfEntity - r.XmlOffset,
+                                        10);
                             }
                         } else {
                             int idx = r.XmlOffset;
-                            if (r.XmlDoc[idx] == 'q' &&
-                                    r.XmlDoc[idx+1] == 'o' &&
-                                    r.XmlDoc[idx+2] == 'u' &&
-                                    r.XmlDoc[idx+3] == 't' &&
-                                    r.XmlDoc[idx+4] == ';') {
+                            if (r.XmlDoc[idx] == 'q' && r.XmlDoc[idx + 1] == 'o' && r.XmlDoc[idx + 2] == 'u'
+                                    && r.XmlDoc[idx + 3] == 't' && r.XmlDoc[idx + 4] == ';') {
                                 // quot
                                 entity = 34;
-                            } else if (r.XmlDoc[idx] == 'a' &&
-                                    r.XmlDoc[idx+1] == 'm' &&
-                                    r.XmlDoc[idx+2] == 'p' &&
-                                    r.XmlDoc[idx+3] == ';') {
-                                //amp
+                            } else if (r.XmlDoc[idx] == 'a' && r.XmlDoc[idx + 1] == 'm' && r.XmlDoc[idx + 2] == 'p'
+                                    && r.XmlDoc[idx + 3] == ';') {
+                                // amp
                                 entity = 38;
-                            } else if (r.XmlDoc[idx] == 'a' &&
-                                    r.XmlDoc[idx+1] == 'p' &&
-                                    r.XmlDoc[idx+2] == 'o' &&
-                                    r.XmlDoc[idx+3] == 's' &&
-                                    r.XmlDoc[idx+4] == ';') {
-                                //apos
+                            } else if (r.XmlDoc[idx] == 'a' && r.XmlDoc[idx + 1] == 'p' && r.XmlDoc[idx + 2] == 'o'
+                                    && r.XmlDoc[idx + 3] == 's' && r.XmlDoc[idx + 4] == ';') {
+                                // apos
                                 entity = 39;
-                            } else if (r.XmlDoc[idx] == 'l' &&
-                                    r.XmlDoc[idx+1] == 't' &&
-                                    r.XmlDoc[idx+2] == ';') {
-                                //lt
+                            } else if (r.XmlDoc[idx] == 'l' && r.XmlDoc[idx + 1] == 't' && r.XmlDoc[idx + 2] == ';') {
+                                // lt
                                 entity = 60;
-                            } else if (r.XmlDoc[idx] == 'g' &&
-                                    r.XmlDoc[idx+1] == 't' &&
-                                    r.XmlDoc[idx+2] == ';') {
-                                //gt
+                            } else if (r.XmlDoc[idx] == 'g' && r.XmlDoc[idx + 1] == 't' && r.XmlDoc[idx + 2] == ';') {
+                                // gt
                                 entity = 62;
                             }
                         }
@@ -187,7 +178,7 @@ public class DuckbillParser {
 
         public void skipTagName() {
             while (XmlOffset < XmlLength) {
-                if (Character.isWhitespace(XmlDoc[XmlOffset])
+                if (((XmlDoc[XmlOffset] >= 0x1c && XmlDoc[XmlOffset] <= 0x20) || (XmlDoc[XmlOffset] >= 0x9 && XmlDoc[XmlOffset] <= 0xd))
                         || (XmlDoc[XmlOffset] == '/' && XmlDoc[XmlOffset + 1] == '>') || XmlDoc[XmlOffset] == '>') {
                     break;
                 }

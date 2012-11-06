@@ -227,6 +227,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
             BackupManager.backup();
         }
         if (finishing) {
+            bookshelfAdapter.stopScan();
             working.set(false);
             CacheManager.listeners.removeListener(this);
         }

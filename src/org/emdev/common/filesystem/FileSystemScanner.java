@@ -37,6 +37,11 @@ public class FileSystemScanner {
         this.listeners = new EventDispatcher(activity, InvokationType.AsyncUI, Listener.class, ProgressListener.class);
     }
 
+    public void shutdown() {
+        stopScan();
+        stopObservers();
+    }
+
     public void startScan(final FileExtensionFilter filter, final String... paths) {
         if (inScan.compareAndSet(false, true)) {
             m_scanTask = new ScanTask(filter);
@@ -122,8 +127,12 @@ public class FileSystemScanner {
         protected Void doInBackground(final String... paths) {
             addPaths(paths);
 
-            for (File dir = getDir(); dir != null && inScan.get(); dir = getDir()) {
-                scanDir(dir);
+            try {
+                for (File dir = getDir(); dir != null && inScan.get(); dir = getDir()) {
+                    scanDir(dir);
+                }
+            } finally {
+                inScan.set(false);
             }
             return null;
         }
@@ -132,7 +141,6 @@ public class FileSystemScanner {
         protected void onPostExecute(final Void v) {
             ProgressListener pl = listeners.getListener();
             pl.showProgress(false);
-            inScan.set(false);
         }
 
         void scanDir(final File dir) {

@@ -73,6 +73,12 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
         this.searchQuery = LibSettings.current().searchBookQuery;
     }
 
+    public void onDestroy() {
+        scanner.shutdown();
+        data.clear();
+        folders.clear();
+    }
+
     @Override
     public void destroyItem(final View collection, final int position, final Object view) {
         ((ViewPager) collection).removeView((View) view);

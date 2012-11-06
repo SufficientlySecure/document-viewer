@@ -36,7 +36,6 @@ import android.net.Uri;
 import android.text.Editable;
 import android.view.View;
 import android.view.Window;
-import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -48,7 +47,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.emdev.common.backup.BackupManager;
 import org.emdev.common.filesystem.FileExtensionFilter;
-import org.emdev.common.fonts.FontManager;
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
 import org.emdev.ui.AbstractActionActivity;
@@ -227,8 +225,8 @@ public class RecentActivityController extends ActionController<RecentActivity> i
             BackupManager.backup();
         }
         if (finishing) {
-            bookshelfAdapter.stopScan();
             working.set(false);
+            bookshelfAdapter.onDestroy();
             CacheManager.listeners.removeListener(this);
         }
     }

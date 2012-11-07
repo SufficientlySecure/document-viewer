@@ -129,6 +129,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         DecodingProgressListener, CurrentPageListener, IAppSettingsChangeListener, IBookSettingsChangeListener {
 
     private static final String E_MAIL_ATTACHMENT = "[E-mail Attachment]";
+    private static final String SMB_SOURCE = "[smb source]";
 
     private static final AtomicLong SEQ = new AtomicLong();
 
@@ -279,29 +280,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                 CacheManager.clear(m_fileName);
             } else if (scheme.equalsIgnoreCase("smb")) {
                 temporaryBook = true;
-                Thread t = new Thread() {
-                    // Ugly thing to prevent NetworkOnMainThread exception.
-                    @Override
-                    public void run() {
-                        InputStream source;
-                        try {
-                            source = new SmbFileInputStream(data.toString());
-                            final File f = org.emdev.common.cache.CacheManager
-                                    .createTempFile(source, data.getLastPathSegment());
-                            m_fileName = f.getAbsolutePath();
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                };
-
-                t.start();
-                try {
-                    t.join();
-                } catch (InterruptedException e) {
-                    Thread.interrupted();
-                    throw new RuntimeException(e);
-                }
+                m_fileName = SMB_SOURCE;
             } else {
                 m_fileName = PathFromUri.retrieve(activity.getContentResolver(), uri);
             }
@@ -924,6 +903,10 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
             try {
                 if (intent.getScheme().equals("content")) {
                     final File tempFile = org.emdev.common.cache.CacheManager.createTempFile(intent.getData());
+                    m_fileName = tempFile.getAbsolutePath();
+                } else if (intent.getScheme().equals("smb")) {
+                    final File tempFile = org.emdev.common.cache.CacheManager.createTempFile(new SmbFileInputStream(intent
+                            .getData().toString()), intent.getData().getLastPathSegment());
                     m_fileName = tempFile.getAbsolutePath();
                 }
                 getView().waitForInitialization();

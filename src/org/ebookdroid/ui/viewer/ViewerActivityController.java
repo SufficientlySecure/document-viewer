@@ -59,6 +59,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -66,6 +69,9 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+
+import jcifs.smb.SmbException;
+import jcifs.smb.SmbFileInputStream;
 
 import org.emdev.common.android.AndroidVersion;
 import org.emdev.common.backup.BackupManager;
@@ -271,6 +277,31 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                 temporaryBook = true;
                 m_fileName = E_MAIL_ATTACHMENT;
                 CacheManager.clear(m_fileName);
+            } else if (scheme.equalsIgnoreCase("smb")) {
+                temporaryBook = true;
+                Thread t = new Thread() {
+                    // Ugly thing to prevent NetworkOnMainThread exception.
+                    @Override
+                    public void run() {
+                        InputStream source;
+                        try {
+                            source = new SmbFileInputStream(data.toString());
+                            final File f = org.emdev.common.cache.CacheManager
+                                    .createTempFile(source, data.getLastPathSegment());
+                            m_fileName = f.getAbsolutePath();
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                };
+
+                t.start();
+                try {
+                    t.join();
+                } catch (InterruptedException e) {
+                    Thread.interrupted();
+                    throw new RuntimeException(e);
+                }
             } else {
                 m_fileName = PathFromUri.retrieve(activity.getContentResolver(), uri);
             }
@@ -334,7 +365,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                 documentModel.recycle();
             }
             if (temporaryBook) {
-                CacheManager.clear(E_MAIL_ATTACHMENT);
+                CacheManager.clear(m_fileName);
             }
             SettingsManager.removeListener(this);
             BitmapManager.clear("on finish");
@@ -768,7 +799,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
             documentModel.recycle();
         }
         if (temporaryBook) {
-            CacheManager.clear(E_MAIL_ATTACHMENT);
+            CacheManager.clear(m_fileName);
         }
         SettingsManager.releaseBookSettings(id, bookSettings);
         getManagedComponent().finish();

@@ -44,11 +44,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputType;
 import android.view.KeyEvent;
@@ -59,9 +57,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -70,11 +65,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
-import jcifs.smb.SmbException;
-import jcifs.smb.SmbFileInputStream;
-
 import org.emdev.common.android.AndroidVersion;
 import org.emdev.common.backup.BackupManager;
+import org.emdev.common.content.ContentScheme;
 import org.emdev.common.filesystem.PathFromUri;
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
@@ -128,9 +121,6 @@ actions = {
 public class ViewerActivityController extends ActionController<ViewerActivity> implements IActivityController,
         DecodingProgressListener, CurrentPageListener, IAppSettingsChangeListener, IBookSettingsChangeListener {
 
-    private static final String E_MAIL_ATTACHMENT = "[E-mail Attachment]";
-    private static final String SMB_SOURCE = "[smb source]";
-
     private static final AtomicLong SEQ = new AtomicLong();
 
     private final LogContext LCTX;
@@ -149,7 +139,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     private String bookTitle;
 
-    private boolean temporaryBook;
+    private ContentScheme scheme;
 
     private CodecType codecType;
 
@@ -219,43 +209,32 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
                 showErrorDlg(R.string.msg_bad_intent, intent);
                 return;
             }
-            final String scheme = intent.getScheme();
-            if (LengthUtils.isEmpty(scheme)) {
-                showErrorDlg(R.string.msg_bad_intent, intent);
-                return;
-            }
+
             final Uri data = intent.getData();
             if (data == null) {
                 showErrorDlg(R.string.msg_no_intent_data, intent);
                 return;
             }
-            if (scheme.equals("content")) {
-                try {
-                    final Cursor c = activity.getContentResolver().query(data, null, null, null, null);
-                    c.moveToFirst();
-                    final int fileNameColumnId = c.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME);
-                    if (fileNameColumnId >= 0) {
-                        final String attachmentFileName = c.getString(fileNameColumnId);
-                        bookTitle = LengthUtils.safeString(attachmentFileName, E_MAIL_ATTACHMENT);
-                        codecType = CodecType.getByUri(attachmentFileName);
-                    } else {
-                        if (LCTX.isDebugEnabled()) {
-                            LCTX.d("No attachment file name returned");
-                        }
-                    }
-                } catch (final Throwable th) {
-                    LCTX.e("Unexpected error: ", th);
-                }
+
+            scheme = ContentScheme.getScheme(intent);
+            if (scheme == ContentScheme.UNKNOWN) {
+                showErrorDlg(R.string.msg_bad_intent, intent);
+                return;
             }
+
+            bookTitle = scheme.getResourceName(activity.getContentResolver(), data);
+            codecType = CodecType.getByUri(bookTitle);
+
             if (codecType == null) {
-                bookTitle = LengthUtils.safeString(data.getLastPathSegment(), E_MAIL_ATTACHMENT);
-                codecType = CodecType.getByUri(data.toString());
-                if (codecType == null) {
-                    final String type = intent.getType();
-                    LCTX.i("Book mime type: " + type);
-                    if (LengthUtils.isNotEmpty(type)) {
-                        codecType = CodecType.getByMimeType(type);
-                    }
+                bookTitle = ContentScheme.getDefaultResourceName(data, "");
+                codecType = CodecType.getByUri(bookTitle);
+            }
+
+            if (codecType == null) {
+                final String type = intent.getType();
+                LCTX.i("Book mime type: " + type);
+                if (LengthUtils.isNotEmpty(type)) {
+                    codecType = CodecType.getByMimeType(type);
                 }
             }
 
@@ -272,20 +251,14 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
             progressModel.addListener(ViewerActivityController.this);
 
             final Uri uri = data;
-            m_fileName = "";
-
-            if (scheme.equals("content")) {
-                temporaryBook = true;
-                m_fileName = E_MAIL_ATTACHMENT;
-                CacheManager.clear(m_fileName);
-            } else if (scheme.equalsIgnoreCase("smb")) {
-                temporaryBook = true;
-                m_fileName = SMB_SOURCE;
+            if (scheme.temporary) {
+                m_fileName = scheme.key;
+                CacheManager.clear(scheme.key);
             } else {
                 m_fileName = PathFromUri.retrieve(activity.getContentResolver(), uri);
             }
 
-            bookSettings = SettingsManager.create(id, m_fileName, temporaryBook, intent);
+            bookSettings = SettingsManager.create(id, m_fileName, scheme.temporary, intent);
             SettingsManager.applyBookSettingsChanges(null, bookSettings);
         }
     }
@@ -343,8 +316,8 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
             if (documentModel != null) {
                 documentModel.recycle();
             }
-            if (temporaryBook) {
-                CacheManager.clear(m_fileName);
+            if (scheme != null && scheme.temporary) {
+                CacheManager.clear(scheme.key);
             }
             SettingsManager.removeListener(this);
             BitmapManager.clear("on finish");
@@ -777,8 +750,8 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         if (documentModel != null) {
             documentModel.recycle();
         }
-        if (temporaryBook) {
-            CacheManager.clear(m_fileName);
+        if (scheme != null && scheme.temporary) {
+            CacheManager.clear(scheme.key);
         }
         SettingsManager.releaseBookSettings(id, bookSettings);
         getManagedComponent().finish();
@@ -901,13 +874,9 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         protected Throwable doInBackground(final String... params) {
             LCTX.d("BookLoadTask.doInBackground(): start");
             try {
-                if (intent.getScheme().equals("content")) {
-                    final File tempFile = org.emdev.common.cache.CacheManager.createTempFile(intent.getData());
-                    m_fileName = tempFile.getAbsolutePath();
-                } else if (intent.getScheme().equals("smb")) {
-                    final File tempFile = org.emdev.common.cache.CacheManager.createTempFile(new SmbFileInputStream(intent
-                            .getData().toString()), intent.getData().getLastPathSegment());
-                    m_fileName = tempFile.getAbsolutePath();
+                final File cached = scheme.loadToCache(intent.getData());
+                if (cached != null) {
+                    m_fileName = cached.getAbsolutePath();
                 }
                 getView().waitForInitialization();
                 documentModel.open(m_fileName, m_password);

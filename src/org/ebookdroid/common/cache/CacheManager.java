@@ -117,6 +117,10 @@ public class CacheManager extends org.emdev.common.cache.CacheManager {
     }
 
     public static void clear(final String path) {
+        if (LengthUtils.isEmpty(path)) {
+            return;
+        }
+
         final String amd5 = StringUtils.md5(path);
         final String mpath = FileUtils.invertMountPrefix(path);
         final String mmd5 = mpath != null ? StringUtils.md5(mpath) : null;

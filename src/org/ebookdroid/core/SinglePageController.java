@@ -202,6 +202,17 @@ public class SinglePageController extends AbstractViewController {
         getView().continueScroll();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.ui.viewer.IViewController#drawView(org.ebookdroid.core.EventGLDraw)
+     */
+    @Override
+    public void drawView(final EventGLDraw eventDraw) {
+//        curler.draw(eventDraw);
+//        getView().continueScroll();
+    }
+
     public final ViewState invalidatePages(final ViewState oldState, final Page... pages) {
         if (LengthUtils.isNotEmpty(pages) && pages[0] != null) {
             return EventPool.newEventScrollTo(this, pages[0].index.viewIndex).process();

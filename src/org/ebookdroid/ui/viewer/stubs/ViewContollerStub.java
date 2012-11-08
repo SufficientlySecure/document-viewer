@@ -2,6 +2,7 @@ package org.ebookdroid.ui.viewer.stubs;
 
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.core.EventDraw;
+import org.ebookdroid.core.EventGLDraw;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.ViewState;
 import org.ebookdroid.ui.viewer.IActivityController;
@@ -152,5 +153,9 @@ public class ViewContollerStub implements IViewController {
 
     @Override
     public void goToLink(final int pageDocIndex, final RectF targetRect, final boolean addToHistory) {
+    }
+
+    @Override
+    public void drawView(EventGLDraw eventGLDraw) {
     }
 }

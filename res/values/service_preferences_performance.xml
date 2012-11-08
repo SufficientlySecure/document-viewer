@@ -9,16 +9,19 @@
     <string translatable="false" name="pref_docviewtype_id">docviewtype</string>
     <string translatable="false" name="pref_docviewtype_base">Base</string>
     <string translatable="false" name="pref_docviewtype_surface">Surface</string>
+    <string translatable="false" name="pref_docviewtype_glsurface">GL Surface</string>
 
     <string-array name="pref_docviewtype_entries" translatable="false">
         <item>@string/list_docviewtype_base</item>
         <item>@string/list_docviewtype_surface</item>
-    </string-array>
+        <item>@string/list_docviewtype_glsurface</item>
+        </string-array>
 
     <string-array name="pref_docviewtype_values" translatable="false">
         <item>@string/pref_docviewtype_base</item>
         <item>@string/pref_docviewtype_surface</item>
-    </string-array>
+        <item>@string/pref_docviewtype_glsurface</item>
+        </string-array>
 
     <string translatable="false" name="pref_decodethread_priority_id">decodethread_priority</string>
     <string translatable="false" name="pref_drawthread_priority_id">drawthread_priority</string>

@@ -71,6 +71,25 @@ public abstract class AbstractScrollController extends AbstractViewController {
         getView().continueScroll();
     }
 
+    @Override
+    public final void drawView(final EventGLDraw eventDraw) {
+        final ViewState viewState = eventDraw.viewState;
+        if (viewState.model == null) {
+            return;
+        }
+
+        for (final Page page : viewState.pages.getVisiblePages()) {
+            if (page != null) {
+                eventDraw.process(page);
+            }
+        }
+
+//        if (eventDraw.viewState.app.showAnimIcon) {
+//            DragMark.draw(eventDraw.canvas, viewState);
+//        }
+        getView().continueScroll();
+    }
+
     /**
      * {@inheritDoc}
      *

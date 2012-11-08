@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.emdev.common.log.LogContext;
+import org.emdev.ui.gl.GLCanvas;
 import org.emdev.utils.MatrixUtils;
 
 public class PageTreeNode implements DecodeService.DecodeCallback {
@@ -291,6 +292,12 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             return bitmaps != null ? bitmaps.draw(canvas, paint, viewBase, targetRect, clipRect) : false;
         }
 
+        public boolean drawBitmap(final GLCanvas canvas, final PagePaint paint, final PointF viewBase,
+                final RectF targetRect, final RectF clipRect) {
+            final Bitmaps bitmaps = ref.get();
+            return bitmaps != null ? bitmaps.drawGL(canvas, paint, viewBase, targetRect, clipRect) : false;
+        }
+
         public Bitmaps reuse(final String nodeId, final IBitmapRef bitmap, final Rect bitmapBounds) {
             final BookSettings bs = page.base.getBookSettings();
             final AppSettings app = AppSettings.current();
@@ -303,7 +310,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                     }
                 }
             }
-            return new Bitmaps(nodeId, bitmap, bitmapBounds, invert);
+            return page.base.getView().createBitmaps(nodeId, bitmap, bitmapBounds, invert);
         }
 
         public boolean hasBitmaps() {

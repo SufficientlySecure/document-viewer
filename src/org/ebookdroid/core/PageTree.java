@@ -71,6 +71,21 @@ public class PageTree {
         return res;
     }
 
+    public boolean paintChildren(final EventGLDraw event, final PageTreeNode node, final RectF nodeRect) {
+        boolean res = true;
+        int childId = PageTree.getFirstChildId(node.id);
+        if (childId < maxNodeId) {
+            final PageTreeNode[] nodes = getNodes();
+            for (final int end = Math.min(nodes.length, childId + PageTree.splitMasks.length); childId < end; childId++) {
+                final PageTreeNode child = nodes[childId];
+                if (child != null) {
+                    res &= event.paintChild(node, child, nodeRect);
+                }
+            }
+        }
+        return res;
+    }
+
     public boolean createChildren(final PageTreeNode parent) {
         final PageTreeNode[] nodes = getNodes();
         int childId = getFirstChildId(parent.id);

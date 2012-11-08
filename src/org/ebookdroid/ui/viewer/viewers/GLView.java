@@ -1,9 +1,9 @@
 package org.ebookdroid.ui.viewer.viewers;
 
 import org.ebookdroid.common.bitmaps.Bitmaps;
+import org.ebookdroid.common.bitmaps.GLBitmaps;
 import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.common.settings.AppSettings;
-import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.core.DecodeService;
 import org.ebookdroid.core.EventPool;
 import org.ebookdroid.core.Page;
@@ -11,28 +11,26 @@ import org.ebookdroid.core.ViewState;
 import org.ebookdroid.ui.viewer.IActivityController;
 import org.ebookdroid.ui.viewer.IView;
 
-import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.Scroller;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.emdev.ui.gl.GLCanvas;
+import org.emdev.ui.gl.GLRootView;
 import org.emdev.utils.concurrent.Flag;
 
-public final class BaseView extends View implements IView {
-
-    private static final PointF BASE_POINT = new PointF(0, 0);
+public final class GLView extends GLRootView implements IView, SurfaceHolder.Callback {
 
     protected final IActivityController base;
 
     protected final Scroller scroller;
-
-    protected PageAlign align;
 
     protected DrawThread drawThread;
 
@@ -46,8 +44,9 @@ public final class BaseView extends View implements IView {
 
     protected final FullScreenCallback fullScreenCallback;
 
-    public BaseView(final IActivityController baseActivity) {
+    public GLView(final IActivityController baseActivity) {
         super(baseActivity.getContext());
+
         this.base = baseActivity;
         this.scroller = new Scroller(getContext());
 
@@ -55,11 +54,19 @@ public final class BaseView extends View implements IView {
         setFocusable(true);
         setFocusableInTouchMode(true);
 
-        drawThread = new DrawThread(null);
         fullScreenCallback = FullScreenCallback.get(baseActivity.getActivity(), this);
 
+        drawThread = new DrawThread(null);
         scrollThread = new ScrollEventThread(base, this);
         scrollThread.start();
+    }
+
+    protected void draw(GLCanvas canvas) {
+        ViewState viewState = drawThread.takeTask(1, TimeUnit.MILLISECONDS, true);
+        if (viewState == null) {
+            viewState = new ViewState(base.getDocumentController());
+        }
+        EventPool.newGLEventDraw(viewState, canvas).process();
     }
 
     /**
@@ -115,8 +122,16 @@ public final class BaseView extends View implements IView {
         stopScroller();
 
         final float ratio = newZoom / oldZoom;
-        scrollTo((int) ((getScrollX() + getWidth() / 2) * ratio - getWidth() / 2),
-                (int) ((getScrollY() + getHeight() / 2) * ratio - getHeight() / 2));
+        final float halfWidth = getWidth() / 2.0f;
+        final float halfHeight = getHeight() / 2.0f;
+
+        final int x = (int) ((getScrollX() + halfWidth) * ratio - halfWidth);
+        final int y = (int) ((getScrollY() + halfHeight) * ratio - halfHeight);
+
+        // if (LCTX.isDebugEnabled()) {
+        // LCTX.d("invalidateScroll(" + newZoom + ", " + oldZoom + "): " + x + ", " + y);
+        // }
+        scrollTo(x, y);
     }
 
     /**
@@ -171,7 +186,7 @@ public final class BaseView extends View implements IView {
      * @see android.view.View#onScrollChanged(int, int, int, int)
      */
     @Override
-    public final void onScrollChanged(final int curX, final int curY, final int oldX, final int oldY) {
+    public void onScrollChanged(final int curX, final int curY, final int oldX, final int oldY) {
         super.onScrollChanged(curX, curY, oldX, oldY);
         scrollThread.onScrollChanged(curX, curY, oldX, oldY);
     }
@@ -183,12 +198,17 @@ public final class BaseView extends View implements IView {
      */
     @Override
     public boolean onTouchEvent(final MotionEvent ev) {
-        checkFullScreenMode();
+        mRenderLock.lock();
+        try {
+            checkFullScreenMode();
 
-        if (base.getDocumentController().onTouchEvent(ev)) {
-            return true;
+            if (base.getDocumentController().onTouchEvent(ev)) {
+                return true;
+            }
+            return super.onTouchEvent(ev);
+        } finally {
+            mRenderLock.unlock();
         }
-        return super.onTouchEvent(ev);
     }
 
     /**
@@ -333,11 +353,6 @@ public final class BaseView extends View implements IView {
         redrawView(new ViewState(base.getDocumentController()));
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.ebookdroid.ui.viewer.IView#redrawView(org.ebookdroid.core.ViewState)
-     */
     @Override
     public final void redrawView(final ViewState viewState) {
         if (viewState != null) {
@@ -348,22 +363,8 @@ public final class BaseView extends View implements IView {
             if (ds != null) {
                 ds.updateViewState(viewState);
             }
-            postInvalidate();
+            requestRender();
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see android.view.View#onDraw(android.graphics.Canvas)
-     */
-    @Override
-    protected void onDraw(final Canvas canvas) {
-        ViewState viewState = drawThread.takeTask(1, TimeUnit.MILLISECONDS, true);
-        if (viewState == null) {
-            viewState = new ViewState(base.getDocumentController());
-        }
-        EventPool.newEventDraw(viewState, canvas).process();
     }
 
     /**
@@ -373,11 +374,11 @@ public final class BaseView extends View implements IView {
      */
     @Override
     public PointF getBase(final RectF viewRect) {
-        return BASE_POINT;
+        return new PointF(viewRect.left, viewRect.top);
     }
 
     @Override
     public Bitmaps createBitmaps(final String nodeId, final IBitmapRef orig, final Rect bitmapBounds, final boolean invert) {
-        return new Bitmaps(nodeId, orig, bitmapBounds, invert);
+        return new GLBitmaps(nodeId, orig, bitmapBounds, invert);
     }
 }

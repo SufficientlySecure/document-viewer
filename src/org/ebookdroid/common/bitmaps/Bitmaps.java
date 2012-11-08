@@ -15,17 +15,19 @@ import android.util.FloatMath;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
+import org.emdev.ui.gl.GLCanvas;
 import org.emdev.utils.LengthUtils;
 
 public class Bitmaps {
 
-    private static final LogContext LCTX = BitmapManager.LCTX;
+    protected static final LogContext LCTX = LogManager.root().lctx("Bitmaps", true);
 
-    private static final Config DEF_BITMAP_TYPE = Bitmap.Config.RGB_565;
+    protected static final Config DEF_BITMAP_TYPE = Bitmap.Config.RGB_565;
 
-    private static boolean useDefaultBitmapType = true;
+    protected static boolean useDefaultBitmapType = true;
 
-    private static final ThreadLocal<RawBitmap> threadSlices = new ThreadLocal<RawBitmap>();
+    protected static final ThreadLocal<RawBitmap> threadSlices = new ThreadLocal<RawBitmap>();
 
     public final Bitmap.Config config;
     public final int partSize;
@@ -33,8 +35,8 @@ public class Bitmaps {
     public int columns;
     public int rows;
 
-    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-    private AbstractBitmapRef[] bitmaps;
+    protected final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    protected AbstractBitmapRef[] bitmaps;
 
     public Bitmaps(final String nodeId, final IBitmapRef orig, final Rect bitmapBounds, final boolean invert) {
 
@@ -62,8 +64,7 @@ public class Bitmaps {
                 if (row == rows - 1 || col == columns - 1) {
                     final int right = Math.min(left + partSize, bounds.width());
                     final int bottom = Math.min(top + partSize, bounds.height());
-                    b.eraseColor(invert ? PagePaint.NIGHT.fillPaint.getColor() : PagePaint.DAY.fillPaint
-                            .getColor());
+                    b.eraseColor(invert ? PagePaint.NIGHT.fillPaint.getColor() : PagePaint.DAY.fillPaint.getColor());
                     orig.getPixels(slice, left, top, right - left, bottom - top);
                 } else {
                     orig.getPixels(slice, left, top, partSize, partSize);
@@ -140,8 +141,7 @@ public class Bitmaps {
                     if (row == rows - 1 || col == columns - 1) {
                         final int right = Math.min(left + partSize, bounds.width());
                         final int bottom = Math.min(top + partSize, bounds.height());
-                        b.eraseColor(invert ? PagePaint.NIGHT.fillPaint.getColor() : PagePaint.DAY.fillPaint
-                                .getColor());
+                        b.eraseColor(invert ? PagePaint.NIGHT.fillPaint.getColor() : PagePaint.DAY.fillPaint.getColor());
                         orig.getPixels(slice, left, top, right - left, bottom - top);
                     } else {
                         orig.getPixels(slice, left, top, partSize, partSize);
@@ -211,6 +211,9 @@ public class Bitmaps {
             if (this.bitmaps == null) {
                 return false;
             }
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("draw()");
+            }
 
             final RectF actual = new RectF(cr.left - vb.x, cr.top - vb.y, cr.right - vb.x, cr.bottom - vb.y);
             final Rect orig = canvas.getClipBounds();
@@ -255,6 +258,10 @@ public class Bitmaps {
         } finally {
             lock.readLock().unlock();
         }
+    }
+
+    public boolean drawGL(final GLCanvas canvas, final PagePaint paint, final PointF vb, final RectF tr, final RectF cr) {
+        return false;
     }
 
 }

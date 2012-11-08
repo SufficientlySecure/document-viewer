@@ -1,7 +1,8 @@
 package org.ebookdroid.ui.viewer.viewers;
 
+import org.ebookdroid.common.bitmaps.Bitmaps;
+import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.common.settings.AppSettings;
-import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.core.DecodeService;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.ViewState;
@@ -26,8 +27,6 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
     protected final IActivityController base;
 
     protected final Scroller scroller;
-
-    protected PageAlign align;
 
     protected DrawThread drawThread;
 
@@ -379,5 +378,10 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
     @Override
     public PointF getBase(final RectF viewRect) {
         return new PointF(viewRect.left, viewRect.top);
+    }
+
+    @Override
+    public Bitmaps createBitmaps(final String nodeId, final IBitmapRef orig, final Rect bitmapBounds, final boolean invert) {
+        return new Bitmaps(nodeId, orig, bitmapBounds, invert);
     }
 }

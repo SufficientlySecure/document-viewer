@@ -1,5 +1,7 @@
 package org.ebookdroid.ui.viewer.stubs;
 
+import org.ebookdroid.common.bitmaps.Bitmaps;
+import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.core.ViewState;
 import org.ebookdroid.ui.viewer.IActivityController;
 import org.ebookdroid.ui.viewer.IView;
@@ -141,4 +143,11 @@ public class ViewStub implements IView {
     public boolean post(final Runnable r) {
         return false;
     }
+
+    @Override
+    public Bitmaps createBitmaps(final String nodeId, final IBitmapRef orig, final Rect bitmapBounds,
+            final boolean invert) {
+        return new Bitmaps(nodeId, orig, bitmapBounds, invert);
+    }
+
 }

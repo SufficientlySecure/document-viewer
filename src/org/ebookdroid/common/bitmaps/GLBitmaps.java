@@ -135,7 +135,7 @@ public class GLBitmaps extends Bitmaps {
                         } else {
                             final boolean tres = canvas.drawTexture(t, src, r);
                             if (LCTX.isDebugEnabled()) {
-                                LCTX.d(nodeId + ": " + row + "." + col + " : " + t.getId() + " = " + src);
+                                LCTX.d(nodeId + ": " + row + "." + col + " : " + t.getId() + " = " + tres);
                             }
                             res &= tres;
                         }
@@ -152,7 +152,7 @@ public class GLBitmaps extends Bitmaps {
                 rect.bottom += sizeY;
             }
 
-            if (bitmaps != null) {
+            if (res && bitmaps != null) {
                 BitmapManager.release(bitmaps);
                 bitmaps = null;
             }

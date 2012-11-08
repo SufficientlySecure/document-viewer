@@ -274,6 +274,14 @@ public class BitmapManager {
                         }
                     }
                 }
+            } else if (ref instanceof AbstractBitmapRef[]) {
+                final AbstractBitmapRef[] bitmaps = (AbstractBitmapRef[]) ref;
+                for (final AbstractBitmapRef bitmap : bitmaps) {
+                    if (bitmap != null) {
+                        releaseImpl(bitmap);
+                        count++;
+                    }
+                }
             } else {
                 LCTX.e("Unknown object in release queue: " + ref);
             }
@@ -295,6 +303,15 @@ public class BitmapManager {
                 LCTX.d("Adding 1 ref to release queue");
             }
             releasing.add(ref);
+        }
+    }
+
+    public static void release(final IBitmapRef[] refs) {
+        if (refs != null) {
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("Adding " + refs.length + " refs to release queue");
+            }
+            releasing.add(refs);
         }
     }
 

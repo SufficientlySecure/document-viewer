@@ -21,7 +21,7 @@ import org.emdev.utils.LengthUtils;
 
 public class Bitmaps {
 
-    protected static final LogContext LCTX = LogManager.root().lctx("Bitmaps", true);
+    protected static final LogContext LCTX = LogManager.root().lctx("Bitmaps", false);
 
     protected static final Config DEF_BITMAP_TYPE = Bitmap.Config.RGB_565;
 
@@ -34,12 +34,13 @@ public class Bitmaps {
     public Rect bounds;
     public int columns;
     public int rows;
+    public String nodeId;
 
     protected final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     protected AbstractBitmapRef[] bitmaps;
 
     public Bitmaps(final String nodeId, final IBitmapRef orig, final Rect bitmapBounds, final boolean invert) {
-
+        this.nodeId = nodeId;
         this.partSize = BitmapManager.partSize;
         this.bounds = bitmapBounds;
         this.columns = (int) FloatMath.ceil(bounds.width() / (float) partSize);
@@ -95,6 +96,7 @@ public class Bitmaps {
             final AbstractBitmapRef[] oldBitmaps = this.bitmaps;
             final int oldBitmapsLength = LengthUtils.length(oldBitmaps);
 
+            this.nodeId = nodeId;
             this.bounds = bitmapBounds;
             this.columns = (int) FloatMath.ceil(bitmapBounds.width() / (float) partSize);
             this.rows = (int) FloatMath.ceil(bitmapBounds.height() / (float) partSize);

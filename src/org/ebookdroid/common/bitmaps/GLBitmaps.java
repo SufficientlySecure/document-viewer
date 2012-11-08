@@ -99,11 +99,12 @@ public class GLBitmaps extends Bitmaps {
                     textures[i] = new BitmapTexture(bitmaps[i].getBitmap());
                 }
             }
+
             if (LCTX.isDebugEnabled()) {
-                LCTX.d("drawGL()");
+                LCTX.d(nodeId + ".drawGL(): >>>>");
             }
 
-            // final RectF actual = new RectF(cr.left - vb.x, cr.top - vb.y, cr.right - vb.x, cr.bottom - vb.y);
+            final RectF actual = new RectF(cr.left - vb.x, cr.top - vb.y, cr.right - vb.x, cr.bottom - vb.y);
             // final Rect orig = canvas.getClipBounds();
             // canvas.clipRect(actual, Op.INTERSECT);
 
@@ -127,8 +128,17 @@ public class GLBitmaps extends Bitmaps {
                     final BitmapTexture t = this.textures[index];
                     if (t != null) {
                         r.set(rect);
-                        src.set(0, 0, t.getTextureWidth(), t.getTextureHeight());
-                        canvas.drawTexture(t, src, r);
+                        src.set(0, 0, t.getWidth(), t.getHeight());
+                        if (r.right < actual.left || r.left > actual.right || r.bottom < actual.top
+                                || r.top > actual.bottom) {
+
+                        } else {
+                            final boolean tres = canvas.drawTexture(t, src, r);
+                            if (LCTX.isDebugEnabled()) {
+                                LCTX.d(nodeId + ": " + row + "." + col + " : " + t.getId() + " = " + src);
+                            }
+                            res &= tres;
+                        }
                     } else {
                         res = false;
                     }
@@ -143,11 +153,14 @@ public class GLBitmaps extends Bitmaps {
             }
 
             if (bitmaps != null) {
-                for (int i = 0; i < bitmaps.length; i++) {
-                    BitmapManager.release(bitmaps[i]);
-                }
+                BitmapManager.release(bitmaps);
                 bitmaps = null;
             }
+
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d(nodeId + ".drawGL(): <<<<<");
+            }
+
             // canvas.clipRect(orig, Op.REPLACE);
             return res;
         } finally {

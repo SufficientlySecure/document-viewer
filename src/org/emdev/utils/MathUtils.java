@@ -26,6 +26,13 @@ public class MathUtils {
         return new RectF(zoom * rect.left, zoom * rect.top, zoom * rect.right, zoom * rect.bottom);
     }
 
+    public static void zoom(final RectF rect, final float zoom, final RectF target) {
+        target.left = rect.left * zoom;
+        target.right = rect.right * zoom;
+        target.top = rect.top * zoom;
+        target.bottom = rect.bottom * zoom;
+    }
+
     public static RectF zoom(final Rect rect, final float zoom) {
         return new RectF(zoom * rect.left, zoom * rect.top, zoom * rect.right, zoom * rect.bottom);
     }
@@ -103,8 +110,9 @@ public class MathUtils {
     }
 
     public static int nextPowerOf2(int n) {
-        if (n <= 0 || n > (1 << 30))
+        if (n <= 0 || n > (1 << 30)) {
             throw new IllegalArgumentException();
+        }
         n -= 1;
         n |= n >> 16;
         n |= n >> 8;
@@ -114,13 +122,14 @@ public class MathUtils {
         return n + 1;
     }
 
-    public static int prevPowerOf2(int n) {
-        if (n <= 0)
+    public static int prevPowerOf2(final int n) {
+        if (n <= 0) {
             throw new IllegalArgumentException();
+        }
         return Integer.highestOneBit(n);
     }
 
-    public static boolean isOpaque(int color) {
+    public static boolean isOpaque(final int color) {
         return color >>> 24 == 0xFF;
     }
 }

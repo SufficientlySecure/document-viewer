@@ -1,5 +1,7 @@
 package org.ebookdroid.core;
 
+import android.graphics.RectF;
+
 import java.util.Queue;
 
 import org.emdev.utils.LengthUtils;
@@ -19,7 +21,7 @@ public class EventScrollTo extends AbstractEventScroll<EventScrollTo> {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.AbstractEvent#calculatePageVisibility(org.ebookdroid.core.ViewState)
      */
     @Override
@@ -32,16 +34,18 @@ public class EventScrollTo extends AbstractEventScroll<EventScrollTo> {
             return initial;
         }
 
+        final RectF bounds = new RectF();
+
         while (firstVisiblePage > 0) {
             final int index = firstVisiblePage - 1;
-            if (!ctrl.isPageVisible(pages[index], initial)) {
+            if (!ctrl.isPageVisible(pages[index], initial, bounds)) {
                 break;
             }
             firstVisiblePage = index;
         }
         while (lastVisiblePage < pages.length - 1) {
             final int index = lastVisiblePage + 1;
-            if (!ctrl.isPageVisible(pages[index], initial)) {
+            if (!ctrl.isPageVisible(pages[index], initial, bounds)) {
                 break;
             }
             lastVisiblePage = index;

@@ -11,16 +11,17 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.emdev.ui.progress.IProgressIndicator;
 
 public final class FileUtils {
 
-    private static Map<String, String> aliasToMountEQ = new HashMap<String, String>();
-    private static Map<String, String> aliasToMountPR = new HashMap<String, String>();
+    private static ArrayList<String> mounts = new ArrayList<String>();
+    private static ArrayList<String> mountsPR = new ArrayList<String>();
+    private static ArrayList<String> aliases = new ArrayList<String>();
+    private static ArrayList<String> aliasesPR = new ArrayList<String>();
 
     static {
         for (final File f : new File("/").listFiles()) {
@@ -29,8 +30,10 @@ public final class FileUtils {
                     final String cp = f.getCanonicalPath();
                     final String ap = f.getAbsolutePath();
                     if (!cp.equals(ap)) {
-                        aliasToMountEQ.put(ap, cp);
-                        aliasToMountPR.put(ap + "/", cp + "/");
+                        aliases.add(ap);
+                        aliasesPR.add(ap + "/");
+                        mounts.add(cp);
+                        mountsPR.add("/");
                     }
                 } catch (final IOException ex) {
                     System.err.println(ex.getMessage());
@@ -72,9 +75,9 @@ public final class FileUtils {
     }
 
     public static final String invertMountPrefix(final String fileName) {
-        for (final Map.Entry<String, String> entry : aliasToMountEQ.entrySet()) {
-            final String alias = entry.getKey();
-            final String mount = entry.getValue();
+        for (int i = 0, n = Math.min(aliases.size(), mounts.size()); i < n; i++) {
+            final String alias = aliases.get(i);
+            final String mount = mounts.get(i);
             if (fileName.equals(alias)) {
                 return mount;
             }
@@ -82,9 +85,9 @@ public final class FileUtils {
                 return alias;
             }
         }
-        for (final Map.Entry<String, String> entry : aliasToMountPR.entrySet()) {
-            final String alias = entry.getKey();
-            final String mount = entry.getValue();
+        for (int i = 0, n = Math.min(aliasesPR.size(), mountsPR.size()); i < n; i++) {
+            final String alias = aliasesPR.get(i);
+            final String mount = mountsPR.get(i);
             if (fileName.startsWith(alias)) {
                 return mount + fileName.substring(alias.length());
             }

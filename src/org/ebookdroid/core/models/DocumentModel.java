@@ -37,11 +37,14 @@ import org.emdev.common.log.LogManager;
 import org.emdev.ui.progress.IProgressIndicator;
 import org.emdev.utils.CompareUtils;
 import org.emdev.utils.LengthUtils;
+import org.emdev.utils.collections.TLIterator;
 import org.emdev.utils.listeners.ListenerProxy;
 
 public class DocumentModel extends ListenerProxy {
 
     protected static final LogContext LCTX = LogManager.root().lctx("DocModel");
+
+    private final ThreadLocal<PageIterator> iterators = new ThreadLocal<DocumentModel.PageIterator>();
 
     public final DecodeService decodeService;
 
@@ -80,12 +83,20 @@ public class DocumentModel extends ListenerProxy {
         return pages;
     }
 
-    public Iterable<Page> getPages(final int start) {
-        return new PageIterator(start, pages.length);
+    public PageIterator getPages(final int start) {
+        return getPages(start, pages.length);
     }
 
-    public Iterable<Page> getPages(final int start, final int end) {
-        return new PageIterator(start, Math.min(end, pages.length));
+    public PageIterator getPages(final int start, final int end) {
+        final PageIterator pi = iterators.get();
+        if (pi == null) {
+            return new PageIterator(start, Math.min(end, pages.length));
+        }
+
+        pi.index = start;
+        pi.end = Math.min(end, pages.length);
+        iterators.set(null);
+        return pi;
     }
 
     public int getPageCount() {
@@ -350,9 +361,9 @@ public class DocumentModel extends ListenerProxy {
         return docInfo;
     }
 
-    private final class PageIterator implements Iterable<Page>, Iterator<Page> {
+    public final class PageIterator implements TLIterator<Page> {
 
-        private final int end;
+        private int end;
         private int index;
 
         private PageIterator(final int start, final int end) {
@@ -377,6 +388,10 @@ public class DocumentModel extends ListenerProxy {
         @Override
         public Iterator<Page> iterator() {
             return this;
+        }
+
+        public void release() {
+            iterators.set(this);
         }
     }
 }

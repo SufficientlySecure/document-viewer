@@ -128,13 +128,18 @@ public class Page {
     }
 
     public RectF getBounds(final float zoom) {
-        final BookSettings bs = base.getBookSettings();
+        RectF bounds = new RectF();
+        getBounds(zoom, bounds);
+        return bounds;
+    }
 
-        final RectF zb = MathUtils.zoom(bounds, zoom);
+    public void getBounds(final float zoom, RectF target) {
+        MathUtils.zoom(bounds, zoom, target);
+
+        final BookSettings bs = base.getBookSettings();
         if (bs != null && bs.viewMode == DocumentViewMode.SINGLE_PAGE && bounds.left > 0) {
-            zb.offset((bounds.left + bounds.right)*(1 - zoom)/2, 0);
+            target.offset((bounds.left + bounds.right)*(1 - zoom)/2, 0);
         }
-        return zb;
     }
 
     public float getTargetRectScale() {

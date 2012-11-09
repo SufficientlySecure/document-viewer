@@ -15,6 +15,7 @@ import org.ebookdroid.common.touch.TouchManager;
 import org.ebookdroid.common.touch.TouchManager.Touch;
 import org.ebookdroid.core.codec.PageLink;
 import org.ebookdroid.core.models.DocumentModel;
+import org.ebookdroid.core.models.DocumentModel.PageIterator;
 import org.ebookdroid.ui.viewer.IActivityController;
 import org.ebookdroid.ui.viewer.IView;
 import org.ebookdroid.ui.viewer.IViewController;
@@ -261,13 +262,18 @@ public abstract class AbstractViewController extends AbstractComponentController
         PointF pos = null;
         Page page = null;
 
-        ViewState vs = new ViewState(this);
-        for (final Page p : model.getPages(firstVisiblePage, lastVisiblePage + 1)) {
-            pos = vs.getPositionOnPage(p, tapX, tapY);
-            if ((0 <= pos.x && pos.x <= 1) && (0 <= pos.y && pos.y <= 1)) {
-                page = p;
-                break;
+        final ViewState vs = new ViewState(this);
+        final PageIterator pages = model.getPages(firstVisiblePage, lastVisiblePage + 1);
+        try {
+            for (final Page p : pages) {
+                pos = vs.getPositionOnPage(p, tapX, tapY);
+                if ((0 <= pos.x && pos.x <= 1) && (0 <= pos.y && pos.y <= 1)) {
+                    page = p;
+                    break;
+                }
             }
+        } finally {
+            pages.release();
         }
         if (page == null) {
             return;
@@ -297,7 +303,7 @@ public abstract class AbstractViewController extends AbstractComponentController
         final int screenWidth = view.getWidth();
         final int screenHeight = view.getHeight();
 
-        RectF pb = vs.getBounds(page);
+        final RectF pb = vs.getBounds(page);
 
         final float columnScreenWidth = page.getPageRegion(pb, new RectF(column)).width();
 
@@ -308,7 +314,7 @@ public abstract class AbstractViewController extends AbstractComponentController
         scrollToColumn(page, column, pos, screenHeight);
     }
 
-    protected void scrollToColumn(Page page, final RectF column, PointF pos, final int screenHeight) {
+    protected void scrollToColumn(final Page page, final RectF column, final PointF pos, final int screenHeight) {
         final ViewState vs = new ViewState(AbstractViewController.this);
         final RectF pb = vs.getBounds(page);
         final RectF columnRegion = page.getPageRegion(pb, new RectF(column));
@@ -321,7 +327,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
     @ActionMethod(ids = { R.id.actions_leftTopCorner, R.id.actions_leftBottomCorner, R.id.actions_rightTopCorner,
             R.id.actions_rightBottomCorner })
-    public void scrollToCorner(ActionEx action) {
+    public void scrollToCorner(final ActionEx action) {
         final Integer offX = action.getParameter("offsetX");
         final Integer offY = action.getParameter("offsetY");
 
@@ -563,18 +569,24 @@ public abstract class AbstractViewController extends AbstractComponentController
         final RectF rect = new RectF(x, y, x, y);
         rect.offset(getScrollX(), getScrollY());
 
-        for (final Page page : model.getPages(firstVisiblePage, lastVisiblePage + 1)) {
-            final RectF bounds = page.getBounds(zoom);
-            if (RectF.intersects(bounds, rect)) {
-                if (LengthUtils.isNotEmpty(page.links)) {
-                    for (final PageLink link : page.links) {
-                        if (processLinkTap(page, link, bounds, rect)) {
-                            return true;
+        final PageIterator pages = model.getPages(firstVisiblePage, lastVisiblePage + 1);
+        try {
+            final RectF bounds = new RectF();
+            for (final Page page : pages) {
+                page.getBounds(zoom, bounds);
+                if (RectF.intersects(bounds, rect)) {
+                    if (LengthUtils.isNotEmpty(page.links)) {
+                        for (final PageLink link : page.links) {
+                            if (processLinkTap(page, link, bounds, rect)) {
+                                return true;
+                            }
                         }
                     }
+                    return false;
                 }
-                return false;
             }
+        } finally {
+            pages.release();
         }
         return false;
     }
@@ -602,8 +614,8 @@ public abstract class AbstractViewController extends AbstractComponentController
     @Override
     public void goToLink(final int pageDocIndex, final RectF targetRect, final boolean addToHistory) {
         if (pageDocIndex >= 0) {
-            PointF linkPoint = new PointF();
-            Page target = model.getLinkTargetPage(pageDocIndex, targetRect, linkPoint, base.getBookSettings().splitRTL);
+            final PointF linkPoint = new PointF();
+            final Page target = model.getLinkTargetPage(pageDocIndex, targetRect, linkPoint, base.getBookSettings().splitRTL);
             if (LCTX.isDebugEnabled()) {
                 LCTX.d("Target page found: " + target);
             }

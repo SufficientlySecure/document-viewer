@@ -4,6 +4,7 @@ import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
+import org.ebookdroid.core.models.DocumentModel.PageIterator;
 import org.ebookdroid.ui.viewer.IActivityController;
 
 import android.graphics.Rect;
@@ -27,17 +28,21 @@ public class VScrollController extends AbstractScrollController {
 
         final int viewY = Math.round(viewState.viewRect.centerY());
 
-        final Iterable<Page> pages = firstVisible != -1 ? viewState.model.getPages(firstVisible, lastVisible + 1)
+        final PageIterator pages = firstVisible != -1 ? viewState.model.getPages(firstVisible, lastVisible + 1)
                 : viewState.model.getPages(0);
-
-        for (final Page page : pages) {
-            final RectF bounds = viewState.getBounds(page);
-            final int pageY = Math.round(bounds.centerY());
-            final long dist = Math.abs(pageY - viewY);
-            if (dist < bestDistance) {
-                bestDistance = dist;
-                result = page.index.viewIndex;
+        try {
+            RectF bounds = new RectF();
+            for (final Page page : pages) {
+                viewState.getBounds(page, bounds);
+                final int pageY = Math.round(bounds.centerY());
+                final long dist = Math.abs(pageY - viewY);
+                if (dist < bestDistance) {
+                    bestDistance = dist;
+                    result = page.index.viewIndex;
+                }
             }
+        } finally {
+            pages.release();
         }
         return result;
     }
@@ -108,11 +113,16 @@ public class VScrollController extends AbstractScrollController {
             }
         } else {
             float heightAccum = changedPage.getBounds(1.0f).top;
-            for (final Page page : model.getPages(changedPage.index.viewIndex)) {
-                final RectF pageBounds = calcPageBounds(pageAlign, page.getAspectRatio(), width, height);
-                pageBounds.offset(0, heightAccum);
-                page.setBounds(pageBounds);
-                heightAccum += pageBounds.height() + 3;
+            final PageIterator pages = model.getPages(changedPage.index.viewIndex);
+            try {
+                for (final Page page : pages) {
+                    final RectF pageBounds = calcPageBounds(pageAlign, page.getAspectRatio(), width, height);
+                    pageBounds.offset(0, heightAccum);
+                    page.setBounds(pageBounds);
+                    heightAccum += pageBounds.height() + 3;
+                }
+            } finally {
+                pages.release();
             }
         }
     }

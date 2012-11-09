@@ -62,6 +62,8 @@ import java.util.Stack;
  */
 public class ArrayDeque<E> extends AbstractCollection<E> implements Cloneable, Serializable {
 
+    private final ThreadLocal<DeqIterator> iterators = new ThreadLocal<DeqIterator>();
+
     /**
      * The array in which the elements of the deque are stored.
      * The capacity of the deque is the length of this array, which is
@@ -624,15 +626,24 @@ public class ArrayDeque<E> extends AbstractCollection<E> implements Cloneable, S
      * @return an iterator over the elements in this deque
      */
     @Override
-    public Iterator<E> iterator() {
-        return new DeqIterator();
+    public TLIterator<E> iterator() {
+        DeqIterator iter = iterators.get();
+        if (iter == null) {
+            iter = new DeqIterator();
+            return iter;
+        }
+        iter.cursor = head;
+        iter.fence = tail;
+        iter.lastRet = -1;
+        iterators.set(null);
+        return iter;
     }
 
     public Iterator<E> descendingIterator() {
         return new DescendingIterator();
     }
 
-    private class DeqIterator implements Iterator<E> {
+    private class DeqIterator implements TLIterator<E> {
 
         /**
          * Index of element to be returned by subsequent call to next.
@@ -650,6 +661,9 @@ public class ArrayDeque<E> extends AbstractCollection<E> implements Cloneable, S
          * Reset to -1 if element is deleted by a call to remove.
          */
         private int lastRet = -1;
+
+        private DeqIterator() {
+        }
 
         @Override
         public boolean hasNext() {
@@ -682,6 +696,16 @@ public class ArrayDeque<E> extends AbstractCollection<E> implements Cloneable, S
                 fence = tail;
             }
             lastRet = -1;
+        }
+
+        @Override
+        public Iterator<E> iterator() {
+            return this;
+        }
+
+        @Override
+        public void release() {
+            iterators.set(this);
         }
     }
 

@@ -24,6 +24,9 @@ public class EventDraw implements IEvent {
 
     public final static LogContext LCTX = LogManager.root().lctx("EventDraw", false);
 
+    private static final Paint LINK_PAINT = new Paint();
+    private static final Paint BRIGHTNESS_FILTER = new Paint();
+
     private final Queue<EventDraw> eventQueue;
 
     public ViewState viewState;
@@ -42,22 +45,12 @@ public class EventDraw implements IEvent {
         this.viewState = viewState;
         this.level = PageTreeLevel.getLevel(viewState.zoom);
         this.canvas = canvas;
-
-        if (viewState.app.brightness < 100) {
-            final int alpha = 255 - viewState.app.brightness * 255 / 100;
-            brightnessFilter = new Paint();
-            brightnessFilter.setColor(Color.BLACK);
-            brightnessFilter.setAlpha(alpha);
-        } else {
-            brightnessFilter = null;
-        }
     }
 
     void init(final EventDraw event, final Canvas canvas) {
         this.viewState = event.viewState;
         this.level = event.level;
         this.canvas = canvas;
-        this.brightnessFilter = event.brightnessFilter;
     }
 
     void release() {
@@ -169,9 +162,8 @@ public class EventDraw implements IEvent {
             final RectF rect = page.getLinkSourceRect(pageBounds, link);
             if (rect != null) {
                 rect.offset(-viewState.viewBase.x, -viewState.viewBase.y);
-                final Paint p = new Paint();
-                p.setColor(AppSettings.current().linkHighlightColor);
-                canvas.drawRect(rect, p);
+                LINK_PAINT.setColor(AppSettings.current().linkHighlightColor);
+                canvas.drawRect(rect, LINK_PAINT);
             }
         }
     }
@@ -204,13 +196,17 @@ public class EventDraw implements IEvent {
             return;
         }
 
-        if (brightnessFilter == null) {
+        if (viewState.app.brightness >= 100) {
             return;
         }
 
+        final int alpha = 255 - viewState.app.brightness * 255 / 100;
+        BRIGHTNESS_FILTER.setColor(Color.BLACK);
+        BRIGHTNESS_FILTER.setAlpha(alpha);
+
         final float offX = viewState.viewBase.x;
         final float offY = viewState.viewBase.y;
-        canvas.drawRect(nodeRect.left - offX, nodeRect.top - offY, nodeRect.right - offX + 1, nodeRect.bottom - offY + 1,
-                brightnessFilter);
+        canvas.drawRect(nodeRect.left - offX, nodeRect.top - offY, nodeRect.right - offX + 1, nodeRect.bottom - offY
+                + 1, BRIGHTNESS_FILTER);
     }
 }

@@ -59,8 +59,7 @@ public class Bitmaps {
         for (int row = 0; row < rows; row++, top += partSize) {
             int left = 0;
             for (int col = 0; col < columns; col++, left += partSize) {
-                final String name = nodeId + ":[" + row + ", " + col + "]";
-                final AbstractBitmapRef b = BitmapManager.getTexture(name, config);
+                final AbstractBitmapRef b = BitmapManager.getTexture(null, config);
 
                 if (row == rows - 1 || col == columns - 1) {
                     final int right = Math.min(left + partSize, bounds.width());
@@ -114,7 +113,7 @@ public class Bitmaps {
                     }
                 }
                 if (this.bitmaps[i] == null) {
-                    this.bitmaps[i] = BitmapManager.getTexture(nodeId + ":reuse:" + i, config);
+                    this.bitmaps[i] = BitmapManager.getTexture(null, config);
                 } else {
                     if (LCTX.isDebugEnabled()) {
                         LCTX.d("Reuse  bitmap: " + this.bitmaps[i]);

@@ -129,7 +129,8 @@ public class ViewContollerStub implements IViewController {
     }
 
     @Override
-    public boolean isPageVisible(final Page page, final ViewState viewState) {
+    public boolean isPageVisible(final Page page, final ViewState viewState, final RectF outBounds) {
+        viewState.getBounds(page, outBounds);
         return false;
     }
 
@@ -156,6 +157,6 @@ public class ViewContollerStub implements IViewController {
     }
 
     @Override
-    public void drawView(EventGLDraw eventGLDraw) {
+    public void drawView(final EventGLDraw eventGLDraw) {
     }
 }

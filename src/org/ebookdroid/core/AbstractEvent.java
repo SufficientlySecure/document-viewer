@@ -3,6 +3,8 @@ package org.ebookdroid.core;
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.Bitmaps;
 
+import android.graphics.RectF;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -84,8 +86,9 @@ public abstract class AbstractEvent implements IEvent {
     protected ViewState calculatePageVisibility(final ViewState initial) {
         int firstVisiblePage = -1;
         int lastVisiblePage = -1;
+        final RectF bounds = new RectF();
         for (final Page page : ctrl.model.getPages()) {
-            if (ctrl.isPageVisible(page, initial)) {
+            if (ctrl.isPageVisible(page, initial, bounds)) {
                 if (firstVisiblePage == -1) {
                     firstVisiblePage = page.index.viewIndex;
                 }

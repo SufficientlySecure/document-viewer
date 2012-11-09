@@ -12,11 +12,11 @@ public class PageAnimatorProxy implements PageAnimator {
 
     private final AtomicReference<PageAnimator> orig;
 
-    public PageAnimatorProxy(PageAnimator pa) {
+    public PageAnimatorProxy(final PageAnimator pa) {
         orig = new AtomicReference<PageAnimator>(pa);
     }
 
-    public void switchCurler(PageAnimator orig) {
+    public void switchCurler(final PageAnimator orig) {
         this.orig.set(orig);
     }
 
@@ -30,7 +30,7 @@ public class PageAnimatorProxy implements PageAnimator {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
+    public boolean onTouchEvent(final MotionEvent ev) {
         return orig.get().onTouchEvent(ev);
     }
 
@@ -40,17 +40,17 @@ public class PageAnimatorProxy implements PageAnimator {
     }
 
     @Override
-    public void resetPageIndexes(int currentIndex) {
+    public void resetPageIndexes(final int currentIndex) {
         orig.get().resetPageIndexes(currentIndex);
     }
 
     @Override
-    public void draw(EventDraw event) {
+    public void draw(final EventDraw event) {
         orig.get().draw(event);
     }
 
     @Override
-    public void setViewDrawn(boolean b) {
+    public void setViewDrawn(final boolean b) {
         orig.get().setViewDrawn(b);
     }
 
@@ -60,7 +60,7 @@ public class PageAnimatorProxy implements PageAnimator {
     }
 
     @Override
-    public boolean isPageVisible(Page page, ViewState viewState) {
+    public boolean isPageVisible(final Page page, final ViewState viewState) {
         return orig.get().isPageVisible(page, viewState);
     }
 
@@ -70,7 +70,7 @@ public class PageAnimatorProxy implements PageAnimator {
     }
 
     @Override
-    public void animate(int direction) {
+    public void animate(final int direction) {
         orig.get().animate(direction);
     }
 }

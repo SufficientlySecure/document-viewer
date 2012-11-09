@@ -323,11 +323,11 @@ public final class GLView extends GLRootView implements IView, SurfaceHolder.Cal
     @Override
     public float getScrollScaleRatio() {
         final Page page = base.getDocumentModel().getCurrentPageObject();
-        final float zoom = base.getZoomModel().getZoom();
-
-        if (page == null || page.getBounds(zoom) == null) {
+        if (page == null) {
             return 0;
         }
+
+        final float zoom = base.getZoomModel().getZoom();
         return getWidth() * zoom / page.getBounds(zoom).width();
     }
 

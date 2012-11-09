@@ -1,6 +1,5 @@
 package org.ebookdroid.core;
 
-
 import android.graphics.RectF;
 
 import java.util.Comparator;
@@ -10,6 +9,9 @@ import org.emdev.utils.CompareUtils;
 public class PageTreeNodeComparator implements Comparator<PageTreeNode> {
 
     final ViewState viewState;
+
+    final RectF bounds1 = new RectF();
+    final RectF bounds2 = new RectF();
 
     public PageTreeNodeComparator(final ViewState viewState) {
         this.viewState = viewState;
@@ -21,8 +23,11 @@ public class PageTreeNodeComparator implements Comparator<PageTreeNode> {
         final int viewIndex1 = node1.page.index.viewIndex;
         final int viewIndex2 = node2.page.index.viewIndex;
 
-        final boolean v1 = viewState.isNodeVisible(node1, viewState.getBounds(node1.page));
-        final boolean v2 = viewState.isNodeVisible(node2, viewState.getBounds(node2.page));
+        viewState.getBounds(node1.page, bounds1);
+        viewState.getBounds(node2.page, bounds2);
+
+        final boolean v1 = viewState.isNodeVisible(node1, bounds1);
+        final boolean v2 = viewState.isNodeVisible(node2, bounds2);
 
         final RectF s1 = node1.pageSliceBounds;
         final RectF s2 = node2.pageSliceBounds;

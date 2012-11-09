@@ -23,6 +23,8 @@ public class DrawThread extends Thread {
 
     private final BlockingQueue<ViewState> queue = new ArrayBlockingQueue<ViewState>(16, true);
 
+    private final ArrayList<ViewState> list = new ArrayList<ViewState>();
+
     private final Flag stop = new Flag();
 
     public DrawThread(final SurfaceHolder surfaceHolder) {
@@ -70,7 +72,6 @@ public class DrawThread extends Thread {
         try {
             task = queue.poll(timeout, unit);
             if (task != null && useLastState) {
-                final ArrayList<ViewState> list = new ArrayList<ViewState>();
                 // Workaround for possible ConcurrentModificationException
                 while (true) {
                     list.clear();

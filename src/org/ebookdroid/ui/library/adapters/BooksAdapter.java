@@ -32,6 +32,7 @@ import org.emdev.utils.FileUtils;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.StringUtils;
 import org.emdev.utils.collections.SparseArrayEx;
+import org.emdev.utils.collections.TLIterator;
 
 public class BooksAdapter extends PagerAdapter implements FileSystemScanner.Listener, Iterable<BookShelfAdapter> {
 
@@ -91,7 +92,7 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
     }
 
     @Override
-    public Iterator<BookShelfAdapter> iterator() {
+    public TLIterator<BookShelfAdapter> iterator() {
         return data.iterator();
     }
 

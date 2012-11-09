@@ -1,5 +1,7 @@
 package org.ebookdroid.core;
 
+import android.graphics.RectF;
+
 import java.util.Queue;
 
 import org.emdev.utils.LengthUtils;
@@ -29,12 +31,13 @@ public class EventScrollUp extends AbstractEventScroll<EventScrollUp> {
             return super.calculatePageVisibility(initial);
         }
 
-        if (ctrl.isPageVisible(pages[firstVisiblePage], initial)) {
-            return findLastVisiblePage(initial, pages, firstVisiblePage, true);
+        final RectF bounds = new RectF();
+        if (ctrl.isPageVisible(pages[firstVisiblePage], initial, bounds)) {
+            return findLastVisiblePage(initial, pages, firstVisiblePage, true, bounds);
         }
 
-        if (firstVisiblePage != lastVisiblePage && ctrl.isPageVisible(pages[lastVisiblePage], initial)) {
-            return findFirstVisiblePage(initial, pages, lastVisiblePage, true);
+        if (firstVisiblePage != lastVisiblePage && ctrl.isPageVisible(pages[lastVisiblePage], initial, bounds)) {
+            return findFirstVisiblePage(initial, pages, lastVisiblePage, true, bounds);
         }
 
         final int midIndex = firstVisiblePage + 1;
@@ -46,14 +49,14 @@ public class EventScrollUp extends AbstractEventScroll<EventScrollUp> {
             final int right = midIndex + delta;
             if (left >= 0) {
                 run++;
-                if (ctrl.isPageVisible(pages[left], initial)) {
-                    return findFirstVisiblePage(initial, pages, left, false);
+                if (ctrl.isPageVisible(pages[left], initial, bounds)) {
+                    return findFirstVisiblePage(initial, pages, left, false, bounds);
                 }
             }
             if (right < pages.length - 1) {
                 run++;
-                if (ctrl.isPageVisible(pages[right], initial)) {
-                    return findLastVisiblePage(initial, pages, right, false);
+                if (ctrl.isPageVisible(pages[right], initial, bounds)) {
+                    return findLastVisiblePage(initial, pages, right, false, bounds);
                 }
             }
             delta++;
@@ -63,13 +66,13 @@ public class EventScrollUp extends AbstractEventScroll<EventScrollUp> {
     }
 
     protected ViewState findLastVisiblePage(final ViewState initial, final Page[] pages, final int first,
-            final boolean updateFirst) {
+            final boolean updateFirst, final RectF outBounds) {
         int firstVisiblePage = first;
         // If firstVisiblePage is still visible, try to find lastVisiblePage
         int lastVisiblePage = firstVisiblePage;
         while (lastVisiblePage < pages.length - 1) {
             final int index = lastVisiblePage + 1;
-            if (!ctrl.isPageVisible(pages[index], initial)) {
+            if (!ctrl.isPageVisible(pages[index], initial, outBounds)) {
                 break;
             }
             lastVisiblePage = index;
@@ -77,7 +80,7 @@ public class EventScrollUp extends AbstractEventScroll<EventScrollUp> {
         if (updateFirst) {
             // Then try to find real firstVisiblePage
             for (int index = firstVisiblePage - 1; index >= 0; index--) {
-                if (!ctrl.isPageVisible(pages[index], initial)) {
+                if (!ctrl.isPageVisible(pages[index], initial, outBounds)) {
                     break;
                 }
                 firstVisiblePage = index;
@@ -87,12 +90,12 @@ public class EventScrollUp extends AbstractEventScroll<EventScrollUp> {
     }
 
     protected ViewState findFirstVisiblePage(final ViewState initial, final Page[] pages, final int last,
-            final boolean updateLast) {
+            final boolean updateLast, final RectF outBounds) {
         int lastVisiblePage = last;
         // If lastVisiblePage is still visible, try to find firstVisiblePage
         int firstVisiblePage = lastVisiblePage;
         for (int index = lastVisiblePage - 1; index >= 0; index--) {
-            if (!ctrl.isPageVisible(pages[index], initial)) {
+            if (!ctrl.isPageVisible(pages[index], initial, outBounds)) {
                 break;
             }
             firstVisiblePage = index;
@@ -100,7 +103,7 @@ public class EventScrollUp extends AbstractEventScroll<EventScrollUp> {
         if (updateLast) {
             // Then try to find real lastVisiblePage
             for (int index = lastVisiblePage + 1; index < pages.length; index++) {
-                if (!ctrl.isPageVisible(pages[index], initial)) {
+                if (!ctrl.isPageVisible(pages[index], initial, outBounds)) {
                     break;
                 }
                 lastVisiblePage = index;

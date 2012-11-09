@@ -209,8 +209,8 @@ public class SinglePageController extends AbstractViewController {
      */
     @Override
     public void drawView(final EventGLDraw eventDraw) {
-//        curler.draw(eventDraw);
-//        getView().continueScroll();
+        // curler.draw(eventDraw);
+        // getView().continueScroll();
     }
 
     public final ViewState invalidatePages(final ViewState oldState, final Page... pages) {
@@ -282,7 +282,8 @@ public class SinglePageController extends AbstractViewController {
      *      org.ebookdroid.core.ViewState)
      */
     @Override
-    public final boolean isPageVisible(final Page page, final ViewState viewState) {
+    public final boolean isPageVisible(final Page page, final ViewState viewState, final RectF outBounds) {
+        viewState.getBounds(page, outBounds);
         return curler.isPageVisible(page, viewState);
     }
 
@@ -297,7 +298,8 @@ public class SinglePageController extends AbstractViewController {
         final PageAnimator newCurler = PageAnimationType.create(animationType, this);
 
         IUIManager.instance.setHardwareAccelerationEnabled(base.getActivity(), AppSettings.current().hwaEnabled);
-        IUIManager.instance.setHardwareAccelerationMode(base.getActivity(), getView().getView(), animationType.isHardwareAccelSupported());
+        IUIManager.instance.setHardwareAccelerationMode(base.getActivity(), getView().getView(),
+                animationType.isHardwareAccelSupported());
 
         newCurler.init();
         curler.switchCurler(newCurler);

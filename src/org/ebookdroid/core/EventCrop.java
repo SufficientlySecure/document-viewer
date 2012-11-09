@@ -4,6 +4,7 @@ import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.Bitmaps;
 import org.ebookdroid.common.settings.types.PageType;
 import org.ebookdroid.core.models.DocumentModel;
+import org.ebookdroid.core.models.DocumentModel.PageIterator;
 import org.ebookdroid.ui.viewer.IViewController;
 import org.ebookdroid.ui.viewer.IViewController.InvalidateSizeReason;
 
@@ -14,7 +15,8 @@ import java.util.List;
 
 public class EventCrop extends AbstractEvent {
 
-    private static final RectF FULL_PAGE_CROPPING = new RectF(0f,0f,1f,1f);
+    private static final RectF FULL_PAGE_CROPPING = new RectF(0f, 0f, 1f, 1f);
+
     protected final PageTreeLevel level;
     protected final InvalidateSizeReason reason = InvalidateSizeReason.PAGE_LOADED;
 
@@ -56,11 +58,17 @@ public class EventCrop extends AbstractEvent {
 
     public EventCrop addEvenOdd(final Page page, final boolean eq) {
         final int evenOdd = (page.index.viewIndex + (eq ? 0 : 1)) % 2;
-        for (final Page p : ctrl.getBase().getDocumentModel().getPages(page.index.viewIndex)) {
-            if (evenOdd == (p.index.viewIndex % 2)) {
-                pages.add(p);
+        final PageIterator nextPages = ctrl.getBase().getDocumentModel().getPages(page.index.viewIndex);
+        try {
+            for (final Page p : nextPages) {
+                if (evenOdd == (p.index.viewIndex % 2)) {
+                    pages.add(p);
+                }
             }
+        } finally {
+            nextPages.release();
         }
+
         return this;
     }
 
@@ -91,7 +99,7 @@ public class EventCrop extends AbstractEvent {
                 }
             }
 
-            DocumentModel dm = ctrl.getBase().getDocumentModel();
+            final DocumentModel dm = ctrl.getBase().getDocumentModel();
             dm.saveDocumentInfo();
 
             BitmapManager.release(bitmapsToRecycle);

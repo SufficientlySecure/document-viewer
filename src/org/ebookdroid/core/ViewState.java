@@ -6,6 +6,7 @@ import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.common.settings.types.PageType;
 import org.ebookdroid.core.models.DocumentModel;
+import org.ebookdroid.core.models.DocumentModel.PageIterator;
 import org.ebookdroid.ui.viewer.IView;
 import org.ebookdroid.ui.viewer.IViewController;
 
@@ -75,6 +76,10 @@ public class ViewState {
 
     public RectF getBounds(final Page page) {
         return page.getBounds(zoom);
+    }
+
+    public void getBounds(final Page page, RectF target) {
+        page.getBounds(zoom, target);
     }
 
     public final boolean isPageKeptInMemory(final Page page) {
@@ -197,7 +202,7 @@ public class ViewState {
             }
         }
 
-        public Iterable<Page> getVisiblePages() {
+        public PageIterator getVisiblePages() {
             return firstVisible != -1 ? model.getPages(firstVisible, lastVisible + 1) : model.getPages(0);
         }
 

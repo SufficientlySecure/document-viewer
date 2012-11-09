@@ -4,6 +4,7 @@ import org.ebookdroid.R;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
+import org.ebookdroid.core.models.DocumentModel.PageIterator;
 import org.ebookdroid.ui.viewer.IActivityController;
 import org.ebookdroid.ui.viewer.views.DragMark;
 
@@ -59,10 +60,15 @@ public abstract class AbstractScrollController extends AbstractViewController {
             return;
         }
 
-        for (final Page page : viewState.pages.getVisiblePages()) {
-            if (page != null) {
-                eventDraw.process(page);
+        final PageIterator pages = viewState.pages.getVisiblePages();
+        try {
+            for (final Page page : pages) {
+                if (page != null) {
+                    eventDraw.process(page);
+                }
             }
+        } finally {
+            pages.release();
         }
 
         if (eventDraw.viewState.app.showAnimIcon) {
@@ -78,15 +84,20 @@ public abstract class AbstractScrollController extends AbstractViewController {
             return;
         }
 
-        for (final Page page : viewState.pages.getVisiblePages()) {
-            if (page != null) {
-                eventDraw.process(page);
+        final PageIterator pages = viewState.pages.getVisiblePages();
+        try {
+            for (final Page page : pages) {
+                if (page != null) {
+                    eventDraw.process(page);
+                }
             }
+        } finally {
+            pages.release();
         }
 
-//        if (eventDraw.viewState.app.showAnimIcon) {
-//            DragMark.draw(eventDraw.canvas, viewState);
-//        }
+        // if (eventDraw.viewState.app.showAnimIcon) {
+        // DragMark.draw(eventDraw.canvas, viewState);
+        // }
         getView().continueScroll();
     }
 
@@ -130,12 +141,13 @@ public abstract class AbstractScrollController extends AbstractViewController {
     /**
      * {@inheritDoc}
      *
-     * @see org.ebookdroid.core.AbstractViewController#isPageVisible(org.ebookdroid.core.Page,
-     *      org.ebookdroid.core.ViewState)
+     * @see org.ebookdroid.ui.viewer.IViewController#isPageVisible(org.ebookdroid.core.Page,
+     *      org.ebookdroid.core.ViewState, android.graphics.RectF)
      */
     @Override
-    public final boolean isPageVisible(final Page page, final ViewState viewState) {
-        return RectF.intersects(viewState.viewRect, viewState.getBounds(page));
+    public final boolean isPageVisible(final Page page, final ViewState viewState, final RectF outBounds) {
+        viewState.getBounds(page, outBounds);
+        return RectF.intersects(viewState.viewRect, outBounds);
     }
 
     /**

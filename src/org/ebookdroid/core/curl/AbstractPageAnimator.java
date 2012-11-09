@@ -4,6 +4,7 @@ import org.ebookdroid.R;
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.core.EventDraw;
+import org.ebookdroid.core.EventGLDraw;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.SinglePageController;
 import org.ebookdroid.core.ViewState;
@@ -17,6 +18,9 @@ import android.graphics.Rect;
 import android.view.MotionEvent;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import org.emdev.ui.gl.BitmapTexture;
+import org.emdev.ui.gl.GLCanvas;
 
 public abstract class AbstractPageAnimator extends SinglePageView implements PageAnimator {
 
@@ -52,7 +56,8 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
     protected IBitmapRef backBitmap;
     protected int backBitmapIndex = -1;
 
-    protected Bitmap arrowsBitmap;
+    protected static Bitmap arrowsBitmap;
+    protected BitmapTexture arrowsBitmapTx;
 
     protected final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
@@ -68,7 +73,14 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
     @Override
     public void init() {
         super.init();
-        arrowsBitmap = BitmapFactory.decodeResource(view.getBase().getContext().getResources(), R.drawable.components_curler_arrows);
+        if (arrowsBitmap == null || arrowsBitmap.isRecycled()) {
+            arrowsBitmap = BitmapFactory.decodeResource(view.getBase().getContext().getResources(),
+                    R.drawable.components_curler_arrows);
+            if (arrowsBitmapTx != null) {
+                arrowsBitmapTx.recycle();
+                arrowsBitmapTx = null;
+            }
+        }
 
         mMovement = new Vector2D(0, 0);
         mFinger = new Vector2D(0, 0);
@@ -218,9 +230,15 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
 
     protected abstract void drawBackground(EventDraw event);
 
+    protected abstract void drawBackground(EventGLDraw event);
+
     protected abstract void drawForeground(EventDraw event);
 
+    protected abstract void drawForeground(EventGLDraw event);
+
     protected abstract void drawExtraObjects(EventDraw event);
+
+    protected abstract void drawExtraObjects(EventGLDraw event);
 
     /**
      * Update points values values.
@@ -272,6 +290,45 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.curl.SinglePageView#draw(org.ebookdroid.core.EventGLDraw)
+     */
+    @Override
+    public final synchronized void draw(final EventGLDraw event) {
+        final GLCanvas canvas = event.canvas;
+        final ViewState viewState = event.viewState;
+
+        if (!enabled()) {
+            super.draw(event);
+            return;
+        }
+
+        // We need to initialize all size data when we first draw the view
+        if (!isViewDrawn()) {
+            setViewDrawn(true);
+            onFirstDrawEvent(canvas, viewState);
+        }
+
+        canvas.clearBuffer(Color.BLACK);
+
+        // Draw our elements
+        lock.readLock().lock();
+        try {
+            drawInternal(event);
+            drawExtraObjects(event);
+        } finally {
+            lock.readLock().unlock();
+        }
+
+        // Check if we can re-enable input
+        if (bEnableInputAfterDraw) {
+            bBlockTouchInput = false;
+            bEnableInputAfterDraw = false;
+        }
+    }
+
     protected void drawInternal(final EventDraw event) {
         drawForeground(event);
         if (foreIndex != backIndex) {
@@ -279,7 +336,16 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
         }
     }
 
+    protected void drawInternal(final EventGLDraw event) {
+        drawForeground(event);
+        if (foreIndex != backIndex) {
+            drawBackground(event);
+        }
+    }
+
     protected abstract void onFirstDrawEvent(Canvas canvas, final ViewState viewState);
+
+    protected abstract void onFirstDrawEvent(GLCanvas canvas, final ViewState viewState);
 
     /**
      * {@inheritDoc}

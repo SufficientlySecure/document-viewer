@@ -67,9 +67,10 @@ public class EventGLDraw implements IEvent {
             if (canvas == null || viewState == null) {
                 return viewState;
             }
-            canvas.drawRect(0, 0, viewState.viewRect.width(), viewState.viewRect.height(),
-                    viewState.paint.backgroundFillPaint);
+
+            canvas.clearBuffer(viewState.paint.backgroundFillPaint);
             viewState.ctrl.drawView(this);
+
             return viewState;
         } finally {
             release();
@@ -144,7 +145,7 @@ public class EventGLDraw implements IEvent {
         fixedPageBounds.set(pageBounds);
         fixedPageBounds.offset(-viewState.viewBase.x, -viewState.viewBase.y);
 
-        canvas.drawRect(fixedPageBounds, viewState.paint.fillPaint);
+        canvas.fillRect(fixedPageBounds, viewState.paint.fillPaint);
 
         final TextPaint textPaint = viewState.paint.textPaint;
         textPaint.setTextSize(24 * viewState.zoom);
@@ -212,7 +213,7 @@ public class EventGLDraw implements IEvent {
 
         final float offX = viewState.viewBase.x;
         final float offY = viewState.viewBase.y;
-        canvas.drawRect(nodeRect.left - offX, nodeRect.top - offY, nodeRect.right - offX + 1, nodeRect.bottom - offY
-                + 1, BRIGHTNESS_FILTER);
+        canvas.fillRect(nodeRect.left - offX, nodeRect.top - offY, nodeRect.right - offX + 1, nodeRect.bottom - offY
+                + 1, BRIGHTNESS_FILTER.getColor());
     }
 }

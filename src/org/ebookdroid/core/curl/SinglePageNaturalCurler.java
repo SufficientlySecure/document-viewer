@@ -23,6 +23,7 @@ import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.core.EventDraw;
+import org.ebookdroid.core.EventGLDraw;
 import org.ebookdroid.core.EventPool;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.SinglePageController;
@@ -36,6 +37,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.FloatMath;
 
+import org.emdev.ui.gl.BitmapTexture;
+import org.emdev.ui.gl.GLCanvas;
 import org.emdev.utils.FastMath;
 import org.emdev.utils.MatrixUtils;
 
@@ -252,6 +255,28 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
     /**
      * {@inheritDoc}
      *
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawBackground(org.ebookdroid.core.EventGLDraw)
+     */
+    @Override
+    protected void drawBackground(final EventGLDraw event) {
+        final GLCanvas canvas = event.canvas;
+        final ViewState viewState = event.viewState;
+
+        Page page = event.viewState.model.getPageObject(backIndex);
+        if (page == null) {
+            page = event.viewState.model.getCurrentPageObject();
+        }
+        if (page != null) {
+            canvas.save();
+            canvas.setClipRect(viewState.getBounds(page));
+            event.process(page);
+            canvas.restore();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawForeground(org.ebookdroid.core.EventDraw)
      */
     @Override
@@ -266,6 +291,28 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
         if (page != null) {
             canvas.save();
             canvas.clipRect(viewState.getBounds(page));
+            event.process(page);
+            canvas.restore();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawForeground(org.ebookdroid.core.EventGLDraw)
+     */
+    @Override
+    protected void drawForeground(final EventGLDraw event) {
+        final GLCanvas canvas = event.canvas;
+        final ViewState viewState = event.viewState;
+
+        Page page = event.viewState.model.getPageObject(foreIndex);
+        if (page == null) {
+            page = event.viewState.model.getCurrentPageObject();
+        }
+        if (page != null) {
+            canvas.save();
+            canvas.setClipRect(viewState.getBounds(page));
             event.process(page);
             canvas.restore();
         }
@@ -289,6 +336,24 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
     /**
      * {@inheritDoc}
      *
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawExtraObjects(org.ebookdroid.core.EventDraw)
+     */
+    @Override
+    protected void drawExtraObjects(final EventGLDraw event) {
+
+        if (AppSettings.current().showAnimIcon) {
+            if (arrowsBitmapTx == null) {
+                arrowsBitmapTx = new BitmapTexture(arrowsBitmap);
+            }
+            final GLCanvas canvas = event.canvas;
+            canvas.drawTexture(arrowsBitmapTx, view.getWidth() - arrowsBitmapTx.getWidth(), view.getHeight()
+                    - arrowsBitmapTx.getHeight(), arrowsBitmapTx.getWidth(), arrowsBitmapTx.getHeight());
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @see org.ebookdroid.core.curl.AbstractPageAnimator#onFirstDrawEvent(android.graphics.Canvas,
      *      org.ebookdroid.core.ViewState)
      */
@@ -303,4 +368,23 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
             lock.writeLock().unlock();
         }
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#onFirstDrawEvent(org.emdev.ui.gl.GLCanvas,
+     *      org.ebookdroid.core.ViewState)
+     */
+    @Override
+    protected void onFirstDrawEvent(final GLCanvas canvas, final ViewState viewState) {
+        resetClipEdge();
+
+        lock.writeLock().lock();
+        try {
+            updateValues();
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
 }

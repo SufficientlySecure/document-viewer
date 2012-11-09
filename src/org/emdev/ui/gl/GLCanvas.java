@@ -38,6 +38,8 @@ public interface GLCanvas {
 
     // Clear the drawing buffers. This should only be used by GLRoot.
     public void clearBuffer();
+    public void clearBuffer(Paint p);
+    public void clearBuffer(int color);
 
     // Sets and gets the current alpha, alpha must be in [0, 1].
     public void setAlpha(float alpha);
@@ -88,6 +90,8 @@ public interface GLCanvas {
     // Fills the specified rectangle with the specified color.
     public void fillRect(float x, float y, float width, float height, int color);
 
+    public void fillRect(RectF r, Paint p);
+
     // Draws a texture to the specified rectangle.
     public void drawTexture(BasicTexture texture, int x, int y, int width, int height);
 
@@ -124,4 +128,9 @@ public interface GLCanvas {
     public void beginRenderTarget(RawTexture texture);
 
     public void endRenderTarget();
+
+    public void setClipRect(RectF bounds);
+
+    public void clearClipRect();
+
 }

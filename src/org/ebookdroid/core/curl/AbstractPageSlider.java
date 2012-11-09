@@ -3,12 +3,16 @@ package org.ebookdroid.core.curl;
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.core.EventDraw;
+import org.ebookdroid.core.EventGLDraw;
 import org.ebookdroid.core.EventPool;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.SinglePageController;
 import org.ebookdroid.core.ViewState;
 
 import android.graphics.Canvas;
+
+import org.emdev.ui.gl.BitmapTexture;
+import org.emdev.ui.gl.GLCanvas;
 
 public abstract class AbstractPageSlider extends AbstractPageAnimator {
 
@@ -35,6 +39,22 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
      */
     @Override
     protected void onFirstDrawEvent(final Canvas canvas, final ViewState viewState) {
+        lock.writeLock().lock();
+        try {
+            updateValues();
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#onFirstDrawEvent(org.emdev.ui.gl.GLCanvas,
+     *      org.ebookdroid.core.ViewState)
+     */
+    @Override
+    protected void onFirstDrawEvent(final GLCanvas canvas, final ViewState viewState) {
         lock.writeLock().lock();
         try {
             updateValues();
@@ -92,6 +112,25 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
             final int x = view.getWidth() - arrowsBitmap.getWidth();
             final int y = view.getHeight() - arrowsBitmap.getHeight();
             event.canvas.drawBitmap(arrowsBitmap, x, y, PAINT);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawExtraObjects(org.ebookdroid.core.EventDraw)
+     */
+    @Override
+    protected final void drawExtraObjects(final EventGLDraw event) {
+        if (event.viewState.app.showAnimIcon) {
+            if (arrowsBitmapTx == null) {
+                arrowsBitmapTx = new BitmapTexture(arrowsBitmap);
+            }
+            final int w = arrowsBitmapTx.getWidth();
+            final int h = arrowsBitmapTx.getHeight();
+            final int x = view.getWidth() - w;
+            final int y = view.getHeight() - h;
+            event.canvas.drawTexture(arrowsBitmapTx, x, y, w, h);
         }
     }
 

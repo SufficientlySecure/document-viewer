@@ -105,8 +105,8 @@ public class GLBitmaps extends Bitmaps {
             }
 
             final RectF actual = new RectF(cr.left - vb.x, cr.top - vb.y, cr.right - vb.x, cr.bottom - vb.y);
-            // final Rect orig = canvas.getClipBounds();
-            // canvas.clipRect(actual, Op.INTERSECT);
+            canvas.save();
+            canvas.setClipRect(actual);
 
             final float offsetX = tr.left - vb.x;
             final float offsetY = tr.top - vb.y;
@@ -161,11 +161,12 @@ public class GLBitmaps extends Bitmaps {
                 LCTX.d(nodeId + ".drawGL(): <<<<<");
             }
 
-            // canvas.clipRect(orig, Op.REPLACE);
+            canvas.clearClipRect();
+            canvas.restore();
+
             return res;
         } finally {
             lock.writeLock().unlock();
         }
     }
-
 }

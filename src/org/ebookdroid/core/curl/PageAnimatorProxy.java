@@ -1,6 +1,7 @@
 package org.ebookdroid.core.curl;
 
 import org.ebookdroid.core.EventDraw;
+import org.ebookdroid.core.EventGLDraw;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.ViewState;
 
@@ -46,6 +47,11 @@ public class PageAnimatorProxy implements PageAnimator {
 
     @Override
     public void draw(final EventDraw event) {
+        orig.get().draw(event);
+    }
+
+    @Override
+    public void draw(final EventGLDraw event) {
         orig.get().draw(event);
     }
 

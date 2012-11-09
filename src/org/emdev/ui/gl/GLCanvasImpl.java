@@ -172,6 +172,23 @@ public class GLCanvasImpl implements GLCanvas {
     }
 
     @Override
+    public void setClipRect(final RectF bounds) {
+        final GL11 gl = mGL;
+        gl.glEnable(GL10.GL_SCISSOR_TEST);
+
+        saveTransform();
+        gl.glLoadMatrixf(mMatrixValues, 0);
+        gl.glScissor((int) bounds.left, (int) bounds.top, (int) bounds.width(), (int) bounds.height());
+        restoreTransform();
+    }
+
+    @Override
+    public void clearClipRect() {
+        final GL11 gl = mGL;
+        gl.glDisable(GL10.GL_SCISSOR_TEST);
+    }
+
+    @Override
     public void drawRect(final float x, final float y, final float width, final float height, final Paint paint) {
         final GL11 gl = mGL;
 
@@ -233,6 +250,22 @@ public class GLCanvasImpl implements GLCanvas {
         saveTransform();
         translate(x, y);
         scale(width, height, 1);
+
+        gl.glLoadMatrixf(mMatrixValues, 0);
+        gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, OFFSET_FILL_RECT, 4);
+
+        restoreTransform();
+        mCountFillRect++;
+    }
+
+    @Override
+    public void fillRect(final RectF r, final Paint p) {
+        mGLState.setColorMode(p.getColor(), mAlpha);
+        final GL11 gl = mGL;
+
+        saveTransform();
+        translate(r.left, r.top);
+        scale(r.width(), r.height(), 1);
 
         gl.glLoadMatrixf(mMatrixValues, 0);
         gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, OFFSET_FILL_RECT, 4);
@@ -672,6 +705,24 @@ public class GLCanvasImpl implements GLCanvas {
     @Override
     public void clearBuffer() {
         mGL.glClear(GL10.GL_COLOR_BUFFER_BIT);
+    }
+
+    @Override
+    public void clearBuffer(final Paint p) {
+        clearBuffer(p.getColor());
+    }
+
+    @Override
+    public void clearBuffer(final int color) {
+        final GL11 gl = mGL;
+        final float prealpha = (color >>> 24) / 255f;
+        final float red = ((color >> 16) & 0xFF) * prealpha;
+        final float green = ((color >> 8) & 0xFF) * prealpha;
+        final float blue = (color & 0xFF) * prealpha;
+        final float alpha = 255 * prealpha;
+
+        gl.glClearColor(red, green, blue, alpha);
+        gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
     }
 
     private void setTextureCoords(final RectF source) {

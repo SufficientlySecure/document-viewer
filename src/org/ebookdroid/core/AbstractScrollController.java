@@ -22,7 +22,8 @@ public abstract class AbstractScrollController extends AbstractViewController {
     protected AbstractScrollController(final IActivityController base, final DocumentViewMode mode) {
         super(base, mode);
         if (dragBitmap == null) {
-            dragBitmap = BitmapFactory.decodeResource(base.getContext().getResources(), R.drawable.components_curler_drag);
+            dragBitmap = BitmapFactory.decodeResource(base.getContext().getResources(),
+                    R.drawable.components_curler_drag);
         }
         IUIManager.instance.setHardwareAccelerationEnabled(base.getActivity(), AppSettings.current().hwaEnabled);
         IUIManager.instance.setHardwareAccelerationMode(base.getActivity(), getView().getView(), true);
@@ -95,9 +96,9 @@ public abstract class AbstractScrollController extends AbstractViewController {
             pages.release();
         }
 
-        // if (eventDraw.viewState.app.showAnimIcon) {
-        // DragMark.draw(eventDraw.canvas, viewState);
-        // }
+        if (eventDraw.viewState.app.showAnimIcon) {
+            DragMark.draw(eventDraw.canvas, viewState);
+        }
         getView().continueScroll();
     }
 

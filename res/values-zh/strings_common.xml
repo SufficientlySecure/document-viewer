@@ -8,7 +8,7 @@
     <string name="msg_bad_intent">"错误:\n%s"</string>
     <string name="msg_no_intent_data">"数据丢失:\n%s"</string>
     <string name="msg_unknown_intent_data_type">"未知的数据类型:\n%s"</string>
-<!--<string name="msg_loading_book">"加载书籍： %1$s…"</string>-->
+    <string name="msg_loading_book">"加载书籍： %1$s…"</string>
     <string name="msg_wrong_password">"密码错误&quot;…"</string>
     <string name="msg_password_required">"请输入密码…"</string>
     <string name="msg_unexpected_error">"发生异常:\n%s"</string>

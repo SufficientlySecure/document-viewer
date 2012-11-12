@@ -20,11 +20,13 @@ interface IDBAdapter {
 
     Map<String, BookSettings> getAllBooks();
 
-    Map<String, BookSettings> getRecentBooks(final boolean all);
+    Map<String, BookSettings> getRecentBooks(boolean all);
 
-    BookSettings getBookSettings(final String fileName);
+    BookSettings getBookSettings(String fileName);
 
-    boolean storeBookSettings(final BookSettings bs);
+    boolean storeBookSettings(BookSettings bs);
+
+    boolean storeBookSettings(List<BookSettings> list);
 
     boolean restoreBookSettings(Collection<BookSettings> c);
 
@@ -34,13 +36,11 @@ interface IDBAdapter {
 
     boolean deleteAll();
 
-    boolean updateBookmarks(final BookSettings book);
+    boolean updateBookmarks(BookSettings book);
 
-    boolean deleteBookmarks(final String book, final List<Bookmark> bookmarks);
+    boolean deleteBookmarks(String book, List<Bookmark> bookmarks);
 
     boolean deleteAllBookmarks();
 
     boolean removeBookFromRecents(BookSettings bs);
-
-
 }

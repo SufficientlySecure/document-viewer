@@ -171,6 +171,36 @@ class DBAdapterV1 implements IDBAdapter {
     }
 
     @Override
+    public boolean storeBookSettings(final List<BookSettings> list) {
+        try {
+            final SQLiteDatabase db = manager.getWritableDatabase();
+            try {
+                db.beginTransaction();
+
+                for (final BookSettings bs : list) {
+                    if (bs.lastChanged > 0) {
+                        bs.lastUpdated = System.currentTimeMillis();
+                    }
+
+                    if (LCTX.isDebugEnabled()) {
+                        LCTX.d("Store: " + bs.toJSON());
+                    }
+
+                    storeBookSettings(bs, db);
+                }
+                db.setTransactionSuccessful();
+
+                return true;
+            } finally {
+                endTransaction(db);
+            }
+        } catch (final Throwable th) {
+            LCTX.e("Update book settings failed: ", th);
+        }
+        return false;
+    }
+
+    @Override
     public final boolean restoreBookSettings(final Collection<BookSettings> c) {
         try {
             final SQLiteDatabase db = manager.getWritableDatabase();

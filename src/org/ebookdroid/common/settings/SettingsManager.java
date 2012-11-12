@@ -19,20 +19,23 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
 import org.emdev.utils.FileUtils;
 import org.emdev.utils.LengthUtils;
+import org.emdev.utils.concurrent.Flag;
 import org.emdev.utils.listeners.ListenerProxy;
 
 public class SettingsManager {
 
-    public static final LogContext LCTX = LogManager.root().lctx("SettingsManager");
+    public static final LogContext LCTX = LogManager.root().lctx("SettingsManager", false);
 
     public static final int INITIAL_FONTS = 1 << 0;
 
@@ -67,6 +70,15 @@ public class SettingsManager {
 
             updateThread = new BookSettingsUpdate();
             updateThread.start();
+        }
+    }
+
+    public static void onTerminate() {
+        updateThread.run.clear();
+        try {
+            updateThread.join();
+        } catch (final InterruptedException e) {
+            Thread.interrupted();
         }
     }
 
@@ -145,7 +157,7 @@ public class SettingsManager {
     private static BookSettings getBookSettingsImpl(final String fileName) {
         BookSettings bs = loadBookSettingsImpl(fileName);
         if (bs == null) {
-            String mpath = FileUtils.invertMountPrefix(fileName);
+            final String mpath = FileUtils.invertMountPrefix(fileName);
             final File f = mpath != null ? new File(mpath) : null;
             if (f != null && f.exists()) {
                 bs = loadBookSettingsImpl(mpath);
@@ -435,25 +447,33 @@ public class SettingsManager {
 
     private static class BookSettingsUpdate extends Thread {
 
-        final AtomicBoolean run = new AtomicBoolean(true);
+        private static final int INACTIVITY_PERIOD = 3000;
+
+        final Flag run = new Flag(true);
+
+        final List<BookSettings> list = new ArrayList<BookSettings>();
 
         @Override
         public void run() {
-            while (run.get()) {
-                try {
-                    Thread.sleep(3000);
-                } catch (final InterruptedException ex) {
-                    Thread.interrupted();
-                }
+            LCTX.i("BookSettingsUpdate thread started");
+
+            while (run.waitFor(TimeUnit.MILLISECONDS, INACTIVITY_PERIOD)) {
                 boolean stored = false;
                 lock.writeLock().lock();
                 try {
+                    list.clear();
+                    final long now = run.get() ? System.currentTimeMillis() : 0;
                     for (final BookSettings current : bookSettings.values()) {
-                        if (current.persistent && current.lastUpdated < current.lastChanged) {
-                            stored |= db.storeBookSettings(current);
+                        if (current.persistent && current.lastUpdated < current.lastChanged
+                                && now - current.lastChanged >= INACTIVITY_PERIOD) {
+                            list.add(current);
                         }
                     }
-
+                    if (!list.isEmpty()) {
+                        stored |= db.storeBookSettings(list);
+                    }
+                } catch (Throwable th) {
+                    LCTX.e("BookSettingsUpdate thread error: ", th);
                 } finally {
                     lock.writeLock().unlock();
                 }
@@ -461,6 +481,7 @@ public class SettingsManager {
                     onRecentBooksChanged();
                 }
             }
+            LCTX.i("BookSettingsUpdate thread finished");
         }
     }
 

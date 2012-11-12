@@ -185,6 +185,11 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter, I
     }
 
     @Override
+    public boolean storeBookSettings(final List<BookSettings> list) {
+        return adapter.storeBookSettings(list);
+    }
+
+    @Override
     public boolean restoreBookSettings(Collection<BookSettings> c) {
         return adapter.restoreBookSettings(c);
     }

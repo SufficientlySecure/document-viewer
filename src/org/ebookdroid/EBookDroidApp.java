@@ -29,14 +29,18 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
 
     public static final Flag initialized = new Flag();
 
+    private static EBookDroidApp instance;
+
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see android.app.Application#onCreate()
      */
     @Override
     public void onCreate() {
         super.onCreate();
+
+        instance = this;
 
         SettingsManager.init(this);
         CacheManager.init(this);
@@ -51,9 +55,14 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
         initialized.set();
     }
 
+    @Override
+    public void onTerminate() {
+        SettingsManager.onTerminate();
+    }
+
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see android.app.Application#onLowMemory()
      */
     @Override
@@ -110,6 +119,9 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
 
     public static void onActivityClose(final boolean finishing) {
         if (finishing && !SettingsManager.hasOpenedBooks() && !RecentActivityController.working.get()) {
+            if (instance != null) {
+                instance.onTerminate();
+            }
             Log.i(APP_NAME, "Application finished");
             System.exit(0);
         }

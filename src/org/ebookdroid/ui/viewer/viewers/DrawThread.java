@@ -52,10 +52,10 @@ public class DrawThread extends Thread {
             return;
         }
         Canvas canvas = null;
-        //long t1 = System.currentTimeMillis();
+        // long t1 = System.currentTimeMillis();
         try {
             canvas = surfaceHolder.lockCanvas(null);
-            EventPool.newEventDraw(viewState, canvas).process();
+            EventPool.newEventDraw(viewState, canvas).process().releaseAfterDraw();
         } catch (final Throwable th) {
             LCTX.e("Unexpected error on drawing: " + th.getMessage(), th);
         } finally {
@@ -63,8 +63,8 @@ public class DrawThread extends Thread {
                 surfaceHolder.unlockCanvasAndPost(canvas);
             }
         }
-        //long t2 = System.currentTimeMillis();
-        //System.out.println("DrawThread.draw(): " + (t2 - t1) + " ms");
+        // long t2 = System.currentTimeMillis();
+        // System.out.println("DrawThread.draw(): " + (t2 - t1) + " ms");
     }
 
     public ViewState takeTask(final long timeout, final TimeUnit unit, final boolean useLastState) {
@@ -77,10 +77,17 @@ public class DrawThread extends Thread {
                     list.clear();
                     try {
                         if (queue.drainTo(list) > 0) {
-                            task = list.get(list.size() - 1);
+                            final int last = list.size() - 1;
+                            task = list.get(last);
+                            for (int i = 0; i < last; i++) {
+                                final ViewState vs = list.get(i);
+                                if (vs != null) {
+                                    vs.releaseAfterDraw();
+                                }
+                            }
                         }
                         break;
-                    } catch (Throwable ex) {
+                    } catch (final Throwable ex) {
                         // Go to next attempt
                         LCTX.e("Unexpected error on retrieving last view state from draw queue: " + ex.getMessage());
                     }
@@ -88,7 +95,7 @@ public class DrawThread extends Thread {
             }
         } catch (final InterruptedException e) {
             Thread.interrupted();
-        } catch (Throwable ex) {
+        } catch (final Throwable ex) {
             // Go to next attempt
             LCTX.e("Unexpected error on retrieving view state from draw queue: " + ex.getMessage());
         }
@@ -98,11 +105,12 @@ public class DrawThread extends Thread {
     public void draw(final ViewState viewState) {
         if (viewState != null) {
             // Workaround for possible ConcurrentModificationException
+            viewState.addedToDrawQueue();
             while (true) {
                 try {
                     queue.offer(viewState);
                     break;
-                } catch (Throwable ex) {
+                } catch (final Throwable ex) {
                     // Go to next attempt
                     LCTX.e("Unexpected error on adding view state to draw queue: " + ex.getMessage());
                 }

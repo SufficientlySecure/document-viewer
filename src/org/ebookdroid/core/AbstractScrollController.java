@@ -35,8 +35,8 @@ public abstract class AbstractScrollController extends AbstractViewController {
      * @see org.ebookdroid.ui.viewer.IViewController#goToPage(int)
      */
     @Override
-    public final ViewState goToPage(final int toPage) {
-        return new EventGotoPage(this, toPage).process();
+    public final void goToPage(final int toPage) {
+        new EventGotoPage(this, toPage).process().release();
     }
 
     /**
@@ -45,8 +45,8 @@ public abstract class AbstractScrollController extends AbstractViewController {
      * @see org.ebookdroid.ui.viewer.IViewController#goToPage(int, float, float)
      */
     @Override
-    public final ViewState goToPage(final int toPage, final float offsetX, final float offsetY) {
-        return new EventGotoPage(this, toPage, offsetX, offsetY).process();
+    public final void goToPage(final int toPage, final float offsetX, final float offsetY) {
+        new EventGotoPage(this, toPage, offsetX, offsetY).process().release();
     }
 
     /**
@@ -136,7 +136,7 @@ public abstract class AbstractScrollController extends AbstractViewController {
             return;
         }
 
-        EventPool.newEventScroll(this, mode == DocumentViewMode.VERTICALL_SCROLL ? dY : dX).process();
+       EventPool.newEventScroll(this, mode == DocumentViewMode.VERTICALL_SCROLL ? dY : dX).process().release();
     }
 
     /**

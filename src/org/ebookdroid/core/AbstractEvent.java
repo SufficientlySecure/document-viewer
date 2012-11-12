@@ -20,7 +20,7 @@ public abstract class AbstractEvent implements IEvent {
     protected final List<Bitmaps> bitmapsToRecycle = new ArrayList<Bitmaps>();
 
     public AbstractViewController ctrl;
-    public ViewState viewState;
+    protected ViewState viewState;
 
     protected AbstractEvent() {
     }
@@ -32,7 +32,7 @@ public abstract class AbstractEvent implements IEvent {
      */
     @Override
     public ViewState process() {
-        viewState = calculatePageVisibility(viewState);
+        calculatePageVisibility();
 
         ctrl.firstVisiblePage = viewState.pages.firstVisible;
         ctrl.lastVisiblePage = viewState.pages.lastVisible;
@@ -83,12 +83,12 @@ public abstract class AbstractEvent implements IEvent {
         return nodes.process(this, level, true);
     }
 
-    protected ViewState calculatePageVisibility(final ViewState initial) {
+    protected void calculatePageVisibility() {
         int firstVisiblePage = -1;
         int lastVisiblePage = -1;
         final RectF bounds = new RectF();
         for (final Page page : ctrl.model.getPages()) {
-            if (ctrl.isPageVisible(page, initial, bounds)) {
+            if (ctrl.isPageVisible(page, viewState, bounds)) {
                 if (firstVisiblePage == -1) {
                     firstVisiblePage = page.index.viewIndex;
                 }
@@ -97,7 +97,7 @@ public abstract class AbstractEvent implements IEvent {
                 break;
             }
         }
-        return new ViewState(initial, firstVisiblePage, lastVisiblePage);
+        viewState.update(firstVisiblePage, lastVisiblePage);
     }
 
     protected final void decodePageTreeNodes(final ViewState viewState, final List<PageTreeNode> nodesToDecode) {

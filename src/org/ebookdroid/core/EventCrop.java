@@ -31,7 +31,7 @@ public class EventCrop extends AbstractEvent {
     }
 
     public EventCrop(final IViewController ctrl, final RectF cropping, final boolean commit) {
-        this.viewState = new ViewState(ctrl);
+        this.viewState = ViewState.get(ctrl);
         this.ctrl = (AbstractViewController) ctrl;
         this.level = PageTreeLevel.getLevel(viewState.zoom);
         this.commit = commit;
@@ -106,7 +106,7 @@ public class EventCrop extends AbstractEvent {
 
             ctrl.invalidatePageSizes(reason, null);
             ctrl.invalidateScroll();
-            viewState = new ViewState(ctrl);
+            viewState.update();
 
             return super.process();
 

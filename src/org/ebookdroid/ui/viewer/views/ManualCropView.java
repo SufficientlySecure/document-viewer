@@ -76,7 +76,7 @@ public class ManualCropView extends View {
         final RectF oldCb = page.nodes.root.getCropping();
 
         if (page.shouldCrop() && oldCb != null) {
-            new EventCrop(base.getDocumentController()).add(page).process();
+            new EventCrop(base.getDocumentController()).add(page).process().release();
         }
 
         if (oldCb == null) {
@@ -127,19 +127,19 @@ public class ManualCropView extends View {
             case 0:
                 // Apply to current only
                 event = new EventCrop(base.getDocumentController(), result, true);
-                event.add(page).process();
+                event.add(page).process().release();
                 return;
 
             case 1:
                 // Apply to even(odd)
                 event = new EventCrop(base.getDocumentController(), result, true);
-                event.addEvenOdd(page, true).process();
+                event.addEvenOdd(page, true).process().release();
                 return;
 
             case 2:
                 // Apply to even(odd) symmetrically
                 event = new EventCrop(base.getDocumentController(), result, true);
-                event.addEvenOdd(page, true).process();
+                event.addEvenOdd(page, true).process().release();
 
                 final RectF symm = new RectF();
                 symm.left = 1 - result.right;
@@ -148,24 +148,24 @@ public class ManualCropView extends View {
                 symm.bottom = result.bottom;
 
                 event = new EventCrop(base.getDocumentController(), symm, true);
-                event.addEvenOdd(page, false).process();
+                event.addEvenOdd(page, false).process().release();
 
                 return;
 
             case 3:
                 // Apply to all
                 event = new EventCrop(base.getDocumentController(), result, true);
-                event.addAll().process();
+                event.addAll().process().release();
                 return;
             case 4:
                 // Remove manual cropping
                 event = new EventCrop(base.getDocumentController(), null, true);
-                event.add(page).process();
+                event.add(page).process().release();
                 return;
             case 5:
                 // Remove all manual cropping
                 event = new EventCrop(base.getDocumentController(), null, true);
-                event.addAll().process();
+                event.addAll().process().release();
                 return;
         }
     }
@@ -214,9 +214,10 @@ public class ManualCropView extends View {
     }
 
     private RectF getPageRect() {
-        final ViewState viewState = new ViewState(base.getDocumentController());
+        final ViewState viewState = ViewState.get(base.getDocumentController());
         final RectF pageBounds = viewState.getBounds(page);
         pageBounds.offset(-viewState.viewBase.x, -viewState.viewBase.y);
+        viewState.release();
         return pageBounds;
     }
 

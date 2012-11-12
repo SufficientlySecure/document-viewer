@@ -64,9 +64,10 @@ public final class GLView extends GLRootView implements IView, SurfaceHolder.Cal
     protected void draw(GLCanvas canvas) {
         ViewState viewState = drawThread.takeTask(1, TimeUnit.MILLISECONDS, true);
         if (viewState == null) {
-            viewState = new ViewState(base.getDocumentController());
+            viewState = ViewState.get(base.getDocumentController());
+            viewState.addedToDrawQueue();
         }
-        EventPool.newGLEventDraw(viewState, canvas).process();
+        EventPool.newGLEventDraw(viewState, canvas).process().releaseAfterDraw();
     }
 
     /**
@@ -350,7 +351,7 @@ public final class GLView extends GLRootView implements IView, SurfaceHolder.Cal
      */
     @Override
     public final void redrawView() {
-        redrawView(new ViewState(base.getDocumentController()));
+        redrawView(ViewState.get(base.getDocumentController()));
     }
 
     @Override

@@ -333,7 +333,7 @@ public final class SurfaceView extends android.view.SurfaceView implements IView
      */
     @Override
     public final void redrawView() {
-        redrawView(new ViewState(base.getDocumentController()));
+        redrawView(ViewState.get(base.getDocumentController()));
     }
 
     @Override

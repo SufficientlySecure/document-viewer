@@ -23,7 +23,7 @@ public class EventReset extends AbstractEvent {
     }
 
     void init(final AbstractViewController ctrl, final InvalidateSizeReason reason, final boolean clearPages) {
-        this.viewState = new ViewState(ctrl);
+        this.viewState = ViewState.get(ctrl);
         this.ctrl = ctrl;
         this.level = PageTreeLevel.getLevel(viewState.zoom);
         this.reason = reason;
@@ -42,7 +42,7 @@ public class EventReset extends AbstractEvent {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.AbstractEvent#process()
      */
     @Override
@@ -58,7 +58,7 @@ public class EventReset extends AbstractEvent {
             if (reason != null) {
                 ctrl.invalidatePageSizes(reason, null);
                 ctrl.invalidateScroll();
-                viewState = new ViewState(ctrl);
+                viewState.update();
             }
             return super.process();
         } finally {
@@ -68,7 +68,7 @@ public class EventReset extends AbstractEvent {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IEvent#process(org.ebookdroid.core.ViewState, org.ebookdroid.core.PageTree)
      */
     @Override
@@ -78,7 +78,7 @@ public class EventReset extends AbstractEvent {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IEvent#process(org.ebookdroid.core.ViewState, org.ebookdroid.core.PageTreeNode)
      */
     @Override

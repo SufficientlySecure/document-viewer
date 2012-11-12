@@ -190,7 +190,8 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
 
             final IViewController dc = page.base.getDocumentController();
             if (dc instanceof AbstractViewController) {
-                EventPool.newEventChildLoaded((AbstractViewController) dc, PageTreeNode.this, bitmapBounds).process();
+                EventPool.newEventChildLoaded((AbstractViewController) dc, PageTreeNode.this, bitmapBounds).process()
+                        .release();
             }
 
         } catch (final OutOfMemoryError ex) {

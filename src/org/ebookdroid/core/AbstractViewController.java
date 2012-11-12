@@ -221,7 +221,7 @@ public abstract class AbstractViewController extends AbstractComponentController
         }
 
         inZoom.set(!committed);
-        EventPool.newEventZoom(this, oldZoom, newZoom, committed).process();
+        EventPool.newEventZoom(this, oldZoom, newZoom, committed).process().release();
 
         if (committed) {
             base.getManagedComponent().zoomChanged(newZoom);
@@ -262,60 +262,62 @@ public abstract class AbstractViewController extends AbstractComponentController
         PointF pos = null;
         Page page = null;
 
-        final ViewState vs = new ViewState(this);
-        final PageIterator pages = model.getPages(firstVisiblePage, lastVisiblePage + 1);
+        final ViewState vs = ViewState.get(this);
         try {
-            for (final Page p : pages) {
-                pos = vs.getPositionOnPage(p, tapX, tapY);
-                if ((0 <= pos.x && pos.x <= 1) && (0 <= pos.y && pos.y <= 1)) {
-                    page = p;
-                    break;
+            final PageIterator pages = model.getPages(firstVisiblePage, lastVisiblePage + 1);
+            try {
+                for (final Page p : pages) {
+                    pos = vs.getPositionOnPage(p, tapX, tapY);
+                    if ((0 <= pos.x && pos.x <= 1) && (0 <= pos.y && pos.y <= 1)) {
+                        page = p;
+                        break;
+                    }
                 }
+            } finally {
+                pages.release();
             }
+            if (page == null) {
+                return;
+            }
+
+            final IView view = base.getView();
+            if (inZoomToColumn.compareAndSet(true, false)) {
+                base.getZoomModel().setZoom(1.0f, true);
+                final float offsetX = 0;
+                final float offsetY = pos.y - 0.5f * (view.getHeight() / page.getBounds(1.0f).height());
+                goToPage(page.index.viewIndex, offsetX, offsetY);
+                return;
+            }
+
+            final RectF column = page.getColumn(pos);
+            // System.out.println("AbstractViewController.zoomToColumn(): column = " + column);
+
+            if (column == null || column.width() > 0.95f) {
+                return;
+            }
+
+            inZoomToColumn.set(true);
+            inQuickZoom.set(false);
+
+            final int screenWidth = view.getWidth();
+            final int screenHeight = view.getHeight();
+
+            final RectF pb = vs.getBounds(page);
+
+            final float columnScreenWidth = page.getPageRegion(pb, new RectF(column)).width();
+
+            final float newZoom = screenWidth / columnScreenWidth;
+
+            base.getZoomModel().setZoom(newZoom, true);
+
+            scrollToColumn(page, column, pos, screenHeight);
         } finally {
-            pages.release();
+            vs.release();
         }
-        if (page == null) {
-            return;
-        }
-
-        // System.out.println("AbstractViewController.zoomToColumn(" + pos.x + "," + pos.y + "), page = " + page.index);
-
-        final IView view = base.getView();
-        if (inZoomToColumn.compareAndSet(true, false)) {
-            base.getZoomModel().setZoom(1.0f, true);
-            final float offsetX = 0;
-            final float offsetY = pos.y - 0.5f * (view.getHeight() / page.getBounds(1.0f).height());
-            goToPage(page.index.viewIndex, offsetX, offsetY);
-            return;
-        }
-
-        final RectF column = page.getColumn(pos);
-        // System.out.println("AbstractViewController.zoomToColumn(): column = " + column);
-
-        if (column == null || column.width() > 0.95f) {
-            return;
-        }
-
-        inZoomToColumn.set(true);
-        inQuickZoom.set(false);
-
-        final int screenWidth = view.getWidth();
-        final int screenHeight = view.getHeight();
-
-        final RectF pb = vs.getBounds(page);
-
-        final float columnScreenWidth = page.getPageRegion(pb, new RectF(column)).width();
-
-        final float newZoom = screenWidth / columnScreenWidth;
-
-        base.getZoomModel().setZoom(newZoom, true);
-
-        scrollToColumn(page, column, pos, screenHeight);
     }
 
     protected void scrollToColumn(final Page page, final RectF column, final PointF pos, final int screenHeight) {
-        final ViewState vs = new ViewState(AbstractViewController.this);
+        final ViewState vs = ViewState.get(AbstractViewController.this);
         final RectF pb = vs.getBounds(page);
         final RectF columnRegion = page.getPageRegion(pb, new RectF(column));
         columnRegion.offset(-vs.viewBase.x, -vs.viewBase.y);
@@ -323,6 +325,8 @@ public abstract class AbstractViewController extends AbstractComponentController
         final float toX = columnRegion.left;
         final float toY = pb.top + pos.y * pb.height() - 0.5f * screenHeight;
         getView().scrollTo((int) toX, (int) toY);
+
+        vs.release();
     }
 
     @ActionMethod(ids = { R.id.actions_leftTopCorner, R.id.actions_leftBottomCorner, R.id.actions_rightTopCorner,
@@ -334,7 +338,7 @@ public abstract class AbstractViewController extends AbstractComponentController
         final float offsetX = offX != null ? offX.floatValue() : 0;
         final float offsetY = offY != null ? offY.floatValue() : 0;
 
-        new EventGotoPageCorner(this, offsetX, offsetY).process();
+        new EventGotoPageCorner(this, offsetX, offsetY).process().release();
     }
 
     /**
@@ -344,7 +348,7 @@ public abstract class AbstractViewController extends AbstractComponentController
      */
     @Override
     public final void updateMemorySettings() {
-        EventPool.newEventReset(this, null, false).process();
+        EventPool.newEventReset(this, null, false).process().release();
     }
 
     public final int getScrollX() {
@@ -432,7 +436,7 @@ public abstract class AbstractViewController extends AbstractComponentController
         }
         if (layoutChanged && !layoutLocked) {
             if (isShown) {
-                EventPool.newEventReset(this, InvalidateSizeReason.LAYOUT, true).process();
+                EventPool.newEventReset(this, InvalidateSizeReason.LAYOUT, true).process().release();
                 return true;
             } else {
                 if (LCTX.isDebugEnabled()) {
@@ -450,7 +454,7 @@ public abstract class AbstractViewController extends AbstractComponentController
      */
     @Override
     public final void toggleRenderingEffects() {
-        EventPool.newEventReset(this, null, true).process();
+        EventPool.newEventReset(this, null, true).process().release();
     }
 
     /**
@@ -474,7 +478,7 @@ public abstract class AbstractViewController extends AbstractComponentController
      */
     @Override
     public final void setAlign(final PageAlign align) {
-        EventPool.newEventReset(this, InvalidateSizeReason.PAGE_ALIGN, false).process();
+        EventPool.newEventReset(this, InvalidateSizeReason.PAGE_ALIGN, false).process().release();
     }
 
     /**
@@ -513,7 +517,7 @@ public abstract class AbstractViewController extends AbstractComponentController
      */
     @Override
     public final void redrawView() {
-        getView().redrawView(new ViewState(this));
+        getView().redrawView(ViewState.get(this));
     }
 
     /**
@@ -615,7 +619,8 @@ public abstract class AbstractViewController extends AbstractComponentController
     public void goToLink(final int pageDocIndex, final RectF targetRect, final boolean addToHistory) {
         if (pageDocIndex >= 0) {
             final PointF linkPoint = new PointF();
-            final Page target = model.getLinkTargetPage(pageDocIndex, targetRect, linkPoint, base.getBookSettings().splitRTL);
+            final Page target = model.getLinkTargetPage(pageDocIndex, targetRect, linkPoint,
+                    base.getBookSettings().splitRTL);
             if (LCTX.isDebugEnabled()) {
                 LCTX.d("Target page found: " + target);
             }

@@ -17,7 +17,7 @@ public abstract class AbstractEventScroll<E extends AbstractEventScroll<E>> exte
     }
 
     final void init(final AbstractViewController ctrl) {
-        this.viewState = new ViewState(ctrl);
+        this.viewState = ViewState.get(ctrl);
         this.ctrl = ctrl;
         this.level = PageTreeLevel.getLevel(viewState.zoom);
     }
@@ -34,13 +34,13 @@ public abstract class AbstractEventScroll<E extends AbstractEventScroll<E>> exte
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.AbstractEvent#process()
      */
     @Override
     public final ViewState process() {
         try {
-            viewState = super.process();
+            super.process();
             final Page page = viewState.pages.getCurrentPage();
             if (page != null) {
                 if (ctrl.mode != DocumentViewMode.SINGLE_PAGE) {
@@ -57,7 +57,7 @@ public abstract class AbstractEventScroll<E extends AbstractEventScroll<E>> exte
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IEvent#process(org.ebookdroid.core.ViewState, org.ebookdroid.core.PageTree)
      */
     @Override
@@ -70,7 +70,7 @@ public abstract class AbstractEventScroll<E extends AbstractEventScroll<E>> exte
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IEvent#process(org.ebookdroid.core.ViewState, org.ebookdroid.core.PageTreeNode)
      */
     @Override

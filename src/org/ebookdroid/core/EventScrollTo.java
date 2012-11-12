@@ -25,33 +25,32 @@ public class EventScrollTo extends AbstractEventScroll<EventScrollTo> {
      * @see org.ebookdroid.core.AbstractEvent#calculatePageVisibility(org.ebookdroid.core.ViewState)
      */
     @Override
-    protected ViewState calculatePageVisibility(final ViewState initial) {
+    protected void calculatePageVisibility() {
         int firstVisiblePage = viewIndex;
         int lastVisiblePage = viewIndex;
 
         final Page[] pages = ctrl.model.getPages();
         if (LengthUtils.isEmpty(pages)) {
-            return initial;
+            return;
         }
 
         final RectF bounds = new RectF();
 
         while (firstVisiblePage > 0) {
             final int index = firstVisiblePage - 1;
-            if (!ctrl.isPageVisible(pages[index], initial, bounds)) {
+            if (!ctrl.isPageVisible(pages[index], viewState, bounds)) {
                 break;
             }
             firstVisiblePage = index;
         }
         while (lastVisiblePage < pages.length - 1) {
             final int index = lastVisiblePage + 1;
-            if (!ctrl.isPageVisible(pages[index], initial, bounds)) {
+            if (!ctrl.isPageVisible(pages[index], viewState, bounds)) {
                 break;
             }
             lastVisiblePage = index;
         }
-
-        return new ViewState(initial, firstVisiblePage, lastVisiblePage);
+        viewState.update(firstVisiblePage, lastVisiblePage);
     }
 
 }

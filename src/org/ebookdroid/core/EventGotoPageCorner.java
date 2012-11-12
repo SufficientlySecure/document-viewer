@@ -14,14 +14,14 @@ public class EventGotoPageCorner implements IEvent {
     public static final LogContext LCTX = LogManager.root().lctx("EventGotoPage");
 
     protected AbstractViewController ctrl;
-    protected ViewState viewState;
+    protected final ViewState viewState;
     protected DocumentModel model;
     protected int viewIndex;
     protected final float offsetX;
     protected final float offsetY;
 
     public EventGotoPageCorner(final AbstractViewController ctrl, final float offsetX, final float offsetY) {
-        this.viewState = new ViewState(ctrl);
+        this.viewState = ViewState.get(ctrl);
         this.ctrl = ctrl;
         this.model = viewState.model;
         this.viewIndex = ctrl.getBase().getDocumentModel().getCurrentViewPageIndex();
@@ -57,7 +57,8 @@ public class EventGotoPageCorner implements IEvent {
         final int top = Math.round(p.y);
 
         view.scrollTo(left, top);
-        return new ViewState(ctrl);
+        viewState.update();
+        return viewState;
     }
 
     protected PointF calculateScroll(final Page page) {

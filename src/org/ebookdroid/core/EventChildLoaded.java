@@ -25,7 +25,7 @@ public class EventChildLoaded extends AbstractEvent {
     }
 
     final void init(final AbstractViewController ctrl, final PageTreeNode child, final Rect bitmapBounds) {
-        this.viewState = new ViewState(ctrl);
+        this.viewState = ViewState.get(ctrl);
         this.ctrl = ctrl;
         this.page = child.page;
         this.nodes = page.nodes;

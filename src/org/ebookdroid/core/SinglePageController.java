@@ -48,7 +48,7 @@ public class SinglePageController extends AbstractViewController {
      * @see org.ebookdroid.core.AbstractViewController#goToPageImpl(int)
      */
     @Override
-    public final ViewState goToPage(final int toPage) {
+    public final void goToPage(final int toPage) {
         if (toPage >= 0 && toPage < model.getPageCount()) {
             final Page page = model.getPageObject(toPage);
             model.setCurrentPageIndex(page.index);
@@ -57,9 +57,8 @@ public class SinglePageController extends AbstractViewController {
 
             final ViewState viewState = EventPool.newEventScrollTo(this, page.index.viewIndex).process();
             getView().redrawView(viewState);
-            return viewState;
+            viewState.release();
         }
-        return null;
     }
 
     /**
@@ -68,7 +67,7 @@ public class SinglePageController extends AbstractViewController {
      * @see org.ebookdroid.core.AbstractViewController#goToPageImpl(int, float, float)
      */
     @Override
-    public ViewState goToPage(final int toPage, final float offsetX, final float offsetY) {
+    public void goToPage(final int toPage, final float offsetX, final float offsetY) {
         if (toPage >= 0 && toPage < model.getPageCount()) {
             final Page page = model.getPageObject(toPage);
             model.setCurrentPageIndex(page.index);
@@ -83,9 +82,8 @@ public class SinglePageController extends AbstractViewController {
             final ViewState viewState = EventPool.newEventScrollTo(this, page.index.viewIndex).process();
             pageUpdated(viewState, page);
             getView().redrawView(viewState);
-            return viewState;
+            viewState.release();
         }
-        return null;
     }
 
     /**
@@ -100,7 +98,7 @@ public class SinglePageController extends AbstractViewController {
             return;
         }
 
-        EventPool.newEventScroll(this, dX).process();
+        EventPool.newEventScroll(this, dX).process().release();
     }
 
     /**
@@ -209,8 +207,8 @@ public class SinglePageController extends AbstractViewController {
      */
     @Override
     public void drawView(final EventGLDraw eventDraw) {
-         curler.draw(eventDraw);
-         getView().continueScroll();
+        curler.draw(eventDraw);
+        getView().continueScroll();
     }
 
     public final ViewState invalidatePages(final ViewState oldState, final Page... pages) {

@@ -13,72 +13,127 @@ import org.ebookdroid.ui.viewer.IViewController;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicLong;
+
 public class ViewState {
 
-    public final AppSettings app;
-    public final BookSettings book;
-    public final IViewController ctrl;
-    public final DocumentModel model;
+    @SuppressWarnings("unused")
+    private static final AtomicLong SEQ = new AtomicLong();
 
-    public final RectF viewRect;
-    public final PointF viewBase;
+    private static final ConcurrentLinkedQueue<ViewState> states = new ConcurrentLinkedQueue<ViewState>();
 
-    public final boolean nightMode;
-    public final boolean positiveImagesInNightMode;
-    public final float zoom;
-    public final PageAlign pageAlign;
-    public final PagePaint paint;
+    private volatile boolean addedToDrawQueue;
+    private volatile boolean released;
+
+    public AppSettings app;
+    public BookSettings book;
+    public IViewController ctrl;
+    public DocumentModel model;
+
+    public boolean nightMode;
+    public boolean positiveImagesInNightMode;
+    public float zoom;
+    public PageAlign pageAlign;
+    public PagePaint paint;
 
     public final Pages pages;
 
-    public ViewState(final PageTreeNode node) {
-        this(node.page.base.getDocumentController());
+    public RectF viewRect;
+    public PointF viewBase;
+
+    public static ViewState get(final IViewController dc) {
+        ViewState state = states.poll();
+        if (state == null || !state.released) {
+            state = new ViewState();
+        } else {
+            state.addedToDrawQueue = false;
+            state.released = false;
+        }
+        state.init(dc, dc.getBase().getZoomModel().getZoom());
+        return state;
     }
 
-    public ViewState(final IViewController dc) {
-        this(dc, dc.getBase().getZoomModel().getZoom());
+    public static ViewState get(final IViewController dc, final float zoom) {
+        ViewState state = states.poll();
+        if (state == null || !state.released) {
+            state = new ViewState();
+        } else {
+            state.addedToDrawQueue = false;
+            state.released = false;
+        }
+        state.init(dc, zoom);
+        return state;
     }
 
-    public ViewState(final IViewController dc, final float zoom) {
+    private ViewState() {
+        pages = new Pages();
+    }
+
+    public void release() {
+        if (!addedToDrawQueue) {
+            if (released) {
+                throw new IllegalStateException();
+            }
+            released = true;
+            states.add(this);
+        }
+    }
+
+    public void releaseAfterDraw() {
+        if (released) {
+            throw new IllegalStateException();
+        }
+        if (!addedToDrawQueue) {
+            throw new IllegalStateException();
+        }
+        released = true;
+        states.add(this);
+    }
+
+    public void addedToDrawQueue() {
+        if (released) {
+            throw new IllegalStateException();
+        }
+        addedToDrawQueue = true;
+    }
+
+    private void init(final IViewController dc, final float zoom) {
+
         this.app = AppSettings.current();
         this.book = dc.getBase().getBookSettings();
         this.ctrl = dc;
         this.model = dc.getBase().getDocumentModel();
-
-        this.viewRect = new RectF(ctrl.getView().getViewRect());
-        this.viewBase = ctrl.getView().getBase(viewRect);
         this.nightMode = book != null ? book.nightMode : app.nightMode;
         this.positiveImagesInNightMode = book != null ? book.positiveImagesInNightMode : app.positiveImagesInNightMode;
-        this.zoom = zoom;
         this.pageAlign = DocumentViewMode.getPageAlign(book);
         this.paint = this.nightMode ? PagePaint.NIGHT : PagePaint.DAY;
         this.paint.bitmapPaint.setFilterBitmap(app.bitmapFileringEnabled);
 
-        this.pages = new Pages();
+        this.zoom = zoom;
+
+        this.viewRect = new RectF(ctrl.getView().getViewRect());
+        this.viewBase = ctrl.getView().getBase(viewRect);
+        this.pages.update();
     }
 
-    public ViewState(final ViewState oldState, final int firstVisiblePage, final int lastVisiblePage) {
-        this.app = oldState.app;
-        this.book = oldState.book;
-        this.ctrl = oldState.ctrl;
-        this.model = oldState.model;
+    public void update() {
+        this.zoom = ctrl.getBase().getZoomModel().getZoom();
+        this.viewRect = new RectF(ctrl.getView().getViewRect());
+        this.viewBase = ctrl.getView().getBase(viewRect);
+        this.pages.update(ctrl.getFirstVisiblePage(), ctrl.getLastVisiblePage());
+    }
 
-        this.viewRect = oldState.viewRect;
-        this.viewBase = oldState.viewBase;
-        this.nightMode = oldState.nightMode;
-        this.positiveImagesInNightMode = oldState.positiveImagesInNightMode;
-        this.zoom = oldState.zoom;
-        this.pageAlign = oldState.pageAlign;
-        this.paint = oldState.paint;
-
-        this.pages = new Pages(firstVisiblePage, lastVisiblePage);
+    public ViewState update(final int firstVisiblePage, final int lastVisiblePage) {
+        this.pages.update(firstVisiblePage, lastVisiblePage);
+        return this;
     }
 
     public RectF getBounds(final Page page) {
         return page.getBounds(zoom);
     }
 
-    public void getBounds(final Page page, RectF target) {
+    public void getBounds(final Page page, final RectF target) {
         page.getBounds(zoom, target);
     }
 
@@ -127,14 +182,15 @@ public class ViewState {
         final PointF pos = new PointF();
         final IView view = ctrl.getView();
         if (view != null) {
-            System.out.println("ViewState.getPositionOnPage("+x+","+y+","+view.getScrollX()+","+view.getScrollY()+")");
-            final int left = (int) (x + view.getScrollX());
-            final int top = (int) (y + view.getScrollY());
+            System.out.println("ViewState.getPositionOnPage(" + x + "," + y + "," + view.getScrollX() + ","
+                    + view.getScrollY() + ")");
+            final int left = x + view.getScrollX();
+            final int top = y + view.getScrollY();
             final RectF cpBounds = getBounds(page);
 
             pos.x = (left - cpBounds.left) / cpBounds.width();
             pos.y = (top - cpBounds.top) / cpBounds.height();
-            RectF cropping = page.getCropping();
+            final RectF cropping = page.getCropping();
             if (cropping != null) {
                 pos.x *= cropping.width();
                 pos.x += cropping.left;
@@ -161,31 +217,21 @@ public class ViewState {
 
     public class Pages {
 
-        public final int currentIndex;
-        public final int firstVisible;
-        public final int lastVisible;
+        public int currentIndex;
+        public int firstVisible;
+        public int lastVisible;
 
-        public final int firstCached;
-        public final int lastCached;
+        public int firstCached;
+        public int lastCached;
 
-        public Pages() {
-            this.firstVisible = ctrl.getFirstVisiblePage();
-            this.lastVisible = ctrl.getLastVisiblePage();
-
-            if (model != null) {
-                this.currentIndex = ctrl.calculateCurrentPage(ViewState.this, firstVisible, lastVisible);
-
-                final int inMemory = (int) Math.ceil(app.pagesInMemory / 2.0);
-                this.firstCached = Math.max(0, this.currentIndex - inMemory);
-                this.lastCached = Math.min(this.currentIndex + inMemory, model.getPageCount());
-            } else {
-                this.currentIndex = firstVisible;
-                this.firstCached = firstVisible;
-                this.lastCached = lastVisible;
-            }
+        private Pages() {
         }
 
-        public Pages(final int firstVisible, final int lastVisible) {
+        public void update() {
+            update(ctrl.getFirstVisiblePage(), ctrl.getLastVisiblePage());
+        }
+
+        public void update(final int firstVisible, final int lastVisible) {
             this.firstVisible = firstVisible;
             this.lastVisible = lastVisible;
 

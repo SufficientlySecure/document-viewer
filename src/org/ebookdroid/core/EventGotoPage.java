@@ -16,14 +16,14 @@ public class EventGotoPage implements IEvent {
     protected final boolean centerPage;
 
     protected AbstractViewController ctrl;
-    protected ViewState viewState;
+    protected final ViewState viewState;
     protected DocumentModel model;
     protected int viewIndex;
     protected final float offsetX;
     protected final float offsetY;
 
     public EventGotoPage(final AbstractViewController ctrl, final int viewIndex) {
-        this.viewState = new ViewState(ctrl);
+        this.viewState = ViewState.get(ctrl);
         this.ctrl = ctrl;
         this.model = viewState.model;
         this.centerPage = true;
@@ -34,7 +34,7 @@ public class EventGotoPage implements IEvent {
 
     public EventGotoPage(final AbstractViewController ctrl, final int viewIndex, final float offsetX,
             final float offsetY) {
-        this.viewState = new ViewState(ctrl);
+        this.viewState = ViewState.get(ctrl);
         this.ctrl = ctrl;
         this.model = viewState.model;
         this.centerPage = false;
@@ -78,8 +78,10 @@ public class EventGotoPage implements IEvent {
 
         if (isScrollRequired(left, top, scrollX, scrollY)) {
             view.scrollTo(left, top);
-            return new ViewState(ctrl);
+            viewState.update();
+            return viewState;
         }
+        viewState.release();
 
         return EventPool.newEventScrollTo(ctrl, viewIndex).process();
     }

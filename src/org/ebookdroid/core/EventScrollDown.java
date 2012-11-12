@@ -18,27 +18,30 @@ public class EventScrollDown extends AbstractEventScroll<EventScrollDown> {
      * @see org.ebookdroid.core.AbstractEvent#calculatePageVisibility(org.ebookdroid.core.ViewState)
      */
     @Override
-    protected ViewState calculatePageVisibility(final ViewState initial) {
+    protected void calculatePageVisibility() {
         final Page[] pages = ctrl.model.getPages();
         if (LengthUtils.isEmpty(pages)) {
-            return initial;
+            return;
         }
 
-        final int firstVisiblePage = initial.pages.firstVisible;
-        final int lastVisiblePage = initial.pages.lastVisible;
+        final int firstVisiblePage = viewState.pages.firstVisible;
+        final int lastVisiblePage = viewState.pages.lastVisible;
 
         if (firstVisiblePage == -1) {
-            return super.calculatePageVisibility(initial);
+            super.calculatePageVisibility();
+            return;
         }
 
         final RectF bounds = new RectF();
 
-        if (ctrl.isPageVisible(pages[firstVisiblePage], initial, bounds)) {
-            return findLastVisiblePage(initial, pages, firstVisiblePage, true, bounds);
+        if (ctrl.isPageVisible(pages[firstVisiblePage], viewState, bounds)) {
+            findLastVisiblePage(pages, firstVisiblePage, true, bounds);
+            return;
         }
 
-        if (firstVisiblePage != lastVisiblePage && ctrl.isPageVisible(pages[lastVisiblePage], initial, bounds)) {
-            return findFirstVisiblePage(initial, pages, lastVisiblePage, true, bounds);
+        if (firstVisiblePage != lastVisiblePage && ctrl.isPageVisible(pages[lastVisiblePage], viewState, bounds)) {
+            findFirstVisiblePage(pages, lastVisiblePage, true, bounds);
+            return;
         }
 
         final int midIndex = firstVisiblePage;
@@ -50,30 +53,32 @@ public class EventScrollDown extends AbstractEventScroll<EventScrollDown> {
             final int right = midIndex + delta;
             if (left >= 0) {
                 run++;
-                if (ctrl.isPageVisible(pages[left], initial, bounds)) {
-                    return findFirstVisiblePage(initial, pages, left, false, bounds);
+                if (ctrl.isPageVisible(pages[left], viewState, bounds)) {
+                    findFirstVisiblePage(pages, left, false, bounds);
+                    return;
                 }
             }
             if (right < pages.length - 1) {
                 run++;
-                if (ctrl.isPageVisible(pages[right], initial, bounds)) {
-                    return findLastVisiblePage(initial, pages, right, false, bounds);
+                if (ctrl.isPageVisible(pages[right], viewState, bounds)) {
+                    findLastVisiblePage(pages, right, false, bounds);
+                    return;
                 }
             }
             delta++;
         }
 
-        return new ViewState(initial, -1, -1);
+        viewState.update(-1, -1);
     }
 
-    protected ViewState findLastVisiblePage(final ViewState initial, final Page[] pages, final int first,
-            final boolean updateFirst, final RectF bounds) {
+    protected void findLastVisiblePage(final Page[] pages, final int first, final boolean updateFirst,
+            final RectF bounds) {
         int firstVisiblePage = first;
         // If firstVisiblePage is still visible, try to find lastVisiblePage
         int lastVisiblePage = firstVisiblePage;
         while (lastVisiblePage < pages.length - 1) {
             final int index = lastVisiblePage + 1;
-            if (!ctrl.isPageVisible(pages[index], initial, bounds)) {
+            if (!ctrl.isPageVisible(pages[index], viewState, bounds)) {
                 break;
             }
             lastVisiblePage = index;
@@ -81,22 +86,21 @@ public class EventScrollDown extends AbstractEventScroll<EventScrollDown> {
         if (updateFirst) {
             // Then try to find real firstVisiblePage
             for (int index = firstVisiblePage - 1; index >= 0; index--) {
-                if (!ctrl.isPageVisible(pages[index], initial, bounds)) {
+                if (!ctrl.isPageVisible(pages[index], viewState, bounds)) {
                     break;
                 }
                 firstVisiblePage = index;
             }
         }
-        return new ViewState(initial, firstVisiblePage, lastVisiblePage);
+        viewState.update(firstVisiblePage, lastVisiblePage);
     }
 
-    protected ViewState findFirstVisiblePage(final ViewState initial, final Page[] pages, final int last,
-            final boolean updateLast, final RectF bounds) {
+    protected void findFirstVisiblePage(final Page[] pages, final int last, final boolean updateLast, final RectF bounds) {
         int lastVisiblePage = last;
         // If lastVisiblePage is still visible, try to find firstVisiblePage
         int firstVisiblePage = lastVisiblePage;
         for (int index = lastVisiblePage - 1; index >= 0; index--) {
-            if (!ctrl.isPageVisible(pages[index], initial, bounds)) {
+            if (!ctrl.isPageVisible(pages[index], viewState, bounds)) {
                 break;
             }
             firstVisiblePage = index;
@@ -104,12 +108,12 @@ public class EventScrollDown extends AbstractEventScroll<EventScrollDown> {
         if (updateLast) {
             // Then try to find real lastVisiblePage
             for (int index = lastVisiblePage + 1; index < pages.length; index++) {
-                if (!ctrl.isPageVisible(pages[index], initial, bounds)) {
+                if (!ctrl.isPageVisible(pages[index], viewState, bounds)) {
                     break;
                 }
                 lastVisiblePage = index;
             }
         }
-        return new ViewState(initial, firstVisiblePage, lastVisiblePage);
+        viewState.update(firstVisiblePage, lastVisiblePage);
     }
 }

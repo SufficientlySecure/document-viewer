@@ -330,7 +330,7 @@ public final class BaseView extends View implements IView {
      */
     @Override
     public final void redrawView() {
-        redrawView(new ViewState(base.getDocumentController()));
+        redrawView(ViewState.get(base.getDocumentController()));
     }
 
     /**
@@ -361,9 +361,10 @@ public final class BaseView extends View implements IView {
     protected void onDraw(final Canvas canvas) {
         ViewState viewState = drawThread.takeTask(1, TimeUnit.MILLISECONDS, true);
         if (viewState == null) {
-            viewState = new ViewState(base.getDocumentController());
+            viewState = ViewState.get(base.getDocumentController());
+            viewState.addedToDrawQueue();
         }
-        EventPool.newEventDraw(viewState, canvas).process();
+        EventPool.newEventDraw(viewState, canvas).process().releaseAfterDraw();
     }
 
     /**

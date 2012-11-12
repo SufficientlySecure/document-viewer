@@ -365,15 +365,17 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
      */
     @Override
     public final boolean onTouchEvent(final MotionEvent event) {
-        if (!bBlockTouchInput) {
+        if (bBlockTouchInput) {
+            return true;
+        }
 
-            // Get our finger position
-            mFinger.x = event.getX();
-            mFinger.y = event.getY();
-            final int width = view.getWidth();
+        // Get our finger position
+        mFinger.x = event.getX();
+        mFinger.y = event.getY();
+        final int width = view.getWidth();
 
-            ViewState viewState = new ViewState(view);
-
+        ViewState viewState = ViewState.get(view);
+        try {
             // Depending on the action do what we need to
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -452,11 +454,12 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
                     view.redrawView(viewState);
                     return !bUserMoves;
             }
-
+        } finally {
+            viewState.release();
         }
-
         // TODO: Only consume event if we need to.
         return true;
+
     }
 
     protected int getInitialXForBackFlip(final int width) {
@@ -489,16 +492,13 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
         mMovement = new Vector2D(direction < 0 ? 7 * view.getWidth() / 8 : view.getWidth() / 8, mInitialEdgeOffset);
         bFlipping = true;
         bFlipRight = direction > 0;
-        final ViewState viewState = new ViewState(view);
-        if (bFlipRight) {
-            nextView(viewState);
-        } else {
-            previousView(viewState);
-        }
-
+        final ViewState viewState = ViewState.get(view);
+        final ViewState newState = bFlipRight ? nextView(viewState) : previousView(viewState);
         bUserMoves = false;
         flipAnimationStep();
 
+        viewState.release();
+        newState.release();
     }
 
 }

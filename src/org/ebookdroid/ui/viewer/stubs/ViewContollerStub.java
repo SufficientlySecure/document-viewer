@@ -25,13 +25,11 @@ public class ViewContollerStub implements IViewController {
     }
 
     @Override
-    public ViewState goToPage(final int page) {
-        return null;
+    public void goToPage(final int page) {
     }
 
     @Override
-    public ViewState goToPage(final int page, final float offsetX, final float offsetY) {
-        return null;
+    public void goToPage(final int page, final float offsetX, final float offsetY) {
     }
 
     @Override

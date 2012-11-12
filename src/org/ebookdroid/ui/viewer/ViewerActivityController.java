@@ -588,12 +588,13 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         final String name = value.toString();
         final Page page = documentModel.getCurrentPageObject();
         if (page != null) {
-            final ViewState state = new ViewState(getDocumentController());
+            final ViewState state = ViewState.get(getDocumentController());
             final PointF pos = state.getPositionOnPage(page);
             bookSettings.bookmarks.add(new Bookmark(name, documentModel.getCurrentIndex(), pos.x, pos.y));
             Collections.sort(bookSettings.bookmarks);
             SettingsManager.storeBookSettings(bookSettings);
             IUIManager.instance.invalidateOptionsMenu(getManagedComponent());
+            state.release();
         }
     }
 

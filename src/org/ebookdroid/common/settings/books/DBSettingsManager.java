@@ -132,7 +132,7 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter, I
         if (m_db != null && m_db.isOpen()) {
             return m_db;
         }
-
+        LCTX.d("New DB connection created: " + m_db);
         m_db = super.getWritableDatabase();
         return m_db;
     }
@@ -160,6 +160,7 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter, I
                 db.close();
             } catch (final Exception ex) {
             }
+            LCTX.d("DB connection closed: " + m_db);
         }
     }
 

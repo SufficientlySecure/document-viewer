@@ -441,7 +441,7 @@ public class SettingsManager {
         public void run() {
             while (run.get()) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(3000);
                 } catch (final InterruptedException ex) {
                     Thread.interrupted();
                 }

@@ -13,6 +13,7 @@ import org.emdev.common.filesystem.FilePrefixFilter;
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
 import org.emdev.ui.progress.IProgressIndicator;
+import org.emdev.ui.progress.UIFileCopying;
 import org.emdev.utils.FileUtils;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.StringUtils;
@@ -69,11 +70,30 @@ public class CacheManager {
         return tempfile;
     }
 
+    public static File createTempFile(final InputStream source, final String suffix, final UIFileCopying worker)
+            throws IOException {
+        final File tempfile = File.createTempFile("temp", suffix, s_cacheDir);
+        tempfile.deleteOnExit();
+
+        worker.copy(-1, source, new FileOutputStream(tempfile));
+        return tempfile;
+    }
+
     public static File createTempFile(final byte[] source, final String suffix) throws IOException {
         final File tempfile = File.createTempFile("temp", suffix, s_cacheDir);
         tempfile.deleteOnExit();
 
         FileUtils.copy(new ByteArrayInputStream(source), new FileOutputStream(tempfile), source.length, null);
+
+        return tempfile;
+    }
+
+    public static File createTempFile(final Uri uri, final UIFileCopying worker) throws IOException {
+        final File tempfile = File.createTempFile("temp", "content", s_cacheDir);
+        tempfile.deleteOnExit();
+
+        final InputStream source = s_context.getContentResolver().openInputStream(uri);
+        worker.copy(-1, source, new FileOutputStream(tempfile));
 
         return tempfile;
     }

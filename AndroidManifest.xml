@@ -28,6 +28,8 @@
                 <data android:scheme="file" />
                 <data android:scheme="smb" />
                 <data android:scheme="content" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
                 <data android:mimeType="*/*" />
                 <data android:pathPattern=".*\\.pdf" />
                 <data android:pathPattern=".*\\.djvu" />

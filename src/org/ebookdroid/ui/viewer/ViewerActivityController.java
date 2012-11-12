@@ -874,9 +874,10 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         protected Throwable doInBackground(final String... params) {
             LCTX.d("BookLoadTask.doInBackground(): start");
             try {
-                final File cached = scheme.loadToCache(intent.getData());
+                final File cached = scheme.loadToCache(intent.getData(), this);
                 if (cached != null) {
                     m_fileName = cached.getAbsolutePath();
+                    setProgressDialogMessage(startProgressStringId);
                 }
                 getView().waitForInitialization();
                 documentModel.open(m_fileName, m_password);

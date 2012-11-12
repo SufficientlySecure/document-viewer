@@ -1,5 +1,7 @@
 package org.emdev.common.content;
 
+import org.ebookdroid.R;
+
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
@@ -8,10 +10,13 @@ import android.provider.MediaStore;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import jcifs.smb.SmbFileInputStream;
 
 import org.emdev.common.cache.CacheManager;
+import org.emdev.ui.progress.IProgressIndicator;
+import org.emdev.ui.progress.UIFileCopying;
 import org.emdev.utils.LengthUtils;
 
 public enum ContentScheme {
@@ -21,8 +26,9 @@ public enum ContentScheme {
     CONTENT("content", "[E-mail Attachment]") {
 
         @Override
-        public File loadToCache(final Uri uri) throws IOException {
-            return CacheManager.createTempFile(uri);
+        public File loadToCache(final Uri uri, final IProgressIndicator progress) throws IOException {
+            final UIFileCopying ui = new UIFileCopying(R.string.msg_loading_book, 64 * 1024, progress);
+            return CacheManager.createTempFile(uri, ui);
         }
 
         @Override
@@ -45,8 +51,25 @@ public enum ContentScheme {
     SMB("smb", "[SMB source]") {
 
         @Override
-        public File loadToCache(final Uri uri) throws IOException {
-            return CacheManager.createTempFile(new SmbFileInputStream(uri.toString()), uri.getLastPathSegment());
+        public File loadToCache(final Uri uri, final IProgressIndicator progress) throws IOException {
+            final UIFileCopying ui = new UIFileCopying(R.string.opds_loading_book, 64 * 1024, progress);
+            return CacheManager.createTempFile(new SmbFileInputStream(uri.toString()), uri.getLastPathSegment(), ui);
+        }
+    },
+
+    HTTP("http", "[HTTP source]") {
+
+        @Override
+        public File loadToCache(final Uri uri, final IProgressIndicator progress) throws IOException {
+            return loadFromURL(uri, progress);
+        }
+    },
+
+    HTTPS("https", "[HTTPS source]") {
+
+        @Override
+        public File loadToCache(final Uri uri, final IProgressIndicator progress) throws IOException {
+            return loadFromURL(uri, progress);
         }
     },
 
@@ -70,7 +93,7 @@ public enum ContentScheme {
         this.temporary = true;
     }
 
-    public File loadToCache(final Uri uri) throws IOException {
+    public File loadToCache(final Uri uri, final IProgressIndicator progress) throws IOException {
         return null;
     }
 
@@ -99,4 +122,9 @@ public enum ContentScheme {
         return UNKNOWN;
     }
 
+    public static File loadFromURL(final Uri uri, final IProgressIndicator progress) throws IOException {
+        final URL url = new URL(uri.toString());
+        final UIFileCopying ui = new UIFileCopying(R.string.msg_loading_book, 64 * 1024, progress);
+        return CacheManager.createTempFile(url.openStream(), uri.getLastPathSegment(), ui);
+    }
 }

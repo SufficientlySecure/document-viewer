@@ -10,6 +10,7 @@ import android.os.FileObserver;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -17,6 +18,9 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.emdev.common.cache.CacheManager;
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.ui.actions.EventDispatcher;
 import org.emdev.ui.actions.InvokationType;
 import org.emdev.ui.tasks.AsyncTask;
@@ -24,6 +28,8 @@ import org.emdev.utils.LengthUtils;
 import org.emdev.utils.StringUtils;
 
 public class FileSystemScanner {
+
+    private static final LogContext LCTX = LogManager.root().lctx("FileSystemScanner", false);
 
     private static final int EVENT_MASK = CLOSE_WRITE | MOVED_TO | DELETE | MOVED_FROM;
 
@@ -119,7 +125,7 @@ public class FileSystemScanner {
 
         @Override
         protected void onPreExecute() {
-            ProgressListener pl = listeners.getListener();
+            final ProgressListener pl = listeners.getListener();
             pl.showProgress(true);
         }
 
@@ -139,14 +145,37 @@ public class FileSystemScanner {
 
         @Override
         protected void onPostExecute(final Void v) {
-            ProgressListener pl = listeners.getListener();
+            final ProgressListener pl = listeners.getListener();
             pl.showProgress(false);
         }
 
         void scanDir(final File dir) {
             // Checks if scan should be continued
-            if (!inScan.get() || !dir.isDirectory() || dir.getAbsolutePath().startsWith("/sys")) {
+            if (!inScan.get()) {
                 return;
+            }
+
+            if (dir == null || !dir.isDirectory()) {
+                return;
+            }
+
+            if (dir.getAbsolutePath().startsWith("/sys")) {
+                LCTX.d("Skip system dir: " + dir);
+                return;
+            }
+
+            try {
+                final File cd = CacheManager.getCacheDir();
+                if (dir.getCanonicalPath().equals(cd.getCanonicalPath())) {
+                    LCTX.d("Skip file cache: " + dir);
+                    return;
+                }
+            } catch (final IOException ex) {
+                ex.printStackTrace();
+            }
+
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("Scan dir: " + dir);
             }
 
             // Retrieves file observer for scanning folder

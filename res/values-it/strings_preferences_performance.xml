@@ -11,6 +11,7 @@
     <string name="pref_docviewtype_summary">"Definizione classe visualizzatore"</string>
     <string name="list_docviewtype_base">"Basata su android.view.View"</string>
     <string name="list_docviewtype_surface">"Basata su android.view.SurfaceView"</string>
+<!--<string name="list_docviewtype_glsurface">"Based on android.opengl.GLSurfaceView"</string>-->
     <string name="pref_decoding_threads_title">"Thread di decodifica"</string>
     <string name="pref_decoding_threads_summary">"Numero dei thread per la decodifica"</string>
     <string name="pref_decodethread_priority_title">"Priorità thread di decodifica"</string>

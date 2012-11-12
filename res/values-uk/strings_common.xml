@@ -8,6 +8,7 @@
 <!--<string name="msg_bad_intent">"Bad intent or scheme:\n%s"</string>-->
 <!--<string name="msg_no_intent_data">"No intent data:\n%s"</string>-->
 <!--<string name="msg_unknown_intent_data_type">"Unknown intent data type:\n%s"</string>-->
+<!--<string name="msg_loading_book">"Loading book: %1$s…"</string>-->
 <!--<string name="msg_wrong_password">"Wrong password…"</string>-->
     <string name="msg_password_required">"Введіть пароль…"</string>
 <!--<string name="msg_unexpected_error">"An unexpected error has occurred:\n%s"</string>-->

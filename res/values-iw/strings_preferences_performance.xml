@@ -11,6 +11,7 @@
     <string name="pref_docviewtype_summary">"מציין את מחלקת הבסיס"</string>
     <string name="list_docviewtype_base">"בהתבסס על android.view.View"</string>
     <string name="list_docviewtype_surface">"בהתבסס על android.view.SurfaceView"</string>
+<!--<string name="list_docviewtype_glsurface">"Based on android.opengl.GLSurfaceView"</string>-->
     <string name="pref_decoding_threads_title">"מספר זרם הפענוח"</string>
     <string name="pref_decoding_threads_summary">"מספר זרם הפענוח"</string>
     <string name="pref_decodethread_priority_title">"עדיפות זרם פענוח"</string>

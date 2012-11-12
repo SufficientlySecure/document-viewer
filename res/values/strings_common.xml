@@ -11,6 +11,8 @@
     <string name="msg_no_intent_data">"No intent data:\n%s"</string>
     <string name="msg_unknown_intent_data_type">"Unknown intent data type:\n%s"</string>
 
+    <string name="msg_loading_book">"Loading book: %1$s&#8230;"</string>
+
     <string name="msg_wrong_password">"Wrong password&#8230;"</string>
     <string name="msg_password_required">"Enter password&#8230;"</string>
 

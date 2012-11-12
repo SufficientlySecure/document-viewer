@@ -11,6 +11,7 @@
     <string name="pref_docviewtype_summary">"定义文档查看器使用的视图"</string>
     <string name="list_docviewtype_base">"普通绘图"</string>
     <string name="list_docviewtype_surface">"表面绘图"</string>
+<!--<string name="list_docviewtype_glsurface">"Based on android.opengl.GLSurfaceView"</string>-->
     <string name="pref_decoding_threads_title">"解码线程数量"</string>
     <string name="pref_decoding_threads_summary">"运行解码线程的数量"</string>
     <string name="pref_decodethread_priority_title">"解码线程优先级"</string>

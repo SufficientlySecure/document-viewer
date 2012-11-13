@@ -14,17 +14,12 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class ViewState {
 
-    @SuppressWarnings("unused")
-    private static final AtomicLong SEQ = new AtomicLong();
-
     private static final ConcurrentLinkedQueue<ViewState> states = new ConcurrentLinkedQueue<ViewState>();
 
-    private volatile boolean addedToDrawQueue;
-    private volatile boolean released;
+    private State state;
 
     public AppSettings app;
     public BookSettings book;
@@ -43,62 +38,80 @@ public class ViewState {
     public PointF viewBase;
 
     public static ViewState get(final IViewController dc) {
-        ViewState state = states.poll();
-        if (state == null || !state.released) {
-            state = new ViewState();
-        } else {
-            state.addedToDrawQueue = false;
-            state.released = false;
-        }
-        state.init(dc, dc.getBase().getZoomModel().getZoom());
-        return state;
+        return get().init(dc, dc.getBase().getZoomModel().getZoom());
     }
 
     public static ViewState get(final IViewController dc, final float zoom) {
-        ViewState state = states.poll();
-        if (state == null || !state.released) {
-            state = new ViewState();
-        } else {
-            state.addedToDrawQueue = false;
-            state.released = false;
+        return get().init(dc, zoom);
+    }
+
+    private static ViewState get() {
+        ViewState state = null;
+        while (true) {
+            state = states.poll();
+            if (state == null) {
+                state = new ViewState();
+                return state;
+            }
+            if (state.use()) {
+                return state;
+            }
         }
-        state.init(dc, zoom);
-        return state;
     }
 
     private ViewState() {
         pages = new Pages();
+        state = State.RELEASED;
+        use();
     }
 
-    public void release() {
-        if (!addedToDrawQueue) {
-            if (released) {
-                throw new IllegalStateException();
-            }
-            released = true;
-            states.add(this);
+    private synchronized boolean use() {
+        if (state == State.RELEASED || state == State.RELEASED_AFTER_DRAW) {
+            state = State.USED;
+            return true;
+        }
+        return false;
+    }
+
+    public synchronized void release() {
+        switch (state) {
+            case USED:
+                state = State.RELEASED;
+                states.add(this);
+                return;
+            case QUEUED:
+            case RELEASED:
+            case RELEASED_AFTER_DRAW:
+                return;
         }
     }
 
-    public void releaseAfterDraw() {
-        if (released) {
-            throw new IllegalStateException();
+    public synchronized void addedToDrawQueue() {
+        switch (state) {
+            case USED:
+                state = State.QUEUED;
+                return;
+            case QUEUED:
+            case RELEASED:
+            case RELEASED_AFTER_DRAW:
+                return;
         }
-        if (!addedToDrawQueue) {
-            throw new IllegalStateException();
-        }
-        released = true;
-        states.add(this);
     }
 
-    public void addedToDrawQueue() {
-        if (released) {
-            throw new IllegalStateException();
+    public synchronized void releaseAfterDraw() {
+        switch (state) {
+            case QUEUED:
+                state = State.RELEASED_AFTER_DRAW;
+                states.add(this);
+                return;
+            case USED:
+            case RELEASED:
+            case RELEASED_AFTER_DRAW:
+                return;
         }
-        addedToDrawQueue = true;
     }
 
-    private void init(final IViewController dc, final float zoom) {
+    private ViewState init(final IViewController dc, final float zoom) {
 
         this.app = AppSettings.current();
         this.book = dc.getBase().getBookSettings();
@@ -115,6 +128,8 @@ public class ViewState {
         this.viewRect = new RectF(ctrl.getView().getViewRect());
         this.viewBase = ctrl.getView().getBase(viewRect);
         this.pages.update();
+
+        return this;
     }
 
     public void update() {
@@ -276,5 +291,9 @@ public class ViewState {
 
             return buf;
         }
+    }
+
+    public static enum State {
+        USED, QUEUED, RELEASED, RELEASED_AFTER_DRAW;
     }
 }

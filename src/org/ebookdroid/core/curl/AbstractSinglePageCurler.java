@@ -170,7 +170,6 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
         }
         if (page != null) {
             event.canvas.save();
-            event.canvas.setClipRect(event.viewState.getBounds(page));
             event.process(page);
             event.canvas.restore();
         }

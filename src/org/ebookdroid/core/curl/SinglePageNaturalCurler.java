@@ -268,7 +268,6 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
         }
         if (page != null) {
             canvas.save();
-            canvas.setClipRect(viewState.getBounds(page));
             event.process(page);
             canvas.restore();
         }
@@ -312,7 +311,6 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
         }
         if (page != null) {
             canvas.save();
-            canvas.setClipRect(viewState.getBounds(page));
             event.process(page);
             canvas.restore();
         }

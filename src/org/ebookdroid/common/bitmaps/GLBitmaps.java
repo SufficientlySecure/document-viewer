@@ -105,7 +105,6 @@ public class GLBitmaps extends Bitmaps {
             }
 
             final RectF actual = new RectF(cr.left - vb.x, cr.top - vb.y, cr.right - vb.x, cr.bottom - vb.y);
-            canvas.save();
             canvas.setClipRect(actual);
 
             final float offsetX = tr.left - vb.x;
@@ -162,7 +161,6 @@ public class GLBitmaps extends Bitmaps {
             }
 
             canvas.clearClipRect();
-            canvas.restore();
 
             return res;
         } finally {

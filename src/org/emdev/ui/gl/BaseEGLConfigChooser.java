@@ -72,9 +72,14 @@ public class BaseEGLConfigChooser implements EGLConfigChooser {
         // has stencil support but with smallest number of stencil bits. If
         // none is found, choose any one.
         for (int i = 0, n = configs.length; i < n; ++i) {
+            if (egl.eglGetConfigAttrib(display, configs[i], EGL10.EGL_ALPHA_SIZE, value)) {
+                if (value[0] == 0) {
+                    continue;
+                }
+            }
             if (egl.eglGetConfigAttrib(display, configs[i], EGL10.EGL_RED_SIZE, value)) {
-                // Filter out ARGB 8888 configs.
-                if (value[0] == 8) {
+                // Filter in ARGB 8888 configs.
+                if (value[0] != 8) {
                     continue;
                 }
             }

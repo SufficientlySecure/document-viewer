@@ -174,18 +174,27 @@ public class GLCanvasImpl implements GLCanvas {
     @Override
     public void setClipRect(final RectF bounds) {
         final GL11 gl = mGL;
-        gl.glEnable(GL10.GL_SCISSOR_TEST);
+        gl.glEnable(GL10.GL_STENCIL_TEST);
 
-        saveTransform();
-        gl.glLoadMatrixf(mMatrixValues, 0);
-        gl.glScissor((int) bounds.left, (int) bounds.top, (int) bounds.width(), (int) bounds.height());
+        gl.glClear(GL10.GL_STENCIL_BUFFER_BIT);
+        gl.glColorMask(false, false, false, false);
+        gl.glStencilFunc(gl.GL_ALWAYS, 1, ~0);
+        gl.glStencilOp(GL10.GL_REPLACE, GL10.GL_REPLACE, GL10.GL_REPLACE);
+
+        fillRect(bounds, 1);
+
         restoreTransform();
+
+        gl.glColorMask(true, true, true, true);
+        gl.glStencilFunc(gl.GL_EQUAL, 1, ~0);
+        gl.glStencilOp(GL10.GL_KEEP, GL10.GL_KEEP, GL10.GL_KEEP);
+
     }
 
     @Override
     public void clearClipRect() {
         final GL11 gl = mGL;
-        gl.glDisable(GL10.GL_SCISSOR_TEST);
+        gl.glDisable(GL10.GL_STENCIL_TEST);
     }
 
     @Override
@@ -260,7 +269,13 @@ public class GLCanvasImpl implements GLCanvas {
 
     @Override
     public void fillRect(final RectF r, final Paint p) {
-        mGLState.setColorMode(p.getColor(), mAlpha);
+        int color = p.getColor();
+        fillRect(r, color);
+    }
+
+    public void fillRect(final RectF r, int color) {
+        mGLState.setColorMode(color, mAlpha);
+
         final GL11 gl = mGL;
 
         saveTransform();

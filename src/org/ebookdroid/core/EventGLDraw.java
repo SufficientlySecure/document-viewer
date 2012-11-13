@@ -80,6 +80,8 @@ public class EventGLDraw implements IEvent {
     @Override
     public boolean process(final Page page) {
         pageBounds = viewState.getBounds(page);
+        fixedPageBounds.set(pageBounds);
+        fixedPageBounds.offset(-viewState.viewBase.x, -viewState.viewBase.y);
 
         if (LCTX.isDebugEnabled()) {
             LCTX.d("process(" + page.index + "): view=" + viewState.viewRect + ", page=" + pageBounds);
@@ -142,9 +144,8 @@ public class EventGLDraw implements IEvent {
     }
 
     protected void drawPageBackground(final Page page) {
-        fixedPageBounds.set(pageBounds);
-        fixedPageBounds.offset(-viewState.viewBase.x, -viewState.viewBase.y);
 
+        canvas.setClipRect(fixedPageBounds);
         canvas.fillRect(fixedPageBounds, viewState.paint.fillPaint);
 
         final TextPaint textPaint = viewState.paint.textPaint;
@@ -158,12 +159,16 @@ public class EventGLDraw implements IEvent {
         // final int h = t.getTextureHeight();
         // canvas.drawTexture(t, (int) fixedPageBounds.centerX() - w / 2, (int) fixedPageBounds.centerY() - h / 2, w,
         // h);
+
+        canvas.clearClipRect();
     }
 
     private void drawPageLinks(final Page page) {
         if (LengthUtils.isEmpty(page.links)) {
             return;
         }
+
+        canvas.setClipRect(fixedPageBounds);
 
         for (final PageLink link : page.links) {
             final RectF rect = page.getLinkSourceRect(pageBounds, link);
@@ -173,6 +178,9 @@ public class EventGLDraw implements IEvent {
                 canvas.drawRect(rect, LINK_PAINT);
             }
         }
+
+        canvas.clearClipRect();
+
     }
 
     private void drawHighlights(final Page page) {
@@ -188,6 +196,8 @@ public class EventGLDraw implements IEvent {
         final Page cp = sm.getCurrentPage();
         final int cmi = sm.getCurrentMatchIndex();
 
+        canvas.setClipRect(fixedPageBounds);
+
         for (int i = 0; i < mm.size(); i++) {
             final boolean current = page == cp && i == cmi;
             final RectF link = mm.get(i);
@@ -196,6 +206,8 @@ public class EventGLDraw implements IEvent {
             p.setColor(current ? app.currentSearchHighlightColor : app.searchHighlightColor);
             canvas.drawRect(rect, p);
         }
+
+        canvas.clearClipRect();
     }
 
     protected void drawBrightnessFilter(final RectF nodeRect) {
@@ -211,9 +223,11 @@ public class EventGLDraw implements IEvent {
         BRIGHTNESS_FILTER.setColor(Color.BLACK);
         BRIGHTNESS_FILTER.setAlpha(alpha);
 
-        final float offX = viewState.viewBase.x;
-        final float offY = viewState.viewBase.y;
-        canvas.fillRect(nodeRect.left - offX, nodeRect.top - offY, nodeRect.right - offX + 1, nodeRect.bottom - offY
-                + 1, BRIGHTNESS_FILTER.getColor());
+        canvas.setClipRect(fixedPageBounds);
+
+        canvas.fillRect(fixedPageBounds, BRIGHTNESS_FILTER);
+
+        canvas.clearClipRect();
+
     }
 }

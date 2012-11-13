@@ -16,20 +16,23 @@ import org.emdev.ui.gl.GLCanvas;
 
 public enum DragMark {
 
-    DRAG(R.drawable.components_curler_drag),
+    DRAG(R.drawable.components_curler_drag, false),
 
-    CURLER(R.drawable.components_curler_arrows);
+    CURLER(R.drawable.components_curler_arrows, true);
 
     private static final Paint PAINT = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
 
     private final int resId;
 
+    private final boolean showAlways;
+
     private Bitmap dragBitmap;
 
     private BitmapTexture dragBitmapTx;
 
-    private DragMark(final int resId) {
+    private DragMark(final int resId, final boolean showAlways) {
         this.resId = resId;
+        this.showAlways = showAlways;
     }
 
     public synchronized void draw(final Canvas canvas, final ViewState viewState) {
@@ -38,7 +41,7 @@ public enum DragMark {
         }
 
         final Rect l = viewState.ctrl.getScrollLimits();
-        if (l.width() + l.height() > 0) {
+        if (showAlways || (l.width() + l.height() > 0)) {
             final IView view = viewState.ctrl.getView();
             final float x = view.getScrollX() - viewState.viewBase.x + view.getWidth() - dragBitmap.getWidth() - 1;
             final float y = view.getScrollY() - viewState.viewBase.y + view.getHeight() - dragBitmap.getHeight() - 1;
@@ -61,7 +64,7 @@ public enum DragMark {
         }
 
         final Rect l = viewState.ctrl.getScrollLimits();
-        if (l.width() + l.height() > 0) {
+        if (showAlways || (l.width() + l.height() > 0)) {
             final IView view = viewState.ctrl.getView();
 
             final int w = dragBitmap.getWidth();

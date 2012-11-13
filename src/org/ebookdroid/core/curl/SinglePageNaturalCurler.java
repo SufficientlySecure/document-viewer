@@ -28,6 +28,7 @@ import org.ebookdroid.core.EventPool;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.SinglePageController;
 import org.ebookdroid.core.ViewState;
+import org.ebookdroid.ui.viewer.views.DragMark;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -37,7 +38,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.FloatMath;
 
-import org.emdev.ui.gl.BitmapTexture;
 import org.emdev.ui.gl.GLCanvas;
 import org.emdev.utils.FastMath;
 import org.emdev.utils.MatrixUtils;
@@ -325,9 +325,7 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
     protected void drawExtraObjects(final EventDraw event) {
 
         if (AppSettings.current().showAnimIcon) {
-            final Canvas canvas = event.canvas;
-            canvas.drawBitmap(arrowsBitmap, view.getWidth() - arrowsBitmap.getWidth(),
-                    view.getHeight() - arrowsBitmap.getHeight(), PAINT);
+            DragMark.CURLER.draw(event.canvas, event.viewState);
         }
     }
 
@@ -340,12 +338,7 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
     protected void drawExtraObjects(final EventGLDraw event) {
 
         if (AppSettings.current().showAnimIcon) {
-            if (arrowsBitmapTx == null) {
-                arrowsBitmapTx = new BitmapTexture(arrowsBitmap);
-            }
-            final GLCanvas canvas = event.canvas;
-            canvas.drawTexture(arrowsBitmapTx, view.getWidth() - arrowsBitmapTx.getWidth(), view.getHeight()
-                    - arrowsBitmapTx.getHeight(), arrowsBitmapTx.getWidth(), arrowsBitmapTx.getHeight());
+            DragMark.CURLER.draw(event.canvas, event.viewState);
         }
     }
 

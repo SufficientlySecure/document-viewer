@@ -131,6 +131,9 @@ public interface GLCanvas {
 
     public void setClipRect(RectF bounds);
 
+    public void setClipRect(float x, float y, float w, float h);
+
     public void clearClipRect();
+
 
 }

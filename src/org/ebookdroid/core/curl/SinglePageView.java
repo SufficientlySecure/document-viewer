@@ -97,7 +97,7 @@ public class SinglePageView implements PageAnimator {
         if (page != null) {
             event.process(page);
             if (AppSettings.current().showAnimIcon) {
-                DragMark.draw(event.canvas, event.viewState);
+                DragMark.DRAG.draw(event.canvas, event.viewState);
             }
         }
     }
@@ -113,7 +113,7 @@ public class SinglePageView implements PageAnimator {
         if (page != null) {
             event.process(page);
             if (AppSettings.current().showAnimIcon) {
-                DragMark.draw(event.canvas, event.viewState);
+                DragMark.DRAG.draw(event.canvas, event.viewState);
             }
         }
     }

@@ -1,6 +1,5 @@
 package org.ebookdroid.core.curl;
 
-import org.ebookdroid.R;
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.core.EventDraw;
@@ -9,8 +8,6 @@ import org.ebookdroid.core.Page;
 import org.ebookdroid.core.SinglePageController;
 import org.ebookdroid.core.ViewState;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -19,7 +16,6 @@ import android.view.MotionEvent;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.emdev.ui.gl.BitmapTexture;
 import org.emdev.ui.gl.GLCanvas;
 
 public abstract class AbstractPageAnimator extends SinglePageView implements PageAnimator {
@@ -56,9 +52,6 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
     protected IBitmapRef backBitmap;
     protected int backBitmapIndex = -1;
 
-    protected static Bitmap arrowsBitmap;
-    protected BitmapTexture arrowsBitmapTx;
-
     protected final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     public AbstractPageAnimator(final PageAnimationType type, final SinglePageController singlePageDocumentView) {
@@ -73,14 +66,6 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
     @Override
     public void init() {
         super.init();
-        if (arrowsBitmap == null || arrowsBitmap.isRecycled()) {
-            arrowsBitmap = BitmapFactory.decodeResource(view.getBase().getContext().getResources(),
-                    R.drawable.components_curler_arrows);
-            if (arrowsBitmapTx != null) {
-                arrowsBitmapTx.recycle();
-                arrowsBitmapTx = null;
-            }
-        }
 
         mMovement = new Vector2D(0, 0);
         mFinger = new Vector2D(0, 0);

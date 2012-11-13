@@ -73,7 +73,7 @@ public abstract class AbstractScrollController extends AbstractViewController {
         }
 
         if (eventDraw.viewState.app.showAnimIcon) {
-            DragMark.draw(eventDraw.canvas, viewState);
+            DragMark.DRAG.draw(eventDraw.canvas, viewState);
         }
         getView().continueScroll();
     }
@@ -97,7 +97,7 @@ public abstract class AbstractScrollController extends AbstractViewController {
         }
 
         if (eventDraw.viewState.app.showAnimIcon) {
-            DragMark.draw(eventDraw.canvas, viewState);
+            DragMark.DRAG.draw(eventDraw.canvas, viewState);
         }
         getView().continueScroll();
     }

@@ -178,7 +178,7 @@ public class GLCanvasImpl implements GLCanvas {
 
         gl.glClear(GL10.GL_STENCIL_BUFFER_BIT);
         gl.glColorMask(false, false, false, false);
-        gl.glStencilFunc(gl.GL_ALWAYS, 1, ~0);
+        gl.glStencilFunc(GL10.GL_ALWAYS, 1, ~0);
         gl.glStencilOp(GL10.GL_REPLACE, GL10.GL_REPLACE, GL10.GL_REPLACE);
 
         fillRect(bounds, 1);
@@ -186,7 +186,26 @@ public class GLCanvasImpl implements GLCanvas {
         restoreTransform();
 
         gl.glColorMask(true, true, true, true);
-        gl.glStencilFunc(gl.GL_EQUAL, 1, ~0);
+        gl.glStencilFunc(GL10.GL_EQUAL, 1, ~0);
+        gl.glStencilOp(GL10.GL_KEEP, GL10.GL_KEEP, GL10.GL_KEEP);
+
+    }
+
+    public void setClipRect(float left, float top, float width, float height) {
+        final GL11 gl = mGL;
+        gl.glEnable(GL10.GL_STENCIL_TEST);
+
+        gl.glClear(GL10.GL_STENCIL_BUFFER_BIT);
+        gl.glColorMask(false, false, false, false);
+        gl.glStencilFunc(GL10.GL_ALWAYS, 1, ~0);
+        gl.glStencilOp(GL10.GL_REPLACE, GL10.GL_REPLACE, GL10.GL_REPLACE);
+
+        fillRect(left, top, width, height, 1);
+
+        restoreTransform();
+
+        gl.glColorMask(true, true, true, true);
+        gl.glStencilFunc(GL10.GL_EQUAL, 1, ~0);
         gl.glStencilOp(GL10.GL_KEEP, GL10.GL_KEEP, GL10.GL_KEEP);
 
     }

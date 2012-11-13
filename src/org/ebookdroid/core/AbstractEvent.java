@@ -14,7 +14,7 @@ import org.emdev.common.log.LogManager;
 
 public abstract class AbstractEvent implements IEvent {
 
-    public final LogContext LCTX = LogManager.root().lctx(getClass().getSimpleName());
+    public final LogContext LCTX = LogManager.root().lctx(getClass().getSimpleName(), false);
 
     protected final List<PageTreeNode> nodesToDecode = new ArrayList<PageTreeNode>();
     protected final List<Bitmaps> bitmapsToRecycle = new ArrayList<Bitmaps>();

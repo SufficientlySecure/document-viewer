@@ -455,11 +455,11 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfLinks_fillPageLinkTargetPoint(JNIEnv
         return 0;
     }
 
-    DEBUG("MuPdfLinks_fillPageLinkTargetPoint(): %d %x (%f, %f) - (%f, %f)",
-          link->dest.ld.gotor.page,
-          link->dest.ld.gotor.flags,
-          link->dest.ld.gotor.lt.x, link->dest.ld.gotor.lt.y,
-          link->dest.ld.gotor.rb.x, link->dest.ld.gotor.rb.y);
+//    DEBUG("MuPdfLinks_fillPageLinkTargetPoint(): %d %x (%f, %f) - (%f, %f)",
+//          link->dest.ld.gotor.page,
+//          link->dest.ld.gotor.flags,
+//          link->dest.ld.gotor.lt.x, link->dest.ld.gotor.lt.y,
+//          link->dest.ld.gotor.rb.x, link->dest.ld.gotor.rb.y);
 
     point[0] = link->dest.ld.gotor.lt.x;
     point[1] = link->dest.ld.gotor.lt.y;
@@ -483,7 +483,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_open(JNIEnv *env, jclass clazz,
     renderpage_t *page = NULL;
     fz_device *dev = NULL;
 
-    DEBUG("MuPdfPage_open(%p, %d): start", doc, pageno);
+//    DEBUG("MuPdfPage_open(%p, %d): start", doc, pageno);
 
     fz_context* ctx = fz_clone_context(doc->ctx);
     if (!ctx)
@@ -493,7 +493,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_open(JNIEnv *env, jclass clazz,
     }
 
     page = fz_malloc_no_throw(ctx, sizeof(renderpage_t));
-    DEBUG("MuPdfPage_open(%p, %d): page=%p", doc, pageno, page);
+//    DEBUG("MuPdfPage_open(%p, %d): page=%p", doc, pageno, page);
 
     if (!page)
     {
@@ -530,7 +530,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_open(JNIEnv *env, jclass clazz,
         mupdf_throw_exception(env, "error loading page");
     }
 
-    DEBUG("MuPdfPage_open(%p, %d): finish: %p", doc, pageno, page);
+//    DEBUG("MuPdfPage_open(%p, %d): finish: %p", doc, pageno, page);
 
     return (jlong) (long) page;
 }
@@ -540,7 +540,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_free(JNIEnv *env, jclass clazz,
 {
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
     renderpage_t *page = (renderpage_t*) (long) handle;
-    DEBUG("MuPdfPage_free(%p): start", page);
+//    DEBUG("MuPdfPage_free(%p): start", page);
 
     if (!page || !page->ctx)
     {
@@ -565,7 +565,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_free(JNIEnv *env, jclass clazz,
     page = NULL;
     ctx = NULL;
 
-    DEBUG("MuPdfPage_free(%p): finish", page);
+//    DEBUG("MuPdfPage_free(%p): finish", page);
 }
 
 JNIEXPORT void JNICALL
@@ -666,7 +666,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPageBitmap(JNIEnv *env, j
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
     renderpage_t *page = (renderpage_t*) (long) pagehandle;
 
-    DEBUG("MuPdfPage_renderPageBitmap(%p, %p): start", doc, page);
+//    DEBUG("MuPdfPage_renderPageBitmap(%p, %p): start", doc, page);
 
     fz_matrix ctm;
     fz_bbox viewbox;
@@ -754,7 +754,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPageBitmap(JNIEnv *env, j
 
     NativeBitmap_unlockPixels(env, bitmap);
 
-    DEBUG("MuPdfPage_renderPageBitmap(%p, %p): finish", doc, page);
+//    DEBUG("MuPdfPage_renderPageBitmap(%p, %p): finish", doc, page);
 
     return JNI_TRUE;
 }
@@ -924,7 +924,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_search(JNIEnv * env, jobject th
             n = match(&ch, pagetext, str, pos);
             if (n > 0)
             {
-                DEBUG("MuPdfPage(%p).search(%p, %p): match found: %d, %d", thiz, doc, page, pos, n);
+//                DEBUG("MuPdfPage(%p).search(%p, %p): match found: %d, %d", thiz, doc, page, pos, n);
                 for (i = 0; i < n; i++)
                 {
                     rr = fz_union_bbox(rr, bboxcharat(pagetext, pos + i));
@@ -937,7 +937,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_search(JNIEnv * env, jobject th
                     coords[1] = (rr.y0);
                     coords[2] = (rr.x1);
                     coords[3] = (rr.y1);
-                    DEBUG("MuPdfPage(%p).search(%p, %p): found rectangle (%d, %d - %d, %d)", thiz, doc, page, coords[0], coords[1], coords[2], coords[3]);
+//                    DEBUG("MuPdfPage(%p).search(%p, %p): found rectangle (%d, %d - %d, %d)", thiz, doc, page, coords[0], coords[1], coords[2], coords[3]);
                     jobject ptb = PageTextBoxHelper_create(&ptbh);
                     if (ptb)
                     {
@@ -1064,11 +1064,11 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfOutline_fillLinkTargetPoint(JNIEnv *
         return 0;
     }
 
-    DEBUG("MuPdfOutline_fillLinkTargetPoint(): %d %x (%f, %f) - (%f, %f)",
-          outline->dest.ld.gotor.page,
-          outline->dest.ld.gotor.flags,
-          outline->dest.ld.gotor.lt.x, outline->dest.ld.gotor.lt.y,
-          outline->dest.ld.gotor.rb.x, outline->dest.ld.gotor.rb.y);
+//    DEBUG("MuPdfOutline_fillLinkTargetPoint(): %d %x (%f, %f) - (%f, %f)",
+//          outline->dest.ld.gotor.page,
+//          outline->dest.ld.gotor.flags,
+//          outline->dest.ld.gotor.lt.x, outline->dest.ld.gotor.lt.y,
+//          outline->dest.ld.gotor.rb.x, outline->dest.ld.gotor.rb.y);
 
     point[0] = outline->dest.ld.gotor.lt.x;
     point[1] = outline->dest.ld.gotor.lt.y;

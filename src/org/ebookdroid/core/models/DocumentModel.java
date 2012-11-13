@@ -42,7 +42,7 @@ import org.emdev.utils.listeners.ListenerProxy;
 
 public class DocumentModel extends ListenerProxy {
 
-    protected static final LogContext LCTX = LogManager.root().lctx("DocModel");
+    protected static final LogContext LCTX = LogManager.root().lctx("DocModel", false);
 
     private final ThreadLocal<PageIterator> iterators = new ThreadLocal<DocumentModel.PageIterator>();
 

@@ -173,25 +173,11 @@ public class GLCanvasImpl implements GLCanvas {
 
     @Override
     public void setClipRect(final RectF bounds) {
-        final GL11 gl = mGL;
-        gl.glEnable(GL10.GL_STENCIL_TEST);
-
-        gl.glClear(GL10.GL_STENCIL_BUFFER_BIT);
-        gl.glColorMask(false, false, false, false);
-        gl.glStencilFunc(GL10.GL_ALWAYS, 1, ~0);
-        gl.glStencilOp(GL10.GL_REPLACE, GL10.GL_REPLACE, GL10.GL_REPLACE);
-
-        fillRect(bounds, 1);
-
-        restoreTransform();
-
-        gl.glColorMask(true, true, true, true);
-        gl.glStencilFunc(GL10.GL_EQUAL, 1, ~0);
-        gl.glStencilOp(GL10.GL_KEEP, GL10.GL_KEEP, GL10.GL_KEEP);
-
+        setClipRect(bounds.left, bounds.top, bounds.width(), bounds.height());
     }
 
-    public void setClipRect(float left, float top, float width, float height) {
+    @Override
+    public void setClipRect(final float left, final float top, final float width, final float height) {
         final GL11 gl = mGL;
         gl.glEnable(GL10.GL_STENCIL_TEST);
 
@@ -201,8 +187,6 @@ public class GLCanvasImpl implements GLCanvas {
         gl.glStencilOp(GL10.GL_REPLACE, GL10.GL_REPLACE, GL10.GL_REPLACE);
 
         fillRect(left, top, width, height, 1);
-
-        restoreTransform();
 
         gl.glColorMask(true, true, true, true);
         gl.glStencilFunc(GL10.GL_EQUAL, 1, ~0);
@@ -288,11 +272,11 @@ public class GLCanvasImpl implements GLCanvas {
 
     @Override
     public void fillRect(final RectF r, final Paint p) {
-        int color = p.getColor();
+        final int color = p.getColor();
         fillRect(r, color);
     }
 
-    public void fillRect(final RectF r, int color) {
+    public void fillRect(final RectF r, final int color) {
         mGLState.setColorMode(color, mAlpha);
 
         final GL11 gl = mGL;

@@ -8,6 +8,7 @@ import android.graphics.RectF;
 
 import org.emdev.ui.gl.BitmapTexture;
 import org.emdev.ui.gl.GLCanvas;
+import org.emdev.utils.MathUtils;
 
 public class GLBitmaps extends Bitmaps {
 
@@ -105,6 +106,7 @@ public class GLBitmaps extends Bitmaps {
             }
 
             final RectF actual = new RectF(cr.left - vb.x, cr.top - vb.y, cr.right - vb.x, cr.bottom - vb.y);
+            MathUtils.round(actual);
             canvas.setClipRect(actual);
 
             final float offsetX = tr.left - vb.x;

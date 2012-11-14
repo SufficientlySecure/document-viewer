@@ -42,22 +42,6 @@ public class SinglePageSqueezer extends AbstractPageSlider {
     /**
      * {@inheritDoc}
      *
-     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawForeground(org.ebookdroid.core.EventDraw)
-     */
-    @Override
-    protected void drawForeground(final EventGLDraw event) {
-        Page page = event.viewState.model.getPageObject(foreIndex);
-        if (page == null) {
-            page = event.viewState.model.getCurrentPageObject();
-        }
-        if (page != null) {
-            event.process(page);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
      * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawBackground(org.ebookdroid.core.EventDraw)
      */
     @Override
@@ -77,8 +61,41 @@ public class SinglePageSqueezer extends AbstractPageSlider {
 
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawForeground(org.ebookdroid.core.EventDraw)
+     */
+    @Override
+    protected void drawForeground(final EventGLDraw event) {
+        Page page = event.viewState.model.getPageObject(foreIndex);
+        if (page == null) {
+            page = event.viewState.model.getCurrentPageObject();
+        }
+        if (page != null) {
+            final RectF viewRect = event.viewState.viewRect;
+            event.canvas.save();
+            event.canvas.translate(-mA.x, 0);
+            event.canvas.scale((viewRect.width() - mA.x) / viewRect.width(), 1, 1);
+            event.process(page);
+            event.canvas.restore();
+        }
+    }
+
     @Override
     protected void drawBackground(final EventGLDraw event) {
-        // TODO Auto-generated method stub
+        Page page = event.viewState.model.getPageObject(backIndex);
+        if (page == null) {
+            page = event.viewState.model.getCurrentPageObject();
+        }
+        if (page != null) {
+            final RectF viewRect = event.viewState.viewRect;
+            event.canvas.save();
+            event.canvas.translate(-mA.x + event.viewState.viewRect.width(), 0);
+            event.canvas.scale((mA.x) / viewRect.width(), 1, 1);
+            event.process(page);
+            event.canvas.restore();
+        }
     }
+
 }

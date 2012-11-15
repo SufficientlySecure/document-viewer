@@ -24,7 +24,8 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
     /** Our points used to define the current clipping paths in our draw call */
     protected final Vector2D mB, mC, mD, mE, mF, mOldF, mOrigin;
 
-    protected final Vector2D[] pageBack;
+    protected final Vector2D[] foreBack;
+    protected final Vector2D[] backClip;
 
     public AbstractSinglePageCurler(final PageAnimationType type, final SinglePageController singlePageDocumentView) {
         super(type, singlePageDocumentView);
@@ -38,7 +39,8 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
         // The movement origin point
         mOrigin = new Vector2D(view.getWidth(), 0);
 
-        pageBack = new Vector2D[] { mA, mD, mE, mF };
+        foreBack = new Vector2D[] { mA, mD, mE, mF };
+        backClip = new Vector2D[] { mA, mB, mC, mD };
     }
 
     /**
@@ -197,7 +199,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
         if (foreIndex != backIndex) {
             final Page page = event.viewState.model.getPageObject(backIndex);
             if (page != null) {
-                event.canvas.setClipPath(mA, mB, mC, mD);
+                event.canvas.setClipPath(backClip);
                 event.process(page);
                 event.canvas.clearClipRect();
             }
@@ -213,17 +215,17 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
     protected void drawExtraObjects(final EventGLDraw event) {
         final GLCanvas canvas = event.canvas;
 
-        float center1 = (mF.x + mD.x )/2;
+        float center = (mF.x + mD.x) / 2;
 
         canvas.save();
         canvas.setAlpha(0.5f);
-        canvas.translate(center1, 0);
+        canvas.translate(center, 0);
         canvas.scale(1.10f, 1.10f, 1f);
-        canvas.translate(-center1, 0);
-        canvas.drawPoly(Color.BLACK, pageBack);
+        canvas.translate(-center, 0);
+        canvas.drawPoly(Color.BLACK, foreBack);
         canvas.restore();
 
-        canvas.drawPoly(mCurlEdgePaint.getColor(), pageBack);
+        canvas.drawPoly(mCurlEdgePaint.getColor(), foreBack);
     }
 
     /**

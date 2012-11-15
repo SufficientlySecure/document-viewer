@@ -9,6 +9,7 @@ import org.ebookdroid.core.models.SearchModel.Matches;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Paint.Align;
 import android.text.TextPaint;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import org.emdev.BaseDroidApp;
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
 import org.emdev.ui.gl.GLCanvas;
+import org.emdev.ui.gl.StringTexture;
 import org.emdev.utils.LengthUtils;
 
 public class EventGLDraw implements IEvent {
@@ -155,15 +157,16 @@ public class EventGLDraw implements IEvent {
 
         final TextPaint textPaint = viewState.paint.textPaint;
         textPaint.setTextSize(24 * viewState.zoom);
+        textPaint.setTextAlign(Align.LEFT);
 
         final int offset = viewState.book != null ? viewState.book.firstPageOffset : 1;
         final String text = BaseDroidApp.context.getString(R.string.text_page) + " " + (page.index.viewIndex + offset);
 
-        // final StringTexture t = StringTexture.newInstance(text, textPaint);
-        // final int w = t.getTextureWidth();
-        // final int h = t.getTextureHeight();
-        // canvas.drawTexture(t, (int) fixedPageBounds.centerX() - w / 2, (int) fixedPageBounds.centerY() - h / 2, w,
-        // h);
+         final StringTexture t = StringTexture.newInstance(text, textPaint);
+         final int w = t.getWidth();
+         final int h = t.getHeight();
+         t.draw(canvas, (int) fixedPageBounds.centerX() - w / 2, (int) fixedPageBounds.centerY() - h / 2);
+         t.recycle();
     }
 
     private void drawPageLinks(final Page page) {

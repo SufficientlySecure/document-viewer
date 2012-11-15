@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Paint.Align;
 import android.text.TextPaint;
 
 import java.util.List;
@@ -147,6 +148,7 @@ public class EventDraw implements IEvent {
 
         final TextPaint textPaint = viewState.paint.textPaint;
         textPaint.setTextSize(24 * viewState.zoom);
+        textPaint.setTextAlign(Align.CENTER);
 
         final int offset = viewState.book != null ? viewState.book.firstPageOffset : 1;
         final String text = BaseDroidApp.context.getString(R.string.text_page) + " " + (page.index.viewIndex + offset);

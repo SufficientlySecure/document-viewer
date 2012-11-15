@@ -25,7 +25,6 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
     protected final Vector2D mB, mC, mD, mE, mF, mOldF, mOrigin;
 
     protected final Vector2D[] pageBack;
-    protected final Vector2D[] pageBackShadow;
 
     public AbstractSinglePageCurler(final PageAnimationType type, final SinglePageController singlePageDocumentView) {
         super(type, singlePageDocumentView);
@@ -40,10 +39,6 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
         mOrigin = new Vector2D(view.getWidth(), 0);
 
         pageBack = new Vector2D[] { mA, mD, mE, mF };
-        pageBackShadow = new Vector2D[pageBack.length];
-        for (int i = 0; i < pageBackShadow.length; i++) {
-            pageBackShadow[i] = new Vector2D();
-        }
     }
 
     /**
@@ -218,19 +213,14 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
     protected void drawExtraObjects(final EventGLDraw event) {
         final GLCanvas canvas = event.canvas;
 
-        for (int i = 0; i < pageBackShadow.length; i++) {
-            pageBackShadow[i].set(pageBack[i]);
-        }
-        pageBackShadow[0].y += 20;
-        pageBackShadow[1].y -= 20;
-        pageBackShadow[1].x += 20;
-        pageBackShadow[2].y -= 20;
-        pageBackShadow[2].x -= 20;
-        pageBackShadow[2].x -= 20;
+        float center1 = (mF.x + mD.x )/2;
 
         canvas.save();
         canvas.setAlpha(0.5f);
-        canvas.drawPoly(Color.BLACK, pageBackShadow);
+        canvas.translate(center1, 0);
+        canvas.scale(1.10f, 1.10f, 1f);
+        canvas.translate(-center1, 0);
+        canvas.drawPoly(Color.BLACK, pageBack);
         canvas.restore();
 
         canvas.drawPoly(mCurlEdgePaint.getColor(), pageBack);

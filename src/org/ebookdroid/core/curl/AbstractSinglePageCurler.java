@@ -215,19 +215,26 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
     protected void drawExtraObjects(final EventGLDraw event) {
         final GLCanvas canvas = event.canvas;
 
-        float center = (mF.x + mD.x) / 2;
-
-        canvas.save();
-            for(int i = 10; i > 0; i--) {
-                canvas.setAlpha(0.5f / (i+1));
-                canvas.translate(i, i);
-                canvas.fillPoly(Color.BLACK, foreBack);
-                canvas.translate(-i, -i);
-            }
-        canvas.restore();
+        shadow(canvas);
 
         canvas.fillPoly(mCurlEdgePaint.getColor(), foreBack);
         canvas.drawPoly(Color.BLACK, foreBack);
+    }
+
+    void shadow(final GLCanvas canvas) {
+        canvas.save();
+        float width = 40;
+        int count = 20;
+        for (int i = count; i > 0; i--) {
+            float move = i * width / count;
+            float alpha = 0.5f * (1 - i /(float)count);
+
+            canvas.setAlpha(alpha * alpha * alpha);
+            canvas.translate(move, move);
+            canvas.fillPoly(Color.BLACK, foreBack);
+            canvas.translate(-move, -move);
+        }
+        canvas.restore();
     }
 
     /**

@@ -18,9 +18,7 @@ package org.emdev.ui.gl;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint.FontMetricsInt;
-import android.graphics.Typeface;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.FloatMath;
@@ -31,60 +29,49 @@ import android.util.FloatMath;
 // the String, the font size, and the color.
 public class StringTexture extends CanvasTexture {
 
-    private final String mText;
-    private final TextPaint mPaint;
-    private final FontMetricsInt mMetrics;
+    private TextPaint mPaint;
+    private FontMetricsInt mMetrics;
+    private String mText;
+    private int mTextWidth;
+    private int mTextHeight;
 
-    private StringTexture(final String text, final TextPaint paint, final FontMetricsInt metrics, final int width,
-            final int height) {
-        super(width, height);
-        mText = text;
+    public StringTexture(final int maxWidth, final int maxHeight) {
+        super(Math.max(1, maxWidth), Math.max(1, maxHeight));
+    }
+
+    public void setText(final String text, final TextPaint paint) {
         mPaint = paint;
-        mMetrics = metrics;
+        mMetrics = paint.getFontMetricsInt();
+        mText = text;
+        mTextWidth = (int) FloatMath.ceil(mPaint.measureText(mText));
+        mTextHeight = mMetrics.bottom - mMetrics.top;
+
+        if (mTextWidth > mWidth) {
+            mText = TextUtils.ellipsize(mText, mPaint, mWidth, TextUtils.TruncateAt.END).toString();
+            mTextWidth = (int) FloatMath.ceil(mPaint.measureText(mText));
+        }
+        if (text != null) {
+            invalidateContent();
+        }
     }
 
-    public static TextPaint getDefaultPaint(final float textSize, final int color) {
-        final TextPaint paint = new TextPaint();
-        paint.setTextSize(textSize);
-        paint.setAntiAlias(true);
-        paint.setColor(color);
-        paint.setShadowLayer(2f, 0f, 0f, Color.BLACK);
-        return paint;
+    public String getText() {
+        return mText;
     }
 
-    public static StringTexture newInstance(final String text, final float textSize, final int color) {
-        return newInstance(text, getDefaultPaint(textSize, color));
+    public int getTextWidth() {
+        return mTextWidth;
     }
 
-    public static StringTexture newInstance(String text, final float textSize, final int color,
-            final float lengthLimit, final boolean isBold) {
-        final TextPaint paint = getDefaultPaint(textSize, color);
-        if (isBold) {
-            paint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-        }
-        if (lengthLimit > 0) {
-            text = TextUtils.ellipsize(text, paint, lengthLimit, TextUtils.TruncateAt.END).toString();
-        }
-        return newInstance(text, paint);
-    }
-
-    public static StringTexture newInstance(final String text, final TextPaint paint) {
-        final FontMetricsInt metrics = paint.getFontMetricsInt();
-        int width = (int) FloatMath.ceil(paint.measureText(text));
-        int height = metrics.bottom - metrics.top;
-        // The texture size needs to be at least 1x1.
-        if (width <= 0) {
-            width = 1;
-        }
-        if (height <= 0) {
-            height = 1;
-        }
-        return new StringTexture(text, paint, metrics, width, height);
+    public int getTextHeight() {
+        return mTextHeight;
     }
 
     @Override
     protected void onDraw(final Canvas canvas, final Bitmap backing) {
-        canvas.translate(0, -mMetrics.ascent);
-        canvas.drawText(mText, 0, 0, mPaint);
+        if (mText != null && mPaint != null && mMetrics != null) {
+            canvas.translate(0, -mMetrics.ascent);
+            canvas.drawText(mText, 0, 0, mPaint);
+        }
     }
 }

@@ -27,16 +27,19 @@ abstract class CanvasTexture extends UploadedTexture {
 
     protected Canvas mCanvas;
     private final Config mConfig;
+    private final int mCanvasWidth, mCanvasHeight;
 
     public CanvasTexture(final int width, final int height) {
         mConfig = Config.ARGB_8888;
         setSize(width, height);
         setOpaque(false);
+        mCanvasWidth = width;
+        mCanvasHeight = height;
     }
 
     @Override
     protected Bitmap onGetBitmap() {
-        final Bitmap bitmap = Bitmap.createBitmap(mWidth, mHeight, mConfig);
+        final Bitmap bitmap = Bitmap.createBitmap(mCanvasWidth, mCanvasHeight, mConfig);
         mCanvas = new Canvas(bitmap);
         onDraw(mCanvas, bitmap);
         return bitmap;

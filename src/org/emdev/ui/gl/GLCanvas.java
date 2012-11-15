@@ -126,10 +126,6 @@ public interface GLCanvas {
     // called in the GL thread.
     public void deleteRecycledResources();
 
-    public void beginRenderTarget(RawTexture texture);
-
-    public void endRenderTarget();
-
     public void setClipRect(RectF bounds);
 
     public void setClipRect(float x, float y, float w, float h);

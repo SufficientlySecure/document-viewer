@@ -29,6 +29,8 @@ public class EventGLDraw implements IEvent {
     private static final Paint LINK_PAINT = new Paint();
     private static final Paint BRIGHTNESS_FILTER = new Paint();
 
+    private static final StringTexture t = new StringTexture(256, 128);
+
     private final Queue<EventGLDraw> eventQueue;
 
     public ViewState viewState;
@@ -162,11 +164,10 @@ public class EventGLDraw implements IEvent {
         final int offset = viewState.book != null ? viewState.book.firstPageOffset : 1;
         final String text = BaseDroidApp.context.getString(R.string.text_page) + " " + (page.index.viewIndex + offset);
 
-         final StringTexture t = StringTexture.newInstance(text, textPaint);
-         final int w = t.getWidth();
-         final int h = t.getHeight();
-         t.draw(canvas, (int) fixedPageBounds.centerX() - w / 2, (int) fixedPageBounds.centerY() - h / 2);
-         t.recycle();
+        t.setText(text, textPaint);
+        final int w = t.getTextWidth();
+        final int h = t.getTextHeight();
+        t.draw(canvas, (int) fixedPageBounds.centerX() - w / 2, (int) fixedPageBounds.centerY() - h / 2);
     }
 
     private void drawPageLinks(final Page page) {

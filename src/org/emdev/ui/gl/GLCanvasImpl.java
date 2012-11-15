@@ -60,7 +60,6 @@ public class GLCanvasImpl implements GLCanvas {
     private int mBoxCoords;
 
     private final GLState mGLState;
-    private final ArrayList<RawTexture> mTargetStack = new ArrayList<RawTexture>();
 
     private float mAlpha;
     private final ArrayList<ConfigState> mRestoreStack = new ArrayList<ConfigState>();
@@ -74,9 +73,7 @@ public class GLCanvasImpl implements GLCanvas {
     private int mScreenWidth;
     private int mScreenHeight;
     private final boolean mBlendEnabled = true;
-    private final int mFrameBuffer[] = new int[1];
 
-    private RawTexture mTargetTexture;
     private GLClipHelper mClipper;
 
     public GLCanvasImpl(final GL11 gl) {
@@ -88,10 +85,8 @@ public class GLCanvasImpl implements GLCanvas {
 
     @Override
     public void setSize(final int width, final int height) {
-        if (mTargetTexture == null) {
-            mScreenWidth = width;
-            mScreenHeight = height;
-        }
+        mScreenWidth = width;
+        mScreenHeight = height;
         mAlpha = 1.0f;
 
         final GL11 gl = mGL;
@@ -106,10 +101,8 @@ public class GLCanvasImpl implements GLCanvas {
         final float matrix[] = mMatrixValues;
         Matrix.setIdentityM(matrix, 0);
         // to match the graphic coordinate system in android, we flip it vertically.
-        if (mTargetTexture == null) {
-            Matrix.translateM(matrix, 0, 0, height, 0);
-            Matrix.scaleM(matrix, 0, 1, -1, 1);
-        }
+        Matrix.translateM(matrix, 0, 0, height, 0);
+        Matrix.scaleM(matrix, 0, 1, -1, 1);
     }
 
     public int getScreenHeight() {
@@ -925,49 +918,6 @@ public class GLCanvasImpl implements GLCanvas {
 
     private void restoreTransform() {
         System.arraycopy(mTempMatrix, 0, mMatrixValues, 0, 16);
-    }
-
-    private void setRenderTarget(final RawTexture texture) {
-        final GL11ExtensionPack gl11ep = (GL11ExtensionPack) mGL;
-
-        if (mTargetTexture == null && texture != null) {
-            GLId.glGenBuffers(1, mFrameBuffer, 0);
-            gl11ep.glBindFramebufferOES(GL11ExtensionPack.GL_FRAMEBUFFER_OES, mFrameBuffer[0]);
-        }
-        if (mTargetTexture != null && texture == null) {
-            gl11ep.glBindFramebufferOES(GL11ExtensionPack.GL_FRAMEBUFFER_OES, 0);
-            gl11ep.glDeleteFramebuffersOES(1, mFrameBuffer, 0);
-        }
-
-        mTargetTexture = texture;
-        if (texture == null) {
-            setSize(mScreenWidth, mScreenHeight);
-        } else {
-            setSize(texture.getWidth(), texture.getHeight());
-
-            if (!texture.isLoaded()) {
-                texture.prepare(this);
-            }
-
-            gl11ep.glFramebufferTexture2DOES(GL11ExtensionPack.GL_FRAMEBUFFER_OES,
-                    GL11ExtensionPack.GL_COLOR_ATTACHMENT0_OES, GL10.GL_TEXTURE_2D, texture.getId(), 0);
-
-            checkFramebufferStatus(gl11ep);
-        }
-    }
-
-    @Override
-    public void endRenderTarget() {
-        final RawTexture texture = mTargetStack.remove(mTargetStack.size() - 1);
-        setRenderTarget(texture);
-        restore(); // restore matrix and alpha
-    }
-
-    @Override
-    public void beginRenderTarget(final RawTexture texture) {
-        save(); // save matrix and alpha
-        mTargetStack.add(mTargetTexture);
-        setRenderTarget(texture);
     }
 
     private static void checkFramebufferStatus(final GL11ExtensionPack gl11ep) {

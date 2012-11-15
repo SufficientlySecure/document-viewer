@@ -23,6 +23,8 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.FloatMath;
 
+import org.emdev.utils.CompareUtils;
+
 // StringTexture is a texture shows the content of a specified String.
 //
 // To create a StringTexture, use the newInstance() method and specify
@@ -40,17 +42,20 @@ public class StringTexture extends CanvasTexture {
     }
 
     public void setText(final String text, final TextPaint paint) {
+        String oldText = mText;
+        int oldTextHeight = mTextHeight;
+
         mPaint = paint;
         mMetrics = paint.getFontMetricsInt();
         mText = text;
         mTextWidth = (int) FloatMath.ceil(mPaint.measureText(mText));
         mTextHeight = mMetrics.bottom - mMetrics.top;
 
-        if (mTextWidth > mWidth) {
-            mText = TextUtils.ellipsize(mText, mPaint, mWidth, TextUtils.TruncateAt.END).toString();
+        if (mTextWidth > mCanvasWidth) {
+            mText = TextUtils.ellipsize(mText, mPaint, mCanvasWidth, TextUtils.TruncateAt.END).toString();
             mTextWidth = (int) FloatMath.ceil(mPaint.measureText(mText));
         }
-        if (text != null) {
+        if (!CompareUtils.equals(mText, oldText) || mTextHeight != oldTextHeight) {
             invalidateContent();
         }
     }

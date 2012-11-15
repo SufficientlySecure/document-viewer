@@ -27,7 +27,7 @@ abstract class CanvasTexture extends UploadedTexture {
 
     protected Canvas mCanvas;
     private final Config mConfig;
-    private final int mCanvasWidth, mCanvasHeight;
+    protected final int mCanvasWidth, mCanvasHeight;
 
     public CanvasTexture(final int width, final int height) {
         mConfig = Config.ARGB_8888;

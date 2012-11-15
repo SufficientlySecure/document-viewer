@@ -17,6 +17,7 @@ package org.emdev.ui.gl;
  */
 
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.opengl.GLU;
 import android.opengl.Matrix;
@@ -45,7 +46,7 @@ public class GLCanvasImpl implements GLCanvas {
             0, 0, 1, 1, // used for drawing a line
             0, 0, 0, 1, 1, 1, 1, 0 }; // used for drawing the outline of a rectangle
 
-    private final GL11 mGL;
+    final GL11 mGL;
 
     private final float mMatrixValues[] = new float[16];
     private final float mTextureMatrixValues[] = new float[16];
@@ -76,17 +77,12 @@ public class GLCanvasImpl implements GLCanvas {
     private final int mFrameBuffer[] = new int[1];
 
     private RawTexture mTargetTexture;
-
-    // Drawing statistics
-    int mCountDrawLine;
-    int mCountFillRect;
-    int mCountDrawMesh;
-    int mCountTextureRect;
-    int mCountTextureOES;
+    private GLClipHelper mClipper;
 
     public GLCanvasImpl(final GL11 gl) {
         mGL = gl;
         mGLState = new GLState(gl);
+        mClipper = new GLClipHelper(this);
         initialize();
     }
 
@@ -173,31 +169,22 @@ public class GLCanvasImpl implements GLCanvas {
 
     @Override
     public void setClipRect(final RectF bounds) {
-        setClipRect(bounds.left, bounds.top, bounds.width(), bounds.height());
+        mClipper.setClipRect(bounds);
     }
 
     @Override
     public void setClipRect(final float left, final float top, final float width, final float height) {
-        final GL11 gl = mGL;
-        gl.glEnable(GL10.GL_STENCIL_TEST);
+        mClipper.setClipRect(left, top, width, height);
+    }
 
-        gl.glClear(GL10.GL_STENCIL_BUFFER_BIT);
-        gl.glColorMask(false, false, false, false);
-        gl.glStencilFunc(GL10.GL_ALWAYS, 1, ~0);
-        gl.glStencilOp(GL10.GL_REPLACE, GL10.GL_REPLACE, GL10.GL_REPLACE);
-
-        fillRect(left, top, width, height, 1);
-
-        gl.glColorMask(true, true, true, true);
-        gl.glStencilFunc(GL10.GL_EQUAL, 1, ~0);
-        gl.glStencilOp(GL10.GL_KEEP, GL10.GL_KEEP, GL10.GL_KEEP);
-
+    @Override
+    public void setClipPath(final PointF... path) {
+        mClipper.setClipPath(path);
     }
 
     @Override
     public void clearClipRect() {
-        final GL11 gl = mGL;
-        gl.glDisable(GL10.GL_STENCIL_TEST);
+        mClipper.clearClipRect();
     }
 
     @Override
@@ -215,7 +202,6 @@ public class GLCanvasImpl implements GLCanvas {
         gl.glDrawArrays(GL10.GL_LINE_LOOP, OFFSET_DRAW_RECT, 4);
 
         restoreTransform();
-        mCountDrawLine++;
     }
 
     @Override
@@ -233,7 +219,6 @@ public class GLCanvasImpl implements GLCanvas {
         gl.glDrawArrays(GL10.GL_LINE_LOOP, OFFSET_DRAW_RECT, 4);
 
         restoreTransform();
-        mCountDrawLine++;
     }
 
     @Override
@@ -251,7 +236,6 @@ public class GLCanvasImpl implements GLCanvas {
         gl.glDrawArrays(GL10.GL_LINE_STRIP, OFFSET_DRAW_LINE, 2);
 
         restoreTransform();
-        mCountDrawLine++;
     }
 
     @Override
@@ -267,7 +251,6 @@ public class GLCanvasImpl implements GLCanvas {
         gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, OFFSET_FILL_RECT, 4);
 
         restoreTransform();
-        mCountFillRect++;
     }
 
     @Override
@@ -289,7 +272,39 @@ public class GLCanvasImpl implements GLCanvas {
         gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, OFFSET_FILL_RECT, 4);
 
         restoreTransform();
-        mCountFillRect++;
+    }
+
+    @Override
+    public void drawPoly(final int color, final PointF... path) {
+        mGLState.setColorMode(color, mAlpha);
+        final GL11 gl = mGL;
+
+        final int bytes = 2 * path.length * Float.SIZE;
+        final FloatBuffer xyBuffer = allocateDirectNativeOrderBuffer(bytes).asFloatBuffer();
+        for (int i = 0; i < path.length; i++) {
+            xyBuffer.put(path[i].x / mScreenWidth);
+            xyBuffer.put(path[i].y / mScreenHeight);
+        }
+        xyBuffer.position(0);
+
+        saveTransform();
+        translate(0, 0);
+        scale(mScreenWidth, mScreenHeight, 1);
+        gl.glLoadMatrixf(mMatrixValues, 0);
+
+        final int[] name = new int[1];
+        GLId.glGenBuffers(1, name, 0);
+
+        gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, name[0]);
+        gl.glBufferData(GL11.GL_ARRAY_BUFFER, bytes, xyBuffer, GL11.GL_DYNAMIC_DRAW);
+        gl.glVertexPointer(2, GL10.GL_FLOAT, 0, 0);
+        gl.glDrawArrays(GL10.GL_TRIANGLE_FAN, 0, path.length);
+
+        restoreTransform();
+
+        gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, mBoxCoords);
+        gl.glVertexPointer(2, GL10.GL_FLOAT, 0, 0);
+        gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, 0);
     }
 
     @Override
@@ -343,7 +358,6 @@ public class GLCanvasImpl implements GLCanvas {
         gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, OFFSET_FILL_RECT, 4);
 
         restoreTransform();
-        mCountTextureRect++;
     }
 
     @Override
@@ -380,7 +394,6 @@ public class GLCanvasImpl implements GLCanvas {
         mGL.glTexCoordPointer(2, GL10.GL_FLOAT, 0, 0);
 
         restoreTransform();
-        mCountDrawMesh++;
     }
 
     // Transforms two points by the given matrix m. The result
@@ -421,7 +434,6 @@ public class GLCanvasImpl implements GLCanvas {
             height = (int) (points[3] + 0.5f) - y;
             if (width > 0 && height > 0) {
                 ((GL11Ext) mGL).glDrawTexiOES(x, y, 0, width, height);
-                mCountTextureOES++;
             }
         }
     }

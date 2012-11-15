@@ -17,6 +17,7 @@ package org.emdev.ui.gl;
  */
 
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.RectF;
 
 import javax.microedition.khronos.opengles.GL11;
@@ -83,7 +84,7 @@ public interface GLCanvas {
 
     // Draws a rectangle using the specified paint from (x1, y1) to (x2, y2).
     // (Both end points are included).
-    public void drawRect(float x1, float y1, float x2, float y2, Paint paint);
+    public void drawRect(float x1, float y1, float width, float heught, Paint paint);
 
     public void drawRect(final RectF r, final Paint paint);
 
@@ -133,7 +134,9 @@ public interface GLCanvas {
 
     public void setClipRect(float x, float y, float w, float h);
 
+    public void setClipPath(final PointF... path);
+
     public void clearClipRect();
 
-
+    public void drawPoly(final int color, final PointF... path);
 }

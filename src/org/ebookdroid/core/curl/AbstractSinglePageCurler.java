@@ -115,6 +115,96 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
     /**
      * {@inheritDoc}
      *
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawForeground(org.ebookdroid.core.EventDraw)
+     */
+    @Override
+    protected void drawForeground(final EventDraw event) {
+        Page page = event.viewState.model.getPageObject(foreIndex);
+        if (page == null) {
+            page = event.viewState.model.getCurrentPageObject();
+        }
+        if (page != null) {
+            event.canvas.save();
+            event.canvas.clipRect(event.viewState.getBounds(page));
+            event.process(page);
+            event.canvas.restore();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawBackground(org.ebookdroid.core.EventDraw)
+     */
+    @Override
+    protected void drawBackground(final EventDraw event) {
+        final Path mask = createBackgroundPath();
+
+        final Page page = event.viewState.model.getPageObject(backIndex);
+        if (page != null) {
+            // Save current canvas so we do not mess it up
+            event.canvas.save();
+            event.canvas.clipPath(mask);
+            event.canvas.drawRect(event.canvas.getClipBounds(), event.viewState.paint.backgroundFillPaint);
+            event.process(page);
+            event.canvas.restore();
+        }
+
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawExtraObjects(org.ebookdroid.core.EventDraw)
+     */
+    @Override
+    protected void drawExtraObjects(final EventDraw event) {
+        final Path path = createCurlEdgePath();
+        event.canvas.drawPath(path, mCurlEdgePaint);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawForeground(org.ebookdroid.core.EventDraw)
+     */
+    @Override
+    protected void drawForeground(final EventGLDraw event) {
+        Page page = event.viewState.model.getPageObject(foreIndex);
+        if (page == null) {
+            page = event.viewState.model.getCurrentPageObject();
+        }
+        if (page != null) {
+            event.process(page);
+        }
+    }
+
+    @Override
+    protected void drawBackground(final EventGLDraw event) {
+        if (foreIndex != backIndex) {
+            final Page page = event.viewState.model.getPageObject(backIndex);
+            if (page != null) {
+                event.canvas.setClipPath(mA, mB, mC, mD);
+                event.process(page);
+                event.canvas.clearClipRect();
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawExtraObjects(org.ebookdroid.core.EventGLDraw)
+     */
+    @Override
+    protected void drawExtraObjects(final EventGLDraw event) {
+        final GLCanvas canvas = event.canvas;
+        canvas.drawPoly(mCurlEdgePaint.getColor(), mA, mD, mE, mF);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @see org.ebookdroid.core.curl.AbstractPageAnimator#resetClipEdge()
      */
     @Override
@@ -136,72 +226,6 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
 
         // The movement origin point
         mOrigin = new Vector2D(view.getWidth(), 0);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawForeground(org.ebookdroid.core.EventDraw)
-     */
-    @Override
-    protected void drawForeground(final EventDraw event) {
-        Page page = event.viewState.model.getPageObject(foreIndex);
-        if (page == null) {
-            page = event.viewState.model.getCurrentPageObject();
-        }
-        if (page != null) {
-            event.canvas.save();
-            event.canvas.clipRect(event.viewState.getBounds(page));
-            event.process(page);
-            event.canvas.restore();
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawForeground(org.ebookdroid.core.EventDraw)
-     */
-    @Override
-    protected void drawForeground(final EventGLDraw event) {
-        Page page = event.viewState.model.getPageObject(foreIndex);
-        if (page == null) {
-            page = event.viewState.model.getCurrentPageObject();
-        }
-        if (page != null) {
-            event.canvas.save();
-            event.process(page);
-            event.canvas.restore();
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawBackground(org.ebookdroid.core.EventDraw)
-     */
-    @Override
-    protected void drawBackground(final EventDraw event) {
-        final Path mask = createBackgroundPath();
-
-        final Page page = event.viewState.model.getPageObject(backIndex);
-        if (page != null) {
-            // Save current canvas so we do not mess it up
-            event.canvas.save();
-            event.canvas.clipPath(mask);
-
-            event.canvas.drawRect(event.canvas.getClipBounds(), event.viewState.paint.backgroundFillPaint);
-
-            event.process(page);
-
-            event.canvas.restore();
-        }
-
-    }
-
-    @Override
-    protected void drawBackground(final EventGLDraw event) {
-        // TODO Auto-generated method stub
     }
 
     /**
@@ -232,31 +256,6 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
         path.lineTo(mF.x, mF.y);
         path.lineTo(mA.x, mA.y);
         return path;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawExtraObjects(org.ebookdroid.core.EventDraw)
-     */
-    @Override
-    protected void drawExtraObjects(final EventDraw event) {
-        final Path path = createCurlEdgePath();
-        event.canvas.drawPath(path, mCurlEdgePaint);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawExtraObjects(org.ebookdroid.core.EventGLDraw)
-     */
-    @Override
-    protected void drawExtraObjects(final EventGLDraw event) {
-        final GLCanvas canvas = event.canvas;
-        canvas.drawLine(mA.x, mA.y, mD.x, mD.y, mCurlEdgePaint);
-        canvas.drawLine(mD.x, mD.y, mE.x, mE.y, mCurlEdgePaint);
-        canvas.drawLine(mE.x, mE.y, mF.x, mF.y, mCurlEdgePaint);
-        canvas.drawLine(mF.x, mF.y, mA.x, mA.y, mCurlEdgePaint);
     }
 
 }

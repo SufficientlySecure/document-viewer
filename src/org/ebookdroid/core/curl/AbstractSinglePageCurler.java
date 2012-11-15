@@ -218,14 +218,16 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
         float center = (mF.x + mD.x) / 2;
 
         canvas.save();
-        canvas.setAlpha(0.5f);
-        canvas.translate(center, 0);
-        canvas.scale(1.10f, 1.10f, 1f);
-        canvas.translate(-center, 0);
-        canvas.drawPoly(Color.BLACK, foreBack);
+            for(int i = 10; i > 0; i--) {
+                canvas.setAlpha(0.5f / (i+1));
+                canvas.translate(i, i);
+                canvas.fillPoly(Color.BLACK, foreBack);
+                canvas.translate(-i, -i);
+            }
         canvas.restore();
 
-        canvas.drawPoly(mCurlEdgePaint.getColor(), foreBack);
+        canvas.fillPoly(mCurlEdgePaint.getColor(), foreBack);
+        canvas.drawPoly(Color.BLACK, foreBack);
     }
 
     /**

@@ -105,7 +105,7 @@ public class GLClipHelper {
 
         @Override
         public void draw(final GLCanvas canvas) {
-            canvas.drawPoly(1, path);
+            canvas.fillPoly(1, path);
         }
     }
 

@@ -167,6 +167,10 @@ public class GLCanvasImpl implements GLCanvas {
         gl.glHint(GL10.GL_LINE_SMOOTH_HINT, GL10.GL_NICEST);
         gl.glHint(GL10.GL_POLYGON_SMOOTH_HINT, GL10.GL_NICEST);
 
+        gl.glEnable(GL10.GL_LINE_SMOOTH);
+        gl.glLineWidth(1.5f);
+        gl.glEnable(GL10.GL_BLEND);
+        gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
         // mMatrixValues and mAlpha will be initialized in setSize()
     }
 
@@ -278,7 +282,7 @@ public class GLCanvasImpl implements GLCanvas {
     }
 
     @Override
-    public void drawPoly(final int color, final PointF... path) {
+    public void fillPoly(final int color, final PointF... path) {
         mGLState.setColorMode(color, mAlpha);
         final GL11 gl = mGL;
 
@@ -302,6 +306,40 @@ public class GLCanvasImpl implements GLCanvas {
         gl.glBufferData(GL11.GL_ARRAY_BUFFER, bytes, xyBuffer, GL11.GL_DYNAMIC_DRAW);
         gl.glVertexPointer(2, GL10.GL_FLOAT, 0, 0);
         gl.glDrawArrays(GL10.GL_TRIANGLE_FAN, 0, path.length);
+
+        restoreTransform();
+
+        gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, mBoxCoords);
+        gl.glVertexPointer(2, GL10.GL_FLOAT, 0, 0);
+        gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, 0);
+    }
+
+    @Override
+    public void drawPoly(final int color, final PointF... path) {
+        mGLState.setColorMode(color, mAlpha);
+        mGLState.setLineWidth(1.5f);
+        final GL11 gl = mGL;
+
+        final int bytes = 2 * path.length * Float.SIZE;
+        final FloatBuffer xyBuffer = allocateDirectNativeOrderBuffer(bytes).asFloatBuffer();
+        for (int i = 0; i < path.length; i++) {
+            xyBuffer.put(path[i].x / mScreenWidth);
+            xyBuffer.put(path[i].y / mScreenHeight);
+        }
+        xyBuffer.position(0);
+
+        saveTransform();
+        translate(0, 0);
+        scale(mScreenWidth, mScreenHeight, 1);
+        gl.glLoadMatrixf(mMatrixValues, 0);
+
+        final int[] name = new int[1];
+        GLId.glGenBuffers(1, name, 0);
+
+        gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, name[0]);
+        gl.glBufferData(GL11.GL_ARRAY_BUFFER, bytes, xyBuffer, GL11.GL_DYNAMIC_DRAW);
+        gl.glVertexPointer(2, GL10.GL_FLOAT, 0, 0);
+        gl.glDrawArrays(GL10.GL_LINE_LOOP, 0, path.length);
 
         restoreTransform();
 

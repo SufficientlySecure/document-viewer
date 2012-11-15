@@ -139,4 +139,6 @@ public interface GLCanvas {
     public void clearClipRect();
 
     public void drawPoly(final int color, final PointF... path);
+
+    public void fillPoly(final int color, final PointF... path);
 }

@@ -77,7 +77,7 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
         mOldMovement.y = 0;
 
         // Now set the points
-        mA = new Vector2D(mInitialEdgeOffset, 0);
+        mA.set(mInitialEdgeOffset, 0);
     }
 
     /**

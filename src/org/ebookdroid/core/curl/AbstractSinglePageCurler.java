@@ -22,10 +22,28 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
     protected Paint mCurlEdgePaint;
 
     /** Our points used to define the current clipping paths in our draw call */
-    protected Vector2D mB, mC, mD, mE, mF, mOldF, mOrigin;
+    protected final Vector2D mB, mC, mD, mE, mF, mOldF, mOrigin;
+
+    protected final Vector2D[] pageBack;
+    protected final Vector2D[] pageBackShadow;
 
     public AbstractSinglePageCurler(final PageAnimationType type, final SinglePageController singlePageDocumentView) {
         super(type, singlePageDocumentView);
+        mB = new Vector2D();
+        mC = new Vector2D();
+        mD = new Vector2D();
+        mE = new Vector2D();
+        mF = new Vector2D();
+        mOldF = new Vector2D();
+
+        // The movement origin point
+        mOrigin = new Vector2D(view.getWidth(), 0);
+
+        pageBack = new Vector2D[] { mA, mD, mE, mF };
+        pageBackShadow = new Vector2D[pageBack.length];
+        for (int i = 0; i < pageBackShadow.length; i++) {
+            pageBackShadow[i] = new Vector2D();
+        }
     }
 
     /**
@@ -199,7 +217,23 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
     @Override
     protected void drawExtraObjects(final EventGLDraw event) {
         final GLCanvas canvas = event.canvas;
-        canvas.drawPoly(mCurlEdgePaint.getColor(), mA, mD, mE, mF);
+
+        for (int i = 0; i < pageBackShadow.length; i++) {
+            pageBackShadow[i].set(pageBack[i]);
+        }
+        pageBackShadow[0].y += 20;
+        pageBackShadow[1].y -= 20;
+        pageBackShadow[1].x += 20;
+        pageBackShadow[2].y -= 20;
+        pageBackShadow[2].x -= 20;
+        pageBackShadow[2].x -= 20;
+
+        canvas.save();
+        canvas.setAlpha(0.5f);
+        canvas.drawPoly(Color.BLACK, pageBackShadow);
+        canvas.restore();
+
+        canvas.drawPoly(mCurlEdgePaint.getColor(), pageBack);
     }
 
     /**
@@ -216,16 +250,16 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
         mOldMovement.y = 0;
 
         // Now set the points
-        mA = new Vector2D(mInitialEdgeOffset, 0);
-        mB = new Vector2D(view.getWidth(), view.getHeight());
-        mC = new Vector2D(view.getWidth(), 0);
-        mD = new Vector2D(0, 0);
-        mE = new Vector2D(0, 0);
-        mF = new Vector2D(0, 0);
-        mOldF = new Vector2D(0, 0);
+        mA.set(mInitialEdgeOffset, 0);
+        mB.set(view.getWidth(), view.getHeight());
+        mC.set(view.getWidth(), 0);
+        mD.set(0, 0);
+        mE.set(0, 0);
+        mF.set(0, 0);
+        mOldF.set(0, 0);
 
         // The movement origin point
-        mOrigin = new Vector2D(view.getWidth(), 0);
+        mOrigin.set(view.getWidth(), 0);
     }
 
     /**

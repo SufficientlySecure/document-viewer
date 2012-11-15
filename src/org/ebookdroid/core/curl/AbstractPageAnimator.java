@@ -36,7 +36,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
     protected boolean bBlockTouchInput = false;
     /** Enable input after the next draw event */
     protected boolean bEnableInputAfterDraw = false;
-    protected Vector2D mA = new Vector2D(0, 0);
+    protected final Vector2D mA = new Vector2D(0, 0);
     /** The initial offset for x and y axis movements */
     protected int mInitialEdgeOffset;
     /** The finger position */

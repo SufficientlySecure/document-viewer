@@ -8,6 +8,10 @@ import android.util.FloatMath;
  */
 public class Vector2D extends PointF {
 
+    public Vector2D() {
+        super();
+    }
+
     public Vector2D(final float x, final float y) {
         super(x, y);
     }

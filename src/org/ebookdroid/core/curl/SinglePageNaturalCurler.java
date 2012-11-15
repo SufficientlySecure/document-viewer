@@ -217,7 +217,7 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
         mOldMovement.y = 0;
 
         // Now set the points
-        mA = new Vector2D(0, 0);
+        mA.set(0, 0);
     }
 
     /**

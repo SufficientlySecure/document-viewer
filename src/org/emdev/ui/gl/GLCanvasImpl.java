@@ -164,6 +164,9 @@ public class GLCanvasImpl implements GLCanvas {
         gl.glClientActiveTexture(GL10.GL_TEXTURE0);
         gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 
+        gl.glHint(GL10.GL_LINE_SMOOTH_HINT, GL10.GL_NICEST);
+        gl.glHint(GL10.GL_POLYGON_SMOOTH_HINT, GL10.GL_NICEST);
+
         // mMatrixValues and mAlpha will be initialized in setSize()
     }
 

@@ -180,7 +180,7 @@ public class EventGLDraw implements IEvent {
             if (rect != null) {
                 rect.offset(-viewState.viewBase.x, -viewState.viewBase.y);
                 LINK_PAINT.setColor(AppSettings.current().linkHighlightColor);
-                canvas.drawRect(rect, LINK_PAINT);
+                canvas.fillRect(rect, LINK_PAINT);
             }
         }
     }
@@ -204,7 +204,7 @@ public class EventGLDraw implements IEvent {
             final RectF rect = page.getPageRegion(pageBounds, new RectF(link));
             rect.offset(-viewState.viewBase.x, -viewState.viewBase.y);
             p.setColor(current ? app.currentSearchHighlightColor : app.searchHighlightColor);
-            canvas.drawRect(rect, p);
+            canvas.fillRect(rect, p);
         }
     }
 

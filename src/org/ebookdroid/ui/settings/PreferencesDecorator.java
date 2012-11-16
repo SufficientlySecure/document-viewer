@@ -140,7 +140,7 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
             try {
                 final Method setCheckedMethod = clazz.getMethod("setChecked", boolean.class);
                 final Method setEnabledMethod = clazz.getMethod("setEnabled", boolean.class);
-                if ((type == DocumentViewType.SURFACE) || AndroidVersion.lessThan3x) {
+                if ((type != DocumentViewType.BASE) || AndroidVersion.lessThan3x) {
                     setCheckedMethod.invoke(hwaPref, false);
                     setEnabledMethod.invoke(hwaPref, false);
                 } else {

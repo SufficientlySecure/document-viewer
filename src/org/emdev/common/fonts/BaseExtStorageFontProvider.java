@@ -32,7 +32,6 @@ public class BaseExtStorageFontProvider extends AbstractCustomFontProvider {
     }
 
     @Override
-    @SuppressWarnings("resource")
     protected final InputStream openCatalog() throws IOException {
         return fontsCatalog.exists() ? new FileInputStream(fontsCatalog) : null;
     }

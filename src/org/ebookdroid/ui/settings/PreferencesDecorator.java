@@ -95,9 +95,6 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
     }
 
     public void decorateMemorySettings() {
-        addViewTypeListener(VIEW_TYPE.key, HWA_ENABLED.key);
-
-        setHWA(AppSettings.current().viewType, HWA_ENABLED.key);
     }
 
     public void decorateRenderSettings() {
@@ -265,10 +262,6 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
         addListener(source, new ViewModeListener(targets));
     }
 
-    protected void addViewTypeListener(final String source, final String target) {
-        addListener(source, new ViewTypeListener(target));
-    }
-
     protected static class CompositeListener implements OnPreferenceChangeListener {
 
         final List<OnPreferenceChangeListener> listeners = new LinkedList<Preference.OnPreferenceChangeListener>();
@@ -320,20 +313,4 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
         }
     }
 
-    protected class ViewTypeListener implements OnPreferenceChangeListener {
-
-        private final String relatedKey;
-
-        public ViewTypeListener(final String relatedKey) {
-            this.relatedKey = relatedKey;
-        }
-
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object newValue) {
-            final DocumentViewType dvt = EnumUtils.getByResValue(DocumentViewType.class, newValue.toString(), null);
-            setHWA(dvt, relatedKey);
-            return true;
-        }
-
-    }
 }

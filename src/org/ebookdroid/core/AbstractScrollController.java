@@ -1,32 +1,18 @@
 package org.ebookdroid.core;
 
-import org.ebookdroid.R;
-import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.core.models.DocumentModel.PageIterator;
 import org.ebookdroid.ui.viewer.IActivityController;
 import org.ebookdroid.ui.viewer.views.DragMark;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-import org.emdev.ui.uimanager.IUIManager;
-
 public abstract class AbstractScrollController extends AbstractViewController {
-
-    protected static volatile Bitmap dragBitmap;
 
     protected AbstractScrollController(final IActivityController base, final DocumentViewMode mode) {
         super(base, mode);
-        if (dragBitmap == null) {
-            dragBitmap = BitmapFactory.decodeResource(base.getContext().getResources(),
-                    R.drawable.components_curler_drag);
-        }
-        IUIManager.instance.setHardwareAccelerationEnabled(base.getActivity(), AppSettings.current().hwaEnabled);
-        IUIManager.instance.setHardwareAccelerationMode(base.getActivity(), getView().getView(), true);
     }
 
     /**

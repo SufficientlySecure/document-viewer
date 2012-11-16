@@ -17,7 +17,6 @@ import android.util.Log;
 import android.webkit.WebView;
 
 import org.emdev.BaseDroidApp;
-import org.emdev.common.android.VMRuntimeHack;
 import org.emdev.common.backup.BackupManager;
 import org.emdev.common.fonts.FontManager;
 import org.emdev.ui.actions.ActionController;
@@ -33,7 +32,7 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see android.app.Application#onCreate()
      */
     @Override
@@ -46,7 +45,7 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
         CacheManager.init(this);
         FontManager.init();
 
-        VMRuntimeHack.preallocateHeap(AppSettings.current().heapPreallocate);
+        preallocateHeap(AppSettings.current().heapPreallocate);
 
         SettingsManager.addListener(this);
         onAppSettingsChanged(null, AppSettings.current(), null);
@@ -62,7 +61,7 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see android.app.Application#onLowMemory()
      */
     @Override
@@ -77,7 +76,6 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
 
         BitmapManager.setPartSize(1 << newSettings.bitmapSize);
         BitmapManager.setUseEarlyRecycling(newSettings.useEarlyRecycling);
-        BitmapManager.setUseBitmapHack(newSettings.useBitmapHack);
         BitmapManager.setUseNativeTextures(newSettings.useNativeTextures);
 
         setAppLocale(newSettings.lang);
@@ -126,4 +124,36 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
             System.exit(0);
         }
     }
+
+    /**
+     * Preallocate heap.
+     *
+     * @param size
+     *            the size in megabytes
+     * @return the object
+     */
+    private static Object preallocateHeap(int size) {
+        if (size <= 0) {
+            Log.i(APP_NAME, "No heap preallocation");
+            return null;
+        }
+        int i = size;
+        Log.i(APP_NAME, "Trying to preallocate " + size + "Mb");
+        while (i > 0) {
+            try {
+                byte[] tmp = new byte[i * 1024 * 1024];
+                tmp[(int) (size - 1)] = (byte) size;
+                Log.i(APP_NAME, "Preallocated " + i + "Mb");
+                tmp = null;
+                return tmp;
+            } catch (OutOfMemoryError e) {
+                i--;
+            } catch (IllegalArgumentException e) {
+                i--;
+            }
+        }
+        Log.i(APP_NAME, "Heap preallocation failed");
+        return null;
+    }
+
 }

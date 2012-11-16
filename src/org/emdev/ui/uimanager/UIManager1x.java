@@ -69,14 +69,6 @@ public class UIManager1x implements IUIManager {
     }
 
     @Override
-    public void setHardwareAccelerationEnabled(final Activity activity, final boolean enabled) {
-    }
-
-    @Override
-    public void setHardwareAccelerationMode(final Activity activity, final View view, final boolean accelerated) {
-    }
-
-    @Override
     public void openOptionsMenu(final Activity activity, final View view) {
         activity.openOptionsMenu();
     }

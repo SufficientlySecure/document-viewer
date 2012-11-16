@@ -93,18 +93,6 @@ public class UIManager3x implements IUIManager {
     }
 
     @Override
-    public void setHardwareAccelerationEnabled(final Activity activity, final boolean enabled) {
-        data.get(activity.getComponentName()).hwaEnabled = enabled;
-    }
-
-    @Override
-    public void setHardwareAccelerationMode(final Activity activity, final View view, final boolean accelerated) {
-        if (data.get(activity.getComponentName()).hwaEnabled && view != null) {
-            view.setLayerType(accelerated ? View.LAYER_TYPE_HARDWARE : View.LAYER_TYPE_SOFTWARE, null);
-        }
-    }
-
-    @Override
     public void openOptionsMenu(final Activity activity, final View view) {
         activity.openOptionsMenu();
     }
@@ -258,7 +246,6 @@ public class UIManager3x implements IUIManager {
 
     private static class Data {
 
-        boolean hwaEnabled = false;
         boolean fullScreen = false;
         boolean titleVisible = true;
         final AtomicBoolean fullScreenState = new AtomicBoolean();

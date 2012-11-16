@@ -18,7 +18,6 @@ import android.graphics.RectF;
 
 import java.util.List;
 
-import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.utils.LengthUtils;
 
 /**
@@ -294,10 +293,6 @@ public class SinglePageController extends AbstractViewController {
     public final void updateAnimationType() {
         final PageAnimationType animationType = base.getBookSettings().animationType;
         final PageAnimator newCurler = PageAnimationType.create(animationType, this);
-
-        IUIManager.instance.setHardwareAccelerationEnabled(base.getActivity(), AppSettings.current().hwaEnabled);
-        IUIManager.instance.setHardwareAccelerationMode(base.getActivity(), getView().getView(),
-                animationType.isHardwareAccelSupported());
 
         newCurler.init();
         curler.switchCurler(newCurler);

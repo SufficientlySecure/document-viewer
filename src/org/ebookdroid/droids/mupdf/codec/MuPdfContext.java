@@ -65,8 +65,7 @@ public abstract class MuPdfContext extends AbstractCodecContext {
 
     @Override
     public Bitmap.Config getBitmapConfig() {
-        return EBookDroidLibraryLoader.nativeGraphicsAvailable && AppSettings.current().useNativeGraphics ? NATIVE_BITMAP_CFG
-                : BITMAP_CFG;
+        return EBookDroidLibraryLoader.nativeGraphicsAvailable ? NATIVE_BITMAP_CFG : BITMAP_CFG;
     }
 
     private static native void setMonoFonts(String regular, String italic, String bold, String boldItalic);

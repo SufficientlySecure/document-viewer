@@ -120,7 +120,7 @@ public class MuPdfPage extends AbstractCodecPage {
         final int nightmode = viewState != null && viewState.nightMode && viewState.positiveImagesInNightMode ? 1 : 0;
         final int slowcmyk = AppSettings.current().slowCMYK ? 1 : 0;
 
-        if (EBookDroidLibraryLoader.nativeGraphicsAvailable && AppSettings.current().useNativeGraphics) {
+        if (EBookDroidLibraryLoader.nativeGraphicsAvailable) {
             final IBitmapRef bmp = BitmapManager.getBitmap("PDF page", width, height, MuPdfContext.NATIVE_BITMAP_CFG);
             boolean res = renderPageBitmap(docHandle, pageHandle, mRect, ctm, bmp.getBitmap(), nightmode, slowcmyk);
             if (res) {

@@ -101,19 +101,11 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     public final int drawThreadPriority;
 
-    public final boolean useNativeGraphics;
-
-    public final boolean hwaEnabled;
-
     public final int bitmapSize;
-
-    public final boolean bitmapFileringEnabled;
 
     public final boolean textureReuseEnabled;
 
     public final boolean useNativeTextures;
-
-    public final boolean useBitmapHack;
 
     public final boolean useEarlyRecycling;
 
@@ -225,13 +217,9 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         decodingThreads = DECODING_THREADS.getPreferenceValue(prefs);
         decodingThreadPriority = DECODE_THREAD_PRIORITY.getPreferenceValue(prefs);
         drawThreadPriority = DRAW_THREAD_PRIORITY.getPreferenceValue(prefs);
-        useNativeGraphics = USE_NATIVE_GRAPHICS.getPreferenceValue(prefs);
-        hwaEnabled = viewType == DocumentViewType.BASE && HWA_ENABLED.getPreferenceValue(prefs);
         bitmapSize = BITMAP_SIZE.getPreferenceValue(prefs);
-        bitmapFileringEnabled = BITMAP_FILTERING.getPreferenceValue(prefs);
         textureReuseEnabled = REUSE_TEXTURES.getPreferenceValue(prefs);
         useNativeTextures = USE_NATIVE_TEXTURES.getPreferenceValue(prefs);
-        useBitmapHack = USE_BITMAP_HACK.getPreferenceValue(prefs);
         useEarlyRecycling = EARLY_RECYCLING.getPreferenceValue(prefs);
         reloadDuringZoom = RELOAD_DURING_ZOOM.getPreferenceValue(prefs);
         heapPreallocate = HEAP_PREALLOCATE.getPreferenceValue(prefs);

@@ -48,18 +48,6 @@
                 android:summary="@string/pref_drawthread_priority_summary"
                 android:title="@string/pref_drawthread_priority_title" />
 
-            <CheckBoxPreference
-                android:defaultValue="@string/pref_usenativegraphics_defvalue"
-                android:key="@string/pref_usenativegraphics_id"
-                android:summary="@string/pref_usenativegraphics_summary"
-                android:title="@string/pref_usenativegraphics_title" />
-
-            <CheckBoxPreference
-                android:defaultValue="@string/pref_hwa_enabled_defvalue"
-                android:key="@string/pref_hwa_enabled_id"
-                android:summary="@string/pref_hwa_enabled_summary"
-                android:title="@string/pref_hwa_enabled_title" />
-
             <ListPreference
                 android:defaultValue="@string/pref_bitmapsize_128"
                 android:entries="@array/pref_bitmapsize_entries"
@@ -67,12 +55,6 @@
                 android:key="@string/pref_bitmapsize_id"
                 android:summary="@string/pref_bitmapsize_summary"
                 android:title="@string/pref_bitmapsize_title" />
-
-            <CheckBoxPreference
-                android:defaultValue="@string/pref_bitmapfilering_enabled_defvalue"
-                android:key="@string/pref_bitmapfilering_enabled_id"
-                android:summary="@string/pref_bitmapfilering_enabled_summary"
-                android:title="@string/pref_bitmapfilering_enabled_title" />
 
             <CheckBoxPreference
                 android:defaultValue="@string/pref_texturereuse_defvalue"
@@ -85,12 +67,6 @@
                 android:key="@string/pref_usenativetextures_id"
                 android:summary="@string/pref_usenativetextures_summary"
                 android:title="@string/pref_usenativetextures_title" />
-
-            <CheckBoxPreference
-                android:defaultValue="@string/pref_bitmaphack_defvalue"
-                android:key="@string/pref_bitmaphack_id"
-                android:summary="@string/pref_bitmaphack_summary"
-                android:title="@string/pref_bitmaphack_title" />
 
             <CheckBoxPreference
                 android:defaultValue="@string/pref_earlyrecycling_defvalue"

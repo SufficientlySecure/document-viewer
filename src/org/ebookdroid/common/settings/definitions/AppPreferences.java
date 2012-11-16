@@ -122,26 +122,14 @@ public interface AppPreferences {
     IntegerPreferenceDefinition DRAW_THREAD_PRIORITY = new IntegerPreferenceDefinition(pref_drawthread_priority_id,
             pref_thread_priority_normal, pref_thread_priority_lowest, pref_thread_priority_highest);
 
-    BooleanPreferenceDefinition USE_NATIVE_GRAPHICS = new BooleanPreferenceDefinition(pref_usenativegraphics_id,
-            pref_usenativegraphics_defvalue);
-
-    BooleanPreferenceDefinition HWA_ENABLED = new BooleanPreferenceDefinition(pref_hwa_enabled_id,
-            pref_hwa_enabled_defvalue);
-
     IntegerPreferenceDefinition BITMAP_SIZE = new IntegerPreferenceDefinition(pref_bitmapsize_id, pref_bitmapsize_128,
             pref_bitmapsize_64, pref_bitmapsize_1024);
-
-    BooleanPreferenceDefinition BITMAP_FILTERING = new BooleanPreferenceDefinition(pref_bitmapfilering_enabled_id,
-            pref_bitmapfilering_enabled_defvalue);
 
     BooleanPreferenceDefinition REUSE_TEXTURES = new BooleanPreferenceDefinition(pref_texturereuse_id,
             pref_texturereuse_defvalue);
 
     BooleanPreferenceDefinition USE_NATIVE_TEXTURES = new BooleanPreferenceDefinition(pref_usenativetextures_id,
             pref_usenativetextures_defvalue);
-
-    BooleanPreferenceDefinition USE_BITMAP_HACK = new BooleanPreferenceDefinition(pref_bitmaphack_id,
-            pref_bitmaphack_defvalue);
 
     BooleanPreferenceDefinition EARLY_RECYCLING = new BooleanPreferenceDefinition(pref_earlyrecycling_id,
             pref_earlyrecycling_defvalue);

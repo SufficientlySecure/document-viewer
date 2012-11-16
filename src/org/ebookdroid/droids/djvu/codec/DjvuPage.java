@@ -53,7 +53,7 @@ public class DjvuPage extends AbstractCodecPage {
         IBitmapRef bmp = null;
         if (width > 0 && height > 0) {
             bmp = BitmapManager.getBitmap("Djvu page", width, height, Bitmap.Config.RGB_565);
-            if (EBookDroidLibraryLoader.nativeGraphicsAvailable && AppSettings.current().useNativeGraphics) {
+            if (EBookDroidLibraryLoader.nativeGraphicsAvailable) {
                 if (renderPageBitmap(pageHandle, contextHandle, width, height, pageSliceBounds.left,
                         pageSliceBounds.top, pageSliceBounds.width(), pageSliceBounds.height(), bmp.getBitmap(),
                         renderMode)) {

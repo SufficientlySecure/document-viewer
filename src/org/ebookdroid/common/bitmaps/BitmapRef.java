@@ -11,20 +11,15 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-import org.emdev.common.android.VMRuntimeHack;
 import org.emdev.utils.MathUtils;
 
 class BitmapRef extends AbstractBitmapRef {
 
     private volatile Bitmap bitmap;
-    private boolean hacked;
 
     BitmapRef(final Bitmap bitmap, final long generation) {
         super(bitmap.getConfig(), bitmap.hasAlpha(), bitmap.getWidth(), bitmap.getHeight(), generation);
         this.bitmap = bitmap;
-        if (BitmapManager.useBitmapHack) {
-            hacked = VMRuntimeHack.trackFree(size);
-        }
     }
 
     @Override
@@ -123,10 +118,6 @@ class BitmapRef extends AbstractBitmapRef {
             if (!bitmap.isRecycled()) {
                 return false;
             }
-            if (hacked) {
-                hacked = false;
-                VMRuntimeHack.trackAlloc(size);
-            }
             bitmap = null;
         }
         return true;
@@ -139,10 +130,6 @@ class BitmapRef extends AbstractBitmapRef {
         if (b != null) {
             if (BitmapManager.useEarlyRecycling) {
                 b.recycle();
-            }
-            if (hacked) {
-                hacked = false;
-                VMRuntimeHack.trackAlloc(size);
             }
         }
     }

@@ -53,8 +53,6 @@ public class BitmapManager {
 
     static boolean useEarlyRecycling = false;
 
-    static boolean useBitmapHack = false;
-
     static boolean useNativeTextures = false;
 
     public static Bitmap getResource(final int resourceId) {
@@ -419,10 +417,6 @@ public class BitmapManager {
 
     public static void setUseEarlyRecycling(final boolean useEarlyRecycling) {
         BitmapManager.useEarlyRecycling = useEarlyRecycling;
-    }
-
-    public static void setUseBitmapHack(final boolean useBitmapHack) {
-        BitmapManager.useBitmapHack = useBitmapHack;
     }
 
     public static void setUseNativeTextures(final boolean useNativeTextures) {

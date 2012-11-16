@@ -44,7 +44,7 @@ public class BaseDroidApp extends Application {
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see android.app.Application#onCreate()
      */
     @Override
@@ -107,10 +107,14 @@ public class BaseDroidApp extends Application {
 
     @Override
     public void onConfigurationChanged(final Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
+        final Configuration oldConfig = getResources().getConfiguration();
+        final int diff = oldConfig.diff(newConfig);
+        final Configuration target = diff == 0 ? oldConfig : newConfig;
+
         if (appLocale != null) {
-            setAppLocale(newConfig);
+            setAppLocaleIntoConfiguration(target);
         }
+        super.onConfigurationChanged(target);
     }
 
     protected File getAppStorage(final String appPackage) {
@@ -130,13 +134,15 @@ public class BaseDroidApp extends Application {
     public static void setAppLocale(final String lang) {
         final Configuration config = context.getResources().getConfiguration();
         appLocale = LengthUtils.isNotEmpty(lang) ? new Locale(lang) : defLocale;
-        setAppLocale(config);
+        setAppLocaleIntoConfiguration(config);
     }
 
-    protected static void setAppLocale(final Configuration config) {
-        Locale.setDefault(appLocale);
-        config.locale = appLocale;
-        context.getResources().updateConfiguration(config, context.getResources().getDisplayMetrics());
+    protected static void setAppLocaleIntoConfiguration(final Configuration config) {
+        if (!config.locale.equals(appLocale)) {
+            Locale.setDefault(appLocale);
+            config.locale = appLocale;
+            context.getResources().updateConfiguration(config, context.getResources().getDisplayMetrics());
+        }
         Log.i(APP_NAME, "UI Locale: " + appLocale);
     }
 }

@@ -10,7 +10,7 @@ import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.common.touch.DefaultGestureDetector;
 import org.ebookdroid.common.touch.IGestureDetector;
 import org.ebookdroid.common.touch.IMultiTouchListener;
-import org.ebookdroid.common.touch.MultiTouchGestureDetectorFactory;
+import org.ebookdroid.common.touch.MultiTouchGestureDetector;
 import org.ebookdroid.common.touch.TouchManager;
 import org.ebookdroid.common.touch.TouchManager.Touch;
 import org.ebookdroid.core.codec.PageLink;
@@ -104,7 +104,7 @@ public abstract class AbstractViewController extends AbstractComponentController
 
     protected List<IGestureDetector> initGestureDetectors(final List<IGestureDetector> list) {
         final GestureListener listener = new GestureListener();
-        list.add(MultiTouchGestureDetectorFactory.create(listener));
+        list.add(new MultiTouchGestureDetector(listener));
         list.add(new DefaultGestureDetector(base.getContext(), listener));
         return list;
     }

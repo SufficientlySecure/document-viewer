@@ -6,7 +6,7 @@ import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.common.touch.DefaultGestureDetector;
 import org.ebookdroid.common.touch.IGestureDetector;
-import org.ebookdroid.common.touch.MultiTouchGestureDetectorFactory;
+import org.ebookdroid.common.touch.MultiTouchGestureDetector;
 import org.ebookdroid.core.curl.PageAnimationType;
 import org.ebookdroid.core.curl.PageAnimator;
 import org.ebookdroid.core.curl.PageAnimatorProxy;
@@ -182,7 +182,7 @@ public class SinglePageController extends AbstractViewController {
     @Override
     protected List<IGestureDetector> initGestureDetectors(final List<IGestureDetector> list) {
         final GestureListener listener = new GestureListener();
-        list.add(MultiTouchGestureDetectorFactory.create(listener));
+        list.add(new MultiTouchGestureDetector(listener));
         list.add(curler);
         list.add(new DefaultGestureDetector(base.getContext(), listener));
         return list;

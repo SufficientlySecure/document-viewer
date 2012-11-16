@@ -226,7 +226,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         decodingThreadPriority = DECODE_THREAD_PRIORITY.getPreferenceValue(prefs);
         drawThreadPriority = DRAW_THREAD_PRIORITY.getPreferenceValue(prefs);
         useNativeGraphics = USE_NATIVE_GRAPHICS.getPreferenceValue(prefs);
-        hwaEnabled = HWA_ENABLED.getPreferenceValue(prefs);
+        hwaEnabled = viewType == DocumentViewType.BASE && HWA_ENABLED.getPreferenceValue(prefs);
         bitmapSize = BITMAP_SIZE.getPreferenceValue(prefs);
         bitmapFileringEnabled = BITMAP_FILTERING.getPreferenceValue(prefs);
         textureReuseEnabled = REUSE_TEXTURES.getPreferenceValue(prefs);

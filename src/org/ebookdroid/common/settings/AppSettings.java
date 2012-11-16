@@ -1,5 +1,7 @@
 package org.ebookdroid.common.settings;
 
+import org.ebookdroid.EBookDroidApp;
+import org.ebookdroid.EBookDroidVersion;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.definitions.AppPreferences;
 import org.ebookdroid.common.settings.definitions.BookPreferences;
@@ -210,7 +212,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         keysBinding = KEY_BINDINGS.getPreferenceValue(prefs);
         /* =============== Performance settings =============== */
         pagesInMemory = PAGES_IN_MEMORY.getPreferenceValue(prefs);
-        viewType = VIEW_TYPE.getPreferenceValue(prefs);
+        viewType = EBookDroidApp.version == EBookDroidVersion.DEV ? DocumentViewType.GL : VIEW_TYPE.getPreferenceValue(prefs);
         decodingThreads = DECODING_THREADS.getPreferenceValue(prefs);
         decodingThreadPriority = DECODE_THREAD_PRIORITY.getPreferenceValue(prefs);
         drawThreadPriority = DRAW_THREAD_PRIORITY.getPreferenceValue(prefs);

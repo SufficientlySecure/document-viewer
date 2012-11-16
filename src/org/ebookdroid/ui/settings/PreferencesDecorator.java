@@ -1,5 +1,7 @@
 package org.ebookdroid.ui.settings;
 
+import org.ebookdroid.EBookDroidApp;
+import org.ebookdroid.EBookDroidVersion;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.books.BookSettings;
@@ -63,7 +65,7 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
         decoratePreference(getRoot());
         decorateBrowserSettings();
         decorateOpdsSettings();
-        decorateMemorySettings();
+        decoratePerformanceSettings();
         decorateRenderSettings();
         decorateTypeSpecificSettings();
         decorateScrollSettings();
@@ -82,7 +84,8 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
 
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                CacheLocation newLocation = EnumUtils.getByResValue(CacheLocation.class, LengthUtils.toString(newValue), null);
+                CacheLocation newLocation = EnumUtils.getByResValue(CacheLocation.class,
+                        LengthUtils.toString(newValue), null);
                 if (newLocation != null) {
                     CacheManager.moveCacheLocation(preference.getContext(), newLocation);
                 }
@@ -94,7 +97,14 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
     public void decorateOpdsSettings() {
     }
 
-    public void decorateMemorySettings() {
+    public void decoratePerformanceSettings() {
+        if (EBookDroidApp.version == EBookDroidVersion.DEV) {
+            Preference p = findPreference(VIEW_TYPE.key);
+            if (p instanceof ListPreference) {
+                ((ListPreference)p).setValue(DocumentViewType.GL.getResValue());
+                p.setEnabled(false);
+            }
+        }
     }
 
     public void decorateRenderSettings() {

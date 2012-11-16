@@ -172,10 +172,6 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
         EBookDroidApp.onActivityClose(finishing);
     }
 
-    protected IView createView() {
-        return AppSettings.current().viewType.create(getController());
-    }
-
     public TouchManagerView getTouchView() {
         if (touchView == null) {
             touchView = new TouchManagerView(getController());

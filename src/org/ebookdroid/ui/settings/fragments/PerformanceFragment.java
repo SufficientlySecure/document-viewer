@@ -5,15 +5,15 @@ import org.ebookdroid.R;
 import android.annotation.TargetApi;
 
 @TargetApi(11)
-public class MemoryFragment extends BasePreferenceFragment {
+public class PerformanceFragment extends BasePreferenceFragment {
 
-    public MemoryFragment() {
-        super(R.xml.fragment_memory);
+    public PerformanceFragment() {
+        super(R.xml.fragment_performance);
     }
 
     @Override
     public void decorate() {
         super.decorate();
-        decorator.decorateMemorySettings();
+        decorator.decoratePerformanceSettings();
     }
 }

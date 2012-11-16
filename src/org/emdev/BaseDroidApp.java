@@ -24,7 +24,9 @@ public class BaseDroidApp extends Application {
 
     public static Context context;
 
-    public static String APP_VERSION;
+    public static int APP_VERSION_CODE;
+
+    public static String APP_VERSION_NAME;
 
     public static String APP_PACKAGE;
 
@@ -70,12 +72,13 @@ public class BaseDroidApp extends Application {
         try {
             final PackageInfo pi = pm.getPackageInfo(getPackageName(), 0);
             APP_NAME = getString(pi.applicationInfo.labelRes);
-            APP_VERSION = LengthUtils.safeString(pi.versionName, "DEV");
+            APP_VERSION_CODE = pi.versionCode;
+            APP_VERSION_NAME = LengthUtils.safeString(pi.versionName, "DEV");
             APP_PACKAGE = pi.packageName;
             EXT_STORAGE = Environment.getExternalStorageDirectory();
             APP_STORAGE = getAppStorage(APP_PACKAGE);
 
-            Log.i(APP_NAME, APP_NAME + " (" + APP_PACKAGE + ")" + " " + APP_VERSION + "(" + pi.versionCode + ")");
+            Log.i(APP_NAME, APP_NAME + " (" + APP_PACKAGE + ")" + " " + APP_VERSION_NAME + "(" + pi.versionCode + ")");
 
             Log.i(APP_NAME, "Root             dir: " + Environment.getRootDirectory());
             Log.i(APP_NAME, "Data             dir: " + Environment.getDataDirectory());

@@ -28,6 +28,8 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
 
     public static final Flag initialized = new Flag();
 
+    public static EBookDroidVersion version;
+
     private static EBookDroidApp instance;
 
     /**
@@ -40,6 +42,7 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
         super.onCreate();
 
         instance = this;
+        version = EBookDroidVersion.get(APP_VERSION_CODE);
 
         SettingsManager.init(this);
         CacheManager.init(this);

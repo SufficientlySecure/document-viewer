@@ -53,7 +53,7 @@ public class OPDSClient extends BaseHttpClient {
     private final IEntryBuilder builder;
 
     public OPDSClient(final IEntryBuilder builder) {
-        super(BaseDroidApp.APP_PACKAGE + " " + BaseDroidApp.APP_VERSION);
+        super(BaseDroidApp.APP_PACKAGE + " " + BaseDroidApp.APP_VERSION_NAME);
         this.builder = builder;
     }
 

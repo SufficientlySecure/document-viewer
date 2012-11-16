@@ -9,11 +9,6 @@
     <string translatable="false" name="pref_scrollheight_minvalue">0</string>
     <string translatable="false" name="pref_scrollheight_maxvalue">100</string>
 
-    <string translatable="false" name="pref_touchdelay_id">touchdelay</string>
-    <string translatable="false" name="pref_touchdelay_defvalue">50</string>
-    <string translatable="false" name="pref_touchdelay_minvalue">0</string>
-    <string translatable="false" name="pref_touchdelay_maxvalue">250</string>
-
     <string translatable="false" name="pref_animate_scrolling_id">animate_scrolling</string>
     <string translatable="false" name="pref_animate_scrolling_defvalue">true</string>
 

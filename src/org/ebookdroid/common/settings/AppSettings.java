@@ -79,8 +79,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     public final int scrollHeight;
 
-    public final int touchProcessingDelay;
-
     public final boolean animateScrolling;
 
     /* =============== Tap & Keyboard settings =============== */
@@ -197,7 +195,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         /* =============== Tap & Scroll settings =============== */
         tapsEnabled = TAPS_ENABLED.getPreferenceValue(prefs);
         scrollHeight = SCROLL_HEIGHT.getPreferenceValue(prefs);
-        touchProcessingDelay = TOUCH_DELAY.getPreferenceValue(prefs);
         animateScrolling = ANIMATE_SCROLLING.getPreferenceValue(prefs);
         /* =============== Navigation & History settings =============== */
         showBookmarksInMenu = SHOW_BOOKMARKs_MENU.getPreferenceValue(prefs);

@@ -389,15 +389,6 @@ public abstract class AbstractViewController extends AbstractComponentController
      */
     @Override
     public final boolean onTouchEvent(final MotionEvent ev) {
-        final int delay = AppSettings.current().touchProcessingDelay;
-        if (delay > 0) {
-            try {
-                Thread.sleep(Math.min(250, delay));
-            } catch (final InterruptedException e) {
-                Thread.interrupted();
-            }
-        }
-
         for (final IGestureDetector d : getGestureDetectors()) {
             if (d.enabled() && d.onTouchEvent(ev)) {
                 return true;

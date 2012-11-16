@@ -13,7 +13,7 @@
             android:title="@string/pref_navigation_category"
             android:summary="@string/pref_navigation_category_summary" />
 
-    <header android:fragment="org.ebookdroid.ui.settings.fragments.MemoryFragment"
+    <header android:fragment="org.ebookdroid.ui.settings.fragments.PerformanceFragment"
             android:summary="@string/pref_performance_category_summary"
             android:title="@string/pref_performance_category" />
 

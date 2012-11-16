@@ -29,9 +29,7 @@
             android:summary="@string/pref_customdpi_summary"
             android:title="@string/pref_customdpi_title" />
 
-        <EditTextPreference
-            android:maxLength="3"
-            android:numeric="integer"
+        <org.emdev.ui.preference.SeekBarPreference
             android:defaultValue="@string/pref_xdpi_defvalue"
             android:dependency="@string/pref_customdpi_id"
             android:key="@string/pref_xdpi_id"
@@ -40,9 +38,7 @@
             ebookdroid:maxValue="@string/pref_xdpi_maxvalue"
             ebookdroid:minValue="@string/pref_xdpi_minvalue" />
 
-        <EditTextPreference
-            android:maxLength="3"
-            android:numeric="integer"
+        <org.emdev.ui.preference.SeekBarPreference
             android:defaultValue="@string/pref_ydpi_defvalue"
             android:dependency="@string/pref_customdpi_id"
             android:key="@string/pref_ydpi_id"

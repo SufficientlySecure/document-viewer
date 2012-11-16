@@ -9,17 +9,16 @@
         android:key="@string/pref_backuponexit_id"
         android:summary="@string/pref_backuponexit_summary"
         android:title="@string/pref_backuponexit_title" />
+
     <CheckBoxPreference
         android:defaultValue="@string/pref_backuponbookclose_defvalue"
         android:key="@string/pref_backuponbookclose_id"
         android:summary="@string/pref_backuponbookclose_summary"
         android:title="@string/pref_backuponbookclose_title" />
 
-    <EditTextPreference
+    <org.emdev.ui.preference.SeekBarPreference
         android:defaultValue="@string/pref_maxnumberofautobackups_defvalue"
         android:key="@string/pref_maxnumberofautobackups_id"
-        android:maxLength="3"
-        android:numeric="integer"
         android:summary="@string/pref_maxnumberofautobackups_summary"
         android:title="@string/pref_maxnumberofautobackups_title"
         ebookdroid:maxValue="@string/pref_maxnumberofautobackups_maxvalue"

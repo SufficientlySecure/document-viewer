@@ -24,7 +24,7 @@
             android:id="@+id/recent_showlibrary"
             style="@style/action_bar_action"
             android:onClick="onButtonClick"
-            android:src="@drawable/recent_actionbar_recent" />
+            android:src="@drawable/recent_actionbar_library" />
 
         <View style="@style/action_bar_separator" />
 
@@ -33,6 +33,13 @@
             style="@style/action_bar_action"
             android:onClick="onButtonClick"
             android:src="@drawable/recent_actionbar_filebrowser" />
+
+        <ImageView
+            android:id="@+id/mainmenu_opds"
+            style="@style/action_bar_action"
+            android:onClick="onButtonClick"
+            android:src="@drawable/recent_actionbar_opdsbrowser" />
+
     </LinearLayout>
 
     <ViewFlipper

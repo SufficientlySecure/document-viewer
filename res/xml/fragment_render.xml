@@ -77,9 +77,7 @@
             android:summary="@string/pref_posimages_in_nightmode_summary"
             android:title="@string/pref_posimages_in_nightmode_title" />
 
-        <EditTextPreference
-            android:maxLength="3"
-            android:numeric="integer"
+        <org.emdev.ui.preference.SeekBarPreference
             android:defaultValue="@string/pref_contrast_defvalue"
             android:key="@string/pref_contrast_id"
             ebookdroid:minValue="@string/pref_contrast_minvalue"
@@ -87,9 +85,7 @@
             android:summary="@string/pref_contrast_summary"
             android:title="@string/pref_contrast_title" />
 
-        <EditTextPreference
-            android:maxLength="3"
-            android:numeric="integer"
+        <org.emdev.ui.preference.SeekBarPreference
             android:defaultValue="@string/pref_exposure_defvalue"
             android:key="@string/pref_exposure_id"
             ebookdroid:minValue="@string/pref_exposure_minvalue"

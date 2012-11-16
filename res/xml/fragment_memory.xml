@@ -4,9 +4,7 @@
         android:summary="@string/pref_performance_category_summary"
         android:title="@string/pref_performance_category" >
 
-        <EditTextPreference
-            android:maxLength="3"
-            android:numeric="integer"
+        <org.emdev.ui.preference.SeekBarPreference
             android:defaultValue="@string/pref_pagesinmemory_defvalue"
             android:key="@string/pref_pagesinmemory_id"
             ebookdroid:minValue="@string/pref_pagesinmemory_minvalue"

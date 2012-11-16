@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
 import javax.microedition.khronos.opengles.GL11Ext;
-import javax.microedition.khronos.opengles.GL11ExtensionPack;
 
 import org.emdev.utils.MathUtils;
 import org.emdev.utils.collections.IntArray;
@@ -918,36 +917,5 @@ public class GLCanvasImpl implements GLCanvas {
 
     private void restoreTransform() {
         System.arraycopy(mTempMatrix, 0, mMatrixValues, 0, 16);
-    }
-
-    private static void checkFramebufferStatus(final GL11ExtensionPack gl11ep) {
-        final int status = gl11ep.glCheckFramebufferStatusOES(GL11ExtensionPack.GL_FRAMEBUFFER_OES);
-        if (status != GL11ExtensionPack.GL_FRAMEBUFFER_COMPLETE_OES) {
-            String msg = "";
-            switch (status) {
-                case GL11ExtensionPack.GL_FRAMEBUFFER_INCOMPLETE_FORMATS_OES:
-                    msg = "FRAMEBUFFER_FORMATS";
-                    break;
-                case GL11ExtensionPack.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_OES:
-                    msg = "FRAMEBUFFER_ATTACHMENT";
-                    break;
-                case GL11ExtensionPack.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_OES:
-                    msg = "FRAMEBUFFER_MISSING_ATTACHMENT";
-                    break;
-                case GL11ExtensionPack.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_OES:
-                    msg = "FRAMEBUFFER_DRAW_BUFFER";
-                    break;
-                case GL11ExtensionPack.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_OES:
-                    msg = "FRAMEBUFFER_READ_BUFFER";
-                    break;
-                case GL11ExtensionPack.GL_FRAMEBUFFER_UNSUPPORTED_OES:
-                    msg = "FRAMEBUFFER_UNSUPPORTED";
-                    break;
-                case GL11ExtensionPack.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_OES:
-                    msg = "FRAMEBUFFER_INCOMPLETE_DIMENSIONS";
-                    break;
-            }
-            throw new RuntimeException(msg + ":" + Integer.toHexString(status));
-        }
     }
 }

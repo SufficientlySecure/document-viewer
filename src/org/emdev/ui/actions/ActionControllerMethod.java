@@ -1,13 +1,11 @@
 package org.emdev.ui.actions;
 
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.emdev.common.android.AndroidVersion;
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
 import org.emdev.utils.LengthUtils;
@@ -31,7 +29,7 @@ public class ActionControllerMethod {
 
     /**
      * Constructor
-     * 
+     *
      * @param controller
      *            action controller
      * @param actionId
@@ -44,7 +42,7 @@ public class ActionControllerMethod {
 
     /**
      * Invokes controller method for the given controller and action
-     * 
+     *
      * @param action
      *            action
      * @return execution result
@@ -69,7 +67,7 @@ public class ActionControllerMethod {
 
     /**
      * Returns reflection error info.
-     * 
+     *
      * @return {@link Throwable}
      */
     public Throwable getErrorInfo() {
@@ -109,12 +107,12 @@ public class ActionControllerMethod {
 
     /**
      * Gets the method.
-     * 
+     *
      * @param target
      *            a possible action target
      * @param actionId
      *            the action id
-     * 
+     *
      * @return the method
      */
     private static synchronized Method getMethod(final Object target, final int actionId) {
@@ -130,35 +128,16 @@ public class ActionControllerMethod {
 
     /**
      * Gets the method.
-     * 
+     *
      * @param clazz
      *            an action target class
-     * 
+     *
      * @return the map of action methods method
      */
     private static SparseArrayEx<Method> getActionMethods(final Class<?> clazz) {
         final SparseArrayEx<Method> result = new SparseArrayEx<Method>();
-
-        if (AndroidVersion.VERSION < 8) {
-            getActionsMethodsFromClassAnnotation(clazz, result);
-        } else {
-            getActionMethodsFromMethodAnnotations(clazz, result);
-        }
+        getActionMethodsFromMethodAnnotations(clazz, result);
         return result;
-    }
-
-    private static void getActionsMethodsFromClassAnnotation(final Class<?> clazz, final SparseArrayEx<Method> result) {
-        if (clazz.isAnnotationPresent(ActionTarget.class)) {
-            ActionTarget a = clazz.getAnnotation(ActionTarget.class);
-            for(ActionMethodDef def : a.actions()) {
-                try {
-                    Method m = clazz.getMethod(def.method(), ActionEx.class);
-                    result.put(def.id(), m);
-                } catch (Exception ex) {
-                    LCTX.e("No action method found: " + clazz.getSimpleName() + "." + ex.getMessage());
-                }
-            }
-        }
     }
 
     private static void getActionMethodsFromMethodAnnotations(final Class<?> clazz, final SparseArrayEx<Method> result) {

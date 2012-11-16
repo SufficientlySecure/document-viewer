@@ -2,13 +2,7 @@ package org.emdev.common.textmarkup.line;
 
 import org.ebookdroid.common.settings.AppSettings;
 
-import android.graphics.Canvas;
-import android.graphics.Rect;
-
 import org.emdev.common.textmarkup.RenderingStyle;
-import org.emdev.common.textmarkup.RenderingStyle.Script;
-import org.emdev.common.textmarkup.RenderingStyle.Strike;
-import org.emdev.utils.HyphenationUtils;
 
 public class TextPreElement extends TextElement {
 

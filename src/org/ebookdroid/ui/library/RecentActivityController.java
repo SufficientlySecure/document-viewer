@@ -54,8 +54,6 @@ import org.emdev.ui.actions.ActionController;
 import org.emdev.ui.actions.ActionDialogBuilder;
 import org.emdev.ui.actions.ActionEx;
 import org.emdev.ui.actions.ActionMethod;
-import org.emdev.ui.actions.ActionMethodDef;
-import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.actions.IActionController;
 import org.emdev.ui.actions.params.Constant;
 import org.emdev.ui.actions.params.EditableValue;
@@ -64,42 +62,6 @@ import org.emdev.utils.CompareUtils;
 import org.emdev.utils.FileUtils;
 import org.emdev.utils.LengthUtils;
 
-@ActionTarget(
-// actions
-actions = {
-        // start
-        @ActionMethodDef(id = R.id.recentmenu_cleanrecent, method = "showClearRecentDialog"),
-        @ActionMethodDef(id = R.id.actions_clearRecent, method = "doClearRecent"),
-        @ActionMethodDef(id = R.id.bookmenu_removefromrecent, method = "removeBookFromRecents"),
-        @ActionMethodDef(id = R.id.bookmenu_cleardata, method = "removeCachedBookFiles"),
-        @ActionMethodDef(id = R.id.bookmenu_deletesettings, method = "removeBookSettings"),
-        @ActionMethodDef(id = R.id.recentmenu_searchBook, method = "showSearchDlg"),
-        @ActionMethodDef(id = R.id.actions_searchBook, method = "searchBook"),
-        @ActionMethodDef(id = R.id.mainmenu_settings, method = "showSettings"),
-        @ActionMethodDef(id = R.id.bookmenu_copy, method = "copyBook"),
-        @ActionMethodDef(id = R.id.bookmenu_move, method = "copyBook"),
-        @ActionMethodDef(id = R.id.actions_doCopyBook, method = "doCopyBook"),
-        @ActionMethodDef(id = R.id.actions_doMoveBook, method = "doMoveBook"),
-        @ActionMethodDef(id = R.id.bookmenu_rename, method = "renameBook"),
-        @ActionMethodDef(id = R.id.actions_doRenameBook, method = "doRenameBook"),
-        @ActionMethodDef(id = R.id.bookmenu_delete, method = "deleteBook"),
-        @ActionMethodDef(id = R.id.actions_doDeleteBook, method = "doDeleteBook"),
-        @ActionMethodDef(id = R.id.actions_goToBookmark, method = "openBook"),
-        @ActionMethodDef(id = R.id.bookmenu_settings, method = "openBookSettings"),
-        @ActionMethodDef(id = R.id.bookmenu_openbookshelf, method = "openBookShelf"),
-        @ActionMethodDef(id = R.id.bookmenu_openbookfolder, method = "openBookFolder"),
-        @ActionMethodDef(id = R.id.ShelfCaption, method = "showSelectShelfDlg"),
-        @ActionMethodDef(id = R.id.actions_selectShelf, method = "selectShelf"),
-        @ActionMethodDef(id = R.id.ShelfLeftButton, method = "selectPrevShelf"),
-        @ActionMethodDef(id = R.id.ShelfRightButton, method = "selectNextShelf"),
-        @ActionMethodDef(id = R.id.recent_showbrowser, method = "goFileBrowser"),
-        @ActionMethodDef(id = R.id.recent_showlibrary, method = "goLibrary"),
-        @ActionMethodDef(id = R.id.recent_showrecent, method = "goLibrary"),
-        @ActionMethodDef(id = R.id.mainmenu_opds, method = "goOPDSBrowser"),
-        @ActionMethodDef(id = R.id.recentmenu_backupsettings, method = "backupSettings"),
-        @ActionMethodDef(id = R.id.mainmenu_close, method = "close")
-// finish
-})
 public class RecentActivityController extends ActionController<RecentActivity> implements IBrowserActivity,
         ILibSettingsChangeListener, IRecentBooksChangedListener, ICacheListener {
 
@@ -190,7 +152,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         }
 
         final LibSettings libSettings = LibSettings.current();
-        if (libSettings.getUseBookcase()) {
+        if (libSettings.useBookcase) {
             if (firstResume) {
                 bookshelfAdapter.startScan();
             }
@@ -321,7 +283,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         final Editable value = action.getParameter("input");
         final String searchQuery = value.toString();
         if (bookshelfAdapter.startSearch(searchQuery)) {
-            if (LibSettings.current().getUseBookcase()) {
+            if (LibSettings.current().useBookcase) {
                 getManagedComponent().showBookshelf(BooksAdapter.SEARCH_INDEX);
             }
         }
@@ -420,7 +382,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         if (f.delete()) {
             CacheManager.clear(book.path);
             final LibSettings libSettings = LibSettings.current();
-            if (libSettings.getUseBookcase()) {
+            if (libSettings.useBookcase) {
                 bookshelfAdapter.startScan();
             } else {
                 libraryAdapter.startScan();
@@ -520,7 +482,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
 
     @ActionMethod(ids = { R.id.recent_showlibrary, R.id.recent_showrecent })
     public void goLibrary(final ActionEx action) {
-        if (!LibSettings.current().getUseBookcase()) {
+        if (!LibSettings.current().useBookcase) {
             final int viewMode = getManagedComponent().getViewMode();
             if (viewMode == RecentActivity.VIEW_RECENT) {
                 changeLibraryView(RecentActivity.VIEW_LIBRARY);
@@ -619,7 +581,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         final FileExtensionFilter filter = newSettings.allowedFileTypes;
         if (diff.isUseBookcaseChanged()) {
 
-            if (newSettings.getUseBookcase()) {
+            if (newSettings.useBookcase) {
                 recentAdapter.setBooks(SettingsManager.getRecentBooks().values(), filter);
                 getManagedComponent().showBookcase(bookshelfAdapter, recentAdapter);
             } else {
@@ -629,7 +591,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         }
 
         if (diff.isAutoScanDirsChanged()) {
-            if (newSettings.getUseBookcase()) {
+            if (newSettings.useBookcase) {
                 bookshelfAdapter.startScan();
             } else {
                 libraryAdapter.startScan();
@@ -638,7 +600,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         }
         if (diff.isAllowedFileTypesChanged()) {
             recentAdapter.setBooks(SettingsManager.getRecentBooks().values(), filter);
-            if (newSettings.getUseBookcase()) {
+            if (newSettings.useBookcase) {
                 bookshelfAdapter.startScan();
             } else {
                 libraryAdapter.startScan();
@@ -660,7 +622,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
     }
 
     public void changeLibraryView(final int view) {
-        if (!LibSettings.current().getUseBookcase()) {
+        if (!LibSettings.current().useBookcase) {
             getManagedComponent().changeLibraryView(view);
             if (view == RecentActivity.VIEW_LIBRARY) {
                 libraryAdapter.startScan();

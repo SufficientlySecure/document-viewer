@@ -10,7 +10,6 @@ import android.content.SharedPreferences.Editor;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.emdev.common.android.AndroidVersion;
 import org.emdev.common.backup.BackupManager;
 import org.emdev.common.backup.IBackupAgent;
 import org.emdev.common.filesystem.FileExtensionFilter;
@@ -44,12 +43,6 @@ public class LibSettings implements LibPreferences, IBackupAgent {
         searchBookQuery = SEARCH_BOOK_QUERY.getPreferenceValue(prefs);
         allowedFileTypes = FILE_TYPE_FILTER.getFilter(prefs);
         cacheLocation  = CACHE_LOCATION.getPreferenceValue(prefs);
-    }
-
-    /* =============== Browser settings =============== */
-
-    public boolean getUseBookcase() {
-        return !AndroidVersion.is1x && useBookcase;
     }
 
     /* =============== */
@@ -142,7 +135,7 @@ public class LibSettings implements LibPreferences, IBackupAgent {
             if (firstTime) {
                 mask = 0xFFFFFFFF;
             } else if (news != null) {
-                if (olds.getUseBookcase() != news.getUseBookcase()) {
+                if (olds.useBookcase != news.useBookcase) {
                     mask |= D_UseBookcase;
                 }
                 if (!olds.autoScanDirs.equals(news.autoScanDirs)) {

@@ -32,19 +32,10 @@ import org.emdev.common.android.AndroidVersion;
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
 import org.emdev.ui.AbstractActionActivity;
-import org.emdev.ui.actions.ActionMethodDef;
-import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.utils.LayoutUtils;
 import org.emdev.utils.LengthUtils;
 
-@ActionTarget(
-// action list
-actions = {
-// start
-@ActionMethodDef(id = R.id.mainmenu_about, method = "showAbout")
-// finish
-})
 public class ViewerActivity extends AbstractActionActivity<ViewerActivity, ViewerActivityController> {
 
     public static final DisplayMetrics DM = new DisplayMetrics();

@@ -25,12 +25,9 @@ import org.emdev.ui.actions.ActionController;
 import org.emdev.ui.actions.ActionDialogBuilder;
 import org.emdev.ui.actions.ActionEx;
 import org.emdev.ui.actions.ActionMethod;
-import org.emdev.ui.actions.ActionMethodDef;
-import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.actions.IActionController;
 import org.emdev.utils.MathUtils;
 
-@ActionTarget(actions = { @ActionMethodDef(id = R.id.actions_applyCrop, method = "onApply") })
 public class ManualCropView extends View {
 
     private static final Paint PAINT = new Paint();

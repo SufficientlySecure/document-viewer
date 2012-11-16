@@ -75,8 +75,6 @@ import org.emdev.ui.actions.ActionController;
 import org.emdev.ui.actions.ActionDialogBuilder;
 import org.emdev.ui.actions.ActionEx;
 import org.emdev.ui.actions.ActionMethod;
-import org.emdev.ui.actions.ActionMethodDef;
-import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.actions.IActionController;
 import org.emdev.ui.actions.params.Constant;
 import org.emdev.ui.actions.params.EditableValue;
@@ -88,36 +86,6 @@ import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.StringUtils;
 
-@ActionTarget(
-// action list
-actions = {
-        // start
-        @ActionMethodDef(id = R.id.actions_redecodingWithPassword, method = "redecodingWithPassword"),
-        @ActionMethodDef(id = R.id.actions_openOptionsMenu, method = "openOptionsMenu"),
-        @ActionMethodDef(id = R.id.actions_gotoOutlineItem, method = "gotoOutlineItem"),
-        @ActionMethodDef(id = R.id.mainmenu_outline, method = "showOutline"),
-        @ActionMethodDef(id = R.id.actions_doSearch, method = "doSearch"),
-        @ActionMethodDef(id = R.id.actions_doSearchBack, method = "doSearch"),
-        @ActionMethodDef(id = R.id.mainmenu_goto_page, method = "showGotoDialog"),
-        @ActionMethodDef(id = R.id.mainmenu_booksettings, method = "showBookSettings"),
-        @ActionMethodDef(id = R.id.mainmenu_settings, method = "showAppSettings"),
-        @ActionMethodDef(id = R.id.mainmenu_fullscreen, method = "toggleFullScreen"),
-        @ActionMethodDef(id = R.id.mainmenu_showtitle, method = "toggleTitleVisibility"),
-        @ActionMethodDef(id = R.id.mainmenu_nightmode, method = "toggleNightMode"),
-        @ActionMethodDef(id = R.id.mainmenu_splitpages, method = "toggleSplitPages"),
-        @ActionMethodDef(id = R.id.mainmenu_croppages, method = "toggleCropPages"),
-        @ActionMethodDef(id = R.id.mainmenu_thumbnail, method = "setCurrentPageAsThumbnail"),
-        @ActionMethodDef(id = R.id.mainmenu_bookmark, method = "showBookmarkDialog"),
-        @ActionMethodDef(id = R.id.actions_addBookmark, method = "addBookmark"),
-        @ActionMethodDef(id = R.id.actions_goToBookmark, method = "goToBookmark"),
-        @ActionMethodDef(id = R.id.actions_keyBindings, method = "showKeyBindingsDialog"),
-        @ActionMethodDef(id = R.id.mainmenu_zoom, method = "toggleControls"),
-        @ActionMethodDef(id = R.id.mainmenu_crop, method = "toggleControls"),
-        @ActionMethodDef(id = R.id.actions_toggleTouchManagerView, method = "toggleControls"),
-        @ActionMethodDef(id = R.id.mainmenu_search, method = "toggleControls"),
-        @ActionMethodDef(id = R.id.mainmenu_close, method = "closeActivity")
-// finish
-})
 public class ViewerActivityController extends ActionController<ViewerActivity> implements IActivityController,
         DecodingProgressListener, CurrentPageListener, IAppSettingsChangeListener, IBookSettingsChangeListener {
 

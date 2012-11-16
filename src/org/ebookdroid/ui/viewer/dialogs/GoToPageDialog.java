@@ -23,8 +23,6 @@ import android.widget.Toast;
 import org.emdev.ui.actions.ActionDialogBuilder;
 import org.emdev.ui.actions.ActionEx;
 import org.emdev.ui.actions.ActionMethod;
-import org.emdev.ui.actions.ActionMethodDef;
-import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.actions.DialogController;
 import org.emdev.ui.actions.IActionController;
 import org.emdev.ui.actions.params.Constant;
@@ -34,21 +32,6 @@ import org.emdev.ui.widget.IViewContainer;
 import org.emdev.ui.widget.SeekBarIncrementHandler;
 import org.emdev.utils.LayoutUtils;
 
-@ActionTarget(
-// action
-actions = {
-        // start
-        @ActionMethodDef(id = R.id.goToButton, method = "goToPageAndDismiss"),
-        @ActionMethodDef(id = R.id.actions_setBookmarkedPage, method = "updateControls"),
-        @ActionMethodDef(id = R.id.actions_showDeleteBookmarkDlg, method = "showDeleteBookmarkDlg"),
-        @ActionMethodDef(id = R.id.actions_removeBookmark, method = "removeBookmark"),
-        @ActionMethodDef(id = R.id.bookmark_add, method = "showAddBookmarkDlg"),
-        @ActionMethodDef(id = R.id.actions_addBookmark, method = "addBookmark"),
-        @ActionMethodDef(id = R.id.bookmark_remove_all, method = "showDeleteAllBookmarksDlg"),
-        @ActionMethodDef(id = R.id.actions_showDeleteAllBookmarksDlg, method = "showDeleteAllBookmarksDlg"),
-        @ActionMethodDef(id = R.id.actions_deleteAllBookmarks, method = "deleteAllBookmarks")
-// finish
-})
 public class GoToPageDialog extends Dialog {
 
     final IActivityController base;

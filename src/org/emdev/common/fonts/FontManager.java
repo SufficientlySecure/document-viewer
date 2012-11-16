@@ -7,7 +7,6 @@ import android.util.SparseArray;
 import java.io.File;
 import java.lang.ref.WeakReference;
 
-import org.emdev.common.android.AndroidVersion;
 import org.emdev.common.fonts.data.FontFamilyType;
 import org.emdev.common.fonts.data.FontInfo;
 import org.emdev.common.fonts.data.FontPack;
@@ -26,24 +25,14 @@ public class FontManager {
 
     public static void init() {
         try {
-        system = new SystemFontProvider();
-        assets = new AssetsFontProvider();
+            system = new SystemFontProvider();
+            assets = new AssetsFontProvider();
 
-        try {
-            Class<?> classESFP = null;
-            if(AndroidVersion.VERSION < 4) {
-                classESFP = Class.forName(FontManager.class.getPackage().getName() +".BaseExtStorageFontProvider");
-            } else {
-                classESFP = Class.forName(FontManager.class.getPackage().getName() +".ExtStorageFontProvider");
-            }
-            external = (BaseExtStorageFontProvider) classESFP.getConstructor(File.class).newInstance(EBookDroidApp.APP_STORAGE);
-        } catch (Throwable ex) {
-            ex.printStackTrace();
-        }
+            external = new ExtStorageFontProvider(EBookDroidApp.APP_STORAGE);
 
-        system.init();
-        assets.init();
-        external.init();
+            system.init();
+            assets.init();
+            external.init();
         } catch (VerifyError ex) {
             ex.printStackTrace();
             throw ex;

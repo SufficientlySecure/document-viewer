@@ -260,7 +260,6 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
     @Override
     protected void drawBackground(final EventGLDraw event) {
         final GLCanvas canvas = event.canvas;
-        final ViewState viewState = event.viewState;
 
         Page page = event.viewState.model.getPageObject(backIndex);
         if (page == null) {
@@ -303,7 +302,6 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
     @Override
     protected void drawForeground(final EventGLDraw event) {
         final GLCanvas canvas = event.canvas;
-        final ViewState viewState = event.viewState;
 
         Page page = event.viewState.model.getPageObject(foreIndex);
         if (page == null) {

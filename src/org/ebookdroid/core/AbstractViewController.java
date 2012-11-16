@@ -37,26 +37,10 @@ import org.emdev.common.log.LogManager;
 import org.emdev.ui.actions.AbstractComponentController;
 import org.emdev.ui.actions.ActionEx;
 import org.emdev.ui.actions.ActionMethod;
-import org.emdev.ui.actions.ActionMethodDef;
-import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.actions.params.Constant;
 import org.emdev.ui.progress.IProgressIndicator;
 import org.emdev.utils.LengthUtils;
 
-@ActionTarget(
-// action list
-actions = {
-        // actions
-        @ActionMethodDef(id = R.id.actions_verticalConfigScrollUp, method = "verticalConfigScroll"),
-        @ActionMethodDef(id = R.id.actions_verticalConfigScrollDown, method = "verticalConfigScroll"),
-        @ActionMethodDef(id = R.id.actions_leftTopCorner, method = "scrollToCorner"),
-        @ActionMethodDef(id = R.id.actions_leftBottomCorner, method = "scrollToCorner"),
-        @ActionMethodDef(id = R.id.actions_rightTopCorner, method = "scrollToCorner"),
-        @ActionMethodDef(id = R.id.actions_rightBottomCorner, method = "scrollToCorner"),
-        @ActionMethodDef(id = R.id.actions_quickZoom, method = "quickZoom"),
-        @ActionMethodDef(id = R.id.actions_zoomToColumn, method = "zoomToColumn")
-// no more
-})
 public abstract class AbstractViewController extends AbstractComponentController<IView> implements IViewController {
 
     protected static final LogContext LCTX = LogManager.root().lctx("View", false);

@@ -36,19 +36,10 @@ import org.emdev.common.android.AndroidVersion;
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
 import org.emdev.ui.AbstractActionActivity;
-import org.emdev.ui.actions.ActionMethodDef;
-import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.utils.LayoutUtils;
 import org.emdev.utils.LengthUtils;
 
-@ActionTarget(
-// action list
-actions = {
-// start
-@ActionMethodDef(id = R.id.mainmenu_about, method = "showAbout")
-// finish
-})
 public class BrowserActivity extends AbstractActionActivity<BrowserActivity, BrowserActivityController> {
 
     private static final String CURRENT_DIRECTORY = "currentDirectory";
@@ -90,12 +81,6 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Bro
         header = (TextView) findViewById(R.id.browsertext);
         viewflipper = (ViewFlipper) findViewById(R.id.browserflip);
         viewflipper.addView(LayoutUtils.fillInParent(viewflipper, new FileBrowserView(c, c.adapter)));
-
-        if (AndroidVersion.VERSION == 3) {
-            setActionForView(R.id.browserhome);
-            setActionForView(R.id.browserupfolder);
-            setActionForView(R.id.browserrecent);
-        }
     }
 
     @Override

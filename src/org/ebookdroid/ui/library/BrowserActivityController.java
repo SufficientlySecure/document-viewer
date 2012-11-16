@@ -42,37 +42,12 @@ import org.emdev.ui.actions.ActionController;
 import org.emdev.ui.actions.ActionDialogBuilder;
 import org.emdev.ui.actions.ActionEx;
 import org.emdev.ui.actions.ActionMethod;
-import org.emdev.ui.actions.ActionMethodDef;
-import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.actions.params.Constant;
 import org.emdev.ui.actions.params.EditableValue;
 import org.emdev.utils.CompareUtils;
 import org.emdev.utils.FileUtils;
 import org.emdev.utils.LengthUtils;
 
-@ActionTarget(
-// action list
-actions = {
-        // start
-        @ActionMethodDef(id = R.id.browserhome, method = "goHome"),
-        @ActionMethodDef(id = R.id.browserupfolder, method = "goUp"),
-        @ActionMethodDef(id = R.id.mainmenu_settings, method = "showSettings"),
-        @ActionMethodDef(id = R.id.browserrecent, method = "goRecent"),
-        @ActionMethodDef(id = R.id.mainmenu_opds, method = "goOPDSBrowser"),
-        @ActionMethodDef(id = R.id.actions_goToBookmark, method = "openBook"),
-        @ActionMethodDef(id = R.id.bookmenu_removefromrecent, method = "removeBookFromRecents"),
-        @ActionMethodDef(id = R.id.bookmenu_cleardata, method = "removeCachedBookFiles"),
-        @ActionMethodDef(id = R.id.bookmenu_deletesettings, method = "removeBookSettings"),
-        @ActionMethodDef(id = R.id.bookmenu_copy, method = "copyBook"),
-        @ActionMethodDef(id = R.id.bookmenu_move, method = "copyBook"),
-        @ActionMethodDef(id = R.id.actions_doCopyBook, method = "doCopyBook"),
-        @ActionMethodDef(id = R.id.actions_doMoveBook, method = "doMoveBook"),
-        @ActionMethodDef(id = R.id.bookmenu_rename, method = "renameBook"),
-        @ActionMethodDef(id = R.id.actions_doRenameBook, method = "doRenameBook"),
-        @ActionMethodDef(id = R.id.bookmenu_delete, method = "deleteBook"),
-        @ActionMethodDef(id = R.id.actions_doDeleteBook, method = "doDeleteBook")
-// finish
-})
 public class BrowserActivityController extends ActionController<BrowserActivity> implements IBrowserActivity {
 
     private static final String CURRENT_DIRECTORY = "currentDirectory";

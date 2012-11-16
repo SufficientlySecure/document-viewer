@@ -13,11 +13,10 @@ import org.emdev.common.log.LogManager;
 
 /**
  * This class defines base features for action controller.
- * 
+ *
  * @param <ManagedComponent>
  *            manager GUI component class
  */
-@ActionTarget(actions = { @ActionMethodDef(id = R.id.actions_no_action, method = "noAction") })
 public abstract class AbstractComponentController<ManagedComponent> implements IActionController<ManagedComponent> {
 
     protected static final LogContext LCTX = LogManager.root().lctx("Actions");
@@ -32,7 +31,7 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
 
     /**
      * Constructor
-     * 
+     *
      * @param managedComponent
      *            managed component
      */
@@ -42,7 +41,7 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
 
     /**
      * Constructor.
-     * 
+     *
      * @param parent
      *            the parent controller
      * @param managedComponent
@@ -73,7 +72,7 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.emdev.ui.actions.IActionController#setManagedComponent(java.lang.Object)
      */
     @Override
@@ -91,7 +90,7 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
 
     /**
      * Searches for an action by the given id
-     * 
+     *
      * @param id
      *            action id
      * @return an instance of {@link ActionEx} object or <code>null</code>
@@ -119,7 +118,7 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
 
     /**
      * Creates and register a global action
-     * 
+     *
      * @param id
      *            action id
      * @return an instance of {@link ActionEx} object
@@ -143,7 +142,7 @@ public abstract class AbstractComponentController<ManagedComponent> implements I
 
     /**
      * Creates an action
-     * 
+     *
      * @param id
      *            action id
      * @param parameters

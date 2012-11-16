@@ -83,7 +83,6 @@ public class SinglePageSlider extends AbstractPageSlider {
      */
     @Override
     protected void drawBackground(final EventGLDraw event) {
-        final Page fore = event.viewState.model.getPageObject(foreIndex);
         final Page page = event.viewState.model.getPageObject(backIndex);
         if (page != null) {
             event.canvas.save();

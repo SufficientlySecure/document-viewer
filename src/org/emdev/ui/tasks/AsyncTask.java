@@ -18,7 +18,6 @@ package org.emdev.ui.tasks;
 
 import android.os.Handler;
 import android.os.Message;
-import android.os.NetworkOnMainThreadException;
 import android.os.Process;
 
 import java.util.concurrent.Callable;

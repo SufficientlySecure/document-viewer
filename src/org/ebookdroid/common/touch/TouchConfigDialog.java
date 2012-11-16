@@ -21,20 +21,9 @@ import java.util.List;
 
 import org.emdev.ui.actions.ActionEx;
 import org.emdev.ui.actions.ActionMethod;
-import org.emdev.ui.actions.ActionMethodDef;
-import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.actions.DialogController;
 import org.emdev.ui.adapters.ActionsAdapter;
 
-@ActionTarget(
-// action list
-actions = {
-        // actions
-        @ActionMethodDef(id = R.id.tapZonesConfigReset, method = "resetRegion"),
-        @ActionMethodDef(id = R.id.tapZonesConfigClear, method = "clearRegion"),
-        @ActionMethodDef(id = R.id.tapZonesConfigDelete, method = "deleteRegion")
-// no more
-})
 public class TouchConfigDialog extends Dialog {
 
     private final TouchManagerView view;

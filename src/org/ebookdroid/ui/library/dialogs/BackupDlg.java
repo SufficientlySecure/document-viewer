@@ -25,20 +25,9 @@ import org.emdev.common.backup.BackupManager;
 import org.emdev.ui.actions.ActionController;
 import org.emdev.ui.actions.ActionEx;
 import org.emdev.ui.actions.ActionMethod;
-import org.emdev.ui.actions.ActionMethodDef;
-import org.emdev.ui.actions.ActionTarget;
 import org.emdev.utils.LayoutUtils;
 import org.emdev.utils.LengthUtils;
 
-@ActionTarget(
-// action list
-actions = {
-        // actions
-        @ActionMethodDef(id = R.id.backupButton, method = "backup"),
-        @ActionMethodDef(id = R.id.restoreBackupButton, method = "restore"),
-        @ActionMethodDef(id = R.id.removeBackupButton, method = "remove")
-// no more
-})
 public class BackupDlg extends Dialog implements TextWatcher, ListView.OnItemLongClickListener,
         ListView.OnItemClickListener {
 

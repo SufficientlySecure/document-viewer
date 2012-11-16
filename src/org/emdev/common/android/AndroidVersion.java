@@ -4,8 +4,6 @@ public class AndroidVersion {
 
     public static final int VERSION = getVersion();
 
-    public static final boolean is1x = VERSION <= 4;
-
     public static final boolean is2x = 5 <= VERSION && VERSION <= 10;
 
     public static final boolean lessThan3x = VERSION <= 10;

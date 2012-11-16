@@ -42,18 +42,9 @@ import org.emdev.common.android.AndroidVersion;
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
 import org.emdev.ui.AbstractActionActivity;
-import org.emdev.ui.actions.ActionMethodDef;
-import org.emdev.ui.actions.ActionTarget;
 import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.utils.LengthUtils;
 
-@ActionTarget(
-// actions
-actions = {
-// start
-@ActionMethodDef(id = R.id.mainmenu_about, method = "showAbout")
-// finish
-})
 public class RecentActivity extends AbstractActionActivity<RecentActivity, RecentActivityController> {
 
     public final LogContext LCTX;
@@ -110,14 +101,6 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
         } else {
             getController().onCreate();
         }
-
-        if (AndroidVersion.VERSION == 3) {
-            setActionForView(R.id.recent_showlibrary);
-            setActionForView(R.id.recent_showbrowser);
-            setActionForView(R.id.ShelfLeftButton);
-            setActionForView(R.id.ShelfCaption);
-            setActionForView(R.id.ShelfRightButton);
-        }
     }
 
     @Override
@@ -164,7 +147,7 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
 
     @Override
     protected void updateMenuItems(final Menu menu) {
-        if (!LibSettings.current().getUseBookcase()) {
+        if (!LibSettings.current().useBookcase) {
             final int viewMode = getViewMode();
             final boolean showLibraryAvailable = viewMode == RecentActivity.VIEW_RECENT;
             setMenuItemVisible(menu, showLibraryAvailable, R.id.recent_showlibrary);

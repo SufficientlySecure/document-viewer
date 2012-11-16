@@ -72,7 +72,7 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
         decorateUISettings();
     }
 
-    public void decorateBooksSettings(BookSettings bs) {
+    public void decorateBooksSettings(final BookSettings bs) {
         addViewModeListener(BOOK_VIEW_MODE.key, BOOK_PAGE_ALIGN.key, BOOK_ANIMATION_TYPE.key);
         addAnimationTypeListener(BOOK_ANIMATION_TYPE.key, BOOK_PAGE_ALIGN.key);
 
@@ -83,8 +83,8 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
         addListener(CACHE_LOCATION.key, new OnPreferenceChangeListener() {
 
             @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                CacheLocation newLocation = EnumUtils.getByResValue(CacheLocation.class,
+            public boolean onPreferenceChange(final Preference preference, final Object newValue) {
+                final CacheLocation newLocation = EnumUtils.getByResValue(CacheLocation.class,
                         LengthUtils.toString(newValue), null);
                 if (newLocation != null) {
                     CacheManager.moveCacheLocation(preference.getContext(), newLocation);
@@ -99,10 +99,13 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
 
     public void decoratePerformanceSettings() {
         if (EBookDroidApp.version == EBookDroidVersion.DEV) {
-            Preference p = findPreference(VIEW_TYPE.key);
+            final Preference p = findPreference(VIEW_TYPE.key);
             if (p instanceof ListPreference) {
-                ((ListPreference)p).setValue(DocumentViewType.GL.getResValue());
-                p.setEnabled(false);
+                final ListPreference lp = (ListPreference) p;
+                final String value = DocumentViewType.GL.getResValue();
+                lp.setValue(value);
+                setListPreferenceSummary(lp, value);
+                lp.setEnabled(false);
             }
         }
     }
@@ -143,7 +146,7 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
     public void setHWA(final DocumentViewType type, final String hwaPrefKey) {
         final Preference hwaPref = findPreference(hwaPrefKey);
         if (hwaPref != null) {
-            Class<? extends Preference> clazz = hwaPref.getClass();
+            final Class<? extends Preference> clazz = hwaPref.getClass();
             try {
                 final Method setCheckedMethod = clazz.getMethod("setChecked", boolean.class);
                 final Method setEnabledMethod = clazz.getMethod("setEnabled", boolean.class);
@@ -153,10 +156,10 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
                 } else {
                     setEnabledMethod.invoke(hwaPref, true);
                 }
-            } catch (NoSuchMethodException e) {
-            } catch (IllegalArgumentException e) {
-            } catch (IllegalAccessException e) {
-            } catch (InvocationTargetException e) {
+            } catch (final NoSuchMethodException e) {
+            } catch (final IllegalArgumentException e) {
+            } catch (final IllegalAccessException e) {
+            } catch (final InvocationTargetException e) {
             }
         }
     }
@@ -175,7 +178,7 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
         } else if (pref instanceof SeekBarPreference) {
             decorateSeekPreference((SeekBarPreference) pref);
         } else if (pref instanceof PreferenceGroup) {
-            PreferenceGroup group = (PreferenceGroup) pref;
+            final PreferenceGroup group = (PreferenceGroup) pref;
             for (int i = 0, n = group.getPreferenceCount(); i < n; i++) {
                 decoratePreference(group.getPreference(i));
             }

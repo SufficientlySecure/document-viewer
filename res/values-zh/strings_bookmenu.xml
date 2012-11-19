@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-<!--<string name="bookmenu_open">"Open book at..."</string>-->
+    <string name="bookmenu_open">"打开书籍"</string>
     <string name="bookmenu_settings">"设置"</string>
     <string name="bookmenu_openbookshelf">"显示书架"</string>
     <string name="bookmenu_openbookfolder">"显示文件夹"</string>

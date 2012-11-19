@@ -8,7 +8,7 @@
     <string name="list_rotation_port" translatable="true">"Force portrait"</string>
     <string name="list_rotation_user" translatable="true">"User"</string>
     <string name="list_rotation_behind" translatable="true">"Behind"</string>
-    <string name="list_rotation_auto" translatable="true">"Automatic"</string>
+    <string name="list_rotation_auto" translatable="true">"自动"</string>
     <string name="list_rotation_nosensor" translatable="true">"No sensor"</string>
     <string name="list_rotation_sensor_landscape" translatable="true">"Sensor landscape"</string>
     <string name="list_rotation_sensor_portrait" translatable="true">"Sensor portrait"</string>
@@ -58,7 +58,7 @@
     <string name="pref_contrast_title">"对比"</string>
     <string name="pref_contrast_summary">"对比度校正极 (0——1000,默认为 100)：100&quot;"</string>
     <string name="pref_exposure_title">"曝光"</string>
-    <string name="pref_exposure_summary">"曝光校正极 (0 - 200, 默认为100)：100"</string>
+    <string name="pref_exposure_summary">"曝光校正极 (0——200, 默认为100)：100"</string>
     <string name="pref_autolevels_title">"自动色阶"</string>
     <string name="pref_autolevels_summary">"使用自动水平矫正"</string>
 

@@ -91,7 +91,7 @@
     <string name="outline_title">"Inhaltsverzeichnis"</string>
     <string name="outline_missed">"Kein Inhaltsverzeichnis"</string>
     <string name="error_page_out_of_rande">"Falsche Seitennummer. Zulässiger Bereich: 1-%1$d"</string>
-    <string name="msg_loading">"Ladung… bitte warten"</string>
+    <string name="msg_loading">"Lade… bitte warten"</string>
 <!--<string name="msg_getting_page_size">"Assessing page size %1$d/%2$d"</string>-->
 <!--<string name="tap_zones_single_tap">"Single Tap"</string>-->
 <!--<string name="tap_zones_double_tap">"Double Tap"</string>-->

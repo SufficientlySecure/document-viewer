@@ -45,7 +45,7 @@ public abstract class UploadedTexture extends BasicTexture {
     @SuppressWarnings("unused")
     private static final LogContext LCTX = LogManager.root().lctx("Texture");
 
-    private boolean mContentValid = true;
+    protected boolean mContentValid = true;
 
     // indicate this textures is being uploaded in background
     private boolean mIsUploading = false;
@@ -84,7 +84,7 @@ public abstract class UploadedTexture extends BasicTexture {
         return mBitmap;
     }
 
-    private void freeBitmap() {
+    protected void freeBitmap() {
         if (mBitmap != null) {
             onFreeBitmap(mBitmap);
             mBitmap = null;

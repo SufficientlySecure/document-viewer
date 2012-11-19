@@ -8,8 +8,8 @@ import org.ebookdroid.core.models.SearchModel.Matches;
 
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.graphics.Paint.Align;
+import android.graphics.RectF;
 import android.text.TextPaint;
 
 import java.util.List;
@@ -94,6 +94,7 @@ public class EventGLDraw implements IEvent {
             }
 
             drawPageBackground(page);
+            // drawPageNumber(page);
 
             final boolean res = process(page.nodes);
 
@@ -154,9 +155,10 @@ public class EventGLDraw implements IEvent {
     }
 
     protected void drawPageBackground(final Page page) {
-
         canvas.fillRect(fixedPageBounds, viewState.paint.fillPaint);
+    }
 
+    protected void drawPageNumber(final Page page) {
         final TextPaint textPaint = viewState.paint.textPaint;
         textPaint.setTextSize(24 * viewState.zoom);
         textPaint.setTextAlign(Align.LEFT);

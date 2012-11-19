@@ -36,14 +36,15 @@ public class StringTexture extends CanvasTexture {
     private String mText;
     private int mTextWidth;
     private int mTextHeight;
+    private volatile boolean recycled;
 
     public StringTexture(final int maxWidth, final int maxHeight) {
         super(Math.max(1, maxWidth), Math.max(1, maxHeight));
     }
 
     public void setText(final String text, final TextPaint paint) {
-        String oldText = mText;
-        int oldTextHeight = mTextHeight;
+        final String oldText = mText;
+        final int oldTextHeight = mTextHeight;
 
         mPaint = paint;
         mMetrics = paint.getFontMetricsInt();
@@ -56,7 +57,12 @@ public class StringTexture extends CanvasTexture {
             mTextWidth = (int) FloatMath.ceil(mPaint.measureText(mText));
         }
         if (!CompareUtils.equals(mText, oldText) || mTextHeight != oldTextHeight) {
-            invalidateContent();
+            if (mBitmap != null) {
+                mBitmap.eraseColor(0);
+            }
+            mContentValid = false;
+            mWidth = UNSPECIFIED;
+            mHeight = UNSPECIFIED;
         }
     }
 
@@ -70,6 +76,19 @@ public class StringTexture extends CanvasTexture {
 
     public int getTextHeight() {
         return mTextHeight;
+    }
+
+    @Override
+    public void recycle() {
+        recycled = true;
+        super.recycle();
+    }
+
+    @Override
+    protected void freeBitmap() {
+        if (recycled) {
+            super.freeBitmap();
+        }
     }
 
     @Override

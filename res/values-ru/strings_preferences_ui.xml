@@ -4,7 +4,7 @@
     <string name="pref_ui_category">"Пользовательский интерфейс"</string>
     <string name="pref_ui_category_summary">"Настройки пользовательского интерфейса"</string>
     <string name="pref_lang_title">"Язык интерфейса"</string>
-    <string name="pref_lang_summary">"Язык интерфейса (требуетсфя перезапуск)"</string>
+    <string name="pref_lang_summary">"Язык интерфейса (требуется перезапуск)"</string>
     <string name="list_lang_default">"Системный"</string>
     <string name="list_lang_en">"Английский (English)"</string>
     <string name="list_lang_de">"Немецкий (Deutsch)"</string>

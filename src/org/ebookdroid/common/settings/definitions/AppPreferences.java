@@ -125,9 +125,6 @@ public interface AppPreferences {
     BooleanPreferenceDefinition REUSE_TEXTURES = new BooleanPreferenceDefinition(pref_texturereuse_id,
             pref_texturereuse_defvalue);
 
-    BooleanPreferenceDefinition USE_NATIVE_TEXTURES = new BooleanPreferenceDefinition(pref_usenativetextures_id,
-            pref_usenativetextures_defvalue);
-
     BooleanPreferenceDefinition EARLY_RECYCLING = new BooleanPreferenceDefinition(pref_earlyrecycling_id,
             pref_earlyrecycling_defvalue);
 

@@ -79,9 +79,6 @@
     <string translatable="false" name="pref_texturereuse_id">texturereuse</string>
     <string translatable="false" name="pref_texturereuse_defvalue">true</string>
 
-    <string translatable="false" name="pref_usenativetextures_id">usenativetextures</string>
-    <string translatable="false" name="pref_usenativetextures_defvalue">false</string>
-
     <string translatable="false" name="pref_earlyrecycling_id">earlyrecycling</string>
     <string translatable="false" name="pref_earlyrecycling_defvalue">false</string>
 

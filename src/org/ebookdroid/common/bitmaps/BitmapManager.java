@@ -53,8 +53,6 @@ public class BitmapManager {
 
     static boolean useEarlyRecycling = false;
 
-    static boolean useNativeTextures = false;
-
     public static Bitmap getResource(final int resourceId) {
         synchronized (resources) {
             Bitmap bitmap = resources.get(resourceId);
@@ -210,13 +208,7 @@ public class BitmapManager {
                 it.release();
             }
 
-            final AbstractBitmapRef ref =
-            /* */
-            useNativeTextures ?
-            /* */
-            new NativeTextureRef(false, partSize, partSize, generation.get()) :
-            /* */
-            new BitmapRef(Bitmap.createBitmap(partSize, partSize, config), generation.get());
+            final AbstractBitmapRef ref = new BitmapRef(Bitmap.createBitmap(partSize, partSize, config), generation.get());
 
             used.put(ref.id, ref);
 
@@ -417,10 +409,6 @@ public class BitmapManager {
 
     public static void setUseEarlyRecycling(final boolean useEarlyRecycling) {
         BitmapManager.useEarlyRecycling = useEarlyRecycling;
-    }
-
-    public static void setUseNativeTextures(final boolean useNativeTextures) {
-        BitmapManager.useNativeTextures = useNativeTextures;
     }
 
     public static int getPixelSizeInBytes(final Bitmap.Config config) {

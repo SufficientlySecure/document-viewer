@@ -105,8 +105,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     public final boolean textureReuseEnabled;
 
-    public final boolean useNativeTextures;
-
     public final boolean useEarlyRecycling;
 
     public final boolean reloadDuringZoom;
@@ -218,7 +216,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         drawThreadPriority = DRAW_THREAD_PRIORITY.getPreferenceValue(prefs);
         bitmapSize = BITMAP_SIZE.getPreferenceValue(prefs);
         textureReuseEnabled = REUSE_TEXTURES.getPreferenceValue(prefs);
-        useNativeTextures = USE_NATIVE_TEXTURES.getPreferenceValue(prefs);
         useEarlyRecycling = EARLY_RECYCLING.getPreferenceValue(prefs);
         reloadDuringZoom = RELOAD_DURING_ZOOM.getPreferenceValue(prefs);
         heapPreallocate = HEAP_PREALLOCATE.getPreferenceValue(prefs);

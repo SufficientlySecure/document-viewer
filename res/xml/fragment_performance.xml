@@ -63,12 +63,6 @@
                 android:title="@string/pref_texturereuse_title" />
 
             <CheckBoxPreference
-                android:defaultValue="@string/pref_usenativetextures_defvalue"
-                android:key="@string/pref_usenativetextures_id"
-                android:summary="@string/pref_usenativetextures_summary"
-                android:title="@string/pref_usenativetextures_title" />
-
-            <CheckBoxPreference
                 android:defaultValue="@string/pref_earlyrecycling_defvalue"
                 android:key="@string/pref_earlyrecycling_id"
                 android:summary="@string/pref_earlyrecycling_summary"

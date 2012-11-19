@@ -7,4 +7,7 @@
 
     <dimen name="recent_bookcase_title_margin">1dip</dimen>
 
+    <dimen name="browser_item_title_textsize">20dip</dimen>
+    <dimen name="browser_item_info_textsize">16dip</dimen>
+
 </resources>

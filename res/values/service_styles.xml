@@ -62,4 +62,22 @@
         <item name="android:text">EBookDroid</item>
     </style>
 
+    <style name="browser_item_title">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textSize">@dimen/browser_item_title_textsize</item>
+        <item name="android:textColor">@color/actionbar_white</item>
+    </style>
+
+    <style name="browser_item_info">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">0dip</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textSize">@dimen/browser_item_info_textsize</item>
+        <item name="android:textColor">@color/actionbar_white</item>
+    </style>
+
 </resources>

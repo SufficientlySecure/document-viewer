@@ -11,6 +11,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import java.nio.Buffer;
+
 import org.emdev.utils.MathUtils;
 
 class BitmapRef extends AbstractBitmapRef {
@@ -79,6 +81,11 @@ class BitmapRef extends AbstractBitmapRef {
     @Override
     public void setPixels(final int[] pixels, final int width, final int height) {
         bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+    }
+
+    @Override
+    public void setPixels(final Buffer pixels) {
+        bitmap.copyPixelsFromBuffer(pixels);
     }
 
     @Override

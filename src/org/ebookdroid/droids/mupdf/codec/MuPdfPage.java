@@ -14,6 +14,8 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +32,8 @@ public class MuPdfPage extends AbstractCodecPage {
     final RectF pageBounds;
     final int actualWidth;
     final int actualHeight;
+
+    private final static boolean USE_DIRECT = true;
 
     private MuPdfPage(final long pageHandle, final long docHandle) {
         this.pageHandle = pageHandle;
@@ -120,21 +124,34 @@ public class MuPdfPage extends AbstractCodecPage {
         final int nightmode = viewState != null && viewState.nightMode && viewState.positiveImagesInNightMode ? 1 : 0;
         final int slowcmyk = AppSettings.current().slowCMYK ? 1 : 0;
 
-        if (EBookDroidLibraryLoader.nativeGraphicsAvailable) {
-            final IBitmapRef bmp = BitmapManager.getBitmap("PDF page", width, height, MuPdfContext.NATIVE_BITMAP_CFG);
-            boolean res = renderPageBitmap(docHandle, pageHandle, mRect, ctm, bmp.getBitmap(), nightmode, slowcmyk);
-            if (res) {
-                return bmp;
-            }
-            BitmapManager.release(bmp);
-            return null;
+        if (USE_DIRECT) {
+        final ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4 * width * height).order(ByteOrder.nativeOrder());
+        {
+            boolean res = renderPageDirect(docHandle, pageHandle, mRect, ctm, byteBuffer, nightmode, slowcmyk);
+            final IBitmapRef b = BitmapManager.getBitmap("PDF page", width, height, Bitmap.Config.ARGB_8888);
+            b.setPixels(byteBuffer);
+            return b;
         }
 
-        final int[] bufferarray = new int[width * height];
-        renderPage(docHandle, pageHandle, mRect, ctm, bufferarray, nightmode, slowcmyk);
-        final IBitmapRef b = BitmapManager.getBitmap("PDF page", width, height, MuPdfContext.BITMAP_CFG);
-        b.setPixels(bufferarray, width, height);
-        return b;
+        } else {
+
+            if (EBookDroidLibraryLoader.nativeGraphicsAvailable) {
+                final IBitmapRef bmp = BitmapManager.getBitmap("PDF page", width, height,
+                        MuPdfContext.NATIVE_BITMAP_CFG);
+                boolean res = renderPageBitmap(docHandle, pageHandle, mRect, ctm, bmp.getBitmap(), nightmode, slowcmyk);
+                if (res) {
+                    return bmp;
+                }
+                BitmapManager.release(bmp);
+                return null;
+            }
+
+            final int[] bufferarray = new int[width * height];
+            renderPage(docHandle, pageHandle, mRect, ctm, bufferarray, nightmode, slowcmyk);
+            final IBitmapRef b = BitmapManager.getBitmap("PDF page", width, height, MuPdfContext.BITMAP_CFG);
+            b.setPixels(bufferarray, width, height);
+            return b;
+        }
     }
 
     @Override
@@ -153,6 +170,9 @@ public class MuPdfPage extends AbstractCodecPage {
 
     private static native boolean renderPageBitmap(long dochandle, long pagehandle, int[] viewboxarray,
             float[] matrixarray, Bitmap bitmap, int noghtmode, int slowcmyk);
+
+    private static native boolean renderPageDirect(long dochandle, long pagehandle, int[] viewboxarray,
+            float[] matrixarray, ByteBuffer buffer, int noghtmode, int slowcmyk);
 
     private native static List<PageTextBox> search(long docHandle, long pageHandle, String pattern);
 

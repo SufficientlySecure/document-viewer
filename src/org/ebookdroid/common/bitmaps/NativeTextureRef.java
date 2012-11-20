@@ -11,6 +11,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import java.nio.Buffer;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.emdev.utils.MatrixUtils;
@@ -179,5 +180,11 @@ public class NativeTextureRef extends AbstractBitmapRef {
     private static native int nativeEraseColor(int ref, int color, int width, int height);
 
     private static native int nativeRecycle(int ref);
+
+    @Override
+    public void setPixels(Buffer pixels) {
+        // TODO Auto-generated method stub
+
+    }
 
 }

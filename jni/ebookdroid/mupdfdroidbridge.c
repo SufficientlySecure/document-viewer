@@ -759,6 +759,88 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPageBitmap(JNIEnv *env, j
     return JNI_TRUE;
 }
 
+/*JNI BITMAP API*/
+JNIEXPORT jboolean JNICALL
+Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPageDirect(JNIEnv *env, jobject this, jlong dochandle,
+                                                              jlong pagehandle, jintArray viewboxarray,
+                                                              jfloatArray matrixarray, jobject byteBuffer, jint nightmode, jint slowcmyk)
+{
+    renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
+    renderpage_t *page = (renderpage_t*) (long) pagehandle;
+
+//    DEBUG("MuPdfPage_renderPageBitmap(%p, %p): start", doc, page);
+
+    fz_matrix ctm;
+    fz_bbox viewbox;
+    fz_pixmap *pixmap;
+    jfloat *matrix;
+    jint *viewboxarr;
+    jint *dimen;
+    int length, val;
+    fz_device *dev = NULL;
+
+    AndroidBitmapInfo info;
+    void *pixels;
+
+    int ret;
+
+    pixels = (*env)->GetDirectBufferAddress(env, byteBuffer);
+    if (!pixels) {
+        ERROR("GetDirectBufferAddress failed!");
+        return JNI_FALSE;
+    }
+
+    matrix = (*env)->GetPrimitiveArrayCritical(env, matrixarray, 0);
+    ctm = fz_identity;
+    ctm.a = matrix[0];
+    ctm.b = matrix[1];
+    ctm.c = matrix[2];
+    ctm.d = matrix[3];
+    ctm.e = matrix[4];
+    ctm.f = matrix[5];
+    (*env)->ReleasePrimitiveArrayCritical(env, matrixarray, matrix, 0);
+
+    viewboxarr = (*env)->GetPrimitiveArrayCritical(env, viewboxarray, 0);
+    viewbox.x0 = viewboxarr[0];
+    viewbox.y0 = viewboxarr[1];
+    viewbox.x1 = viewboxarr[2];
+    viewbox.y1 = viewboxarr[3];
+    (*env)->ReleasePrimitiveArrayCritical(env, viewboxarray, viewboxarr, 0);
+
+    fz_context* ctx = page->ctx;
+    if (!ctx)
+    {
+        ERROR("No page context");
+        return JNI_FALSE;
+    }
+
+    //add check for night mode and set global variable accordingly
+    ctx->ebookdroid_nightmode = nightmode;
+
+    //add check for slowcmyk mode and set global variable accordingly
+    ctx->ebookdroid_slowcmyk = slowcmyk;
+
+    fz_try(ctx)
+    {
+         pixmap = fz_new_pixmap_with_data(ctx, fz_device_rgb, viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0, pixels);
+
+         fz_clear_pixmap_with_value(ctx, pixmap, 0xff);
+
+         dev = fz_new_draw_device(ctx, pixmap);
+
+         fz_run_display_list(page->pageList, dev, ctm, viewbox, NULL);
+    }
+    fz_always(ctx)
+    {
+       fz_free_device(dev);
+       fz_drop_pixmap(ctx, pixmap);
+    }
+    fz_catch(ctx)
+    {
+        DEBUG("Render failed");
+    }
+    return JNI_TRUE;
+}
 
 static fz_text_char textcharat(fz_text_page *page, int idx)
 {

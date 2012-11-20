@@ -9,6 +9,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import java.nio.Buffer;
+
 
 public interface IBitmapRef {
 
@@ -27,6 +29,8 @@ public interface IBitmapRef {
     void draw(final Canvas canvas, final Rect src, Rect dst, Paint p);
 
     void setPixels(int[] pixels, int width, int height);
+
+    void setPixels(Buffer pixels);
 
     void setPixels(final RawBitmap raw);
 

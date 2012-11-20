@@ -56,5 +56,16 @@
         <activity android:name=".ui.about.AboutActivity" android:icon="@drawable/application_icon" android:theme="@android:style/Theme.Dialog"/>
         <activity android:name=".ui.library.dialogs.FolderDlg" android:icon="@drawable/application_icon" android:theme="@android:style/Theme.Dialog"/>
 
+        <receiver android:name="org.emdev.common.filesystem.MediaManager" android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_MOUNTED"/>
+                <action android:name="android.intent.action.MEDIA_NOFS"/>
+                <action android:name="android.intent.action.MEDIA_SHARED"/>
+                <action android:name="android.intent.action.MEDIA_EJECT"/>
+                <action android:name="android.intent.action.MEDIA_UNMOUNTABLE"/>
+                <action android:name="android.intent.action.MEDIA_UNMOUNTED"/>
+                <data android:scheme="file" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

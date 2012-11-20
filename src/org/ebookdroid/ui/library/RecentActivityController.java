@@ -45,8 +45,11 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.emdev.BaseDroidApp;
 import org.emdev.common.backup.BackupManager;
 import org.emdev.common.filesystem.FileExtensionFilter;
+import org.emdev.common.filesystem.MediaManager;
+import org.emdev.common.filesystem.MediaState;
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
 import org.emdev.ui.AbstractActionActivity;
@@ -63,7 +66,7 @@ import org.emdev.utils.FileUtils;
 import org.emdev.utils.LengthUtils;
 
 public class RecentActivityController extends ActionController<RecentActivity> implements IBrowserActivity,
-        ILibSettingsChangeListener, IRecentBooksChangedListener, ICacheListener {
+        ILibSettingsChangeListener, IRecentBooksChangedListener, ICacheListener, MediaManager.Listener {
 
     public static final AtomicBoolean working = new AtomicBoolean();
 
@@ -100,6 +103,8 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         bookshelfAdapter = new BooksAdapter(this, recentAdapter);
         libraryAdapter = new LibraryAdapter(bookshelfAdapter);
 
+        MediaManager.listeners.addListener(this);
+
         SettingsManager.addListener(this);
 
         final LibSettings libSettings = LibSettings.current();
@@ -107,13 +112,11 @@ public class RecentActivityController extends ActionController<RecentActivity> i
 
         final BookSettings recent = SettingsManager.getRecentBook();
 
-        if (checkAutoLoad(libSettings, recent)) {
-            return;
+        if (!checkAutoLoad(libSettings, recent)) {
+            changeLibraryView(recent != null ? RecentActivity.VIEW_RECENT : RecentActivity.VIEW_LIBRARY);
+            EBookDroidApp.checkInstalledFonts(getManagedComponent());
         }
 
-        changeLibraryView(recent != null ? RecentActivity.VIEW_RECENT : RecentActivity.VIEW_LIBRARY);
-
-        EBookDroidApp.checkInstalledFonts(getManagedComponent());
     }
 
     public void onRestore(final RecentActivity activity) {
@@ -183,13 +186,15 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         if (LCTX.isDebugEnabled()) {
             LCTX.d("onDestroy(): " + finishing);
         }
-        if (finishing && BackupSettings.current().backupOnExit) {
-            BackupManager.backup();
-        }
         if (finishing) {
+            if (BackupSettings.current().backupOnExit) {
+                BackupManager.backup();
+            }
             working.set(false);
             bookshelfAdapter.onDestroy();
             CacheManager.listeners.removeListener(this);
+            SettingsManager.removeListener(this);
+            MediaManager.listeners.removeListener(this);
         }
     }
 
@@ -640,5 +645,10 @@ public class RecentActivityController extends ActionController<RecentActivity> i
 
     public BookShelfAdapter getBookShelf(final int index) {
         return bookshelfAdapter.getList(index);
+    }
+
+    @Override
+    public void onMediaStateChanged(final String path, final MediaState oldState, final MediaState newState) {
+        System.out.println(path + " : " + oldState + " -> " + newState);
     }
 }

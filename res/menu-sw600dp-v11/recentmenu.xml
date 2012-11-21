@@ -12,19 +12,29 @@
         android:alphabeticShortcut="l"
         android:icon="@drawable/recent_actionbar_library"
         android:showAsAction="always"
-        android:title="Show library"/>
+        android:title="@string/menu_show_library"/>
     <item
         android:id="@+id/recent_showrecent"
         android:alphabeticShortcut="l"
         android:icon="@drawable/recent_actionbar_recent"
         android:showAsAction="always"
-        android:title="Show recent"/>
+        android:title="@string/menu_show_recent"/>
     <item
-        android:id="@+id/recent_showbrowser"
-        android:alphabeticShortcut="l"
-        android:icon="@drawable/recent_actionbar_filebrowser"
+        android:id="@+id/recent_storage_menu"
+        android:icon="@drawable/recent_actionbar_menu_storages"
         android:showAsAction="always"
-        android:title="Show files"/>
+        android:title="@string/menu_storages">
+        <menu>
+            <item
+                android:id="@+id/recent_storage_all"
+                android:icon="@drawable/recent_menu_storage_internal"
+                android:title="@string/menu_storages_filesystem"/>
+            <item
+                android:id="@+id/recent_storage_external"
+                android:icon="@drawable/recent_menu_storage_internal"
+                android:title="@string/menu_storages_external"/>
+            </menu>
+    </item>
     <item
         android:id="@+id/mainmenu_opds"
         android:alphabeticShortcut="o"

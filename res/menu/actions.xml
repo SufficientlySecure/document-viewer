@@ -40,4 +40,6 @@
 
     <item android:id="@+id/actions_applyCrop"/>
 
+    <item android:id="@+id/actions_storageGroup"/>
+    <item android:id="@+id/actions_storage"/>
 </menu>

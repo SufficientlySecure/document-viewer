@@ -1,11 +1,17 @@
 package org.ebookdroid.common.settings.definitions;
 
+import static org.ebookdroid.R.string.pref_autoscanremovable_defvalue;
+import static org.ebookdroid.R.string.pref_autoscanremovable_id;
 import static org.ebookdroid.R.string.pref_brautoscandir_defvalue;
 import static org.ebookdroid.R.string.pref_brautoscandir_id;
 import static org.ebookdroid.R.string.pref_brfiletypes;
 import static org.ebookdroid.R.string.pref_brsearchbookquery_id;
 import static org.ebookdroid.R.string.pref_cachelocation_defvalue;
 import static org.ebookdroid.R.string.pref_cachelocation_id;
+import static org.ebookdroid.R.string.pref_showremovable_defvalue;
+import static org.ebookdroid.R.string.pref_showremovable_id;
+import static org.ebookdroid.R.string.pref_showscanning_defvalue;
+import static org.ebookdroid.R.string.pref_showscanning_id;
 import static org.ebookdroid.R.string.pref_usebookcase_defvalue;
 import static org.ebookdroid.R.string.pref_usebookcase_id;
 
@@ -31,6 +37,16 @@ public interface LibPreferences {
 
     FileTypeFilterPreferenceDefinition FILE_TYPE_FILTER = new FileTypeFilterPreferenceDefinition(pref_brfiletypes);
 
-    EnumPreferenceDefinition<CacheLocation> CACHE_LOCATION = new EnumPreferenceDefinition<CacheLocation>(CacheLocation.class, pref_cachelocation_id, pref_cachelocation_defvalue);
+    EnumPreferenceDefinition<CacheLocation> CACHE_LOCATION = new EnumPreferenceDefinition<CacheLocation>(
+            CacheLocation.class, pref_cachelocation_id, pref_cachelocation_defvalue);
+
+    BooleanPreferenceDefinition AUTO_SCAN_REMOVABLE_MEDIA = new BooleanPreferenceDefinition(pref_autoscanremovable_id,
+            pref_autoscanremovable_defvalue);
+
+    BooleanPreferenceDefinition SHOW_REMOVABLE_MEDIA = new BooleanPreferenceDefinition(pref_showremovable_id,
+            pref_showremovable_defvalue);
+
+    BooleanPreferenceDefinition SHOW_SCANNING_MEDIA = new BooleanPreferenceDefinition(pref_showscanning_id,
+            pref_showscanning_defvalue);
 
 }

@@ -7,6 +7,15 @@
     <string translatable="false" name="pref_brautoscandir_id">brautoscandir</string>
     <string translatable="false" name="pref_brautoscandir_defvalue">/sdcard</string>
 
+    <string translatable="false" name="pref_autoscanremovable_id">autoscanremovable</string>
+    <string translatable="false" name="pref_autoscanremovable_defvalue">false</string>
+
+    <string translatable="false" name="pref_showremovable_id">showremovable</string>
+    <string translatable="false" name="pref_showremovable_defvalue">true</string>
+
+    <string translatable="false" name="pref_showscanning_id">showscanning</string>
+    <string translatable="false" name="pref_showscanning_defvalue">true</string>
+
     <string translatable="false" name="pref_brfiletypes">brfiletypes</string>
 
     <string translatable="false" name="pref_brsearchbookquery_id">brsearchbookquery</string>

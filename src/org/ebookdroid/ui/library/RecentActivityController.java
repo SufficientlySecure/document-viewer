@@ -41,11 +41,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.emdev.BaseDroidApp;
 import org.emdev.common.backup.BackupManager;
 import org.emdev.common.filesystem.FileExtensionFilter;
 import org.emdev.common.filesystem.MediaManager;
@@ -387,11 +387,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         if (f.delete()) {
             CacheManager.clear(book.path);
             final LibSettings libSettings = LibSettings.current();
-            if (libSettings.useBookcase) {
-                bookshelfAdapter.startScan();
-            } else {
-                libraryAdapter.startScan();
-            }
+            bookshelfAdapter.startScan();
             recentAdapter.setBooks(SettingsManager.getRecentBooks().values(), libSettings.allowedFileTypes);
         }
     }
@@ -497,9 +493,14 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         }
     }
 
-    @ActionMethod(ids = R.id.recent_showbrowser)
+    @ActionMethod(ids = { R.id.recent_showbrowser, R.id.recent_storage_all, R.id.recent_storage_external,
+            R.id.actions_storage })
     public void goFileBrowser(final ActionEx action) {
         final Intent myIntent = new Intent(getManagedComponent(), BrowserActivity.class);
+        final String path = action.getParameter("path");
+        if (path != null) {
+            myIntent.setData(Uri.fromFile(new File(path)));
+        }
         getManagedComponent().startActivity(myIntent);
     }
 
@@ -583,35 +584,40 @@ public class RecentActivityController extends ActionController<RecentActivity> i
     @Override
     public void onLibSettingsChanged(final LibSettings oldSettings, final LibSettings newSettings,
             final LibSettings.Diff diff) {
-        final FileExtensionFilter filter = newSettings.allowedFileTypes;
-        if (diff.isUseBookcaseChanged()) {
+        try {
+            final FileExtensionFilter filter = newSettings.allowedFileTypes;
+            if (diff.isUseBookcaseChanged()) {
 
-            if (newSettings.useBookcase) {
+                if (newSettings.useBookcase) {
+                    recentAdapter.setBooks(SettingsManager.getRecentBooks().values(), filter);
+                    getManagedComponent().showBookcase(bookshelfAdapter, recentAdapter);
+                } else {
+                    getManagedComponent().showLibrary(libraryAdapter, recentAdapter);
+                }
+                return;
+            }
+
+            if (diff.isAutoScanDirsChanged()) {
+                bookshelfAdapter.startScan();
+                return;
+            }
+            if (diff.isAllowedFileTypesChanged()) {
                 recentAdapter.setBooks(SettingsManager.getRecentBooks().values(), filter);
-                getManagedComponent().showBookcase(bookshelfAdapter, recentAdapter);
-            } else {
-                getManagedComponent().showLibrary(libraryAdapter, recentAdapter);
-            }
-            return;
-        }
-
-        if (diff.isAutoScanDirsChanged()) {
-            if (newSettings.useBookcase) {
                 bookshelfAdapter.startScan();
-            } else {
-                libraryAdapter.startScan();
             }
-            return;
-        }
-        if (diff.isAllowedFileTypesChanged()) {
-            recentAdapter.setBooks(SettingsManager.getRecentBooks().values(), filter);
-            if (newSettings.useBookcase) {
-                bookshelfAdapter.startScan();
-            } else {
-                libraryAdapter.startScan();
+            if (diff.isAutoScanRemovableMediaChanged()) {
+                final Collection<String> media = MediaManager.getReadableMedia();
+                if (LengthUtils.isNotEmpty(media)) {
+                    if (newSettings.autoScanRemovableMedia) {
+                        bookshelfAdapter.startScan(media);
+                    } else {
+                        bookshelfAdapter.removeAll(media);
+                    }
+                }
             }
+        } finally {
+            IUIManager.instance.invalidateOptionsMenu(getManagedComponent());
         }
-        IUIManager.instance.invalidateOptionsMenu(getManagedComponent());
     }
 
     @Override
@@ -630,7 +636,7 @@ public class RecentActivityController extends ActionController<RecentActivity> i
         if (!LibSettings.current().useBookcase) {
             getManagedComponent().changeLibraryView(view);
             if (view == RecentActivity.VIEW_LIBRARY) {
-                libraryAdapter.startScan();
+                bookshelfAdapter.startScan();
             } else {
                 final FileExtensionFilter filter = LibSettings.current().allowedFileTypes;
                 recentAdapter.setBooks(SettingsManager.getRecentBooks().values(), filter);
@@ -649,6 +655,19 @@ public class RecentActivityController extends ActionController<RecentActivity> i
 
     @Override
     public void onMediaStateChanged(final String path, final MediaState oldState, final MediaState newState) {
-        System.out.println(path + " : " + oldState + " -> " + newState);
+        if (newState.readable) {
+            if (oldState == null || !oldState.readable) {
+                if (LibSettings.current().autoScanRemovableMedia) {
+                    bookshelfAdapter.startScan(path);
+                }
+                IUIManager.instance.invalidateOptionsMenu(getManagedComponent());
+            }
+            return;
+        }
+
+        if (oldState != null && oldState.readable) {
+            bookshelfAdapter.removeAll(path);
+            IUIManager.instance.invalidateOptionsMenu(getManagedComponent());
+        }
     }
 }

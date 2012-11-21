@@ -33,16 +33,22 @@ import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 import android.widget.ImageView;
 import android.widget.ViewFlipper;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.emdev.BaseDroidApp;
 import org.emdev.common.android.AndroidVersion;
+import org.emdev.common.filesystem.MediaManager;
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
 import org.emdev.ui.AbstractActionActivity;
 import org.emdev.ui.uimanager.IUIManager;
+import org.emdev.utils.FileUtils;
 import org.emdev.utils.LengthUtils;
 
 public class RecentActivity extends AbstractActionActivity<RecentActivity, RecentActivityController> {
@@ -147,7 +153,8 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
 
     @Override
     protected void updateMenuItems(final Menu menu) {
-        if (!LibSettings.current().useBookcase) {
+        final LibSettings ls = LibSettings.current();
+        if (!ls.useBookcase) {
             final int viewMode = getViewMode();
             final boolean showLibraryAvailable = viewMode == RecentActivity.VIEW_RECENT;
             setMenuItemVisible(menu, showLibraryAvailable, R.id.recent_showlibrary);
@@ -156,6 +163,44 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
             setMenuItemVisible(menu, false, R.id.recent_showlibrary);
             setMenuItemVisible(menu, false, R.id.recent_showrecent);
         }
+
+        setMenuItemExtra(menu, R.id.recent_storage_all, "path", "/");
+        setMenuItemExtra(menu, R.id.recent_storage_external, "path", BaseDroidApp.EXT_STORAGE.getAbsolutePath());
+
+        final MenuItem storageMenu = menu.findItem(R.id.recent_storage_menu);
+        if (storageMenu != null) {
+            final SubMenu subMenu = storageMenu.getSubMenu();
+            subMenu.removeGroup(R.id.actions_storageGroup);
+
+            final Set<String> added = new HashSet<String>();
+            added.add("/");
+            added.add(FileUtils.getCanonicalPath(BaseDroidApp.EXT_STORAGE));
+
+            if (ls.showScanningInMenu) {
+                for (final String path : ls.autoScanDirs) {
+                    final File file = new File(path);
+                    final String mp = FileUtils.getCanonicalPath(file);
+                    if (mp != null && added.add(mp)) {
+                        addStorageMenuItem(subMenu, R.drawable.recent_menu_storage_scanned, file.getPath(), path);
+                    }
+                }
+            }
+            if (ls.showRemovableMediaInMenu) {
+                for (final String path : MediaManager.getReadableMedia()) {
+                    final File file = new File(path);
+                    final String mp = FileUtils.getCanonicalPath(file);
+                    if (mp != null && added.add(mp)) {
+                        addStorageMenuItem(subMenu, R.drawable.recent_menu_storage_external, file.getName(), path);
+                    }
+                }
+            }
+        }
+    }
+
+    protected void addStorageMenuItem(final Menu menu, final int resId, final String name, final String path) {
+        final MenuItem bmi = menu.add(R.id.actions_storageGroup, R.id.actions_storage, Menu.NONE, name);
+        bmi.setIcon(resId);
+        setMenuItemExtra(bmi, "path", path);
     }
 
     @Override

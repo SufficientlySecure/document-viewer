@@ -18,6 +18,7 @@ import android.webkit.WebView;
 
 import org.emdev.BaseDroidApp;
 import org.emdev.common.backup.BackupManager;
+import org.emdev.common.filesystem.MediaManager;
 import org.emdev.common.fonts.FontManager;
 import org.emdev.ui.actions.ActionController;
 import org.emdev.ui.actions.ActionDialogBuilder;
@@ -47,6 +48,7 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
         SettingsManager.init(this);
         CacheManager.init(this);
         FontManager.init();
+        MediaManager.init(this);
 
         preallocateHeap(AppSettings.current().heapPreallocate);
 
@@ -60,6 +62,7 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
     @Override
     public void onTerminate() {
         SettingsManager.onTerminate();
+        MediaManager.onTerminate(this);
     }
 
     /**

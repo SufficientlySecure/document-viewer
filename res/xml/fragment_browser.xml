@@ -17,6 +17,24 @@
             android:summary="@string/pref_brautoscandir_summary"
             android:title="@string/pref_brautoscandir_title" />
 
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_autoscanremovable_defvalue"
+            android:key="@string/pref_autoscanremovable_id"
+            android:summary="@string/pref_autoscanremovable_summary"
+            android:title="@string/pref_autoscanremovable_title" />
+
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_showremovable_defvalue"
+            android:key="@string/pref_showremovable_id"
+            android:summary="@string/pref_showremovable_summary"
+            android:title="@string/pref_showremovable_title" />
+
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_showscanning_defvalue"
+            android:key="@string/pref_showscanning_id"
+            android:summary="@string/pref_showscanning_summary"
+            android:title="@string/pref_showscanning_title" />
+
         <ListPreference
             android:defaultValue="@string/pref_cachelocation_defvalue"
             android:entries="@array/pref_cachelocation_entries"

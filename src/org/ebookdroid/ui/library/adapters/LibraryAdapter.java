@@ -123,14 +123,6 @@ public class LibraryAdapter extends BaseExpandableListAdapter {
         notifyDataSetInvalidated();
     }
 
-    public void startScan() {
-        adapter.startScan();
-    }
-
-    public void stopScan() {
-        adapter.stopScan();
-    }
-
     public static class ViewHolder extends BaseViewHolder {
 
         TextView name;

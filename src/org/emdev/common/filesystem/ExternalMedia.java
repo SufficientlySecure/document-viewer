@@ -9,4 +9,9 @@ public class ExternalMedia {
         this.path = path;
         this.state = state;
     }
+
+    @Override
+    public String toString() {
+        return path + " " + state;
+    }
 }

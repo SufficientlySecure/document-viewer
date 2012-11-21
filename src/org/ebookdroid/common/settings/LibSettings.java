@@ -34,6 +34,12 @@ public class LibSettings implements LibPreferences, IBackupAgent {
 
     public final CacheLocation cacheLocation;
 
+    public final boolean autoScanRemovableMedia;
+
+    public final boolean showScanningInMenu;
+
+    public final boolean showRemovableMediaInMenu;
+
     private LibSettings() {
         BackupManager.addAgent(this);
         final SharedPreferences prefs = SettingsManager.prefs;
@@ -43,6 +49,9 @@ public class LibSettings implements LibPreferences, IBackupAgent {
         searchBookQuery = SEARCH_BOOK_QUERY.getPreferenceValue(prefs);
         allowedFileTypes = FILE_TYPE_FILTER.getFilter(prefs);
         cacheLocation  = CACHE_LOCATION.getPreferenceValue(prefs);
+        autoScanRemovableMedia = AUTO_SCAN_REMOVABLE_MEDIA.getPreferenceValue(prefs);
+        showRemovableMediaInMenu = SHOW_REMOVABLE_MEDIA.getPreferenceValue(prefs);
+        showScanningInMenu = SHOW_SCANNING_MEDIA.getPreferenceValue(prefs);
     }
 
     /* =============== */
@@ -126,6 +135,7 @@ public class LibSettings implements LibPreferences, IBackupAgent {
         private static final int D_AutoScanDirs = 0x0001 << 1;
         private static final int D_AllowedFileTypes = 0x0001 << 2;
         private static final int D_CacheLocation = 0x0001 << 3;
+        private static final int D_AutoScanMedia = 0x0001 << 4;
 
         private int mask;
         private final boolean firstTime;
@@ -146,6 +156,9 @@ public class LibSettings implements LibPreferences, IBackupAgent {
                 }
                 if (olds.cacheLocation != news.cacheLocation) {
                     mask |= D_CacheLocation;
+                }
+                if (olds.autoScanRemovableMedia != news.autoScanRemovableMedia) {
+                    mask |= D_AutoScanMedia;
                 }
             }
         }
@@ -170,5 +183,8 @@ public class LibSettings implements LibPreferences, IBackupAgent {
             return 0 != (mask & D_CacheLocation);
         }
 
+        public boolean isAutoScanRemovableMediaChanged() {
+            return 0 != (mask & D_AutoScanMedia);
+        }
     }
 }

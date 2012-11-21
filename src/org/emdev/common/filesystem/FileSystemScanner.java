@@ -14,8 +14,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.emdev.common.cache.CacheManager;
@@ -24,6 +26,7 @@ import org.emdev.common.log.LogManager;
 import org.emdev.ui.actions.EventDispatcher;
 import org.emdev.ui.actions.InvokationType;
 import org.emdev.ui.tasks.AsyncTask;
+import org.emdev.utils.FileUtils;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.StringUtils;
 
@@ -102,6 +105,27 @@ public class FileSystemScanner {
                 o.stopWatching();
             }
             observers.clear();
+        }
+    }
+
+    public void stopObservers(final String path) {
+        final String mpath = FileUtils.invertMountPrefix(path);
+        final String ap = path + "/";
+        final String mp = mpath != null ? mpath + "/" : null;
+
+        synchronized (observers) {
+            final Iterator<Entry<File, FileObserver>> iter = observers.entrySet().iterator();
+            while (iter.hasNext()) {
+                final Entry<File, FileObserver> next = iter.next();
+                final File file = next.getKey();
+                final String filePath = file.getAbsolutePath();
+                final boolean eq = filePath.startsWith(ap) || filePath.equals(path) || mpath != null
+                        && (filePath.startsWith(mp) || filePath.equals(mpath));
+                if (eq) {
+                    next.getValue().stopWatching();
+                    iter.remove();
+                }
+            }
         }
     }
 

@@ -130,6 +130,19 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Actio
         intent.putExtra(name, new ExtraWrapper(data));
     }
 
+    protected void setMenuItemExtra(final Menu menu, final int itemId, final String name, final Object data) {
+        MenuItem item = menu.findItem(itemId);
+        if (item == null) {
+            return;
+        }
+        Intent intent = item.getIntent();
+        if (intent == null) {
+            intent = new Intent();
+            item.setIntent(intent);
+        }
+        intent.putExtra(name, new ExtraWrapper(data));
+    }
+
     protected void setMenuParameters(final Menu menu, final IActionParameter... parameters) {
         for (int i = 0, n = menu.size(); i < n; i++) {
             final MenuItem item = menu.getItem(i);

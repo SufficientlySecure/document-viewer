@@ -16,9 +16,12 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -26,6 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.emdev.common.filesystem.FileSystemScanner;
+import org.emdev.common.filesystem.MediaManager;
 import org.emdev.ui.adapters.BaseViewHolder;
 import org.emdev.ui.tasks.AsyncTask;
 import org.emdev.utils.FileUtils;
@@ -288,11 +292,64 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
     public void startScan() {
         clearData();
         final LibSettings libSettings = LibSettings.current();
-        scanner.startScan(libSettings.allowedFileTypes, libSettings.autoScanDirs);
+        final Set<String> folders = new LinkedHashSet<String>(libSettings.autoScanDirs);
+        if (libSettings.autoScanRemovableMedia) {
+            folders.addAll(MediaManager.getReadableMedia());
+        }
+        scanner.startScan(libSettings.allowedFileTypes, folders);
+    }
+
+    public void startScan(final String path) {
+        final LibSettings libSettings = LibSettings.current();
+        scanner.startScan(libSettings.allowedFileTypes, path);
+    }
+
+    public void startScan(final Collection<String> paths) {
+        final LibSettings libSettings = LibSettings.current();
+        scanner.startScan(libSettings.allowedFileTypes, paths);
     }
 
     public void stopScan() {
         scanner.stopScan();
+    }
+
+    public synchronized void removeAll(final Collection<String> paths) {
+        boolean found = false;
+        for (final String path : paths) {
+            scanner.stopObservers(path);
+            found |= removeAllImpl(path);
+        }
+        if (found) {
+            notifyDataSetChanged();
+        }
+    }
+
+    public synchronized void removeAll(final String path) {
+        scanner.stopObservers(path);
+        if (removeAllImpl(path)) {
+            notifyDataSetChanged();
+        }
+    }
+
+    private boolean removeAllImpl(final String path) {
+        final String ap = path + "/";
+        final TLIterator<BookShelfAdapter> iter = data.iterator();
+        boolean found = false;
+        while (iter.hasNext()) {
+            final BookShelfAdapter next = iter.next();
+            final boolean eq = next.path.startsWith(ap) || next.path.equals(path) || next.mpath != null
+                    && (next.mpath.startsWith(ap) || next.mpath.equals(path));
+            if (eq) {
+                folders.remove(next.path);
+                if (next.mpath != null) {
+                    folders.remove(next.mpath);
+                }
+                iter.remove();
+                found = true;
+            }
+        }
+        iter.release();
+        return found;
     }
 
     public boolean startSearch(final String searchQuery) {

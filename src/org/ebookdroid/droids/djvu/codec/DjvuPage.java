@@ -16,6 +16,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +30,8 @@ public class DjvuPage extends AbstractCodecPage {
     private final long docHandle;
     private final int pageNo;
     private long pageHandle;
+
+    private final static boolean USE_DIRECT = true;
 
     DjvuPage(final long contextHandle, final long docHandle, final long pageHandle, final int pageNo) {
         this.contextHandle = contextHandle;
@@ -52,6 +56,18 @@ public class DjvuPage extends AbstractCodecPage {
         final int renderMode = AppSettings.current().djvuRenderingMode;
         IBitmapRef bmp = null;
         if (width > 0 && height > 0) {
+
+            if (USE_DIRECT) {
+                final ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4 * width * height).order(
+                        ByteOrder.nativeOrder());
+                if (renderPageDirect(pageHandle, contextHandle, width, height, pageSliceBounds.left,
+                        pageSliceBounds.top, pageSliceBounds.width(), pageSliceBounds.height(), byteBuffer, renderMode)) {
+
+                    bmp = BitmapManager.getBitmap("DJVU page", width, height, Bitmap.Config.ARGB_8888);
+                    bmp.setPixels(byteBuffer);
+                    return bmp;
+                }
+            }
             bmp = BitmapManager.getBitmap("Djvu page", width, height, Bitmap.Config.RGB_565);
             if (EBookDroidLibraryLoader.nativeGraphicsAvailable) {
                 if (renderPageBitmap(pageHandle, contextHandle, width, height, pageSliceBounds.left,
@@ -179,6 +195,10 @@ public class DjvuPage extends AbstractCodecPage {
     private static native boolean renderPageBitmap(long pageHandle, long contextHandle, int targetWidth,
             int targetHeight, float pageSliceX, float pageSliceY, float pageSliceWidth, float pageSliceHeight,
             Bitmap bitmap, int renderMode);
+
+    private static native boolean renderPageDirect(long pageHandle, long contextHandle, int targetWidth,
+            int targetHeight, float pageSliceX, float pageSliceY, float pageSliceWidth, float pageSliceHeight,
+            ByteBuffer byteBuffer, int renderMode);
 
     private static native void free(long pageHandle);
 

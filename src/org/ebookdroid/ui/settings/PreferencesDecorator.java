@@ -15,6 +15,7 @@ import org.ebookdroid.common.settings.types.DocumentViewType;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.core.curl.PageAnimationType;
 
+import android.app.Activity;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -31,6 +32,7 @@ import java.util.Map;
 
 import org.emdev.common.android.AndroidVersion;
 import org.emdev.ui.preference.SeekBarPreference;
+import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.enums.EnumUtils;
 
@@ -61,6 +63,11 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
         return parent.getRoot();
     }
 
+    @Override
+    public Activity getActivity() {
+        return parent.getActivity();
+    }
+
     public void decorateSettings() {
         decoratePreference(getRoot());
         decorateBrowserSettings();
@@ -80,6 +87,9 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
     }
 
     public void decorateBrowserSettings() {
+        final boolean isTablet = IUIManager.instance.isTabletUi(parent.getActivity()) && !AndroidVersion.lessThan3x;
+        enableSettings(isTablet, SHOW_REMOVABLE_MEDIA.key, SHOW_SCANNING_MEDIA.key);
+
         addListener(CACHE_LOCATION.key, new OnPreferenceChangeListener() {
 
             @Override
@@ -135,10 +145,14 @@ public class PreferencesDecorator implements IPreferenceContainer, AppPreference
     }
 
     public void enableSinglePageModeSetting(final DocumentViewMode type, final String... relatedKeys) {
+        enableSettings(type == DocumentViewMode.SINGLE_PAGE, relatedKeys);
+    }
+
+    public void enableSettings(final boolean enabled, final String... relatedKeys) {
         for (final String relatedKey : relatedKeys) {
             final Preference pref = findPreference(relatedKey);
             if (pref != null) {
-                pref.setEnabled(type == DocumentViewMode.SINGLE_PAGE);
+                pref.setEnabled(enabled);
             }
         }
     }

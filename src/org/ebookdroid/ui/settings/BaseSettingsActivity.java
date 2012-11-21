@@ -1,6 +1,7 @@
 package org.ebookdroid.ui.settings;
 
 
+import android.app.Activity;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 
@@ -16,5 +17,10 @@ public class BaseSettingsActivity extends PreferenceActivity implements IPrefere
     @Override
     public Preference getRoot() {
         return this.getPreferenceScreen();
+    }
+
+    @Override
+    public Activity getActivity() {
+        return this;
     }
 }

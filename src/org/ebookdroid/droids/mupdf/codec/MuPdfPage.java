@@ -125,33 +125,30 @@ public class MuPdfPage extends AbstractCodecPage {
         final int slowcmyk = AppSettings.current().slowCMYK ? 1 : 0;
 
         if (USE_DIRECT) {
-        final ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4 * width * height).order(ByteOrder.nativeOrder());
-        {
+            final ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4 * width * height).order(ByteOrder.nativeOrder());
             boolean res = renderPageDirect(docHandle, pageHandle, mRect, ctm, byteBuffer, nightmode, slowcmyk);
-            final IBitmapRef b = BitmapManager.getBitmap("PDF page", width, height, Bitmap.Config.ARGB_8888);
-            b.setPixels(byteBuffer);
-            return b;
-        }
-
-        } else {
-
-            if (EBookDroidLibraryLoader.nativeGraphicsAvailable) {
-                final IBitmapRef bmp = BitmapManager.getBitmap("PDF page", width, height,
-                        MuPdfContext.NATIVE_BITMAP_CFG);
-                boolean res = renderPageBitmap(docHandle, pageHandle, mRect, ctm, bmp.getBitmap(), nightmode, slowcmyk);
-                if (res) {
-                    return bmp;
-                }
-                BitmapManager.release(bmp);
-                return null;
+            if (res) {
+                final IBitmapRef b = BitmapManager.getBitmap("PDF page", width, height, Bitmap.Config.ARGB_8888);
+                b.setPixels(byteBuffer);
+                return b;
             }
-
-            final int[] bufferarray = new int[width * height];
-            renderPage(docHandle, pageHandle, mRect, ctm, bufferarray, nightmode, slowcmyk);
-            final IBitmapRef b = BitmapManager.getBitmap("PDF page", width, height, MuPdfContext.BITMAP_CFG);
-            b.setPixels(bufferarray, width, height);
-            return b;
         }
+
+        if (EBookDroidLibraryLoader.nativeGraphicsAvailable) {
+            final IBitmapRef bmp = BitmapManager.getBitmap("PDF page", width, height, MuPdfContext.NATIVE_BITMAP_CFG);
+            boolean res = renderPageBitmap(docHandle, pageHandle, mRect, ctm, bmp.getBitmap(), nightmode, slowcmyk);
+            if (res) {
+                return bmp;
+            }
+            BitmapManager.release(bmp);
+            return null;
+        }
+
+        final int[] bufferarray = new int[width * height];
+        renderPage(docHandle, pageHandle, mRect, ctm, bufferarray, nightmode, slowcmyk);
+        final IBitmapRef b = BitmapManager.getBitmap("PDF page", width, height, MuPdfContext.BITMAP_CFG);
+        b.setPixels(bufferarray, width, height);
+        return b;
     }
 
     @Override

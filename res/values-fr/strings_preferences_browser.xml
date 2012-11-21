@@ -7,6 +7,12 @@
     <string name="pref_usebookcase_summary">"Utiliser l’armoire avec les couvertures à la place des listes"</string>
     <string name="pref_brautoscandir_title">"Catalogue pour numérisation"</string>
     <string name="pref_brautoscandir_summary">"Catalogue pour numérisation automatique"</string>
+<!--<string name="pref_autoscanremovable_title">"Auto Scan revomable"</string>-->
+<!--<string name="pref_autoscanremovable_summary">"Automatic scan inserted removable media"</string>-->
+<!--<string name="pref_showremovable_title">"Show Removable"</string>-->
+<!--<string name="pref_showremovable_summary">"Show removable media in storage menu"</string>-->
+<!--<string name="pref_showscanning_title">"Show Scan dirs"</string>-->
+<!--<string name="pref_showscanning_summary">"Show Auto Scan dirs in storage menu"</string>-->
     <string name="pref_brbrfiletypesscreen_title">"Types de fichiers"</string>
     <string name="pref_brbrfiletypesscreen_summary">"types de fichiers pour affichage"</string>
 <!--<string name="pref_cachelocation_title">"Cache location"</string>-->

@@ -26,9 +26,9 @@
     <string name="menu_allsettings_menu">Settings...</string>
 
     <string name="menu_show_library">Show library</string>
-    <string name="menu_show_recent">Show library</string>
+    <string name="menu_show_recent">Show recent</string>
     <string name="menu_storages">Storages</string>
-    <string name="menu_storages_filesystem">Root folder</string>
-    <string name="menu_storages_external">User folder</string>
+    <string name="menu_storages_filesystem">File System</string>
+    <string name="menu_storages_external">SD Card</string>
 
 </resources>

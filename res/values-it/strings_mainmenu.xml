@@ -23,5 +23,10 @@
     <string name="menu_navigation_menu">"Navigazione..."</string>
     <string name="menu_fastsettings_menu">"Vista..."</string>
     <string name="menu_allsettings_menu">"Impostazioni..."</string>
+<!--<string name="menu_show_library">"Show library"</string>-->
+<!--<string name="menu_show_recent">"Show recent"</string>-->
+<!--<string name="menu_storages">"Storages"</string>-->
+<!--<string name="menu_storages_filesystem">"File System"</string>-->
+<!--<string name="menu_storages_external">"SD Card"</string>-->
 
 </resources>

@@ -6,8 +6,8 @@
     <string name="actions_quickZoom">"缩放"</string>
     <string name="actions_zoomToColumn">"缩放到列"</string>
     <string name="actions_leftTopCorner">"滚动到左上角"</string>
-	<string name="actions_rightTopCorner">"滚动到左上角"</string>
-	<string name="actions_leftBottomCorner">"滚动到左下角"</string>
-	<string name="actions_rightBottomCorner">"滚动到右下角"</string>
+    <string name="actions_rightTopCorner">"滚动到左上角"</string>
+    <string name="actions_leftBottomCorner">"滚动到左下角"</string>
+    <string name="actions_rightBottomCorner">"滚动到右下角"</string>
 
 </resources>

@@ -24,7 +24,7 @@
     <string name="dialog_backup_remove">"删除…"</string>
     <string name="add_bookmark_name">"输入书签描述"</string>
     <string name="bookmark_start">"启动"</string>
-    <string name="bookmark_current">"当前书签位置"</string> 
+    <string name="bookmark_current">"当前书签位置"</string>
     <string name="bookmark_end">"结束"</string>
     <string name="bookmark_invalid_page">"无效的页码. 有效的页码范围是: %1$d-%2$d"</string>
     <string name="bookmarks_title">"书签"</string>
@@ -93,10 +93,10 @@
     <string name="error_page_out_of_rande">"无效的页码。有效页码范围: 1-%1$d"</string>
     <string name="msg_loading">"载入中… 请稍候"</string>
     <string name="msg_getting_page_size">"获取页面大小 %1$d/%2$d"</string>
-	<string name="tap_zones_single_tap">"按一下p"</string>	
-	<string name="tap_zones_double_tap">"按两下"</string>	
-	<string name="tap_zones_long_tap">"长按"</string>	
-	<string name="tap_zones_two_finger_tap">"两指轻敲"</string>	
+    <string name="tap_zones_single_tap">"按一下p"</string>
+    <string name="tap_zones_double_tap">"按两下"</string>
+    <string name="tap_zones_long_tap">"长按"</string>
+    <string name="tap_zones_two_finger_tap">"两指轻敲"</string>
     <string name="tap_zones_reset">"重置"</string>
     <string name="tap_zones_delete">"删除"</string>
     <string name="tap_zones_clear">"清空"</string>
@@ -114,6 +114,6 @@
     <string name="font_reminder">"从1.5版本开始，使用标准的安卓系统字体替换了内嵌的PDF和FB2字体。如果你想恢复原有的字体或者安装新的字体， 请从谷歌网上商店下载字体安装包 : &lt;ul&gt;&lt;li&gt;&lt;a href=&quot;market://details?id=org.ebookdroid.fontpack.legacy&quot;&gt;下载字体&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;"</string>
     <string name="cache_moving_text">"正在移动缓存文件…"</string>
     <string name="cache_moving_progress">"正在移动缓存文件 %1$d/%2$d"</string>
-    <string name="error_invalid_view_mode">"该操作只在视图模式下可用  %1$s"</string> 
+    <string name="error_invalid_view_mode">"该操作只在视图模式下可用  %1$s"</string>
 
 </resources>

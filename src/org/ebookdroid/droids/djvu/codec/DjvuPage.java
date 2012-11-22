@@ -31,7 +31,7 @@ public class DjvuPage extends AbstractCodecPage {
     private final int pageNo;
     private long pageHandle;
 
-    private final static boolean USE_DIRECT = true;
+    private final static boolean USE_DIRECT = false;
 
     DjvuPage(final long contextHandle, final long docHandle, final long pageHandle, final int pageNo) {
         this.contextHandle = contextHandle;

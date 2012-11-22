@@ -33,7 +33,7 @@ public class MuPdfPage extends AbstractCodecPage {
     final int actualWidth;
     final int actualHeight;
 
-    private final static boolean USE_DIRECT = true;
+    private final static boolean USE_DIRECT = false;
 
     private MuPdfPage(final long pageHandle, final long docHandle) {
         this.pageHandle = pageHandle;

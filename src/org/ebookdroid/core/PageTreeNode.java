@@ -37,6 +37,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
     final AtomicBoolean decodingNow = new AtomicBoolean();
     final BitmapHolder holder = new BitmapHolder();
 
+    final RectF localPageSliceBounds;
     final RectF pageSliceBounds;
 
     float bitmapZoom = 1;
@@ -96,7 +97,8 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         this.level = PageTreeLevel.ROOT;
         this.shortId = page.index.viewIndex + ":0";
         this.fullId = page.index + ":0";
-        this.pageSliceBounds = page.type.getInitialRect();
+        this.localPageSliceBounds = page.type.getInitialRect();
+        this.pageSliceBounds = localPageSliceBounds;
         this.autoCropping = null;
         this.manualCropping = null;
     }
@@ -112,6 +114,7 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
         this.level = parent.level.next;
         this.shortId = page.index.viewIndex + ":" + id;
         this.fullId = page.index + ":" + id;
+        this.localPageSliceBounds = localPageSliceBounds;
         this.pageSliceBounds = evaluatePageSliceBounds(localPageSliceBounds, parent);
 
         evaluateCroppedPageSliceBounds();
@@ -208,8 +211,8 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             parent.evaluateCroppedPageSliceBounds();
         }
 
-        autoCropping = evaluateCroppedPageSliceBounds(parent.autoCropping, this.pageSliceBounds);
-        manualCropping = evaluateCroppedPageSliceBounds(parent.manualCropping, this.pageSliceBounds);
+        autoCropping = evaluateCroppedPageSliceBounds(parent.autoCropping, this.localPageSliceBounds);
+        manualCropping = evaluateCroppedPageSliceBounds(parent.manualCropping, this.localPageSliceBounds);
     }
 
     public static RectF evaluateCroppedPageSliceBounds(final RectF crop, final RectF slice) {
@@ -217,12 +220,11 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             return null;
         }
 
+        final RectF sliceBounds = new RectF();
         final Matrix tmpMatrix = MatrixUtils.get();
 
         tmpMatrix.postScale(crop.width(), crop.height());
         tmpMatrix.postTranslate(crop.left, crop.top);
-
-        final RectF sliceBounds = new RectF();
         tmpMatrix.mapRect(sliceBounds, slice);
         return sliceBounds;
     }

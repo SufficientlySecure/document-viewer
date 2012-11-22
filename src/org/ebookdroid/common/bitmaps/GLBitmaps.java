@@ -39,34 +39,33 @@ public class GLBitmaps {
         this.partSize = BitmapManager.partSize;
         this.columns = getPartCount(width, partSize);
         this.rows = getPartCount(height, partSize);
-        this.bitmaps = new ByteBufferBitmap[rows * columns];
+        this.bitmaps = ByteBufferManager.getParts(partSize, rows, columns);
 
         if (invert) {
             orig.invert();
         }
 
+        final int color = invert ? PagePaint.NIGHT.fillPaint.getColor() : PagePaint.DAY.fillPaint.getColor();
+
         int top = 0;
         for (int row = 0; row < rows; row++, top += partSize) {
             int left = 0;
             for (int col = 0; col < columns; col++, left += partSize) {
-                final ByteBufferBitmap b = ByteBufferManager.getBitmap(partSize, partSize);
-
+                final int index = row * columns + col;
                 try {
                     if (row == rows - 1 || col == columns - 1) {
                         final int right = Math.min(left + partSize, orig.width);
                         final int bottom = Math.min(top + partSize, orig.height);
-                        // b.eraseColor(invert ? PagePaint.NIGHT.fillPaint.getColor() :
-                        // PagePaint.DAY.fillPaint.getColor());
-                        b.copyPixelsFrom(orig, left, top, right - left, bottom - top);
+                        bitmaps[index].eraseColor(color);
+                        bitmaps[index].copyPixelsFrom(orig, left, top, right - left, bottom - top);
                     } else {
-                        b.copyPixelsFrom(orig, left, top, partSize, partSize);
+                        bitmaps[index].copyPixelsFrom(orig, left, top, partSize, partSize);
                     }
-                } catch (IllegalArgumentException ex) {
-                    LCTX.e("Cannot create part: " + row + "/" + rows + ", " + col + "/" + columns + ": "  + ex.getMessage());
+                } catch (final IllegalArgumentException ex) {
+                    LCTX.e("Cannot create part: " + row + "/" + rows + ", " + col + "/" + columns + ": "
+                            + ex.getMessage());
                     // throw ex;
                 }
-                final int index = row * columns + col;
-                bitmaps[index] = b;
             }
         }
     }

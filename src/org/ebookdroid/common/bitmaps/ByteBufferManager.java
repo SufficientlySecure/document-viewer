@@ -105,6 +105,78 @@ public class ByteBufferManager {
         }
     }
 
+    public static ByteBufferBitmap[] getParts(final int partSize, final int rows, final int columns) {
+        lock.lock();
+        try {
+            if (LCTX.isDebugEnabled()) {
+                if (memoryUsed.get() + memoryPooled.get() == 0) {
+                    LCTX.d("!!! Bitmap pool size: " + (BITMAP_MEMORY_LIMIT / 1024) + "KB");
+                }
+            }
+
+            int filled = 0;
+            final int length = rows * columns;
+            final ByteBufferBitmap[] arr = new ByteBufferBitmap[length];
+
+            final int size = 4 * partSize * partSize;
+            final TLIterator<ByteBufferBitmap> it = pool.iterator();
+            try {
+                while (filled < length && it.hasNext()) {
+                    final ByteBufferBitmap ref = it.next();
+
+                    if (ref.size == size) {
+                        if (ref.used.compareAndSet(false, true)) {
+                            it.remove();
+
+                            ref.pixels.rewind();
+                            ref.gen = generation.get();
+                            ref.width = partSize;
+                            ref.height = partSize;
+                            used.append(ref.id, ref);
+
+                            reused.incrementAndGet();
+                            memoryPooled.addAndGet(-ref.size);
+                            memoryUsed.addAndGet(ref.size);
+
+                            arr[filled++] = ref;
+                        } else {
+                            if (LCTX.isDebugEnabled()) {
+                                LCTX.d("Attempt to re-use used bitmap: " + ref);
+                            }
+                        }
+                    }
+                }
+            } finally {
+                it.release();
+            }
+
+            final int reused = filled;
+            final int additional = length - filled;
+            if (additional > 0) {
+                for (int i = 0; i < additional; i++) {
+                    final ByteBufferBitmap ref = new ByteBufferBitmap(partSize, partSize);
+                    arr[filled++] = ref;
+
+                    used.append(ref.id, ref);
+                    created.incrementAndGet();
+                    memoryUsed.addAndGet(ref.size);
+                }
+            }
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("Parts created : " + (additional) + ", resused: " + reused + ". Totally created=" + created
+                        + ", reused=" + reused + ", memoryUsed=" + used.size() + "/" + (memoryUsed.get() / 1024) + "KB"
+                        + ", memoryInPool=" + pool.size() + "/" + (memoryPooled.get() / 1024) + "KB");
+            }
+
+            if (additional > 0) {
+                shrinkPool(BITMAP_MEMORY_LIMIT);
+            }
+            return arr;
+        } finally {
+            lock.unlock();
+        }
+    }
+
     public static void clear(final String msg) {
         lock.lock();
         try {
@@ -135,7 +207,7 @@ public class ByteBufferManager {
                     final GLBitmaps bmp = (GLBitmaps) ref;
                     final ByteBufferBitmap[] bitmaps = bmp.clear();
                     if (bitmaps != null) {
-                        for (ByteBufferBitmap b : bitmaps) {
+                        for (final ByteBufferBitmap b : bitmaps) {
                             releaseImpl(b);
                             count++;
                         }
@@ -145,7 +217,7 @@ public class ByteBufferManager {
                     for (final GLBitmaps bmp : list) {
                         final ByteBufferBitmap[] bitmaps = bmp.clear();
                         if (bitmaps != null) {
-                            for (ByteBufferBitmap b : bitmaps) {
+                            for (final ByteBufferBitmap b : bitmaps) {
                                 releaseImpl(b);
                                 count++;
                             }

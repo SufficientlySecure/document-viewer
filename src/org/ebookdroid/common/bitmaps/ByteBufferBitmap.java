@@ -183,7 +183,7 @@ public final class ByteBufferBitmap {
         return dest;
     }
 
-    public void eraseColor(int color) {
+    public void eraseColor(final int color) {
         nativeEraseColor(pixels, width, height, color);
     }
 

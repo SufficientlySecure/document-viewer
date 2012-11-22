@@ -1,13 +1,9 @@
 package org.ebookdroid.core.curl;
 
-import org.ebookdroid.core.EventDraw;
 import org.ebookdroid.core.EventGLDraw;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.SinglePageController;
 import org.ebookdroid.core.ViewState;
-
-import android.graphics.Rect;
-import android.graphics.RectF;
 
 public class SinglePageDefaultSlider extends AbstractPageSlider {
 
@@ -29,31 +25,6 @@ public class SinglePageDefaultSlider extends AbstractPageSlider {
     /**
      * {@inheritDoc}
      *
-     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawForeground(org.ebookdroid.core.EventDraw)
-     */
-    @Override
-    protected void drawForeground(final EventDraw event) {
-        final ViewState viewState = event.viewState;
-        Page page = null;
-        if (bFlipping) {
-            page = viewState.model.getPageObject(!bFlipRight ? foreIndex : backIndex);
-        }
-        if (page == null) {
-            page = viewState.model.getCurrentPageObject();
-        }
-        if (page != null) {
-            updateForeBitmap(event, page);
-
-            final Rect src = new Rect(0, 0, (int) viewState.viewRect.width(), (int) viewState.viewRect.height());
-            final RectF dst = new RectF(0, 0, viewState.viewRect.width(), viewState.viewRect.height());
-
-            foreBitmap.draw(event.canvas, src, dst, PAINT);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
      * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawForeground(org.ebookdroid.core.EventGLDraw)
      */
     @Override
@@ -68,17 +39,7 @@ public class SinglePageDefaultSlider extends AbstractPageSlider {
         }
         if (page != null) {
             event.process(page);
-            foreBitmapIndex = foreIndex;
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawBackground(org.ebookdroid.core.EventDraw)
-     */
-    @Override
-    protected void drawBackground(final EventDraw event) {
     }
 
     /**

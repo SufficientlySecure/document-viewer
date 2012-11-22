@@ -3,7 +3,6 @@ package org.ebookdroid.common.settings.definitions;
 import static org.ebookdroid.R.string.*;
 
 import org.ebookdroid.common.settings.types.DocumentViewMode;
-import org.ebookdroid.common.settings.types.DocumentViewType;
 import org.ebookdroid.common.settings.types.FontSize;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.common.settings.types.RotationType;
@@ -107,9 +106,6 @@ public interface AppPreferences {
     IntegerPreferenceDefinition PAGES_IN_MEMORY = new IntegerPreferenceDefinition(pref_pagesinmemory_id,
             pref_pagesinmemory_defvalue, pref_pagesinmemory_minvalue, pref_pagesinmemory_maxvalue);
 
-    EnumPreferenceDefinition<DocumentViewType> VIEW_TYPE = new EnumPreferenceDefinition<DocumentViewType>(
-            DocumentViewType.class, pref_docviewtype_id, pref_docviewtype_surface);
-
     IntegerPreferenceDefinition DECODING_THREADS = new IntegerPreferenceDefinition(pref_decoding_threads_id,
             pref_decoding_threads_defvalue, pref_decoding_threads_minvalue, pref_decoding_threads_maxvalue);
 
@@ -121,15 +117,6 @@ public interface AppPreferences {
 
     IntegerPreferenceDefinition BITMAP_SIZE = new IntegerPreferenceDefinition(pref_bitmapsize_id, pref_bitmapsize_128,
             pref_bitmapsize_64, pref_bitmapsize_1024);
-
-    BooleanPreferenceDefinition REUSE_TEXTURES = new BooleanPreferenceDefinition(pref_texturereuse_id,
-            pref_texturereuse_defvalue);
-
-    BooleanPreferenceDefinition EARLY_RECYCLING = new BooleanPreferenceDefinition(pref_earlyrecycling_id,
-            pref_earlyrecycling_defvalue);
-
-    BooleanPreferenceDefinition RELOAD_DURING_ZOOM = new BooleanPreferenceDefinition(pref_reloadduringzoom_id,
-            pref_reloadduringzoom_defvalue);
 
     IntegerPreferenceDefinition HEAP_PREALLOCATE = new IntegerPreferenceDefinition(pref_heappreallocate_id,
             pref_heappreallocate_defvalue, pref_heappreallocate_minvalue, pref_heappreallocate_maxvalue);

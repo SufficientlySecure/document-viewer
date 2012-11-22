@@ -7,6 +7,7 @@ import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.books.Bookmark;
 import org.ebookdroid.common.settings.types.ToastPosition;
 import org.ebookdroid.common.touch.TouchManagerView;
+import org.ebookdroid.ui.viewer.viewers.GLView;
 import org.ebookdroid.ui.viewer.views.ManualCropView;
 import org.ebookdroid.ui.viewer.views.PageViewZoomControls;
 import org.ebookdroid.ui.viewer.views.SearchControls;
@@ -107,7 +108,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
         frameLayout = new FrameLayout(this);
 
-        view = AppSettings.current().viewType.create(getController());
+        view = new GLView(getController());
         this.registerForContextMenu(view.getView());
 
         LayoutUtils.fillInParent(frameLayout, view.getView());

@@ -1,8 +1,11 @@
 package org.ebookdroid.core;
 
 import org.ebookdroid.common.bitmaps.BitmapManager;
+import org.ebookdroid.common.bitmaps.ByteBufferBitmap;
+import org.ebookdroid.common.bitmaps.ByteBufferManager;
 import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.common.settings.AppSettings;
+import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.core.codec.CodecContext;
 import org.ebookdroid.core.codec.CodecDocument;
 import org.ebookdroid.core.codec.CodecFeatures;
@@ -14,8 +17,6 @@ import org.ebookdroid.core.crop.PageCropper;
 import org.ebookdroid.ui.viewer.IViewController.InvalidateSizeReason;
 
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
@@ -94,29 +95,6 @@ public class DecodeServiceBase implements DecodeService {
     @Override
     public boolean isFeatureSupported(final int feature) {
         return codecContext.isFeatureSupported(feature);
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public int getPixelFormat() {
-        final Config cfg = getBitmapConfig();
-        switch (cfg) {
-            case ALPHA_8:
-                return PixelFormat.A_8;
-            case ARGB_4444:
-                return PixelFormat.RGBA_4444;
-            case RGB_565:
-                return PixelFormat.RGB_565;
-            case ARGB_8888:
-                return PixelFormat.RGBA_8888;
-            default:
-                return PixelFormat.RGB_565;
-        }
-    }
-
-    @Override
-    public Config getBitmapConfig() {
-        return this.codecContext.getBitmapConfig();
     }
 
     @Override
@@ -231,14 +209,15 @@ public class DecodeServiceBase implements DecodeService {
 
             RectF cropping = task.node.page.getCropping(task.node);
             final RectF actualSliceBounds = cropping != null ? cropping : task.node.pageSliceBounds;
-            final IBitmapRef bitmap = vuPage.renderBitmap(task.viewState, r.width(), r.height(), actualSliceBounds);
+            final ByteBufferBitmap bitmap = vuPage.renderBitmap(task.viewState, r.width(), r.height(),
+                    actualSliceBounds);
 
             if (executor.isTaskDead(task)) {
                 if (LCTX.isDebugEnabled()) {
                     LCTX.d(Thread.currentThread().getName() + ": Task " + task.id + ": Abort dead decode task for "
                             + task.node);
                 }
-                BitmapManager.release(bitmap);
+                ByteBufferManager.release(bitmap);
                 return;
             }
 
@@ -265,6 +244,7 @@ public class DecodeServiceBase implements DecodeService {
             }
 
             BitmapManager.clear("DecodeService OutOfMemoryError: ");
+            ByteBufferManager.clear("DecodeService OutOfMemoryError: ");
 
             abortDecoding(task, null, null);
         } catch (final Throwable th) {
@@ -304,18 +284,22 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     protected RectF calculateRootCropping(final DecodeTask task, final PageTreeNode root, final CodecPage vuPage) {
-        final Rect rootRect = new Rect(0, 0, PageCropper.BMP_SIZE, PageCropper.BMP_SIZE);
         final RectF rootBounds = root.pageSliceBounds;
+        final ByteBufferBitmap rootBitmap = vuPage.renderBitmap(task.viewState, PageCropper.BMP_SIZE, PageCropper.BMP_SIZE, rootBounds);
 
-        final IBitmapRef rootBitmap = vuPage.renderBitmap(task.viewState, rootRect.width(), rootRect.height(), rootBounds);
-        root.setAutoCropping(PageCropper.getCropBounds(rootBitmap, rootRect, root.pageSliceBounds), true);
+        final BookSettings bs = task.viewState.book;
+        if (bs != null) {
+            rootBitmap.applyEffects(bs);
+        }
+
+        root.setAutoCropping(PageCropper.getCropBounds(rootBitmap, root.pageSliceBounds), true);
 
         if (LCTX.isDebugEnabled()) {
             LCTX.d(Thread.currentThread().getName() + ": Task " + task.id + ": cropping root bounds: "
                     + root.getCropping());
         }
 
-        BitmapManager.release(rootBitmap);
+        ByteBufferManager.release(rootBitmap);
 
         final ViewState viewState = task.viewState;
         final PageIndex currentPage = viewState.book.getCurrentPage();
@@ -348,13 +332,13 @@ public class DecodeServiceBase implements DecodeService {
         return new Rect(0, 0, (int) r.width(), (int) r.height());
     }
 
-    void finishDecoding(final DecodeTask currentDecodeTask, final CodecPage page, final IBitmapRef bitmap,
+    void finishDecoding(final DecodeTask currentDecodeTask, final CodecPage page, final ByteBufferBitmap bitmap,
             final Rect bitmapBounds, final RectF croppedPageBounds) {
         stopDecoding(currentDecodeTask.node, "complete");
         updateImage(currentDecodeTask, page, bitmap, bitmapBounds, croppedPageBounds);
     }
 
-    void abortDecoding(final DecodeTask currentDecodeTask, final CodecPage page, final IBitmapRef bitmap) {
+    void abortDecoding(final DecodeTask currentDecodeTask, final CodecPage page, final ByteBufferBitmap bitmap) {
         stopDecoding(currentDecodeTask.node, "failed");
         updateImage(currentDecodeTask, page, bitmap, null, null);
     }
@@ -393,9 +377,9 @@ public class DecodeServiceBase implements DecodeService {
         return holder;
     }
 
-    void updateImage(final DecodeTask currentDecodeTask, final CodecPage page, final IBitmapRef bitmap,
+    void updateImage(final DecodeTask currentDecodeTask, final CodecPage page, final ByteBufferBitmap bitmap,
             final Rect bitmapBounds, final RectF croppedPageBounds) {
-        currentDecodeTask.node.decodeComplete(page, bitmap, bitmapBounds, croppedPageBounds);
+        currentDecodeTask.node.decodeComplete(page, bitmap, croppedPageBounds);
     }
 
     @Override
@@ -456,6 +440,7 @@ public class DecodeServiceBase implements DecodeService {
                     final Runnable r = nextTask();
                     if (r != null) {
                         BitmapManager.release();
+                        ByteBufferManager.release();
                         r.run();
                     }
                 }
@@ -848,7 +833,16 @@ public class DecodeServiceBase implements DecodeService {
             return ref;
         } else {
             final CodecPage page = getPage(pageNo);
-            return page.renderBitmap(null, width, height, region);
+            return page.renderBitmap(null, width, height, region).toBitmap();
         }
+    }
+
+    @Override
+    public ByteBufferBitmap createPageThumbnail(int width, int height, final int pageNo, final RectF region) {
+        if (document == null) {
+            return null;
+        }
+        final CodecPage page = getPage(pageNo);
+        return page.renderBitmap(null, width, height, region);
     }
 }

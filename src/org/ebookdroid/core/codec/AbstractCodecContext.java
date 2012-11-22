@@ -93,7 +93,7 @@ public abstract class AbstractCodecContext implements CodecContext {
      */
     @Override
     public Bitmap.Config getBitmapConfig() {
-        return Bitmap.Config.RGB_565;
+        return Bitmap.Config.ARGB_8888;
     }
 
     public static int getWidthInPixels(final float pdfWidth) {

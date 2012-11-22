@@ -2,9 +2,6 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.ui.viewer.IViewController.InvalidateSizeReason;
 
-import android.graphics.Canvas;
-import android.graphics.Rect;
-
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.emdev.ui.gl.GLCanvas;
@@ -12,7 +9,6 @@ import org.emdev.ui.gl.GLCanvas;
 public class EventPool {
 
     private static final ConcurrentLinkedQueue<EventGLDraw> glEvents = new ConcurrentLinkedQueue<EventGLDraw>();
-    private static final ConcurrentLinkedQueue<EventDraw> drawEvents = new ConcurrentLinkedQueue<EventDraw>();
     private static final ConcurrentLinkedQueue<EventReset> resetEvents = new ConcurrentLinkedQueue<EventReset>();
 
     private static final ConcurrentLinkedQueue<EventScrollUp> scrollUpEvents = new ConcurrentLinkedQueue<EventScrollUp>();
@@ -29,24 +25,6 @@ public class EventPool {
             event = new EventGLDraw(glEvents);
         }
         event.init(viewState, canvas);
-        return event;
-    }
-
-    public static EventDraw newEventDraw(final ViewState viewState, final Canvas canvas) {
-        EventDraw event = drawEvents.poll();
-        if (event == null) {
-            event = new EventDraw(drawEvents);
-        }
-        event.init(viewState, canvas);
-        return event;
-    }
-
-    public static EventDraw newEventDraw(final EventDraw parentEvent, final Canvas canvas) {
-        EventDraw event = drawEvents.poll();
-        if (event == null) {
-            event = new EventDraw(drawEvents);
-        }
-        event.init(parentEvent, canvas);
         return event;
     }
 
@@ -86,13 +64,12 @@ public class EventPool {
         return event;
     }
 
-    public static EventChildLoaded newEventChildLoaded(final AbstractViewController ctrl, final PageTreeNode child,
-            final Rect bitmapBounds) {
+    public static EventChildLoaded newEventChildLoaded(final AbstractViewController ctrl, final PageTreeNode child) {
         EventChildLoaded event = childLoadedEvents.poll();
         if (event == null) {
             event = new EventChildLoaded(childLoadedEvents);
         }
-        event.init(ctrl, child, bitmapBounds);
+        event.init(ctrl, child);
         return event;
     }
 

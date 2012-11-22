@@ -1,14 +1,11 @@
 package org.ebookdroid.common.settings;
 
-import org.ebookdroid.EBookDroidApp;
-import org.ebookdroid.EBookDroidVersion;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.definitions.AppPreferences;
 import org.ebookdroid.common.settings.definitions.BookPreferences;
 import org.ebookdroid.common.settings.listeners.IAppSettingsChangeListener;
 import org.ebookdroid.common.settings.types.BookRotationType;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
-import org.ebookdroid.common.settings.types.DocumentViewType;
 import org.ebookdroid.common.settings.types.FontSize;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.common.settings.types.RotationType;
@@ -93,8 +90,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     public final int pagesInMemory;
 
-    public final DocumentViewType viewType;
-
     public final int decodingThreads;
 
     public final int decodingThreadPriority;
@@ -102,12 +97,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
     public final int drawThreadPriority;
 
     public final int bitmapSize;
-
-    public final boolean textureReuseEnabled;
-
-    public final boolean useEarlyRecycling;
-
-    public final boolean reloadDuringZoom;
 
     public final int heapPreallocate;
 
@@ -210,14 +199,10 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         keysBinding = KEY_BINDINGS.getPreferenceValue(prefs);
         /* =============== Performance settings =============== */
         pagesInMemory = PAGES_IN_MEMORY.getPreferenceValue(prefs);
-        viewType = EBookDroidApp.version == EBookDroidVersion.DEV ? DocumentViewType.GL : VIEW_TYPE.getPreferenceValue(prefs);
         decodingThreads = DECODING_THREADS.getPreferenceValue(prefs);
         decodingThreadPriority = DECODE_THREAD_PRIORITY.getPreferenceValue(prefs);
         drawThreadPriority = DRAW_THREAD_PRIORITY.getPreferenceValue(prefs);
         bitmapSize = BITMAP_SIZE.getPreferenceValue(prefs);
-        textureReuseEnabled = REUSE_TEXTURES.getPreferenceValue(prefs);
-        useEarlyRecycling = EARLY_RECYCLING.getPreferenceValue(prefs);
-        reloadDuringZoom = RELOAD_DURING_ZOOM.getPreferenceValue(prefs);
         heapPreallocate = HEAP_PREALLOCATE.getPreferenceValue(prefs);
         pdfStorageSize = PDF_STORAGE_SIZE.getPreferenceValue(prefs);
         /* =============== Default rendering settings =============== */

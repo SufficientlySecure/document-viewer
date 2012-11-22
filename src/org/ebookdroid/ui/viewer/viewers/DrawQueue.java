@@ -1,10 +1,6 @@
 package org.ebookdroid.ui.viewer.viewers;
 
-import org.ebookdroid.core.EventPool;
 import org.ebookdroid.core.ViewState;
-
-import android.graphics.Canvas;
-import android.view.SurfaceHolder;
 
 import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -13,58 +9,16 @@ import java.util.concurrent.TimeUnit;
 
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
-import org.emdev.utils.concurrent.Flag;
 
-public class DrawThread extends Thread {
+public class DrawQueue {
 
     private static final LogContext LCTX = LogManager.root().lctx("Imaging");
-
-    private final SurfaceHolder surfaceHolder;
 
     private final BlockingQueue<ViewState> queue = new ArrayBlockingQueue<ViewState>(16, true);
 
     private final ArrayList<ViewState> list = new ArrayList<ViewState>();
 
-    private final Flag stop = new Flag();
-
-    public DrawThread(final SurfaceHolder surfaceHolder) {
-        this.surfaceHolder = surfaceHolder;
-    }
-
-    public void finish() {
-        stop.set();
-        try {
-            this.join();
-        } catch (final InterruptedException e) {
-        }
-    }
-
-    @Override
-    public void run() {
-        while (!stop.get()) {
-            draw(false);
-        }
-    }
-
-    protected void draw(final boolean useLastState) {
-        final ViewState viewState = takeTask(1, TimeUnit.SECONDS, useLastState);
-        if (viewState == null) {
-            return;
-        }
-        Canvas canvas = null;
-        // long t1 = System.currentTimeMillis();
-        try {
-            canvas = surfaceHolder.lockCanvas(null);
-            EventPool.newEventDraw(viewState, canvas).process().releaseAfterDraw();
-        } catch (final Throwable th) {
-            LCTX.e("Unexpected error on drawing: " + th.getMessage(), th);
-        } finally {
-            if (canvas != null) {
-                surfaceHolder.unlockCanvasAndPost(canvas);
-            }
-        }
-        // long t2 = System.currentTimeMillis();
-        // System.out.println("DrawThread.draw(): " + (t2 - t1) + " ms");
+    public DrawQueue() {
     }
 
     public ViewState takeTask(final long timeout, final TimeUnit unit, final boolean useLastState) {

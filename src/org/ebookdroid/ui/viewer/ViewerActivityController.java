@@ -3,6 +3,7 @@ package org.ebookdroid.ui.viewer;
 import org.ebookdroid.CodecType;
 import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
+import org.ebookdroid.common.bitmaps.ByteBufferManager;
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.keysbinding.KeyBindingsDialog;
@@ -289,6 +290,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
             }
             SettingsManager.removeListener(this);
             BitmapManager.clear("on finish");
+            ByteBufferManager.clear("on finish");
         }
     }
 

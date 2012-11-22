@@ -16,8 +16,11 @@ LOCAL_SRC_FILES := \
 	DjvuDroidBridge.cpp \
 	fb2droid.cpp \
 	cbdroidbridge.c \
+	bytebufferbitmapbridge.c \
 	mupdfdroidbridge.c \
 	jni_concurrent.c \
+	PageCropper.c \
+	javahelpers.c
 
 LOCAL_C_INCLUDES := \
 	$(LOCAL_PATH)/../mupdf/mupdf/fitz \

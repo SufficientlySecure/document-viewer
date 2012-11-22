@@ -1,7 +1,7 @@
 package org.ebookdroid.core;
 
-import org.ebookdroid.common.bitmaps.BitmapManager;
-import org.ebookdroid.common.bitmaps.Bitmaps;
+import org.ebookdroid.common.bitmaps.GLBitmaps;
+import org.ebookdroid.common.bitmaps.ByteBufferManager;
 import org.ebookdroid.common.settings.types.PageType;
 import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.models.DocumentModel.PageIterator;
@@ -85,7 +85,7 @@ public class EventCrop extends AbstractEvent {
     @Override
     public ViewState process() {
         try {
-            final List<Bitmaps> bitmapsToRecycle = new ArrayList<Bitmaps>();
+            final List<GLBitmaps> bitmapsToRecycle = new ArrayList<GLBitmaps>();
 
             if (processAll) {
                 for (final Page page : ctrl.getBase().getDocumentModel().getPages()) {
@@ -102,7 +102,7 @@ public class EventCrop extends AbstractEvent {
             final DocumentModel dm = ctrl.getBase().getDocumentModel();
             dm.saveDocumentInfo();
 
-            BitmapManager.release(bitmapsToRecycle);
+            ByteBufferManager.release(bitmapsToRecycle);
 
             ctrl.invalidatePageSizes(reason, null);
             ctrl.invalidateScroll();

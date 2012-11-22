@@ -35,35 +35,6 @@ public abstract class AbstractScrollController extends AbstractViewController {
         new EventGotoPage(this, toPage, offsetX, offsetY).process().release();
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.ebookdroid.ui.viewer.IViewController#drawView(org.ebookdroid.core.EventDraw)
-     */
-    @Override
-    public final void drawView(final EventDraw eventDraw) {
-        final ViewState viewState = eventDraw.viewState;
-        if (viewState.model == null) {
-            return;
-        }
-
-        final PageIterator pages = viewState.pages.getVisiblePages();
-        try {
-            for (final Page page : pages) {
-                if (page != null) {
-                    eventDraw.process(page);
-                }
-            }
-        } finally {
-            pages.release();
-        }
-
-        if (eventDraw.viewState.app.showAnimIcon) {
-            DragMark.DRAG.draw(eventDraw.canvas, viewState);
-        }
-        getView().continueScroll();
-    }
-
     @Override
     public final void drawView(final EventGLDraw eventDraw) {
         final ViewState viewState = eventDraw.viewState;

@@ -1,7 +1,5 @@
 package org.ebookdroid.ui.viewer;
 
-import org.ebookdroid.common.bitmaps.Bitmaps;
-import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.core.ViewState;
 
 import android.graphics.PointF;
@@ -74,6 +72,4 @@ public interface IView {
     void checkFullScreenMode();
 
     boolean post(Runnable r);
-
-    Bitmaps createBitmaps(final String nodeId, final IBitmapRef orig, final Rect bitmapBounds, final boolean invert);
 }

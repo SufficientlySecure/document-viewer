@@ -1,6 +1,6 @@
 package org.ebookdroid.core;
 
-import org.ebookdroid.common.bitmaps.Bitmaps;
+import org.ebookdroid.common.bitmaps.GLBitmaps;
 
 import android.graphics.RectF;
 
@@ -56,21 +56,6 @@ public class PageTree {
         return res;
     }
 
-    public boolean paintChildren(final EventDraw event, final PageTreeNode node, final RectF nodeRect) {
-        boolean res = true;
-        int childId = PageTree.getFirstChildId(node.id);
-        if (childId < maxNodeId) {
-            final PageTreeNode[] nodes = getNodes();
-            for (final int end = Math.min(nodes.length, childId + PageTree.splitMasks.length); childId < end; childId++) {
-                final PageTreeNode child = nodes[childId];
-                if (child != null) {
-                    res &= event.paintChild(node, child, nodeRect);
-                }
-            }
-        }
-        return res;
-    }
-
     public boolean paintChildren(final EventGLDraw event, final PageTreeNode node, final RectF nodeRect) {
         boolean res = true;
         int childId = PageTree.getFirstChildId(node.id);
@@ -113,7 +98,7 @@ public class PageTree {
         return nodes[parentIndex];
     }
 
-    public boolean recycleAll(final List<Bitmaps> bitmapsToRecycle, final boolean includeRoot) {
+    public boolean recycleAll(final List<GLBitmaps> bitmapsToRecycle, final boolean includeRoot) {
         boolean res = false;
         if (includeRoot) {
             res |= root.recycle(bitmapsToRecycle);
@@ -131,7 +116,7 @@ public class PageTree {
         return res;
     }
 
-    public boolean recycleParents(final PageTreeNode child, final List<Bitmaps> bitmapsToRecycle) {
+    public boolean recycleParents(final PageTreeNode child, final List<GLBitmaps> bitmapsToRecycle) {
         if (child.id == 0) {
             return false;
         }
@@ -147,7 +132,7 @@ public class PageTree {
         return res;
     }
 
-    public boolean recycleChildren(final PageTreeNode node, final List<Bitmaps> bitmapsToRecycle) {
+    public boolean recycleChildren(final PageTreeNode node, final List<GLBitmaps> bitmapsToRecycle) {
         boolean res = false;
         int childId = getFirstChildId(node.id);
         if (childId >= maxNodeId) {
@@ -172,7 +157,7 @@ public class PageTree {
         return res;
     }
 
-    public void recycleNodes(final PageTreeLevel level, final List<Bitmaps> bitmapsToRecycle) {
+    public void recycleNodes(final PageTreeLevel level, final List<GLBitmaps> bitmapsToRecycle) {
         if (level.start >= maxNodeId) {
             return;
         }

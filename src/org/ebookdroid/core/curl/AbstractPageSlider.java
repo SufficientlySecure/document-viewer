@@ -1,11 +1,6 @@
 package org.ebookdroid.core.curl;
 
-import org.ebookdroid.common.bitmaps.BitmapManager;
-import org.ebookdroid.common.bitmaps.IBitmapRef;
-import org.ebookdroid.core.EventDraw;
 import org.ebookdroid.core.EventGLDraw;
-import org.ebookdroid.core.EventPool;
-import org.ebookdroid.core.Page;
 import org.ebookdroid.core.SinglePageController;
 import org.ebookdroid.core.ViewState;
 import org.ebookdroid.ui.viewer.views.DragMark;
@@ -92,27 +87,6 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
         mA.y = 0;
     }
 
-    protected final IBitmapRef getBitmap(final ViewState viewState, final IBitmapRef ref) {
-        final float width = viewState.viewRect.width();
-        final float height = viewState.viewRect.height();
-
-        final IBitmapRef bitmap = BitmapManager.checkBitmap(ref, width, height);
-        bitmap.eraseColor(viewState.paint.backgroundFillPaint.getColor());
-        return bitmap;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawExtraObjects(org.ebookdroid.core.EventDraw)
-     */
-    @Override
-    protected final void drawExtraObjects(final EventDraw event) {
-        if (event.viewState.app.showAnimIcon) {
-            DragMark.CURLER.draw(event.canvas, event.viewState);
-        }
-    }
-
     /**
      * {@inheritDoc}
      *
@@ -133,23 +107,5 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
     @Override
     protected Vector2D fixMovement(final Vector2D movement, final boolean bMaintainMoveDir) {
         return movement;
-    }
-
-    protected final void updateForeBitmap(final EventDraw event, final Page page) {
-        if (foreBitmapIndex != foreIndex || foreBitmap == null) {
-            foreBitmap = getBitmap(event.viewState, foreBitmap);
-
-            EventPool.newEventDraw(event, foreBitmap.getCanvas()).process(page);
-            foreBitmapIndex = foreIndex;
-        }
-    }
-
-    protected final void updateBackBitmap(final EventDraw event, final Page page) {
-        if (backBitmapIndex != backIndex || backBitmap == null) {
-            backBitmap = getBitmap(event.viewState, backBitmap);
-
-            EventPool.newEventDraw(event, backBitmap.getCanvas()).process(page);
-            backBitmapIndex = backIndex;
-        }
     }
 }

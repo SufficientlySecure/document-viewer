@@ -1,7 +1,6 @@
 package org.ebookdroid.ui.viewer.stubs;
 
 import org.ebookdroid.common.settings.types.PageAlign;
-import org.ebookdroid.core.EventDraw;
 import org.ebookdroid.core.EventGLDraw;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.ViewState;
@@ -120,10 +119,6 @@ public class ViewContollerStub implements IViewController {
 
     @Override
     public void toggleRenderingEffects() {
-    }
-
-    @Override
-    public void drawView(final EventDraw eventDraw) {
     }
 
     @Override

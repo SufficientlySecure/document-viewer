@@ -6,23 +6,6 @@
     <string translatable="false" name="pref_pagesinmemory_minvalue">0</string>
     <string translatable="false" name="pref_pagesinmemory_maxvalue">100</string>
 
-    <string translatable="false" name="pref_docviewtype_id">docviewtype</string>
-    <string translatable="false" name="pref_docviewtype_base">Base</string>
-    <string translatable="false" name="pref_docviewtype_surface">Surface</string>
-    <string translatable="false" name="pref_docviewtype_glsurface">GL Surface</string>
-
-    <string-array name="pref_docviewtype_entries" translatable="false">
-        <item>@string/list_docviewtype_base</item>
-        <item>@string/list_docviewtype_surface</item>
-        <item>@string/list_docviewtype_glsurface</item>
-        </string-array>
-
-    <string-array name="pref_docviewtype_values" translatable="false">
-        <item>@string/pref_docviewtype_base</item>
-        <item>@string/pref_docviewtype_surface</item>
-        <item>@string/pref_docviewtype_glsurface</item>
-        </string-array>
-
     <string translatable="false" name="pref_decodethread_priority_id">decodethread_priority</string>
     <string translatable="false" name="pref_drawthread_priority_id">drawthread_priority</string>
 
@@ -75,15 +58,6 @@
         <item>@string/pref_bitmapsize_512</item>
         <item>@string/pref_bitmapsize_1024</item>
     </string-array>
-
-    <string translatable="false" name="pref_texturereuse_id">texturereuse</string>
-    <string translatable="false" name="pref_texturereuse_defvalue">true</string>
-
-    <string translatable="false" name="pref_earlyrecycling_id">earlyrecycling</string>
-    <string translatable="false" name="pref_earlyrecycling_defvalue">false</string>
-
-    <string translatable="false" name="pref_reloadduringzoom_id">reloadduringzoom</string>
-    <string translatable="false" name="pref_reloadduringzoom_defvalue">false</string>
 
     <string translatable="false" name="pref_heappreallocate_id">heappreallocate</string>
     <string translatable="false" name="pref_heappreallocate_defvalue">0</string>

@@ -1,8 +1,8 @@
 package org.ebookdroid.core;
 
-import org.ebookdroid.common.bitmaps.BitmapManager;
-import org.ebookdroid.common.bitmaps.Bitmaps;
-import org.ebookdroid.common.bitmaps.IBitmapRef;
+import org.ebookdroid.common.bitmaps.ByteBufferBitmap;
+import org.ebookdroid.common.bitmaps.ByteBufferManager;
+import org.ebookdroid.common.bitmaps.GLBitmaps;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageType;
@@ -13,7 +13,6 @@ import org.ebookdroid.ui.viewer.IActivityController;
 
 import android.graphics.Matrix;
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.FloatMath;
 
@@ -57,7 +56,7 @@ public class Page {
         nodes = new PageTree(this);
     }
 
-    public void recycle(final List<Bitmaps> bitmapsToRecycle) {
+    public void recycle(final List<GLBitmaps> bitmapsToRecycle) {
         recycled = true;
         nodes.recycleAll(bitmapsToRecycle, true);
     }
@@ -205,14 +204,12 @@ public class Page {
     }
 
     protected RectF getColumn(final PointF pos) {
-        final Rect rootRect = new Rect(0, 0, PageCropper.BMP_SIZE, PageCropper.BMP_SIZE);
-
         final DecodeService ds = base.getDecodeService();
-        final IBitmapRef pageImage = ds.createThumbnail(false, PageCropper.BMP_SIZE, PageCropper.BMP_SIZE,
+        final ByteBufferBitmap pageImage = ds.createPageThumbnail(PageCropper.BMP_SIZE, PageCropper.BMP_SIZE,
                 index.docIndex, type.getInitialRect());
 
-        final RectF column = PageCropper.getColumn(pageImage, rootRect, pos.x, pos.y);
-        BitmapManager.release(pageImage);
+        final RectF column = PageCropper.getColumn(pageImage, pos.x, pos.y);
+        ByteBufferManager.release(pageImage);
 
         return column;
     }

@@ -12,7 +12,7 @@ public class EventZoomIn extends AbstractEventZoom<EventZoomIn> {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.ebookdroid.core.IEvent#process(org.ebookdroid.core.ViewState, org.ebookdroid.core.PageTreeNode)
      */
     @Override
@@ -34,10 +34,8 @@ public class EventZoomIn extends AbstractEventZoom<EventZoomIn> {
         return true;
     }
 
-    protected final boolean isReDecodingRequired(final ViewState viewState, final PageTreeNode node, final boolean committed) {
-        if (committed) {
-            return viewState.zoom != node.bitmapZoom;
-        }
-        return (viewState.app.reloadDuringZoom && viewState.zoom > 1.2 * node.bitmapZoom);
+    protected final boolean isReDecodingRequired(final ViewState viewState, final PageTreeNode node,
+            final boolean committed) {
+        return committed && viewState.zoom != node.bitmapZoom;
     }
 }

@@ -1,6 +1,7 @@
 package org.ebookdroid;
 
 import org.ebookdroid.common.bitmaps.BitmapManager;
+import org.ebookdroid.common.bitmaps.ByteBufferManager;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.BackupSettings;
@@ -74,6 +75,7 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
     public void onLowMemory() {
         super.onLowMemory();
         BitmapManager.clear("on Low Memory: ");
+        ByteBufferManager.clear("on Low Memory: ");
     }
 
     @Override
@@ -81,7 +83,6 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
             final AppSettings.Diff diff) {
 
         BitmapManager.setPartSize(1 << newSettings.bitmapSize);
-        BitmapManager.setUseEarlyRecycling(newSettings.useEarlyRecycling);
 
         setAppLocale(newSettings.lang);
     }

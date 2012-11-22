@@ -1,8 +1,5 @@
 package org.ebookdroid.ui.viewer.viewers;
 
-import org.ebookdroid.common.bitmaps.Bitmaps;
-import org.ebookdroid.common.bitmaps.GLBitmaps;
-import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.core.DecodeService;
 import org.ebookdroid.core.EventPool;
@@ -32,7 +29,7 @@ public final class GLView extends GLRootView implements IView, SurfaceHolder.Cal
 
     protected final Scroller scroller;
 
-    protected DrawThread drawThread;
+    protected DrawQueue drawQueue;
 
     protected ScrollEventThread scrollThread;
 
@@ -56,13 +53,13 @@ public final class GLView extends GLRootView implements IView, SurfaceHolder.Cal
 
         fullScreenCallback = FullScreenCallback.get(baseActivity.getActivity(), this);
 
-        drawThread = new DrawThread(null);
+        drawQueue = new DrawQueue();
         scrollThread = new ScrollEventThread(base, this);
         scrollThread.start();
     }
 
     protected void draw(GLCanvas canvas) {
-        ViewState viewState = drawThread.takeTask(1, TimeUnit.MILLISECONDS, true);
+        ViewState viewState = drawQueue.takeTask(1, TimeUnit.MILLISECONDS, true);
         if (viewState == null) {
             viewState = ViewState.get(base.getDocumentController());
             viewState.addedToDrawQueue();
@@ -357,8 +354,8 @@ public final class GLView extends GLRootView implements IView, SurfaceHolder.Cal
     @Override
     public final void redrawView(final ViewState viewState) {
         if (viewState != null) {
-            if (drawThread != null) {
-                drawThread.draw(viewState);
+            if (drawQueue != null) {
+                drawQueue.draw(viewState);
             }
             final DecodeService ds = base.getDecodeService();
             if (ds != null) {
@@ -376,10 +373,5 @@ public final class GLView extends GLRootView implements IView, SurfaceHolder.Cal
     @Override
     public PointF getBase(final RectF viewRect) {
         return new PointF(viewRect.left, viewRect.top);
-    }
-
-    @Override
-    public Bitmaps createBitmaps(final String nodeId, final IBitmapRef orig, final Rect bitmapBounds, final boolean invert) {
-        return new GLBitmaps(nodeId, orig, bitmapBounds, invert);
     }
 }

@@ -1,6 +1,5 @@
 package org.ebookdroid.core.curl;
 
-import org.ebookdroid.core.EventDraw;
 import org.ebookdroid.core.EventGLDraw;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.SinglePageController;
@@ -9,7 +8,6 @@ import org.ebookdroid.core.ViewState;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 
 import org.emdev.ui.gl.GLCanvas;
 
@@ -133,57 +131,6 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
      * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawForeground(org.ebookdroid.core.EventDraw)
      */
     @Override
-    protected void drawForeground(final EventDraw event) {
-        Page page = event.viewState.model.getPageObject(foreIndex);
-        if (page == null) {
-            page = event.viewState.model.getCurrentPageObject();
-        }
-        if (page != null) {
-            event.canvas.save();
-            event.canvas.clipRect(event.viewState.getBounds(page));
-            event.process(page);
-            event.canvas.restore();
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawBackground(org.ebookdroid.core.EventDraw)
-     */
-    @Override
-    protected void drawBackground(final EventDraw event) {
-        final Path mask = createBackgroundPath();
-
-        final Page page = event.viewState.model.getPageObject(backIndex);
-        if (page != null) {
-            // Save current canvas so we do not mess it up
-            event.canvas.save();
-            event.canvas.clipPath(mask);
-            event.canvas.drawRect(event.canvas.getClipBounds(), event.viewState.paint.backgroundFillPaint);
-            event.process(page);
-            event.canvas.restore();
-        }
-
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawExtraObjects(org.ebookdroid.core.EventDraw)
-     */
-    @Override
-    protected void drawExtraObjects(final EventDraw event) {
-        final Path path = createCurlEdgePath();
-        event.canvas.drawPath(path, mCurlEdgePaint);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawForeground(org.ebookdroid.core.EventDraw)
-     */
-    @Override
     protected void drawForeground(final EventGLDraw event) {
         Page page = event.viewState.model.getPageObject(foreIndex);
         if (page == null) {
@@ -262,35 +209,4 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
         // The movement origin point
         mOrigin.set(view.getWidth(), 0);
     }
-
-    /**
-     * Create a Path used as a mask to draw the background page
-     *
-     * @return
-     */
-    private Path createBackgroundPath() {
-        final Path path = new Path();
-        path.moveTo(mA.x, mA.y);
-        path.lineTo(mB.x, mB.y);
-        path.lineTo(mC.x, mC.y);
-        path.lineTo(mD.x, mD.y);
-        path.lineTo(mA.x, mA.y);
-        return path;
-    }
-
-    /**
-     * Creates a path used to draw the curl edge in.
-     *
-     * @return
-     */
-    private Path createCurlEdgePath() {
-        final Path path = new Path();
-        path.moveTo(mA.x, mA.y);
-        path.lineTo(mD.x, mD.y);
-        path.lineTo(mE.x, mE.y);
-        path.lineTo(mF.x, mF.y);
-        path.lineTo(mA.x, mA.y);
-        return path;
-    }
-
 }

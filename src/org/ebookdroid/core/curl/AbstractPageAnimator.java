@@ -1,8 +1,5 @@
 package org.ebookdroid.core.curl;
 
-import org.ebookdroid.common.bitmaps.BitmapManager;
-import org.ebookdroid.common.bitmaps.IBitmapRef;
-import org.ebookdroid.core.EventDraw;
 import org.ebookdroid.core.EventGLDraw;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.SinglePageController;
@@ -45,12 +42,6 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
     protected Vector2D mOldMovement;
     /** TRUE if the user moves the pages */
     protected boolean bUserMoves;
-
-    protected IBitmapRef foreBitmap;
-    protected int foreBitmapIndex = -1;
-
-    protected IBitmapRef backBitmap;
-    protected int backBitmapIndex = -1;
 
     protected final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
@@ -213,15 +204,9 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
 
     protected abstract Vector2D fixMovement(Vector2D point, final boolean bMaintainMoveDir);
 
-    protected abstract void drawBackground(EventDraw event);
-
     protected abstract void drawBackground(EventGLDraw event);
 
-    protected abstract void drawForeground(EventDraw event);
-
     protected abstract void drawForeground(EventGLDraw event);
-
-    protected abstract void drawExtraObjects(EventDraw event);
 
     protected abstract void drawExtraObjects(EventGLDraw event);
 
@@ -229,51 +214,6 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
      * Update points values values.
      */
     protected abstract void updateValues();
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.ebookdroid.core.curl.SinglePageView#draw(org.ebookdroid.core.EventDraw)
-     */
-    @Override
-    public final synchronized void draw(final EventDraw event) {
-        final Canvas canvas = event.canvas;
-        final ViewState viewState = event.viewState;
-
-        if (!enabled()) {
-            BitmapManager.release(foreBitmap);
-            BitmapManager.release(backBitmap);
-
-            foreBitmap = null;
-            backBitmap = null;
-
-            super.draw(event);
-            return;
-        }
-
-        // We need to initialize all size data when we first draw the view
-        if (!isViewDrawn()) {
-            setViewDrawn(true);
-            onFirstDrawEvent(canvas, viewState);
-        }
-
-        canvas.drawColor(Color.BLACK);
-
-        // Draw our elements
-        lock.readLock().lock();
-        try {
-            drawInternal(event);
-            drawExtraObjects(event);
-        } finally {
-            lock.readLock().unlock();
-        }
-
-        // Check if we can re-enable input
-        if (bEnableInputAfterDraw) {
-            bBlockTouchInput = false;
-            bEnableInputAfterDraw = false;
-        }
-    }
 
     /**
      * {@inheritDoc}
@@ -311,13 +251,6 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
         if (bEnableInputAfterDraw) {
             bBlockTouchInput = false;
             bEnableInputAfterDraw = false;
-        }
-    }
-
-    protected void drawInternal(final EventDraw event) {
-        drawForeground(event);
-        if (foreIndex != backIndex) {
-            drawBackground(event);
         }
     }
 
@@ -449,21 +382,6 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
 
     protected int getInitialXForBackFlip(final int width) {
         return width;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.ebookdroid.core.curl.SinglePageView#pageUpdated(int)
-     */
-    @Override
-    public void pageUpdated(final ViewState viewState, final Page page) {
-        if (foreBitmapIndex == page.index.viewIndex) {
-            foreBitmapIndex = -1;
-        }
-        if (backBitmapIndex == page.index.viewIndex) {
-            backBitmapIndex = -1;
-        }
     }
 
     /**

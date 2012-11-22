@@ -16,14 +16,6 @@
             android:summary="@string/pref_lowlevel_category_summary"
             android:title="@string/pref_lowlevel_category" >
 
-            <ListPreference
-                android:defaultValue="@string/pref_docviewtype_surface"
-                android:entries="@array/pref_docviewtype_entries"
-                android:entryValues="@array/pref_docviewtype_values"
-                android:key="@string/pref_docviewtype_id"
-                android:summary="@string/pref_docviewtype_summary"
-                android:title="@string/pref_docviewtype_title" />
-
             <org.emdev.ui.preference.SeekBarPreference
                 android:defaultValue="@string/pref_decoding_threads_defvalue"
                 android:key="@string/pref_decoding_threads_id"
@@ -55,24 +47,6 @@
                 android:key="@string/pref_bitmapsize_id"
                 android:summary="@string/pref_bitmapsize_summary"
                 android:title="@string/pref_bitmapsize_title" />
-
-            <CheckBoxPreference
-                android:defaultValue="@string/pref_texturereuse_defvalue"
-                android:key="@string/pref_texturereuse_id"
-                android:summary="@string/pref_texturereuse_summary"
-                android:title="@string/pref_texturereuse_title" />
-
-            <CheckBoxPreference
-                android:defaultValue="@string/pref_earlyrecycling_defvalue"
-                android:key="@string/pref_earlyrecycling_id"
-                android:summary="@string/pref_earlyrecycling_summary"
-                android:title="@string/pref_earlyrecycling_title" />
-
-            <CheckBoxPreference
-                android:defaultValue="@string/pref_reloadduringzoom_defvalue"
-                android:key="@string/pref_reloadduringzoom_id"
-                android:summary="@string/pref_reloadduringzoom_summary"
-                android:title="@string/pref_reloadduringzoom_title" />
 
             <org.emdev.ui.preference.SeekBarPreference
                 android:defaultValue="@string/pref_heappreallocate_defvalue"

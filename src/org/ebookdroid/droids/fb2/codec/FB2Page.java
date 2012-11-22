@@ -1,6 +1,7 @@
 package org.ebookdroid.droids.fb2.codec;
 
 import org.ebookdroid.common.bitmaps.BitmapManager;
+import org.ebookdroid.common.bitmaps.ByteBufferBitmap;
 import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.core.ViewState;
 import org.ebookdroid.core.codec.AbstractCodecPage;
@@ -111,7 +112,7 @@ public class FB2Page extends AbstractCodecPage {
     }
 
     @Override
-    public IBitmapRef renderBitmap(final ViewState viewState, final int width, final int height,
+    public ByteBufferBitmap renderBitmap(final ViewState viewState, final int width, final int height,
             final RectF pageSliceBounds) {
         final int nightmode = viewState != null && viewState.nightMode && viewState.positiveImagesInNightMode ? 1 : 0;
 
@@ -120,7 +121,7 @@ public class FB2Page extends AbstractCodecPage {
         matrix.postTranslate(-pageSliceBounds.left * width, -pageSliceBounds.top * height);
         matrix.postScale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height());
 
-        final IBitmapRef bmp = BitmapManager.getBitmap("FB2 page", width, height, Bitmap.Config.RGB_565);
+        final IBitmapRef bmp = BitmapManager.getBitmap("FB2 page", width, height, Bitmap.Config.ARGB_8888);
 
         final Canvas c = bmp.getCanvas();
         c.setMatrix(matrix);
@@ -152,7 +153,11 @@ public class FB2Page extends AbstractCodecPage {
             y = bottom;
         }
 
-        return bmp;
+        final ByteBufferBitmap buffer = ByteBufferBitmap.get(bmp.getBitmap());
+
+        BitmapManager.release(bmp);
+
+        return buffer;
     }
 
     public void appendLine(final Line line) {

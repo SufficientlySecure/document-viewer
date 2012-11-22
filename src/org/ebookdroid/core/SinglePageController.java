@@ -191,17 +191,6 @@ public class SinglePageController extends AbstractViewController {
     /**
      * {@inheritDoc}
      *
-     * @see org.ebookdroid.ui.viewer.IViewController#drawView(org.ebookdroid.core.EventDraw)
-     */
-    @Override
-    public void drawView(final EventDraw eventDraw) {
-        curler.draw(eventDraw);
-        getView().continueScroll();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
      * @see org.ebookdroid.ui.viewer.IViewController#drawView(org.ebookdroid.core.EventGLDraw)
      */
     @Override

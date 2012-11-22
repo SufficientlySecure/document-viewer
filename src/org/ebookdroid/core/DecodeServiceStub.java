@@ -1,11 +1,10 @@
 package org.ebookdroid.core;
 
+import org.ebookdroid.common.bitmaps.ByteBufferBitmap;
 import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.codec.OutlineLink;
 
-import android.graphics.Bitmap.Config;
-import android.graphics.PixelFormat;
 import android.graphics.RectF;
 
 import java.util.List;
@@ -115,32 +114,17 @@ public class DecodeServiceStub implements DecodeService {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.ebookdroid.core.DecodeService#getPixelFormat()
-     */
-    @Override
-    public int getPixelFormat() {
-        return PixelFormat.RGBA_8888;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.ebookdroid.core.DecodeService#getBitmapConfig()
-     */
-    @Override
-    public Config getBitmapConfig() {
-        return Config.ARGB_8888;
-    }
-
     @Override
     public void searchText(final Page page, final String pattern, final SearchCallback callback) {
     }
 
     @Override
     public void stopSearch(final String pattern) {
+    }
+
+    @Override
+    public ByteBufferBitmap createPageThumbnail(int width, int height, int pageNo, RectF region) {
+        return null;
     }
 
 }

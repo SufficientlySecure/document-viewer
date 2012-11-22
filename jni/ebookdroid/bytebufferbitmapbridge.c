@@ -149,7 +149,7 @@ JNIEXPORT void JNICALL
 
 JNIEXPORT void JNICALL
  Java_org_ebookdroid_common_bitmaps_ByteBufferBitmap_nativeEraseColor(JNIEnv* env, jclass classObject, jobject srcBuffer,
-                                                          jint width, jint height, jint value)
+                                                          jint width, jint height, jint c)
 {
 	int i;
 

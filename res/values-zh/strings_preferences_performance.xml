@@ -7,11 +7,6 @@
     <string name="pref_pagesinmemory_summary">"存储在内存中的页数"</string>
     <string name="pref_lowlevel_category">"低级别的应用程序首选项（需重新加载文件）"</string>
     <string name="pref_lowlevel_category_summary">"低级别的应用程序首选项（需重新加载文件）"</string>
-    <string name="pref_docviewtype_title">"文档查看器"</string>
-    <string name="pref_docviewtype_summary">"定义文档查看器使用的视图"</string>
-    <string name="list_docviewtype_base">"普通绘图"</string>
-    <string name="list_docviewtype_surface">"表面绘图"</string>
-<!--<string name="list_docviewtype_glsurface">"Based on android.opengl.GLSurfaceView"</string>-->
     <string name="pref_decoding_threads_title">"解码线程数量"</string>
     <string name="pref_decoding_threads_summary">"运行解码线程的数量"</string>
     <string name="pref_decodethread_priority_title">"解码线程优先级"</string>
@@ -23,10 +18,6 @@
     <string name="list_thread_priority_normal">"正常"</string>
     <string name="list_thread_priority_higher">"较高"</string>
     <string name="list_thread_priority_highest">"最高"</string>
-    <string name="pref_usenativegraphics_title">"使用本地图形"</string>
-    <string name="pref_usenativegraphics_summary">"使用安卓本地图形库"</string>
-    <string name="pref_hwa_enabled_title">"启用硬件加速"</string>
-    <string name="pref_hwa_enabled_summary">"如果硬件加速可以启用"</string>
     <string name="pref_bitmapsize_title">"位图尺寸"</string>
     <string name="pref_bitmapsize_summary">"设置位图尺寸"</string>
     <string name="list_bitmapsize_64" translatable="true">"64 * 64"</string>
@@ -34,18 +25,6 @@
     <string name="list_bitmapsize_256" translatable="true">"256 * 256"</string>
     <string name="list_bitmapsize_512" translatable="true">"512 * 512"</string>
     <string name="list_bitmapsize_1024" translatable="true">"1024 * 1024"</string>
-    <string name="pref_bitmapfilering_enabled_title">"位图过滤"</string>
-    <string name="pref_bitmapfilering_enabled_summary">"启用线性位图过滤"</string>
-    <string name="pref_texturereuse_title">"重用位图"</string>
-    <string name="pref_texturereuse_summary">"页面解码时使用已经存在的位图"</string>
-<!--<string name="pref_usenativetextures_title">"Store textures in native memory"</string>-->
-<!--<string name="pref_usenativetextures_summary">"Store textures in native memory"</string>-->
-    <string name="pref_bitmaphack_title">"位图分配破解"</string>
-    <string name="pref_bitmaphack_summary">"使用位图分配跟踪破解"</string>
-    <string name="pref_earlyrecycling_title">"位图回收"</string>
-    <string name="pref_earlyrecycling_summary">"位图移除时，手工回收位图"</string>
-    <string name="pref_reloadduringzoom_title">"缩放时重新加载页面"</string>
-    <string name="pref_reloadduringzoom_summary">"如果页面缩放超过20%，则重新加载页面"</string>
     <string name="pref_heappreallocate_title">"预分配堆栈"</string>
     <string name="pref_heappreallocate_summary">"程序启动时预分配堆栈大小（兆字节）"</string>
     <string name="pref_pdfstoragesize_title">"MuPDF内部存储容量"</string>

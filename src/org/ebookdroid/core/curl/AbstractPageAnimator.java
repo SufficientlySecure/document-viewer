@@ -5,7 +5,6 @@ import org.ebookdroid.core.Page;
 import org.ebookdroid.core.SinglePageController;
 import org.ebookdroid.core.ViewState;
 
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -260,8 +259,6 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
             drawBackground(event);
         }
     }
-
-    protected abstract void onFirstDrawEvent(Canvas canvas, final ViewState viewState);
 
     protected abstract void onFirstDrawEvent(GLCanvas canvas, final ViewState viewState);
 

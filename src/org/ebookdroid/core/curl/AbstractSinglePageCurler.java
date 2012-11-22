@@ -5,9 +5,9 @@ import org.ebookdroid.core.Page;
 import org.ebookdroid.core.SinglePageController;
 import org.ebookdroid.core.ViewState;
 
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
 
 import org.emdev.ui.gl.GLCanvas;
 
@@ -88,31 +88,11 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
     /**
      * {@inheritDoc}
      *
-     * @see org.ebookdroid.core.curl.AbstractPageAnimator#onFirstDrawEvent(android.graphics.Canvas,
-     *      org.ebookdroid.core.ViewState)
-     */
-    @Override
-    protected void onFirstDrawEvent(final Canvas canvas, final ViewState viewState) {
-        mFlipRadius = viewState.viewRect.width();
-
-        resetClipEdge();
-
-        lock.writeLock().lock();
-        try {
-            updateValues();
-        } finally {
-            lock.writeLock().unlock();
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
      * @see org.ebookdroid.core.curl.AbstractPageAnimator#onFirstDrawEvent(org.emdev.ui.gl.GLCanvas,
      *      org.ebookdroid.core.ViewState)
      */
     @Override
-    protected void onFirstDrawEvent(final GLCanvas canvas, final ViewState viewState) {
+    protected final void onFirstDrawEvent(final GLCanvas canvas, final ViewState viewState) {
         mFlipRadius = viewState.viewRect.width();
 
         resetClipEdge();
@@ -131,7 +111,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
      * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawForeground(org.ebookdroid.core.EventDraw)
      */
     @Override
-    protected void drawForeground(final EventGLDraw event) {
+    protected final void drawForeground(final EventGLDraw event) {
         Page page = event.viewState.model.getPageObject(foreIndex);
         if (page == null) {
             page = event.viewState.model.getCurrentPageObject();
@@ -142,11 +122,17 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
     }
 
     @Override
-    protected void drawBackground(final EventGLDraw event) {
+    protected final void drawBackground(final EventGLDraw event) {
         if (foreIndex != backIndex) {
-            final Page page = event.viewState.model.getPageObject(backIndex);
+            final ViewState viewState = event.viewState;
+            final Page page = viewState.model.getPageObject(backIndex);
             if (page != null) {
                 event.canvas.setClipPath(backClip);
+
+                final RectF viewRect = viewState.viewRect;
+                final int color = viewState.paint.backgroundFillPaint.getColor();
+                event.canvas.fillRect(0, 0, viewRect.width(), viewRect.height(), color);
+
                 event.process(page);
                 event.canvas.clearClipRect();
             }
@@ -159,7 +145,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
      * @see org.ebookdroid.core.curl.AbstractPageAnimator#drawExtraObjects(org.ebookdroid.core.EventGLDraw)
      */
     @Override
-    protected void drawExtraObjects(final EventGLDraw event) {
+    protected final void drawExtraObjects(final EventGLDraw event) {
         final GLCanvas canvas = event.canvas;
 
         shadow(canvas);
@@ -168,13 +154,13 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
         canvas.drawPoly(Color.BLACK, foreBack);
     }
 
-    void shadow(final GLCanvas canvas) {
+    protected final void shadow(final GLCanvas canvas) {
         canvas.save();
-        float width = 40;
-        int count = 20;
+        final float width = 40;
+        final int count = 20;
         for (int i = count; i > 0; i--) {
-            float move = i * width / count;
-            float alpha = 0.5f * (1 - i /(float)count);
+            final float move = i * width / count;
+            final float alpha = 0.5f * (1 - i / (float) count);
 
             canvas.setAlpha(alpha * alpha * alpha);
             canvas.translate(move, move);
@@ -190,7 +176,7 @@ public abstract class AbstractSinglePageCurler extends AbstractPageAnimator {
      * @see org.ebookdroid.core.curl.AbstractPageAnimator#resetClipEdge()
      */
     @Override
-    protected void resetClipEdge() {
+    protected final void resetClipEdge() {
         // Set our base movement
         mMovement.x = mInitialEdgeOffset;
         mMovement.y = mInitialEdgeOffset;

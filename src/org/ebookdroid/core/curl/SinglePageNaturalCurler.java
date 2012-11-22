@@ -26,7 +26,6 @@ import org.ebookdroid.core.SinglePageController;
 import org.ebookdroid.core.ViewState;
 import org.ebookdroid.ui.viewer.views.DragMark;
 
-import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 
@@ -270,24 +269,6 @@ public class SinglePageNaturalCurler extends AbstractPageAnimator {
 
         if (AppSettings.current().showAnimIcon) {
             DragMark.CURLER.draw(event.canvas, event.viewState);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.ebookdroid.core.curl.AbstractPageAnimator#onFirstDrawEvent(android.graphics.Canvas,
-     *      org.ebookdroid.core.ViewState)
-     */
-    @Override
-    protected void onFirstDrawEvent(final Canvas canvas, final ViewState viewState) {
-        resetClipEdge();
-
-        lock.writeLock().lock();
-        try {
-            updateValues();
-        } finally {
-            lock.writeLock().unlock();
         }
     }
 

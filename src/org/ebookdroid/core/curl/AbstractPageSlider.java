@@ -5,8 +5,6 @@ import org.ebookdroid.core.SinglePageController;
 import org.ebookdroid.core.ViewState;
 import org.ebookdroid.ui.viewer.views.DragMark;
 
-import android.graphics.Canvas;
-
 import org.emdev.ui.gl.GLCanvas;
 
 public abstract class AbstractPageSlider extends AbstractPageAnimator {
@@ -24,22 +22,6 @@ public abstract class AbstractPageSlider extends AbstractPageAnimator {
     public void init() {
         super.init();
         mInitialEdgeOffset = 0;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.ebookdroid.core.curl.AbstractPageAnimator#onFirstDrawEvent(android.graphics.Canvas,
-     *      org.ebookdroid.core.ViewState)
-     */
-    @Override
-    protected void onFirstDrawEvent(final Canvas canvas, final ViewState viewState) {
-        lock.writeLock().lock();
-        try {
-            updateValues();
-        } finally {
-            lock.writeLock().unlock();
-        }
     }
 
     /**

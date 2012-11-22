@@ -9,6 +9,7 @@ import org.ebookdroid.core.codec.PageLink;
 import org.ebookdroid.core.codec.PageTextBox;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.RectF;
 
 import java.nio.ByteBuffer;
@@ -60,7 +61,7 @@ public class DjvuPage extends AbstractCodecPage {
             }
         }
 
-        // TODO fill with gray
+        buf.eraseColor(Color.GRAY);
         return buf;
     }
 

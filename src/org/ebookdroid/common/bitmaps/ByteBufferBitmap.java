@@ -183,6 +183,10 @@ public final class ByteBufferBitmap {
         return dest;
     }
 
+    public void eraseColor(int color) {
+        nativeEraseColor(pixels, width, height, color);
+    }
+
     private static native void nativeHq2x(ByteBuffer src, ByteBuffer dst, int width, int height);
 
     private static native void nativeHq3x(ByteBuffer src, ByteBuffer dst, int width, int height);
@@ -192,6 +196,8 @@ public final class ByteBufferBitmap {
     private static native void nativeInvert(ByteBuffer src, int width, int height);
 
     private static native void nativeFillAlpha(ByteBuffer src, int width, int height, int value);
+
+    private static native void nativeEraseColor(ByteBuffer src, int width, int height, int color);
 
     /* contrast value 256 - normal */
     private static native void nativeContrast(ByteBuffer src, int width, int height, int contrast);
@@ -214,5 +220,4 @@ public final class ByteBufferBitmap {
     private static native ByteBuffer create(int size);
 
     private static native void free(ByteBuffer buf);
-
 }

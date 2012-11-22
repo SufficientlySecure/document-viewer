@@ -14,7 +14,7 @@
     __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid.ByteBufferBitmap", args)
 
 #define ERROR(args...) \
-    __android_log_print(ANDROID_LOG_ERROR, "EBookDroid.MuPByteBufferBitmapDF", args)
+    __android_log_print(ANDROID_LOG_ERROR, "EBookDroid.ByteBufferBitmap", args)
 
 #define INFO(args...) \
     __android_log_print(ANDROID_LOG_INFO, "EBookDroid.ByteBufferBitmap", args)
@@ -144,6 +144,31 @@ JNIEXPORT void JNICALL
 
     for (i = 0; i < width * height * 4; i+=4) {
     	src[i + 3] = value;
+    }
+}
+
+JNIEXPORT void JNICALL
+ Java_org_ebookdroid_common_bitmaps_ByteBufferBitmap_nativeEraseColor(JNIEnv* env, jclass classObject, jobject srcBuffer,
+                                                          jint width, jint height, jint value)
+{
+	int i;
+
+	uint8_t* src;
+    src = (uint8_t*)((*env)->GetDirectBufferAddress(env, srcBuffer));
+    if (!src) {
+    	ERROR("Can not get direct buffer");
+    	return;
+    }
+    uint8_t a = (uint8_t)((c >> 24) & 0xFF);
+    uint8_t r = (uint8_t)((c >> 16) & 0xFF);
+    uint8_t g = (uint8_t)((c >> 8) & 0xFF);
+    uint8_t b = (uint8_t)(c & 0xFF);
+
+    for (i = 0; i < width * height * 4; i+=4) {
+    	src[i + 0] = r;
+    	src[i + 1] = g;
+    	src[i + 2] = b;
+    	src[i + 3] = a;
     }
 }
 

@@ -9,6 +9,7 @@ import org.ebookdroid.core.codec.PageLink;
 import org.ebookdroid.core.codec.PageTextBox;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -130,7 +131,7 @@ public class MuPdfPage extends AbstractCodecPage {
             return bmp;
         }
 
-        // TODO fill with gray
+        bmp.eraseColor(Color.GRAY);
         return bmp;
     }
 

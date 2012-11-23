@@ -8,7 +8,6 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.View;
-import android.widget.Scroller;
 
 public class ViewStub implements IView {
 
@@ -22,11 +21,6 @@ public class ViewStub implements IView {
     @Override
     public IActivityController getBase() {
         return ActivityControllerStub.STUB;
-    }
-
-    @Override
-    public Scroller getScroller() {
-        return null;
     }
 
     @Override

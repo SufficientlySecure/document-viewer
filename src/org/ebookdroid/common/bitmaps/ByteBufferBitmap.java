@@ -37,6 +37,13 @@ public final class ByteBufferBitmap {
         recycle();
     }
 
+    public void recycle() {
+        ByteBuffer buf = pixels;
+        pixels = null;
+        free(buf);
+        buf = null;
+    }
+
     public static ByteBufferBitmap get(final Bitmap bmp) {
         if (bmp.getConfig() != Bitmap.Config.ARGB_8888) {
             throw new IllegalArgumentException("Wrong bitmap config: " + bmp.getConfig());
@@ -64,13 +71,6 @@ public final class ByteBufferBitmap {
         return part;
     }
 
-    public void recycle() {
-        ByteBuffer buf = pixels;
-        pixels = null;
-        free(buf);
-        buf = null;
-    }
-
     public void applyEffects(final BookSettings bs) {
         final boolean correctContrast = bs.contrast != AppPreferences.CONTRAST.defValue;
         final boolean correctExposure = bs.exposure != AppPreferences.EXPOSURE.defValue;
@@ -91,18 +91,18 @@ public final class ByteBufferBitmap {
     public void copyPixelsFrom(final ByteBufferBitmap src, final int left, final int top, final int width,
             final int height) {
         if (width > this.width) {
-            throw new IllegalArgumentException("width > this.width");
+            throw new IllegalArgumentException("width > this.width: " + width + ", " + this.width);
         }
         if (height > this.height) {
-            throw new IllegalArgumentException("height > this.height");
+            throw new IllegalArgumentException("height > this.height: " + height + ", " + this.height);
         }
         if (left + width > src.width) {
             throw new IllegalArgumentException("left + width > src.width: " + left + ", " + width + ", " + src.width);
         }
         if (top + height > src.height) {
-            throw new IllegalArgumentException("top + height > src.height");
+            throw new IllegalArgumentException("top + height > src.height: " + top + ", " + height + ", " + src.height);
         }
-        nativeFillRect2(src.pixels, src.width, this.pixels, this.width, left, top, width, height);
+        nativeFillRect(src.pixels, src.width, this.pixels, this.width, left, top, width, height);
     }
 
     public ByteBuffer getPixels() {
@@ -119,7 +119,7 @@ public final class ByteBufferBitmap {
 
     public IBitmapRef toBitmap() {
         final IBitmapRef bitmap = BitmapManager.getBitmap("RawBitmap", width, height, Bitmap.Config.ARGB_8888);
-        bitmap.setPixels(pixels);
+        bitmap.getBitmap().copyPixelsFromBuffer(pixels);
         return bitmap;
     }
 
@@ -145,6 +145,10 @@ public final class ByteBufferBitmap {
 
     public void autoLevels() {
         nativeAutoLevels2(pixels, width, height);
+    }
+
+    public void eraseColor(final int color) {
+        nativeEraseColor(pixels, width, height, color);
     }
 
     public static ByteBufferBitmap scaleHq4x(final Bitmap bitmap, final Rect srcRect) {
@@ -183,8 +187,10 @@ public final class ByteBufferBitmap {
         return dest;
     }
 
-    public void eraseColor(final int color) {
-        nativeEraseColor(pixels, width, height, color);
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[id=" + id + ", width=" + width + ", height=" + height + ", size=" + size
+                + "]";
     }
 
     private static native void nativeHq2x(ByteBuffer src, ByteBuffer dst, int width, int height);
@@ -211,10 +217,7 @@ public final class ByteBufferBitmap {
 
     private static native int nativeAvgLum(ByteBuffer src, int width, int height);
 
-    private static native void nativeFillRect(ByteBuffer src, ByteBuffer dst, int srcWidth, int x, int y, int dstWidth,
-            int dstHeight);
-
-    private static native void nativeFillRect2(ByteBuffer src, int srcWidth, ByteBuffer dst, int dstWidth, int x,
+    private static native void nativeFillRect(ByteBuffer src, int srcWidth, ByteBuffer dst, int dstWidth, int x,
             int y, int width, int height);
 
     private static native ByteBuffer create(int size);

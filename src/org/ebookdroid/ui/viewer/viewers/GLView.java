@@ -90,16 +90,6 @@ public final class GLView extends GLRootView implements IView, SurfaceHolder.Cal
     /**
      * {@inheritDoc}
      *
-     * @see org.ebookdroid.ui.viewer.IView#getScroller()
-     */
-    @Override
-    public final Scroller getScroller() {
-        return scroller;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
      * @see org.ebookdroid.ui.viewer.IView#invalidateScroll()
      */
     @Override

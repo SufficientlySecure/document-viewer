@@ -64,7 +64,6 @@ public class GLBitmaps {
                 } catch (final IllegalArgumentException ex) {
                     LCTX.e("Cannot create part: " + row + "/" + rows + ", " + col + "/" + columns + ": "
                             + ex.getMessage());
-                    // throw ex;
                 }
             }
         }

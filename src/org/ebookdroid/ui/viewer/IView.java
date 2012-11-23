@@ -6,7 +6,6 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.View;
-import android.widget.Scroller;
 
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
@@ -18,8 +17,6 @@ public interface IView {
     View getView();
 
     IActivityController getBase();
-
-    Scroller getScroller();
 
     void invalidateScroll();
 

@@ -45,14 +45,11 @@ public class ByteBufferTexture extends BasicTexture {
     @SuppressWarnings("unused")
     private static final LogContext LCTX = LogManager.root().lctx("Texture");
 
-    protected boolean mContentValid = true;
+    private static int[] sTextureId = new int[1];
 
-    // indicate this textures is being uploaded in background
-    private boolean mIsUploading = false;
+    private static float[] sCropRect = new float[4];
+
     private boolean mOpaque = true;
-    private boolean mThrottled = false;
-    private static int sUploadedCount;
-    private static final int UPLOAD_LIMIT = 100;
 
     protected ByteBufferBitmap mBitmap;
 
@@ -60,18 +57,6 @@ public class ByteBufferTexture extends BasicTexture {
         super(null, 0, STATE_UNLOADED);
         this.mBitmap = bitmap;
         setSize(mBitmap.getWidth(), mBitmap.getHeight());
-    }
-
-    protected void setIsUploading(final boolean uploading) {
-        mIsUploading = uploading;
-    }
-
-    public boolean isUploading() {
-        return mIsUploading;
-    }
-
-    protected void setThrottled(final boolean throttled) {
-        mThrottled = throttled;
     }
 
     protected void freeBitmap() {
@@ -90,22 +75,6 @@ public class ByteBufferTexture extends BasicTexture {
         return mHeight;
     }
 
-    protected void invalidateContent() {
-        if (mBitmap != null) {
-            freeBitmap();
-        }
-        mContentValid = false;
-        mWidth = UNSPECIFIED;
-        mHeight = UNSPECIFIED;
-    }
-
-    /**
-     * Whether the content on GPU is valid.
-     */
-    public boolean isContentValid() {
-        return isLoaded() && mContentValid;
-    }
-
     /**
      * Updates the content on GPU's memory.
      *
@@ -113,23 +82,9 @@ public class ByteBufferTexture extends BasicTexture {
      */
     public void updateContent(final GLCanvas canvas) {
         if (!isLoaded()) {
-            if (mThrottled && ++sUploadedCount > UPLOAD_LIMIT) {
-                return;
-            }
             uploadToCanvas(canvas);
         }
     }
-
-    public static void resetUploadLimit() {
-        sUploadedCount = 0;
-    }
-
-    public static boolean uploadLimitReached() {
-        return sUploadedCount > UPLOAD_LIMIT;
-    }
-
-    static int[] sTextureId = new int[1];
-    static float[] sCropRect = new float[4];
 
     private void uploadToCanvas(final GLCanvas canvas) {
         final GL11 gl = canvas.getGLInstance();
@@ -175,7 +130,6 @@ public class ByteBufferTexture extends BasicTexture {
             setAssociatedCanvas(canvas);
             mId = sTextureId[0];
             mState = STATE_LOADED;
-            mContentValid = true;
         } else {
             mState = STATE_ERROR;
             throw new RuntimeException("Texture load fail, no bitmap");
@@ -185,7 +139,7 @@ public class ByteBufferTexture extends BasicTexture {
     @Override
     protected boolean onBind(final GLCanvas canvas) {
         updateContent(canvas);
-        return isContentValid();
+        return isLoaded();
     }
 
     @Override

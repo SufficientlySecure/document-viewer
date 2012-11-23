@@ -85,12 +85,12 @@ final class ScrollEventThread extends Thread {
         final IViewController dc = base.getDocumentController();
         final DocumentModel dm = base.getDocumentModel();
         final View w = view.getView();
-    
+
         if (dc != null && dm != null) {
             final Rect l = dc.getScrollLimits();
             final int xx = MathUtils.adjust(x, l.left, l.right);
             final int yy = MathUtils.adjust(y, l.top, l.bottom);
-    
+
             if (SCROLL_X == null || SCROLL_Y == null) {
                 try {
                     view._scrollTo(xx, yy);

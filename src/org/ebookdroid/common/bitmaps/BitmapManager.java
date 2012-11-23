@@ -3,7 +3,6 @@ package org.ebookdroid.common.bitmaps;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.util.SparseArray;
 
 import java.util.Iterator;
@@ -112,7 +111,6 @@ public class BitmapManager {
                                         + ", memoryUsed=" + used.size() + "/" + (memoryUsed.get() / 1024) + "KB"
                                         + ", memoryInPool=" + pool.size() + "/" + (memoryPooled.get() / 1024) + "KB");
                             }
-                            ref.eraseColor(Color.CYAN);
                             ref.name = name;
                             return ref;
                         } else {
@@ -173,14 +171,6 @@ public class BitmapManager {
                 if (ref instanceof AbstractBitmapRef) {
                     releaseImpl((AbstractBitmapRef) ref);
                     count++;
-                } else if (ref instanceof AbstractBitmapRef[]) {
-                    final AbstractBitmapRef[] bitmaps = (AbstractBitmapRef[]) ref;
-                    for (final AbstractBitmapRef bitmap : bitmaps) {
-                        if (bitmap != null) {
-                            releaseImpl(bitmap);
-                            count++;
-                        }
-                    }
                 } else {
                     LCTX.e("Unknown object in release queue: " + ref);
                 }
@@ -204,15 +194,6 @@ public class BitmapManager {
                 LCTX.d("Adding 1 ref to release queue");
             }
             releasing.add(ref);
-        }
-    }
-
-    public static void release(final IBitmapRef[] refs) {
-        if (refs != null) {
-            if (LCTX.isDebugEnabled()) {
-                LCTX.d("Adding " + refs.length + " refs to release queue");
-            }
-            releasing.add(refs);
         }
     }
 

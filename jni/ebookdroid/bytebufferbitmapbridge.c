@@ -385,33 +385,7 @@ JNIEXPORT void JNICALL
 }
 
 JNIEXPORT void JNICALL
- Java_org_ebookdroid_common_bitmaps_ByteBufferBitmap_nativeFillRect(JNIEnv* env, jclass classObject, jobject srcBuffer,
-		 jobject dstBuffer, jint srcWidth, jint sub_x, jint sub_y, jint width, jint height)
-{
-    uint8_t* src;
-    uint8_t* dst;
-    int y;
-
-    src = (uint8_t*)((*env)->GetDirectBufferAddress(env, srcBuffer));
-    if (!src) {
-    	ERROR("Can not get direct buffer");
-    	return;
-    }
-    dst = (uint8_t*)((*env)->GetDirectBufferAddress(env, dstBuffer));
-    if (!dst) {
-    	ERROR("Can not get direct buffer");
-    	return;
-    }
-
-    for(y = 0; y < height; y++ )
-    {
-    	uint8_t* row = src + ((y + sub_y)*srcWidth + sub_x) * 4;
-        memcpy(dst + y * width * 4, row, width * 4);
-    }
-}
-
-JNIEXPORT void JNICALL
-Java_org_ebookdroid_common_bitmaps_ByteBufferBitmap_nativeFillRect2(JNIEnv* env, jclass classObject, jobject srcBuffer,
+Java_org_ebookdroid_common_bitmaps_ByteBufferBitmap_nativeFillRect(JNIEnv* env, jclass classObject, jobject srcBuffer,
                                                                    jint srcWidth, jobject dstBuffer, jint dstWidth,
                                                                    jint sub_x, jint sub_y, jint width, jint height)
 {

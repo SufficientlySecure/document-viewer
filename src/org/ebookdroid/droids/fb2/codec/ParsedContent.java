@@ -6,6 +6,7 @@ import static org.ebookdroid.droids.fb2.codec.FB2Page.PAGE_WIDTH;
 import org.ebookdroid.common.settings.AppSettings;
 
 import android.graphics.Bitmap;
+import android.text.TextPaint;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,10 +19,10 @@ import org.emdev.common.fonts.SystemFontProvider;
 import org.emdev.common.fonts.data.FontFamilyType;
 import org.emdev.common.fonts.data.FontStyle;
 import org.emdev.common.fonts.typeface.TypefaceEx;
+import org.emdev.common.textmarkup.CustomTextPaintContainer;
 import org.emdev.common.textmarkup.JustificationMode;
 import org.emdev.common.textmarkup.MarkupElement;
 import org.emdev.common.textmarkup.MarkupEndDocument;
-import org.emdev.common.textmarkup.RenderingStyle;
 import org.emdev.common.textmarkup.TextStyle;
 import org.emdev.common.textmarkup.Words;
 import org.emdev.common.textmarkup.image.DiskImageData;
@@ -33,6 +34,8 @@ import org.emdev.utils.LengthUtils;
 import org.emdev.utils.collections.SparseArrayEx;
 
 public class ParsedContent {
+
+    private static final CustomTextPaintContainer DEFAULT_PAINTS = new CustomTextPaintContainer(null);
 
     final ArrayList<MarkupElement> docMarkup = new ArrayList<MarkupElement>();
 
@@ -47,18 +50,33 @@ public class ParsedContent {
 
     public TypefaceEx[] fonts;
     public TypefaceEx mono;
+    public final CustomTextPaintContainer paints;
+
+    public ParsedContent() {
+        paints = DEFAULT_PAINTS;
+    }
+
+    public ParsedContent(TextPaint defPaint) {
+        paints = new CustomTextPaintContainer(defPaint);
+    }
 
     public void loadFonts() {
+        final String fontPack = AppSettings.current().fb2FontPack;
+        final FontFamilyType family = FontFamilyType.SERIF;
+        loadFonts(fontPack, family);
+    }
+
+    public void loadFonts(final String fontPack, final FontFamilyType family) {
         final FontStyle[] styles = FontStyle.values();
         fonts = new TypefaceEx[styles.length];
         for (final FontStyle style : styles) {
-            final TypefaceEx font = FontManager.getFont(AppSettings.current().fb2FontPack, FontFamilyType.SERIF, style);
+            final TypefaceEx font = FontManager.getFont(fontPack, family, style);
             fonts[style.ordinal()] = font;
-            RenderingStyle.getTextPaint(font, TextStyle.TEXT.getFontSize());
-            System.out.println("Preloaded: " + font);
+            this.paints.getTextPaint(font, TextStyle.TEXT.getFontSize());
+            // System.out.println("Preloaded: " + font);
         }
         mono = FontManager.getFont(SystemFontProvider.SYSTEM_FONT_PACK, FontFamilyType.MONO, FontStyle.REGULAR);
-        System.out.println("Preloaded: " + mono);
+        // System.out.println("Preloaded: " + mono);
     }
 
     public void clear() {
@@ -106,7 +124,8 @@ public class ParsedContent {
         }
     }
 
-    public void addImage(String tmpBinaryName, char[] tmpBinary, int tmpBinaryStart, int tmpBinaryLength) {
+    public void addImage(final String tmpBinaryName, final char[] tmpBinary, final int tmpBinaryStart,
+            final int tmpBinaryLength) {
         if (tmpBinaryName != null && tmpBinary != null && tmpBinaryLength > 0) {
             IImageData data = new MemoryImageData(tmpBinary, tmpBinaryStart, tmpBinaryLength);
             if (AppSettings.current().fb2CacheImagesOnDisk) {
@@ -128,7 +147,7 @@ public class ParsedContent {
         return img;
     }
 
-    public LineStream getNote(final String noteName) {
+    public LineStream getNote(final String noteName, boolean hyphenEnabled) {
         LineStream note = notes.get(noteName);
         if (note != null) {
             return note;
@@ -139,15 +158,17 @@ public class ParsedContent {
             stream = getMarkupStream(noteName.substring(1));
         }
         if (stream != null) {
-            note = createLines(stream, PAGE_WIDTH - 2 * MARGIN_X, JustificationMode.Justify);
+            note = createLines(stream, PAGE_WIDTH - 2 * MARGIN_X, JustificationMode.Justify, hyphenEnabled);
             notes.put(noteName, note);
         }
 
         return note;
     }
 
-    LineStream createLines(final List<MarkupElement> markup, final int maxLineWidth, final JustificationMode jm) {
-        final LineStream lines = new LineStream(this, maxLineWidth, jm);
+    public LineStream createLines(final List<MarkupElement> markup, final int maxLineWidth, final JustificationMode jm,
+            final boolean hyphenEnabled) {
+
+        final LineStream lines = new LineStream(this, maxLineWidth, jm, hyphenEnabled);
         if (LengthUtils.isNotEmpty(markup)) {
             for (final MarkupElement me : markup) {
                 if (me instanceof MarkupEndDocument) {
@@ -159,10 +180,12 @@ public class ParsedContent {
         return lines;
     }
 
-    public LineStream getStreamLines(final String streamName, final int maxWidth, final JustificationMode jm) {
+    public LineStream getStreamLines(final String streamName, final int maxWidth, final JustificationMode jm,
+            final boolean hyphenEnabled) {
+
         final ArrayList<MarkupElement> stream = getMarkupStream(streamName);
         if (stream != null) {
-            return createLines(stream, maxWidth, jm);
+            return createLines(stream, maxWidth, jm, hyphenEnabled);
         }
         return null;
     }

@@ -2,6 +2,7 @@ package org.emdev.common.textmarkup;
 
 import org.ebookdroid.droids.fb2.codec.FB2Page;
 
+import android.graphics.Paint;
 import android.text.TextPaint;
 
 import org.emdev.common.fonts.typeface.TypefaceEx;
@@ -26,6 +27,7 @@ public class CustomTextPaint extends TextPaint {
     private final float[] punct = new float[256];
 
     public CustomTextPaint(final int key, final TypefaceEx face, final int textSize) {
+        super();
         this.key = key;
         setTextSize(textSize);
         setTypeface(face.typeface);
@@ -33,6 +35,25 @@ public class CustomTextPaint extends TextPaint {
         setAntiAlias(true);
         setFilterBitmap(true);
         setDither(true);
+
+        initMeasures();
+
+        space = new LineWhiteSpace(standard[0x20], textSize);
+        fixedSpace = new LineFixedWhiteSpace(standard[0x20], textSize);
+        emptyLine = new LineFixedWhiteSpace(FB2Page.PAGE_WIDTH - 2 * FB2Page.MARGIN_X, textSize);
+        pOffset = new LineFixedWhiteSpace(textSize * 3, textSize);
+        vOffset = new LineFixedWhiteSpace(FB2Page.PAGE_WIDTH / 8, textSize);
+    }
+
+    public CustomTextPaint(final Paint parent, final int key, final TypefaceEx face, final int textSize) {
+        super(parent);
+        this.key = key;
+        setTextSize(textSize);
+        setTypeface(face.typeface);
+        setFakeBoldText(face.fakeBold);
+        setAntiAlias(parent.isAntiAlias());
+        setFilterBitmap(parent.isFilterBitmap());
+        setDither(parent.isDither());
 
         initMeasures();
 

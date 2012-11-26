@@ -46,7 +46,7 @@ public abstract class BaseHandler {
 
     protected final RenderingStyle setTitleStyle(final TextStyle font) {
         renderingStates.addFirst(crs);
-        crs = new RenderingStyle(crs, font, JustificationMode.Center);
+        crs = new RenderingStyle(parsedContent, crs, font, JustificationMode.Center);
         return crs;
     }
 
@@ -65,19 +65,19 @@ public abstract class BaseHandler {
 
     protected final RenderingStyle setSupStyle() {
         renderingStates.addFirst(crs);
-        crs = new RenderingStyle(crs, RenderingStyle.Script.SUPER);
+        crs = new RenderingStyle(parsedContent, crs, RenderingStyle.Script.SUPER);
         return crs;
     }
 
     protected final RenderingStyle setSubStyle() {
         renderingStates.addFirst(crs);
-        crs = new RenderingStyle(crs, RenderingStyle.Script.SUB);
+        crs = new RenderingStyle(parsedContent, crs, RenderingStyle.Script.SUB);
         return crs;
     }
 
     protected final RenderingStyle setStrikeThrough() {
         renderingStates.addFirst(crs);
-        crs = new RenderingStyle(crs, RenderingStyle.Strike.THROUGH);
+        crs = new RenderingStyle(parsedContent, crs, RenderingStyle.Strike.THROUGH);
         return crs;
     }
 

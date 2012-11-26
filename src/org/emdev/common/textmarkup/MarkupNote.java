@@ -14,7 +14,7 @@ public class MarkupNote implements MarkupElement {
 
     @Override
     public void publishToLines(final LineStream lines) {
-        final LineStream note = lines.params.content.getNote(ref);
+        final LineStream note = lines.params.content.getNote(ref, lines.params.hyphenEnabled);
         if (note != null && LengthUtils.isNotEmpty(lines)) {
             final Line line = lines.tail();
             line.addNote(note, false);

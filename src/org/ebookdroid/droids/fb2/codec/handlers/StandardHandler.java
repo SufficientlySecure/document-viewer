@@ -231,7 +231,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
                         markupStream.add(MarkupNoSpace.E);
                         markupStream.add(MarkupNoLineBreak.E);
                         markupStream.add(new TextElement(prettyNote.toCharArray(), 0, prettyNote.length(),
-                                new RenderingStyle(crs, Script.SUPER)));
+                                new RenderingStyle(parsedContent, crs, Script.SUPER)));
                         markupStream.add(new MarkupNote(note));
                         skipContent = true;
                     }

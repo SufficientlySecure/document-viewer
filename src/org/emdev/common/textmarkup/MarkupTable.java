@@ -1,6 +1,6 @@
 package org.emdev.common.textmarkup;
 
-import org.ebookdroid.droids.fb2.codec.ParsedContent;
+import org.ebookdroid.droids.fb2.codec.LineCreationParams;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -52,7 +52,7 @@ public class MarkupTable implements MarkupElement {
 
             int maxHeight = 0;
             for (final Cell cell : row) {
-                final int cellHeight = MultiLineElement.calcHeight(cell.getLines(lines.params.content, cellWidth));
+                final int cellHeight = MultiLineElement.calcHeight(cell.getLines(lines.params, cellWidth));
                 maxHeight = Math.max(maxHeight, cellHeight);
             }
 
@@ -71,9 +71,9 @@ public class MarkupTable implements MarkupElement {
         public boolean hasBackground;
         private LineStream lines;
 
-        private LineStream getLines(final ParsedContent content, final int cellWidth) {
+        private LineStream getLines(final LineCreationParams params, final int cellWidth) {
             if (lines == null) {
-                lines = content.getStreamLines(stream, cellWidth - DOUBLE_BORDER_WIDTH, align);
+                lines = params.content.getStreamLines(stream, cellWidth - DOUBLE_BORDER_WIDTH, align, params.hyphenEnabled);
             }
             return lines;
         }

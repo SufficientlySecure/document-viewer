@@ -1,7 +1,5 @@
 package org.emdev.common.textmarkup.line;
 
-import org.ebookdroid.common.settings.AppSettings;
-
 import org.emdev.common.textmarkup.RenderingStyle;
 
 public class TextPreElement extends TextElement {
@@ -15,8 +13,8 @@ public class TextPreElement extends TextElement {
     }
 
     @Override
-    public AbstractLineElement[] split(final float remaining) {
-        if (!AppSettings.current().fb2HyphenEnabled) {
+    public AbstractLineElement[] split(final float remaining, boolean hyphenEnabled) {
+        if (!hyphenEnabled) {
             return null;
         }
         final int firstStart = this.start;

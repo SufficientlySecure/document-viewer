@@ -39,7 +39,7 @@ public abstract class AbstractLineElement implements LineElement {
             }
             line.append(this);
         } else {
-            final AbstractLineElement[] splitted = split(remaining);
+            final AbstractLineElement[] splitted = split(remaining, lines.params.hyphenEnabled);
             if (splitted != null && splitted.length > 1) {
                 if (line.hasNonWhiteSpaces() && lines.params.insertSpace && !isWhiteSpace) {
                     line.append(space);
@@ -61,7 +61,7 @@ public abstract class AbstractLineElement implements LineElement {
         lines.params.noLineBreak = false;
     }
 
-    public AbstractLineElement[] split(final float remaining) {
+    public AbstractLineElement[] split(final float remaining, boolean hyphenEnabled) {
         return null;
     }
 }

@@ -5,7 +5,7 @@
     <string name="pref_rotation_summary">"Який режим використати"</string>
 <!--<string name="list_rotation_unspecified">"Unspecified"</string>-->
     <string name="list_rotation_land">"Форсувати альбом"</string>
-    <string name="list_rotation_port">" Форсувати портрет"</string>
+    <string name="list_rotation_port">"Форсувати портрет"</string>
 <!--<string name="list_rotation_user">"User"</string>-->
 <!--<string name="list_rotation_behind">"Inherit from background"</string>-->
     <string name="list_rotation_auto">"Автоматично"</string>

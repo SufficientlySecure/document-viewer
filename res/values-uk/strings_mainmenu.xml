@@ -28,5 +28,7 @@
 <!--<string name="menu_storages">"Storages"</string>-->
 <!--<string name="menu_storages_filesystem">"File System"</string>-->
 <!--<string name="menu_storages_external">"SD Card"</string>-->
+    <string name="menu_force_portrait">"Форсувати портрет"</string>
+    <string name="menu_force_landscape">"Форсувати альбом"</string>
 
 </resources>

@@ -28,5 +28,7 @@
 <!--<string name="menu_storages">"Storages"</string>-->
 <!--<string name="menu_storages_filesystem">"File System"</string>-->
 <!--<string name="menu_storages_external">"SD Card"</string>-->
+    <string name="menu_force_portrait">"Forzar retrato"</string>
+    <string name="menu_force_landscape">"Forzar apaisado"</string>
 
 </resources>

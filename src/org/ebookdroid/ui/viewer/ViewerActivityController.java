@@ -512,7 +512,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         }
     }
 
-    @ActionMethod(ids = { R.id.mainmenu_force_portrait, R.id.mainmenu_force_landscape})
+    @ActionMethod(ids = { R.id.mainmenu_force_portrait, R.id.mainmenu_force_landscape })
     public void forceOrientation(final ActionEx action) {
         final BookRotationType mode = action.getParameter("mode");
         if (bookSettings.rotation == mode) {
@@ -692,39 +692,45 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
     }
 
     public final boolean dispatchKeyEvent(final KeyEvent event) {
+        final int action = event.getAction();
+        final int keyCode = event.getKeyCode();
+
+        if (getManagedComponent().getSearchControls().getVisibility() == View.VISIBLE) {
+            if (action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
+                toggleControls(getAction(R.id.mainmenu_search));
+                return true;
+            }
+            return false;
+        }
+
         if (getDocumentController().dispatchKeyEvent(event)) {
             return true;
         }
 
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            switch (event.getKeyCode()) {
-                case KeyEvent.KEYCODE_BACK:
-                    if (event.getRepeatCount() == 0) {
-                        if (getManagedComponent().getTouchView().isShown()) {
-                            ViewEffects.toggleControls(getManagedComponent().getTouchView());
-                        } else if (getManagedComponent().getManualCropControls().isShown()) {
-                            ViewEffects.toggleControls(getManagedComponent().getManualCropControls());
-                        } else {
+        if (action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
+            if (event.getRepeatCount() == 0) {
+                if (getManagedComponent().getTouchView().isShown()) {
+                    ViewEffects.toggleControls(getManagedComponent().getTouchView());
+                } else if (getManagedComponent().getManualCropControls().isShown()) {
+                    ViewEffects.toggleControls(getManagedComponent().getManualCropControls());
+                } else {
 
-                            if (history.goBack()) {
-                                return true;
-                            }
-
-                            if (AppSettings.current().confirmClose) {
-                                final ActionDialogBuilder builder = new ActionDialogBuilder(getManagedComponent(), this);
-                                builder.setTitle(R.string.confirmclose_title);
-                                builder.setMessage(R.string.confirmclose_msg);
-                                builder.setPositiveButton(R.id.mainmenu_close);
-                                builder.setNegativeButton().show();
-                            } else {
-                                getOrCreateAction(R.id.mainmenu_close).run();
-                            }
-                        }
+                    if (history.goBack()) {
+                        return true;
                     }
-                    return true;
-                default:
-                    return false;
+
+                    if (AppSettings.current().confirmClose) {
+                        final ActionDialogBuilder builder = new ActionDialogBuilder(getManagedComponent(), this);
+                        builder.setTitle(R.string.confirmclose_title);
+                        builder.setMessage(R.string.confirmclose_msg);
+                        builder.setPositiveButton(R.id.mainmenu_close);
+                        builder.setNegativeButton().show();
+                    } else {
+                        getOrCreateAction(R.id.mainmenu_close).run();
+                    }
+                }
             }
+            return true;
         }
         return false;
     }

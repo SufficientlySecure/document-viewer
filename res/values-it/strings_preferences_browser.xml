@@ -13,12 +13,14 @@
 <!--<string name="pref_showremovable_summary">"Show removable media in storage menu"</string>-->
 <!--<string name="pref_showscanning_title">"Show Scan dirs"</string>-->
 <!--<string name="pref_showscanning_summary">"Show Auto Scan dirs in storage menu"</string>-->
-    <string name="pref_brbrfiletypesscreen_title">"Formato dei file da visualizzare"</string>
-    <string name="pref_brbrfiletypesscreen_summary">"Associazione dei tipi di file"</string>
+<!--<string name="pref_shownotifications_title">"Show notifications"</string>-->
+<!--<string name="pref_shownotifications_summary">"Show notifications about added/deleted files"</string>-->
     <string name="pref_cachelocation_title">"Posizione cache"</string>
     <string name="pref_cachelocation_summary">"Specifica dove memorizzare i file della cache (temporanei)"</string>
     <string name="list_cachelocation_system">"Cache dell'app nella memoria di sistema"</string>
     <string name="list_cachelocation_custom">"Cache dell'app sulla Sdcard esterna"</string>
+    <string name="pref_brbrfiletypesscreen_title">"Formato dei file da visualizzare"</string>
+    <string name="pref_brbrfiletypesscreen_summary">"Associazione dei tipi di file"</string>
 <!--<string name="pref_brfiletypedjvu_title">".djvu"</string>-->
     <string name="pref_brfiletypedjvu_summary">"Visualizza i file DjVu"</string>
 <!--<string name="pref_brfiletypedjv_title">".djv"</string>-->

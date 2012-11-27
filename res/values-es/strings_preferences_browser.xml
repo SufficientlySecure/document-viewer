@@ -13,12 +13,14 @@
 <!--<string name="pref_showremovable_summary">"Show removable media in storage menu"</string>-->
 <!--<string name="pref_showscanning_title">"Show Scan dirs"</string>-->
 <!--<string name="pref_showscanning_summary">"Show Auto Scan dirs in storage menu"</string>-->
-    <string name="pref_brbrfiletypesscreen_title">"Tipos de Archivo"</string>
-    <string name="pref_brbrfiletypesscreen_summary">"Tipos de Archivo a mostrar en la biblioteca"</string>
+<!--<string name="pref_shownotifications_title">"Show notifications"</string>-->
+<!--<string name="pref_shownotifications_summary">"Show notifications about added/deleted files"</string>-->
     <string name="pref_cachelocation_title">"Localización de la caché"</string>
     <string name="pref_cachelocation_summary">"Localización del aarchivo de caché"</string>
     <string name="list_cachelocation_system">"En System"</string>
     <string name="list_cachelocation_custom">"En Sdcard"</string>
+    <string name="pref_brbrfiletypesscreen_title">"Tipos de Archivo"</string>
+    <string name="pref_brbrfiletypesscreen_summary">"Tipos de Archivo a mostrar en la biblioteca"</string>
 <!--<string name="pref_brfiletypedjvu_title">".djvu"</string>-->
     <string name="pref_brfiletypedjvu_summary">"Mostrar los archivos DjVu"</string>
 <!--<string name="pref_brfiletypedjv_title">".djv"</string>-->

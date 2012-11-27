@@ -3,8 +3,8 @@ package org.ebookdroid.ui.viewer;
 import org.ebookdroid.CodecType;
 import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
-import org.ebookdroid.common.bitmaps.ByteBufferManager;
 import org.ebookdroid.common.bitmaps.BitmapManager;
+import org.ebookdroid.common.bitmaps.ByteBufferManager;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.keysbinding.KeyBindingsDialog;
 import org.ebookdroid.common.keysbinding.KeyBindingsManager;
@@ -15,6 +15,7 @@ import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.books.Bookmark;
 import org.ebookdroid.common.settings.listeners.IAppSettingsChangeListener;
 import org.ebookdroid.common.settings.listeners.IBookSettingsChangeListener;
+import org.ebookdroid.common.settings.types.BookRotationType;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.touch.TouchManager;
 import org.ebookdroid.core.DecodeService;
@@ -169,6 +170,8 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         createAction(R.id.mainmenu_zoom).putValue("view", activity.getZoomControls());
         createAction(R.id.mainmenu_search).putValue("view", activity.getSearchControls());
         createAction(R.id.actions_toggleTouchManagerView).putValue("view", activity.getTouchView());
+        createAction(R.id.mainmenu_force_portrait).putValue("mode", BookRotationType.PORTRAIT);
+        createAction(R.id.mainmenu_force_landscape).putValue("mode", BookRotationType.LANDSCAPE);
 
         if (++loadingCount == 1) {
             documentModel = ActivityControllerStub.DM_STUB;
@@ -506,6 +509,16 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
     public void toggleTitleVisibility(final ActionEx action) {
         if (!AndroidVersion.lessThan3x) {
             AppSettings.toggleTitleVisibility();
+        }
+    }
+
+    @ActionMethod(ids = { R.id.mainmenu_force_portrait, R.id.mainmenu_force_landscape})
+    public void forceOrientation(final ActionEx action) {
+        final BookRotationType mode = action.getParameter("mode");
+        if (bookSettings.rotation == mode) {
+            SettingsManager.setBookRotation(bookSettings, BookRotationType.UNSPECIFIED);
+        } else {
+            SettingsManager.setBookRotation(bookSettings, mode);
         }
     }
 

@@ -8,6 +8,7 @@ import org.ebookdroid.common.settings.listeners.IBookSettingsChangeListener;
 import org.ebookdroid.common.settings.listeners.ILibSettingsChangeListener;
 import org.ebookdroid.common.settings.listeners.IOpdsSettingsChangeListener;
 import org.ebookdroid.common.settings.listeners.IRecentBooksChangedListener;
+import org.ebookdroid.common.settings.types.BookRotationType;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.core.PageIndex;
@@ -267,6 +268,22 @@ public class SettingsManager {
         }
     }
 
+    public static void setBookRotation(final BookSettings current, final BookRotationType mode) {
+        if (current == null) {
+            return;
+        }
+        lock.writeLock().lock();
+        try {
+            final BookSettings olds = new BookSettings(current);
+            current.rotation = mode;
+            current.lastChanged = System.currentTimeMillis();
+            db.storeBookSettings(current);
+            applyBookSettingsChanges(olds, current);
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
     public static void toggleNightMode(final BookSettings current) {
         if (current == null) {
             return;
@@ -472,7 +489,7 @@ public class SettingsManager {
                     if (!list.isEmpty()) {
                         stored |= db.storeBookSettings(list);
                     }
-                } catch (Throwable th) {
+                } catch (final Throwable th) {
                     LCTX.e("BookSettingsUpdate thread error: ", th);
                 } finally {
                     lock.writeLock().unlock();

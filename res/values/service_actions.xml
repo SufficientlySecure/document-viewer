@@ -13,6 +13,8 @@
 
         <item>mainmenu_fullscreen</item>
         <item>mainmenu_showtitle</item>
+        <item>mainmenu_force_portrait</item>
+        <item>mainmenu_force_landscape</item>
         <item>mainmenu_nightmode</item>
         <item>mainmenu_splitpages</item>
         <item>mainmenu_croppages</item>
@@ -51,6 +53,8 @@
 
         <item>@string/pref_fullscreen_title</item>
         <item>@string/pref_title_title</item>
+        <item>@string/menu_force_portrait</item>
+        <item>@string/menu_force_landscape</item>
         <item>@string/menu_nightmode</item>
         <item>@string/pref_splitpages_title</item>
         <item>@string/pref_croppages_title</item>

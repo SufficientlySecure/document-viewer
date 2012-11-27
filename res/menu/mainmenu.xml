@@ -42,6 +42,16 @@
                 android:icon="@drawable/viewer_menu_showtitle"
                 android:title="@string/pref_title_title"/>
             <item
+                android:id="@+id/mainmenu_force_portrait"
+                android:checkable="true"
+                android:icon="@drawable/viewer_menu_force_portrait"
+                android:title="@string/menu_force_portrait"/>
+            <item
+                android:id="@+id/mainmenu_force_landscape"
+                android:checkable="true"
+                android:icon="@drawable/viewer_menu_force_landscape"
+                android:title="@string/menu_force_landscape"/>
+            <item
                 android:id="@+id/mainmenu_nightmode"
                 android:checkable="true"
                 android:icon="@drawable/viewer_menu_daynight"

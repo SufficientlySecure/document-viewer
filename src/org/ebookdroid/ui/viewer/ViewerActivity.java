@@ -5,6 +5,7 @@ import org.ebookdroid.R;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.books.Bookmark;
+import org.ebookdroid.common.settings.types.BookRotationType;
 import org.ebookdroid.common.settings.types.ToastPosition;
 import org.ebookdroid.common.touch.TouchManagerView;
 import org.ebookdroid.ui.viewer.viewers.GLView;
@@ -321,6 +322,8 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
             return;
         }
 
+        setMenuItemChecked(menu, bs.rotation == BookRotationType.PORTRAIT, R.id.mainmenu_force_portrait);
+        setMenuItemChecked(menu, bs.rotation == BookRotationType.LANDSCAPE, R.id.mainmenu_force_landscape);
         setMenuItemChecked(menu, bs.nightMode, R.id.mainmenu_nightmode);
         setMenuItemChecked(menu, bs.cropPages, R.id.mainmenu_croppages);
         setMenuItemChecked(menu, bs.splitPages, R.id.mainmenu_splitpages, R.drawable.viewer_menu_split_pages,

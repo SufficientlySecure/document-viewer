@@ -8,6 +8,8 @@ import static org.ebookdroid.R.string.pref_brfiletypes;
 import static org.ebookdroid.R.string.pref_brsearchbookquery_id;
 import static org.ebookdroid.R.string.pref_cachelocation_defvalue;
 import static org.ebookdroid.R.string.pref_cachelocation_id;
+import static org.ebookdroid.R.string.pref_shownotifications_defvalue;
+import static org.ebookdroid.R.string.pref_shownotifications_id;
 import static org.ebookdroid.R.string.pref_showremovable_defvalue;
 import static org.ebookdroid.R.string.pref_showremovable_id;
 import static org.ebookdroid.R.string.pref_showscanning_defvalue;
@@ -48,5 +50,8 @@ public interface LibPreferences {
 
     BooleanPreferenceDefinition SHOW_SCANNING_MEDIA = new BooleanPreferenceDefinition(pref_showscanning_id,
             pref_showscanning_defvalue);
+
+    BooleanPreferenceDefinition SHOW_NOTIFICATIONS = new BooleanPreferenceDefinition(pref_shownotifications_id,
+            pref_shownotifications_defvalue);
 
 }

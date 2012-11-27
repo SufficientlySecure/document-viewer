@@ -40,6 +40,8 @@ public class LibSettings implements LibPreferences, IBackupAgent {
 
     public final boolean showRemovableMediaInMenu;
 
+    public final boolean showNotifications;
+
     private LibSettings() {
         BackupManager.addAgent(this);
         final SharedPreferences prefs = SettingsManager.prefs;
@@ -52,6 +54,7 @@ public class LibSettings implements LibPreferences, IBackupAgent {
         autoScanRemovableMedia = AUTO_SCAN_REMOVABLE_MEDIA.getPreferenceValue(prefs);
         showRemovableMediaInMenu = SHOW_REMOVABLE_MEDIA.getPreferenceValue(prefs);
         showScanningInMenu = SHOW_SCANNING_MEDIA.getPreferenceValue(prefs);
+        showNotifications = SHOW_NOTIFICATIONS.getPreferenceValue(prefs);
     }
 
     /* =============== */

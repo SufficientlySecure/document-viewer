@@ -16,6 +16,9 @@
     <string translatable="false" name="pref_showscanning_id">showscanning</string>
     <string translatable="false" name="pref_showscanning_defvalue">true</string>
 
+    <string translatable="false" name="pref_shownotifications_id">shownotifications</string>
+    <string translatable="false" name="pref_shownotifications_defvalue">true</string>
+
     <string translatable="false" name="pref_brfiletypes">brfiletypes</string>
 
     <string translatable="false" name="pref_brsearchbookquery_id">brsearchbookquery</string>

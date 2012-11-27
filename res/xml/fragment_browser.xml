@@ -35,6 +35,12 @@
             android:summary="@string/pref_showscanning_summary"
             android:title="@string/pref_showscanning_title" />
 
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_shownotifications_defvalue"
+            android:key="@string/pref_shownotifications_id"
+            android:summary="@string/pref_shownotifications_summary"
+            android:title="@string/pref_shownotifications_title" />
+
         <ListPreference
             android:defaultValue="@string/pref_cachelocation_defvalue"
             android:entries="@array/pref_cachelocation_entries"

@@ -7,6 +7,7 @@ import org.ebookdroid.droids.fb2.codec.tags.FB2TagId;
 
 import java.util.ArrayList;
 
+import org.emdev.common.fonts.data.FontStyle;
 import org.emdev.common.lang.StrBuilder;
 import org.emdev.common.textmarkup.JustificationMode;
 import org.emdev.common.textmarkup.MarkupElement;
@@ -347,6 +348,9 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
                 markupStream.add(new MarkupExtraSpace(-(int) (crs.paint.pOffset.width * ulLevel)));
             case P:
                 if (!skipContent) {
+                    if (crs.face.style != FontStyle.REGULAR) {
+                        crs = new RenderingStyle(parsedContent, crs, FontStyle.REGULAR);
+                    }
                     markupStream.add(MarkupParagraphEnd.E);
                 }
                 paragraphParsing = false;

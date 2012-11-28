@@ -4,7 +4,7 @@
     <string translatable="false" name="pref_pagesinmemory_id">pagesinmemory</string>
     <string translatable="false" name="pref_pagesinmemory_defvalue">0</string>
     <string translatable="false" name="pref_pagesinmemory_minvalue">0</string>
-    <string translatable="false" name="pref_pagesinmemory_maxvalue">100</string>
+    <string translatable="false" name="pref_pagesinmemory_maxvalue">16</string>
 
     <string translatable="false" name="pref_decodethread_priority_id">decodethread_priority</string>
     <string translatable="false" name="pref_drawthread_priority_id">drawthread_priority</string>
@@ -67,7 +67,7 @@
     <string translatable="false" name="pref_pdfstoragesize_id">pdfstoragesize</string>
     <string translatable="false" name="pref_pdfstoragesize_defvalue">64</string>
     <string translatable="false" name="pref_pdfstoragesize_minvalue">16</string>
-    <string translatable="false" name="pref_pdfstoragesize_maxvalue">128</string>
+    <string translatable="false" name="pref_pdfstoragesize_maxvalue">256</string>
 
 
 </resources>

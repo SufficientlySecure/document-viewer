@@ -155,7 +155,7 @@ MY_MUPDF_C_INCLUDES := \
 # of Androids own droid.ttf ... Maybe resort to pointing
 # to it in the filesystem? But this would violate proper
 # API use. Bleh.
-MY_MUPDF_CFLAGS := 
+MY_MUPDF_CFLAGS := -DAA_BITS=8
 
 MY_MUPDF_SRC_FILES := \
 	mupdf/pdf/pdf_annot.c \

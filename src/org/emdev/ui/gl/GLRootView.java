@@ -17,7 +17,6 @@
 package org.emdev.ui.gl;
 
 import android.content.Context;
-import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Process;
 import android.util.AttributeSet;
@@ -73,7 +72,6 @@ public class GLRootView extends GLSurfaceView implements GLSurfaceView.Renderer 
         mFlags |= FLAG_INITIALIZED;
         setEGLConfigChooser(mEglConfigChooser);
         setRenderer(this);
-        getHolder().setFormat(PixelFormat.RGB_565);
     }
 
     @Override

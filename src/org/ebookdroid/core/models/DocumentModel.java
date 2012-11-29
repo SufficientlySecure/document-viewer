@@ -2,9 +2,9 @@ package org.ebookdroid.core.models;
 
 import org.ebookdroid.CodecType;
 import org.ebookdroid.R;
-import org.ebookdroid.common.bitmaps.GLBitmaps;
-import org.ebookdroid.common.bitmaps.ByteBufferManager;
 import org.ebookdroid.common.bitmaps.BitmapManager;
+import org.ebookdroid.common.bitmaps.ByteBufferManager;
+import org.ebookdroid.common.bitmaps.GLBitmaps;
 import org.ebookdroid.common.bitmaps.IBitmapRef;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.cache.DocumentCacheFile;
@@ -374,7 +374,7 @@ public class DocumentModel extends ListenerProxy {
 
         @Override
         public boolean hasNext() {
-            return 0 <= index && index < end;
+            return 0 <= index && index < end && index < pages.length;
         }
 
         @Override
@@ -391,6 +391,7 @@ public class DocumentModel extends ListenerProxy {
             return this;
         }
 
+        @Override
         public void release() {
             iterators.set(this);
         }

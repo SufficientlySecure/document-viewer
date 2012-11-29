@@ -72,17 +72,7 @@ public class BaseEGLConfigChooser implements EGLConfigChooser {
         // has stencil support but with smallest number of stencil bits. If
         // none is found, choose any one.
         for (int i = 0, n = configs.length; i < n; ++i) {
-            if (egl.eglGetConfigAttrib(display, configs[i], EGL10.EGL_ALPHA_SIZE, value)) {
-                if (value[0] == 0) {
-                    continue;
-                }
-            }
-            if (egl.eglGetConfigAttrib(display, configs[i], EGL10.EGL_RED_SIZE, value)) {
-                // Filter in ARGB 8888 configs.
-                if (value[0] != 8) {
-                    continue;
-                }
-            }
+            logConfig("Config found: ", egl, display, configs[i]);
             if (egl.eglGetConfigAttrib(display, configs[i], EGL10.EGL_STENCIL_SIZE, value)) {
                 if (value[0] == 0) {
                     continue;
@@ -92,24 +82,24 @@ public class BaseEGLConfigChooser implements EGLConfigChooser {
                     result = configs[i];
                 }
             } else {
-                throw new RuntimeException("eglGetConfigAttrib error: " + egl.eglGetError());
+                LCTX.e("eglGetConfigAttrib error: " + egl.eglGetError());
             }
         }
         if (result == null) {
             result = configs[0];
         }
-        egl.eglGetConfigAttrib(display, result, EGL10.EGL_STENCIL_SIZE, value);
-        logConfig(egl, display, result);
+        logConfig("Config chosen: ", egl, display, result);
         return result;
     }
 
-    private void logConfig(final EGL10 egl, final EGLDisplay display, final EGLConfig config) {
+    private void logConfig(final String prefix, final EGL10 egl, final EGLDisplay display, final EGLConfig config) {
         final int value[] = new int[1];
         final StringBuilder sb = new StringBuilder();
         for (int j = 0; j < ATTR_ID.length; j++) {
+            value[0] = -1;
             egl.eglGetConfigAttrib(display, config, ATTR_ID[j], value);
             sb.append(ATTR_NAME[j] + value[0] + " ");
         }
-        LCTX.i("Config chosen: " + sb.toString());
+        LCTX.i(prefix + sb.toString());
     }
 }

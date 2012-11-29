@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Bundle;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -94,7 +95,8 @@ public class MediaManager extends BroadcastReceiver {
         if (Intent.ACTION_MEDIA_MOUNTED.equals(action)) {
             final Uri data = intent.getData();
             final String path = PathFromUri.retrieve(context.getContentResolver(), data);
-            final boolean readOnly = intent.getExtras().getBoolean("read-only");
+            final Bundle extras = intent.getExtras();
+            final boolean readOnly = extras != null ? extras.getBoolean("read-only") : false;
             setMediaState(path, readOnly ? MediaState.MEDIA_MOUNTED : MediaState.MEDIA_MOUNTED_READ_ONLY);
             return;
         }

@@ -36,6 +36,8 @@ public class BaseDroidApp extends Application {
 
     public static Properties BUILD_PROPS;
 
+    public static boolean IS_EMULATOR;
+
     public static String APP_NAME;
 
     public static Locale defLocale;
@@ -44,7 +46,7 @@ public class BaseDroidApp extends Application {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see android.app.Application#onCreate()
      */
     @Override
@@ -77,6 +79,7 @@ public class BaseDroidApp extends Application {
             APP_PACKAGE = pi.packageName;
             EXT_STORAGE = Environment.getExternalStorageDirectory();
             APP_STORAGE = getAppStorage(APP_PACKAGE);
+            IS_EMULATOR = "sdk".equalsIgnoreCase(Build.MODEL);
 
             Log.i(APP_NAME, APP_NAME + " (" + APP_PACKAGE + ")" + " " + APP_VERSION_NAME + "(" + pi.versionCode + ")");
 

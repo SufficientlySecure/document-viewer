@@ -8,6 +8,7 @@ import org.ebookdroid.common.settings.books.Bookmark;
 import org.ebookdroid.common.settings.types.BookRotationType;
 import org.ebookdroid.common.settings.types.ToastPosition;
 import org.ebookdroid.common.touch.TouchManagerView;
+import org.ebookdroid.ui.viewer.stubs.ViewStub;
 import org.ebookdroid.ui.viewer.viewers.GLView;
 import org.ebookdroid.ui.viewer.views.ManualCropView;
 import org.ebookdroid.ui.viewer.views.PageViewZoomControls;
@@ -34,6 +35,8 @@ import org.emdev.common.android.AndroidVersion;
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
 import org.emdev.ui.AbstractActionActivity;
+import org.emdev.ui.actions.ActionDialogBuilder;
+import org.emdev.ui.gl.GLConfiguration;
 import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.utils.LayoutUtils;
 import org.emdev.utils.LengthUtils;
@@ -109,16 +112,29 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
         frameLayout = new FrameLayout(this);
 
-        view = new GLView(getController());
-        this.registerForContextMenu(view.getView());
+        view = ViewStub.STUB;
 
-        LayoutUtils.fillInParent(frameLayout, view.getView());
+        try {
+            GLConfiguration.checkConfiguration();
 
-        frameLayout.addView(view.getView());
-        frameLayout.addView(getZoomControls());
-        frameLayout.addView(getManualCropControls());
-        frameLayout.addView(getSearchControls());
-        frameLayout.addView(getTouchView());
+            view = new GLView(getController());
+            this.registerForContextMenu(view.getView());
+
+            LayoutUtils.fillInParent(frameLayout, view.getView());
+
+            frameLayout.addView(view.getView());
+            frameLayout.addView(getZoomControls());
+            frameLayout.addView(getManualCropControls());
+            frameLayout.addView(getSearchControls());
+            frameLayout.addView(getTouchView());
+
+        } catch (final Throwable th) {
+            final ActionDialogBuilder builder = new ActionDialogBuilder(this, getController());
+            builder.setTitle(R.string.error_dlg_title);
+            builder.setMessage(th.getMessage());
+            builder.setPositiveButton(R.string.error_close, R.id.mainmenu_close);
+            builder.show();
+        }
 
         getController().afterCreate();
 

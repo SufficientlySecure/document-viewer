@@ -23,6 +23,7 @@ import org.emdev.common.filesystem.MediaManager;
 import org.emdev.common.fonts.FontManager;
 import org.emdev.ui.actions.ActionController;
 import org.emdev.ui.actions.ActionDialogBuilder;
+import org.emdev.ui.gl.GLConfiguration;
 import org.emdev.utils.concurrent.Flag;
 
 public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeListener, IBackupSettingsChangeListener,
@@ -56,6 +57,8 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
         SettingsManager.addListener(this);
         onAppSettingsChanged(null, AppSettings.current(), null);
         onBackupSettingsChanged(null, BackupSettings.current(), null);
+
+        GLConfiguration.stencilRequired = !IS_EMULATOR;
 
         initialized.set();
     }

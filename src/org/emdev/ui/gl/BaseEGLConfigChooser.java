@@ -24,18 +24,12 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
 
-/*
- * The code is copied/adapted from
- * <code>android.opengl.GLSurfaceView.BaseConfigChooser</code>. Here we try to
- * choose a configuration that support RGBA_8888 format and if possible,
- * with stencil buffer, but is not required.
- */
 public class BaseEGLConfigChooser implements EGLConfigChooser {
 
     private static final LogContext LCTX = LogManager.root().lctx("BaseEGLConfigChooser");
 
     private final int mConfigSpec[] = new int[] { EGL10.EGL_RED_SIZE, 5, EGL10.EGL_GREEN_SIZE, 6, EGL10.EGL_BLUE_SIZE,
-            5, EGL10.EGL_ALPHA_SIZE, 0, EGL10.EGL_NONE };
+            5, EGL10.EGL_ALPHA_SIZE, 0, EGL10.EGL_STENCIL_SIZE, GLConfiguration.stencilRequired ? 1 : 0, EGL10.EGL_NONE };
 
     private static final int[] ATTR_ID = { EGL10.EGL_RED_SIZE, EGL10.EGL_GREEN_SIZE, EGL10.EGL_BLUE_SIZE,
             EGL10.EGL_ALPHA_SIZE, EGL10.EGL_DEPTH_SIZE, EGL10.EGL_STENCIL_SIZE, EGL10.EGL_CONFIG_ID,
@@ -51,7 +45,7 @@ public class BaseEGLConfigChooser implements EGLConfigChooser {
         }
 
         if (numConfig[0] <= 0) {
-            throw new RuntimeException("No configs match configSpec");
+            throw new RuntimeException("Your device cannot support required GLES configuration");
         }
 
         final EGLConfig[] configs = new EGLConfig[numConfig[0]];
@@ -68,11 +62,17 @@ public class BaseEGLConfigChooser implements EGLConfigChooser {
         int minStencil = Integer.MAX_VALUE;
         final int value[] = new int[1];
 
-        // Because we need only one bit of stencil, try to choose a config that
-        // has stencil support but with smallest number of stencil bits. If
-        // none is found, choose any one.
         for (int i = 0, n = configs.length; i < n; ++i) {
             logConfig("Config found: ", egl, display, configs[i]);
+            if (egl.eglGetConfigAttrib(display, configs[i], EGL10.EGL_RED_SIZE, value)) {
+                if (GLConfiguration.use8888 && value[0] != 8) {
+                    continue;
+                }
+                if (!GLConfiguration.use8888 && value[0] == 8) {
+                    continue;
+                }
+            }
+
             if (egl.eglGetConfigAttrib(display, configs[i], EGL10.EGL_STENCIL_SIZE, value)) {
                 if (value[0] == 0) {
                     continue;

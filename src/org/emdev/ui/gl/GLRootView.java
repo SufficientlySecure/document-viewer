@@ -17,6 +17,7 @@
 package org.emdev.ui.gl;
 
 import android.content.Context;
+import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Process;
 import android.util.AttributeSet;
@@ -53,8 +54,6 @@ public class GLRootView extends GLSurfaceView implements GLSurfaceView.Renderer 
     protected int mFlags = FLAG_NEED_LAYOUT;
     protected volatile boolean mRenderRequested = false;
 
-    protected final BaseEGLConfigChooser mEglConfigChooser = new BaseEGLConfigChooser();
-
     protected final ReentrantLock mRenderLock = new ReentrantLock();
     protected final Condition mFreezeCondition = mRenderLock.newCondition();
     protected boolean mFreeze;
@@ -70,8 +69,13 @@ public class GLRootView extends GLSurfaceView implements GLSurfaceView.Renderer 
     public GLRootView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         mFlags |= FLAG_INITIALIZED;
-        setEGLConfigChooser(mEglConfigChooser);
+        setEGLConfigChooser(GLConfiguration.getConfigChooser());
         setRenderer(this);
+        if (GLConfiguration.use8888) {
+            getHolder().setFormat(PixelFormat.RGBA_8888);
+        } else {
+            getHolder().setFormat(PixelFormat.RGB_565);
+        }
     }
 
     @Override

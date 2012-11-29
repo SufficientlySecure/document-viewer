@@ -131,7 +131,6 @@
     <string translatable="false" name="pref_animation_type_none">None</string>
     <string translatable="false" name="pref_animation_type_curler_simple">Simple curler</string>
     <string translatable="false" name="pref_animation_type_curler_dynamic">Dynamic curler</string>
-    <string translatable="false" name="pref_animation_type_curler_natural">Natural curler</string>
     <string translatable="false" name="pref_animation_type_slider">Slider</string>
     <string translatable="false" name="pref_animation_type_fader">Fade in</string>
     <string translatable="false" name="pref_animation_type_squeezer">Squeeze</string>
@@ -141,7 +140,6 @@
         <item>@string/list_animation_none</item>
         <item>@string/list_animation_curler_simple</item>
         <item>@string/list_animation_curler_dynamic</item>
-        <item>@string/list_animation_curler_natural</item>
         <item>@string/list_animation_slider</item>
         <item>@string/list_animation_fader</item>
         <item>@string/list_animation_squeezer</item>
@@ -152,7 +150,6 @@
         <item>@string/pref_animation_type_none</item>
         <item>@string/pref_animation_type_curler_simple</item>
         <item>@string/pref_animation_type_curler_dynamic</item>
-        <item>@string/pref_animation_type_curler_natural</item>
         <item>@string/pref_animation_type_slider</item>
         <item>@string/pref_animation_type_fader</item>
         <item>@string/pref_animation_type_squeezer</item>

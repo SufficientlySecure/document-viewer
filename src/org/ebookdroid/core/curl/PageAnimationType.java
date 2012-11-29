@@ -14,8 +14,6 @@ public enum PageAnimationType implements ResourceConstant {
 
     CURLER_DYNAMIC(R.string.pref_animation_type_curler_dynamic, false),
 
-    CURLER_NATURAL(R.string.pref_animation_type_curler_natural, false),
-
     SLIDER(R.string.pref_animation_type_slider, true),
 
     SLIDER2(R.string.pref_animation_type_slider2, true),
@@ -60,8 +58,6 @@ public enum PageAnimationType implements ResourceConstant {
                     return new SinglePageSimpleCurler(singlePageDocumentView);
                 case CURLER_DYNAMIC:
                   return new SinglePageDynamicCurler(singlePageDocumentView);
-                case CURLER_NATURAL:
-                    return new SinglePageNaturalCurler(singlePageDocumentView);
                 case SLIDER:
                     return new SinglePageSlider(singlePageDocumentView);
                 case SLIDER2:

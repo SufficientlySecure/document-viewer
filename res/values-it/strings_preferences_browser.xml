@@ -7,7 +7,7 @@
     <string name="pref_usebookcase_summary">"Utilizza la libreria con le copertine al posto degli elenchi"</string>
     <string name="pref_brautoscandir_title">"Cartella di scansione"</string>
     <string name="pref_brautoscandir_summary">"Cartella nella quale effettuare una scansione automatica dei documenti in formato conosciuto"</string>
-<!--<string name="pref_autoscanremovable_title">"Auto Scan revomable"</string>-->
+<!--<string name="pref_autoscanremovable_title">"Auto Scan removable"</string>-->
 <!--<string name="pref_autoscanremovable_summary">"Automatic scan inserted removable media"</string>-->
 <!--<string name="pref_showremovable_title">"Show Removable"</string>-->
 <!--<string name="pref_showremovable_summary">"Show removable media in storage menu"</string>-->

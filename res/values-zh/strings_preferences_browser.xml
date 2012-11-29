@@ -7,7 +7,7 @@
     <string name="pref_usebookcase_summary">"使用书柜视图，而不是列表"</string>
     <string name="pref_brautoscandir_title">"自动扫描目录"</string>
     <string name="pref_brautoscandir_summary">"自动搜索的文件目录"</string>
-<!--<string name="pref_autoscanremovable_title">"Auto Scan revomable"</string>-->
+<!--<string name="pref_autoscanremovable_title">"Auto Scan removable"</string>-->
 <!--<string name="pref_autoscanremovable_summary">"Automatic scan inserted removable media"</string>-->
 <!--<string name="pref_showremovable_title">"Show Removable"</string>-->
 <!--<string name="pref_showremovable_summary">"Show removable media in storage menu"</string>-->

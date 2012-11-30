@@ -61,7 +61,7 @@ public class EventChildLoaded extends AbstractEvent {
 
             ctrl.pageUpdated(viewState, page);
 
-            if (viewState.isNodeVisible(child, viewState.getBounds(page))) {
+            if (viewState.isPageVisible(page) && viewState.isNodeVisible(child, viewState.getBounds(page))) {
                 ctrl.redrawView(viewState);
             }
 

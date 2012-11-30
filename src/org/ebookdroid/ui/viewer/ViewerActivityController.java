@@ -83,6 +83,7 @@ import org.emdev.ui.actions.params.EditableValue;
 import org.emdev.ui.actions.params.EditableValue.PasswordEditable;
 import org.emdev.ui.progress.IProgressIndicator;
 import org.emdev.ui.tasks.AsyncTask;
+import org.emdev.ui.tasks.AsyncTaskExecutor;
 import org.emdev.ui.tasks.BaseAsyncTask;
 import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.utils.LengthUtils;
@@ -125,6 +126,8 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     private BookSettings bookSettings;
 
+    private final AsyncTaskExecutor executor;
+
     /**
      * Instantiates a new base viewer activity.
      */
@@ -136,6 +139,8 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         SettingsManager.addListener(this);
 
         history = new NavigationHistory(this);
+
+        executor = new AsyncTaskExecutor(256, 1, 5, 1, "BookExecutor-" + id);
     }
 
     public void beforeCreate(final ViewerActivity activity) {
@@ -252,7 +257,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
     }
 
     public void startDecoding(final String fileName, final String password) {
-        getManagedComponent().view.post(new BookLoadTask(fileName, password));
+        executor.execute(new BookLoadTask(fileName, password));
     }
 
     public void beforeResume() {
@@ -481,7 +486,8 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         final String oldPattern = currentSearchPattern;
 
         currentSearchPattern = newPattern;
-        new SearchTask().execute(newPattern, oldPattern, (String) action.getParameter("forward"));
+
+        executor.execute(new SearchTask(), newPattern, oldPattern, (String) action.getParameter("forward"));
     }
 
     @ActionMethod(ids = R.id.mainmenu_goto_page)
@@ -844,7 +850,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         IUIManager.instance.invalidateOptionsMenu(getManagedComponent());
     }
 
-    final class BookLoadTask extends BaseAsyncTask<String, Throwable> implements IProgressIndicator, Runnable {
+    final class BookLoadTask extends BaseAsyncTask<String, Throwable> implements IProgressIndicator {
 
         private String m_fileName;
         private final String m_password;
@@ -853,11 +859,6 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
             super(getManagedComponent(), R.string.msg_loading, false);
             m_fileName = fileName;
             m_password = password;
-        }
-
-        @Override
-        public void run() {
-            execute(" ");
         }
 
         @Override

@@ -5,12 +5,14 @@ import android.os.SystemClock;
 public class Flinger {
 
     private static final float FLING_DURATION_PARAM = 50f;
-    private static final int DECELERATED_FACTOR = 4;
+    private static final int DECELERATED_FACTOR = 3;
     private static final int DEFAULT_DURATION = 250;
-    private static final int SCROLL_MODE = 0;
-    private static final int FLING_MODE = 1;
 
-    private int mode;
+    private static final int MODE_STOPPED = 0;
+    private static final int MODE_SCROLL = 1;
+    private static final int MODE_FLING = 2;
+
+    private int mode = MODE_STOPPED;
 
     private int startX, startY;
     private int minX, minY, maxX, maxY;
@@ -45,12 +47,12 @@ public class Flinger {
         return currY;
     }
 
-    public void startScroll(int startX, int startY, int dx, int dy) {
+    public void startScroll(final int startX, final int startY, final int dx, final int dy) {
         startScroll(startX, startY, dx, dy, DEFAULT_DURATION);
     }
 
-    private void startScroll(int startX, int startY, int dx, int dy, int duration) {
-        mode = SCROLL_MODE;
+    private void startScroll(final int startX, final int startY, final int dx, final int dy, final int duration) {
+        mode = MODE_SCROLL;
         this.startX = startX;
         this.startY = startY;
         this.finalX = startX + dx;
@@ -58,9 +60,9 @@ public class Flinger {
         this.duration = duration;
         this.startTime = SystemClock.uptimeMillis();
         if (duration > 0) {
-            double velocityX = (double) (finalX - startX) / (duration / 1000);
-            double velocityY = (double) (finalY - startY) / (duration / 1000);
-            double velocity = Math.hypot(velocityX, velocityY);
+            final double velocityX = (double) (finalX - startX) / (duration / 1000);
+            final double velocityY = (double) (finalY - startY) / (duration / 1000);
+            final double velocity = Math.hypot(velocityX, velocityY);
             this.sinAngle = velocityY / velocity;
             this.cosAngle = velocityX / velocity;
 
@@ -69,8 +71,9 @@ public class Flinger {
         oldProgress = 0;
     }
 
-    public void fling(int startX, int startY, int velocityX, int velocityY, int minX, int maxX, int minY, int maxY) {
-        mode = FLING_MODE;
+    public void fling(final int startX, final int startY, final int velocityX, final int velocityY, final int minX,
+            final int maxX, final int minY, final int maxY) {
+        mode = MODE_FLING;
         this.startX = startX;
         this.startY = startY;
         this.minX = minX;
@@ -78,7 +81,7 @@ public class Flinger {
         this.maxX = maxX;
         this.maxY = maxY;
 
-        double velocity = Math.hypot(velocityX, velocityY);
+        final double velocity = Math.hypot(velocityX, velocityY);
         this.sinAngle = velocityY / velocity;
         this.cosAngle = velocityX / velocity;
 
@@ -88,6 +91,7 @@ public class Flinger {
         this.duration = (int) Math.round(FLING_DURATION_PARAM
                 * Math.pow(Math.abs(velocity), 1.0 / (DECELERATED_FACTOR - 1)));
 
+        // System.out.println("Start time:" + startTime + ", duration:" + duration);
         this.distance = (int) Math.round(velocity * duration / DECELERATED_FACTOR / 1000);
 
         this.finalX = getX(1.0f);
@@ -95,38 +99,71 @@ public class Flinger {
     }
 
     public boolean computeScrollOffset() {
-        float progress = duration > 0 ? (SystemClock.uptimeMillis() - startTime) / duration : 1;
+        if (isFinished()) {
+            return false;
+        }
+        // System.out.println("Flinger.computeScrollOffset(" + SystemClock.uptimeMillis() + ")");
+        float progress = duration > 0 ? (float) (SystemClock.uptimeMillis() - startTime) / duration : 1;
         if (oldProgress == progress && progress != 0) {
+            // System.out.println("oldProgress == progress && progress != 0");
+            mode = MODE_SCROLL;
             return false;
         }
         progress = Math.min(progress, 1);
-        float f = progress;
-        if (mode == FLING_MODE) {
+        // System.out.println("computeScrollOffset progress:" + progress);
+        if (mode == MODE_FLING) {
+            float f = progress;
             f = 1 - (float) Math.pow(1 - progress, DECELERATED_FACTOR);
+            currX = getX(f);
+            currY = getY(f);
+            // System.out.println("computeScrollOffset(FLING):" + f);
+        } else {
+            currX = (int) (startX + (finalX - startX) * progress);
+            currY = (int) (startY + (finalY - startY) * progress);
+            // System.out.println("computeScrollOffset(SCROLL):" + progress);
         }
-        currX = getX(f);
-        currY = getY(f);
         oldProgress = progress;
         return true;
     }
 
     public boolean isFinished() {
-        return SystemClock.uptimeMillis() - startTime >= duration;
+        if (SystemClock.uptimeMillis() - startTime >= duration) {
+            startTime = 0;
+            duration = 0;
+            oldProgress = 0;
+            mode = MODE_STOPPED;
+        }
+        return mode == MODE_STOPPED;
     }
 
-    public void forceFinished(boolean b) {
+    public void forceFinished() {
+        if (isFinished()) {
+            return;
+        }
         startTime = 0;
         duration = 0;
-        currX = getX(1);
-        currY = getY(1);
+        // System.out.println("Flinger.forceFinished(): " + oldProgress);
+        if (oldProgress > 0) {
+            if (mode == MODE_FLING) {
+                currX = getX(oldProgress);
+                currY = getY(oldProgress);
+            } else {
+                currX = (int) (startX + (finalX - startX) * oldProgress);
+                currY = (int) (startY + (finalY - startY) * oldProgress);
+            }
+            oldProgress = 0;
+        }
+        mode = MODE_STOPPED;
     }
 
     public void abortAnimation() {
         startTime = 0;
         duration = 0;
+        oldProgress = 0;
+        mode = MODE_STOPPED;
     }
 
-    private int getX(float f) {
+    private int getX(final float f) {
         int r = (int) Math.round(startX + f * distance * cosAngle);
         if (cosAngle > 0 && startX <= maxX) {
             r = Math.min(r, maxX);
@@ -136,7 +173,7 @@ public class Flinger {
         return r;
     }
 
-    private int getY(float f) {
+    private int getY(final float f) {
         int r = (int) Math.round(startY + f * distance * sinAngle);
         if (sinAngle > 0 && startY <= maxY) {
             r = Math.min(r, maxY);

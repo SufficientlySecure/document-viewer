@@ -14,20 +14,20 @@ import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.View;
-import android.widget.Scroller;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.emdev.ui.gl.GLCanvas;
 import org.emdev.ui.gl.GLRootView;
+import org.emdev.ui.widget.Flinger;
 import org.emdev.utils.concurrent.Flag;
 
 public final class GLView extends GLRootView implements IView, SurfaceHolder.Callback {
 
     protected final IActivityController base;
 
-    protected final Scroller scroller;
+    protected final Flinger scroller;
 
     protected DrawQueue drawQueue;
 
@@ -45,7 +45,7 @@ public final class GLView extends GLRootView implements IView, SurfaceHolder.Cal
         super(baseActivity.getContext());
 
         this.base = baseActivity;
-        this.scroller = new Scroller(getContext());
+        this.scroller = new Flinger();
 
         setKeepScreenOn(AppSettings.current().keepScreenOn);
         setFocusable(true);
@@ -163,9 +163,17 @@ public final class GLView extends GLRootView implements IView, SurfaceHolder.Cal
      */
     @Override
     public void forceFinishScroll() {
-        if (!scroller.isFinished()) { // is flinging
-            scroller.forceFinished(true); // to stop flinging on touch
-        }
+        scroller.forceFinished(); // to stop flinging on touch
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.ui.viewer.IView#isScrollFinished()
+     */
+    @Override
+    public boolean isScrollFinished() {
+        return scroller.isFinished();
     }
 
     /**

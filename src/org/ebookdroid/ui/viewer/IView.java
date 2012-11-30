@@ -69,4 +69,6 @@ public interface IView {
     void checkFullScreenMode();
 
     boolean post(Runnable r);
+
+    boolean isScrollFinished();
 }

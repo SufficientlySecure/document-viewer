@@ -135,4 +135,9 @@ public class ViewStub implements IView {
     public boolean post(final Runnable r) {
         return false;
     }
+
+    @Override
+    public boolean isScrollFinished() {
+        return true;
+    }
 }

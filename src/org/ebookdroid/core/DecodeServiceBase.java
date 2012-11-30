@@ -44,6 +44,8 @@ public class DecodeServiceBase implements DecodeService {
 
     static final AtomicLong TASK_ID_SEQ = new AtomicLong();
 
+    static boolean decodeDuringScroll = true;
+    
     final CodecContext codecContext;
 
     final Executor executor = new Executor();
@@ -454,52 +456,59 @@ public class DecodeServiceBase implements DecodeService {
         }
 
         Runnable nextTask() {
-            lock.lock();
-            try {
-                if (!tasks.isEmpty()) {
-                    final TaskComparator comp = new TaskComparator(viewState.get());
-                    Task candidate = null;
-                    int cindex = 0;
-
-                    int index = 0;
-                    while (index < tasks.size() && candidate == null) {
-                        candidate = tasks.get(index);
-                        cindex = index;
-                        index++;
+            ViewState vs = viewState.get();
+            if (vs == null || decodeDuringScroll || vs.ctrl.getView().isScrollFinished()) {
+                lock.lock();
+                try {
+                    if (!tasks.isEmpty()) {
+                        return selectBestTask();
                     }
-                    if (candidate == null) {
-                        if (LCTX.isDebugEnabled()) {
-                            LCTX.d(Thread.currentThread().getName() + ": No tasks in queue");
-                        }
-                        tasks.clear();
-                    } else {
-                        while (index < tasks.size()) {
-                            final Task next = tasks.get(index);
-                            if (next != null && comp.compare(next, candidate) < 0) {
-                                candidate = next;
-                                cindex = index;
-                            }
-                            index++;
-                        }
-                        if (LCTX.isDebugEnabled()) {
-                            LCTX.d(Thread.currentThread().getName() + ": <<<: " + cindex + "/" + tasks.size() + ": "
-                                    + candidate);
-                        }
-                        tasks.set(cindex, null);
-                    }
-                    return candidate;
+                } finally {
+                    lock.unlock();
                 }
-            } finally {
-                lock.unlock();
             }
             synchronized (run) {
                 try {
-                    run.wait(60000);
+                    run.wait(500);
                 } catch (final InterruptedException ex) {
                     Thread.interrupted();
                 }
             }
             return null;
+        }
+
+        private Runnable selectBestTask() {
+            final TaskComparator comp = new TaskComparator(viewState.get());
+            Task candidate = null;
+            int cindex = 0;
+
+            int index = 0;
+            while (index < tasks.size() && candidate == null) {
+                candidate = tasks.get(index);
+                cindex = index;
+                index++;
+            }
+            if (candidate == null) {
+                if (LCTX.isDebugEnabled()) {
+                    LCTX.d(Thread.currentThread().getName() + ": No tasks in queue");
+                }
+                tasks.clear();
+            } else {
+                while (index < tasks.size()) {
+                    final Task next = tasks.get(index);
+                    if (next != null && comp.compare(next, candidate) < 0) {
+                        candidate = next;
+                        cindex = index;
+                    }
+                    index++;
+                }
+                if (LCTX.isDebugEnabled()) {
+                    LCTX.d(Thread.currentThread().getName() + ": <<<: " + cindex + "/" + tasks.size() + ": "
+                            + candidate);
+                }
+                tasks.set(cindex, null);
+            }
+            return candidate;
         }
 
         public void add(final SearchTask task) {

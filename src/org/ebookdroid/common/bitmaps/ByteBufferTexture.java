@@ -130,7 +130,7 @@ public class ByteBufferTexture extends BasicTexture {
             mState = STATE_LOADED;
         } else {
             mState = STATE_ERROR;
-            throw new RuntimeException("Texture load fail, no bitmap");
+            LCTX.e("Texture load fail, no bitmap");
         }
     }
 

@@ -26,7 +26,7 @@ import org.emdev.common.log.LogManager;
 
 public class BaseEGLConfigChooser implements EGLConfigChooser {
 
-    private static final LogContext LCTX = LogManager.root().lctx("BaseEGLConfigChooser");
+    private static final LogContext LCTX = LogManager.root().lctx("GLConfiguration");
 
     private final int mConfigSpec[] = new int[] { EGL10.EGL_RED_SIZE, 5, EGL10.EGL_GREEN_SIZE, 6, EGL10.EGL_BLUE_SIZE,
             5, EGL10.EGL_ALPHA_SIZE, 0, EGL10.EGL_STENCIL_SIZE, GLConfiguration.stencilRequired ? 1 : 0, EGL10.EGL_NONE };

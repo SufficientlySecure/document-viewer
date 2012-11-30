@@ -104,11 +104,6 @@ public interface GLCanvas {
     // Draw a texture with a specified texture transform.
     public void drawTexture(BasicTexture texture, float[] mTextureTransform, int x, int y, int w, int h);
 
-    // Draw two textures to the specified rectangle. The actual texture used is
-    // from * (1 - ratio) + to * ratio
-    // The two textures must have the same size.
-    public void drawMixed(BasicTexture from, int toColor, float ratio, int x, int y, int w, int h);
-
     // Gets the underlying GL instance. This is used only when direct access to
     // GL is needed.
     public GL11 getGLInstance();

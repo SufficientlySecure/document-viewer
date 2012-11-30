@@ -54,8 +54,6 @@ public class GLCanvasImpl implements GLCanvas {
     // x1, y1, x2, y2.
     private final float mMapPointsBuffer[] = new float[4];
 
-    private final float mTextureColor[] = new float[4];
-
     private int mBoxCoords;
 
     private final GLState mGLState;
@@ -554,12 +552,6 @@ public class GLCanvasImpl implements GLCanvas {
         }
     }
 
-    @Override
-    public void drawMixed(final BasicTexture from, final int toColor, final float ratio, final int x, final int y,
-            final int w, final int h) {
-        drawMixed(from, toColor, ratio, x, y, w, h, mAlpha);
-    }
-
     private boolean bindTexture(final BasicTexture texture) {
         if (!texture.onBind(this)) {
             return false;
@@ -568,76 +560,6 @@ public class GLCanvasImpl implements GLCanvas {
         mGLState.setTextureTarget(target);
         mGL.glBindTexture(target, texture.getId());
         return true;
-    }
-
-    private void setTextureColor(final float r, final float g, final float b, final float alpha) {
-        final float[] color = mTextureColor;
-        color[0] = r;
-        color[1] = g;
-        color[2] = b;
-        color[3] = alpha;
-    }
-
-    private void drawMixed(final BasicTexture from, final int toColor, final float ratio, final int x, final int y,
-            final int width, final int height, final float alpha) {
-        // change from 0 to 0.01f to prevent getting divided by zero below
-        if (ratio <= 0.01f) {
-            drawTexture(from, x, y, width, height, alpha);
-            return;
-        } else if (ratio >= 1) {
-            fillRect(x, y, width, height, toColor);
-            return;
-        }
-
-        mGLState.setBlendEnabled(mBlendEnabled
-                && (!from.isOpaque() || !MathUtils.isOpaque(toColor) || alpha < OPAQUE_ALPHA));
-
-        final GL11 gl = mGL;
-        if (!bindTexture(from)) {
-            return;
-        }
-
-        //
-        // The formula we want:
-        // alpha * ((1 - ratio) * from + ratio * to)
-        //
-        // The formula that GL supports is in the form of:
-        // combo * from + (1 - combo) * to * scale
-        //
-        // So, we have combo = alpha * (1 - ratio)
-        // and scale = alpha * ratio / (1 - combo)
-        //
-        final float combo = alpha * (1 - ratio);
-        final float scale = alpha * ratio / (1 - combo);
-
-        // Interpolate the RGB and alpha values between both textures.
-        mGLState.setTexEnvMode(GL11.GL_COMBINE);
-
-        // Specify the interpolation factor via the alpha component of
-        // GL_TEXTURE_ENV_COLORs.
-        // RGB component are get from toColor and will used as SRC1
-        final float colorScale = scale * (toColor >>> 24) / (0xff * 0xff);
-        setTextureColor(((toColor >>> 16) & 0xff) * colorScale, ((toColor >>> 8) & 0xff) * colorScale, (toColor & 0xff)
-                * colorScale, combo);
-        gl.glTexEnvfv(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_COLOR, mTextureColor, 0);
-
-        gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL11.GL_COMBINE_RGB, GL11.GL_INTERPOLATE);
-        gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL11.GL_COMBINE_ALPHA, GL11.GL_INTERPOLATE);
-        gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL11.GL_SRC1_RGB, GL11.GL_CONSTANT);
-        gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL11.GL_OPERAND1_RGB, GL10.GL_SRC_COLOR);
-        gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL11.GL_SRC1_ALPHA, GL11.GL_CONSTANT);
-        gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL11.GL_OPERAND1_ALPHA, GL10.GL_SRC_ALPHA);
-
-        // Wire up the interpolation factor for RGB.
-        gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL11.GL_SRC2_RGB, GL11.GL_CONSTANT);
-        gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL11.GL_OPERAND2_RGB, GL10.GL_SRC_ALPHA);
-
-        // Wire up the interpolation factor for alpha.
-        gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL11.GL_SRC2_ALPHA, GL11.GL_CONSTANT);
-        gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL11.GL_OPERAND2_ALPHA, GL10.GL_SRC_ALPHA);
-
-        drawBoundTexture(from, x, y, width, height);
-        mGLState.setTexEnvMode(GL10.GL_REPLACE);
     }
 
     // TODO: the code only work for 2D should get fixed for 3D or removed

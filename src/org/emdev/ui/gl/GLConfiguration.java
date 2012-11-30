@@ -22,7 +22,7 @@ public class GLConfiguration {
             throw new RuntimeException("Your device cannot support EGL");
         }
 
-        int[] version = new int[2];
+        final int[] version = new int[2];
         if (!egl.eglInitialize(eglDisplay, version)) {
             throw new RuntimeException("Your device cannot support EGL");
         }

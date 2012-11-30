@@ -183,7 +183,11 @@ public abstract class UploadedTexture extends BasicTexture {
                 // Upload the bitmap to a new texture.
                 GLId.glGenTextures(1, sTextureId, 0);
                 gl.glBindTexture(GL10.GL_TEXTURE_2D, sTextureId[0]);
-                gl.glTexParameterfv(GL10.GL_TEXTURE_2D, GL11Ext.GL_TEXTURE_CROP_RECT_OES, sCropRect, 0);
+
+                if (texWidth != bWidth || texHeight != bHeight) {
+                    gl.glTexParameterfv(GL10.GL_TEXTURE_2D, GL11Ext.GL_TEXTURE_CROP_RECT_OES, sCropRect, 0);
+                }
+
                 gl.glTexParameteri(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
                 gl.glTexParameteri(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
                 gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);

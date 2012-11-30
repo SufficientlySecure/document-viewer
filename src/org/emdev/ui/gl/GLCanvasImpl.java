@@ -29,7 +29,6 @@ import java.util.ArrayList;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
-import javax.microedition.khronos.opengles.GL11Ext;
 
 import org.emdev.utils.MathUtils;
 import org.emdev.utils.collections.IntArray;
@@ -50,10 +49,6 @@ public class GLCanvasImpl implements GLCanvas {
     private final float mMatrixValues[] = new float[16];
     private final float mTextureMatrixValues[] = new float[16];
 
-    // The results of mapPoints are stored in this buffer, and the order is
-    // x1, y1, x2, y2.
-    private final float mMapPointsBuffer[] = new float[4];
-
     private int mBoxCoords;
 
     private final GLState mGLState;
@@ -71,7 +66,7 @@ public class GLCanvasImpl implements GLCanvas {
     private int mScreenHeight;
     private final boolean mBlendEnabled = true;
 
-    private GLClipHelper mClipper;
+    private final GLClipHelper mClipper;
 
     public GLCanvasImpl(final GL11 gl) {
         mGL = gl;
@@ -384,89 +379,19 @@ public class GLCanvasImpl implements GLCanvas {
         saveTransform();
         translate(x, y);
         scale(width, height, 1);
-
+        gl.glColor4f(1, 1, 1, 1);
         gl.glLoadMatrixf(mMatrixValues, 0);
         gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, OFFSET_FILL_RECT, 4);
 
         restoreTransform();
     }
 
-    @Override
-    public void drawMesh(final BasicTexture tex, final int x, final int y, final int xyBuffer, final int uvBuffer,
-            final int indexBuffer, final int indexCount) {
-        final float alpha = mAlpha;
-        if (!bindTexture(tex)) {
-            return;
-        }
-
-        mGLState.setBlendEnabled(mBlendEnabled && (!tex.isOpaque() || alpha < OPAQUE_ALPHA));
-        mGLState.setTextureAlpha(alpha);
-
-        // Reset the texture matrix. We will set our own texture coordinates
-        // below.
-        setTextureCoords(0, 0, 1, 1);
-
-        saveTransform();
-        translate(x, y);
-
-        mGL.glLoadMatrixf(mMatrixValues, 0);
-
-        mGL.glBindBuffer(GL11.GL_ARRAY_BUFFER, xyBuffer);
-        mGL.glVertexPointer(2, GL10.GL_FLOAT, 0, 0);
-
-        mGL.glBindBuffer(GL11.GL_ARRAY_BUFFER, uvBuffer);
-        mGL.glTexCoordPointer(2, GL10.GL_FLOAT, 0, 0);
-
-        mGL.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-        mGL.glDrawElements(GL10.GL_TRIANGLE_STRIP, indexCount, GL10.GL_UNSIGNED_BYTE, 0);
-
-        mGL.glBindBuffer(GL11.GL_ARRAY_BUFFER, mBoxCoords);
-        mGL.glVertexPointer(2, GL10.GL_FLOAT, 0, 0);
-        mGL.glTexCoordPointer(2, GL10.GL_FLOAT, 0, 0);
-
-        restoreTransform();
-    }
-
-    // Transforms two points by the given matrix m. The result
-    // {x1', y1', x2', y2'} are stored in mMapPointsBuffer and also returned.
-    private float[] mapPoints(final float m[], final int x1, final int y1, final int x2, final int y2) {
-        final float[] r = mMapPointsBuffer;
-
-        // Multiply m and (x1 y1 0 1) to produce (x3 y3 z3 w3). z3 is unused.
-        final float x3 = m[0] * x1 + m[4] * y1 + m[12];
-        final float y3 = m[1] * x1 + m[5] * y1 + m[13];
-        final float w3 = m[3] * x1 + m[7] * y1 + m[15];
-        r[0] = x3 / w3;
-        r[1] = y3 / w3;
-
-        // Same for x2 y2.
-        final float x4 = m[0] * x2 + m[4] * y2 + m[12];
-        final float y4 = m[1] * x2 + m[5] * y2 + m[13];
-        final float w4 = m[3] * x2 + m[7] * y2 + m[15];
-        r[2] = x4 / w4;
-        r[3] = y4 / w4;
-
-        return r;
-    }
-
-    private void drawBoundTexture(final BasicTexture texture, int x, int y, int width, int height) {
-        // Test whether it has been rotated or flipped, if so, glDrawTexiOES
-        // won't work
-        if (isMatrixRotatedOrFlipped(mMatrixValues)) {
-            setTextureCoords(0, 0, (float) texture.getWidth() / texture.getTextureWidth(), (float) texture.getHeight()
-                    / texture.getTextureHeight());
-            textureRect(x, y, width, height);
-        } else {
-            // draw the rect from bottom-left to top-right
-            final float points[] = mapPoints(mMatrixValues, x, y + height, x + width, y);
-            x = (int) (points[0] + 0.5f);
-            y = (int) (points[1] + 0.5f);
-            width = (int) (points[2] + 0.5f) - x;
-            height = (int) (points[3] + 0.5f) - y;
-            if (width > 0 && height > 0) {
-                ((GL11Ext) mGL).glDrawTexiOES(x, y, 0, width, height);
-            }
-        }
+    private void drawBoundTexture(final BasicTexture texture, final int x, final int y, final int width,
+            final int height) {
+        final float w = (float) texture.getWidth() / texture.getTextureWidth();
+        final float h = (float) texture.getHeight() / texture.getTextureHeight();
+        setTextureCoords(0, 0, w, h);
+        textureRect(x, y, width, height);
     }
 
     @Override
@@ -560,18 +485,6 @@ public class GLCanvasImpl implements GLCanvas {
         mGLState.setTextureTarget(target);
         mGL.glBindTexture(target, texture.getId());
         return true;
-    }
-
-    // TODO: the code only work for 2D should get fixed for 3D or removed
-    private static final int MSKEW_X = 4;
-    private static final int MSKEW_Y = 1;
-    private static final int MSCALE_X = 0;
-    private static final int MSCALE_Y = 5;
-
-    private static boolean isMatrixRotatedOrFlipped(final float matrix[]) {
-        final float eps = 1e-5f;
-        return Math.abs(matrix[MSKEW_X]) > eps || Math.abs(matrix[MSKEW_Y]) > eps || matrix[MSCALE_X] < -eps
-                || matrix[MSCALE_Y] > eps;
     }
 
     private static class GLState {

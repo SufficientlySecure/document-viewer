@@ -22,6 +22,9 @@ import android.graphics.RectF;
 
 import javax.microedition.khronos.opengles.GL11;
 
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
+
 //
 // GLCanvas gives a convenient interface to draw using OpenGL.
 //
@@ -29,6 +32,8 @@ import javax.microedition.khronos.opengles.GL11;
 // [x, x+width) * [y, y+height)
 //
 public interface GLCanvas {
+
+    LogContext LCTX = LogManager.root().lctx("GLCanvas");
 
     // Tells GLCanvas the size of the underlying GL surface. This should be
     // called before first drawing and when the size of GL surface is changed.
@@ -95,8 +100,6 @@ public interface GLCanvas {
 
     // Draws a texture to the specified rectangle.
     public void drawTexture(BasicTexture texture, int x, int y, int width, int height);
-
-    public void drawMesh(BasicTexture tex, int x, int y, int xyBuffer, int uvBuffer, int indexBuffer, int indexCount);
 
     // Draws the source rectangle part of the texture to the target rectangle.
     public boolean drawTexture(BasicTexture texture, RectF source, RectF target);

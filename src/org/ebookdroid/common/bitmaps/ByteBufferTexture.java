@@ -18,7 +18,6 @@ package org.ebookdroid.common.bitmaps;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
-import javax.microedition.khronos.opengles.GL11Ext;
 
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;

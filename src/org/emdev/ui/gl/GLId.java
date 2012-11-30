@@ -17,7 +17,6 @@
 package org.emdev.ui.gl;
 
 import javax.microedition.khronos.opengles.GL11;
-import javax.microedition.khronos.opengles.GL11ExtensionPack;
 
 // This mimics corresponding GL functions.
 public class GLId {
@@ -42,10 +41,5 @@ public class GLId {
 
     public synchronized static void glDeleteBuffers(final GL11 gl, final int n, final int[] buffers, final int offset) {
         gl.glDeleteBuffers(n, buffers, offset);
-    }
-
-    public synchronized static void glDeleteFramebuffers(final GL11ExtensionPack gl11ep, final int n,
-            final int[] buffers, final int offset) {
-        gl11ep.glDeleteFramebuffersOES(n, buffers, offset);
     }
 }

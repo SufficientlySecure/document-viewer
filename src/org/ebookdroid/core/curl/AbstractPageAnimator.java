@@ -349,12 +349,13 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
                     }
 
                     // Get movement direction
-                    if (mFinger.x < mOldMovement.x) {
-                        bFlipRight = true;
-                    } else {
-                        bFlipRight = false;
+                    if ((mFinger.absdistancex(mOldMovement) > 25)) {
+                        if (mFinger.x < mOldMovement.x) {
+                            bFlipRight = true;
+                        } else {
+                            bFlipRight = false;
+                        }
                     }
-
                     // Save old movement values
                     mOldMovement.x = mFinger.x;
                     mOldMovement.y = mFinger.y;

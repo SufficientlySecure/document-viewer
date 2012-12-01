@@ -40,6 +40,12 @@
                 android:summary="@string/pref_drawthread_priority_summary"
                 android:title="@string/pref_drawthread_priority_title" />
 
+            <org.emdev.ui.preference.SwitchPreferenceEx
+                android:defaultValue="@string/pref_decodingonscroll_defvalue"
+                android:key="@string/pref_decodingonscroll_id"
+                android:summary="@string/pref_decodingonscroll_summary"
+                android:title="@string/pref_decodingonscroll_title" />
+
             <ListPreference
                 android:defaultValue="@string/pref_bitmapsize_128"
                 android:entries="@array/pref_bitmapsize_entries"

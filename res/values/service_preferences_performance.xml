@@ -36,6 +36,9 @@
     <string translatable="false" name="pref_decoding_threads_minvalue">1</string>
     <string translatable="false" name="pref_decoding_threads_maxvalue">16</string>
 
+    <string translatable="false" name="pref_decodingonscroll_id">decodingonscroll</string>
+    <string translatable="false" name="pref_decodingonscroll_defvalue">true</string>
+
     <string translatable="false" name="pref_bitmapsize_id">bitmapsize</string>
     <string translatable="false" name="pref_bitmapsize_64">6</string>
     <string translatable="false" name="pref_bitmapsize_128">7</string>

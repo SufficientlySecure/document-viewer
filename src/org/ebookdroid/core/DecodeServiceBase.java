@@ -40,12 +40,10 @@ import org.emdev.utils.MathUtils;
 
 public class DecodeServiceBase implements DecodeService {
 
-    public static final LogContext LCTX = LogManager.root().lctx("Decoding", false);
+    public static final LogContext LCTX = LogManager.root().lctx("Decoding", true);
 
     static final AtomicLong TASK_ID_SEQ = new AtomicLong();
 
-    static boolean decodeDuringScroll = true;
-    
     final CodecContext codecContext;
 
     final Executor executor = new Executor();
@@ -457,7 +455,7 @@ public class DecodeServiceBase implements DecodeService {
 
         Runnable nextTask() {
             ViewState vs = viewState.get();
-            if (vs == null || decodeDuringScroll || vs.ctrl.getView().isScrollFinished()) {
+            if (vs == null || vs.app == null || vs.app.decodingOnScroll || vs.ctrl.getView().isScrollFinished()) {
                 lock.lock();
                 try {
                     if (!tasks.isEmpty()) {
@@ -465,6 +463,10 @@ public class DecodeServiceBase implements DecodeService {
                     }
                 } finally {
                     lock.unlock();
+                }
+            } else {
+                if (LCTX.isDebugEnabled()) {
+                    LCTX.d(Thread.currentThread().getName() + ": view in scrolling");
                 }
             }
             synchronized (run) {
@@ -485,6 +487,13 @@ public class DecodeServiceBase implements DecodeService {
             int index = 0;
             while (index < tasks.size() && candidate == null) {
                 candidate = tasks.get(index);
+                if (candidate != null && candidate.cancelled.get()) {
+                    if (LCTX.isDebugEnabled()) {
+                        LCTX.d("---: " + index + "/" + tasks.size() + " " + candidate);
+                    }
+                    tasks.set(index, null);
+                    candidate = null;
+                }
                 cindex = index;
                 index++;
             }
@@ -496,9 +505,16 @@ public class DecodeServiceBase implements DecodeService {
             } else {
                 while (index < tasks.size()) {
                     final Task next = tasks.get(index);
-                    if (next != null && comp.compare(next, candidate) < 0) {
-                        candidate = next;
-                        cindex = index;
+                    if (next != null) {
+                        if (next.cancelled.get()) {
+                            if (LCTX.isDebugEnabled()) {
+                                LCTX.d("---: " + index + "/" + tasks.size() + " " + next);
+                            }
+                            tasks.set(index, null);
+                        } else if (comp.compare(next, candidate) < 0) {
+                            candidate = next;
+                            cindex = index;
+                        }
                     }
                     index++;
                 }
@@ -625,15 +641,6 @@ public class DecodeServiceBase implements DecodeService {
 
                 if (removed != null) {
                     removed.cancelled.set(true);
-                    for (int i = 0; i < tasks.size(); i++) {
-                        if (removed == tasks.get(i)) {
-                            if (LCTX.isDebugEnabled()) {
-                                LCTX.d("---: " + i + "/" + tasks.size() + " " + removed);
-                            }
-                            tasks.set(i, null);
-                            break;
-                        }
-                    }
                     if (LCTX.isDebugEnabled()) {
                         LCTX.d(Thread.currentThread().getName() + ": Task " + removed.id
                                 + ": Stop decoding task with reason: " + reason + " for " + removed.node);

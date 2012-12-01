@@ -96,6 +96,8 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     public final int drawThreadPriority;
 
+    public final boolean decodingOnScroll;
+
     public final int bitmapSize;
 
     public final int heapPreallocate;
@@ -202,6 +204,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         decodingThreads = DECODING_THREADS.getPreferenceValue(prefs);
         decodingThreadPriority = DECODE_THREAD_PRIORITY.getPreferenceValue(prefs);
         drawThreadPriority = DRAW_THREAD_PRIORITY.getPreferenceValue(prefs);
+        decodingOnScroll = DECODING_ON_SCROLL.getPreferenceValue(prefs);
         bitmapSize = BITMAP_SIZE.getPreferenceValue(prefs);
         heapPreallocate = HEAP_PREALLOCATE.getPreferenceValue(prefs);
         pdfStorageSize = PDF_STORAGE_SIZE.getPreferenceValue(prefs);

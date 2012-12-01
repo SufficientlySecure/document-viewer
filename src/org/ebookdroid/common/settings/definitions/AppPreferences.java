@@ -115,6 +115,8 @@ public interface AppPreferences {
     IntegerPreferenceDefinition DRAW_THREAD_PRIORITY = new IntegerPreferenceDefinition(pref_drawthread_priority_id,
             pref_thread_priority_normal, pref_thread_priority_lowest, pref_thread_priority_highest);
 
+    BooleanPreferenceDefinition DECODING_ON_SCROLL = new BooleanPreferenceDefinition(pref_decodingonscroll_id, pref_decodingonscroll_defvalue);
+
     IntegerPreferenceDefinition BITMAP_SIZE = new IntegerPreferenceDefinition(pref_bitmapsize_id, pref_bitmapsize_128,
             pref_bitmapsize_64, pref_bitmapsize_1024);
 

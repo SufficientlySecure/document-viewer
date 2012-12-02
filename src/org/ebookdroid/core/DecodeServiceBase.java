@@ -46,50 +46,28 @@ public class DecodeServiceBase implements DecodeService {
 
     final CodecContext codecContext;
 
-    final Executor executor = new Executor();
+    final AtomicBoolean isRecycled;
 
-    final AtomicBoolean isRecycled = new AtomicBoolean();
+    final AtomicReference<ViewState> viewState;
 
-    final AtomicReference<ViewState> viewState = new AtomicReference<ViewState>();
+    final Map<Integer, CodecPageHolder> pages;
+
+    final Executor executor;
 
     CodecDocument document;
 
-    final Map<Integer, CodecPageHolder> pages = new LinkedHashMap<Integer, CodecPageHolder>() {
-
-        private static final long serialVersionUID = -8845124816503128098L;
-
-        @Override
-        protected boolean removeEldestEntry(final Map.Entry<Integer, CodecPageHolder> eldest) {
-            if (this.size() > getCacheSize()) {
-                final CodecPageHolder value = eldest != null ? eldest.getValue() : null;
-                if (value != null) {
-                    if (value.isInvalid(-1)) {
-                        if (LCTX.isDebugEnabled()) {
-                            LCTX.d(Thread.currentThread().getName() + ": Remove auto-recycled codec page reference: "
-                                    + eldest.getKey());
-                        }
-                        return true;
-                    } else {
-                        final boolean recycled = value.recycle(-1, false);
-                        if (LCTX.isDebugEnabled()) {
-                            if (recycled) {
-                                LCTX.d(Thread.currentThread().getName() + ": Recycle and remove old codec page: "
-                                        + eldest.getKey());
-                            } else {
-                                LCTX.d(Thread.currentThread().getName()
-                                        + ": Codec page locked and cannot be recycled: " + eldest.getKey());
-                            }
-                        }
-                        return recycled;
-                    }
-                }
-            }
-            return false;
-        }
-    };
-
     public DecodeServiceBase(final CodecContext codecContext) {
         this.codecContext = codecContext;
+
+        isRecycled = new AtomicBoolean();
+
+        viewState = new AtomicReference<ViewState>();
+
+        pages = new PageCache();
+
+        executor = new Executor();
+        
+        executor.start();
     }
 
     @Override
@@ -410,6 +388,40 @@ public class DecodeServiceBase implements DecodeService {
         return pagesInMemory == 0 ? 0 : Math.max(minSize, pagesInMemory);
     }
 
+    class PageCache extends LinkedHashMap<Integer, CodecPageHolder> {
+
+        private static final long serialVersionUID = -8845124816503128098L;
+
+        @Override
+        protected boolean removeEldestEntry(final Map.Entry<Integer, CodecPageHolder> eldest) {
+            if (this.size() > getCacheSize()) {
+                final CodecPageHolder value = eldest != null ? eldest.getValue() : null;
+                if (value != null) {
+                    if (value.isInvalid(-1)) {
+                        if (LCTX.isDebugEnabled()) {
+                            LCTX.d(Thread.currentThread().getName() + ": Remove auto-recycled codec page reference: "
+                                    + eldest.getKey());
+                        }
+                        return true;
+                    } else {
+                        final boolean recycled = value.recycle(-1, false);
+                        if (LCTX.isDebugEnabled()) {
+                            if (recycled) {
+                                LCTX.d(Thread.currentThread().getName() + ": Recycle and remove old codec page: "
+                                        + eldest.getKey());
+                            } else {
+                                LCTX.d(Thread.currentThread().getName()
+                                        + ": Codec page locked and cannot be recycled: " + eldest.getKey());
+                            }
+                        }
+                        return recycled;
+                    }
+                }
+            }
+            return false;
+        }
+    }
+
     class Executor implements Runnable {
 
         final Map<PageTreeNode, DecodeTask> decodingTasks = new IdentityHashMap<PageTreeNode, DecodeTask>();
@@ -422,13 +434,19 @@ public class DecodeServiceBase implements DecodeService {
         Executor() {
             tasks = new ArrayList<Task>();
             threads = new Thread[AppSettings.current().decodingThreads];
+
             LCTX.i("Number of decoding threads: " + threads.length);
 
+            for (int i = 0; i < threads.length; i++) {
+                threads[i] = new Thread(this, "DecodingThread-" + i);
+            }
+        }
+
+        void start() {
             final int decodingThreadPriority = AppSettings.current().decodingThreadPriority;
             LCTX.i("Decoding thread priority: " + decodingThreadPriority);
 
             for (int i = 0; i < threads.length; i++) {
-                threads[i] = new Thread(this, "DecodingThread-" + i);
                 threads[i].setPriority(decodingThreadPriority);
                 threads[i].start();
             }

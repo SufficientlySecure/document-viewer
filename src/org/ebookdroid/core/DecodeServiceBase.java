@@ -207,7 +207,7 @@ public class DecodeServiceBase implements DecodeService {
                 LCTX.d(Thread.currentThread().getName() + ": Task " + task.id + ": Rendering rect: " + r);
             }
 
-            RectF cropping = task.node.page.getCropping(task.node);
+            final RectF cropping = task.node.page.getCropping(task.node);
             final RectF actualSliceBounds = cropping != null ? cropping : task.node.pageSliceBounds;
             final ByteBufferBitmap bitmap = vuPage.renderBitmap(task.viewState, r.width(), r.height(),
                     actualSliceBounds);
@@ -285,7 +285,8 @@ public class DecodeServiceBase implements DecodeService {
 
     protected RectF calculateRootCropping(final DecodeTask task, final PageTreeNode root, final CodecPage vuPage) {
         final RectF rootBounds = root.pageSliceBounds;
-        final ByteBufferBitmap rootBitmap = vuPage.renderBitmap(task.viewState, PageCropper.BMP_SIZE, PageCropper.BMP_SIZE, rootBounds);
+        final ByteBufferBitmap rootBitmap = vuPage.renderBitmap(task.viewState, PageCropper.BMP_SIZE,
+                PageCropper.BMP_SIZE, rootBounds);
 
         final BookSettings bs = task.viewState.book;
         if (bs != null) {
@@ -308,7 +309,7 @@ public class DecodeServiceBase implements DecodeService {
 
         viewState.ctrl.invalidatePageSizes(InvalidateSizeReason.PAGE_LOADED, task.node.page);
 
-        RectF croppedPageBounds = root.page.getBounds(task.viewState.zoom);
+        final RectF croppedPageBounds = root.page.getBounds(task.viewState.zoom);
 
         if (LCTX.isDebugEnabled()) {
             LCTX.d(Thread.currentThread().getName() + ": Task " + task.id + ": cropping page bounds: "
@@ -454,7 +455,7 @@ public class DecodeServiceBase implements DecodeService {
         }
 
         Runnable nextTask() {
-            ViewState vs = viewState.get();
+            final ViewState vs = viewState != null ? viewState.get() : null;
             if (vs == null || vs.app == null || vs.app.decodingOnScroll || vs.ctrl.getView().isScrollFinished()) {
                 lock.lock();
                 try {
@@ -828,7 +829,7 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     @Override
-    public IBitmapRef createThumbnail(boolean useEmbeddedIfAvailable, int width, int height, final int pageNo,
+    public IBitmapRef createThumbnail(final boolean useEmbeddedIfAvailable, int width, int height, final int pageNo,
             final RectF region) {
         if (document == null) {
             return null;
@@ -854,7 +855,7 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     @Override
-    public ByteBufferBitmap createPageThumbnail(int width, int height, final int pageNo, final RectF region) {
+    public ByteBufferBitmap createPageThumbnail(final int width, final int height, final int pageNo, final RectF region) {
         if (document == null) {
             return null;
         }

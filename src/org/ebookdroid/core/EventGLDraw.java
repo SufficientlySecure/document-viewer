@@ -98,8 +98,10 @@ public class EventGLDraw implements IEvent {
 
             final boolean res = process(page.nodes);
 
-            drawPageLinks(page);
-            drawHighlights(page);
+            if (res) {
+                drawPageLinks(page);
+                drawHighlights(page);
+            }
 
             return res;
         } finally {

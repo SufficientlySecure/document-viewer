@@ -56,6 +56,22 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     public final boolean showAnimIcon;
 
+    /* =============== Tap & Scroll settings =============== */
+
+    public final boolean tapsEnabled;
+
+    public final int scrollHeight;
+
+    public final boolean animateScrolling;
+
+    /* =============== Tap & Keyboard settings =============== */
+
+    public final String tapProfiles;
+
+    public final String keysBinding;
+
+    /* =============== Navigation & History settings =============== */
+
     public final boolean showBookmarksInMenu;
 
     public final int linkHighlightColor;
@@ -71,20 +87,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
     public final boolean storeOutlineGotoHistory;
 
     public final boolean storeSearchGotoHistory;
-
-    /* =============== Tap & Scroll settings =============== */
-
-    public final boolean tapsEnabled;
-
-    public final int scrollHeight;
-
-    public final boolean animateScrolling;
-
-    /* =============== Tap & Keyboard settings =============== */
-
-    public final String tapProfiles;
-
-    public final String keysBinding;
 
     /* =============== Performance settings =============== */
 

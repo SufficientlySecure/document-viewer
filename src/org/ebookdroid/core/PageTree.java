@@ -57,14 +57,14 @@ public class PageTree {
     }
 
     public boolean paintChildren(final EventGLDraw event, final PageTreeNode node, final RectF nodeRect) {
-        boolean res = true;
+        boolean res = false;
         int childId = PageTree.getFirstChildId(node.id);
         if (childId < maxNodeId) {
             final PageTreeNode[] nodes = getNodes();
             for (final int end = Math.min(nodes.length, childId + PageTree.splitMasks.length); childId < end; childId++) {
                 final PageTreeNode child = nodes[childId];
                 if (child != null) {
-                    res &= event.paintChild(node, child, nodeRect);
+                    res |= event.paintChild(node, child, nodeRect);
                 }
             }
         }

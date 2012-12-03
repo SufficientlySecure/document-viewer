@@ -20,11 +20,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
-import org.emdev.common.log.LogContext;
-import org.emdev.common.log.LogManager;
-import org.emdev.ui.actions.ActionController;
+import org.emdev.ui.AbstractActivityController;
 import org.emdev.ui.actions.ActionDialogBuilder;
 import org.emdev.ui.actions.ActionEx;
 import org.emdev.ui.actions.ActionMethod;
@@ -36,69 +33,67 @@ import org.emdev.ui.actions.params.EditableValue.PasswordEditable;
 import org.emdev.utils.LengthUtils;
 
 @TargetApi(8)
-public class OPDSActivityController extends ActionController<OPDSActivity> implements
+public class OPDSActivityController extends AbstractActivityController<OPDSActivity> implements
         ExpandableListView.OnGroupClickListener, ExpandableListView.OnChildClickListener, FeedListener {
 
-    public final LogContext LCTX;
-
-    private static final AtomicLong SEQ = new AtomicLong();
-
     OPDSAdapter adapter;
-
     Feed current;
 
     public OPDSActivityController(final OPDSActivity activity) {
-        super(activity);
-        LCTX = LogManager.root().lctx(this.getClass().getSimpleName(), true).lctx("" + SEQ.getAndIncrement());
+        super(activity, BEFORE_CREATE, AFTER_CREATE, ON_DESTROY);
     }
 
-    public void onCreate() {
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("onCreate(): " + getManagedComponent());
-        }
-        final OPDSActivity activity = getManagedComponent();
-
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.emdev.ui.AbstractActivityController#beforeCreate(android.app.Activity)
+     */
+    @Override
+    public void beforeCreate(final OPDSActivity activity) {
         adapter = new OPDSAdapter(activity, this);
         adapter.addListener(this);
-
-        activity.list.setOnGroupClickListener(this);
-        activity.list.setOnChildClickListener(this);
-
-        activity.list.setAdapter(adapter);
-        goHome(null);
     }
 
-    public void onRestore(final OPDSActivity activity) {
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("onRestore(): " + getManagedComponent());
-        }
-        setManagedComponent(activity);
-        activity.list.setOnGroupClickListener(this);
-        activity.list.setOnChildClickListener(this);
-        activity.list.setAdapter(adapter);
-        activity.onCurrrentFeedChanged(adapter.getCurrentFeed());
-    }
-
-    public void onPostCreate() {
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("onPostCreate()");
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.emdev.ui.AbstractActivityController#afterCreate(android.app.Activity, boolean)
+     */
+    @Override
+    public void afterCreate(final OPDSActivity activity, final boolean recreated) {
+        if (recreated) {
+            activity.onCurrrentFeedChanged(adapter.getCurrentFeed());
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.emdev.ui.AbstractActivityController#onDestroy(boolean)
+     */
+    @Override
     public void onDestroy(final boolean finishing) {
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("onDestroy(): " + finishing);
-        }
         if (finishing) {
             adapter.close();
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.ui.opds.adapters.FeedListener#feedLoaded(org.ebookdroid.opds.model.Feed)
+     */
     @Override
     public void feedLoaded(final Feed feed) {
         getManagedComponent().onFeedLoaded(feed);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see android.widget.ExpandableListView.OnGroupClickListener#onGroupClick(android.widget.ExpandableListView,
+     *      android.view.View, int, long)
+     */
     @Override
     public boolean onGroupClick(final ExpandableListView parent, final View v, final int groupPosition, final long id) {
         if (adapter.getChildrenCount(groupPosition) > 0) {
@@ -115,6 +110,12 @@ public class OPDSActivityController extends ActionController<OPDSActivity> imple
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see android.widget.ExpandableListView.OnChildClickListener#onChildClick(android.widget.ExpandableListView,
+     *      android.view.View, int, int, long)
+     */
     @Override
     public boolean onChildClick(final ExpandableListView parent, final View v, final int groupPosition,
             final int childPosition, final long id) {
@@ -204,7 +205,7 @@ public class OPDSActivityController extends ActionController<OPDSActivity> imple
         authCheck.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
                 loginText.setVisibility(isChecked ? View.VISIBLE : View.GONE);
                 loginEdit.setVisibility(isChecked ? View.VISIBLE : View.GONE);
                 passwordText.setVisibility(isChecked ? View.VISIBLE : View.GONE);
@@ -261,7 +262,7 @@ public class OPDSActivityController extends ActionController<OPDSActivity> imple
         authCheck.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
                 loginText.setVisibility(isChecked ? View.VISIBLE : View.GONE);
                 loginEdit.setVisibility(isChecked ? View.VISIBLE : View.GONE);
                 passwordText.setVisibility(isChecked ? View.VISIBLE : View.GONE);

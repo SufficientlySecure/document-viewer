@@ -30,12 +30,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.emdev.common.android.AndroidVersion;
-import org.emdev.common.log.LogContext;
-import org.emdev.common.log.LogManager;
 import org.emdev.ui.AbstractActionActivity;
+import org.emdev.ui.actions.ActionMenuHelper;
 import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.utils.LayoutUtils;
 import org.emdev.utils.LengthUtils;
@@ -44,55 +42,56 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Bro
 
     private static final String CURRENT_DIRECTORY = "currentDirectory";
 
-    private static final AtomicLong SEQ = new AtomicLong();
-
-    public final LogContext LCTX;
-
     ViewFlipper viewflipper;
     TextView header;
 
     public BrowserActivity() {
-        super();
-        LCTX = LogManager.root().lctx(this.getClass().getSimpleName(), true).lctx("" + SEQ.getAndIncrement(), true);
+        super(false, ON_CREATE);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.emdev.ui.AbstractActionActivity#createController()
+     */
     @Override
     protected BrowserActivityController createController() {
         return new BrowserActivityController(this);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.emdev.ui.AbstractActionActivity#onCreateImpl(android.os.Bundle)
+     */
     @Override
-    public void onCreate(final Bundle savedInstanceState) {
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("onCreate()");
-        }
-
-        super.onCreate(savedInstanceState);
-
-        BrowserActivityController c = restoreController();
-        if (c == null) {
-            c = getController();
-            c.onCreate();
-        }
-
+    protected void onCreateImpl(final Bundle savedInstanceState) {
         IUIManager.instance.setTitleVisible(this, !AndroidVersion.lessThan3x, true);
         setContentView(R.layout.browser);
+
+        final BrowserActivityController c = getController();
 
         header = (TextView) findViewById(R.id.browsertext);
         viewflipper = (ViewFlipper) findViewById(R.id.browserflip);
         viewflipper.addView(LayoutUtils.fillInParent(viewflipper, new FileBrowserView(c, c.adapter)));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see android.app.Activity#onSaveInstanceState(android.os.Bundle)
+     */
     @Override
-    protected void onPostCreate(final Bundle savedInstanceState) {
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("onPostCreate()");
-        }
-        super.onPostCreate(savedInstanceState);
-
-        getController().onPostCreate(savedInstanceState);
+    protected void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(CURRENT_DIRECTORY, getController().adapter.getCurrentDirectory().getAbsolutePath());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+     */
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         final MenuInflater inflater = getMenuInflater();
@@ -100,19 +99,24 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Bro
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.emdev.ui.AbstractActionActivity#updateMenuItems(android.view.Menu)
+     */
     @Override
     protected void updateMenuItems(final Menu optionsMenu) {
 
         final File dir = getController().adapter.getCurrentDirectory();
         final boolean hasParent = dir != null ? dir.getParentFile() != null : false;
 
-        setMenuItemEnabled(optionsMenu, hasParent, R.id.browserupfolder, R.drawable.browser_actionbar_nav_up_enabled,
-                R.drawable.browser_actionbar_nav_up_disabled);
+        ActionMenuHelper.setMenuItemEnabled(optionsMenu, hasParent, R.id.browserupfolder,
+                R.drawable.browser_actionbar_nav_up_enabled, R.drawable.browser_actionbar_nav_up_disabled);
     }
 
     void setTitle(final File dir) {
 
-        String path = dir.getAbsolutePath();
+        final String path = dir.getAbsolutePath();
         if (AndroidVersion.lessThan3x) {
             header.setText(path);
             final ImageView view = (ImageView) findViewById(R.id.browserupfolder);
@@ -127,12 +131,11 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Bro
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(final Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(CURRENT_DIRECTORY, getController().adapter.getCurrentDirectory().getAbsolutePath());
-    }
-
+    /**
+     * {@inheritDoc}
+     *
+     * @see android.app.Activity#onKeyDown(int, android.view.KeyEvent)
+     */
     @Override
     public boolean onKeyDown(final int keyCode, final KeyEvent event) {
         if (getController().onKeyDown(keyCode, event)) {
@@ -157,6 +160,11 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Bro
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see android.app.Activity#onCreateContextMenu(android.view.ContextMenu, android.view.View, android.view.ContextMenu.ContextMenuInfo)
+     */
     @Override
     public void onCreateContextMenu(final ContextMenu menu, final View v, final ContextMenuInfo menuInfo) {
         final Object source = getContextMenuSource(v, menuInfo);
@@ -172,7 +180,7 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Bro
             }
         }
 
-        setMenuSource(menu, source);
+        ActionMenuHelper.setMenuSource(getController(), menu, source);
     }
 
     protected Object getContextMenuSource(final View v, final ContextMenuInfo menuInfo) {
@@ -233,7 +241,7 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Bro
     protected void addBookmarkMenuItem(final Menu menu, final Bookmark b) {
         final MenuItem bmi = menu.add(R.id.actions_goToBookmarkGroup, R.id.actions_goToBookmark, Menu.NONE, b.name);
         bmi.setIcon(R.drawable.viewer_menu_bookmark);
-        setMenuItemExtra(bmi, "bookmark", b);
+        ActionMenuHelper.setMenuItemExtra(bmi, "bookmark", b);
     }
 
     protected void createFolderMenu(final ContextMenu menu, final String path) {

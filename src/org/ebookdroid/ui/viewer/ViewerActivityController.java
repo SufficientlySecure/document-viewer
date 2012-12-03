@@ -40,15 +40,14 @@ import org.ebookdroid.ui.viewer.views.ManualCropView;
 import org.ebookdroid.ui.viewer.views.SearchControls;
 import org.ebookdroid.ui.viewer.views.ViewEffects;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.net.Uri;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.view.KeyEvent;
@@ -64,16 +63,14 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.emdev.common.android.AndroidVersion;
 import org.emdev.common.backup.BackupManager;
 import org.emdev.common.content.ContentScheme;
 import org.emdev.common.filesystem.PathFromUri;
-import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
-import org.emdev.ui.actions.ActionController;
+import org.emdev.ui.AbstractActivityController;
 import org.emdev.ui.actions.ActionDialogBuilder;
 import org.emdev.ui.actions.ActionEx;
 import org.emdev.ui.actions.ActionMethod;
@@ -89,14 +86,9 @@ import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.StringUtils;
 
-public class ViewerActivityController extends ActionController<ViewerActivity> implements IActivityController,
-        DecodingProgressListener, CurrentPageListener, IAppSettingsChangeListener, IBookSettingsChangeListener {
-
-    private static final AtomicLong SEQ = new AtomicLong();
-
-    private final LogContext LCTX;
-
-    private final long id;
+public class ViewerActivityController extends AbstractActivityController<ViewerActivity> implements
+        IActivityController, DecodingProgressListener, CurrentPageListener, IAppSettingsChangeListener,
+        IBookSettingsChangeListener {
 
     private final AtomicReference<IViewController> ctrl = new AtomicReference<IViewController>(ViewContollerStub.STUB);
 
@@ -116,8 +108,6 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
 
     private final Intent intent;
 
-    private int loadingCount = 0;
-
     private String m_fileName;
 
     private final NavigationHistory history;
@@ -132,25 +122,24 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
      * Instantiates a new base viewer activity.
      */
     public ViewerActivityController(final ViewerActivity activity) {
-        super(activity);
-        id = SEQ.getAndIncrement();
-        LCTX = LogManager.root().lctx("Controller", true).lctx("" + id, true);
-        this.intent = activity.getIntent();
-        SettingsManager.addListener(this);
+        super(activity, BEFORE_CREATE, BEFORE_RECREATE, AFTER_CREATE, ON_POST_CREATE, ON_DESTROY);
+
+        intent = activity.getIntent();
 
         history = new NavigationHistory(this);
 
         executor = new AsyncTaskExecutor(256, 1, 5, 1, "BookExecutor-" + id);
+
+        SettingsManager.addListener(this);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.emdev.ui.AbstractActivityController#beforeCreate(android.app.Activity)
+     */
+    @Override
     public void beforeCreate(final ViewerActivity activity) {
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("beforeCreate(): " + activity.LCTX);
-        }
-        if (getManagedComponent() != activity) {
-            setManagedComponent(activity);
-        }
-
         final AppSettings newSettings = AppSettings.current();
 
         activity.setRequestedOrientation(newSettings.rotation.getOrientation());
@@ -160,12 +149,30 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         KeyBindingsManager.loadFromSettings(newSettings);
     }
 
-    public void afterCreate() {
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("afterCreate()");
-        }
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.emdev.ui.AbstractActivityController#beforeRecreate(android.app.Activity)
+     */
+    @Override
+    public void beforeRecreate(final ViewerActivity activity) {
+        final AppSettings newSettings = AppSettings.current();
 
-        final ViewerActivity activity = getManagedComponent();
+        activity.setRequestedOrientation(newSettings.rotation.getOrientation());
+        IUIManager.instance.setTitleVisible(activity, newSettings.showTitle, true);
+
+        TouchManager.loadFromSettings(newSettings);
+        KeyBindingsManager.loadFromSettings(newSettings);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.emdev.ui.AbstractActivityController#afterCreate(android.app.Activity, boolean)
+     */
+    @Override
+    public void afterCreate(final ViewerActivity activity, final boolean recreated) {
+
         final AppSettings appSettings = AppSettings.current();
 
         IUIManager.instance.setFullScreenMode(activity, getManagedComponent().view.getView(), appSettings.fullScreen);
@@ -178,80 +185,79 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         createAction(R.id.mainmenu_force_portrait).putValue("mode", BookRotationType.PORTRAIT);
         createAction(R.id.mainmenu_force_landscape).putValue("mode", BookRotationType.LANDSCAPE);
 
-        if (++loadingCount == 1) {
-            documentModel = ActivityControllerStub.DM_STUB;
-            searchModel = new SearchModel(this);
+        if (recreated) {
+            return;
+        }
 
-            if (intent == null) {
-                showErrorDlg(R.string.msg_bad_intent, intent);
-                return;
-            }
+        documentModel = ActivityControllerStub.DM_STUB;
+        searchModel = new SearchModel(this);
 
-            final Uri data = intent.getData();
-            if (data == null) {
-                showErrorDlg(R.string.msg_no_intent_data, intent);
-                return;
-            }
+        if (intent == null) {
+            showErrorDlg(R.string.msg_bad_intent, intent);
+            return;
+        }
 
-            scheme = ContentScheme.getScheme(intent);
-            if (scheme == ContentScheme.UNKNOWN) {
-                showErrorDlg(R.string.msg_bad_intent, intent);
-                return;
-            }
+        final Uri data = intent.getData();
+        if (data == null) {
+            showErrorDlg(R.string.msg_no_intent_data, intent);
+            return;
+        }
 
-            bookTitle = scheme.getResourceName(activity.getContentResolver(), data);
+        scheme = ContentScheme.getScheme(intent);
+        if (scheme == ContentScheme.UNKNOWN) {
+            showErrorDlg(R.string.msg_bad_intent, intent);
+            return;
+        }
+
+        bookTitle = scheme.getResourceName(activity.getContentResolver(), data);
+        codecType = CodecType.getByUri(bookTitle);
+
+        if (codecType == null) {
+            bookTitle = ContentScheme.getDefaultResourceName(data, "");
             codecType = CodecType.getByUri(bookTitle);
-
-            if (codecType == null) {
-                bookTitle = ContentScheme.getDefaultResourceName(data, "");
-                codecType = CodecType.getByUri(bookTitle);
-            }
-
-            if (codecType == null) {
-                final String type = intent.getType();
-                LCTX.i("Book mime type: " + type);
-                if (LengthUtils.isNotEmpty(type)) {
-                    codecType = CodecType.getByMimeType(type);
-                }
-            }
-
-            LCTX.i("Book codec type: " + codecType);
-            LCTX.i("Book title: " + bookTitle);
-            if (codecType == null) {
-                showErrorDlg(R.string.msg_unknown_intent_data_type, data);
-                return;
-            }
-
-            documentModel = new DocumentModel(codecType);
-            documentModel.addListener(ViewerActivityController.this);
-            progressModel = new DecodingProgressModel();
-            progressModel.addListener(ViewerActivityController.this);
-
-            final Uri uri = data;
-            if (scheme.temporary) {
-                m_fileName = scheme.key;
-                CacheManager.clear(scheme.key);
-            } else {
-                m_fileName = PathFromUri.retrieve(activity.getContentResolver(), uri);
-            }
-
-            bookSettings = SettingsManager.create(id, m_fileName, scheme.temporary, intent);
-            SettingsManager.applyBookSettingsChanges(null, bookSettings);
         }
+
+        if (codecType == null) {
+            final String type = intent.getType();
+            LCTX.i("Book mime type: " + type);
+            if (LengthUtils.isNotEmpty(type)) {
+                codecType = CodecType.getByMimeType(type);
+            }
+        }
+
+        LCTX.i("Book codec type: " + codecType);
+        LCTX.i("Book title: " + bookTitle);
+        if (codecType == null) {
+            showErrorDlg(R.string.msg_unknown_intent_data_type, data);
+            return;
+        }
+
+        documentModel = new DocumentModel(codecType);
+        documentModel.addListener(ViewerActivityController.this);
+        progressModel = new DecodingProgressModel();
+        progressModel.addListener(ViewerActivityController.this);
+
+        final Uri uri = data;
+        if (scheme.temporary) {
+            m_fileName = scheme.key;
+            CacheManager.clear(scheme.key);
+        } else {
+            m_fileName = PathFromUri.retrieve(activity.getContentResolver(), uri);
+        }
+
+        bookSettings = SettingsManager.create(id, m_fileName, scheme.temporary, intent);
+        SettingsManager.applyBookSettingsChanges(null, bookSettings);
     }
 
-    public void beforePostCreate() {
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("beforePostCreate()");
-        }
-    }
-
-    public void afterPostCreate() {
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("afterPostCreate()");
-        }
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.emdev.ui.AbstractActivityController#onPostCreate(android.os.Bundle, boolean)
+     */
+    @Override
+    public void onPostCreate(final Bundle savedInstanceState, final boolean recreated) {
         setWindowTitle();
-        if (loadingCount == 1 && documentModel != ActivityControllerStub.DM_STUB) {
+        if (!recreated && documentModel != ActivityControllerStub.DM_STUB) {
             startDecoding(m_fileName, "");
         }
     }
@@ -260,36 +266,17 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         executor.execute(new BookLoadTask(fileName, password));
     }
 
-    public void beforeResume() {
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("beforeResume()");
-        }
-    }
-
-    public void afterResume() {
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("afterResume()");
-        }
-    }
-
-    public void beforePause() {
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("beforePause()");
-        }
-    }
-
-    public void afterPause() {
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("afterPause()");
-        }
-    }
-
-    public void beforeDestroy(final boolean finishing) {
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("beforeDestroy(): " + finishing);
-        }
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.emdev.ui.AbstractActivityController#onDestroy(boolean)
+     */
+    @Override
+    public void onDestroy(final boolean finishing) {
         if (finishing) {
-            getManagedComponent().view.onDestroy();
+            if (BackupSettings.current().backupOnBookClose) {
+                BackupManager.backup();
+            }
             if (documentModel != null) {
                 documentModel.recycle();
             }
@@ -299,18 +286,9 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
             SettingsManager.removeListener(this);
             BitmapManager.clear("on finish");
             ByteBufferManager.clear("on finish");
-        }
-    }
 
-    public void afterDestroy(final boolean finishing) {
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("afterDestroy()");
-        }
+            EBookDroidApp.onActivityClose(finishing);
 
-        getDocumentController().onDestroy();
-
-        if (finishing && BackupSettings.current().backupOnBookClose) {
-            BackupManager.backup();
         }
     }
 
@@ -361,6 +339,11 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.events.DecodingProgressListener#decodingProgressChanged(int)
+     */
     @Override
     public void decodingProgressChanged(final int currentlyDecoding) {
         final Runnable r = new Runnable() {
@@ -380,6 +363,12 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         getView().post(r);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.core.events.CurrentPageListener#currentPageChanged(org.ebookdroid.core.PageIndex,
+     *      org.ebookdroid.core.PageIndex)
+     */
     @Override
     public void currentPageChanged(final PageIndex oldIndex, final PageIndex newIndex) {
         final Runnable r = new Runnable() {
@@ -404,6 +393,11 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         getView().post(r);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.ui.viewer.IActivityController#runOnUiThread(java.lang.Runnable)
+     */
     @Override
     public void runOnUiThread(final Runnable r) {
         final FutureTask<Object> task = new FutureTask<Object>(r, null);
@@ -618,56 +612,81 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
         return zoomModel;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.ui.viewer.IActivityController#getDecodeService()
+     */
     @Override
     public DecodeService getDecodeService() {
         return documentModel != null ? documentModel.decodeService : null;
     }
 
     /**
-     * Gets the decoding progress model.
+     * {@inheritDoc}
      *
-     * @return the decoding progress model
+     * @see org.ebookdroid.ui.viewer.IActivityController#getDecodingProgressModel()
      */
     @Override
     public DecodingProgressModel getDecodingProgressModel() {
         return progressModel;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.ui.viewer.IActivityController#getDocumentModel()
+     */
     @Override
     public DocumentModel getDocumentModel() {
         return documentModel;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.ui.viewer.IActivityController#getSearchModel()
+     */
     @Override
     public final SearchModel getSearchModel() {
         return searchModel;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.ui.viewer.IActivityController#getDocumentController()
+     */
     @Override
     public final IViewController getDocumentController() {
         return ctrl.get();
     }
 
-    @Override
-    public final Context getContext() {
-        return getManagedComponent();
-    }
-
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.ui.viewer.IActivityController#getView()
+     */
     @Override
     public final IView getView() {
         return getManagedComponent().view;
     }
 
-    @Override
-    public final Activity getActivity() {
-        return getManagedComponent();
-    }
-
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.ui.viewer.IActivityController#getBookSettings()
+     */
     @Override
     public final BookSettings getBookSettings() {
         return bookSettings;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.ebookdroid.ui.viewer.IActivityController#getActionController()
+     */
     @Override
     public final IActionController<?> getActionController() {
         return this;
@@ -756,7 +775,7 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
     /**
      * {@inheritDoc}
      *
-     * @see org.ebookdroid.common.settings.listeners.ISettingsChangeListener#onAppSettingsChanged(org.ebookdroid.common.settings.AppSettings,
+     * @see org.ebookdroid.common.settings.listeners.IAppSettingsChangeListener#onAppSettingsChanged(org.ebookdroid.common.settings.AppSettings,
      *      org.ebookdroid.common.settings.AppSettings, org.ebookdroid.common.settings.AppSettings.Diff)
      */
     @Override
@@ -801,9 +820,8 @@ public class ViewerActivityController extends ActionController<ViewerActivity> i
     /**
      * {@inheritDoc}
      *
-     * @see org.ebookdroid.common.settings.listeners.ISettingsChangeListener#onBookSettingsChanged(org.ebookdroid.common.settings.books.BookSettings,
-     *      org.ebookdroid.common.settings.books.BookSettings, org.ebookdroid.common.settings.books.BookSettings.Diff,
-     *      org.ebookdroid.common.settings.AppSettings.Diff)
+     * @see org.ebookdroid.common.settings.listeners.IBookSettingsChangeListener#onBookSettingsChanged(org.ebookdroid.common.settings.books.BookSettings,
+     *      org.ebookdroid.common.settings.books.BookSettings, org.ebookdroid.common.settings.books.BookSettings.Diff)
      */
     @Override
     public void onBookSettingsChanged(final BookSettings oldSettings, final BookSettings newSettings,

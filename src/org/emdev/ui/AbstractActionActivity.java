@@ -8,41 +8,42 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 
-import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicLong;
 
-import org.emdev.ui.actions.ActionController;
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.ui.actions.ActionEx;
+import org.emdev.ui.actions.ActionMenuHelper;
 import org.emdev.ui.actions.ActionMethod;
-import org.emdev.ui.actions.IActionParameter;
 
-public abstract class AbstractActionActivity<A extends Activity, C extends ActionController<A>> extends Activity {
+public abstract class AbstractActionActivity<A extends Activity, C extends AbstractActivityController<A>> extends
+        Activity implements ActivityEvents {
 
-    public static final String MENU_ITEM_SOURCE = "source";
-    public static final String ACTIVITY_RESULT_DATA = "activityResultData";
-    public static final String ACTIVITY_RESULT_CODE = "activityResultCode";
-    public static final String ACTIVITY_RESULT_ACTION_ID = "activityResultActionId";
+    private static final AtomicLong SEQ = new AtomicLong();
 
-    private C controller;
+    public final LogContext LCTX;
 
-    protected AbstractActionActivity() {
+    public final long id;
+
+    final boolean shouldBeTaskRoot;
+    final int eventMask;
+
+    protected boolean recreated;
+    C controller;
+
+    protected AbstractActionActivity(final boolean shouldBeTaskRoot, final int... events) {
+        id = SEQ.getAndIncrement();
+        LCTX = LogManager.root().lctx(this.getClass().getSimpleName(), true).lctx("" + id, true);
+
+        this.shouldBeTaskRoot = shouldBeTaskRoot;
+        this.eventMask = ActivityEvents.Helper.merge(events);
     }
 
     @Override
     public final Object onRetainNonConfigurationInstance() {
         return getController();
-    }
-
-    @SuppressWarnings({ "unchecked", "deprecation" })
-    public final C restoreController() {
-        final Object last = this.getLastNonConfigurationInstance();
-        if (last instanceof ActionController) {
-            this.controller = (C) last;
-            return controller;
-        }
-        return null;
     }
 
     public final C getController() {
@@ -53,6 +54,256 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Actio
     }
 
     protected abstract C createController();
+
+    @Override
+    @SuppressWarnings({ "unchecked", "deprecation" })
+    protected final void onCreate(final Bundle savedInstanceState) {
+        if (shouldBeTaskRoot && !isTaskRoot()) {
+            super.onCreate(savedInstanceState);
+            // Workaround for Android 2.1-
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("onCreate(): close duplicated activity");
+            }
+            finish();
+            return;
+        }
+
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("onCreate(): " + savedInstanceState);
+        }
+        // Check if controller was created before
+        final Object last = this.getLastNonConfigurationInstance();
+        if (last instanceof AbstractActivityController) {
+            this.recreated = true;
+            this.controller = (C) last;
+            this.controller.setManagedComponent((A) this);
+            if (Helper.enabled(this.controller.eventMask, BEFORE_RECREATE)) {
+                if (this.controller.LCTX.isDebugEnabled()) {
+                    this.controller.LCTX.d("beforeRecreate(): " + this);
+                }
+                this.controller.beforeRecreate((A) this);
+            }
+        } else {
+            this.recreated = false;
+            this.controller = createController();
+            if ((this.controller.eventMask & BEFORE_CREATE) == BEFORE_CREATE) {
+                if (this.controller.LCTX.isDebugEnabled()) {
+                    this.controller.LCTX.d("beforeCreate(): " + this);
+                }
+                this.controller.beforeCreate((A) this);
+            }
+        }
+
+        super.onCreate(savedInstanceState);
+
+        if (Helper.enabled(this.eventMask, ON_CREATE)) {
+            onCreateImpl(savedInstanceState);
+        }
+
+        if (Helper.enabled(this.controller.eventMask, AFTER_CREATE)) {
+            if (this.controller.LCTX.isDebugEnabled()) {
+                this.controller.LCTX.d("afterCreate(): " + recreated);
+            }
+            this.controller.afterCreate((A) this, recreated);
+        }
+    }
+
+    protected void onCreateImpl(final Bundle savedInstanceState) {
+    }
+
+    @Override
+    protected final void onRestart() {
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("onRestart()");
+        }
+
+        super.onRestart();
+
+        if (Helper.enabled(this.eventMask, ON_RESTART)) {
+            onRestartImpl();
+        }
+
+        if (Helper.enabled(this.controller.eventMask, ON_RESTART)) {
+            if (controller.LCTX.isDebugEnabled()) {
+                controller.LCTX.d("onRestart(): " + recreated);
+            }
+            controller.onRestart(recreated);
+        }
+    }
+
+    protected void onRestartImpl() {
+    }
+
+    @Override
+    protected final void onStart() {
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("onStart()");
+        }
+
+        super.onStart();
+
+        if (Helper.enabled(this.eventMask, ON_START)) {
+            onStartImpl();
+        }
+
+        if (Helper.enabled(this.controller.eventMask, ON_START)) {
+            if (controller.LCTX.isDebugEnabled()) {
+                controller.LCTX.d("onStart()");
+            }
+            controller.onStart(recreated);
+        }
+    }
+
+    protected void onStartImpl() {
+    }
+
+    @Override
+    protected final void onPostCreate(final Bundle savedInstanceState) {
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("onCreate(): " + savedInstanceState);
+        }
+
+        super.onPostCreate(savedInstanceState);
+
+        if (Helper.enabled(this.eventMask, ON_POST_CREATE)) {
+            onPostCreateImpl(savedInstanceState);
+        }
+        if (Helper.enabled(this.controller.eventMask, ON_POST_CREATE)) {
+            if (controller.LCTX.isDebugEnabled()) {
+                controller.LCTX.d("savedInstanceState(): " + savedInstanceState);
+            }
+            controller.onPostCreate(savedInstanceState, recreated);
+        }
+    }
+
+    protected void onPostCreateImpl(final Bundle savedInstanceState) {
+    }
+
+    @Override
+    protected final void onResume() {
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("onResume()");
+        }
+
+        super.onResume();
+
+        if (Helper.enabled(this.eventMask, ON_RESUME)) {
+            onResumeImpl();
+        }
+
+        if (Helper.enabled(this.controller.eventMask, ON_RESUME)) {
+            if (controller.LCTX.isDebugEnabled()) {
+                controller.LCTX.d("onResume(): ");
+            }
+            controller.onResume(recreated);
+        }
+    }
+
+    protected void onResumeImpl() {
+    }
+
+    @Override
+    protected final void onPostResume() {
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("onPostResume()");
+        }
+
+        super.onPostResume();
+
+        if (Helper.enabled(this.eventMask, ON_POST_RESUME)) {
+            onPostResumeImpl();
+        }
+
+        if (Helper.enabled(this.controller.eventMask, ON_POST_RESUME)) {
+            if (controller.LCTX.isDebugEnabled()) {
+                controller.LCTX.d("onPostResume(): ");
+            }
+            controller.onPostResume(recreated);
+        }
+    }
+
+    protected void onPostResumeImpl() {
+    }
+
+    @Override
+    protected final void onPause() {
+        final boolean finishing = isFinishing();
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("onPause(): " + finishing);
+        }
+
+        super.onPause();
+
+        if (Helper.enabled(this.eventMask, ON_PAUSE)) {
+            onPauseImpl(finishing);
+        }
+
+        if (Helper.enabled(this.controller.eventMask, ON_PAUSE)) {
+            if (controller.LCTX.isDebugEnabled()) {
+                controller.LCTX.d("onPause(): " + finishing);
+            }
+            controller.onPause(finishing);
+        }
+    }
+
+    protected void onPauseImpl(final boolean finishing) {
+    }
+
+    @Override
+    protected final void onStop() {
+        final boolean finishing = isFinishing();
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("onStop(): " + finishing);
+        }
+
+        super.onStop();
+
+        if (Helper.enabled(this.eventMask, ON_STOP)) {
+            onStopImpl(finishing);
+        }
+
+        if (Helper.enabled(this.controller.eventMask, ON_STOP)) {
+            if (controller.LCTX.isDebugEnabled()) {
+                controller.LCTX.d("onStop(): " + finishing);
+            }
+            controller.onStop(finishing);
+        }
+    }
+
+    protected void onStopImpl(final boolean finishing) {
+    }
+
+    @Override
+    protected final void onDestroy() {
+        if (shouldBeTaskRoot && !isTaskRoot()) {
+            if (LCTX.isDebugEnabled()) {
+                LCTX.d("onDestroy(): close duplicated activity");
+            }
+            super.onDestroy();
+            return;
+        }
+
+        final boolean finishing = isFinishing();
+        if (LCTX.isDebugEnabled()) {
+            LCTX.d("onDestroy(): " + finishing);
+        }
+
+        super.onDestroy();
+
+        if (Helper.enabled(this.eventMask, ON_DESTROY)) {
+            onDestroyImpl(finishing);
+        }
+
+        if (Helper.enabled(this.controller.eventMask, ON_DESTROY)) {
+            if (controller.LCTX.isDebugEnabled()) {
+                controller.LCTX.d("onDestroy(): " + finishing);
+            }
+            controller.onDestroy(finishing);
+        }
+    }
+
+    protected void onDestroyImpl(final boolean finishing) {
+    }
 
     @Override
     public final boolean onPrepareOptionsMenu(final Menu menu) {
@@ -86,109 +337,11 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Actio
         final int actionId = item.getItemId();
         final ActionEx action = getController().getOrCreateAction(actionId);
         if (action.getMethod().isValid()) {
-            setActionParameters(item, action);
+            ActionMenuHelper.setActionParameters(item, action);
             action.run();
             return true;
         }
         return false;
-    }
-
-    protected void setActionParameters(final MenuItem item, final ActionEx action) {
-        final Intent intent = item.getIntent();
-        final Bundle extras = intent != null ? intent.getExtras() : null;
-        if (extras != null) {
-            for (final String key : extras.keySet()) {
-                final ExtraWrapper w = (ExtraWrapper) extras.getSerializable(key);
-                action.putValue(key, w != null ? w.data : null);
-            }
-        }
-    }
-
-    protected void setMenuSource(final Menu menu, final Object source) {
-        for (int i = 0, n = menu.size(); i < n; i++) {
-            final MenuItem item = menu.getItem(i);
-            final SubMenu subMenu = item.getSubMenu();
-            if (subMenu != null) {
-                setMenuSource(subMenu, source);
-            } else {
-                setMenuItemSource(item, source);
-            }
-        }
-    }
-
-    protected void setMenuItemSource(final MenuItem item, final Object source) {
-        final int itemId = item.getItemId();
-        getController().getOrCreateAction(itemId).putValue(MENU_ITEM_SOURCE, source);
-    }
-
-    protected void setMenuItemExtra(final MenuItem item, final String name, final Object data) {
-        Intent intent = item.getIntent();
-        if (intent == null) {
-            intent = new Intent();
-            item.setIntent(intent);
-        }
-        intent.putExtra(name, new ExtraWrapper(data));
-    }
-
-    protected void setMenuItemExtra(final Menu menu, final int itemId, final String name, final Object data) {
-        MenuItem item = menu.findItem(itemId);
-        if (item == null) {
-            return;
-        }
-        Intent intent = item.getIntent();
-        if (intent == null) {
-            intent = new Intent();
-            item.setIntent(intent);
-        }
-        intent.putExtra(name, new ExtraWrapper(data));
-    }
-
-    protected void setMenuParameters(final Menu menu, final IActionParameter... parameters) {
-        for (int i = 0, n = menu.size(); i < n; i++) {
-            final MenuItem item = menu.getItem(i);
-            final SubMenu subMenu = item.getSubMenu();
-            if (subMenu != null) {
-                setMenuParameters(subMenu, parameters);
-            } else {
-                final int itemId = item.getItemId();
-                final ActionEx action = getController().getOrCreateAction(itemId);
-                for (final IActionParameter p : parameters) {
-                    action.addParameter(p);
-                }
-            }
-        }
-    }
-
-    protected void setMenuItemVisible(final Menu menu, final boolean visible, final int viewId) {
-        final MenuItem v = menu.findItem(viewId);
-        if (v != null) {
-            v.setVisible(visible);
-        }
-    }
-
-    protected void setMenuItemEnabled(final Menu menu, final boolean enabled, final int viewId, final int enabledResId,
-            final int disabledResId) {
-        final MenuItem v = menu.findItem(viewId);
-        if (v != null) {
-            v.setIcon(enabled ? enabledResId : disabledResId);
-            v.setEnabled(enabled);
-        }
-    }
-
-    protected void setMenuItemChecked(final Menu menu, final boolean checked, final int viewId) {
-        final MenuItem v = menu.findItem(viewId);
-        if (v != null) {
-            v.setChecked(checked);
-        }
-    }
-
-    protected void setMenuItemChecked(final Menu menu, final boolean checked, final int viewId, final int checkedResId,
-            final int uncheckedResId) {
-        final MenuItem v = menu.findItem(viewId);
-        if (v != null) {
-            v.setChecked(checked);
-            v.setIcon(checked ? checkedResId : uncheckedResId);
-        }
     }
 
     public final void onButtonClick(final View view) {
@@ -203,11 +356,11 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Actio
             return;
         }
         if (data != null) {
-            final int actionId = data.getIntExtra(ACTIVITY_RESULT_ACTION_ID, 0);
+            final int actionId = data.getIntExtra(ActionMenuHelper.ACTIVITY_RESULT_ACTION_ID, 0);
             if (actionId != 0) {
                 final ActionEx action = getController().getOrCreateAction(actionId);
-                action.putValue(ACTIVITY_RESULT_CODE, Integer.valueOf(resultCode));
-                action.putValue(ACTIVITY_RESULT_DATA, data);
+                action.putValue(ActionMenuHelper.ACTIVITY_RESULT_CODE, Integer.valueOf(resultCode));
+                action.putValue(ActionMenuHelper.ACTIVITY_RESULT_DATA, data);
                 action.run();
             }
         }
@@ -225,20 +378,5 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Actio
     public void showAbout(final ActionEx action) {
         final Intent i = new Intent(this, AboutActivity.class);
         startActivity(i);
-    }
-
-    private static final class ExtraWrapper implements Serializable {
-
-        /**
-         * Serial version UID
-         */
-        private static final long serialVersionUID = -5109930164496309305L;
-
-        public Object data;
-
-        private ExtraWrapper(final Object data) {
-            super();
-            this.data = data;
-        }
     }
 }

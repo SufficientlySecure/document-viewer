@@ -1,6 +1,5 @@
 package org.ebookdroid.ui.library;
 
-import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
 import org.ebookdroid.common.settings.LibSettings;
 import org.ebookdroid.common.settings.books.BookSettings;
@@ -39,23 +38,17 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.emdev.BaseDroidApp;
 import org.emdev.common.android.AndroidVersion;
 import org.emdev.common.filesystem.MediaManager;
-import org.emdev.common.log.LogContext;
-import org.emdev.common.log.LogManager;
 import org.emdev.ui.AbstractActionActivity;
+import org.emdev.ui.actions.ActionMenuHelper;
 import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.utils.FileUtils;
 import org.emdev.utils.LengthUtils;
 
 public class RecentActivity extends AbstractActionActivity<RecentActivity, RecentActivityController> {
-
-    public final LogContext LCTX;
-
-    private static final AtomicLong SEQ = new AtomicLong();
 
     public static final int VIEW_RECENT = 0;
     public static final int VIEW_LIBRARY = 1;
@@ -68,30 +61,26 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
     LibraryView libraryView;
 
     public RecentActivity() {
-        super();
-        LCTX = LogManager.root().lctx(this.getClass().getSimpleName(), true).lctx("" + SEQ.getAndIncrement(), true);
+        super(true, ON_CREATE, ON_RESUME);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.emdev.ui.AbstractActionActivity#createController()
+     */
     @Override
     protected RecentActivityController createController() {
         return new RecentActivityController(this);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.emdev.ui.AbstractActionActivity#onCreateImpl(android.os.Bundle)
+     */
     @Override
-    public void onCreate(final Bundle savedInstanceState) {
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("onCreate()");
-        }
-        super.onCreate(savedInstanceState);
-        if (!isTaskRoot()) {
-            // Workaround for Android 2.1-
-            if (LCTX.isDebugEnabled()) {
-                LCTX.d("onCreate(): close duplicated activity");
-            }
-            finish();
-            return;
-        }
-
+    protected void onCreateImpl(final Bundle savedInstanceState) {
         IUIManager.instance.setTitleVisible(this, !AndroidVersion.lessThan3x, true);
 
         setContentView(R.layout.recent);
@@ -100,50 +89,23 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
             // Old layout with custom title bar
             libraryButton = (ImageView) findViewById(R.id.recent_showlibrary);
         }
-
-        final RecentActivityController c = restoreController();
-        if (c != null) {
-            c.onRestore(this);
-        } else {
-            getController().onCreate();
-        }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.emdev.ui.AbstractActionActivity#onResumeImpl()
+     */
     @Override
-    protected void onResume() {
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("onResume()");
-        }
-        super.onResume();
+    protected void onResumeImpl() {
         IUIManager.instance.invalidateOptionsMenu(this);
-        getController().onResume();
     }
 
-    @Override
-    protected void onPause() {
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("onPause(): " + isFinishing());
-        }
-        super.onPause();
-        getController().onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        final boolean finishing = isFinishing();
-        if (LCTX.isDebugEnabled()) {
-            LCTX.d("onDestroy(): " + finishing);
-        }
-        super.onDestroy();
-        if (!isTaskRoot()) {
-            LCTX.d("onDestroy(): close duplicated activity");
-            return;
-        }
-        getController().onDestroy(finishing);
-
-        EBookDroidApp.onActivityClose(finishing);
-    }
-
+    /**
+     * {@inheritDoc}
+     *
+     * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+     */
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         final MenuInflater inflater = getMenuInflater();
@@ -151,21 +113,26 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.emdev.ui.AbstractActionActivity#updateMenuItems(android.view.Menu)
+     */
     @Override
     protected void updateMenuItems(final Menu menu) {
         final LibSettings ls = LibSettings.current();
         if (!ls.useBookcase) {
             final int viewMode = getViewMode();
             final boolean showLibraryAvailable = viewMode == RecentActivity.VIEW_RECENT;
-            setMenuItemVisible(menu, showLibraryAvailable, R.id.recent_showlibrary);
-            setMenuItemVisible(menu, !showLibraryAvailable, R.id.recent_showrecent);
+            ActionMenuHelper.setMenuItemVisible(menu, showLibraryAvailable, R.id.recent_showlibrary);
+            ActionMenuHelper.setMenuItemVisible(menu, !showLibraryAvailable, R.id.recent_showrecent);
         } else {
-            setMenuItemVisible(menu, false, R.id.recent_showlibrary);
-            setMenuItemVisible(menu, false, R.id.recent_showrecent);
+            ActionMenuHelper.setMenuItemVisible(menu, false, R.id.recent_showlibrary);
+            ActionMenuHelper.setMenuItemVisible(menu, false, R.id.recent_showrecent);
         }
 
-        setMenuItemExtra(menu, R.id.recent_storage_all, "path", "/");
-        setMenuItemExtra(menu, R.id.recent_storage_external, "path", BaseDroidApp.EXT_STORAGE.getAbsolutePath());
+        ActionMenuHelper.setMenuItemExtra(menu, R.id.recent_storage_all, "path", "/");
+        ActionMenuHelper.setMenuItemExtra(menu, R.id.recent_storage_external, "path", BaseDroidApp.EXT_STORAGE.getAbsolutePath());
 
         final MenuItem storageMenu = menu.findItem(R.id.recent_storage_menu);
         if (storageMenu != null) {
@@ -200,9 +167,14 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
     protected void addStorageMenuItem(final Menu menu, final int resId, final String name, final String path) {
         final MenuItem bmi = menu.add(R.id.actions_storageGroup, R.id.actions_storage, Menu.NONE, name);
         bmi.setIcon(resId);
-        setMenuItemExtra(bmi, "path", path);
+        ActionMenuHelper.setMenuItemExtra(bmi, "path", path);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see android.app.Activity#onCreateContextMenu(android.view.ContextMenu, android.view.View, android.view.ContextMenu.ContextMenuInfo)
+     */
     @Override
     public void onCreateContextMenu(final ContextMenu menu, final View v, final ContextMenuInfo menuInfo) {
         final Object source = getContextMenuSource(v, menuInfo);
@@ -213,7 +185,7 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
             onCreateShelfMenu(menu, (BookShelfAdapter) source);
         }
 
-        setMenuSource(menu, source);
+        ActionMenuHelper.setMenuSource(getController(), menu, source);
     }
 
     protected Object getContextMenuSource(final View v, final ContextMenuInfo menuInfo) {
@@ -278,7 +250,7 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
     protected void addBookmarkMenuItem(final Menu menu, final Bookmark b) {
         final MenuItem bmi = menu.add(R.id.actions_goToBookmarkGroup, R.id.actions_goToBookmark, Menu.NONE, b.name);
         bmi.setIcon(R.drawable.viewer_menu_bookmark);
-        setMenuItemExtra(bmi, "bookmark", b);
+        ActionMenuHelper.setMenuItemExtra(bmi, "bookmark", b);
     }
 
     protected void onCreateShelfMenu(final ContextMenu menu, final BookShelfAdapter a) {
@@ -287,6 +259,11 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
         menu.setHeaderTitle(a.name);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see android.app.Activity#onKeyDown(int, android.view.KeyEvent)
+     */
     @Override
     public boolean onKeyDown(final int keyCode, final KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {

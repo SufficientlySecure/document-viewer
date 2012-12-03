@@ -40,7 +40,7 @@ import org.emdev.utils.MathUtils;
 
 public class DecodeServiceBase implements DecodeService {
 
-    public static final LogContext LCTX = LogManager.root().lctx("Decoding", true);
+    public static final LogContext LCTX = LogManager.root().lctx("Decoding", false);
 
     static final AtomicLong TASK_ID_SEQ = new AtomicLong();
 
@@ -66,7 +66,7 @@ public class DecodeServiceBase implements DecodeService {
         pages = new PageCache();
 
         executor = new Executor();
-        
+
         executor.start();
     }
 

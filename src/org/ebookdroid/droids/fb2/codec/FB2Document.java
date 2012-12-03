@@ -99,7 +99,7 @@ public class FB2Document extends AbstractCodecDocument {
         final long t5 = System.currentTimeMillis();
         System.out.println("Cleanup: " + (t5 - t4) + " ms, removed: " + removed);
 
-        System.gc();
+        // System.gc();
     }
 
     private void createPages(final LineStream documentLines) {

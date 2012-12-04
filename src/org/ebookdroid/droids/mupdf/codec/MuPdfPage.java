@@ -1,14 +1,13 @@
 package org.ebookdroid.droids.mupdf.codec;
 
-import org.ebookdroid.common.bitmaps.ByteBufferManager;
 import org.ebookdroid.common.bitmaps.ByteBufferBitmap;
+import org.ebookdroid.common.bitmaps.ByteBufferManager;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.core.ViewState;
 import org.ebookdroid.core.codec.AbstractCodecPage;
 import org.ebookdroid.core.codec.PageLink;
 import org.ebookdroid.core.codec.PageTextBox;
 
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Rect;
@@ -145,12 +144,6 @@ public class MuPdfPage extends AbstractCodecPage {
     private static native void free(long dochandle, long handle);
 
     private static native long open(long dochandle, int pageno);
-
-    private static native void renderPage(long dochandle, long pagehandle, int[] viewboxarray, float[] matrixarray,
-            int[] bufferarray, int noghtmode, int slowcmyk);
-
-    private static native boolean renderPageBitmap(long dochandle, long pagehandle, int[] viewboxarray,
-            float[] matrixarray, Bitmap bitmap, int noghtmode, int slowcmyk);
 
     private static native boolean renderPageDirect(long dochandle, long pagehandle, int[] viewboxarray,
             float[] matrixarray, ByteBuffer buffer, int noghtmode, int slowcmyk);

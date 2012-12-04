@@ -1,14 +1,13 @@
 package org.ebookdroid.droids.djvu.codec;
 
-import org.ebookdroid.common.bitmaps.ByteBufferManager;
 import org.ebookdroid.common.bitmaps.ByteBufferBitmap;
+import org.ebookdroid.common.bitmaps.ByteBufferManager;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.core.ViewState;
 import org.ebookdroid.core.codec.AbstractCodecPage;
 import org.ebookdroid.core.codec.PageLink;
 import org.ebookdroid.core.codec.PageTextBox;
 
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.RectF;
 
@@ -159,14 +158,6 @@ public class DjvuPage extends AbstractCodecPage {
     private static native int getHeight(long pageHandle);
 
     private static native boolean isDecodingDone(long pageHandle);
-
-    private static native boolean renderPage(long pageHandle, long contextHandle, int targetWidth, int targetHeight,
-            float pageSliceX, float pageSliceY, float pageSliceWidth, float pageSliceHeight, int[] buffer,
-            int renderMode);
-
-    private static native boolean renderPageBitmap(long pageHandle, long contextHandle, int targetWidth,
-            int targetHeight, float pageSliceX, float pageSliceY, float pageSliceWidth, float pageSliceHeight,
-            Bitmap bitmap, int renderMode);
 
     private static native boolean renderPageDirect(long pageHandle, long contextHandle, int targetWidth,
             int targetHeight, float pageSliceX, float pageSliceY, float pageSliceWidth, float pageSliceHeight,

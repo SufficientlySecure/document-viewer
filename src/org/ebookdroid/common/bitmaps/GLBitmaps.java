@@ -32,7 +32,7 @@ public class GLBitmaps {
 
     private ByteBufferTexture[] textures;
 
-    public GLBitmaps(final String nodeId, final ByteBufferBitmap orig, final boolean invert) {
+    public GLBitmaps(final String nodeId, final ByteBufferBitmap orig, final PagePaint paint) {
         this.nodeId = nodeId;
         this.width = orig.width;
         this.height = orig.height;
@@ -41,11 +41,7 @@ public class GLBitmaps {
         this.rows = getPartCount(height, partSize);
         this.bitmaps = ByteBufferManager.getParts(partSize, rows, columns);
 
-        if (invert) {
-            orig.invert();
-        }
-
-        final int color = invert ? PagePaint.NIGHT.fillPaint.getColor() : PagePaint.DAY.fillPaint.getColor();
+        final int color = paint.fillPaint.getColor();
 
         int top = 0;
         for (int row = 0; row < rows; row++, top += partSize) {

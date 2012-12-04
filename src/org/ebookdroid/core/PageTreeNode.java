@@ -161,12 +161,19 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 return;
             }
 
+            final AppSettings app = AppSettings.current();
             final BookSettings bs = page.base.getBookSettings();
+            final boolean invert = bs != null ? bs.nightMode : app.nightMode;
+
             if (bs != null) {
                 bitmap.applyEffects(bs);
             }
+            if (invert) {
+                bitmap.invert();
+            }
 
-            final GLBitmaps bitmaps = holder.swap(fullId, bitmap);
+            final PagePaint paint = invert ? PagePaint.NIGHT : PagePaint.DAY;
+            final GLBitmaps bitmaps = new GLBitmaps(fullId, bitmap, paint);
 
             holder.setBitmap(bitmaps);
             stopDecodingThisNode(null);
@@ -275,14 +282,6 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 final RectF targetRect, final RectF clipRect) {
             final GLBitmaps bitmaps = ref.get();
             return bitmaps != null ? bitmaps.drawGL(canvas, paint, viewBase, targetRect, clipRect) : false;
-        }
-
-        public GLBitmaps swap(final String nodeId, final ByteBufferBitmap bitmap) {
-            final BookSettings bs = page.base.getBookSettings();
-            final AppSettings app = AppSettings.current();
-            final boolean invert = bs != null ? bs.nightMode : app.nightMode;
-
-            return new GLBitmaps(nodeId, bitmap, invert);
         }
 
         public boolean hasBitmaps() {

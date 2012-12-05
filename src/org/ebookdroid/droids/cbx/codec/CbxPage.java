@@ -45,7 +45,6 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> extends AbstractCode
             try {
                 final Options opts = new Options();
                 opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                opts.inMutable=false;
                 opts.inJustDecodeBounds = onlyBounds;
                 opts.inSampleSize = scale;
 

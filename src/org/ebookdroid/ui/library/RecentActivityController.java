@@ -379,7 +379,6 @@ public class RecentActivityController extends AbstractActivityController<RecentA
         if (f.delete()) {
             CacheManager.clear(book.path);
             final LibSettings libSettings = LibSettings.current();
-            bookshelfAdapter.startScan();
             recentAdapter.setBooks(SettingsManager.getRecentBooks().values(), libSettings.allowedFileTypes);
         }
     }

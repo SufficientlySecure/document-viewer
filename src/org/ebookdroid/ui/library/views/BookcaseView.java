@@ -2,6 +2,7 @@ package org.ebookdroid.ui.library.views;
 
 import org.ebookdroid.R;
 import org.ebookdroid.ui.library.adapters.BooksAdapter;
+import org.ebookdroid.ui.library.adapters.RecentAdapter;
 
 import android.content.Context;
 import android.database.DataSetObserver;
@@ -18,6 +19,7 @@ public class BookcaseView extends RelativeLayout {
     private View prevShelf;
     private View nextShelf;
     private BooksAdapter adapter;
+    private RecentAdapter recents;
 
     public BookcaseView(final Context context) {
         super(context);
@@ -31,8 +33,9 @@ public class BookcaseView extends RelativeLayout {
         super(context, attrs, defStyle);
     }
 
-    public void init(final BooksAdapter adapter) {
+    public void init(final BooksAdapter adapter, final RecentAdapter recents) {
         this.adapter = adapter;
+        this.recents = recents;
         this.shelfCaption = (TextView) findViewById(R.id.ShelfCaption);
         this.shelves = (ViewPager) findViewById(R.id.Shelves);
         this.prevShelf = findViewById(R.id.ShelfLeftButton);
@@ -44,16 +47,15 @@ public class BookcaseView extends RelativeLayout {
 
             @Override
             public void onChanged() {
-                super.onChanged();
-                final int count = BookcaseView.this.adapter.getCount();
-                int currentItem = shelves.getCurrentItem();
-                if (currentItem >= count) {
-                    currentItem = count - 1;
-                    shelves.setCurrentItem(currentItem);
-                    return;
-                }
-                final String listName = BookcaseView.this.adapter.getListName(currentItem);
-                shelfCaption.setText(listName);
+                onBookAdapterChanged();
+            }
+        });
+
+        recents.registerDataSetObserver(new DataSetObserver() {
+
+            @Override
+            public void onChanged() {
+                onRecentAdapterChanged();
             }
         });
 
@@ -65,7 +67,33 @@ public class BookcaseView extends RelativeLayout {
             }
         });
 
-        updateShelfCaption(0);
+        onBookAdapterChanged();
+    }
+
+    protected void onBookAdapterChanged() {
+        final int selfCount = adapter.getCount();
+        int currentItem = shelves.getCurrentItem();
+        if (currentItem >= selfCount) {
+            currentItem = selfCount - 1;
+            setCurrentList(currentItem);
+            return;
+        }
+        if (currentItem == BooksAdapter.RECENT_INDEX) {
+            final int recentCount = adapter.getListCount(BooksAdapter.RECENT_INDEX);
+            if (recentCount == 0 && selfCount > BooksAdapter.SERVICE_SHELVES) {
+                setCurrentList(BooksAdapter.SERVICE_SHELVES);
+                return;
+            }
+        }
+        updateShelfCaption(currentItem);
+    }
+
+    protected void onRecentAdapterChanged() {
+        final int count = BookcaseView.this.adapter.getCount();
+        final int recentCount = recents.getCount();
+        if (recentCount == 0 && count > BooksAdapter.SERVICE_SHELVES) {
+            setCurrentList(BooksAdapter.SERVICE_SHELVES);
+        }
     }
 
     public int getCurrentList() {
@@ -73,10 +101,13 @@ public class BookcaseView extends RelativeLayout {
     }
 
     public void setCurrentList(final int shelf) {
+        System.out.println("BookcaseView.setCurrentList():" + shelf);
+        new Exception().printStackTrace();
         shelves.setCurrentItem(shelf);
     }
 
     public void updateShelfCaption(final int shelf) {
+        System.out.println("BookcaseView.updateShelfCaption(): " + shelf);
         shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentItem()));
         prevShelf.setVisibility(shelf == 0 ? View.GONE : View.VISIBLE);
         nextShelf.setVisibility(shelf >= adapter.getCount() - 1 ? View.GONE : View.VISIBLE);

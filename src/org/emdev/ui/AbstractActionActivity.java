@@ -148,7 +148,7 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Abstr
 
         if (Helper.enabled(this.controller.eventMask, ON_START)) {
             if (controller.LCTX.isDebugEnabled()) {
-                controller.LCTX.d("onStart()");
+                controller.LCTX.d("onStart(): " + recreated);
             }
             controller.onStart(recreated);
         }
@@ -170,7 +170,7 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Abstr
         }
         if (Helper.enabled(this.controller.eventMask, ON_POST_CREATE)) {
             if (controller.LCTX.isDebugEnabled()) {
-                controller.LCTX.d("savedInstanceState(): " + savedInstanceState);
+                controller.LCTX.d("savedInstanceState(): " + savedInstanceState + ", " + recreated);
             }
             controller.onPostCreate(savedInstanceState, recreated);
         }
@@ -193,7 +193,7 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Abstr
 
         if (Helper.enabled(this.controller.eventMask, ON_RESUME)) {
             if (controller.LCTX.isDebugEnabled()) {
-                controller.LCTX.d("onResume(): ");
+                controller.LCTX.d("onResume(): " + recreated);
             }
             controller.onResume(recreated);
         }
@@ -216,7 +216,7 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Abstr
 
         if (Helper.enabled(this.controller.eventMask, ON_POST_RESUME)) {
             if (controller.LCTX.isDebugEnabled()) {
-                controller.LCTX.d("onPostResume(): ");
+                controller.LCTX.d("onPostResume(): " + recreated);
             }
             controller.onPostResume(recreated);
         }

@@ -316,7 +316,7 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
         vf.removeAllViews();
         if (bookcaseView == null) {
             bookcaseView = (BookcaseView) LayoutInflater.from(this).inflate(R.layout.bookcase_view, vf, false);
-            bookcaseView.init(bookshelfAdapter);
+            bookcaseView.init(bookshelfAdapter, recentAdapter);
         }
         vf.addView(bookcaseView, 0);
 
@@ -342,6 +342,10 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
 
         if (libraryButton != null) {
             libraryButton.setImageResource(R.drawable.recent_actionbar_library);
+        }
+
+        if (recentAdapter.getCount() == 0) {
+            changeLibraryView(VIEW_LIBRARY);
         }
     }
 

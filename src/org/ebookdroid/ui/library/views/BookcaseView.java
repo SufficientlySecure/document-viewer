@@ -101,13 +101,10 @@ public class BookcaseView extends RelativeLayout {
     }
 
     public void setCurrentList(final int shelf) {
-        System.out.println("BookcaseView.setCurrentList():" + shelf);
-        new Exception().printStackTrace();
         shelves.setCurrentItem(shelf);
     }
 
     public void updateShelfCaption(final int shelf) {
-        System.out.println("BookcaseView.updateShelfCaption(): " + shelf);
         shelfCaption.setText(BookcaseView.this.adapter.getListName(shelves.getCurrentItem()));
         prevShelf.setVisibility(shelf == 0 ? View.GONE : View.VISIBLE);
         nextShelf.setVisibility(shelf >= adapter.getCount() - 1 ? View.GONE : View.VISIBLE);

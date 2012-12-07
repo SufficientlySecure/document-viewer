@@ -14,6 +14,8 @@
 
     <string translatable="false" name="pref_book_contrast_id">book_contrast</string>
 
+    <string translatable="false" name="pref_book_gamma_id">book_gamma</string>
+
     <string translatable="false" name="pref_book_exposure_id">book_exposure</string>
 
     <string translatable="false" name="pref_book_autolevels_id">book_autolevels</string>

@@ -136,6 +136,9 @@ public interface AppPreferences {
     IntegerPreferenceDefinition CONTRAST = new IntegerPreferenceDefinition(pref_contrast_id, pref_contrast_defvalue,
             pref_contrast_minvalue, pref_contrast_maxvalue);
 
+    IntegerPreferenceDefinition GAMMA = new IntegerPreferenceDefinition(pref_gamma_id, pref_gamma_defvalue,
+            pref_gamma_minvalue, pref_gamma_maxvalue);
+
     IntegerPreferenceDefinition EXPOSURE = new IntegerPreferenceDefinition(pref_exposure_id, pref_exposure_defvalue,
             pref_exposure_minvalue, pref_exposure_maxvalue);
 

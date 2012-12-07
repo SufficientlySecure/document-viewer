@@ -114,6 +114,8 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     final int contrast;
 
+    final int gamma;
+
     final int exposure;
 
     final boolean autoLevels;
@@ -214,6 +216,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         nightMode = NIGHT_MODE.getPreferenceValue(prefs);
         positiveImagesInNightMode = NIGHT_MODE_POS_IMAGES.getPreferenceValue(prefs);
         contrast = CONTRAST.getPreferenceValue(prefs);
+        gamma = GAMMA.getPreferenceValue(prefs);
         exposure = EXPOSURE.getPreferenceValue(prefs);
         autoLevels = AUTO_LEVELS.getPreferenceValue(prefs);
         splitPages = SPLIT_PAGES.getPreferenceValue(prefs);
@@ -325,6 +328,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         bs.nightMode = current.nightMode;
         bs.positiveImagesInNightMode = current.positiveImagesInNightMode;
         bs.contrast = current.contrast;
+        bs.gamma = current.gamma;
         bs.exposure = current.exposure;
         bs.autoLevels = current.autoLevels;
         bs.splitPages = current.splitPages;
@@ -340,6 +344,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         bs.nightMode = BOOK_NIGHT_MODE.getPreferenceValue(prefs, current.nightMode);
         bs.positiveImagesInNightMode = BOOK_NIGHT_MODE_POS_IMAGES.getPreferenceValue(prefs, current.positiveImagesInNightMode);
         bs.contrast = BOOK_CONTRAST.getPreferenceValue(prefs, current.contrast);
+        bs.gamma = BOOK_GAMMA.getPreferenceValue(prefs, current.gamma);
         bs.exposure = BOOK_EXPOSURE.getPreferenceValue(prefs, current.exposure);
         bs.autoLevels = BOOK_AUTO_LEVELS.getPreferenceValue(prefs, current.autoLevels);
         bs.splitPages = BOOK_SPLIT_PAGES.getPreferenceValue(prefs, current.splitPages);
@@ -359,6 +364,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         edit.remove(BOOK_NIGHT_MODE.key);
         edit.remove(BOOK_NIGHT_MODE_POS_IMAGES.key);
         edit.remove(BOOK_CONTRAST.key);
+        edit.remove(BOOK_GAMMA.key);
         edit.remove(BOOK_EXPOSURE.key);
         edit.remove(BOOK_AUTO_LEVELS.key);
         edit.remove(BOOK_SPLIT_PAGES.key);
@@ -379,6 +385,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         BOOK_NIGHT_MODE.setPreferenceValue(edit, bs.nightMode);
         BOOK_NIGHT_MODE_POS_IMAGES.setPreferenceValue(edit, bs.positiveImagesInNightMode);
         BOOK_CONTRAST.setPreferenceValue(edit, bs.contrast);
+        BOOK_GAMMA.setPreferenceValue(edit, bs.gamma);
         BOOK_EXPOSURE.setPreferenceValue(edit, bs.exposure);
         BOOK_AUTO_LEVELS.setPreferenceValue(edit, bs.autoLevels);
         BOOK_SPLIT_PAGES.setPreferenceValue(edit, bs.splitPages);

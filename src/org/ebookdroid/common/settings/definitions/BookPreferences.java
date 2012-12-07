@@ -7,6 +7,7 @@ import static org.ebookdroid.R.string.pref_book_align_id;
 import static org.ebookdroid.R.string.pref_book_animation_type_id;
 import static org.ebookdroid.R.string.pref_book_autolevels_id;
 import static org.ebookdroid.R.string.pref_book_contrast_id;
+import static org.ebookdroid.R.string.pref_book_gamma_id;
 import static org.ebookdroid.R.string.pref_book_croppages_id;
 import static org.ebookdroid.R.string.pref_book_exposure_id;
 import static org.ebookdroid.R.string.pref_book_firstpageoffset_defvalue;
@@ -23,6 +24,9 @@ import static org.ebookdroid.R.string.pref_book_viewmode_id;
 import static org.ebookdroid.R.string.pref_contrast_defvalue;
 import static org.ebookdroid.R.string.pref_contrast_maxvalue;
 import static org.ebookdroid.R.string.pref_contrast_minvalue;
+import static org.ebookdroid.R.string.pref_gamma_defvalue;
+import static org.ebookdroid.R.string.pref_gamma_maxvalue;
+import static org.ebookdroid.R.string.pref_gamma_minvalue;
 import static org.ebookdroid.R.string.pref_croppages_defvalue;
 import static org.ebookdroid.R.string.pref_exposure_defvalue;
 import static org.ebookdroid.R.string.pref_exposure_maxvalue;
@@ -59,6 +63,9 @@ public interface BookPreferences {
 
     IntegerPreferenceDefinition BOOK_CONTRAST = new IntegerPreferenceDefinition(pref_book_contrast_id,
             pref_contrast_defvalue, pref_contrast_minvalue, pref_contrast_maxvalue);
+
+    IntegerPreferenceDefinition BOOK_GAMMA = new IntegerPreferenceDefinition(pref_book_gamma_id,
+            pref_gamma_defvalue, pref_gamma_minvalue, pref_gamma_maxvalue);
 
     IntegerPreferenceDefinition BOOK_EXPOSURE = new IntegerPreferenceDefinition(pref_book_exposure_id,
             pref_exposure_defvalue, pref_exposure_minvalue, pref_exposure_maxvalue);

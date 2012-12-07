@@ -76,6 +76,9 @@
     <string name="pref_contrast_title">Contrast</string>
     <string name="pref_contrast_summary">Contrast correction level (0 &#8211; 1000, 100 by default)</string>
 
+    <string name="pref_gamma_title">Gamma</string>
+    <string name="pref_gamma_summary">Gamma correction level (0 &#8211; 200, 100 by default)</string>
+
     <string name="pref_exposure_title">Exposure</string>
     <string name="pref_exposure_summary">Exposure correction level (0 &#8211; 200, 100 by default)</string>
 

@@ -73,9 +73,13 @@ public final class ByteBufferBitmap {
 
     public void applyEffects(final BookSettings bs) {
         final boolean correctContrast = bs.contrast != AppPreferences.CONTRAST.defValue;
+        final boolean correctGamma = bs.gamma != AppPreferences.GAMMA.defValue;
         final boolean correctExposure = bs.exposure != AppPreferences.EXPOSURE.defValue;
 
-        if (correctContrast || correctExposure || bs.autoLevels) {
+        if (correctContrast || correctGamma || correctExposure || bs.autoLevels) {
+            if (correctGamma) {
+                gamma(bs.gamma);
+            }
             if (correctContrast) {
                 contrast(bs.contrast);
             }
@@ -138,6 +142,10 @@ public final class ByteBufferBitmap {
 
     public void contrast(final int contrast) {
         nativeContrast(pixels, width, height, contrast * 256 / 100);
+    }
+
+    public void gamma(final int gamma) {
+        nativeGamma(pixels, width, height, gamma);
     }
 
     public void exposure(final int exposure) {
@@ -208,6 +216,9 @@ public final class ByteBufferBitmap {
 
     /* contrast value 256 - normal */
     private static native void nativeContrast(ByteBuffer src, int width, int height, int contrast);
+
+    /* gamma value 100 - normal */
+    private static native void nativeGamma(ByteBuffer src, int width, int height, int gamma);
 
     /* Exposure correction values -128...+128 */
     private static native void nativeExposure(ByteBuffer src, int width, int height, int exposure);

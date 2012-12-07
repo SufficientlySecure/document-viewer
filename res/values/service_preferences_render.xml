@@ -76,6 +76,11 @@
     <string translatable="false" name="pref_contrast_minvalue">0</string>
     <string translatable="false" name="pref_contrast_maxvalue">1000</string>
 
+    <string translatable="false" name="pref_gamma_id">gamma</string>
+    <string translatable="false" name="pref_gamma_defvalue">100</string>
+    <string translatable="false" name="pref_gamma_minvalue">0</string>
+    <string translatable="false" name="pref_gamma_maxvalue">200</string>
+
     <string translatable="false" name="pref_exposure_id">exposure</string>
     <string translatable="false" name="pref_exposure_defvalue">100</string>
     <string translatable="false" name="pref_exposure_minvalue">0</string>

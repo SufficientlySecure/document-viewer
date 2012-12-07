@@ -162,7 +162,7 @@ public class DecodeServiceBase implements DecodeService {
             }
 
             // Checks if cropping setting is set and node crop region is not set
-            if (task.node.page.shouldCrop() && task.node.getCropping() == null) {
+            if (codecContext.isFeatureSupported(CodecFeatures.FEATURE_CROP_SUPPORT) && task.node.page.shouldCrop() && task.node.getCropping() == null) {
                 if (LCTX.isDebugEnabled()) {
                     LCTX.d(Thread.currentThread().getName() + ": Task " + task.id
                             + ": no cropping bounds for task node");

@@ -22,5 +22,7 @@ public interface CodecFeatures {
 
     int FEATURE_POSITIVE_IMAGES_IN_NIGHT_MODE = 1 << 10;
 
+    int FEATURE_CROP_SUPPORT = 1 << 11;
+
     boolean isFeatureSupported(int feature);
 }

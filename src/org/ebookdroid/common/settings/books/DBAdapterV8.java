@@ -45,12 +45,12 @@ class DBAdapterV8 extends DBAdapterV7 {
             + "offset_y integer not null, "
             // Contrast
             + "contrast integer not null, "
+            // Gamma
+            + "gamma integer not null, "
             // Exposure
             + "exposure integer not null, "
             // Type specific
             + "type_specific varchar(4096)"
-            // Gamma
-            + "gamma integer not null, "
             // ...
             + ");"
     //

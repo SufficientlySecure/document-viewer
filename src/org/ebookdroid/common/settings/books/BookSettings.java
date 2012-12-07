@@ -160,7 +160,7 @@ public class BookSettings implements CurrentPageListener {
         this.nightMode = object.getBoolean("nightMode");
         this.positiveImagesInNightMode = object.optBoolean("positiveImagesInNightMode", false);
         this.contrast = object.getInt("contrast");
-        this.gamma = object.getInt("gamma");
+        this.gamma = object.optInt("gamma", AppPreferences.GAMMA.defValue);
         this.exposure = object.getInt("exposure");
         this.autoLevels = object.getBoolean("autoLevels");
 

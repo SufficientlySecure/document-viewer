@@ -7,6 +7,8 @@ import org.ebookdroid.common.settings.books.Bookmark;
 import org.ebookdroid.common.settings.types.BookRotationType;
 import org.ebookdroid.common.settings.types.ToastPosition;
 import org.ebookdroid.common.touch.TouchManagerView;
+import org.ebookdroid.core.DecodeService;
+import org.ebookdroid.core.codec.CodecFeatures;
 import org.ebookdroid.ui.viewer.stubs.ViewStub;
 import org.ebookdroid.ui.viewer.viewers.GLView;
 import org.ebookdroid.ui.viewer.views.ManualCropView;
@@ -68,7 +70,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.emdev.ui.AbstractActionActivity#createController()
      */
     @Override
@@ -78,7 +80,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see android.app.Activity#onNewIntent(android.content.Intent)
      */
     @Override
@@ -91,7 +93,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.emdev.ui.AbstractActionActivity#onCreateImpl(android.os.Bundle)
      */
     @Override
@@ -130,7 +132,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.emdev.ui.AbstractActionActivity#onResumeImpl()
      */
     @Override
@@ -140,7 +142,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.emdev.ui.AbstractActionActivity#onPauseImpl(boolean)
      */
     @Override
@@ -150,7 +152,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.emdev.ui.AbstractActionActivity#onDestroyImpl(boolean)
      */
     @Override
@@ -160,7 +162,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see android.app.Activity#onWindowFocusChanged(boolean)
      */
     @Override
@@ -248,8 +250,9 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     /**
      * {@inheritDoc}
-     *
-     * @see android.app.Activity#onCreateContextMenu(android.view.ContextMenu, android.view.View, android.view.ContextMenu.ContextMenuInfo)
+     * 
+     * @see android.app.Activity#onCreateContextMenu(android.view.ContextMenu, android.view.View,
+     *      android.view.ContextMenu.ContextMenuInfo)
      */
     @Override
     public void onCreateContextMenu(final ContextMenu menu, final View v, final ContextMenuInfo menuInfo) {
@@ -263,7 +266,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
      */
     @Override
@@ -287,7 +290,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see android.app.Activity#onMenuOpened(int, android.view.Menu)
      */
     @Override
@@ -299,7 +302,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see org.emdev.ui.AbstractActionActivity#updateMenuItems(android.view.Menu)
      */
     @Override
@@ -331,6 +334,15 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
         ActionMenuHelper.setMenuItemChecked(menu, bs.splitPages, R.id.mainmenu_splitpages,
                 R.drawable.viewer_menu_split_pages, R.drawable.viewer_menu_split_pages_off);
 
+        final DecodeService ds = getController().getDecodeService();
+
+        final boolean cropSupported = ds.isFeatureSupported(CodecFeatures.FEATURE_CROP_SUPPORT);
+        ActionMenuHelper.setMenuItemVisible(menu, cropSupported, R.id.mainmenu_croppages);
+        ActionMenuHelper.setMenuItemVisible(menu, cropSupported, R.id.mainmenu_crop);
+
+        final boolean splitSupported = ds.isFeatureSupported(CodecFeatures.FEATURE_SPLIT_SUPPORT);
+        ActionMenuHelper.setMenuItemVisible(menu, splitSupported, R.id.mainmenu_splitpages);
+
         final MenuItem navMenu = menu.findItem(R.id.mainmenu_nav_menu);
         if (navMenu != null) {
             final SubMenu subMenu = navMenu.getSubMenu();
@@ -352,7 +364,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see android.app.Activity#onPanelClosed(int, android.view.Menu)
      */
     @Override
@@ -366,7 +378,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see android.app.Activity#onOptionsMenuClosed(android.view.Menu)
      */
     @Override
@@ -378,7 +390,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @see android.app.Activity#dispatchKeyEvent(android.view.KeyEvent)
      */
     @Override

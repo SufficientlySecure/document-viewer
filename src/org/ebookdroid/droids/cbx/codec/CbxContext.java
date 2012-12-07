@@ -13,7 +13,8 @@ import org.emdev.common.archives.ArchiveFile;
 public abstract class CbxContext<ArchiveEntryType extends ArchiveEntry> extends AbstractCodecContext implements
         CbxArchiveFactory<ArchiveEntryType> {
 
-    public static final int CBX_FEATURES = FEATURE_CACHABLE_PAGE_INFO | FEATURE_PARALLEL_PAGE_ACCESS | FEATURE_CROP_SUPPORT;
+    public static final int CBX_FEATURES = FEATURE_CACHABLE_PAGE_INFO | FEATURE_PARALLEL_PAGE_ACCESS
+            | FEATURE_CROP_SUPPORT | FEATURE_SPLIT_SUPPORT;
 
     static {
         EBookDroidLibraryLoader.load();

@@ -17,7 +17,8 @@ public abstract class MuPdfContext extends AbstractCodecContext {
     public static final LogContext LCTX = LogManager.root().lctx("MuPdf");
 
     public static final int MUPDF_FEATURES = FEATURE_CACHABLE_PAGE_INFO | FEATURE_EMBEDDED_OUTLINE
-            | FEATURE_PAGE_TEXT_SEARCH | FEATURE_POSITIVE_IMAGES_IN_NIGHT_MODE | FEATURE_CROP_SUPPORT;
+            | FEATURE_PAGE_TEXT_SEARCH | FEATURE_POSITIVE_IMAGES_IN_NIGHT_MODE | FEATURE_CROP_SUPPORT
+            | FEATURE_SPLIT_SUPPORT;
 
     static {
         EBookDroidLibraryLoader.load();

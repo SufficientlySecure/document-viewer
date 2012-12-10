@@ -11,7 +11,6 @@ import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.common.settings.types.RotationType;
 import org.ebookdroid.common.settings.types.ToastPosition;
 import org.ebookdroid.core.curl.PageAnimationType;
-import org.ebookdroid.droids.fb2.codec.parsers.FB2Parsers;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -19,6 +18,7 @@ import android.content.SharedPreferences.Editor;
 import org.emdev.common.backup.BackupManager;
 import org.emdev.common.backup.IBackupAgent;
 import org.emdev.common.settings.backup.SettingsBackupHelper;
+import org.emdev.common.xml.XmlParsers;
 import org.emdev.utils.CompareUtils;
 import org.json.JSONObject;
 
@@ -158,7 +158,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     /* =============== FB2 Format-specific settings =============== */
 
-    public final FB2Parsers fb2XmlParser;
+    public final XmlParsers fb2XmlParser;
 
     public final String fb2FontPack;
 

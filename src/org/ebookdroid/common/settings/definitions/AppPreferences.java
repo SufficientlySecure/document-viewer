@@ -8,12 +8,12 @@ import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.common.settings.types.RotationType;
 import org.ebookdroid.common.settings.types.ToastPosition;
 import org.ebookdroid.core.curl.PageAnimationType;
-import org.ebookdroid.droids.fb2.codec.parsers.FB2Parsers;
 
 import org.emdev.common.settings.base.BooleanPreferenceDefinition;
 import org.emdev.common.settings.base.EnumPreferenceDefinition;
 import org.emdev.common.settings.base.IntegerPreferenceDefinition;
 import org.emdev.common.settings.base.StringPreferenceDefinition;
+import org.emdev.common.xml.XmlParsers;
 
 public interface AppPreferences {
 
@@ -198,7 +198,7 @@ public interface AppPreferences {
 
     /* =============== FB2 Format-specific settings =============== */
 
-    EnumPreferenceDefinition<FB2Parsers> FB2_XML_PARSER = new EnumPreferenceDefinition<FB2Parsers>(FB2Parsers.class,
+    EnumPreferenceDefinition<XmlParsers> FB2_XML_PARSER = new EnumPreferenceDefinition<XmlParsers>(XmlParsers.class,
             pref_fb2_xmlparser_id, pref_fb2_xmlparser_standard);
 
     StringPreferenceDefinition FB2_FONT_PACK = new StringPreferenceDefinition(pref_fb2fontpack_id,

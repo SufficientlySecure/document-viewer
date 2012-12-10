@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.emdev.utils.LengthUtils;
+
 public enum CodecType {
 
     PDF(PdfContext.class, true, Arrays.asList("pdf"), Arrays.asList("application/pdf")),
@@ -77,6 +79,9 @@ public enum CodecType {
     }
 
     public static CodecType getByUri(final String uri) {
+        if (LengthUtils.isEmpty(uri)) {
+            return null;
+        }
         final String uriString = uri.toLowerCase();
         for (final String ext : extensionToActivity.keySet()) {
             if (uriString.endsWith("." + ext)) {

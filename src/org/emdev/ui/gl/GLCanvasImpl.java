@@ -612,6 +612,7 @@ public class GLCanvasImpl implements GLCanvas {
 
     @Override
     public void clearBuffer(final int color) {
+        /*
         final GL11 gl = mGL;
         final float prealpha = (color >>> 24) / 255f;
         final float red = ((color >> 16) & 0xFF) * prealpha;
@@ -621,6 +622,8 @@ public class GLCanvasImpl implements GLCanvas {
 
         gl.glClearColor(red, green, blue, alpha);
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+*/
+        fillRect(0, 0, mScreenWidth, mScreenHeight, color);
     }
 
     private void setTextureCoords(final RectF source) {

@@ -359,9 +359,6 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
                 markupStream.add(new MarkupExtraSpace(-(int) (crs.paint.pOffset.width + crs.paint.vOffset.width)));
 
                 if (!skipContent) {
-                    if (crs.face.style != FontStyle.REGULAR) {
-                        crs = new RenderingStyle(parsedContent, crs, FontStyle.REGULAR);
-                    }
                     markupStream.add(MarkupParagraphEnd.E);
                 }
                 paragraphParsing = false;

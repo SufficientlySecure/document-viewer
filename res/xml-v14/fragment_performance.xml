@@ -47,7 +47,7 @@
                 android:title="@string/pref_decodingonscroll_title" />
 
             <ListPreference
-                android:defaultValue="@string/pref_bitmapsize_128"
+                android:defaultValue="@string/pref_bitmapsize_512"
                 android:entries="@array/pref_bitmapsize_entries"
                 android:entryValues="@array/pref_bitmapsize_values"
                 android:key="@string/pref_bitmapsize_id"

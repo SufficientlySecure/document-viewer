@@ -55,7 +55,7 @@
     <string name="list_clear_recent_mode_delete_book_settings">Clear all book settings</string>
     <string name="list_clear_recent_mode_delete_cached_data">Delete all cached data from disk</string>
 
-    <string name="about_prefix">en_</string>
+    <string name="about_prefix">en</string>
     <string name="about_title">About EBookDroid</string>
     <string name="about_commmon_title">Application info</string>
     <string name="about_fonts_title">Fonts</string>

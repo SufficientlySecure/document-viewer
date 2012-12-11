@@ -18,6 +18,8 @@
     <string name="list_thread_priority_normal">"正常"</string>
     <string name="list_thread_priority_higher">"较高"</string>
     <string name="list_thread_priority_highest">"最高"</string>
+<!--<string name="pref_decodingonscroll_title">"Decoding during scrolling"</string>-->
+<!--<string name="pref_decodingonscroll_summary">"Allow to decode pages during scrolling or fling"</string>-->
     <string name="pref_bitmapsize_title">"位图尺寸"</string>
     <string name="pref_bitmapsize_summary">"设置位图尺寸"</string>
     <string name="list_bitmapsize_64" translatable="true">"64 * 64"</string>

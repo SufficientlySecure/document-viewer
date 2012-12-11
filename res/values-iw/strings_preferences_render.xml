@@ -57,6 +57,8 @@
 <!--<string name="pref_posimages_in_nightmode_summary">"Show gray-scaled images in night mode (do not invert image colors)"</string>-->
     <string name="pref_contrast_title">"הניגודיות"</string>
     <string name="pref_contrast_summary">"תיקון הניגודיות (0 - 1000, 100 כברירת מחדל)"</string>
+<!--<string name="pref_gamma_title">"Gamma"</string>-->
+<!--<string name="pref_gamma_summary">"Gamma correction level (0 – 200, 100 by default)"</string>-->
     <string name="pref_exposure_title">"חשיפה"</string>
     <string name="pref_exposure_summary">"תיקון החשיפה (0 - 200, 100 כברירת מחדל)"</string>
     <string name="pref_autolevels_title">"רמות אוטומטיות"</string>

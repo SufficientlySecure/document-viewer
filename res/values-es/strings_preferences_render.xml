@@ -57,6 +57,8 @@
     <string name="pref_posimages_in_nightmode_summary">"Mostrar las imágenes en escala de grises en modo nocturno (no invertir los colores de la imagen)"</string>
     <string name="pref_contrast_title">"Contraste"</string>
     <string name="pref_contrast_summary">"Nivel de corrección de contraste (0 – 1000, 100 por defecto)"</string>
+<!--<string name="pref_gamma_title">"Gamma"</string>-->
+<!--<string name="pref_gamma_summary">"Gamma correction level (0 – 200, 100 by default)"</string>-->
     <string name="pref_exposure_title">"Exposición"</string>
     <string name="pref_exposure_summary">"Nivel de corrección de exposición (0 – 200, 100 por defecto)"</string>
     <string name="pref_autolevels_title">"Auto ajustar niveles"</string>

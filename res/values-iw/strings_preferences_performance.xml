@@ -18,6 +18,8 @@
     <string name="list_thread_priority_normal">"נורמלי"</string>
     <string name="list_thread_priority_higher">"גבוה"</string>
     <string name="list_thread_priority_highest">"הגבוה ביותר"</string>
+<!--<string name="pref_decodingonscroll_title">"Decoding during scrolling"</string>-->
+<!--<string name="pref_decodingonscroll_summary">"Allow to decode pages during scrolling or fling"</string>-->
     <string name="pref_bitmapsize_title">"גודל מרקם"</string>
     <string name="pref_bitmapsize_summary">"מציין את גודלו של המרקם"</string>
 <!--<string name="list_bitmapsize_64">"64 * 64"</string>-->

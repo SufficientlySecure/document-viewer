@@ -57,6 +57,8 @@
     <string name="pref_posimages_in_nightmode_summary">"In modalità notturna mostra una versione in scala di grigio delle immagini, senza invertirne i colori"</string>
     <string name="pref_contrast_title">"Contrasto"</string>
     <string name="pref_contrast_summary">"Correzione del livello di contrasto (0 – 1000, default = 100 )"</string>
+<!--<string name="pref_gamma_title">"Gamma"</string>-->
+<!--<string name="pref_gamma_summary">"Gamma correction level (0 – 200, 100 by default)"</string>-->
     <string name="pref_exposure_title">"Esposizione"</string>
     <string name="pref_exposure_summary">"Correzione del livello di esposizione (0 – 200, default = 100)"</string>
     <string name="pref_autolevels_title">"Livelli automatici"</string>

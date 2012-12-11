@@ -40,6 +40,7 @@
     <string name="list_clear_recent_mode_delete_bookmarks">"Eliminar todos los marcadores"</string>
     <string name="list_clear_recent_mode_delete_book_settings">"Eliminar todos los ajustes de los libros"</string>
     <string name="list_clear_recent_mode_delete_cached_data">"Eliminar todos los archivos almacenados en caché"</string>
+<!--<string name="about_prefix">"en"</string>-->
     <string name="about_title">"Acerca del programa"</string>
     <string name="about_commmon_title">"Información general"</string>
     <string name="about_fonts_title">"Fuentes"</string>
@@ -47,6 +48,7 @@
     <string name="about_3dparty_title">"Software de terceros"</string>
     <string name="about_changelog_title">"Modificaciones"</string>
     <string name="about_thanks_title">"Agradecimientos"</string>
+<!--<string name="about_donations">"Donations"</string>-->
     <string name="opds">"Navegador OPDS"</string>
     <string name="menu_opds">"Navegador OPDS"</string>
     <string name="opds_connecting">"Conectando…"</string>

@@ -40,6 +40,7 @@
     <string name="list_clear_recent_mode_delete_bookmarks">"Effacer tous les signets"</string>
     <string name="list_clear_recent_mode_delete_book_settings">"Effacer tous les paramètres des livres"</string>
     <string name="list_clear_recent_mode_delete_cached_data">"Effacer tous les fichiers mis en cache"</string>
+<!--<string name="about_prefix">"en"</string>-->
     <string name="about_title">"A propos du programme"</string>
     <string name="about_commmon_title">"Information générale"</string>
 <!--<string name="about_fonts_title">"Fonts"</string>-->
@@ -47,6 +48,7 @@
     <string name="about_3dparty_title">"Programme étranger"</string>
     <string name="about_changelog_title">"Modifications"</string>
 <!--<string name="about_thanks_title">"Acknowledgments"</string>-->
+<!--<string name="about_donations">"Donations"</string>-->
 <!--<string name="opds">"OPDS Browser"</string>-->
 <!--<string name="menu_opds">"OPDS Browser"</string>-->
 <!--<string name="opds_connecting">"Connecting…"</string>-->

@@ -1,0 +1,453 @@
+#labels Featured
+
+= EBookDroid v1.6.2 changelog =
+
+== New features ==
+ * New scrolling & fling implementation
+
+=== Configuration and settings ===
+ * The new "Decoding on scroll" preference allow to prevent CPU load during scrolling
+
+== Bug fixes ==
+ * Fix outline tree creation
+ * Fix directory scanning
+ * Fix other reported issues
+
+= EBookDroid v1.6.1 changelog =
+
+== Bug fixes ==
+
+ * Fix selecting GLES configuration on old devices
+ * Fix other reported issues
+
+= EBookDroid v1.6.0 changelog =
+
+== New features ==
+ * The actual version is targeted for devices with Android 2.2+
+ * OpenGL rendering
+ * Decoding & drawing through native memory
+ * Added support for the following URI schemes: smb:// http:// https://
+
+=== Recents & Files ===
+ * Recent & file browser items re-styled
+ * For Android 3+ tablets added the "File browser" menu item is replaced with "Storage" sub-menu with the following items:
+  * File system (/)
+  * SD card (external storage - typically /sdcard)
+  * Auto Scan dirs (optionally)
+  * Removable media (optionally)
+
+=== Tap/keyboard actions ===
+ * Force portrait/landscape actions added.
+
+=== Configuration and settings ===
+ * Deprecated performance settings removed.
+ * The new "Auto scan removable media" preference allow to automatically scan inserted removable media (flash drives, SD cards, etc).
+ * The new "Show removable" preference allow to show removable media in the "Storage" menu.
+ * The new "Show scan dirs" preference allow to show scan dirs in the "Storage" menu.
+ * The new "Show notifications" preference allow to switch on/off notifications about added/removed files.
+
+== Bug fixes ==
+ * Fix for flickering activities on docked Asus and some other devices.
+ * Fix cropping of inner nodes for splitted pages.
+ * Fix keys processing if search field is visible.
+
+
+= EBookDroid v1.5.6 changelog =
+
+== New features ==
+
+ * Added ability to open a book on existing bookmark from book's context menu in Recents or File Browser.
+ * Splitting pages right-to-left by user choice
+ * File browser opens on first directory from set of autoscan dirs.
+
+=== Improved book formats support ===
+ * PDF: MuPDF library updated up to actual version.
+ * FB2: {{{<code>}}} tag support
+ * FB2: Fixed width of punctuation symbols under Android 4.x
+ * FB2: Various fixed and optimizations
+
+=== Tap/keyboard actions ===
+ * All options menu actions available to bind.
+ * CR #54: new bindable action for scrolling to page corners
+
+=== Configuration and settings ===
+ * Multi-pane preferences shows only on tablets and only in landscape.
+ * "Rotation mode" preference is moved to Rendering settings page.
+ * Navigation and history setting are moved into separated preference screen
+ * New "Show bookmarks in menu" preference added into Navigation settings ( for Android 3+).
+ * Added "First page offset" book preference.
+
+=== Other changes ===
+ * CR #364: capitalize bookmark title
+ * CR #334: GoToPage dialog landscape layout added
+ * Replace task progress dialog with alert one.
+ * Hebrew localization added.
+
+== Bug fixes ==
+ * Fix for #354
+ * Fix for #359
+ * Fix for #345
+ * Fix for missing thumbnails problem
+ * Fix NPEs reported in Market.
+
+
+= EBookDroid v1.5.5 changelog =
+
+=== UI changes ===
+ * Document scrolling has been tuned
+
+
+= EBookDroid v1.5.4 changelog =
+
+=== Other changes ===
+ * Arm7 version removed from Market
+
+== Bug fixes ==
+ * Some minor issues fixed
+
+
+= EBookDroid v1.5.3 changelog =
+
+== New features ==
+
+ * Manual Cropping (experimental)
+ * Caching cropping info
+ * Scrolling & drawing optimization.
+
+=== UI changes ===
+ * New menu structure for Android 3+ tablets and phones (experimental)
+ * New menu structure for Android 1.x-2.x (experimental)
+ * New icons (experimental)
+ * Outline dialog & items re-styled
+ * GoToPage dialog re-styled
+  * Bookmark sorting in ascending order
+  * Edit bookmark name on double click
+  * Scroll long bookmark name on long click
+
+=== Improved book formats support ===
+ * FB2: Empty pages removed.
+ * FB2: Support for notes in paragraphs.
+ * PDF: Add Slow CMYK -> RGB algorithm option to type specific settings.
+
+=== Configuration and settings ===
+ * Book rotation mode added to override application settings.
+ * "Store textures in native memory" experimental performance preference added.
+
+=== Other changes ===
+ * Add one more curler
+ * English localization improved.
+ * Chinese localization added.
+ * Italian localization actualized.
+ * Spanish localization actualized.
+
+== Bug fixes ==
+ * PDF links tapping fixed (#307)
+ * Case-insensitive text search for all formats (#316)
+ * Fix for #318
+ * Fix for black margins in single page mode while zooming
+ * Fix redirect to relative URL
+
+
+
+= EBookDroid v1.5.2 changelog =
+
+== New features ==
+
+ * True gray-scaled night mode.
+ * Positive gray-scaled images in night mode (for PDF & FB2).
+ * Added alternative cache location on sdcard.
+ * ZoomToColumn tap action
+
+=== Improved book formats support ===
+ * FB2: added support of {{{<br>}}}, {{{<ul>}}} and {{{<li>}}} tags.
+ * FB2: fixed section processing and outline structure.
+ * PDF: added workaround support of invalid \Qq operand.
+
+=== Other changes ===
+ * Book shelves: cover loading improved.
+ * Book settings: added support for several loaded books.
+
+== Bug fixes ==
+ * PDF encription filter fixed (#305)
+ * Fix for fullscreen mode on Android 4.x tablets (#294)
+ * OPDS: fixed resolving of relative paths (#292).
+ * Text search fixes.
+
+= EBookDroid v1.5.1 changelog =
+
+=== Configuration and settings ===
+ * UI Language preference added.
+ * Book settings backup preference added.
+
+=== Other changes ===
+ * Italian localization actualized
+
+== Bug fixes ==
+ * Various bugs fixed.
+
+= EBookDroid v1.5.0 changelog =
+
+=== PDF & FB2 fonts ===
+ * PDF built-in fonts removed.
+ * FB2 built-in fonts removed.
+ * Added support of external font packs
+ * Added PDF & FB2 font preferences
+
+=== New features ===
+ * Backup/Restore for application and recent books settings.
+ * OPDS browser added to have ability download books online.
+ * Book text search for PDF, XPS, DjVU and FB2.
+ * Book context menu added to bookcase and file browser.
+ * Tree-like outline.
+ * Quick Zoom action added to be available for keys/tap zones binding.
+
+=== Optimization of decoding and drawing process ===
+ * Multi-threaded rendering for all formats.
+
+=== Improved book formats support ===
+ * MuPDF library updated upto 1.0+.
+ * DjVU library updated.
+ * FB2 tables supported.
+
+=== Configuration and settings ===
+ * Heap preallocation preference added onto Performance page.
+ * Number of decoding threads preference added onto Performance page.
+ * Navigation preferences added onto UI page.
+ * Color preferences added for links and search marks onto UI page.
+ * Auto-backup preferences added.
+ * Added flag to cache FB2 images to disk.
+
+=== Other changes ===
+ * Russian localization actualized
+ * Spanish localization actualized
+
+== Bug fixes ==
+ * Old bugs fixed.
+ * New bugs added.
+
+
+= EBookDroid v1.4.2 changelog =
+
+== Bug fixes ==
+ * Fix for #210.
+ * Fix for #213.
+ * Fixes for various crashes reported on Google Play
+
+= EBookDroid v1.4.1 changelog =
+
+=== New features ===
+ * Store on-page position in bookmarks created from "Add bookmark" menu item.
+ * Store position in navigation history in "GoTo Page" dialog.
+
+=== Optimization of decoding and drawing process ===
+ * "No animation on scrolling" feature added.
+
+=== Configuration and settings ===
+ * UseNativeGraphics preference added.
+ * SeekBar preference control added for numeric settins
+
+== Bug fixes ==
+ * Fix for #169.
+ * Fix for #197
+ * Fix for #200.
+ * Fix for #199.
+ * Fixes for various crashes reported on Google Play
+
+= EBookDroid v1.4.0 changelog =
+
+=== New features ===
+ * PDF/DjVU internal links
+ * Navigation history (by Back button)
+ * Configurable taps
+ * Configurable keys binding
+ * Image post-processing (contrast, exposure, auto-levels correction)
+ * Various low-level performance preferences
+ * MIPS support (not in market)
+
+=== Optimization of decoding and drawing process ===
+ * New rendering engine
+ * New event management engine
+
+=== Impoved book formats support ===
+ * MuPDF library updated
+ * DjVU library updated
+ * Native console unrar is used for CBR format
+ * Custom DPI settings for PDF
+ * Configurable FB2 font size
+ * FB2 hyphenation
+
+=== Configuration and settings ===
+ * Various changes in common and book preferences
+
+== Bug fixes ==
+ * Old bugs fixed
+ * New bugs added
+
+= EBookDroid v1.3.2 changelog =
+
+=== Optimization of decoding and drawing process ===
+ * Bitmap memory management improved
+ * Faster Night mode implementation
+
+=== Impoved book formats support ===
+ * MuPDF library update
+ * FB2.1 <strikethrough> support added
+
+=== Configuration and settings ===
+
+=== Other changes ===
+ * DPad half-page scrolling removed. Dpad keys are now working as Volume ones - in configurable scroll mode
+ * Saving/restoring position inside the page (#19)
+ * Localization updated
+
+== Bug fixes ==
+ * Fix for #84
+ * Fix for #125
+ * Fix for #126
+ * Fix for #127
+ * Fix for #131
+ * Multizoom failure fixed
+ * Various NPE fixed
+
+= EBookDroid v1.3.1 changelog =
+
+=== Optimization of decoding and drawing process ===
+ * Drawing speed optimization.
+ * Memory clearing improved.
+
+=== Impoved book formats support ===
+ * MuPDF library update
+ * Some native code changes for PDF display.
+ * Some MuPDF errors handling added.
+ * Store memory limit for MuPDF library
+ * FB2 fonts are corrected
+
+=== Configuration and settings ===
+ * ShowAnimIcon preference added.
+ * Fix "Use bookcase" settings for Android 1.5
+
+=== Other changes ===
+ * Set App Install Location to auto.
+ * Outline changed to pseudo-tree L&F
+ * Re-styled About dialog.
+ * Bookshelf & Library improvements.
+ * Attachments are viewed via temporary file
+
+== Bug fixes ==
+ * Fix for mixed case file extensions
+ * Fix for #123.
+ * Various FB2 fixes
+ * Several NPE fixed.
+
+= EBookDroid v1.3 changelog =
+
+=== New features ===
+ * Hardware acceleration is returned back for Android 3+
+ * Horizontal scroll view mode added
+ * FB2 support added
+ * Page cropping implemented
+ * Bookshelf view (Android 1.6+) for recent books and library folders added
+ * Natural curler (like as in FBReader) added
+ * PDF rotation implemented.
+ * Book thumbnails added
+ * "Set as thumbnail" action is added into menu
+ * About dialog added
+
+=== Optimization of decoding and drawing process ===
+ * Bitmap pool added
+ * Page bitmaps are splitted onto 128*128 pieces to unify memory usage
+ * Gray background is drawn if djvu page is failed to decode
+ * Zooming processing improved
+
+=== Impoved book formats support ===
+ * MuPDF library updated up to actual sources
+ * DjVU library updated up to actual sources
+ * XPS library updated up to actual sources
+ * Update freetype to version 2.4.7
+
+=== Configuration and settings ===
+ * Preferences based on fragments UI available for Android 3+
+ * DjVU specific settings added
+
+=== Other changes ===
+ * Animated transition is used (if defined) when scroll button pressed
+ * New Year's Easter egg added
+ * Clearing application data dialog added
+
+== Bug fixes ==
+ * Old bugs fixed
+ * New bugs added
+
+=EBookDroid v1.2.2 changelog=
+
+== Bug fixes ==
+
+ * Fix for tap scrolling
+ * Fix for Black screen on Android 1.5
+ * Fix for #50 ( Scrolling jerkiness )
+ * Fix for #52 ( Black/white flashes )
+ * Fix for #51 ( fling effect )
+ * Fix for scrolling by buttons
+ * MuPDF updated
+ * DjVU updated
+
+=EBookDroid v1.2.1 changelog=
+
+== Bug fixes ==
+
+ * Fix PDF memory leaks
+ * Workaround for Archos DPI bug
+
+ * Prevents layout changed on main menu in fullscreen
+ * Recent/Library/Browser view speed improvements
+ * Various MuPDF fixed
+ * Scrolling & Fling optimizartion
+ * Title cleanup improvements
+ * PDF page width/height fixes
+ * Night mode painting fixes
+ * Various NPE fixes
+ * Touch fixes
+ * Loading progress dialog added
+
+=EBookDroid v1.2 changelog=
+
+==New features==
+
+===Optimization of decoding and drawing process===
+ * The decoding queue is resorted depending on current view position before top element is taken
+ * The position & zoom event handlers optimization to restrict number of affected pages/page nodes.
+ * New memory usage mode: "Render page in document resolution" for new devices with Android 3+
+ * Native bitmap memory is directly used if possible (Android 2.2+)
+ * Full recycling of book resources on "Back" key pressed.
+
+===Bookmarks support added===
+ * For current page bookmark can be added by corresponding menu item.
+ * For any other page bookmark can be added inside the "Goto page" dialog
+  * use seek bar to set the required page number
+  *  click the "Bookmarks" button below to open "Add bookmark dialog"
+ * After that bookmark will be available in scrollable list below the "Bookmarks" button
+ * Short click on a bookmark in this list move the progress indicator in seek bar and update page number edit control
+ * Long click on a bookmark allow to delete this bookmark
+ * Long click on the "Bookmarks" allow to delete all bookmarks for the opened book.
+
+===Improved book formats support===
+ * DJVU, PDF: native bitmap memory support added
+ * DJVU: decoding into 16 bit color space suppport added
+
+===Configuration and settings===
+ * "Load recent book on start" preference added into UI settings
+ * "Zoom by double tap" preference added into Touch&Scrolling settings
+ * New memory usage mode: "Render page in document resolution" for new devices with Android 3+
+ * Max slice image size (in KB) added for "Low memory" mode.
+ * Values of text/list preferences are shown in summary string
+
+===Other changes===
+ * Current book settings dialog is additionally available from main menu
+ * Interface changes in file browser/recent library activities
+  * Optimization of folder scanning process
+  * Book settings dialog is opened on long click on a book icon/row
+
+
+== Bug fixes ==
+
+ * Various issues are fixed

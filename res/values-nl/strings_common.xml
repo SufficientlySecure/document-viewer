@@ -40,6 +40,7 @@
     <string name="list_clear_recent_mode_delete_bookmarks">"Verwijder alle bladwijzers"</string>
     <string name="list_clear_recent_mode_delete_book_settings">"Verwijder alle instellingen voor boeken"</string>
     <string name="list_clear_recent_mode_delete_cached_data">"verwijder alle bestanden in de cache"</string>
+<!--<string name="about_prefix">"en"</string>-->
     <string name="about_title">"Over het programma"</string>
     <string name="about_commmon_title">"Algemene informatie"</string>
 <!--<string name="about_fonts_title">"Fonts"</string>-->
@@ -47,6 +48,7 @@
     <string name="about_3dparty_title">"Andere softwareprogramma's"</string>
     <string name="about_changelog_title">"Lijst van veranderingen"</string>
 <!--<string name="about_thanks_title">"Acknowledgments"</string>-->
+<!--<string name="about_donations">"Donations"</string>-->
 <!--<string name="opds">"OPDS Browser"</string>-->
 <!--<string name="menu_opds">"OPDS Browser"</string>-->
 <!--<string name="opds_connecting">"Connecting…"</string>-->

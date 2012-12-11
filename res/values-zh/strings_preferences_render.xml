@@ -57,6 +57,8 @@
 <!--<string name="pref_posimages_in_nightmode_summary">"Show gray-scaled images in night mode (do not invert image colors)"</string>-->
     <string name="pref_contrast_title">"对比"</string>
     <string name="pref_contrast_summary">"对比度校正极 (0——1000,默认为 100)：100&quot;"</string>
+<!--<string name="pref_gamma_title">"Gamma"</string>-->
+<!--<string name="pref_gamma_summary">"Gamma correction level (0 – 200, 100 by default)"</string>-->
     <string name="pref_exposure_title">"曝光"</string>
     <string name="pref_exposure_summary">"曝光校正极 (0——200, 默认为100)：100"</string>
     <string name="pref_autolevels_title">"自动色阶"</string>

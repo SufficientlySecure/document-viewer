@@ -40,6 +40,7 @@
     <string name="list_clear_recent_mode_delete_bookmarks">"הסר את כל הסימניות"</string>
     <string name="list_clear_recent_mode_delete_book_settings">"מחק את כל ההגדרות של ספרים"</string>
     <string name="list_clear_recent_mode_delete_cached_data">"מחק את כל הקבצים במטמון"</string>
+<!--<string name="about_prefix">"en"</string>-->
     <string name="about_title">"על התכנית"</string>
     <string name="about_commmon_title">"מידע כללי"</string>
     <string name="about_fonts_title">"גופנים"</string>
@@ -47,6 +48,7 @@
     <string name="about_3dparty_title">"תוכנת צד שלישי"</string>
     <string name="about_changelog_title">"שינויים"</string>
     <string name="about_thanks_title">"תודות"</string>
+<!--<string name="about_donations">"Donations"</string>-->
     <string name="opds">"OPDS קטלוגים"</string>
     <string name="menu_opds">"OPDS קטלוגים"</string>
     <string name="opds_connecting">"חיבור ..."</string>

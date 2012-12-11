@@ -18,6 +18,8 @@
     <string name="list_thread_priority_normal" translatable="true">"Normal"</string>
     <string name="list_thread_priority_higher">"Arriba de lo normal"</string>
     <string name="list_thread_priority_highest">"Alta"</string>
+<!--<string name="pref_decodingonscroll_title">"Decoding during scrolling"</string>-->
+<!--<string name="pref_decodingonscroll_summary">"Allow to decode pages during scrolling or fling"</string>-->
     <string name="pref_bitmapsize_title">"Tamaño de la texturas"</string>
     <string name="pref_bitmapsize_summary">"Define el tamaño de las texturas"</string>
 <!--<string name="list_bitmapsize_64">"64 * 64"</string>-->

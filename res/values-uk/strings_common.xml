@@ -40,6 +40,7 @@
     <string name="list_clear_recent_mode_delete_bookmarks">"Видалити всі закладки"</string>
     <string name="list_clear_recent_mode_delete_book_settings">"Видалити всі налаштування книг"</string>
     <string name="list_clear_recent_mode_delete_cached_data">"Видалити всі кеш-файли"</string>
+<!--<string name="about_prefix">"en"</string>-->
     <string name="about_title">"Про програму"</string>
     <string name="about_commmon_title">"Загальна інформація"</string>
 <!--<string name="about_fonts_title">"Fonts"</string>-->
@@ -47,6 +48,7 @@
     <string name="about_3dparty_title">"Стороннє ПЗ"</string>
     <string name="about_changelog_title">"Зміни"</string>
 <!--<string name="about_thanks_title">"Acknowledgments"</string>-->
+<!--<string name="about_donations">"Donations"</string>-->
 <!--<string name="opds">"OPDS Browser"</string>-->
 <!--<string name="menu_opds">"OPDS Browser"</string>-->
 <!--<string name="opds_connecting">"Connecting…"</string>-->

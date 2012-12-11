@@ -80,7 +80,7 @@
 
     <target name="-svn-checkout-changelog">
         <svn javahl="false">
-            <export srcurl="${changelog.url}" destpath="assets/about_changelog.wiki" />
+            <export srcurl="${changelog.url}" destpath="assets/about/en/changelog.wiki" />
         </svn>
     </target>
 

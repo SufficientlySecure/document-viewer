@@ -40,7 +40,7 @@
     <string name="list_clear_recent_mode_delete_bookmarks">"Удалить все закладки"</string>
     <string name="list_clear_recent_mode_delete_book_settings">"Удалить все настройки книг"</string>
     <string name="list_clear_recent_mode_delete_cached_data">"Удалить все кэшированные файлы"</string>
-    <string name="about_prefix">ru_</string>
+    <string name="about_prefix">"ru"</string>
     <string name="about_title">"О программе"</string>
     <string name="about_commmon_title">"Общая информация"</string>
     <string name="about_fonts_title">"Шрифты"</string>
@@ -48,7 +48,7 @@
     <string name="about_3dparty_title">"Стороннее ПО"</string>
     <string name="about_changelog_title">"Изменения"</string>
     <string name="about_thanks_title">"Благодарности"</string>
-    <string name="about_donation">"Пожертвования"</string>
+    <string name="about_donations">"Пожертвования"</string>
     <string name="opds">"OPDS каталоги"</string>
     <string name="menu_opds">"OPDS каталоги"</string>
     <string name="opds_connecting">"Соединение…"</string>

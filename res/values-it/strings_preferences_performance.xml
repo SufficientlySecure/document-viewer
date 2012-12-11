@@ -18,6 +18,8 @@
     <string name="list_thread_priority_normal">"Normale"</string>
     <string name="list_thread_priority_higher">"Alta"</string>
     <string name="list_thread_priority_highest">"Molto alta"</string>
+<!--<string name="pref_decodingonscroll_title">"Decoding during scrolling"</string>-->
+<!--<string name="pref_decodingonscroll_summary">"Allow to decode pages during scrolling or fling"</string>-->
     <string name="pref_bitmapsize_title">"Dimensioni mappa di bit delle texture"</string>
     <string name="pref_bitmapsize_summary">"Imposta la dimensione dei componenti che realizzano la texture"</string>
 <!--<string name="list_bitmapsize_64">"64 * 64"</string>-->

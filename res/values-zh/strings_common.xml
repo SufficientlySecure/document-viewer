@@ -40,6 +40,7 @@
     <string name="list_clear_recent_mode_delete_bookmarks">"删除所有书签"</string>
     <string name="list_clear_recent_mode_delete_book_settings">"删除所有设置"</string>
     <string name="list_clear_recent_mode_delete_cached_data">"删除所有缓存的数据"</string>
+<!--<string name="about_prefix">"en"</string>-->
     <string name="about_title">"EBookDroid"</string>
     <string name="about_commmon_title">"软件信息"</string>
     <string name="about_fonts_title">"字体"</string>
@@ -47,6 +48,7 @@
     <string name="about_3dparty_title">"第三方软件"</string>
     <string name="about_changelog_title">"修改记录"</string>
     <string name="about_thanks_title">"致谢"</string>
+<!--<string name="about_donations">"Donations"</string>-->
     <string name="opds">"OPDS浏览器"</string>
     <string name="menu_opds">"OPDS浏览器"</string>
     <string name="opds_connecting">"连接…"</string>

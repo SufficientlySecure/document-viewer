@@ -85,7 +85,7 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
     public void onAppSettingsChanged(final AppSettings oldSettings, final AppSettings newSettings,
             final AppSettings.Diff diff) {
 
-        BitmapManager.setPartSize(1 << newSettings.bitmapSize);
+        ByteBufferManager.setPartSize(1 << newSettings.bitmapSize);
 
         setAppLocale(newSettings.lang);
     }

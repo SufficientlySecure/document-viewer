@@ -36,7 +36,7 @@ public class GLBitmaps {
         this.nodeId = nodeId;
         this.width = orig.width;
         this.height = orig.height;
-        this.partSize = BitmapManager.partSize;
+        this.partSize = ByteBufferManager.partSize;
         this.columns = getPartCount(width, partSize);
         this.rows = getPartCount(height, partSize);
         this.bitmaps = ByteBufferManager.getParts(partSize, rows, columns);

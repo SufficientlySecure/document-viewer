@@ -4,7 +4,6 @@ import org.ebookdroid.core.ViewState;
 
 import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.emdev.common.log.LogContext;
@@ -14,11 +13,41 @@ public class DrawQueue {
 
     private static final LogContext LCTX = LogManager.root().lctx("Imaging");
 
-    private final BlockingQueue<ViewState> queue = new ArrayBlockingQueue<ViewState>(16, true);
+    private final ArrayBlockingQueue<ViewState> queue = new ArrayBlockingQueue<ViewState>(16, true);
 
     private final ArrayList<ViewState> list = new ArrayList<ViewState>();
 
     public DrawQueue() {
+    }
+
+    public ViewState takeLastTask() {
+        ViewState task = null;
+        try {
+            // Workaround for possible ConcurrentModificationException
+            while (true) {
+                list.clear();
+                try {
+                    if (queue.drainTo(list) > 0) {
+                        final int last = list.size() - 1;
+                        task = list.get(last);
+                        for (int i = 0; i < last; i++) {
+                            final ViewState vs = list.get(i);
+                            if (vs != null) {
+                                vs.releaseAfterDraw();
+                            }
+                        }
+                    }
+                    break;
+                } catch (final Throwable ex) {
+                    // Go to next attempt
+                    LCTX.e("Unexpected error on retrieving last view state from draw queue: " + ex.getMessage());
+                }
+            }
+        } catch (final Throwable ex) {
+            // Go to next attempt
+            LCTX.e("Unexpected error on retrieving view state from draw queue: " + ex.getMessage());
+        }
+        return task;
     }
 
     public ViewState takeTask(final long timeout, final TimeUnit unit, final boolean useLastState) {

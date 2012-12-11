@@ -2,7 +2,6 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.R;
 import org.ebookdroid.common.settings.AppSettings;
-import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.core.codec.PageLink;
 import org.ebookdroid.core.models.SearchModel;
 import org.ebookdroid.core.models.SearchModel.Matches;
@@ -95,10 +94,7 @@ public class EventGLDraw implements IEvent {
                 LCTX.d("process(" + page.index + "): view=" + viewState.viewRect + ", page=" + pageBounds);
             }
 
-            if (!(page.nodes.root.holder.hasBitmaps() || page.nodes.isHiddenByChildren(page.nodes.root, viewState, pageBounds))) {
-                drawPageBackground(page);
-            }
-            // drawPageNumber(page);
+            drawPageBackground(page);
 
             final boolean res = page.nodes.process(this, level, false);
 

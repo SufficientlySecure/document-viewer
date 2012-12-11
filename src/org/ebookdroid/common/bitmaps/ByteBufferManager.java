@@ -39,6 +39,8 @@ public class ByteBufferManager {
 
     private static ReentrantLock lock = new ReentrantLock();
 
+    static int partSize = 1 << 7;
+
     public static ByteBufferBitmap getBitmap(final int width, final int height) {
         lock.lock();
         try {
@@ -343,5 +345,13 @@ public class ByteBufferManager {
                         + (memoryPooled.get() / 1024) + "KB");
             }
         }
+    }
+
+    public static int getPartSize() {
+        return partSize;
+    }
+
+    public static void setPartSize(final int partSize) {
+        ByteBufferManager.partSize = partSize;
     }
 }

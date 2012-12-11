@@ -44,8 +44,6 @@ public class BitmapManager {
 
     private static ReentrantLock lock = new ReentrantLock();
 
-    static int partSize = 1 << 7;
-
     public static Bitmap getResource(final int resourceId) {
         synchronized (resources) {
             Bitmap bitmap = resources.get(resourceId);
@@ -260,14 +258,6 @@ public class BitmapManager {
 
     public static int getBitmapBufferSize(final int width, final int height, final Bitmap.Config config) {
         return getPixelSizeInBytes(config) * width * height;
-    }
-
-    public static int getPartSize() {
-        return partSize;
-    }
-
-    public static void setPartSize(final int partSize) {
-        BitmapManager.partSize = partSize;
     }
 
     public static int getPixelSizeInBytes(final Bitmap.Config config) {

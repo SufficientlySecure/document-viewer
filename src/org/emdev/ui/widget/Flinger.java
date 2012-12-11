@@ -100,13 +100,22 @@ public class Flinger {
         lock.lock();
         try {
             if (isFinished()) {
-                return false;
+                if (oldProgress == 0 || oldProgress == 1) {
+                    return false;
+                } else {
+                    currX = finalX;
+                    currY = finalY;
+                    oldProgress = 1;
+                    return true;
+                }
             }
             // System.out.println("Flinger.computeScrollOffset(" + SystemClock.uptimeMillis() + ")");
             float progress = duration > 0 ? (float) (SystemClock.uptimeMillis() - startTime) / duration : 1;
             if (oldProgress == progress && progress != 0) {
                 // System.out.println("oldProgress == progress && progress != 0");
-                mode = MODE_SCROLL;
+                currX = finalX;
+                currY = finalY;
+                mode = MODE_STOPPED;
                 return false;
             }
             progress = Math.min(progress, 1);
@@ -120,7 +129,7 @@ public class Flinger {
             } else {
                 currX = (int) (startX + (finalX - startX) * progress);
                 currY = (int) (startY + (finalY - startY) * progress);
-                // System.out.println("computeScrollOffset(SCROLL):" + progress);
+                // System.out.println("computeScrollOffset(SCROLL):" + progress + ", " + currY);
             }
             oldProgress = progress;
             return true;
@@ -135,7 +144,6 @@ public class Flinger {
             if (SystemClock.uptimeMillis() - startTime >= duration) {
                 startTime = 0;
                 duration = 0;
-                oldProgress = 0;
                 mode = MODE_STOPPED;
             }
             return mode == MODE_STOPPED;

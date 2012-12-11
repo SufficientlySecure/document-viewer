@@ -17,6 +17,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -34,6 +35,7 @@ public class AboutActivity extends Activity {
             new Part(R.string.about_3dparty_title, Format.HTML, "about_3rdparty.html"),
             new Part(R.string.about_changelog_title, Format.WIKI, "about_changelog.wiki"),
             new Part(R.string.about_thanks_title, Format.HTML, "about_thanks.html"),
+            new Part(R.string.about_donation, Format.HTML, "about_donations.html"),
     // End
     };
 
@@ -79,7 +81,12 @@ public class AboutActivity extends Activity {
         public CharSequence getContent(final Context context) {
             if (content == null) {
                 try {
-                    final InputStream input = context.getAssets().open(fileName);
+                    InputStream input;
+                    try {
+                        input = context.getAssets().open(context.getString(R.string.about_prefix) + fileName);
+                    } catch (FileNotFoundException e) {
+                        input = context.getAssets().open(fileName);
+                    }
                     final int size = input.available();
                     byte[] buffer = new byte[size];
                     input.read(buffer);

@@ -55,6 +55,7 @@
     <string name="list_clear_recent_mode_delete_book_settings">Clear all book settings</string>
     <string name="list_clear_recent_mode_delete_cached_data">Delete all cached data from disk</string>
 
+    <string name="about_prefix">en_</string>
     <string name="about_title">About EBookDroid</string>
     <string name="about_commmon_title">Application info</string>
     <string name="about_fonts_title">Fonts</string>
@@ -62,6 +63,7 @@
     <string name="about_3dparty_title">Third party software</string>
     <string name="about_changelog_title">Change Log</string>
     <string name="about_thanks_title">Acknowledgments</string>
+    <string name="about_donations">Donations</string>
 
     <string name="opds">OPDS Browser</string>
     <string name="menu_opds">OPDS Browser</string>

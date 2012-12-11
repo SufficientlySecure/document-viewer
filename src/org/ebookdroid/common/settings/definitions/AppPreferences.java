@@ -117,7 +117,7 @@ public interface AppPreferences {
 
     BooleanPreferenceDefinition DECODING_ON_SCROLL = new BooleanPreferenceDefinition(pref_decodingonscroll_id, pref_decodingonscroll_defvalue);
 
-    IntegerPreferenceDefinition BITMAP_SIZE = new IntegerPreferenceDefinition(pref_bitmapsize_id, pref_bitmapsize_128,
+    IntegerPreferenceDefinition BITMAP_SIZE = new IntegerPreferenceDefinition(pref_bitmapsize_id, pref_bitmapsize_512,
             pref_bitmapsize_64, pref_bitmapsize_1024);
 
     IntegerPreferenceDefinition HEAP_PREALLOCATE = new IntegerPreferenceDefinition(pref_heappreallocate_id,

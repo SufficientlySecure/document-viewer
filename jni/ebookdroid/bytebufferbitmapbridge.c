@@ -5,9 +5,6 @@
 
 #include <android/log.h>
 
-#include "hqxcommon.h"
-#include "hqx.h"
-
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 
@@ -43,76 +40,6 @@ Java_org_ebookdroid_common_bitmaps_ByteBufferBitmap_free(JNIEnv* env, jclass cla
     free(buf);
 }
 
-JNIEXPORT void JNICALL
-Java_org_ebookdroid_common_bitmaps_ByteBufferBitmap_nativeHq4x(JNIEnv* env, jclass classObject, jobject srcBuffer,
-                                                               jobject dstBuffer, jint width, jint height)
-{
-
-    uint32_t* src;
-    uint32_t* dst;
-
-    src = (uint32_t*) ((*env)->GetDirectBufferAddress(env, srcBuffer));
-    if (!src)
-    {
-        ERROR("Can not get direct buffer");
-        return;
-    }
-    dst = (uint32_t*) ((*env)->GetDirectBufferAddress(env, dstBuffer));
-    if (!dst)
-    {
-        ERROR("Can not get direct buffer");
-        return;
-    }
-
-    hq4x_32(src, dst, width, height);
-}
-
-JNIEXPORT void JNICALL
-Java_org_ebookdroid_common_bitmaps_ByteBufferBitmap_nativeHq3x(JNIEnv* env, jclass classObject, jobject srcBuffer,
-                                                               jobject dstBuffer, jint width, jint height)
-{
-
-    uint32_t* src;
-    uint32_t* dst;
-
-    src = (uint32_t*) ((*env)->GetDirectBufferAddress(env, srcBuffer));
-    if (!src)
-    {
-        ERROR("Can not get direct buffer");
-        return;
-    }
-    dst = (uint32_t*) ((*env)->GetDirectBufferAddress(env, dstBuffer));
-    if (!dst)
-    {
-        ERROR("Can not get direct buffer");
-        return;
-    }
-
-    hq3x_32(src, dst, width, height);
-}
-
-JNIEXPORT void JNICALL
-Java_org_ebookdroid_common_bitmaps_ByteBufferBitmap_nativeHq2x(JNIEnv* env, jclass classObject, jobject srcBuffer,
-                                                               jobject dstBuffer, jint width, jint height)
-{
-    uint32_t* src;
-    uint32_t* dst;
-
-    src = (uint32_t*) ((*env)->GetDirectBufferAddress(env, srcBuffer));
-    if (!src)
-    {
-        ERROR("Can not get direct buffer");
-        return;
-    }
-    dst = (uint32_t*) ((*env)->GetDirectBufferAddress(env, dstBuffer));
-    if (!dst)
-    {
-        ERROR("Can not get direct buffer");
-        return;
-    }
-
-    hq2x_32(src, dst, width, height);
-}
 
 JNIEXPORT void JNICALL
 Java_org_ebookdroid_common_bitmaps_ByteBufferBitmap_nativeInvert(JNIEnv* env, jclass classObject, jobject srcBuffer,

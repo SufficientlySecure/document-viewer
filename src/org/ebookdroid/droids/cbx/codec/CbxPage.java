@@ -135,38 +135,9 @@ public class CbxPage<ArchiveEntryType extends ArchiveEntry> extends AbstractCode
                         * storedBitmap.getWidth()), (int) FloatMath.ceil(pageSliceBounds.bottom
                         * storedBitmap.getHeight()));
 
-        if (CbxDocument.LCTX.isDebugEnabled()) {
-            CbxDocument.LCTX.d("bitmap="+storedBitmap.getWidth()+", "+storedBitmap.getHeight()+", src rect=" + (srcRect));
-        }
-        if (CbxDocument.LCTX.isDebugEnabled()) {
-            CbxDocument.LCTX.d("source ratio=" + (srcRect.width() / (float) srcRect.height()) + ", target ratio="
-                    + (width / (float) height));
-        }
-
-        final float scaleFactor = (float) width / (float) srcRect.width();
-
-        if (CbxDocument.LCTX.isDebugEnabled()) {
-            CbxDocument.LCTX.d("Scale factor:" + scaleFactor);
-        }
-        if (scaleFactor > 4.5) {
-            if (CbxDocument.LCTX.isDebugEnabled()) {
-                CbxDocument.LCTX.d("Calling Native HQ4x");
-            }
-            return ByteBufferBitmap.scaleHq4x(storedBitmap, srcRect);
-        } else if (scaleFactor > 3.5) {
-            if (CbxDocument.LCTX.isDebugEnabled()) {
-                CbxDocument.LCTX.d("Calling Native HQ3x");
-            }
-            return ByteBufferBitmap.scaleHq3x(storedBitmap, srcRect);
-        } else if (scaleFactor > 2.5) {
-            if (CbxDocument.LCTX.isDebugEnabled()) {
-                CbxDocument.LCTX.d("Calling Native HQ2x");
-            }
-            return ByteBufferBitmap.scaleHq2x(storedBitmap, srcRect);
-        }
-
         return ByteBufferBitmap.get(storedBitmap, srcRect);
     }
+
 
     private int getScale(final float requiredWidth, final float requiredHeight) {
         int scale = 1;

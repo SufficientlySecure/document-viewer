@@ -160,53 +160,11 @@ public final class ByteBufferBitmap {
         nativeEraseColor(pixels, width, height, color);
     }
 
-    public static ByteBufferBitmap scaleHq4x(final Bitmap bitmap, final Rect srcRect) {
-        final ByteBufferBitmap src = get(bitmap, srcRect);
-        src.fillAlpha(0x00);
-
-        final ByteBufferBitmap dest = ByteBufferManager.getBitmap(src.width * 4, src.height * 4);
-        nativeHq4x(src.pixels, dest.pixels, src.width, src.height);
-        dest.fillAlpha(0xFF);
-
-        ByteBufferManager.release(src);
-        return dest;
-    }
-
-    public static ByteBufferBitmap scaleHq3x(final Bitmap bitmap, final Rect srcRect) {
-        final ByteBufferBitmap src = get(bitmap, srcRect);
-        src.fillAlpha(0x00);
-
-        final ByteBufferBitmap dest = ByteBufferManager.getBitmap(src.width * 3, src.height * 3);
-        nativeHq3x(src.pixels, dest.pixels, src.width, src.height);
-        dest.fillAlpha(0xFF);
-
-        ByteBufferManager.release(src);
-        return dest;
-    }
-
-    public static ByteBufferBitmap scaleHq2x(final Bitmap bitmap, final Rect srcRect) {
-        final ByteBufferBitmap src = get(bitmap, srcRect);
-        src.fillAlpha(0x00);
-
-        final ByteBufferBitmap dest = ByteBufferManager.getBitmap(src.width * 2, src.height * 2);
-        nativeHq2x(src.pixels, dest.pixels, src.width, src.height);
-        dest.fillAlpha(0xFF);
-
-        ByteBufferManager.release(src);
-        return dest;
-    }
-
     @Override
     public String toString() {
         return getClass().getSimpleName() + "[id=" + id + ", width=" + width + ", height=" + height + ", size=" + size
                 + "]";
     }
-
-    private static native void nativeHq2x(ByteBuffer src, ByteBuffer dst, int width, int height);
-
-    private static native void nativeHq3x(ByteBuffer src, ByteBuffer dst, int width, int height);
-
-    private static native void nativeHq4x(ByteBuffer src, ByteBuffer dst, int width, int height);
 
     private static native void nativeInvert(ByteBuffer src, int width, int height);
 

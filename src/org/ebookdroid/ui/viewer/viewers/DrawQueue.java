@@ -50,34 +50,10 @@ public class DrawQueue {
         return task;
     }
 
-    public ViewState takeTask(final long timeout, final TimeUnit unit, final boolean useLastState) {
+    public ViewState takeFirstTask() {
         ViewState task = null;
         try {
-            task = queue.poll(timeout, unit);
-            if (task != null && useLastState) {
-                // Workaround for possible ConcurrentModificationException
-                while (true) {
-                    list.clear();
-                    try {
-                        if (queue.drainTo(list) > 0) {
-                            final int last = list.size() - 1;
-                            task = list.get(last);
-                            for (int i = 0; i < last; i++) {
-                                final ViewState vs = list.get(i);
-                                if (vs != null) {
-                                    vs.releaseAfterDraw();
-                                }
-                            }
-                        }
-                        break;
-                    } catch (final Throwable ex) {
-                        // Go to next attempt
-                        LCTX.e("Unexpected error on retrieving last view state from draw queue: " + ex.getMessage());
-                    }
-                }
-            }
-        } catch (final InterruptedException e) {
-            Thread.interrupted();
+            task = queue.poll(0, TimeUnit.MILLISECONDS);
         } catch (final Throwable ex) {
             // Go to next attempt
             LCTX.e("Unexpected error on retrieving view state from draw queue: " + ex.getMessage());

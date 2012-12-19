@@ -31,6 +31,7 @@ import org.ebookdroid.core.models.DocumentModel;
 import org.ebookdroid.core.models.SearchModel;
 import org.ebookdroid.core.models.ZoomModel;
 import org.ebookdroid.droids.mupdf.codec.exceptions.MuPdfPasswordException;
+import org.ebookdroid.ui.library.dialogs.FolderDlg;
 import org.ebookdroid.ui.settings.SettingsUI;
 import org.ebookdroid.ui.viewer.dialogs.GoToPageDialog;
 import org.ebookdroid.ui.viewer.dialogs.OutlineDialog;
@@ -58,6 +59,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -65,6 +67,7 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.emdev.BaseDroidApp;
 import org.emdev.common.android.AndroidVersion;
 import org.emdev.common.backup.BackupManager;
 import org.emdev.common.content.ContentScheme;
@@ -75,7 +78,6 @@ import org.emdev.ui.actions.ActionDialogBuilder;
 import org.emdev.ui.actions.ActionEx;
 import org.emdev.ui.actions.ActionMethod;
 import org.emdev.ui.actions.IActionController;
-import org.emdev.ui.actions.params.Constant;
 import org.emdev.ui.actions.params.EditableValue;
 import org.emdev.ui.actions.params.EditableValue.PasswordEditable;
 import org.emdev.ui.progress.IProgressIndicator;
@@ -83,6 +85,7 @@ import org.emdev.ui.tasks.AsyncTask;
 import org.emdev.ui.tasks.AsyncTaskExecutor;
 import org.emdev.ui.tasks.BaseAsyncTask;
 import org.emdev.ui.uimanager.IUIManager;
+import org.emdev.utils.FileUtils;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.StringUtils;
 
@@ -258,12 +261,12 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
     public void onPostCreate(final Bundle savedInstanceState, final boolean recreated) {
         setWindowTitle();
         if (!recreated && documentModel != ActivityControllerStub.DM_STUB) {
-            startDecoding(m_fileName, "");
+            startDecoding("");
         }
     }
 
-    public void startDecoding(final String fileName, final String password) {
-        executor.execute(new BookLoadTask(fileName, password));
+    public void startDecoding(final String password) {
+        executor.execute(new BookLoadTask(password));
     }
 
     /**
@@ -299,8 +302,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
 
         final ActionDialogBuilder builder = new ActionDialogBuilder(getManagedComponent(), this);
         builder.setTitle(fileName).setMessage(promtId).setView(input);
-        builder.setPositiveButton(R.id.actions_redecodingWithPassword, new EditableValue("input", input), new Constant(
-                "fileName", fileName));
+        builder.setPositiveButton(R.id.actions_redecodingWithPassword, new EditableValue("input", input));
         builder.setNegativeButton(R.id.mainmenu_close).show();
     }
 
@@ -318,8 +320,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
     public void redecodingWithPassword(final ActionEx action) {
         final PasswordEditable value = action.getParameter("input");
         final String password = value.getPassword();
-        final String fileName = action.getParameter("fileName");
-        startDecoding(fileName, password);
+        startDecoding(password);
     }
 
     protected IViewController switchDocumentController(final BookSettings bs) {
@@ -762,11 +763,52 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
 
     @ActionMethod(ids = R.id.mainmenu_close)
     public void closeActivity(final ActionEx action) {
+        if (scheme == null || !scheme.temporary) {
+            getOrCreateAction(R.id.actions_doClose).run();
+            return;
+        }
+
+        getOrCreateAction(R.id.actions_doSaveAndClose).putValue("save", Boolean.TRUE);
+        getOrCreateAction(R.id.actions_doClose).putValue("save", Boolean.FALSE);
+
+        final ActionDialogBuilder builder = new ActionDialogBuilder(getManagedComponent(), this);
+        builder.setTitle(R.string.confirmclose_title);
+        builder.setMessage(R.string.confirmsave_msg);
+        builder.setPositiveButton(R.string.confirmsave_yes_btn, R.id.actions_showSaveDlg);
+        builder.setNegativeButton(R.string.confirmsave_no_btn, R.id.actions_doClose);
+        builder.show();
+    }
+
+    @ActionMethod(ids = R.id.actions_showSaveDlg)
+    public void showSaveDlg(final ActionEx action) {
+        final FolderDlg dlg = new FolderDlg(this);
+        dlg.show(BaseDroidApp.EXT_STORAGE, R.string.confirmclose_title, R.id.actions_doSaveAndClose, R.id.actions_doClose);
+    }
+
+    @ActionMethod(ids = R.id.actions_doSaveAndClose)
+    public void doSaveAndClose(final ActionEx action) {
+        final File targetFolder = action.getParameter(FolderDlg.SELECTED_FOLDER);
+        final File source = new File(m_fileName);
+        final File target = new File(targetFolder, source.getName());
+
+        try {
+            FileUtils.copy(source, target);
+            SettingsManager.copyBookSettings(target, bookSettings);
+            CacheManager.copy(source.getAbsolutePath(), target.getAbsolutePath(), true);
+        } catch (final IOException ex) {
+            ex.printStackTrace();
+        }
+
+        doClose(action);
+    }
+
+    @ActionMethod(ids = R.id.actions_doClose)
+    public void doClose(final ActionEx action) {
         if (documentModel != null) {
             documentModel.recycle();
         }
         if (scheme != null && scheme.temporary) {
-            CacheManager.clear(scheme.key);
+            CacheManager.clear(m_fileName);
         }
         SettingsManager.releaseBookSettings(id, bookSettings);
         getManagedComponent().finish();
@@ -870,12 +912,10 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
 
     final class BookLoadTask extends BaseAsyncTask<String, Throwable> implements IProgressIndicator {
 
-        private String m_fileName;
         private final String m_password;
 
-        public BookLoadTask(final String fileName, final String password) {
+        public BookLoadTask(final String password) {
             super(getManagedComponent(), R.string.msg_loading, false);
-            m_fileName = fileName;
             m_password = password;
         }
 

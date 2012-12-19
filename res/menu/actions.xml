@@ -42,4 +42,9 @@
 
     <item android:id="@+id/actions_storageGroup"/>
     <item android:id="@+id/actions_storage"/>
+
+    <item android:id="@+id/actions_showSaveDlg"/>
+    <item android:id="@+id/actions_doSaveAndClose"/>
+    <item android:id="@+id/actions_doClose"/>
+
 </menu>

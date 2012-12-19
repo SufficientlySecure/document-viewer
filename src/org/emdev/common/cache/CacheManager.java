@@ -70,9 +70,9 @@ public class CacheManager {
         return tempfile;
     }
 
-    public static File createTempFile(final InputStream source, final String suffix, final UIFileCopying worker)
+    public static File createTempDocument(final InputStream source, final String fileName, final UIFileCopying worker)
             throws IOException {
-        final File tempfile = File.createTempFile("temp", suffix, s_cacheDir);
+        final File tempfile = new File(s_cacheDir, fileName);
         tempfile.deleteOnExit();
 
         worker.copy(-1, source, new FileOutputStream(tempfile));

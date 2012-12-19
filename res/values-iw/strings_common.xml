@@ -4,6 +4,9 @@
 <!--<string name="app_name">"EBookDroid"</string>-->
     <string name="confirmclose_title">"סוגר את הספר ..."</string>
     <string name="confirmclose_msg">"האם אתה באמת רוצה לסגור את הספר?"</string>
+<!--<string name="confirmsave_msg">"Would you like to save this document?"</string>-->
+<!--<string name="confirmsave_yes_btn">"Save and close"</string>-->
+<!--<string name="confirmsave_no_btn">"Close"</string>-->
 <!--<string name="error_dlg_title">"Application error"</string>-->
 <!--<string name="msg_bad_intent">"Bad intent or scheme:\n%s"</string>-->
 <!--<string name="msg_no_intent_data">"No intent data:\n%s"</string>-->

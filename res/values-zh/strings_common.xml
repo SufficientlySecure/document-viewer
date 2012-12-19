@@ -4,6 +4,9 @@
     <string name="app_name" translatable="true">"EBookDroid"</string>
     <string name="confirmclose_title">"关闭…"</string>
     <string name="confirmclose_msg">"确定关闭当前视图？"</string>
+<!--<string name="confirmsave_msg">"Would you like to save this document?"</string>-->
+<!--<string name="confirmsave_yes_btn">"Save and close"</string>-->
+<!--<string name="confirmsave_no_btn">"Close"</string>-->
     <string name="error_dlg_title">"应用程序错误"</string>
     <string name="msg_bad_intent">"错误:\n%s"</string>
     <string name="msg_no_intent_data">"数据丢失:\n%s"</string>

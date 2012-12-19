@@ -53,7 +53,7 @@ public enum ContentScheme {
         @Override
         public File loadToCache(final Uri uri, final IProgressIndicator progress) throws IOException {
             final UIFileCopying ui = new UIFileCopying(R.string.opds_loading_book, 64 * 1024, progress);
-            return CacheManager.createTempFile(new SmbFileInputStream(uri.toString()), uri.getLastPathSegment(), ui);
+            return CacheManager.createTempDocument(new SmbFileInputStream(uri.toString()), uri.getLastPathSegment(), ui);
         }
     },
 
@@ -125,6 +125,6 @@ public enum ContentScheme {
     public static File loadFromURL(final Uri uri, final IProgressIndicator progress) throws IOException {
         final URL url = new URL(uri.toString());
         final UIFileCopying ui = new UIFileCopying(R.string.msg_loading_book, 64 * 1024, progress);
-        return CacheManager.createTempFile(url.openStream(), uri.getLastPathSegment(), ui);
+        return CacheManager.createTempDocument(url.openStream(), uri.getLastPathSegment(), ui);
     }
 }

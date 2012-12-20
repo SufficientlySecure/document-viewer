@@ -2,7 +2,6 @@
 
 #include <android/log.h>
 
-#include <nativebitmap.h>
 #include <javahelpers.h>
 
 #include <fitz.h>
@@ -606,7 +605,6 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPageDirect(JNIEnv *env, j
     int length, val;
     fz_device *dev = NULL;
 
-    AndroidBitmapInfo info;
     void *pixels;
 
     int ret;

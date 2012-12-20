@@ -24,9 +24,6 @@
     __android_log_print(ANDROID_LOG_INFO, "EBookDroid.DJVU", args)
 
 
-/*JNI BITMAP API */
-
-#include <nativebitmap.h>
 #include <javahelpers.h>
 
 void ThrowError(JNIEnv* env, const char* msg)
@@ -539,7 +536,6 @@ extern "C" jboolean Java_org_ebookdroid_droids_djvu_codec_DjvuPage_renderPageDir
 {
 	DEBUG("Rendering page bitmap");
 
-    AndroidBitmapInfo info;
     void *pixels;
 
     int ret;

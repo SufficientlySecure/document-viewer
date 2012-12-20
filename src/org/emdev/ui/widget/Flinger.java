@@ -71,6 +71,8 @@ public class Flinger {
             mode = MODE_FLING;
             this.startX = startX;
             this.startY = startY;
+            this.currX = startX;
+            this.currY = startY;
             this.minX = minX;
             this.minY = minY;
             this.maxX = maxX;
@@ -86,7 +88,7 @@ public class Flinger {
             this.duration = (int) Math.round(FLING_DURATION_PARAM
                     * Math.pow(Math.abs(velocity), 1.0 / (DECELERATED_FACTOR - 1)));
 
-            // System.out.println("Start time:" + startTime + ", duration:" + duration);
+            // System.out.println("Start time:" + startTime + ", duration:" + duration + ", " + startY);
             this.distance = (int) Math.round(velocity * duration / DECELERATED_FACTOR / 1000);
 
             this.finalX = getX(1.0f);
@@ -101,11 +103,13 @@ public class Flinger {
         try {
             if (isFinished()) {
                 if (oldProgress == 0 || oldProgress == 1) {
+                    // System.out.println("oldProgress == 0 || oldProgress == 1");
                     return false;
                 } else {
                     currX = finalX;
                     currY = finalY;
                     oldProgress = 1;
+                    // System.out.println("Finished: " + currY);
                     return true;
                 }
             }
@@ -125,7 +129,7 @@ public class Flinger {
                 f = 1 - (float) Math.pow(1 - progress, DECELERATED_FACTOR);
                 currX = getX(f);
                 currY = getY(f);
-                // System.out.println("computeScrollOffset(FLING):" + f);
+                // System.out.println("computeScrollOffset(FLING):" + f + ", " + currY);
             } else {
                 currX = (int) (startX + (finalX - startX) * progress);
                 currY = (int) (startY + (finalY - startY) * progress);

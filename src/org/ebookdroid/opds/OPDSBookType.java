@@ -13,11 +13,11 @@ public enum OPDSBookType {
     /**
      *
      */
-    DJVU(false, "application/djvu"),
+    DJVU(false, "application/djvu", "image/djvu", "image/x-djvu", "image/vnd.djvu"),
     /**
      *
      */
-    FB2(true, "application/fb2"),
+    FB2(true, "application/fb2", "text/fb2+xml"),
     /**
      *
      */

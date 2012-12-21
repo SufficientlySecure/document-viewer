@@ -88,7 +88,6 @@ public class OPDSClient extends BaseHttpClient {
 
             final HttpEntity entity = resp.getEntity();
 
-            final OPDSContentHandler h = new OPDSContentHandler(feed, builder);
             final Header enc = entity.getContentEncoding();
             final String encoding = LengthUtils.safeString(enc != null ? enc.getValue() : "", "UTF-8");
 
@@ -103,6 +102,14 @@ public class OPDSClient extends BaseHttpClient {
 
             // System.out.println(buf);
 
+            // Workaround for Calibre (tested with 0.8.38)
+            if (buf.indexOf("<title>..:: calibre library ::.. </title>") >= 0) {
+                LCTX.w("The feed link is calibre root URI: " + feed.link.uri);
+                feed.link = new Link(feed.link.uri + "/opds");
+                return loadFeed(feed, progress);
+            }
+
+            final OPDSContentHandler h = new OPDSContentHandler(feed, builder);
             h.parse(buf.toString());
 
         } catch (final InterruptedIOException ex) {

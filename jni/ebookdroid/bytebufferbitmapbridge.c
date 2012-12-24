@@ -8,14 +8,16 @@
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 
+#define LCTX "EBookDroid.ByteBufferBitmap"
+
 #define DEBUG(args...) \
-    __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid.ByteBufferBitmap", args)
+    __android_log_print(ANDROID_LOG_DEBUG, LCTX, args)
 
 #define ERROR(args...) \
-    __android_log_print(ANDROID_LOG_ERROR, "EBookDroid.ByteBufferBitmap", args)
+    __android_log_print(ANDROID_LOG_ERROR, LCTX, args)
 
 #define INFO(args...) \
-    __android_log_print(ANDROID_LOG_INFO, "EBookDroid.ByteBufferBitmap", args)
+    __android_log_print(ANDROID_LOG_INFO, LCTX, args)
 
 JNIEXPORT jobject JNICALL
 Java_org_ebookdroid_common_bitmaps_ByteBufferBitmap_create(JNIEnv* env, jclass classObject, jint size)
@@ -39,7 +41,6 @@ Java_org_ebookdroid_common_bitmaps_ByteBufferBitmap_free(JNIEnv* env, jclass cla
     }
     free(buf);
 }
-
 
 JNIEXPORT void JNICALL
 Java_org_ebookdroid_common_bitmaps_ByteBufferBitmap_nativeInvert(JNIEnv* env, jclass classObject, jobject srcBuffer,

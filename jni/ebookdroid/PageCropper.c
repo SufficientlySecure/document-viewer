@@ -20,14 +20,17 @@
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 
+#define LCTX "EBookDroid.PageCropper"
+
 #define DEBUG(args...) \
-    __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid.PageCropper", args)
+    __android_log_print(ANDROID_LOG_DEBUG, LCTX, args)
 
 #define ERROR(args...) \
-    __android_log_print(ANDROID_LOG_ERROR, "EBookDroid.PageCropper", args)
+    __android_log_print(ANDROID_LOG_ERROR, LCTX, args)
 
 #define INFO(args...) \
-    __android_log_print(ANDROID_LOG_INFO, "EBookDroid.PageCropper", args)
+    __android_log_print(ANDROID_LOG_INFO, LCTX, args)
+
 
 int calculateAvgLum(uint8_t* src, int width, int height, int sub_x, int sub_y, int sub_w, int sub_h);
 float getLeftBound(uint8_t* src, int width, int height, int avgLum);

@@ -12,16 +12,16 @@
 
 #include <android/log.h>
 
-#define DJVU_DROID "EBookDroid.DJVU"
+#define LCTX "EBookDroid.DJVU"
 
 #define DEBUG(args...) \
-    __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid.DJVU", args)
+    __android_log_print(ANDROID_LOG_DEBUG, LCTX, args)
 
 #define ERROR(args...) \
-    __android_log_print(ANDROID_LOG_ERROR, "EBookDroid.DJVU", args)
+    __android_log_print(ANDROID_LOG_ERROR, LCTX, args)
 
 #define INFO(args...) \
-    __android_log_print(ANDROID_LOG_INFO, "EBookDroid.DJVU", args)
+    __android_log_print(ANDROID_LOG_INFO, LCTX, args)
 
 
 #include <javahelpers.h>
@@ -78,7 +78,7 @@ void waitAndHandleMessages(JNIEnv *env, jlong contextHandle)
 
 extern "C" jlong Java_org_ebookdroid_droids_djvu_codec_DjvuContext_create(JNIEnv *env, jclass cls)
 {
-    ddjvu_context_t* context = ddjvu_context_create(DJVU_DROID);
+    ddjvu_context_t* context = ddjvu_context_create(LCTX);
     DEBUG("Creating context: %x", context);
     return (jlong) context;
 }

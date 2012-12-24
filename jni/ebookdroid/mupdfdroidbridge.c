@@ -15,14 +15,16 @@
 
 /* Debugging helper */
 
+#define LCTX "EBookDroid.MuPDF"
+
 #define DEBUG(args...) \
-    __android_log_print(ANDROID_LOG_DEBUG, "EBookDroid.MuPDF", args)
+    __android_log_print(ANDROID_LOG_DEBUG, LCTX, args)
 
 #define ERROR(args...) \
-    __android_log_print(ANDROID_LOG_ERROR, "EBookDroid.MuPDF", args)
+    __android_log_print(ANDROID_LOG_ERROR, LCTX, args)
 
 #define INFO(args...) \
-    __android_log_print(ANDROID_LOG_INFO, "EBookDroid.MuPDF", args)
+    __android_log_print(ANDROID_LOG_INFO, LCTX, args)
 
 typedef struct renderdocument_s renderdocument_t;
 struct renderdocument_s

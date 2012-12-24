@@ -19,7 +19,7 @@ public class Flag {
 
   /**
    * Constructor.
-   * 
+   *
    * @param initial
    *          initial value
    */
@@ -54,7 +54,7 @@ public class Flag {
 
   /**
    * Waits for flag changes.
-   * 
+   *
    * @param unit
    *          time unit
    * @param timeout
@@ -68,5 +68,9 @@ public class Flag {
       Thread.interrupted();
     }
     return get();
+  }
+
+  public synchronized void notifyWaiters() {
+      notifyAll();
   }
 }

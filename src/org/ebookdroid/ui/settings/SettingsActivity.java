@@ -1,5 +1,6 @@
 package org.ebookdroid.ui.settings;
 
+import org.ebookdroid.EBookDroidApp;
 import org.ebookdroid.R;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.SettingsManager;
@@ -12,7 +13,6 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 
 import org.emdev.common.filesystem.PathFromUri;
-import org.emdev.common.fonts.FontManager;
 
 public class SettingsActivity extends BaseSettingsActivity {
 
@@ -20,7 +20,7 @@ public class SettingsActivity extends BaseSettingsActivity {
     protected final void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        FontManager.init();
+        EBookDroidApp.initFonts();
 
         final Uri uri = getIntent().getData();
         if (uri != null) {

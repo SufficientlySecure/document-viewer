@@ -49,8 +49,9 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
 
         SettingsManager.init(this);
         CacheManager.init(this);
-        FontManager.init();
         MediaManager.init(this);
+
+        initFonts();
 
         preallocateHeap(AppSettings.current().heapPreallocate);
 
@@ -61,6 +62,10 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
         GLConfiguration.stencilRequired = !IS_EMULATOR;
 
         initialized.set();
+    }
+
+    public static void initFonts() {
+        FontManager.init(APP_STORAGE);
     }
 
     @Override
@@ -141,7 +146,7 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
      *            the size in megabytes
      * @return the object
      */
-    private static Object preallocateHeap(int size) {
+    private static Object preallocateHeap(final int size) {
         if (size <= 0) {
             Log.i(APP_NAME, "No heap preallocation");
             return null;
@@ -151,13 +156,13 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
         while (i > 0) {
             try {
                 byte[] tmp = new byte[i * 1024 * 1024];
-                tmp[(int) (size - 1)] = (byte) size;
+                tmp[size - 1] = (byte) size;
                 Log.i(APP_NAME, "Preallocated " + i + "Mb");
                 tmp = null;
                 return tmp;
-            } catch (OutOfMemoryError e) {
+            } catch (final OutOfMemoryError e) {
                 i--;
-            } catch (IllegalArgumentException e) {
+            } catch (final IllegalArgumentException e) {
                 i--;
             }
         }

@@ -1,7 +1,5 @@
 package org.emdev.common.fonts;
 
-import org.ebookdroid.EBookDroidApp;
-
 import android.util.SparseArray;
 
 import java.io.File;
@@ -19,16 +17,16 @@ public class FontManager {
 
     public static SystemFontProvider system;
     public static AssetsFontProvider assets;
-    public static BaseExtStorageFontProvider external;
+    public static ExtStorageFontProvider external;
 
     private static final SparseArray<WeakReference<TypefaceEx>> fonts = new SparseArray<WeakReference<TypefaceEx>>();
 
-    public static void init() {
+    public static void init(final File storage) {
         try {
             system = new SystemFontProvider();
             assets = new AssetsFontProvider();
 
-            external = new ExtStorageFontProvider(EBookDroidApp.APP_STORAGE);
+            external = new ExtStorageFontProvider(storage);
 
             system.init();
             assets.init();

@@ -16,7 +16,6 @@ import org.ebookdroid.droids.fb2.codec.tags.FB2TagFactory;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 
-import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -45,7 +44,6 @@ import org.emdev.common.textmarkup.line.Line;
 import org.emdev.common.textmarkup.line.LineStream;
 import org.emdev.common.xml.TextProvider;
 import org.emdev.common.xml.parsers.DuckbillParser;
-import org.emdev.common.xml.parsers.SaxParser;
 import org.emdev.common.xml.parsers.VTDExParser;
 import org.emdev.utils.LengthUtils;
 
@@ -70,14 +68,12 @@ public class FB2Document extends AbstractCodecDocument {
         System.out.println("Fonts preloading: " + (t2 - t1) + " ms");
 
         switch (AppSettings.current().fb2XmlParser) {
-            case Duckbill:
-                parseWithDuckbill(fileName);
-                break;
             case VTDEx:
                 parseWithVTDEx(fileName);
                 break;
+            case Duckbill:
             default:
-                parseWithSax(fileName);
+                parseWithDuckbill(fileName);
                 break;
         }
 
@@ -172,44 +168,6 @@ public class FB2Document extends AbstractCodecDocument {
             }
         }
         return count;
-    }
-
-    private void parseWithSax(final String fileName) {
-        final StandardHandler h = new StandardHandler(content);
-        final List<Closeable> resources = new ArrayList<Closeable>();
-
-        final long t1 = System.currentTimeMillis();
-        try {
-            final AtomicLong size = new AtomicLong();
-            final InputStream inStream = getInputStream(fileName, size, resources);
-
-            if (inStream != null) {
-
-                final String encoding = getEncoding(inStream);
-
-                final Reader isr = new BufferedReader(new InputStreamReader(inStream, encoding), 32 * 1024);
-                resources.add(isr);
-
-                final SaxParser p = new SaxParser();
-                p.parse(isr, FB2TagFactory.instance, h);
-            }
-        } catch (final StopParsingException e) {
-            // do nothing
-        } catch (final Exception e) {
-            throw new RuntimeException("FB2 document can not be opened: " + e.getMessage(), e);
-        } finally {
-            for (final Closeable r : resources) {
-                try {
-                    if (r != null) {
-                        r.close();
-                    }
-                } catch (final IOException e) {
-                }
-            }
-            resources.clear();
-            final long t2 = System.currentTimeMillis();
-            System.out.println("SAX parser: " + (t2 - t1) + " ms");
-        }
     }
 
     private void parseWithVTDEx(final String fileName) {

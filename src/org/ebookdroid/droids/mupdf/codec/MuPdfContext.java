@@ -26,7 +26,9 @@ public abstract class MuPdfContext extends AbstractCodecContext {
 
     public MuPdfContext() {
         super(MUPDF_FEATURES);
+    }
 
+    public void setExternalFonts() {
         final AppSettings app = AppSettings.current();
 
         final String[] monoFonts = FontManager.getExternalFonts(app.monoFontPack, FontFamilyType.MONO);

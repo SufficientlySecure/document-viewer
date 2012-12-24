@@ -58,17 +58,14 @@
     <string translatable="false" name="pref_slowcmyk_defvalue">false</string>
 
     <string translatable="false" name="pref_fb2_xmlparser_id">fb2xmlparser</string>
-    <string translatable="false" name="pref_fb2_xmlparser_standard">Standard</string>
     <string translatable="false" name="pref_fb2_xmlparser_vtd_ex">VTDEx</string>
     <string translatable="false" name="pref_fb2_xmlparser_duckbill">Duckbill</string>
 
     <string-array name="pref_fb2_xmlparser_entries" translatable="false">
-        <item>@string/list_fb2_xmlparser_standard</item>
         <item>@string/list_fb2_xmlparser_vtd_ex</item>
         <item>@string/list_fb2_xmlparser_duckbill</item>
     </string-array>
     <string-array name="pref_fb2_xmlparser_values" translatable="false">
-        <item>@string/pref_fb2_xmlparser_standard</item>
         <item>@string/pref_fb2_xmlparser_vtd_ex</item>
         <item>@string/pref_fb2_xmlparser_duckbill</item>
     </string-array>

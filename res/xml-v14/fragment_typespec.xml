@@ -96,7 +96,7 @@
         android:title="@string/pref_brfiletypespecificfb2_title" >
 
         <ListPreference
-            android:defaultValue="@string/pref_fb2_xmlparser_standard"
+            android:defaultValue="@string/pref_fb2_xmlparser_duckbill"
             android:entries="@array/pref_fb2_xmlparser_entries"
             android:entryValues="@array/pref_fb2_xmlparser_values"
             android:key="@string/pref_fb2_xmlparser_id"

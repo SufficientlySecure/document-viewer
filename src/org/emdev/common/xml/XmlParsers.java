@@ -10,10 +10,6 @@ public enum XmlParsers implements ResourceConstant {
     /**
      *
      */
-    Standard(R.string.pref_fb2_xmlparser_standard),
-    /**
-     *
-     */
     VTDEx(R.string.pref_fb2_xmlparser_vtd_ex),
     /**
      *

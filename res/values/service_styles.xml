@@ -59,7 +59,7 @@
         <item name="android:lines">1</item>
         <item name="android:textSize">20dip</item>
         <item name="android:textColor">@color/actionbar_white</item>
-        <item name="android:text">EBookDroid</item>
+        <item name="android:text">@string/app_name</item>
     </style>
 
     <style name="browser_item_title">

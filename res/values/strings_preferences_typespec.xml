@@ -55,7 +55,6 @@
     <string name="pref_fb2_xmlparser_title">XML parser</string>
     <string name="pref_fb2_xmlparser_summary">XML parser</string>
 
-    <string name="list_fb2_xmlparser_standard">Standard</string>
     <string name="list_fb2_xmlparser_vtd_ex">VTD based</string>
     <string name="list_fb2_xmlparser_duckbill">Dumb &amp; Dirty</string>
 

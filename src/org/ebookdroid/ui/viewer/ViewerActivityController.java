@@ -266,7 +266,11 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
     }
 
     public void startDecoding(final String password) {
-        executor.execute(new BookLoadTask(password));
+        final BookLoadTask loadTask = new BookLoadTask(password);
+        if (codecType != null && codecType.useCustomFonts ) {
+            EBookDroidApp.checkInstalledFonts(getContext());
+        }
+        loadTask.run();
     }
 
     /**
@@ -910,13 +914,18 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
         IUIManager.instance.invalidateOptionsMenu(getManagedComponent());
     }
 
-    final class BookLoadTask extends BaseAsyncTask<String, Throwable> implements IProgressIndicator {
+    final class BookLoadTask extends BaseAsyncTask<String, Throwable> implements Runnable, IProgressIndicator {
 
         private final String m_password;
 
         public BookLoadTask(final String password) {
             super(getManagedComponent(), R.string.msg_loading, false);
             m_password = password;
+        }
+
+        @Override
+        public void run() {
+            executor.execute(this);
         }
 
         @Override
@@ -975,10 +984,6 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
                     final String msg = result.getMessage();
                     LogManager.onUnexpectedError(result);
                     showErrorDlg(R.string.msg_unexpected_error, msg);
-                } else {
-                    if (codecType != null && codecType.useCustomFonts) {
-                        EBookDroidApp.checkInstalledFonts(getManagedComponent());
-                    }
                 }
             } catch (final Throwable th) {
                 LCTX.e("BookLoadTask.onPostExecute(): Unexpected error", th);

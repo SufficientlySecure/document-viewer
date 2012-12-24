@@ -49,6 +49,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
     protected boolean parsingNotes = false;
     protected boolean parsingBinary = false;
     protected boolean inTitle = false;
+    protected boolean inEpigraph = false;
     protected boolean inCite = false;
     protected boolean noteFirstWord = true;
     protected boolean parseNotesInParagraphs = false;
@@ -266,6 +267,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
                 setEmphasisStyle();
                 break;
             case EPIGRAPH:
+                inEpigraph = true;
                 markupStream.add(MarkupParagraphEnd.E);
                 markupStream.add(setEpigraphStyle().jm);
                 break;
@@ -348,7 +350,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
                 markupStream.add(new MarkupExtraSpace(-(int) (crs.paint.pOffset.width * ulLevel)));
             case P:
                 if (!skipContent) {
-                    if (crs.face.style != FontStyle.REGULAR) {
+                    if (crs.face.style != FontStyle.REGULAR && !inEpigraph) {
                         crs = new RenderingStyle(parsedContent, crs, FontStyle.REGULAR);
                     }
                     markupStream.add(MarkupParagraphEnd.E);
@@ -458,6 +460,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
                 break;
             case EPIGRAPH:
                 markupStream.add(setPrevStyle().jm);
+                inEpigraph = false;
                 break;
             case COVERPAGE:
                 cover = false;

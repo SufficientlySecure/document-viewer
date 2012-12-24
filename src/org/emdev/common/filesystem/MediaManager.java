@@ -63,13 +63,21 @@ public class MediaManager extends BroadcastReceiver {
     static void processMountPoint(final String s) {
         try {
             final MountedDevice d = new MountedDevice(s);
-            if (d.device.startsWith("/dev/block/vold")) {
+            if (filterDeviceName(d) && filterMountPath(d)) {
                 final boolean rw = d.params.containsKey("rw");
                 setMediaState(d.point, rw ? MediaState.MEDIA_MOUNTED : MediaState.MEDIA_MOUNTED_READ_ONLY);
             }
         } catch (final IllegalArgumentException th) {
             LCTX.w(th.getMessage());
         }
+    }
+
+    static boolean filterDeviceName(final MountedDevice d) {
+        return d.device.startsWith("/dev/block/vold");
+    }
+
+    static boolean filterMountPath(final MountedDevice d) {
+        return !d.point.endsWith("/secure/asec");
     }
 
     static IntentFilter createIntentFilter() {

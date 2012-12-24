@@ -222,7 +222,7 @@ public class FileSystemScanner {
 
             try {
                 final File cd = CacheManager.getCacheDir();
-                if (dir.getCanonicalPath().equals(cd.getCanonicalPath())) {
+                if (cd != null && dir.getCanonicalPath().equals(cd.getCanonicalPath())) {
                     LCTX.d("Skip file cache: " + dir);
                     return;
                 }

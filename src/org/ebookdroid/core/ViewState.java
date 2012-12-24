@@ -230,14 +230,7 @@ public class ViewState {
         return buf.toString();
     }
 
-    public class Pages {
-
-        public int currentIndex;
-        public int firstVisible;
-        public int lastVisible;
-
-        public int firstCached;
-        public int lastCached;
+    public class Pages extends ViewPages {
 
         private Pages() {
         }
@@ -269,27 +262,6 @@ public class ViewState {
 
         public Page getCurrentPage() {
             return model.getPageObject(currentIndex);
-        }
-
-        @Override
-        public String toString() {
-            final StringBuilder buf = new StringBuilder(this.getClass().getSimpleName());
-            buf.append("[");
-            toString(buf);
-            buf.append("]");
-            return buf.toString();
-        }
-
-        StringBuilder toString(final StringBuilder buf) {
-            buf.append("visible: ").append("[");
-            buf.append(firstVisible).append(", ").append(currentIndex).append(", ").append(lastVisible);
-            buf.append("]");
-            buf.append(" ");
-            buf.append("cached: ").append("[");
-            buf.append(firstCached).append(", ").append(lastCached);
-            buf.append("]");
-
-            return buf;
         }
     }
 

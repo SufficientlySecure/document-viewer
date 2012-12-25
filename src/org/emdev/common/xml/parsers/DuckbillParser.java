@@ -96,7 +96,7 @@ public class DuckbillParser {
                                         10);
                             }
                         } else {
-                            int idx = r.XmlOffset;
+                            final int idx = r.XmlOffset;
                             if (r.XmlDoc[idx] == 'q' && r.XmlDoc[idx + 1] == 'o' && r.XmlDoc[idx + 2] == 'u'
                                     && r.XmlDoc[idx + 3] == 't' && r.XmlDoc[idx + 4] == ';') {
                                 // quot
@@ -215,24 +215,32 @@ public class DuckbillParser {
             skipToEndTag();
             final int end = XmlOffset;
             pop();
-            final String attrs = new String(XmlDoc, start, end - start);
-            final String[] pairs = attrs.split(" ");
-            for (final String pair : pairs) {
-                final String[] split = pair.split("=");
-                if (split.length == 2) {
-                    String attrName = split[0];
-                    String attrValue = split[1];
-                    final String[] split2 = attrName.split(":");
-                    attrName = split2[split2.length - 1];
-                    if (attrValue.startsWith("\"") && attrValue.endsWith("\"")) {
-                        attrValue = attrValue.substring(1, attrValue.length() - 1);
+
+            String attrs = new String(XmlDoc, start, end - start).trim();
+
+            for (int index = attrs.indexOf("="); index > 0; index = attrs.indexOf("=")) {
+                final String[] qName = attrs.substring(0, index).trim().split(":");
+                final String attrName = qName[qName.length - 1];
+
+                attrs = attrs.substring(index + 1).trim();
+                final char quote = attrs.charAt(0);
+                if (quote == '"' || quote == '\'') {
+                    final int qIndex = attrs.indexOf(quote, 1);
+                    if (qIndex > 0) {
+                        final String attrValue = attrs.substring(1, qIndex);
+                        final int i = Arrays.binarySearch(tag.attributes, attrName);
+                        if (i >= 0) {
+                            res[i] = attrValue;
+                        }
+                        attrs = attrs.substring(qIndex + 1).trim();
+                    } else {
+                        break;
                     }
-                    final int i = Arrays.binarySearch(tag.attributes, attrName);
-                    if (i >= 0) {
-                        res[i] = attrValue;
-                    }
+                } else {
+                    break;
                 }
             }
+
             return res;
         }
 

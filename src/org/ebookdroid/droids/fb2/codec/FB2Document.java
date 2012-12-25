@@ -38,7 +38,6 @@ import org.emdev.common.textmarkup.JustificationMode;
 import org.emdev.common.textmarkup.MarkupElement;
 import org.emdev.common.textmarkup.MarkupTitle;
 import org.emdev.common.textmarkup.TextStyle;
-import org.emdev.common.textmarkup.Words;
 import org.emdev.common.textmarkup.line.HorizontalRule;
 import org.emdev.common.textmarkup.line.Line;
 import org.emdev.common.textmarkup.line.LineStream;
@@ -60,8 +59,6 @@ public class FB2Document extends AbstractCodecDocument {
     public FB2Document(final FB2Context context, final String fileName) {
         super(context, context.getContextHandle());
 
-        Words.clear();
-
         final long t1 = System.currentTimeMillis();
         content.loadFonts();
         final long t2 = System.currentTimeMillis();
@@ -76,8 +73,6 @@ public class FB2Document extends AbstractCodecDocument {
                 parseWithDuckbill(fileName);
                 break;
         }
-
-        System.out.println("Words=" + Words.words + ", uniques=" + Words.uniques);
 
         final long t3 = System.currentTimeMillis();
 
@@ -94,8 +89,6 @@ public class FB2Document extends AbstractCodecDocument {
 
         final long t5 = System.currentTimeMillis();
         System.out.println("Cleanup: " + (t5 - t4) + " ms, removed: " + removed);
-
-        // System.gc();
     }
 
     private void createPages(final LineStream documentLines) {
@@ -171,7 +164,7 @@ public class FB2Document extends AbstractCodecDocument {
     }
 
     private void parseWithVTDEx(final String fileName) {
-        final StandardHandler h = new StandardHandler(content, false);
+        final StandardHandler h = new StandardHandler(content);
         final List<Closeable> resources = new ArrayList<Closeable>();
 
         final long t1 = System.currentTimeMillis();
@@ -214,7 +207,7 @@ public class FB2Document extends AbstractCodecDocument {
     }
 
     private void parseWithDuckbill(final String fileName) {
-        final StandardHandler h = new StandardHandler(content, false);
+        final StandardHandler h = new StandardHandler(content);
         final List<Closeable> resources = new ArrayList<Closeable>();
 
         final long t1 = System.currentTimeMillis();

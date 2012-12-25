@@ -25,7 +25,6 @@ import org.emdev.common.textmarkup.MarkupTitle;
 import org.emdev.common.textmarkup.RenderingStyle;
 import org.emdev.common.textmarkup.RenderingStyle.Script;
 import org.emdev.common.textmarkup.TextStyle;
-import org.emdev.common.textmarkup.Words;
 import org.emdev.common.textmarkup.line.LineFixedWhiteSpace;
 import org.emdev.common.textmarkup.line.LineWhiteSpace;
 import org.emdev.common.textmarkup.line.TextElement;
@@ -71,20 +70,13 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
 
     protected MarkupTable currentTable;
 
-    protected boolean useUniqueTextElements;
-
     private boolean parsingPreformatted = false;
     private int parsingPreformattedLevel = -1;
     private int parsingPreformattedLines = 0;
     protected int tagLevel = 0;
 
     public StandardHandler(final ParsedContent content) {
-        this(content, true);
-    }
-
-    public StandardHandler(final ParsedContent content, final boolean useUniqueTextElements) {
         super(content);
-        this.useUniqueTextElements = useUniqueTextElements;
     }
 
     @Override
@@ -507,27 +499,15 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
     @Override
     public void characters(final TextProvider text, final int start, final int length) {
         if (parsingBinary) {
-            if (text.persistent) {
-                if (tmpBinary == null) {
-                    tmpBinary = text.chars;
-                    tmpBinaryStart = start;
-                    tmpBinaryLength = length;
-                } else {
-                    tmpBinaryLength += length;
-                }
+            if (tmpBinary == null) {
+                tmpBinary = text.chars;
+                tmpBinaryStart = start;
+                tmpBinaryLength = length;
             } else {
-                if (tmpBinaryContent == null) {
-                    tmpBinaryContent = new StrBuilder(length);
-                }
-                tmpBinaryContent.append(text.chars, start, length);
+                tmpBinaryLength += length;
             }
-
         } else {
-            if (text.persistent) {
-                processText(text, start, length);
-            } else {
-                tmpTagContent.append(text.chars, start, length);
-            }
+            processText(text, start, length);
         }
     }
 
@@ -537,7 +517,7 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
         final int start = 0;
         final char[] ch = tmpTagContent.getValue();
 
-        processText(new TextProvider(false, ch), start, length);
+        processText(new TextProvider(ch), start, length);
 
         tmpTagContent.setLength(0);
     }
@@ -595,26 +575,11 @@ public class StandardHandler extends BaseHandler implements IContentHandler, FB2
     }
 
     protected TextElement text(final TextProvider text, final int st, final int len, final RenderingStyle style) {
-        if (!useUniqueTextElements && text.persistent) {
-            return new TextElement(text.chars, st, len, style);
-        }
-
-        Words w = parsedContent.words.get(style.paint.key);
-        if (w == null) {
-            w = new Words();
-            parsedContent.words.append(style.paint.key, w);
-        }
-        return w.get(text, st, len, style);
-
+        return new TextElement(text.chars, st, len, style);
     }
 
     protected TextElement textPre(final TextProvider text, final int st, final int len, final RenderingStyle style) {
-        if (text.persistent) {
-            return new TextPreElement(text.chars, st, len, style);
-        }
-        final char[] chars = new char[len];
-        System.arraycopy(text.chars, st, chars, 0, len);
-        return new TextPreElement(chars, 0, len, style);
+        return new TextPreElement(text.chars, st, len, style);
     }
 
 }

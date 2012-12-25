@@ -9,7 +9,7 @@ import org.emdev.common.xml.TextProvider;
 
 public class RenderingStyle {
 
-    private static final TextProvider DEFIS = new TextProvider('-');
+    private static final TextProvider DEFIS = new TextProvider("-");
     private static final TextProvider BULLET = new TextProvider("\u2022 ");
 
     public final CustomTextPaint paint;

@@ -10,6 +10,7 @@ import org.ebookdroid.opds.model.Book;
 import org.ebookdroid.opds.model.BookDownloadLink;
 import org.ebookdroid.opds.model.Feed;
 import org.ebookdroid.opds.model.Link;
+import org.ebookdroid.opds.xml.OPDSContentHandler;
 
 import android.annotation.TargetApi;
 import android.webkit.URLUtil;

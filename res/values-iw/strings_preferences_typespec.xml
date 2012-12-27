@@ -38,7 +38,6 @@
     <string name="pref_brfiletypespecificfb2_summary">"הגדרות מתקדמות לפענוח fb2"</string>
     <string name="pref_fb2_xmlparser_title">"מנתח XML"</string>
     <string name="pref_fb2_xmlparser_summary">"המנוע לניתוח XML"</string>
-    <string name="list_fb2_xmlparser_standard">"רגיל"</string>
     <string name="list_fb2_xmlparser_vtd_ex">"בהתבסס על VTD-XML"</string>
     <string name="list_fb2_xmlparser_duckbill">"אישי"</string>
     <string name="pref_fontsize_title">"גודל גופן"</string>

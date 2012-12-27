@@ -23,12 +23,12 @@
     <string name="menu_navigation_menu">"导航"</string>
     <string name="menu_fastsettings_menu">"查看"</string>
     <string name="menu_allsettings_menu">"设置"</string>
-	<string name="menu_show_library">"Show library"</string>
-	<string name="menu_show_recent">"Show recent"</string>
-	<string name="menu_storages">"存储"</string>
-	<string name="menu_storages_filesystem">"文件系统"</string>
-	<string name="menu_storages_external">"SD存储卡"</string>
-	<string name="menu_force_portrait">"Force portrait"</string>
-	<string name="menu_force_landscape">"Force landscape"</string>
+<!--<string name="menu_show_library">"Show library"</string>-->
+<!--<string name="menu_show_recent">"Show recent"</string>-->
+    <string name="menu_storages">"存储"</string>
+    <string name="menu_storages_filesystem">"文件系统"</string>
+    <string name="menu_storages_external">"SD存储卡"</string>
+<!--<string name="menu_force_portrait">"Force portrait"</string>-->
+<!--<string name="menu_force_landscape">"Force landscape"</string>-->
 
 </resources>

@@ -38,7 +38,6 @@
     <string name="pref_brfiletypespecificfb2_summary">"Opciones específicas para FB2"</string>
     <string name="pref_fb2_xmlparser_title">"Intérprete XML"</string>
     <string name="pref_fb2_xmlparser_summary">"Intérprete XML"</string>
-    <string name="list_fb2_xmlparser_standard">"Estándar"</string>
     <string name="list_fb2_xmlparser_vtd_ex">"Basado en VTD"</string>
     <string name="list_fb2_xmlparser_duckbill">"Tonto &amp; Sucio"</string>
     <string name="pref_fontsize_title">"Tamaño de la fuente"</string>

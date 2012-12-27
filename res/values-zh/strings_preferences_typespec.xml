@@ -38,7 +38,6 @@
     <string name="pref_brfiletypespecificfb2_summary">"FB2 特定格式设置"</string>
     <string name="pref_fb2_xmlparser_title">"XML解析器"</string>
     <string name="pref_fb2_xmlparser_summary">"XML解析器"</string>
-    <string name="list_fb2_xmlparser_standard">"标准"</string>
     <string name="list_fb2_xmlparser_vtd_ex">"基于VTD"</string>
 <!--<string name="list_fb2_xmlparser_duckbill">"Dumb &amp; Dirty"</string>-->
     <string name="pref_fontsize_title">"字体大小"</string>

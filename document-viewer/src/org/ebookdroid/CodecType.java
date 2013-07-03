@@ -1,7 +1,7 @@
 package org.ebookdroid;
 
 import org.ebookdroid.core.codec.CodecContext;
-import org.ebookdroid.droids.cbx.CbrContext;
+//import org.ebookdroid.droids.cbx.CbrContext;
 import org.ebookdroid.droids.cbx.CbzContext;
 import org.ebookdroid.droids.djvu.codec.DjvuContext;
 import org.ebookdroid.droids.fb2.codec.FB2Context;
@@ -27,7 +27,7 @@ public enum CodecType {
 
     CBZ(CbzContext.class, false, Arrays.asList("cbz"), Arrays.asList("application/x-cbz")),
 
-    CBR(CbrContext.class, false, Arrays.asList("cbr"), Arrays.asList("application/x-cbr")),
+//    CBR(CbrContext.class, false, Arrays.asList("cbr"), Arrays.asList("application/x-cbr")),
 
     FB2(FB2Context.class, true, Arrays.asList("fb2", "fb2.zip"), Arrays.asList("application/x-fb2"));
 

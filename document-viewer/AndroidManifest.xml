@@ -39,7 +39,7 @@
                 <data android:mimeType="application/vnd.ms-xpsdocument" />
                 <data android:mimeType="application/oxps" />
                 <data android:mimeType="application/x-cbz" />
-                <data android:mimeType="application/x-cbr" />
+<!--                 <data android:mimeType="application/x-cbr" /> -->
                 <data android:mimeType="application/x-fb2" />
             </intent-filter>
             <intent-filter>
@@ -61,7 +61,7 @@
                 <data android:pathPattern=".*\\.xps" />
                 <data android:pathPattern=".*\\.oxps" />
                 <data android:pathPattern=".*\\.cbz" />
-                <data android:pathPattern=".*\\.cbr" />
+<!--                 <data android:pathPattern=".*\\.cbr" /> -->
                 <data android:pathPattern=".*\\.fb2" />
                 <data android:pathPattern=".*\\.fb2\\.zip" />
             </intent-filter>

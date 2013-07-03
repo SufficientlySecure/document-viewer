@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="app_name">EBookDroid</string>
+    <string name="app_name">Document Viewer</string>
 
     <string name="confirmclose_title">Closing viewer&#8230;</string>
     <string name="confirmclose_msg">Do you really want to close this document?</string>

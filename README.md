@@ -1,6 +1,6 @@
-# Any Document Viewer
+# Document Viewer
 
-Any Document Viewer is a fork of the last GPL version of EBookDroid (http://code.google.com/p/ebookdroid/).
+Document Viewer is a fork of the last GPL version of EBookDroid (http://code.google.com/p/ebookdroid/).
 
 
 ## Build

@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="menu_about">О шрифтах</string>
+    <string name="menu_close">Закрыть</string>
+
+    <string name="msg_no_ebookdroid">Приложение EBookDroid не установлено</string>
+    <string name="msg_old_ebookdroid">Установлено приложение EBookDroid более старой версии чем необходимо (1.5+)</string>
+
+    <string name="install_text">Установка шрифтов</string>
+    <string name="remove_text">Автоматически удалить этот пакет после успешной установки шрифтов</string>
+
+    <string name="msg_installing">Установка...</string>
+    <string name="msg_installing_pack">Установка %1$s...</string>
+
+    <string name="text_string">Съешь еще этих мягких французских булок да выпей чаю</string>
+
+</resources>

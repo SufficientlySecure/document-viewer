@@ -1,0 +1,69 @@
+<project name="EBookDroid Fontpack Template" basedir="." default="EBookDroidFontpack-dev">
+
+    <property file="build.${user.name}.properties" />
+    <property file="build.properties" />
+    <property file="project.properties" />
+
+    <tstamp>
+        <format property="debug.version" pattern="yyyyMMdd.HHmmss" />
+    </tstamp>
+
+    <path id="android.antlibs">
+        <pathelement path="${sdk.dir}/tools/lib/anttasks.jar" />
+    </path>
+
+    <taskdef name="xpath" classname="com.android.ant.XPathTask" classpathref="android.antlibs" />
+
+    <property name="aapt" value="${sdk.dir}/platform-tools/aapt" />
+    <property name="dx" value="${sdk.dir}/platform-tools/dx" />
+
+    <property name="android.jar" value="${sdk.dir}/platforms/${target}/android.jar" />
+
+    <property name="out.dir" value="target" />
+    <property name="out.absolute.dir" location="${out.dir}" />
+
+    <xpath input="AndroidManifest.xml" expression="/manifest/@android:versionName" output="manifest.version" />
+
+    <property name="out.release.file" location="${out.absolute.dir}/${ant.project.name}-release.apk" />
+    <property name="debug.apk" location="apk/${package.name}-${debug.version}.apk" />
+    <property name="release.apk" location="apk/${package.name}-${manifest.version}.apk" />
+
+    <path id="project.libraries.jars" />
+    <path id="project.libraries.libs" />
+
+    <path id="android.target.classpath">
+        <fileset dir="${sdk.dir}/platforms/${target}/">
+            <include name="android.jar" />
+        </fileset>
+    </path>
+
+    <import file="${sdk.dir}/tools/ant/build.xml" />
+
+    <mkdir dir="apk" />
+
+    <target name="--make-release">
+
+        <delete dir="${out.absolute.dir}" />
+        <mkdir dir="${out.absolute.dir}" />
+
+        <antcall target="release" />
+
+        <echo>${apk}</echo>
+        <rename src="${out.release.file}" dest="${apk}" />
+
+    </target>
+
+    <target name="EBookDroidFontpack-release">
+
+        <antcall target="--make-release" inheritall="true">
+            <param name="apk" value="${release.apk}" />
+        </antcall>
+    </target>
+
+    <target name="EBookDroidFontpack-dev">
+        <antcall target="--make-release">
+            <param name="apk" value="${debug.apk}" />
+        </antcall>
+    </target>
+
+</project>

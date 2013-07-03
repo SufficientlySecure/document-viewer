@@ -1,0 +1,80 @@
+[
+{
+    name : "FreeFonts",
+    mono :
+    {
+         "regular"     : "FreeMono/FreeMono.ttf" ,
+         "italic"      : "FreeMono/FreeMonoOblique.ttf" ,
+         "bold"        : "FreeMono/FreeMonoBold.ttf" ,
+         "bold italic" : "FreeMono/FreeMonoBoldOblique.ttf"
+    },
+    sans :
+    {
+         "regular"     : "FreeSans/FreeSans.ttf" ,
+         "italic"      : "FreeSans/FreeSansOblique.ttf" ,
+         "bold"        : "FreeSans/FreeSansBold.ttf" ,
+         "bold italic" : "FreeSans/FreeSansBoldOblique.ttf"
+    },
+    serif :
+    {
+         "regular"     : "FreeSerif/FreeSerif.ttf" ,
+         "italic"      : "FreeSerif/FreeSerifItalic.ttf" ,
+         "bold"        : "FreeSerif/FreeSerifBold.ttf" ,
+         "bold italic" : "FreeSerif/FreeSerifBoldItalic.ttf"
+    }
+},
+{
+    name : "NimbusL free fonts",
+    mono :
+    {
+         "regular"     : "NimbusL/NimbusMonL-Regu.ttf" ,
+         "italic"      : "NimbusL/NimbusMonL-ReguObli.ttf" ,
+         "bold"        : "NimbusL/NimbusMonL-Bold.ttf" ,
+         "bold italic" : "NimbusL/NimbusMonL-BoldObli.ttf"
+    },
+    sans :
+    {
+         "regular"     : "NimbusL/NimbusSanL-Regu.ttf" ,
+         "italic"      : "NimbusL/NimbusSanL-ReguItal.ttf" ,
+         "bold"        : "NimbusL/NimbusSanL-Bold.ttf" ,
+         "bold italic" : "NimbusL/NimbusSanL-BoldItal.ttf"
+    },
+    serif :
+    {
+         "regular"     : "NimbusL/NimbusRomNo9L-Regu.ttf" ,
+         "italic"      : "NimbusL/NimbusRomNo9L-ReguItal.ttf" ,
+         "bold"        : "NimbusL/NimbusRomNo9L-Medi.ttf" ,
+         "bold italic" : "NimbusL/NimbusRomNo9L-MediItal.ttf"
+    }
+},
+{
+    name   : "Free URW symbol fonts",
+    symbol :
+    {
+         "regular"     : "URW/StandardSymL.ttf"
+    },
+    dingbat :
+    {
+         "regular"     : "URW/Dingbats.ttf"
+    }
+},
+{
+    name   : "Academy fonts",
+    serif :
+    {
+         "regular"     : "Academy/academy.ttf",
+         "italic"      : "Academy/academyi.ttf"
+    }
+},
+{
+    name   : "Academy Old fonts",
+    serif :
+    {
+         "regular"     : "AcademyOld/acado___.ttf",
+         "italic"      : "AcademyOld/acadoi__.ttf",
+         "bold"        : "AcademyOld/acadob__.ttf",
+         "bold italic" : "AcademyOld/acadobo_.ttf"
+    }
+}
+
+]

@@ -110,24 +110,24 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
     }
 
     public static void checkInstalledFonts(final Context context) {
-        if (!FontManager.external.hasInstalled()) {
-            if (!SettingsManager.isInitialFlagsSet(SettingsManager.INITIAL_FONTS)) {
-                SettingsManager.setInitialFlags(SettingsManager.INITIAL_FONTS);
-
-                final ActionDialogBuilder b = new ActionDialogBuilder(context, new ActionController<Context>(context));
-                final WebView view = new WebView(context);
-
-                final String text = context.getResources().getString(R.string.font_reminder);
-                final String content = "<html><body>" + text + "</body></html>";
-
-                view.loadDataWithBaseURL("file:///fake/not_used", content, "text/html", "UTF-8", "");
-
-                b.setTitle(R.string.font_reminder_title);
-                b.setView(view);
-                b.setPositiveButton(android.R.string.ok, R.id.actions_no_action);
-                b.show();
-            }
-        }
+//        if (!FontManager.external.hasInstalled()) {
+//            if (!SettingsManager.isInitialFlagsSet(SettingsManager.INITIAL_FONTS)) {
+//                SettingsManager.setInitialFlags(SettingsManager.INITIAL_FONTS);
+//
+//                final ActionDialogBuilder b = new ActionDialogBuilder(context, new ActionController<Context>(context));
+//                final WebView view = new WebView(context);
+//
+//                final String text = context.getResources().getString(R.string.font_reminder);
+//                final String content = "<html><body>" + text + "</body></html>";
+//
+//                view.loadDataWithBaseURL("file:///fake/not_used", content, "text/html", "UTF-8", "");
+//
+//                b.setTitle(R.string.font_reminder_title);
+//                b.setView(view);
+//                b.setPositiveButton(android.R.string.ok, R.id.actions_no_action);
+//                b.show();
+//            }
+//        }
     }
 
     public static void onActivityClose(final boolean finishing) {

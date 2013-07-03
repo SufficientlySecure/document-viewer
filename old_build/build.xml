@@ -1,0 +1,260 @@
+<project name="EBookDroid" basedir="." default="EBookDroid-dev">
+
+    <tstamp>
+        <format property="debug.version" pattern="yyyyMMdd.HHmmss" />
+    </tstamp>
+
+    <property name="out.dir" value="target" />
+    <property name="out.absolute.dir" location="${out.dir}" />
+
+    <property name="out.debug.file" location="${out.absolute.dir}/${ant.project.name}-${debug.version}.apk" />
+    <property name="out.release.file" location="${out.absolute.dir}/${ant.project.name}-release.apk" />
+
+    <path id="project.libraries.jars" />
+    <path id="project.libraries.libs" />
+
+    <import file="${basedir}/build.core.xml" />
+
+    <property name="arm.mk" location="jni/Application.mk" />
+    <property name="arm7.mk" location="jni/Application.arm7.mk" />
+    <property name="cortex.a8.mk" location="jni/Application.arm7.a8.mk" />
+    <property name="cortex.a9.mk" location="jni/Application.arm7.a9.mk" />
+    <property name="cortex.a8.neon.mk" location="jni/Application.arm7.a8.neon.mk" />
+    <property name="cortex.a9.neon.mk" location="jni/Application.arm7.a9.neon.mk" />
+    <property name="mips.mk" location="jni/Application.mips.mk" />
+    <property name="x86.mk" location="jni/Application.x86.mk" />
+
+    <property name="arm.apk" location="apk/${package.name}-${package.version.name}.apk" />
+    <property name="arm7.apk" location="apk/${package.name}-arm7-${package.version.name}.apk" />
+    <property name="cortex.a8.apk" value="apk/${package.name}-arm7-cortex-a8-${package.version.name}.apk" />
+    <property name="cortex.a9.apk" value="apk/${package.name}-arm7-cortex-a9-${package.version.name}.apk" />
+    <property name="cortex.a8.neon.apk" value="apk/${package.name}-arm7-cortex-a8-neon-${package.version.name}.apk" />
+    <property name="cortex.a9.neon.apk" value="apk/${package.name}-arm7-cortex-a9-neon-${package.version.name}.apk" />
+    <property name="mips.apk" value="apk/${package.name}-mips-${package.version.name}.apk" />
+    <property name="x86.apk" value="apk/${package.name}-x86-${package.version.name}.apk" />
+
+    <mkdir dir="apk" />
+
+    <target name="EBookDroid-release" depends="-prepare-release">
+        <var name="target.version.code" value="${package.version.code}" />
+        <var name="target.version.name" value="${package.version.name}" />
+
+        <antcall target="-make-release" inheritall="true">
+            <param name="mk" value="${arm.mk}" />
+            <param name="apk" value="${arm.apk}" />
+            <param name="ndk.dir" value="${arm.ndk.dir}" />
+            <param name="unrar.arch" value="arm5" />
+            <param name="version.code" value="${target.version.code}" />
+            <param name="version.name" value="${target.version.name}" />
+        </antcall>
+
+        <math result="temp" operand1="${target.version.code}" operation="+" operand2="1" datatype="int"/>
+        <var name="target.version.code" value="${temp}" />
+
+        <antcall target="-make-release" inheritall="true">
+            <param name="mk" value="${arm7.mk}" />
+            <param name="apk" value="${arm7.apk}" />
+            <param name="ndk.dir" value="${arm.ndk.dir}" />
+            <param name="unrar.arch" value="arm7" />
+            <param name="version.code" value="${target.version.code}" />
+            <param name="version.name" value="${target.version.name}" />
+        </antcall>
+
+        <math result="temp" operand1="${target.version.code}" operation="+" operand2="1" datatype="int"/>
+        <var name="target.version.code" value="${temp}" />
+
+        <antcall target="-make-release" inheritall="true">
+            <param name="mk" value="${cortex.a8.mk}" />
+            <param name="apk" value="${cortex.a8.apk}" />
+            <param name="ndk.dir" value="${arm.ndk.dir}" />
+            <param name="unrar.arch" value="arm7.a8" />
+            <param name="version.code" value="${target.version.code}" />
+            <param name="version.name" value="${target.version.name}" />
+        </antcall>
+
+        <math result="temp" operand1="${target.version.code}" operation="+" operand2="1" datatype="int"/>
+        <var name="target.version.code" value="${temp}" />
+
+        <antcall target="-make-release" inheritall="true">
+            <param name="mk" value="${cortex.a8.neon.mk}" />
+            <param name="apk" value="${cortex.a8.neon.apk}" />
+            <param name="ndk.dir" value="${arm.ndk.dir}" />
+            <param name="unrar.arch" value="arm7.a8.neon" />
+            <param name="version.code" value="${target.version.code}" />
+            <param name="version.name" value="${target.version.name}" />
+        </antcall>
+
+        <math result="temp" operand1="${target.version.code}" operation="+" operand2="1" datatype="int"/>
+        <var name="target.version.code" value="${temp}" />
+
+        <antcall target="-make-release">
+            <param name="mk" value="${cortex.a9.mk}" />
+            <param name="apk" value="${cortex.a9.apk}" />
+            <param name="ndk.dir" value="${arm.ndk.dir}" />
+            <param name="unrar.arch" value="arm7.a9" />
+            <param name="version.code" value="${target.version.code}" />
+            <param name="version.name" value="${target.version.name}" />
+        </antcall>
+
+        <math result="temp" operand1="${target.version.code}" operation="+" operand2="1" datatype="int"/>
+        <var name="target.version.code" value="${temp}" />
+
+        <antcall target="-make-release">
+            <param name="mk" value="${cortex.a9.neon.mk}" />
+            <param name="apk" value="${cortex.a9.neon.apk}" />
+            <param name="ndk.dir" value="${arm.ndk.dir}" />
+            <param name="unrar.arch" value="arm7.a9.neon" />
+            <param name="version.code" value="${target.version.code}" />
+            <param name="version.name" value="${target.version.name}" />
+        </antcall>
+
+        <math result="temp" operand1="${target.version.code}" operation="+" operand2="1" datatype="int"/>
+        <var name="target.version.code" value="${temp}" />
+
+        <antcall target="-make-release">
+            <param name="mk" value="${mips.mk}" />
+            <param name="apk" value="${mips.apk}" />
+            <param name="ndk.dir" value="${mips.ndk.dir}" />
+            <param name="unrar.arch" value="mips" />
+            <param name="version.code" value="${target.version.code}" />
+            <param name="version.name" value="${target.version.name}" />
+        </antcall>
+
+        <math result="temp" operand1="${target.version.code}" operation="+" operand2="1" datatype="int"/>
+        <var name="target.version.code" value="${temp}" />
+
+        <antcall target="-make-release">
+            <param name="mk" value="${x86.mk}" />
+            <param name="apk" value="${x86.apk}" />
+            <param name="ndk.dir" value="${x86.ndk.dir}" />
+            <param name="unrar.arch" value="x86" />
+            <param name="version.code" value="${target.version.code}" />
+            <param name="version.name" value="${target.version.name}" />
+        </antcall>
+    </target>
+
+    <target name="EBookDroid-dev" depends="-prepare-dev">
+        <property name="target.apk" location="apk/${package.name}-${package.version.name}-r${svn.info.rev}.apk" />
+        <echo>Target: ${target.apk}</echo>
+
+        <antcall target="-make-release">
+            <param name="mk" value="${arm.mk}" />
+            <param name="apk" value="${target.apk}" />
+            <param name="ndk.dir" value="${arm.ndk.dir}" />
+            <param name="unrar.arch" value="arm5" />
+            <param name="version.code" value="${package.version.code}" />
+            <param name="version.name" value="${package.version.name}" />
+        </antcall>
+    </target>
+
+    <target name="EBookDroid-dev-all" depends="-prepare-dev">
+        <antcall target="-make-release" inheritall="true">
+            <param name="mk" value="${arm.mk}" />
+            <param name="apk" value="apk/${package.name}-${package.version.name}-r${svn.info.rev}.apk" />
+            <param name="ndk.dir" value="${arm.ndk.dir}" />
+            <param name="unrar.arch" value="arm5" />
+            <param name="version.code" value="${package.version.code}" />
+            <param name="version.name" value="${package.version.name}" />
+        </antcall>
+        <antcall target="-make-release" inheritall="true">
+            <param name="mk" value="${arm7.mk}" />
+            <param name="apk" value="apk/${package.name}-arm7-${package.version.name}-r${svn.info.rev}.apk" />
+            <param name="ndk.dir" value="${arm.ndk.dir}" />
+            <param name="unrar.arch" value="arm7" />
+            <param name="version.code" value="${package.version.code}" />
+            <param name="version.name" value="${package.version.name}" />
+        </antcall>
+        <antcall target="-make-release" inheritall="true">
+            <param name="mk" value="${cortex.a8.mk}" />
+            <param name="apk" value="apk/${package.name}-arm7-cortex-a8-${package.version.name}-r${svn.info.rev}.apk" />
+            <param name="ndk.dir" value="${arm.ndk.dir}" />
+            <param name="unrar.arch" value="arm7.a8" />
+            <param name="version.code" value="${package.version.code}" />
+            <param name="version.name" value="${package.version.name}" />
+        </antcall>
+        <antcall target="-make-release" inheritall="true">
+            <param name="mk" value="${cortex.a8.neon.mk}" />
+            <param name="apk" value="apk/${package.name}-arm7-cortex-a8-neon-${package.version.name}-r${svn.info.rev}.apk" />
+            <param name="ndk.dir" value="${arm.ndk.dir}" />
+            <param name="unrar.arch" value="arm7.a8.neon" />
+            <param name="version.code" value="${package.version.code}" />
+            <param name="version.name" value="${package.version.name}" />
+        </antcall>
+        <antcall target="-make-release">
+            <param name="mk" value="${cortex.a9.mk}" />
+            <param name="apk" value="apk/${package.name}-arm7-cortex-a9-${package.version.name}-r${svn.info.rev}.apk" />
+            <param name="ndk.dir" value="${arm.ndk.dir}" />
+            <param name="unrar.arch" value="arm7.a9" />
+            <param name="version.code" value="${package.version.code}" />
+            <param name="version.name" value="${package.version.name}" />
+        </antcall>
+        <antcall target="-make-release">
+            <param name="mk" value="${cortex.a9.neon.mk}" />
+            <param name="apk" value="apk/${package.name}-arm7-cortex-a9-neon-${package.version.name}-r${svn.info.rev}.apk" />
+            <param name="ndk.dir" value="${arm.ndk.dir}" />
+            <param name="unrar.arch" value="arm7.a9.neon" />
+            <param name="version.code" value="${package.version.code}" />
+            <param name="version.name" value="${package.version.name}" />
+        </antcall>
+        <antcall target="-make-release">
+            <param name="mk" value="${mips.mk}" />
+            <param name="apk" value="apk/${package.name}-mips-${package.version.name}-r${svn.info.rev}.apk" />
+            <param name="ndk.dir" value="${mips.ndk.dir}" />
+            <param name="unrar.arch" value="mips" />
+            <param name="version.code" value="${package.version.code}" />
+            <param name="version.name" value="${package.version.name}" />
+        </antcall>
+        <antcall target="-make-release">
+            <param name="mk" value="${x86.mk}" />
+            <param name="apk" value="apk/${package.name}-x86-${package.version.name}-r${svn.info.rev}.apk" />
+            <param name="ndk.dir" value="${x86.ndk.dir}" />
+            <param name="unrar.arch" value="x86" />
+            <param name="version.code" value="${package.version.code}" />
+            <param name="version.name" value="${package.version.name}" />
+        </antcall>
+
+    </target>
+
+    <target name="EBookDroid-Iconia-dev" depends="-prepare-dev">
+        <property name="target.apk" location="apk/${package.name}-acer.iconia-${package.version.name}-r${svn.info.rev}.apk" />
+        <echo>Target: ${target.apk}</echo>
+
+        <antcall target="-make-release">
+            <param name="mk" value="${cortex.a9.mk}" />
+            <param name="apk" value="${target.apk}" />
+            <param name="ndk.dir" value="${arm.ndk.dir}" />
+            <param name="unrar.arch" value="arm7.a9" />
+            <param name="version.code" value="${package.version.code}" />
+            <param name="version.name" value="${package.version.name}" />
+        </antcall>
+    </target>
+
+    <target name="EBookDroid-Prime-dev" depends="-prepare-dev">
+        <property name="target.apk" location="apk/${package.name}-asus.prime-${package.version.name}-r${svn.info.rev}.apk" />
+        <echo>Target: ${target.apk}</echo>
+
+        <antcall target="-make-release">
+            <param name="mk" value="${cortex.a9.neon.mk}" />
+            <param name="apk" value="${target.apk}" />
+            <param name="ndk.dir" value="${arm.ndk.dir}" />
+            <param name="unrar.arch" value="arm7.a9.neon" />
+            <param name="version.code" value="${package.version.code}" />
+            <param name="version.name" value="${package.version.name}" />
+        </antcall>
+    </target>
+
+    <target name="EBookDroid-MIPS-dev" depends="-prepare-dev">
+        <property name="target.apk" location="apk/${package.name}-mips-${package.version.name}-r${svn.info.rev}.apk" />
+        <echo>Target: ${target.apk}</echo>
+
+        <antcall target="-make-release">
+            <param name="mk" value="${mips.mk}" />
+            <param name="apk" value="${target.apk}" />
+            <param name="ndk.dir" value="${mips.ndk.dir}" />
+            <param name="unrar.arch" value="mips" />
+            <param name="version.code" value="${package.version.code}" />
+            <param name="version.name" value="${package.version.name}" />
+        </antcall>
+    </target>
+
+</project>

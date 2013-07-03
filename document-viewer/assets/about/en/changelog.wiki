@@ -1,5 +1,10 @@
 #labels Featured
 
+= Document Viewer v2.0 changelog =
+
+== New features ==
+ * Renamed to Document Viewer
+
 = EBookDroid v1.6.6 changelog =
 
 == Bug fixes ==

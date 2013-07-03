@@ -25,6 +25,7 @@ import org.emdev.ui.actions.ActionController;
 import org.emdev.ui.actions.ActionDialogBuilder;
 import org.emdev.ui.gl.GLConfiguration;
 import org.emdev.utils.concurrent.Flag;
+import org.sufficientlysecure.viewer.R;
 
 public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeListener, IBackupSettingsChangeListener,
         ILibSettingsChangeListener {

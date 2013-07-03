@@ -1,6 +1,6 @@
 package org.ebookdroid.ui.viewer.views;
 
-import org.ebookdroid.R;
+import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.core.EventCrop;
 import org.ebookdroid.core.Page;

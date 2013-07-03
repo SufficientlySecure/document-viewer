@@ -1,7 +1,7 @@
 package org.ebookdroid.ui.library.adapters;
 
 import org.ebookdroid.EBookDroidApp;
-import org.ebookdroid.R;
+import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.common.settings.SettingsManager;
 
 import android.database.DataSetObserver;

@@ -1,6 +1,6 @@
 package org.ebookdroid.ui.settings;
 
-import org.ebookdroid.R;
+import org.sufficientlysecure.viewer.R;
 
 import android.annotation.TargetApi;
 import android.content.res.Configuration;

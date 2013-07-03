@@ -16,7 +16,7 @@
 
 package org.afzkl.colorpicker;
 
-import org.ebookdroid.R;
+import org.sufficientlysecure.viewer.R;
 
 import android.app.AlertDialog;
 import android.content.Context;

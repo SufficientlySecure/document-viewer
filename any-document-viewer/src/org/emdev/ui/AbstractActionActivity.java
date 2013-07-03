@@ -1,6 +1,6 @@
 package org.emdev.ui;
 
-import org.ebookdroid.R;
+import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.ui.about.AboutActivity;
 
 import android.app.Activity;

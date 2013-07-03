@@ -1,7 +1,7 @@
 package org.ebookdroid.core.curl;
 
 import org.ebookdroid.EBookDroidApp;
-import org.ebookdroid.R;
+import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.core.SinglePageController;
 
 import org.emdev.utils.enums.ResourceConstant;

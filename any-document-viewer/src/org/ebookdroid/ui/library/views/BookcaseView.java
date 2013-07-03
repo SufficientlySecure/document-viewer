@@ -1,6 +1,6 @@
 package org.ebookdroid.ui.library.views;
 
-import org.ebookdroid.R;
+import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.ui.library.adapters.BooksAdapter;
 import org.ebookdroid.ui.library.adapters.RecentAdapter;
 

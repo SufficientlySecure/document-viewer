@@ -1,6 +1,6 @@
 package org.emdev.common.xml;
 
-import org.ebookdroid.R;
+import org.sufficientlysecure.viewer.R;
 
 import org.emdev.BaseDroidApp;
 import org.emdev.utils.enums.ResourceConstant;

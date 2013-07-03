@@ -1,7 +1,7 @@
 package org.ebookdroid.ui.settings;
 
 import org.ebookdroid.EBookDroidApp;
-import org.ebookdroid.R;
+import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;

@@ -1,7 +1,7 @@
 package org.ebookdroid.ui.library;
 
 import org.ebookdroid.CodecType;
-import org.ebookdroid.R;
+import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.settings.LibSettings;
 import org.ebookdroid.common.settings.SettingsManager;

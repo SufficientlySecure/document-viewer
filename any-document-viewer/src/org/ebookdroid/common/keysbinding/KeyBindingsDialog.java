@@ -1,6 +1,6 @@
 package org.ebookdroid.common.keysbinding;
 
-import org.ebookdroid.R;
+import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.ui.viewer.IActivityController;
 
 import android.app.Dialog;

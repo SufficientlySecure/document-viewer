@@ -1,7 +1,7 @@
 package org.ebookdroid.common.settings.types;
 
 import org.ebookdroid.EBookDroidApp;
-import org.ebookdroid.R;
+import org.sufficientlysecure.viewer.R;
 
 import android.content.pm.ActivityInfo;
 

@@ -1,7 +1,7 @@
 package org.ebookdroid.common.settings.types;
 
 import static android.view.Gravity.*;
-import static org.ebookdroid.R.string.*;
+import static org.sufficientlysecure.viewer.R.string.*;
 
 import org.ebookdroid.EBookDroidApp;
 

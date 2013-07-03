@@ -1,6 +1,6 @@
 package org.ebookdroid.common.settings.definitions;
 
-import org.ebookdroid.R;
+import org.sufficientlysecure.viewer.R;
 
 import org.emdev.common.settings.base.BooleanPreferenceDefinition;
 import org.emdev.common.settings.base.JsonArrayPreferenceDefinition;

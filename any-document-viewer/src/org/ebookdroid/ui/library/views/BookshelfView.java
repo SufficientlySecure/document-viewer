@@ -16,7 +16,7 @@
 
 package org.ebookdroid.ui.library.views;
 
-import org.ebookdroid.R;
+import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.ui.library.IBrowserActivity;
 import org.ebookdroid.ui.library.adapters.BookNode;

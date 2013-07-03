@@ -1,7 +1,7 @@
 package org.ebookdroid.opds;
 
 import org.ebookdroid.CodecType;
-import org.ebookdroid.R;
+import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.common.settings.OpdsSettings;
 import org.ebookdroid.opds.exceptions.AuthorizationRequiredException;
 import org.ebookdroid.opds.exceptions.HttpRequestFailed;

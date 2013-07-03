@@ -1,6 +1,6 @@
 package org.emdev.common.content;
 
-import org.ebookdroid.R;
+import org.sufficientlysecure.viewer.R;
 
 import android.content.ContentResolver;
 import android.content.Intent;

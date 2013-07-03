@@ -1,6 +1,6 @@
 package org.ebookdroid.common.settings.definitions;
 
-import static org.ebookdroid.R.string.*;
+import static org.sufficientlysecure.viewer.R.string.*;
 
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.FontSize;

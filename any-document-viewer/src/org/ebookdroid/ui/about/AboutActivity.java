@@ -1,6 +1,6 @@
 package org.ebookdroid.ui.about;
 
-import org.ebookdroid.R;
+import org.sufficientlysecure.viewer.R;
 
 import android.app.Activity;
 import android.content.Context;

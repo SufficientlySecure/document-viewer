@@ -1,6 +1,6 @@
 package org.emdev.ui.actions;
 
-import org.ebookdroid.R;
+import org.sufficientlysecure.viewer.R;
 
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnMultiChoiceClickListener;

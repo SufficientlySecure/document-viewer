@@ -1,6 +1,6 @@
 package org.ebookdroid.ui.opds.adapters;
 
-import org.ebookdroid.R;
+import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.opds.exceptions.AuthorizationRequiredException;
 import org.ebookdroid.opds.exceptions.OPDSException;
 import org.ebookdroid.opds.model.Book;

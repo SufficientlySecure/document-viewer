@@ -1,6 +1,6 @@
 package org.ebookdroid.common.touch;
 
-import org.ebookdroid.R;
+import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.common.settings.AppSettings;
 
 import android.graphics.Rect;

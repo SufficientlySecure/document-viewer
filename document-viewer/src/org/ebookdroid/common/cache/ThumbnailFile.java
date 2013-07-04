@@ -58,7 +58,7 @@ public class ThumbnailFile extends File {
 
         l.onImageLoaded(defImage);
         listener = l;
-        executor.execute(new LoadingTask(), (Void[]) null);
+        executor.execute(new LoadingTask(), "");
     }
 
     protected synchronized void onImageLoaded(final Bitmap result) {
@@ -160,10 +160,10 @@ public class ThumbnailFile extends File {
         void onImageLoaded(Bitmap image);
     }
 
-    private final class LoadingTask extends AsyncTask<Void, Void, Bitmap> {
+    private final class LoadingTask extends AsyncTask<String, Void, Bitmap> {
 
         @Override
-        protected Bitmap doInBackground(Void... params) {
+        protected Bitmap doInBackground(String... params) {
             try {
                 return load(false);
             } catch (final OutOfMemoryError ex) {

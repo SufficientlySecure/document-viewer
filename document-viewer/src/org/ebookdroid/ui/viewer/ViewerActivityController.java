@@ -925,7 +925,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
 
         @Override
         public void run() {
-            executor.execute(this);
+            executor.execute(this, "");
         }
 
         @Override

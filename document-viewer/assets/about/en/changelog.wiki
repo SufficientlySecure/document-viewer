@@ -1,5 +1,10 @@
 #labels Featured
 
+= Document Viewer v2.1 changelog =
+
+== Bug fixes ==
+ * Fix crash
+
 = Document Viewer v2.0 changelog =
 
 == New features ==

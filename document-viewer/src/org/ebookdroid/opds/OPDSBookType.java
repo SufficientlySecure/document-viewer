@@ -21,11 +21,11 @@ public enum OPDSBookType {
     /**
      *
      */
-    CBZ(false, "application/x-cbz"),
+    CBZ(false, "application/x-cbz");
     /**
     *
     */
-    CBR(false, "application/x-cbr");
+//    CBR(false, "application/x-cbr");
 
     private final boolean supportZip;
     private final Set<String> mimeTypes;

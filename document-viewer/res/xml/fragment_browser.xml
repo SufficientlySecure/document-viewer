@@ -96,12 +96,12 @@
                 android:summary="@string/pref_brfiletypecbz_summary"
                 android:title="@string/pref_brfiletypecbz_title" />
 
-        <org.emdev.ui.preference.JsonCheckBoxPreference
-                android:defaultValue="true"
-                android:key="@string/pref_brfiletypes"
-                ebookdroid:jsonProperty="cbr"
-                android:summary="@string/pref_brfiletypecbr_summary"
-                android:title="@string/pref_brfiletypecbr_title" />
+<!--         <org.emdev.ui.preference.JsonCheckBoxPreference -->
+<!--                 android:defaultValue="true" -->
+<!--                 android:key="@string/pref_brfiletypes" -->
+<!--                 ebookdroid:jsonProperty="cbr" -->
+<!--                 android:summary="@string/pref_brfiletypecbr_summary" -->
+<!--                 android:title="@string/pref_brfiletypecbr_title" /> -->
 
         <org.emdev.ui.preference.JsonCheckBoxPreference
                 android:defaultValue="true"

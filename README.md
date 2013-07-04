@@ -41,7 +41,7 @@ along with Document Viewer.  If not, see <http://www.gnu.org/licenses/>.
   LGPL v2.1
 
 * Color Picker by Daniel Nilsson  
-  Link missing  
+  http://code.google.com/p/color-picker-view/  
   Apache License v2
 
 * VDT-XML by XimpleWare  

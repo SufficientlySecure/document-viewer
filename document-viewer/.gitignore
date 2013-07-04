@@ -3,6 +3,9 @@ bin
 gen
 obj
 libs/armeabi
+libs/armeabi-v7a
+libs/mips
+libs/x86
 lint.xml
 local.properties
 release.properties

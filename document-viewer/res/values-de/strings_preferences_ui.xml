@@ -3,7 +3,7 @@
 
     <string name="pref_ui_category">"Benutzeroberfläche"</string>
     <string name="pref_ui_category_summary">"Einstellungen der Benutzeroberfläche"</string>
-<!--<string name="pref_lang_title">"Language"</string>-->
+    <string name="pref_lang_title">"Sprache"</string>
 <!--<string name="pref_lang_summary">"User interface language (restart required)"</string>-->
 <!--<string name="list_lang_default">"System"</string>-->
 <!--<string name="list_lang_en">"English"</string>-->
@@ -17,8 +17,8 @@
 <!--<string name="list_lang_zh">"Chinese (中文简体)"</string>-->
 <!--<string name="list_lang_iw">"Hebrew (עברית)"</string>-->
     <string name="pref_loadrecent_title">"Letztes öffnen"</string>
-    <string name="pref_loadrecent_summary">"Das letzte Buch automatisch beim Start öffnen lassen"</string>
-<!--<string name="pref_confirmclose_title">"Confirm closing"</string>-->
+    <string name="pref_loadrecent_summary">"Beim Start das zuletzt gelesene Buch öffnen"</string>
+    <string name="pref_confirmclose_title">"Schließen bestätigen"</string>
 <!--<string name="pref_confirmclose_summary">"Ask close confirmation on Back pressed"</string>-->
     <string name="pref_brightness_title">"Helligkeit"</string>
     <string name="pref_brightness_summary">"Einstellungen der Gesamtbildhelligkeit (0–100)"</string>
@@ -36,12 +36,12 @@
 <!--<string name="pref_pagenumbertoastposition_summary">"Position of page number toast"</string>-->
 <!--<string name="pref_zoomtoastposition_title">"Position of zoom toast"</string>-->
 <!--<string name="pref_zoomtoastposition_summary">"Position of zoom toast"</string>-->
-<!--<string name="list_toastposition_invisible">"Do not show"</string>-->
-<!--<string name="list_toastposition_lefttop">"Left top corner"</string>-->
-<!--<string name="list_toastposition_righttop">"Right top corner"</string>-->
-<!--<string name="list_toastposition_leftbottom">"Left bottom corner"</string>-->
-<!--<string name="list_toastposition_bottom">"Bottom"</string>-->
-<!--<string name="list_toastposition_righbottom">"Right bottom corner"</string>-->
+    <string name="list_toastposition_invisible">"Nicht anzeigen"</string>
+    <string name="list_toastposition_lefttop">"Links unten"</string>
+    <string name="list_toastposition_righttop">"Rechts oben"</string>
+    <string name="list_toastposition_leftbottom">"Links unten"</string>
+    <string name="list_toastposition_bottom">"Unten"</string>
+    <string name="list_toastposition_righbottom">"Rechts unten"</string>
     <string name="pref_showanimicon_title">"Animationstyp anzeigen"</string>
     <string name="pref_showanimicon_summary">"Animationstyp anzeigen, wenn Animation oder Drag and Drop-Funktion zugänglich sind"</string>
 

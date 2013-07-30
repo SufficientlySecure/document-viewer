@@ -15,10 +15,10 @@
 <!--<string name="list_rotation_reverse_landscape">"Force reverse landscape"</string>-->
 <!--<string name="list_rotation_reverse_portrait">"Force reverse portrait"</string>-->
 <!--<string name="list_rotation_full_sensor">"Full sensor"</string>-->
-    <string name="pref_render_category">"Abzeichnung"</string>
-    <string name="pref_render_category_summary">"Einstellungen der Abzeichnung"</string>
+    <string name="pref_render_category">"Darstellung"</string>
+    <string name="pref_render_category_summary">"Darstellungseinstellungen"</string>
     <string name="pref_book_category">"Bucheinstellungen"</string>
-    <string name="pref_book_category_summary">"Abzeichnungseinstellungen für das laufende Buch"</string>
+    <string name="pref_book_category_summary">"Darstellungseinstellungen für das momentan geöffnete Buch"</string>
 <!--<string name="pref_firstpageoffset_title">"First page offset"</string>-->
 <!--<string name="pref_firstpageoffset_summary">"Index of first page shown to user"</string>-->
     <string name="pref_splitpages_title">"Seitenpaare teilen"</string>
@@ -35,7 +35,7 @@
     <string name="pref_singlepage_category">"Einseitenmodus"</string>
     <string name="pref_singlepage_category_summary">"Einstellungen für den Einseitenmodus"</string>
     <string name="pref_align_title">"Seitenausgleichsmodus"</string>
-    <string name="pref_align_summary">"Nach welcher Seite sollen die Seiten ausgeglichen werden"</string>
+    <string name="pref_align_summary">"Wie sollen die Seiten an den Bildschirm angepasst werden"</string>
     <string name="list_align_by_width">"Nach Breite"</string>
     <string name="list_align_by_height">"Nach Höhe"</string>
     <string name="list_align_auto">"Automatisch"</string>
@@ -57,8 +57,8 @@
 <!--<string name="pref_posimages_in_nightmode_summary">"Show gray-scaled images in night mode (do not invert image colors)"</string>-->
 <!--<string name="pref_contrast_title">"Contrast"</string>-->
 <!--<string name="pref_contrast_summary">"Contrast correction level (0 – 1000, 100 by default)"</string>-->
-<!--<string name="pref_gamma_title">"Gamma"</string>-->
-<!--<string name="pref_gamma_summary">"Gamma correction level (0 – 200, 100 by default)"</string>-->
+    <string name="pref_gamma_title">"Gamma"</string>
+    <string name="pref_gamma_summary">"Wert der Gammakorrektur (0 – 200, standardmäßig 100)"</string>
 <!--<string name="pref_exposure_title">"Exposure"</string>-->
 <!--<string name="pref_exposure_summary">"Exposure correction level (0 – 200, 100 by default)"</string>-->
 <!--<string name="pref_autolevels_title">"Auto levels"</string>-->

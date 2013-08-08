@@ -51,7 +51,7 @@ along with Document Viewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ## C Libraries
 
-* mupdf - a lightweight PDF and XPS viewer, based on MuPDF   
+* MuPDF - a lightweight PDF and XPS viewer   
   http://www.mupdf.com/  
   AGPLv3+
 

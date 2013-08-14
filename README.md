@@ -17,6 +17,10 @@ Supports the file in following formats:
 2. ``ndk-build``
 3. ``ant debug``
 
+## Font Pack
+
+To save space in the main app, additional fonts can be installed with the fontpack: https://github.com/dschuermann/document-viewer-fontpack
+
 # Licenses
 Document Viewer is licensed under the GPLv3+.  
 The file LICENSE includes the full license text.

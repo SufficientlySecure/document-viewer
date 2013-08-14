@@ -1,0 +1,37 @@
+#Android specific
+bin
+gen
+obj
+libs/armeabi
+libs/armeabi-v7a
+libs/mips
+libs/x86
+lint.xml
+local.properties
+release.properties
+ant.properties
+*.class
+*.apk
+
+#Gradle
+.gradle
+build
+gradle.properties
+gradlew
+gradlew.bat
+gradle
+gradle-app.setting
+
+#Maven
+target
+pom.xml.*
+
+#Eclipse
+.project
+.classpath
+.settings
+.metadata
+
+#IntelliJ IDEA
+.idea
+*.iml

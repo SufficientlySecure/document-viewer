@@ -19,7 +19,7 @@ Supports the file in following formats:
 
 # Licenses
 Document Viewer is licensed under the GPLv3+.  
-The file COPYING includes the full license text.
+The file LICENSE includes the full license text.
 
 ## Details
 Document Viewer is free software: you can redistribute it and/or modify

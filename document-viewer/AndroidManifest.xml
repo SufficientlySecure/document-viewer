@@ -26,11 +26,17 @@
         <activity
             android:name="org.ebookdroid.ui.viewer.ViewerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" >
+
+            <!--
+                Note: Intent matching isn't as easy as it looks at first sight.
+                All <data> tags are merged by Android! <intent-filter> tags are OR'ed
+            -->
+            <!-- Generic intent filter -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.EDIT" />
 
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:mimeType="application/pdf" />
                 <data android:mimeType="image/djvu" />
@@ -39,9 +45,34 @@
                 <data android:mimeType="application/vnd.ms-xpsdocument" />
                 <data android:mimeType="application/oxps" />
                 <data android:mimeType="application/x-cbz" />
-<!--                 <data android:mimeType="application/x-cbr" /> -->
+                <!-- <data android:mimeType="application/x-cbr" /> -->
                 <data android:mimeType="application/x-fb2" />
             </intent-filter>
+            <!--
+				Allow opening directly from browser for schemes http, https, and samba 
+				Matching with mimeTypes here would result in direct opening of pdfs without user interaction!!!
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:host="*" />
+                <data android:scheme="smb" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:pathPattern=".*\\.pdf" />
+                <data android:pathPattern=".*\\.djvu" />
+                <data android:pathPattern=".*\\.djv" />
+                <data android:pathPattern=".*\\.xps" />
+                <data android:pathPattern=".*\\.oxps" />
+                <data android:pathPattern=".*\\.cbz" />
+                <!-- <data android:pathPattern=".*\\.cbr" /> -->
+                <data android:pathPattern=".*\\.fb2" />
+                <data android:pathPattern=".*\\.fb2\\.zip" />
+            </intent-filter>
+            <!-- To allow opening from file managers/content scheme based on file extension -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -50,20 +81,34 @@
 
                 <data android:host="*" />
                 <data android:scheme="file" />
-                <data android:scheme="smb" />
                 <data android:scheme="content" />
-                <data android:scheme="http" />
-                <data android:scheme="https" />
                 <data android:mimeType="*/*" />
+                <!-- Workaround to match files in pathes with dots in them, like /cdcard/my.folder/test.gpg -->
                 <data android:pathPattern=".*\\.pdf" />
+                <data android:pathPattern=".*\\..*\\.pdf" />
+                <data android:pathPattern=".*\\..*\\..*\\.pdf" />
                 <data android:pathPattern=".*\\.djvu" />
+                <data android:pathPattern=".*\\..*\\.djvu" />
+                <data android:pathPattern=".*\\..*\\..*\\.djvu" />
                 <data android:pathPattern=".*\\.djv" />
+                <data android:pathPattern=".*\\..*\\.djv" />
+                <data android:pathPattern=".*\\..*\\..*\\.djv" />
                 <data android:pathPattern=".*\\.xps" />
+                <data android:pathPattern=".*\\..*\\.xps" />
+                <data android:pathPattern=".*\\..*\\..*\\.xps" />
                 <data android:pathPattern=".*\\.oxps" />
+                <data android:pathPattern=".*\\..*\\.oxps" />
+                <data android:pathPattern=".*\\..*\\..*\\.oxps" />
                 <data android:pathPattern=".*\\.cbz" />
-<!--                 <data android:pathPattern=".*\\.cbr" /> -->
+                <data android:pathPattern=".*\\..*\\.cbz" />
+                <data android:pathPattern=".*\\..*\\..*\\.cbz" />
+                <!-- <data android:pathPattern=".*\\.cbr" /> -->
                 <data android:pathPattern=".*\\.fb2" />
+                <data android:pathPattern=".*\\..*\\.fb2" />
+                <data android:pathPattern=".*\\..*\\..*\\.fb2" />
                 <data android:pathPattern=".*\\.fb2\\.zip" />
+                <data android:pathPattern=".*\\..*\\.fb2\\.zip" />
+                <data android:pathPattern=".*\\..*\\..*\\.fb2\\.zip" />
             </intent-filter>
         </activity>
         <activity

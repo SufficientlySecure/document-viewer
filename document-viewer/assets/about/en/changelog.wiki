@@ -1,22 +1,27 @@
 #labels Featured
 
-= Document Viewer v2.1 changelog =
+= DV v2.2 =
+
+== Bug fixes ==
+ * Don't open documents automatically from browsers, user interaction is now required
+
+= DV v2.1 =
 
 == Bug fixes ==
  * Fix crash
 
-= Document Viewer v2.0 changelog =
+= DV v2.0 =
 
 == New features ==
  * Renamed to Document Viewer
  * No support for CBR format (RAR)
 
-= EBookDroid v1.6.6 changelog =
+= EBookDroid v1.6.6 =
 
 == Bug fixes ==
  * Scrolling fixed
 
-= EBookDroid v1.6.5 changelog =
+= EBookDroid v1.6.5  =
 
 == New features ==
  * Mouse wheel scrolling support added
@@ -27,7 +32,7 @@
  * Various bugs fixed
 
 
-= EBookDroid v1.6.4 changelog =
+= EBookDroid v1.6.4  =
 
 == New features ==
  * OPDS feed parsing improved
@@ -41,7 +46,7 @@
  * QuickZoom & ZoomToColumn fixed
 
 
-= EBookDroid v1.6.3 changelog =
+= EBookDroid v1.6.3  =
 
 == New features ==
  * Saving downloaded documents on close
@@ -57,7 +62,7 @@
  * Fix for #405 - Calibre workaround added
 
 
-= EBookDroid v1.6.2 changelog =
+= EBookDroid v1.6.2  =
 
 == New features ==
  * New scrolling & fling implementation
@@ -70,14 +75,14 @@
  * Fix directory scanning
  * Fix other reported issues
 
-= EBookDroid v1.6.1 changelog =
+= EBookDroid v1.6.1  =
 
 == Bug fixes ==
 
  * Fix selecting GLES configuration on old devices
  * Fix other reported issues
 
-= EBookDroid v1.6.0 changelog =
+= EBookDroid v1.6.0  =
 
 == New features ==
  * The actual version is targeted for devices with Android 2.2+
@@ -109,7 +114,7 @@
  * Fix keys processing if search field is visible.
 
 
-= EBookDroid v1.5.6 changelog =
+= EBookDroid v1.5.6  =
 
 == New features ==
 
@@ -148,13 +153,13 @@
  * Fix NPEs reported in Market.
 
 
-= EBookDroid v1.5.5 changelog =
+= EBookDroid v1.5.5  =
 
 === UI changes ===
  * Document scrolling has been tuned
 
 
-= EBookDroid v1.5.4 changelog =
+= EBookDroid v1.5.4  =
 
 === Other changes ===
  * Arm7 version removed from Market
@@ -163,7 +168,7 @@
  * Some minor issues fixed
 
 
-= EBookDroid v1.5.3 changelog =
+= EBookDroid v1.5.3  =
 
 == New features ==
 
@@ -206,7 +211,7 @@
 
 
 
-= EBookDroid v1.5.2 changelog =
+= EBookDroid v1.5.2  =
 
 == New features ==
 
@@ -230,7 +235,7 @@
  * OPDS: fixed resolving of relative paths (#292).
  * Text search fixes.
 
-= EBookDroid v1.5.1 changelog =
+= EBookDroid v1.5.1  =
 
 === Configuration and settings ===
  * UI Language preference added.
@@ -242,7 +247,7 @@
 == Bug fixes ==
  * Various bugs fixed.
 
-= EBookDroid v1.5.0 changelog =
+= EBookDroid v1.5.0  =
 
 === PDF & FB2 fonts ===
  * PDF built-in fonts removed.
@@ -283,14 +288,14 @@
  * New bugs added.
 
 
-= EBookDroid v1.4.2 changelog =
+= EBookDroid v1.4.2  =
 
 == Bug fixes ==
  * Fix for #210.
  * Fix for #213.
  * Fixes for various crashes reported on Google Play
 
-= EBookDroid v1.4.1 changelog =
+= EBookDroid v1.4.1  =
 
 === New features ===
  * Store on-page position in bookmarks created from "Add bookmark" menu item.
@@ -310,7 +315,7 @@
  * Fix for #199.
  * Fixes for various crashes reported on Google Play
 
-= EBookDroid v1.4.0 changelog =
+= EBookDroid v1.4.0  =
 
 === New features ===
  * PDF/DjVU internal links
@@ -340,7 +345,7 @@
  * Old bugs fixed
  * New bugs added
 
-= EBookDroid v1.3.2 changelog =
+= EBookDroid v1.3.2  =
 
 === Optimization of decoding and drawing process ===
  * Bitmap memory management improved
@@ -366,7 +371,7 @@
  * Multizoom failure fixed
  * Various NPE fixed
 
-= EBookDroid v1.3.1 changelog =
+= EBookDroid v1.3.1  =
 
 === Optimization of decoding and drawing process ===
  * Drawing speed optimization.
@@ -396,7 +401,7 @@
  * Various FB2 fixes
  * Several NPE fixed.
 
-= EBookDroid v1.3 changelog =
+= EBookDroid v1.3  =
 
 === New features ===
  * Hardware acceleration is returned back for Android 3+
@@ -435,7 +440,7 @@
  * Old bugs fixed
  * New bugs added
 
-=EBookDroid v1.2.2 changelog=
+=EBookDroid v1.2.2 =
 
 == Bug fixes ==
 
@@ -448,7 +453,7 @@
  * MuPDF updated
  * DjVU updated
 
-=EBookDroid v1.2.1 changelog=
+=EBookDroid v1.2.1 =
 
 == Bug fixes ==
 
@@ -466,7 +471,7 @@
  * Touch fixes
  * Loading progress dialog added
 
-=EBookDroid v1.2 changelog=
+=EBookDroid v1.2 =
 
 ==New features==
 

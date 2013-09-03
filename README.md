@@ -4,7 +4,7 @@ Document Viewer is a fork of the last GPL version of EBookDroid (http://code.goo
 
 We need your support to fix outstanding bugs, join development by forking the project!
 
-Supports the file in following formats:
+Supports the following formats:
 * PDF
 * DjVu
 * XPS (OpenXPS)
@@ -72,7 +72,3 @@ along with Document Viewer.  If not, see <http://www.gnu.org/licenses/>.
     libjpeg License
     - GIFLIB
     - ZLib   
-
-## Other
-
-* Freetype fonts?

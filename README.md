@@ -11,6 +11,8 @@ Supports the following formats:
 * Comic Books (cbz) (NO support for cbr (rar compressed))
 * FictionBook (fb2, fb2.zip)
 
+Additional fonts can be installed using the [Document Viewer Fontpack](https://github.com/dschuermann/document-viewer-fontpack).
+
 General information about supported MIME types and available Intents can be found in the [Wiki](https://github.com/dschuermann/document-viewer/wiki).
 
 ## Build

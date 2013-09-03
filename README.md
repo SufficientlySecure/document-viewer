@@ -11,6 +11,8 @@ Supports the following formats:
 * Comic Books (cbz) (NO support for cbr (rar compressed))
 * FictionBook (fb2, fb2.zip)
 
+General information about supported MIME types and available Intents can be found in the [Wiki](https://github.com/dschuermann/document-viewer/wiki).
+
 ## Build
 
 1. ``cd document-viewer``

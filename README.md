@@ -2,7 +2,7 @@
 
 Document Viewer is a highly customizable document viewer for Android.
 
-Help, such as an FAQ, information about supported MIME types, and available Intents can be found in the [Wiki](https://github.com/dschuermann/document-viewer/wiki).
+FAQ, information about supported MIME types, and available Intents can be found in the [Wiki](https://github.com/dschuermann/document-viewer/wiki).
 
 Supports the following formats:
 * PDF

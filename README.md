@@ -1,15 +1,23 @@
 # Document Viewer
 
-Document Viewer is a fork of the last GPL version of EBookDroid (http://code.google.com/p/ebookdroid/).
+Document Viewer is a highly customizable document viewer for Android.
 
-We need your support to fix outstanding bugs, join development by forking the project!
+FAQ, information about supported MIME types, and available Intents can be found in the [Wiki](https://github.com/dschuermann/document-viewer/wiki).
 
-Supports the file in following formats:
+Supports the following formats:
 * PDF
 * DjVu
 * XPS (OpenXPS)
 * Comic Books (cbz) (NO support for cbr (rar compressed))
 * FictionBook (fb2, fb2.zip)
+
+Collaboration with electronic publication sites and access to online ebook catalogs is allowed by the supported OPDS protocol.
+
+## Development
+
+Document Viewer is a fork of the last GPL version of EBookDroid (http://code.google.com/p/ebookdroid/).
+
+We need your support to fix outstanding bugs, join development by forking the project!
 
 ## Build
 
@@ -19,7 +27,7 @@ Supports the file in following formats:
 
 ## Font Pack
 
-To save space in the main app, additional fonts can be installed with the fontpack: https://github.com/dschuermann/document-viewer-fontpack
+To save space in the main app, additional fonts can be installed using the [Document Viewer Fontpack](https://github.com/dschuermann/document-viewer-fontpack).
 
 # Licenses
 Document Viewer is licensed under the GPLv3+.  
@@ -72,11 +80,7 @@ along with Document Viewer.  If not, see <http://www.gnu.org/licenses/>.
     libjpeg License
     - GIFLIB
     - ZLib   
-
-## Other
-
-* Freetype fonts?
-
+    
 ## Images
 
 * application_icon.svg  

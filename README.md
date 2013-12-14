@@ -76,3 +76,9 @@ along with Document Viewer.  If not, see <http://www.gnu.org/licenses/>.
 ## Other
 
 * Freetype fonts?
+
+## Images
+
+* application_icon.svg  
+  http://rrze-icon-set.berlios.de/  
+  Creative Commons Attribution Share-Alike licence 3.0

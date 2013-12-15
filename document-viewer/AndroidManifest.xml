@@ -3,12 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.sufficientlysecure.viewer"
     android:installLocation="auto"
-    android:versionCode="2200"
-    android:versionName="2.2">
+    android:versionCode="2300"
+    android:versionName="2.3">
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="19" />
 
     <!-- 0x00010001: OpenGL ES 1.1 -->
     <uses-feature

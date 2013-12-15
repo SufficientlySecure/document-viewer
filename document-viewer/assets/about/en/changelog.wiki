@@ -1,5 +1,10 @@
 #labels Featured
 
+= DV v2.4 =
+
+== Bug fixes ==
+ * Fix preference crashes
+
 = DV v2.3 =
 
 == New features ==

@@ -25,7 +25,7 @@ public interface IUIManager {
     /* UIManager40x */
     ? new UIManager40x()
     /* Check Android 4.0.x versions */
-    : AndroidVersion.is41x
+    : AndroidVersion.is41x || AndroidVersion.is42x || AndroidVersion.is43x
     /* UIManager41x */
     ? new UIManager41x()
     /* UIManager44x */

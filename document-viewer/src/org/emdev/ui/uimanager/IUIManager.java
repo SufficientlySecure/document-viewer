@@ -24,8 +24,12 @@ public interface IUIManager {
     : AndroidVersion.is40x
     /* UIManager40x */
     ? new UIManager40x()
+    /* Check Android 4.0.x versions */
+    : AndroidVersion.is41x
     /* UIManager41x */
-    : new UIManager41x();
+    ? new UIManager41x()
+    /* UIManager44x */
+    : new UIManager44x();
 
     void onPause(Activity activity);
 

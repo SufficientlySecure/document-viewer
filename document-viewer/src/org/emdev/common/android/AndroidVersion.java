@@ -18,7 +18,11 @@ public class AndroidVersion {
 
     public static final boolean is41x = 16 == VERSION;
 
-    public static final boolean is42x = 17 <= VERSION;
+    public static final boolean is42x = 17 == VERSION;
+
+    public static final boolean is43x = 18 == VERSION;
+
+    public static final boolean is44x = 19 <= VERSION;
 
     private static int getVersion() {
         try {

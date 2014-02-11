@@ -19,11 +19,29 @@ Document Viewer is a fork of the last GPL version of EBookDroid (http://code.goo
 
 We need your support to fix outstanding bugs, join development by forking the project!
 
-## Build
+## Development
 
-1. ``cd document-viewer``
-2. ``ndk-build``
-3. ``ant debug``
+
+### Build with Gradle
+
+1. Have Android SDK "tools", "platform-tools", and "build-tools" directories in your PATH (http://developer.android.com/sdk/index.html)
+2. Open the Android SDK Manager (shell command: ``android``).  
+Expand the Tools directory and select "Android SDK Build-tools" newest version.  
+Expand the Extras directory and install "Android Support Repository"  
+Select everything for the newest SDK
+3. Export ANDROID_HOME pointing to your Android SDK
+4. Build native libraries with ``cd document-viewer; ndk-build``
+5. Execute ``./gradlew build``
+
+### Development with Android Studio
+
+I am using the newest [Android Studio](http://developer.android.com/sdk/installing/studio.html) for development. Development with Eclipse is currently not possible because I am using the new [project structure](http://developer.android.com/sdk/installing/studio-tips.html).
+
+1. Clone the project from github
+2. From Android Studio: File -> Import Project ->  ...
+  * Select the cloned top folder if you want to develop on the main project
+  * Select the "document-viewer" folder if you want to develop on the API example
+3. Import project from external model -> choose Gradle
 
 ## Font Pack
 

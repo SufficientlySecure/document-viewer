@@ -1,4 +1,4 @@
-# Document Viewer
+# Document Viewer [![Build Status](https://buildhive.cloudbees.com/job/dschuermann/job/document-viewer/badge/icon)](https://buildhive.cloudbees.com/job/dschuermann/job/document-viewer/)
 
 Document Viewer is a highly customizable document viewer for Android.
 

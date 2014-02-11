@@ -1,5 +1,10 @@
 #labels Featured
 
+= DV v2.5 =
+
+== New features ==
+ * Use KitKat immersive full-screen (patch by ebraminio)
+
 = DV v2.4 =
 
 == Bug fixes ==

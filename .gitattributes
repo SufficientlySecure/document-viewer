@@ -1,0 +1,5 @@
+# Auto detect text files and perform LF normalization
+*        text=auto
+
+*.java   text diff=java
+*.xml    text diff=xml

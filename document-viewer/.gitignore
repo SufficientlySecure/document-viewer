@@ -17,9 +17,6 @@ ant.properties
 .gradle
 build
 gradle.properties
-gradlew
-gradlew.bat
-gradle
 gradle-app.setting
 
 #Maven

@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="ebookdroid" parent="android:Theme.NoTitleBar"></style>
+    <style name="ebookdroid"
+           parent="@android:style/Theme.Holo">
+        <item name="android:actionBarStyle">@style/ebookdroid.ActionBarStyle</item>
+    </style>
+
+    <!-- ActionBar styles -->
+    <style name="ebookdroid.ActionBarStyle"
+           parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@color/actionbar_black</item>
+        <item name="android:titleTextStyle">@style/ebookdroid.ActionBar.TitleTextStyle</item>
+  </style>
+
+  <style name="ebookdroid.ActionBar.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/actionbar_white</item>
+  </style>
 
     <!-- actionbar -->
     <style name="action_bar">

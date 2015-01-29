@@ -8,8 +8,7 @@ ifeq ($(TARGET_ARCH_ABI),armeabi)
     LOCAL_ARM_MODE := arm
 endif # TARGET_ARCH_ABI == armeabi
 
-
-LOCAL_CFLAGS := 
+LOCAL_CFLAGS := -DHAVE_CONFIG_H
 
 LOCAL_SRC_FILES := \
 	ebookdroidjni.c \
@@ -21,19 +20,18 @@ LOCAL_SRC_FILES := \
 	javahelpers.c
 
 LOCAL_C_INCLUDES := \
-	$(LOCAL_PATH)/../mupdf/mupdf/fitz \
-	$(LOCAL_PATH)/../mupdf/mupdf/pdf \
-	$(LOCAL_PATH)/../mupdf/mupdf/xps \
-	$(LOCAL_PATH)/../djvu \
-	$(LOCAL_PATH)/../hqx
+	$(LOCAL_PATH)/../mupdf/mupdf/include \
+	$(LOCAL_PATH)/../mupdf/mupdf/source/fitz \
+	$(LOCAL_PATH)/../mupdf/mupdf/source/xps \
+	$(LOCAL_PATH)/../mupdf/mupdf/source/pdf \
+	$(LOCAL_PATH)/../djvu
 
 LOCAL_CXX_INCLUDES := \
-	$(LOCAL_PATH)/../libdjvu
+	$(LOCAL_PATH)/../djvu
 
-LOCAL_STATIC_LIBRARIES := mupdf djvu jpeg hqx
+LOCAL_STATIC_LIBRARIES := djvu mupdfcore mupdfthirdparty
 
 # uses Android log and z library (Android-3 Native API)
 LOCAL_LDLIBS := -llog -lz
 
 include $(BUILD_SHARED_LIBRARY)
-

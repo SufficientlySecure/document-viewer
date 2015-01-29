@@ -64,6 +64,7 @@
 #include "ByteStream.h"
 #include "BSByteStream.h"
 #include "DjVuPalette.h"
+
 #include <stddef.h>
 #include <stdlib.h>
 #include <math.h>

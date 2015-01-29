@@ -65,7 +65,7 @@
 
 #include "GThreads.h"
 #include "GURL.h"
-#include <stddef.h>
+#include "stddef.h"
 
 #ifdef HAVE_NAMESPACES
 namespace DJVU {

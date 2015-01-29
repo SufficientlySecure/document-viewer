@@ -555,7 +555,7 @@ DjVuDocEditor::insert_file(const GURL &file_url, bool is_page,
                                          can_compress_flag);
   }
 
-   // Oh. It does exist... Check that it has IFF structure
+  // Oh. It does exist... Check that it has IFF structure
   {
     const GP<IFFByteStream> giff(
        IFFByteStream::create(file_pool->get_stream()));
@@ -1960,7 +1960,15 @@ DjVuDocEditor::save_as(const GURL &where, bool bundled)
      doc_url=GURL();
    }else
    {
-     if (djvm_dir->get_files_num()==1 && !djvm_nav)
+     bool singlepage = (djvm_dir->get_files_num()==1 && !djvm_nav);
+     if (singlepage)
+     {
+       // maybe save as single page
+       DjVmDir::File *file = djvm_dir->page_to_file(0);
+       if (file->get_title() != file->get_load_name())
+         singlepage = false;
+     }
+     if (singlepage)
      {
        // Here 'bundled' has no effect: we will save it as one page.
        DEBUG_MSG("saving one file...\n");

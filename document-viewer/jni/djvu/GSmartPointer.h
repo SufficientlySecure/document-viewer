@@ -507,7 +507,7 @@ template<class TYPE>
 class GPBuffer : public GPBufferBase
 {
 public:
-  GPBuffer(TYPE *&xptr,const size_t n=0)
+  GPBuffer(TYPE *&xptr,const size_t n=0) 
     : GPBufferBase((void *&)xptr,n,sizeof(TYPE)) {}
   inline void resize(const size_t n) {GPBufferBase::resize(n,sizeof(TYPE));}
   inline void clear(void) {GPBufferBase::set(sizeof(TYPE),0);}

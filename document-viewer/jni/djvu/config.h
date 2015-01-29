@@ -26,7 +26,7 @@
 #define DIR_PREFIX "/usr/local"
 
 /* version string */
-#define DJVULIBRE_VERSION "3.5.22"
+#define DJVULIBRE_VERSION "3.5.25"
 
 /* define if bool is a built-in type */
 #define HAVE_BOOL 1
@@ -50,6 +50,9 @@
 /* Define to 1 if you have the `fork' function. */
 #define HAVE_FORK 1
 
+/* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
+#define HAVE_FSEEKO 1
+
 /* Define to 1 if you have the `gethostname' function. */
 #define HAVE_GETHOSTNAME 1
 
@@ -69,7 +72,7 @@
 #define HAVE_ICONV_H 1
 
 /* define if the compiler supports intel atomic builtins */
-/* #undef HAVE_INTEL_ATOMIC_BUILTINS */
+#define HAVE_INTEL_ATOMIC_BUILTINS 1
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
@@ -78,7 +81,7 @@
 #define HAVE_ISWSPACE 1
 
 /* Define if you have the IJG JPEG library. */
-#define HAVE_JPEG 1
+/* #undef HAVE_JPEG */
 
 /* Define to 1 if you have the `m' library (-lm). */
 #define HAVE_LIBM 1
@@ -99,7 +102,7 @@
 #define HAVE_MKSTEMP 1
 
 /* Define to 1 if you have a working `mmap' system call. */
-/* #undef HAVE_MMAP */
+#define HAVE_MMAP 1
 
 /* define if the compiler implements namespaces */
 #define HAVE_NAMESPACES 1
@@ -157,6 +160,9 @@
    */
 /* #undef HAVE_SYS_NDIR_H */
 
+/* Define to 1 if you have the <sys/param.h> header file. */
+#define HAVE_SYS_PARAM_H 1
+
 /* Define to 1 if you have the <sys/shm.h> header file. */
 #define HAVE_SYS_SHM_H 1
 
@@ -170,7 +176,7 @@
 #define HAVE_SYS_WAIT_H 1
 
 /* Define if you have libtiff. */
-#define HAVE_TIFF 1
+/* #undef HAVE_TIFF */
 
 /* define if the compiler recognizes typename */
 #define HAVE_TYPENAME 1
@@ -211,6 +217,10 @@
 /* Define if you have the Xt include files. */
 /* #undef HAVE_XT */
 
+/* Define to the sub-directory in which libtool stores uninstalled libraries.
+   */
+#define LT_OBJDIR ".libs/"
+
 /* Define to use g++ pragmas interface/implementation */
 /* #undef NEED_GNUG_PRAGMAS */
 
@@ -221,13 +231,16 @@
 #define PACKAGE_NAME "djvulibre"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "djvulibre 3.5.22"
+#define PACKAGE_STRING "djvulibre 3.5.25"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "djvulibre"
 
+/* Define to the home page for this package. */
+#define PACKAGE_URL ""
+
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "3.5.22"
+#define PACKAGE_VERSION "3.5.25"
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
@@ -238,8 +251,17 @@
 /* Define to 1 if the X Window System is missing or not being used. */
 /* #undef X_DISPLAY_MISSING */
 
+/* Number of bits in a file offset, on hosts where this is settable. */
+/* #undef _FILE_OFFSET_BITS */
+
+/* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
+/* #undef _LARGEFILE_SOURCE */
+
+/* Define for large files, on AIX-style hosts. */
+/* #undef _LARGE_FILES */
+
 /* Define for Solaris 2.5.1 so the uint32_t typedef from <sys/synch.h>,
-   <pthread.h>, or <semaphore.h> is not used. If the typedef was allowed, the
+   <pthread.h>, or <semaphore.h> is not used. If the typedef were allowed, the
    #define below would cause a syntax error. */
 /* #undef _UINT32_T */
 
@@ -265,9 +287,13 @@
 /* Define as `fork' if `vfork' does not work. */
 /* #undef vfork */
 
+
+
 /* - Miscellaneous */
 #define AUTOCONF 1
-#define UNIX 1
+#if defined(__CYGWIN32__) || !defined(WIN32)
+# define UNIX 1
+#endif
 
 /* - BOOL */
 #if !defined(HAVE_BOOL) && !defined(bool)
@@ -297,7 +323,7 @@
 #endif
 
 /* - I18N MESSAGES HELL */
-#define HAS_CTRL_C_IN_ERR_MSG 0
+#define HAS_CTRL_C_IN_ERR_MSG 1
 
 /* - CONTAINERS */
 #ifndef HAVE_MEMBER_TEMPLATES

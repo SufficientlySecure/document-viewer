@@ -2,7 +2,7 @@
 #include <dlfcn.h>
 #include <android/log.h>
 
-#include <fitz.h>
+#include <mupdf/fitz.h>
 
 #define LCTX "EBookDroid"
 

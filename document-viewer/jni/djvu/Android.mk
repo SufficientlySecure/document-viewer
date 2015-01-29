@@ -2,8 +2,12 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
+LOCAL_C_INCLUDES := \
+	$(LOCAL_PATH)/../mupdf/thirdparty/jpeg \
+	$(LOCAL_PATH)/../mupdf/scripts/jpeg
+	
 LOCAL_MODULE    := djvu
-LOCAL_CFLAGS    := -I$(LOCAL_PATH)/../jpeg -fexceptions
+LOCAL_CFLAGS    := -fexceptions -DHAVE_CONFIG_H -DTHREADMODEL=POSIXTHREADS
 
 ifeq ($(TARGET_ARCH_ABI),armeabi)
     LOCAL_ARM_MODE := arm
@@ -66,3 +70,4 @@ LOCAL_SRC_FILES := \
 	miniexp.cpp
 
 include $(BUILD_STATIC_LIBRARY)
+

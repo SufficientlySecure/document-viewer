@@ -75,8 +75,6 @@
 #include <stdio.h>
 #include <errno.h>
 
-#include "DjvuDroidTrace.h"
-
 #ifdef WIN32
 # include <windows.h>  // OutputDebugString
 #endif 
@@ -151,8 +149,6 @@ DjVuDebug::format(const char *fmt, ... )
       GUTF8String buffer(fmt,ap);
       va_end(ap);
       GCriticalSectionLock glock(&debug_lock);
-      DEBUG_PRINT("%s", (const char *)buffer);
-      
       if (debug_file)
         {
           fprintf(debug_file,"%s", (const char*)buffer);

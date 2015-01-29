@@ -30,8 +30,9 @@ Expand the Tools directory and select "Android SDK Build-tools" newest version.
 Expand the Extras directory and install "Android Support Repository"  
 Select everything for the newest SDK
 3. Export ANDROID_HOME pointing to your Android SDK
-4. Build native libraries with ``cd document-viewer; ndk-build``
-5. Execute ``./gradlew build``
+5. Pull in submodules with ``./init.sh``
+5. Build native libraries with ``cd document-viewer; ndk-build``
+6. Execute ``./gradlew build``
 
 ### Development with Android Studio
 

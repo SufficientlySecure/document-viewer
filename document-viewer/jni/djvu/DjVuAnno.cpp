@@ -1384,10 +1384,10 @@ DjVuANT::encode_raw(void) const
      //*** Mapareas
    del_all_items(GMapArea::MAPAREA_TAG, parser);
    for(GPosition pos=map_areas;pos;++pos)
-   {
-	GUTF8String mapareabuffer = map_areas[pos]->print();
-	parser.parse(mapareabuffer);
-   }
+     {
+       GUTF8String mapareabuffer = map_areas[pos]->print();
+       parser.parse(mapareabuffer);
+     }
    GP<ByteStream> gstr=ByteStream::create();
    ByteStream &str=*gstr;
    parser.print(str, 1);

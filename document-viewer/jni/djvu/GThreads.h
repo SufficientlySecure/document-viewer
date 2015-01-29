@@ -135,6 +135,10 @@
 #endif
 #endif
 
+#if THREADMODEL==MACTHREADS
+#include <threads.h>
+#endif
+
 #if THREADMODEL==POSIXTHREADS
 #include <sys/types.h>
 #include <sys/time.h>

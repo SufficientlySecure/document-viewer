@@ -3,8 +3,8 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_C_INCLUDES := \
-	$(LOCAL_PATH)/../mupdf/thirdparty/jpeg \
-	$(LOCAL_PATH)/../mupdf/scripts/jpeg
+	$(LOCAL_PATH)/../mupdf/mupdf/thirdparty/jpeg \
+	$(LOCAL_PATH)/../mupdf/mupdf/scripts/jpeg
 	
 LOCAL_MODULE    := djvu
 LOCAL_CFLAGS    := -fexceptions -DHAVE_CONFIG_H -DTHREADMODEL=POSIXTHREADS

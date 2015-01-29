@@ -71,7 +71,6 @@
 #include "GThreads.h"
 #include "GException.h"
 #include "DjVuMessageLite.h"
-
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -102,7 +101,6 @@
 #if THREADMODEL==WINTHREADS
 # include <process.h>
 #endif
-
 
 #ifdef HAVE_NAMESPACES
 namespace DJVU {
@@ -473,8 +471,10 @@ GThread::create(void (*entry)(void*), void *arg)
 void 
 GThread::terminate()
 {
-//  if (xentry || xarg)
-//    pthread_cancel(hthr);
+#ifndef __ANDROID__
+  if (xentry || xarg)
+    pthread_cancel(hthr);
+#endif
 }
 
 int

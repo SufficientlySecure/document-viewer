@@ -114,6 +114,9 @@ __inline int dup2(int _a, int _b ) { return _dup2(_a, _b);}
 # endif
 #endif
 
+
+#include "DjvuDroidTrace.h"
+
 #ifdef HAVE_NAMESPACES
 namespace DJVU {
 # ifdef NOT_DEFINED // Just to fool emacs c++ mode
@@ -667,7 +670,13 @@ urlfopen(const GURL &url,const char mode[])
   }
   return retval?retval:fopen((const char *)url.NativeFilename(),mode);
 #else
-  return fopen((const char *)url.NativeFilename(),mode);
+   // looks like GUTF8String destructor called just after cast 
+   GUTF8String fileNameString = url.UTF8Filename(); 
+   const char *nativeFilename = (const char *)fileNameString; 
+   return fopen(nativeFilename,mode); 
+
+//  DEBUG_PRINT("!!!!Fname =%s", (const char *)url.NativeFilename());
+//  return fopen((const char *)url.NativeFilename(),mode);
 #endif
 }
 

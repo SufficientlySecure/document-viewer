@@ -1774,20 +1774,10 @@ DjVuDocument::write(const GP<ByteStream> &gstr, bool force_djvm)
    
   GP<DjVmDoc> doc=get_djvm_doc();
   GP<DjVmDir> dir=doc->get_djvm_dir();
-
-  bool singlepage = (dir->get_files_num()==1 && !djvm_nav && !force_djvm);
-  if (singlepage)
-  {
-    // maybe save as single page
-    DjVmDir::File *file = dir->page_to_file(0);
-    if (file->get_title() != file->get_load_name())
-      singlepage = false;
-  }
-  if (! singlepage)
+  if (force_djvm || dir->get_files_num()>1)
   {
     doc->write(gstr);
-  }
-  else
+  }else
   {
     GPList<DjVmDir::File> files_list=dir->resolve_duplicates(false);
     GP<DataPool> pool=doc->get_data(files_list[files_list]->get_load_name());

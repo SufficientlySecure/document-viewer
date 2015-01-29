@@ -75,7 +75,6 @@
 #include "GThreads.h"
 #include "Arrays.h"
 #include "JPEGDecoder.h"
-
 #include <stddef.h>
 #include <stdlib.h>
 #include <math.h>

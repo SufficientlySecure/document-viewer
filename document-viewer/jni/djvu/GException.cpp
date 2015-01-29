@@ -68,6 +68,7 @@
 #include "DjVuMessageLite.h"
 #include "debug.h"
 
+#include "DjvuDroidTrace.h"
 
 #ifdef HAVE_NAMESPACES
 namespace DJVU {
@@ -108,6 +109,8 @@ GException::GException (const char *xcause, const char *file, int line,
 {
   // good place to set a breakpoint and DEBUG message too. 
   // It'd hard to track exceptions which seem to go from nowhere
+  DEBUG_PRINT("GException::GException(): cause= %s ", (xcause ? xcause : "unknown"));
+
 #ifdef DEBUG_MSG
   DEBUG_MSG("GException::GException(): cause=" << (xcause ? xcause : "unknown") << "\n");
 #endif

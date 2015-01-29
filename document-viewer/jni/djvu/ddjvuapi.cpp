@@ -2752,7 +2752,6 @@ ddjvu_runnablejob_s::stop()
   mystop = true;
 }
 
-
 // ----------------------------------------
 // S-Expressions (generic)
 
@@ -3113,9 +3112,8 @@ anno_sub(ByteStream *bs, miniexp_t &result)
   io.data[0] = (void*)&anno_dat;
   io.fgetc = anno_fgetc;
   io.ungetc = anno_ungetc;
-  io.p_macrochar = 0;
-  io.p_diezechar = 0;
-  io.p_macroqueue = 0;
+  io.macrochar = 0;
+  io.macroqueue = 0;
   // Read
   while (* anno_dat.s )
     if ((a = miniexp_read_r(&io)) != miniexp_dummy)

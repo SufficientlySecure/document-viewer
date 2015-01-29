@@ -294,11 +294,7 @@ GOS::sleep(int milliseconds)
   struct timeval tv;
   tv.tv_sec = milliseconds / 1000;
   tv.tv_usec = (milliseconds - (tv.tv_sec * 1000)) * 1000;
-# if defined(THREADMODEL) && (THREADMODEL==COTHREADS)
-  GThread::select(0, NULL, NULL, NULL, &tv);
-# else
   select(0, NULL, NULL, NULL, &tv);
-# endif
 #elif defined(WIN32)
   Sleep(milliseconds);
 #elif defined(OS2)

@@ -649,7 +649,6 @@ lt_XMLParser::Impl::parse(const lt_XMLTags &tags, GURL *pdjvufile)
       GPosition typePos(args.contains("type"));
       if(typePos)
         {
-          if(args[typePos] != mimetype)
           continue;
         }
       const GURL url = (pdjvufile) ? *pdjvufile 

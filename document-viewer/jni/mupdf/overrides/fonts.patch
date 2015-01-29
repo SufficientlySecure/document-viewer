@@ -1,0 +1,136 @@
+diff -u -r mupdf.orig/source/pdf/pdf-fontfile.c mupdf/source/pdf/pdf-fontfile.c
+--- mupdf.orig/source/pdf/pdf-fontfile.c	2015-01-29 16:55:12.942984624 +0100
++++ mupdf/source/pdf/pdf-fontfile.c	2015-01-29 17:07:18.372773328 +0100
+@@ -1,5 +1,7 @@
+ #include "mupdf/pdf.h"
+ 
++#include <sys/stat.h>
++
+ /*
+ 	Which fonts are embedded is based on a few preprocessor definitions.
+ 
+@@ -32,64 +34,96 @@
+ #endif
+ #endif
+ 
++char ext_font_Courier[1024];
++char ext_font_CourierBold[1024];
++char ext_font_CourierOblique[1024];
++char ext_font_CourierBoldOblique[1024];
++char ext_font_Helvetica[1024];
++char ext_font_HelveticaBold[1024];
++char ext_font_HelveticaOblique[1024];
++char ext_font_HelveticaBoldOblique[1024];
++char ext_font_TimesRoman[1024];
++char ext_font_TimesBold[1024];
++char ext_font_TimesItalic[1024];
++char ext_font_TimesBoldItalic[1024];
++char ext_font_Symbol[1024];
++char ext_font_ZapfDingbats[1024];
++
++int file_exists(char * filename)
++{
++    struct stat info;
++    int i = stat(filename, &info);
++    /* File found */
++    if ( i == 0 )
++    return 1;
++    return 0;
++}
++
++char* get_ext_font(char* font, char* def)
++{
++    if (font && font[0] && file_exists(font))
++        return font;
++    return def;
++}
++
+ unsigned char *
+ pdf_lookup_builtin_font(const char *name, unsigned int *len)
+ {
+ 	if (!strcmp("Courier", name)) {
+-		*len = sizeof pdf_font_NimbusMon_Reg;
+-		return (unsigned char*) pdf_font_NimbusMon_Reg;
++		*len = 0;
++		return (unsigned char*) get_ext_font(ext_font_Courier, pdf_font_NimbusMon_Reg);
+ 	}
+ 	if (!strcmp("Courier-Bold", name)) {
+-		*len = sizeof pdf_font_NimbusMon_Bol;
+-		return (unsigned char*) pdf_font_NimbusMon_Bol;
++		*len = 0;
++		return (unsigned char*) get_ext_font(ext_font_CourierBold, pdf_font_NimbusMon_Bol);
+ 	}
+ 	if (!strcmp("Courier-Oblique", name)) {
+-		*len = sizeof pdf_font_NimbusMon_Obl;
+-		return (unsigned char*) pdf_font_NimbusMon_Obl;
++		*len = 0;
++		return (unsigned char*) get_ext_font(ext_font_CourierOblique, pdf_font_NimbusMon_Obl);
+ 	}
+ 	if (!strcmp("Courier-BoldOblique", name)) {
+-		*len = sizeof pdf_font_NimbusMon_BolObl;
+-		return (unsigned char*) pdf_font_NimbusMon_BolObl;
++		*len = 0;
++		return (unsigned char*) get_ext_font(ext_font_CourierBoldOblique, pdf_font_NimbusMon_BolObl);
+ 	}
+ 	if (!strcmp("Helvetica", name)) {
+-		*len = sizeof pdf_font_NimbusSan_Reg;
+-		return (unsigned char*) pdf_font_NimbusSan_Reg;
++		*len = 0;
++		return (unsigned char*) get_ext_font(ext_font_Helvetica, pdf_font_NimbusSan_Reg);
+ 	}
+ 	if (!strcmp("Helvetica-Bold", name)) {
+-		*len = sizeof pdf_font_NimbusSan_Bol;
+-		return (unsigned char*) pdf_font_NimbusSan_Bol;
++		*len = 0;
++		return (unsigned char*) get_ext_font(ext_font_HelveticaBold, pdf_font_NimbusSan_Bol);
+ 	}
+ 	if (!strcmp("Helvetica-Oblique", name)) {
+-		*len = sizeof pdf_font_NimbusSan_Ita;
+-		return (unsigned char*) pdf_font_NimbusSan_Ita;
++		*len = 0;
++		return (unsigned char*) get_ext_font(ext_font_HelveticaOblique, pdf_font_NimbusSan_Ita);
+ 	}
+ 	if (!strcmp("Helvetica-BoldOblique", name)) {
+-		*len = sizeof pdf_font_NimbusSan_BolIta;
+-		return (unsigned char*) pdf_font_NimbusSan_BolIta;
++		*len = 0;
++		return (unsigned char*) get_ext_font(ext_font_HelveticaBoldOblique, pdf_font_NimbusSan_BolIta);
+ 	}
+ 	if (!strcmp("Times-Roman", name)) {
+-		*len = sizeof pdf_font_NimbusRom_Reg;
+-		return (unsigned char*) pdf_font_NimbusRom_Reg;
++		*len = 0;
++		return (unsigned char*) get_ext_font(ext_font_TimesRoman, pdf_font_NimbusRom_Reg);
+ 	}
+ 	if (!strcmp("Times-Bold", name)) {
+-		*len = sizeof pdf_font_NimbusRom_Med;
+-		return (unsigned char*) pdf_font_NimbusRom_Med;
++		*len = 0;
++		return (unsigned char*) get_ext_font(ext_font_TimesBold, pdf_font_NimbusRom_Med);
+ 	}
+ 	if (!strcmp("Times-Italic", name)) {
+-		*len = sizeof pdf_font_NimbusRom_Ita;
+-		return (unsigned char*) pdf_font_NimbusRom_Ita;
++		*len = 0;
++		return (unsigned char*) get_ext_font(ext_font_TimesItalic, pdf_font_NimbusRom_Ita);
+ 	}
+ 	if (!strcmp("Times-BoldItalic", name)) {
+-		*len = sizeof pdf_font_NimbusRom_MedIta;
+-		return (unsigned char*) pdf_font_NimbusRom_MedIta;
++		*len = 0;
++		return (unsigned char*) get_ext_font(ext_font_TimesBoldItalic, pdf_font_NimbusRom_MedIta);
+ 	}
+ 	if (!strcmp("Symbol", name)) {
+-		*len = sizeof pdf_font_StandardSymL;
+-		return (unsigned char*) pdf_font_StandardSymL;
++		*len = 0;
++		return (unsigned char*) get_ext_font(ext_font_Symbol, pdf_font_StandardSymL);
+ 	}
+ 	if (!strcmp("ZapfDingbats", name)) {
+-		*len = sizeof pdf_font_Dingbats;
+-		return (unsigned char*) pdf_font_Dingbats;
++		*len = 0;
++		return (unsigned char*) get_ext_font(ext_font_ZapfDingbats, pdf_font_Dingbats);
+ 	}
+ 	*len = 0;
+ 	return NULL;

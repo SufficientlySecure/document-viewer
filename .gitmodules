@@ -1,0 +1,3 @@
+[submodule "document-viewer/jni/mupdf/mupdf"]
+	path = document-viewer/jni/mupdf/mupdf
+	url = git://git.ghostscript.com/mupdf.git

@@ -4,9 +4,9 @@
 
 #include <javahelpers.h>
 
-#include <fitz.h>
-#include <mupdf.h>
-#include <muxps.h>
+#include <mupdf/fitz.h>
+#include <mupdf/pdf.h>
+#include <mupdf/xps.h>
 
 #include <ebookdroid.h>
 
@@ -14,6 +14,8 @@
 #define FORMAT_XPS 1
 
 /* Debugging helper */
+
+#define JNI_FN(A) Java_org_ebookdroid_droids_mupdf_codec_ ## A
 
 #define LCTX "EBookDroid.MuPDF"
 
@@ -51,20 +53,23 @@ struct renderpage_s
 extern fz_locks_context * jni_new_locks();
 extern void jni_free_locks(fz_locks_context *locks);
 
-extern char ext_font_Courier[1024]; //= "/sdcard/.org.ebookdroid/fonts/FreeMono.ttf";
-extern char ext_font_CourierBold[1024]; // = "/sdcard/.org.ebookdroid/fonts/FreeMonoBold.ttf";
-extern char ext_font_CourierOblique[1024]; // = "/sdcard/.org.ebookdroid/fonts/FreeMonoOblique.ttf";
-extern char ext_font_CourierBoldOblique[1024]; // = "/sdcard/.org.ebookdroid/fonts/FreeMonoBoldOblique.ttf";
-extern char ext_font_Helvetica[1024]; // = "/sdcard/.org.ebookdroid/fonts/FreeSans.ttf";
-extern char ext_font_HelveticaBold[1024]; // = "/sdcard/.org.ebookdroid/fonts/FreeSansBold.ttf";
-extern char ext_font_HelveticaOblique[1024]; // = "/sdcard/.org.ebookdroid/fonts/FreeSansOblique.ttf";
-extern char ext_font_HelveticaBoldOblique[1024]; // = "/sdcard/.org.ebookdroid/fonts/FreeSans.ttf";
-extern char ext_font_TimesRoman[1024]; // = "/sdcard/.org.ebookdroid/fonts/FreeSerif.ttf";
-extern char ext_font_TimesBold[1024]; // = "/sdcard/.org.ebookdroid/fonts/FreeSerifBold.ttf";
-extern char ext_font_TimesItalic[1024]; // = "/sdcard/.org.ebookdroid/fonts/FreeSerifItalic.ttf";
-extern char ext_font_TimesBoldItalic[1024]; // = "/sdcard/.org.ebookdroid/fonts/FreeSerifBoldItalic.ttf";
-extern char ext_font_Symbol[1024]; // = "/sdcard/.org.ebookdroid/fonts/StandardSymL.cff";
-extern char ext_font_ZapfDingbats[1024]; // = "/sdcard/.org.ebookdroid/fonts/Dingbats.cff";
+// External fonts apparently cause some malfunction at the moment
+/*
+extern char ext_font_Courier[1024];
+extern char ext_font_CourierBold[1024];
+extern char ext_font_CourierOblique[1024];
+extern char ext_font_CourierBoldOblique[1024];
+extern char ext_font_Helvetica[1024];
+extern char ext_font_HelveticaBold[1024];
+extern char ext_font_HelveticaOblique[1024];
+extern char ext_font_HelveticaBoldOblique[1024];
+extern char ext_font_TimesRoman[1024];
+extern char ext_font_TimesBold[1024];
+extern char ext_font_TimesItalic[1024];
+extern char ext_font_TimesBoldItalic[1024];
+extern char ext_font_Symbol[1024];
+extern char ext_font_ZapfDingbats[1024];
+*/
 
 void mupdf_throw_exception_ex(JNIEnv *env, const char* exception, char *message)
 {
@@ -127,10 +132,12 @@ void setFontFileName(char* ext_Font, const char* fontFileName)
 }
 
 JNIEXPORT void JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfContext_setMonoFonts(JNIEnv *env, jclass clazz, jstring regular,
+JNI_FN(MuPdfContext_setMonoFonts)(JNIEnv *env, jclass clazz, jstring regular,
                                                                  jstring italic, jstring bold, jstring boldItalic)
 {
     jboolean iscopy;
+// External fonts apparently cause some malfunction at the moment
+/*
     const char* regularFFN = GetStringUTFChars(env, regular, &iscopy);
     const char* italicFFN = GetStringUTFChars(env, italic, &iscopy);
     const char* boldFFN = GetStringUTFChars(env, bold, &iscopy);
@@ -145,13 +152,16 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfContext_setMonoFonts(JNIEnv *env, jc
     ReleaseStringUTFChars(env, italic, italicFFN);
     ReleaseStringUTFChars(env, bold, boldFFN);
     ReleaseStringUTFChars(env, boldItalic, boldItalicFFN);
+*/
 }
 
 JNIEXPORT void JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfContext_setSansFonts(JNIEnv *env, jclass clazz, jstring regular,
+JNI_FN(MuPdfContext_setSansFonts)(JNIEnv *env, jclass clazz, jstring regular,
                                                                  jstring italic, jstring bold, jstring boldItalic)
 {
     jboolean iscopy;
+// External fonts apparently cause some malfunction at the moment
+/*
     const char* regularFFN = GetStringUTFChars(env, regular, &iscopy);
     const char* italicFFN = GetStringUTFChars(env, italic, &iscopy);
     const char* boldFFN = GetStringUTFChars(env, bold, &iscopy);
@@ -166,13 +176,16 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfContext_setSansFonts(JNIEnv *env, jc
     ReleaseStringUTFChars(env, italic, italicFFN);
     ReleaseStringUTFChars(env, bold, boldFFN);
     ReleaseStringUTFChars(env, boldItalic, boldItalicFFN);
+*/
 }
 
 JNIEXPORT void JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfContext_setSerifFonts(JNIEnv *env, jclass clazz, jstring regular,
+JNI_FN(MuPdfContext_setSerifFonts)(JNIEnv *env, jclass clazz, jstring regular,
                                                                  jstring italic, jstring bold, jstring boldItalic)
 {
     jboolean iscopy;
+// External fonts apparently cause some malfunction at the moment
+/*
     const char* regularFFN = GetStringUTFChars(env, regular, &iscopy);
     const char* italicFFN = GetStringUTFChars(env, italic, &iscopy);
     const char* boldFFN = GetStringUTFChars(env, bold, &iscopy);
@@ -187,32 +200,39 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfContext_setSerifFonts(JNIEnv *env, j
     ReleaseStringUTFChars(env, italic, italicFFN);
     ReleaseStringUTFChars(env, bold, boldFFN);
     ReleaseStringUTFChars(env, boldItalic, boldItalicFFN);
+*/
 }
 
 JNIEXPORT void JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfContext_setSymbolFont(JNIEnv *env, jclass clazz, jstring regular)
+JNI_FN(MuPdfContext_setSymbolFont)(JNIEnv *env, jclass clazz, jstring regular)
 {
     jboolean iscopy;
+// External fonts apparently cause some malfunction at the moment
+/*
     const char* regularFFN = GetStringUTFChars(env, regular, &iscopy);
 
     setFontFileName(ext_font_Symbol, regularFFN);
 
     ReleaseStringUTFChars(env, regular, regularFFN);
+*/
 }
 
 JNIEXPORT void JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfContext_setDingbatFont(JNIEnv *env, jclass clazz, jstring regular)
+JNI_FN(MuPdfContext_setDingbatFont)(JNIEnv *env, jclass clazz, jstring regular)
 {
     jboolean iscopy;
+// External fonts apparently cause some malfunction at the moment
+/*
     const char* regularFFN = GetStringUTFChars(env, regular, &iscopy);
 
     setFontFileName(ext_font_ZapfDingbats, regularFFN);
 
     ReleaseStringUTFChars(env, regular, regularFFN);
+*/
 }
 
 JNIEXPORT jlong JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfDocument_open(JNIEnv *env, jclass clazz, jint storememory, jint format, jstring fname,
+JNI_FN(MuPdfDocument_open)(JNIEnv *env, jclass clazz, jint storememory, jint format, jstring fname,
                                                       jstring pwd)
 {
     renderdocument_t *doc;
@@ -261,9 +281,9 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfDocument_open(JNIEnv *env, jclass cl
     }
     fz_catch(doc->ctx)
     {
-        mupdf_throw_exception(env, (char*) fz_caught(doc->ctx));
+//        mupdf_throw_exception(env, (char*) fz_caught(doc->ctx));
         mupdf_free_document(doc);
-//        mupdf_throw_exception(env, "PDF file not found or corrupted");
+        mupdf_throw_exception(env, "PDF file not found or corrupted");
         goto cleanup;
     }
 
@@ -301,14 +321,14 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfDocument_open(JNIEnv *env, jclass cl
 }
 
 JNIEXPORT void JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfDocument_free(JNIEnv *env, jclass clazz, jlong handle)
+JNI_FN(MuPdfDocument_free)(JNIEnv *env, jclass clazz, jlong handle)
 {
     renderdocument_t *doc = (renderdocument_t*) (long) handle;
     mupdf_free_document(doc);
 }
 
 JNIEXPORT jint JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfDocument_getPageInfo(JNIEnv *env, jclass cls, jlong handle, jint pageNumber,
+JNI_FN(MuPdfDocument_getPageInfo)(JNIEnv *env, jclass cls, jlong handle, jint pageNumber,
                                                              jobject cpi)
 {
     renderdocument_t *doc = (renderdocument_t*) (long) handle;
@@ -324,7 +344,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfDocument_getPageInfo(JNIEnv *env, jc
     fz_try(doc->ctx)
     {
     page = fz_load_page(doc->document, pageNumber - 1);
-    bounds = fz_bound_page(doc->document, page);
+    fz_bound_page(doc->document, page, &bounds);
     }
     fz_catch(doc->ctx)
     {
@@ -361,7 +381,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfDocument_getPageInfo(JNIEnv *env, jc
 }
 
 JNIEXPORT jlong JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfLinks_getFirstPageLink(JNIEnv *env, jclass clazz, jlong handle,
+JNI_FN(MuPdfLinks_getFirstPageLink)(JNIEnv *env, jclass clazz, jlong handle,
                                                                jlong pagehandle)
 {
     renderdocument_t *doc = (renderdocument_t*) (long) handle;
@@ -370,21 +390,21 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfLinks_getFirstPageLink(JNIEnv *env, 
 }
 
 JNIEXPORT jlong JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfLinks_getNextPageLink(JNIEnv *env, jclass clazz, jlong linkhandle)
+JNI_FN(MuPdfLinks_getNextPageLink)(JNIEnv *env, jclass clazz, jlong linkhandle)
 {
     fz_link *link = (fz_link*) (long) linkhandle;
     return (jlong)(long)(link ? link->next : NULL);
 }
 
 JNIEXPORT jint JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfLinks_getPageLinkType(JNIEnv *env, jclass clazz, jlong linkhandle)
+JNI_FN(MuPdfLinks_getPageLinkType)(JNIEnv *env, jclass clazz, jlong linkhandle)
 {
     fz_link *link = (fz_link*) (long) linkhandle;
     return (jint)(link ? link->dest.kind : FZ_LINK_NONE);
 }
 
 JNIEXPORT jstring JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfLinks_getPageLinkUrl(JNIEnv *env, jclass clazz, jlong linkhandle)
+JNI_FN(MuPdfLinks_getPageLinkUrl)(JNIEnv *env, jclass clazz, jlong linkhandle)
 {
     fz_link *link = (fz_link*) (long) linkhandle;
 
@@ -400,7 +420,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfLinks_getPageLinkUrl(JNIEnv *env, jc
 }
 
 JNIEXPORT jboolean JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfLinks_fillPageLinkSourceRect(JNIEnv *env, jclass clazz, jlong linkhandle,
+JNI_FN(MuPdfLinks_fillPageLinkSourceRect)(JNIEnv *env, jclass clazz, jlong linkhandle,
                                                                      jfloatArray boundsArray)
 {
     fz_link *link = (fz_link*) (long) linkhandle;
@@ -427,7 +447,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfLinks_fillPageLinkSourceRect(JNIEnv 
 }
 
 JNIEXPORT jint JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfLinks_getPageLinkTargetPage(JNIEnv *env, jclass clazz, jlong linkhandle)
+JNI_FN(MuPdfLinks_getPageLinkTargetPage)(JNIEnv *env, jclass clazz, jlong linkhandle)
 {
     fz_link *link = (fz_link*) (long) linkhandle;
 
@@ -440,7 +460,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfLinks_getPageLinkTargetPage(JNIEnv *
 }
 
 JNIEXPORT jint JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfLinks_fillPageLinkTargetPoint(JNIEnv *env, jclass clazz, jlong linkhandle,
+JNI_FN(MuPdfLinks_fillPageLinkTargetPoint)(JNIEnv *env, jclass clazz, jlong linkhandle,
                                                                       jfloatArray pointArray)
 {
     fz_link *link = (fz_link*) (long) linkhandle;
@@ -471,14 +491,14 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfLinks_fillPageLinkTargetPoint(JNIEnv
 }
 
 JNIEXPORT jint JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfDocument_getPageCount(JNIEnv *env, jclass clazz, jlong handle)
+JNI_FN(MuPdfDocument_getPageCount)(JNIEnv *env, jclass clazz, jlong handle)
 {
     renderdocument_t *doc = (renderdocument_t*) (long) handle;
     return (fz_count_pages(doc->document));
 }
 
 JNIEXPORT jlong JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_open(JNIEnv *env, jclass clazz, jlong dochandle, jint pageno)
+JNI_FN(MuPdfPage_open)(JNIEnv *env, jclass clazz, jlong dochandle, jint pageno)
 {
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
     renderpage_t *page = NULL;
@@ -511,7 +531,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_open(JNIEnv *env, jclass clazz,
         page->pageList = fz_new_display_list(ctx);
         dev = fz_new_list_device(ctx, page->pageList);
         page->page = fz_load_page(doc->document, pageno - 1);
-        fz_run_page(doc->document, page->page, dev, fz_identity, NULL);
+        fz_run_page(doc->document, page->page, dev, &fz_identity, NULL);
     }
     fz_always(ctx)
     {
@@ -520,7 +540,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_open(JNIEnv *env, jclass clazz,
     fz_catch(ctx)
     {
         fz_free_device(dev);
-        fz_free_display_list(ctx, page->pageList);
+        fz_drop_display_list(ctx, page->pageList);
         fz_free_page(doc->document, page->page);
 
         fz_free(ctx, page);
@@ -537,7 +557,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_open(JNIEnv *env, jclass clazz,
 }
 
 JNIEXPORT void JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_free(JNIEnv *env, jclass clazz, jlong dochandle, jlong handle)
+JNI_FN(MuPdfPage_free)(JNIEnv *env, jclass clazz, jlong dochandle, jlong handle)
 {
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
     renderpage_t *page = (renderpage_t*) (long) handle;
@@ -553,7 +573,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_free(JNIEnv *env, jclass clazz,
 
     if (page->pageList)
     {
-        fz_free_display_list(ctx, page->pageList);
+        fz_drop_display_list(ctx, page->pageList);
     }
 
     if (page->page)
@@ -570,7 +590,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_free(JNIEnv *env, jclass clazz,
 }
 
 JNIEXPORT void JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_getBounds(JNIEnv *env, jclass clazz, jlong dochandle, jlong handle,
+JNI_FN(MuPdfPage_getBounds)(JNIEnv *env, jclass clazz, jlong dochandle, jlong handle,
                                                        jfloatArray bounds)
 {
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
@@ -578,7 +598,8 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_getBounds(JNIEnv *env, jclass c
     jfloat *bbox = (*env)->GetPrimitiveArrayCritical(env, bounds, 0);
     if (!bbox)
         return;
-    fz_rect page_bounds = fz_bound_page(doc->document, page->page);
+    fz_rect page_bounds;
+    fz_bound_page(doc->document, page->page, &page_bounds);
     // DEBUG("Bounds: %f %f %f %f", page_bounds.x0, page_bounds.y0, page_bounds.x1, page_bounds.y1);
     bbox[0] = page_bounds.x0;
     bbox[1] = page_bounds.y0;
@@ -589,7 +610,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_getBounds(JNIEnv *env, jclass c
 
 
 JNIEXPORT jboolean JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPageDirect(JNIEnv *env, jobject this, jlong dochandle,
+JNI_FN(MuPdfPage_renderPageDirect)(JNIEnv *env, jobject this, jlong dochandle,
                                                               jlong pagehandle, jintArray viewboxarray,
                                                               jfloatArray matrixarray, jobject byteBuffer, jint nightmode, jint slowcmyk)
 {
@@ -599,7 +620,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPageDirect(JNIEnv *env, j
 //    DEBUG("MuPdfPage_renderPageBitmap(%p, %p): start", doc, page);
 
     fz_matrix ctm;
-    fz_bbox viewbox;
+    fz_rect viewbox;
     fz_pixmap *pixmap;
     jfloat *matrix;
     jint *viewboxarr;
@@ -641,6 +662,10 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPageDirect(JNIEnv *env, j
         return JNI_FALSE;
     }
 
+    // TODO: Changing the mupdf/fitz source for implementation of the slow cmyk
+    // and night mode respectively is not so nice; have to find a more elegant
+    // way to do this
+
     //add check for night mode and set global variable accordingly
     ctx->ebookdroid_nightmode = nightmode;
 
@@ -649,13 +674,13 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPageDirect(JNIEnv *env, j
 
     fz_try(ctx)
     {
-         pixmap = fz_new_pixmap_with_data(ctx, fz_device_rgb, viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0, pixels);
+         pixmap = fz_new_pixmap_with_data(ctx, fz_device_rgb(ctx), viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0, pixels);
 
          fz_clear_pixmap_with_value(ctx, pixmap, 0xff);
 
          dev = fz_new_draw_device(ctx, pixmap);
 
-         fz_run_display_list(page->pageList, dev, ctm, viewbox, NULL);
+         fz_run_display_list(page->pageList, dev, &ctm, &viewbox, NULL);
     }
     fz_always(ctx)
     {
@@ -669,63 +694,40 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_renderPageDirect(JNIEnv *env, j
     return JNI_TRUE;
 }
 
-static fz_text_char textcharat(fz_text_page *page, int idx)
-{
-    static fz_text_char emptychar = { { 0, 0, 0, 0 }, ' ' };
-    fz_text_block *block;
-    fz_text_line *line;
-    fz_text_span *span;
-    int ofs = 0;
-    for (block = page->blocks; block < page->blocks + page->len; block++)
-    {
-        for (line = block->lines; line < block->lines + block->len; line++)
-        {
-            for (span = line->spans; span < line->spans + line->len; span++)
-            {
-                if (idx < ofs + span->len)
-                {
-                    return span->text[idx - ofs];
-                }
-                if (span + 1 == line->spans + line->len)
-                {
-                    if (idx == ofs + span->len)
-                    {
-                        return emptychar;
-                    }
-                    ofs++;
-                }
-                ofs += span->len;
-            }
-        }
-    }
-    return emptychar;
-}
-
 static int charat(fz_text_page *page, int idx)
 {
-    return textcharat(page, idx).c;
+    fz_char_and_box cab;
+    return fz_text_char_at(&cab, page, idx)->c;
 }
 
-static fz_bbox bboxcharat(fz_text_page *page, int idx)
+static fz_rect bboxcharat(fz_text_page *page, int idx)
 {
-    return fz_round_rect(textcharat(page, idx).bbox);
+    fz_char_and_box cab;
+    return fz_text_char_at(&cab, page, idx)->bbox;
 }
 
 static int textlen(fz_text_page *page)
 {
-    fz_text_block *block;
-    fz_text_line *line;
-    fz_text_span *span;
     int len = 0;
-    for (block = page->blocks; block < page->blocks + page->len; block++)
+    int block_num;
+
+    for (block_num = 0; block_num < page->len; block_num++)
     {
+        fz_text_block *block;
+        fz_text_line *line;
+
+        if (page->blocks[block_num].type != FZ_PAGE_BLOCK_TEXT)
+            continue;
+        block = page->blocks[block_num].u.text;
         for (line = block->lines; line < block->lines + block->len; line++)
         {
-            for (span = line->spans; span < line->spans + line->len; span++)
+            fz_text_span *span;
+
+            for (span = line->first_span; span; span = span->next)
             {
                 len += span->len;
             }
-            len++;
+            len++; /* pseudo-newline */
         }
     }
     return len;
@@ -759,7 +761,7 @@ static int match(CharacterHelper* ch, fz_text_page *page, const char *s, int n)
 }
 
 JNIEXPORT jobjectArray JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_search(JNIEnv * env, jobject thiz, jlong dochandle, jlong pagehandle,
+JNI_FN(MuPdfPage_search)(JNIEnv * env, jobject thiz, jlong dochandle, jlong pagehandle,
                                                         jstring text)
 {
 
@@ -784,7 +786,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_search(JNIEnv * env, jobject th
 
     if (!ArrayListHelper_init(&alh, env) || !PageTextBoxHelper_init(&ptbh, env)|| !CharacterHelper_init(&ch, env))
     {
-        DEBUG("search(): JNI helper initialization failed", pagehandle);
+        DEBUG("search(): JNI helper initialization failed"); //, pagehandle);
         return NULL;
     }
     jobject arrayList = ArrayListHelper_create(&alh);
@@ -794,7 +796,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_search(JNIEnv * env, jobject th
         return NULL;
     }
 
-    fz_bbox *hit_bbox = NULL;
+    fz_rect *hit_bbox = NULL;
 
     fz_text_sheet *sheet = NULL;
     fz_text_page *pagetext = NULL;
@@ -810,11 +812,11 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_search(JNIEnv * env, jobject th
 
         // DEBUG("MuPdfPage(%p).search(%p, %p): load page text", thiz, doc, page);
 
-        rect = fz_bound_page(doc->document, page->page);
+        fz_bound_page(doc->document, page->page, &rect);
         sheet = fz_new_text_sheet(doc->ctx);
-        pagetext = fz_new_text_page(doc->ctx, rect);
+        pagetext = fz_new_text_page(doc->ctx);
         dev = fz_new_text_device(doc->ctx, sheet, pagetext);
-        fz_run_page(doc->document, page->page, dev, fz_identity, NULL);
+        fz_run_page(doc->document, page->page, dev, &fz_identity, NULL);
 
         // DEBUG("MuPdfPage(%p).search(%p, %p): free text device", thiz, doc, page);
 
@@ -827,7 +829,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_search(JNIEnv * env, jobject th
 
         for (pos = 0; pos < len; pos++)
         {
-            fz_bbox rr = fz_empty_bbox;
+            fz_rect rr = fz_empty_rect;
             // DEBUG("MuPdfPage(%p).search(%p, %p): match %d", thiz, doc, page, pos);
 
             n = match(&ch, pagetext, str, pos);
@@ -836,10 +838,11 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_search(JNIEnv * env, jobject th
 //                DEBUG("MuPdfPage(%p).search(%p, %p): match found: %d, %d", thiz, doc, page, pos, n);
                 for (i = 0; i < n; i++)
                 {
-                    rr = fz_union_bbox(rr, bboxcharat(pagetext, pos + i));
+                    fz_rect tmp_rr = bboxcharat(pagetext, pos + i);
+                    rr = *fz_union_rect(&rr, &tmp_rr);
                 }
 
-                if (!fz_is_empty_bbox(rr))
+                if (!fz_is_empty_rect(&rr))
                 {
                     int coords[4];
                     coords[0] = (rr.x0);
@@ -895,7 +898,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfPage_search(JNIEnv * env, jobject th
 
 //Outline
 JNIEXPORT jlong JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfOutline_open(JNIEnv *env, jclass clazz, jlong dochandle)
+JNI_FN(MuPdfOutline_open)(JNIEnv *env, jclass clazz, jlong dochandle)
 {
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
     if (!doc->outline)
@@ -905,7 +908,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfOutline_open(JNIEnv *env, jclass cla
 }
 
 JNIEXPORT void JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfOutline_free(JNIEnv *env, jclass clazz, jlong dochandle)
+JNI_FN(MuPdfOutline_free)(JNIEnv *env, jclass clazz, jlong dochandle)
 {
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
 //    DEBUG("PdfOutline_free(%p)", doc);
@@ -918,7 +921,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfOutline_free(JNIEnv *env, jclass cla
 }
 
 JNIEXPORT jstring JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfOutline_getTitle(JNIEnv *env, jclass clazz, jlong outlinehandle)
+JNI_FN(MuPdfOutline_getTitle)(JNIEnv *env, jclass clazz, jlong outlinehandle)
 {
     fz_outline *outline = (fz_outline*) (long) outlinehandle;
 //	DEBUG("PdfOutline_getTitle(%p)",outline);
@@ -928,7 +931,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfOutline_getTitle(JNIEnv *env, jclass
 }
 
 JNIEXPORT jstring JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfOutline_getLink(JNIEnv *env, jclass clazz, jlong outlinehandle, jlong dochandle)
+JNI_FN(MuPdfOutline_getLink)(JNIEnv *env, jclass clazz, jlong outlinehandle, jlong dochandle)
 {
     fz_outline *outline = (fz_outline*) (long) outlinehandle;
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
@@ -957,7 +960,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfOutline_getLink(JNIEnv *env, jclass 
 }
 
 JNIEXPORT jint JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfOutline_fillLinkTargetPoint(JNIEnv *env, jclass clazz, jlong outlinehandle,
+JNI_FN(MuPdfOutline_fillLinkTargetPoint)(JNIEnv *env, jclass clazz, jlong outlinehandle,
                                                                       jfloatArray pointArray)
 {
     fz_outline *outline = (fz_outline*) (long) outlinehandle;
@@ -988,7 +991,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfOutline_fillLinkTargetPoint(JNIEnv *
 }
 
 JNIEXPORT jlong JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfOutline_getNext(JNIEnv *env, jclass clazz, jlong outlinehandle)
+JNI_FN(MuPdfOutline_getNext)(JNIEnv *env, jclass clazz, jlong outlinehandle)
 {
     fz_outline *outline = (fz_outline*) (long) outlinehandle;
 //	DEBUG("MuPdfOutline_getNext(%p)",outline);
@@ -996,7 +999,7 @@ Java_org_ebookdroid_droids_mupdf_codec_MuPdfOutline_getNext(JNIEnv *env, jclass 
 }
 
 JNIEXPORT jlong JNICALL
-Java_org_ebookdroid_droids_mupdf_codec_MuPdfOutline_getChild(JNIEnv *env, jclass clazz, jlong outlinehandle)
+JNI_FN(MuPdfOutline_getChild)(JNIEnv *env, jclass clazz, jlong outlinehandle)
 {
     fz_outline *outline = (fz_outline*) (long) outlinehandle;
 //	DEBUG("MuPdfOutline_getChild(%p)",outline);

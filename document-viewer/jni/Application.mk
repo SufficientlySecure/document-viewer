@@ -1,6 +1,1 @@
-APP_ABI := all
-
-APP_CFLAGS := -DHAVE_CONFIG_H -DTHREADMODEL=POSIXTHREADS -DDEBUGLVL=0 -D__ANDROID__
-APP_CFLAGS += -O3
-
-APP_MODULES := jpeg libdjvu mupdf ebookdroid
+APP_ABI := armeabi-v7a

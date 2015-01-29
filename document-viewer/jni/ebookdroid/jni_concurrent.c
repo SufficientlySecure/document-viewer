@@ -10,7 +10,7 @@
  * lets us process multiple documents concurrently as well.
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-#include "fitz-internal.h"
+#include "mupdf/fitz/context.h"
 #include <pthread.h>
 
 typedef pthread_mutex_t jni_mutex;

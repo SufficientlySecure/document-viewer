@@ -1,7 +1,8 @@
-diff -ur mupdf.orig/include/mupdf/fitz/context.h mupdf/include/mupdf/fitz/context.h
---- mupdf.orig/include/mupdf/fitz/context.h	2015-01-29 16:21:56.328802555 +0100
-+++ mupdf/include/mupdf/fitz/context.h	2015-01-29 16:31:29.052391730 +0100
-@@ -110,6 +110,10 @@
+diff --git a/include/mupdf/fitz/context.h b/include/mupdf/fitz/context.h
+index dc13451..62b443e 100644
+--- a/include/mupdf/fitz/context.h
++++ b/include/mupdf/fitz/context.h
+@@ -110,6 +110,10 @@ struct fz_context_s
  	fz_store *store;
  	fz_glyph_cache *glyph_cache;
  	fz_document_handler_context *handler;
@@ -12,9 +13,10 @@ diff -ur mupdf.orig/include/mupdf/fitz/context.h mupdf/include/mupdf/fitz/contex
  };
  
  /*
-diff -ur mupdf.orig/source/fitz/colorspace.c mupdf/source/fitz/colorspace.c
---- mupdf.orig/source/fitz/colorspace.c	2015-01-29 16:21:56.396802150 +0100
-+++ mupdf/source/fitz/colorspace.c	2015-01-29 16:37:41.734177853 +0100
+diff --git a/source/fitz/colorspace.c b/source/fitz/colorspace.c
+index 8b8f3f9..5828363 100644
+--- a/source/fitz/colorspace.c
++++ b/source/fitz/colorspace.c
 @@ -1,6 +1,8 @@
  #include "mupdf/fitz.h"
  
@@ -25,7 +27,7 @@ diff -ur mupdf.orig/source/fitz/colorspace.c mupdf/source/fitz/colorspace.c
  
  void
  fz_free_colorspace_imp(fz_context *ctx, fz_storable *cs_)
-@@ -79,7 +81,9 @@
+@@ -79,7 +81,9 @@ static void rgb_to_bgr(fz_context *ctx, fz_colorspace *cs, const float *rgb, flo
  
  static void cmyk_to_rgb(fz_context *ctx, fz_colorspace *cs, const float *cmyk, float *rgb)
  {
@@ -36,7 +38,7 @@ diff -ur mupdf.orig/source/fitz/colorspace.c mupdf/source/fitz/colorspace.c
  	float c = cmyk[0], m = cmyk[1], y = cmyk[2], k = cmyk[3];
  	float r, g, b, x;
  	float cm = c * m;
-@@ -149,11 +153,15 @@
+@@ -149,11 +153,15 @@ static void cmyk_to_rgb(fz_context *ctx, fz_colorspace *cs, const float *cmyk, f
  	rgb[0] = fz_clamp(r, 0, 1);
  	rgb[1] = fz_clamp(g, 0, 1);
  	rgb[2] = fz_clamp(b, 0, 1);
@@ -54,7 +56,7 @@ diff -ur mupdf.orig/source/fitz/colorspace.c mupdf/source/fitz/colorspace.c
  }
  
  static void rgb_to_cmyk(fz_context *ctx, fz_colorspace *cs, const float *rgb, float *cmyk)
-@@ -626,7 +634,9 @@
+@@ -626,7 +634,9 @@ static void fast_cmyk_to_rgb(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
  
  	while (n--)
  	{
@@ -65,7 +67,7 @@ diff -ur mupdf.orig/source/fitz/colorspace.c mupdf/source/fitz/colorspace.c
  		unsigned int c = s[0];
  		unsigned int m = s[1];
  		unsigned int y = s[2];
-@@ -755,11 +765,15 @@
+@@ -755,11 +765,15 @@ static void fast_cmyk_to_rgb(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
  		d[0] = r;
  		d[1] = g;
  		d[2] = b;
@@ -83,7 +85,7 @@ diff -ur mupdf.orig/source/fitz/colorspace.c mupdf/source/fitz/colorspace.c
  		d[3] = s[4];
  		s += 5;
  		d += 4;
-@@ -774,7 +788,9 @@
+@@ -774,7 +788,9 @@ static void fast_cmyk_to_bgr(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
  	int n = src->w * src->h;
  	while (n--)
  	{
@@ -94,7 +96,7 @@ diff -ur mupdf.orig/source/fitz/colorspace.c mupdf/source/fitz/colorspace.c
  		float cmyk[4], rgb[3];
  		cmyk[0] = s[0] / 255.0f;
  		cmyk[1] = s[1] / 255.0f;
-@@ -784,11 +800,15 @@
+@@ -784,11 +800,15 @@ static void fast_cmyk_to_bgr(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
  		d[0] = rgb[2] * 255;
  		d[1] = rgb[1] * 255;
  		d[2] = rgb[0] * 255;
@@ -112,7 +114,7 @@ diff -ur mupdf.orig/source/fitz/colorspace.c mupdf/source/fitz/colorspace.c
  		d[3] = s[4];
  		s += 5;
  		d += 4;
-@@ -1098,29 +1118,41 @@
+@@ -1098,29 +1118,41 @@ cmyk2g(fz_color_converter *cc, float *dv, const float *sv)
  static void
  cmyk2rgb(fz_color_converter *cc, float *dv, const float *sv)
  {
@@ -160,10 +162,11 @@ diff -ur mupdf.orig/source/fitz/colorspace.c mupdf/source/fitz/colorspace.c
  }
  
  void fz_lookup_color_converter(fz_color_converter *cc, fz_context *ctx, fz_colorspace *ds, fz_colorspace *ss)
-diff -ur mupdf.orig/source/fitz/draw-device.c mupdf/source/fitz/draw-device.c
---- mupdf.orig/source/fitz/draw-device.c	2015-01-29 16:21:56.397802144 +0100
-+++ mupdf/source/fitz/draw-device.c	2015-01-29 16:28:42.667382627 +0100
-@@ -1203,6 +1203,9 @@
+diff --git a/source/fitz/draw-device.c b/source/fitz/draw-device.c
+index 4592f8c..d1b3d23 100644
+--- a/source/fitz/draw-device.c
++++ b/source/fitz/draw-device.c
+@@ -1203,6 +1203,9 @@ fz_draw_fill_image_mask(fz_device *devp, fz_image *image, const fz_matrix *ctm,
  	fz_pixmap *scaled = NULL;
  	fz_pixmap *pixmap;
  	fz_pixmap *orig_pixmap;
@@ -173,28 +176,32 @@ diff -ur mupdf.orig/source/fitz/draw-device.c mupdf/source/fitz/draw-device.c
  	int dx, dy;
  	int i;
  	fz_context *ctx = dev->ctx;
-@@ -1248,8 +1251,18 @@
+@@ -1248,7 +1251,23 @@ fz_draw_fill_image_mask(fz_device *devp, fz_image *image, const fz_matrix *ctm,
  			colorbv[i] = colorfv[i] * 255;
  		colorbv[i] = alpha * 255;
  
 -		fz_paint_image_with_color(state->dest, &state->scissor, state->shape, pixmap, &local_ctm, colorbv, !(devp->hints & FZ_DONT_INTERPOLATE_IMAGES));
--
 +		// EBD: inverted mode >>>
 +		if (dev->ctx->ebookdroid_nightmode) {
 +			inverted = fz_new_pixmap(dev->ctx, pixmap->colorspace, pixmap->w, pixmap->h);
 +			memcpy(inverted->samples, pixmap->samples, pixmap->n * pixmap->w * pixmap->h);
 +			fz_invert_pixmap(dev->ctx, inverted);
-+			
-+		    fz_paint_image_with_color(state->dest, &state->scissor, state->shape, inverted, &local_ctm, colorbv, !(devp->hints & FZ_DONT_INTERPOLATE_IMAGES));
++
++			fz_paint_image_with_color(
++				state->dest, &state->scissor, state->shape, inverted,
++				&local_ctm, colorbv, !(devp->hints & FZ_DONT_INTERPOLATE_IMAGES)
++			);
 +		} else {
-+		    fz_paint_image_with_color(state->dest, &state->scissor, state->shape, pixmap, &local_ctm, colorbv, !(devp->hints & FZ_DONT_INTERPOLATE_IMAGES));
++			fz_paint_image_with_color(
++				state->dest, &state->scissor, state->shape, pixmap,
++				&local_ctm, colorbv, !(devp->hints & FZ_DONT_INTERPOLATE_IMAGES)
++			);
 +		}
 +		// EBD: inverted mode <<<
-+		
+ 
  		if (scaled)
  			fz_drop_pixmap(dev->ctx, scaled);
- 
-@@ -1258,6 +1271,11 @@
+@@ -1258,6 +1277,11 @@ fz_draw_fill_image_mask(fz_device *devp, fz_image *image, const fz_matrix *ctm,
  	}
  	fz_always(ctx)
  	{

@@ -1,5 +1,8 @@
 #include <jni.h>
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include <android/log.h>
 
 #include <javahelpers.h>
@@ -53,23 +56,20 @@ struct renderpage_s
 extern fz_locks_context * jni_new_locks();
 extern void jni_free_locks(fz_locks_context *locks);
 
-// External fonts apparently cause some malfunction at the moment
-/*
-extern char ext_font_Courier[1024];
-extern char ext_font_CourierBold[1024];
-extern char ext_font_CourierOblique[1024];
-extern char ext_font_CourierBoldOblique[1024];
-extern char ext_font_Helvetica[1024];
-extern char ext_font_HelveticaBold[1024];
-extern char ext_font_HelveticaOblique[1024];
-extern char ext_font_HelveticaBoldOblique[1024];
-extern char ext_font_TimesRoman[1024];
-extern char ext_font_TimesBold[1024];
-extern char ext_font_TimesItalic[1024];
-extern char ext_font_TimesBoldItalic[1024];
-extern char ext_font_Symbol[1024];
-extern char ext_font_ZapfDingbats[1024];
-*/
+char ext_font_Courier[1024];
+char ext_font_CourierBold[1024];
+char ext_font_CourierOblique[1024];
+char ext_font_CourierBoldOblique[1024];
+char ext_font_Helvetica[1024];
+char ext_font_HelveticaBold[1024];
+char ext_font_HelveticaOblique[1024];
+char ext_font_HelveticaBoldOblique[1024];
+char ext_font_TimesRoman[1024];
+char ext_font_TimesBold[1024];
+char ext_font_TimesItalic[1024];
+char ext_font_TimesBoldItalic[1024];
+char ext_font_Symbol[1024];
+char ext_font_ZapfDingbats[1024];
 
 void mupdf_throw_exception_ex(JNIEnv *env, const char* exception, char *message)
 {
@@ -119,6 +119,32 @@ static void mupdf_free_document(renderdocument_t* doc)
     doc = NULL;
 }
 
+unsigned char *
+get_bytes_from_file(char *filename, unsigned int *len) {
+	if(filename[0] == '\0') return NULL;
+
+	FILE *fi = fopen(filename, "rb");
+	if(!fi) {
+		DEBUG("Fontfile '%s' not found!", filename);
+		return NULL;
+	}
+
+	fseek(fi, 0, SEEK_END);
+	*len = ftell(fi);
+	fseek(fi, 0, SEEK_SET);
+
+	unsigned char *hexdump = malloc(*len * sizeof(unsigned char));
+
+	int c;
+	int n = 0;
+	while ((c = fgetc(fi)) != EOF) {
+		hexdump[n++] = c;
+	}
+	fclose(fi);
+
+	return hexdump;
+}
+
 void setFontFileName(char* ext_Font, const char* fontFileName)
 {
     if (fontFileName && fontFileName[0])
@@ -136,8 +162,6 @@ JNI_FN(MuPdfContext_setMonoFonts)(JNIEnv *env, jclass clazz, jstring regular,
                                                                  jstring italic, jstring bold, jstring boldItalic)
 {
     jboolean iscopy;
-// External fonts apparently cause some malfunction at the moment
-/*
     const char* regularFFN = GetStringUTFChars(env, regular, &iscopy);
     const char* italicFFN = GetStringUTFChars(env, italic, &iscopy);
     const char* boldFFN = GetStringUTFChars(env, bold, &iscopy);
@@ -152,7 +176,6 @@ JNI_FN(MuPdfContext_setMonoFonts)(JNIEnv *env, jclass clazz, jstring regular,
     ReleaseStringUTFChars(env, italic, italicFFN);
     ReleaseStringUTFChars(env, bold, boldFFN);
     ReleaseStringUTFChars(env, boldItalic, boldItalicFFN);
-*/
 }
 
 JNIEXPORT void JNICALL
@@ -160,8 +183,6 @@ JNI_FN(MuPdfContext_setSansFonts)(JNIEnv *env, jclass clazz, jstring regular,
                                                                  jstring italic, jstring bold, jstring boldItalic)
 {
     jboolean iscopy;
-// External fonts apparently cause some malfunction at the moment
-/*
     const char* regularFFN = GetStringUTFChars(env, regular, &iscopy);
     const char* italicFFN = GetStringUTFChars(env, italic, &iscopy);
     const char* boldFFN = GetStringUTFChars(env, bold, &iscopy);
@@ -176,7 +197,6 @@ JNI_FN(MuPdfContext_setSansFonts)(JNIEnv *env, jclass clazz, jstring regular,
     ReleaseStringUTFChars(env, italic, italicFFN);
     ReleaseStringUTFChars(env, bold, boldFFN);
     ReleaseStringUTFChars(env, boldItalic, boldItalicFFN);
-*/
 }
 
 JNIEXPORT void JNICALL
@@ -184,8 +204,6 @@ JNI_FN(MuPdfContext_setSerifFonts)(JNIEnv *env, jclass clazz, jstring regular,
                                                                  jstring italic, jstring bold, jstring boldItalic)
 {
     jboolean iscopy;
-// External fonts apparently cause some malfunction at the moment
-/*
     const char* regularFFN = GetStringUTFChars(env, regular, &iscopy);
     const char* italicFFN = GetStringUTFChars(env, italic, &iscopy);
     const char* boldFFN = GetStringUTFChars(env, bold, &iscopy);
@@ -200,35 +218,28 @@ JNI_FN(MuPdfContext_setSerifFonts)(JNIEnv *env, jclass clazz, jstring regular,
     ReleaseStringUTFChars(env, italic, italicFFN);
     ReleaseStringUTFChars(env, bold, boldFFN);
     ReleaseStringUTFChars(env, boldItalic, boldItalicFFN);
-*/
 }
 
 JNIEXPORT void JNICALL
 JNI_FN(MuPdfContext_setSymbolFont)(JNIEnv *env, jclass clazz, jstring regular)
 {
     jboolean iscopy;
-// External fonts apparently cause some malfunction at the moment
-/*
     const char* regularFFN = GetStringUTFChars(env, regular, &iscopy);
 
     setFontFileName(ext_font_Symbol, regularFFN);
 
     ReleaseStringUTFChars(env, regular, regularFFN);
-*/
 }
 
 JNIEXPORT void JNICALL
 JNI_FN(MuPdfContext_setDingbatFont)(JNIEnv *env, jclass clazz, jstring regular)
 {
     jboolean iscopy;
-// External fonts apparently cause some malfunction at the moment
-/*
     const char* regularFFN = GetStringUTFChars(env, regular, &iscopy);
 
     setFontFileName(ext_font_ZapfDingbats, regularFFN);
 
     ReleaseStringUTFChars(env, regular, regularFFN);
-*/
 }
 
 JNIEXPORT jlong JNICALL

@@ -110,7 +110,8 @@ public class Flinger {
                     currY = finalY;
                     oldProgress = 1;
                     // System.out.println("Finished: " + currY);
-                    return true;
+                    // It was not really finished, but it surely is now.
+                    return false;
                 }
             }
             // System.out.println("Flinger.computeScrollOffset(" + SystemClock.uptimeMillis() + ")");

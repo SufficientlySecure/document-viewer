@@ -77,6 +77,7 @@ public class EventGotoPage implements IEvent {
         final int top = Math.round(p.y);
 
         if (isScrollRequired(left, top, scrollX, scrollY)) {
+            view.forceFinishScroll();
             view.scrollTo(left, top);
             viewState.update();
             return viewState;

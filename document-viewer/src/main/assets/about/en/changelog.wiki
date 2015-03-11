@@ -1,5 +1,22 @@
 #labels Featured
 
+= DV v2.6.1 =
+
+== Bug fixes ==
+ * Restore other architectures support for ARMv6, MIPS, x86
+
+= DV v2.6 =
+
+== New features ==
+ * Add buildhive CI support
+ * Add gradle wrapper
+ * MuPDF library updated
+ * Support negative page offsets
+
+== Bug fixes ==
+ * Fix for go to page
+ * Fix refresh bug for immersive mode
+
 = DV v2.5 =
 
 == New features ==

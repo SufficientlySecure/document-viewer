@@ -19,16 +19,16 @@
     <string name="menu_searchtext">"搜索"</string>
     <string name="menu_show_options_menu">"显示菜单"</string>
     <string name="menu_backupsettings">"备份与恢复"</string>
-<!--<string name="menu_crop">"Manual crop"</string>-->
+    <string name="menu_crop">"手动分隔"</string>
     <string name="menu_navigation_menu">"导航"</string>
     <string name="menu_fastsettings_menu">"查看"</string>
     <string name="menu_allsettings_menu">"设置"</string>
-<!--<string name="menu_show_library">"Show library"</string>-->
-<!--<string name="menu_show_recent">"Show recent"</string>-->
+    <string name="menu_show_library">"显示书目"</string>
+    <string name="menu_show_recent">"显示最近"</string>
     <string name="menu_storages">"存储"</string>
     <string name="menu_storages_filesystem">"文件系统"</string>
     <string name="menu_storages_external">"SD存储卡"</string>
-<!--<string name="menu_force_portrait">"Force portrait"</string>-->
-<!--<string name="menu_force_landscape">"Force landscape"</string>-->
+    <string name="menu_force_portrait">"强制竖屏"</string>
+    <string name="menu_force_landscape">"强制横屏"</string>
 
 </resources>

@@ -6,34 +6,34 @@
     <string name="pref_brfiletypespecificdjvu_title" translatable="true">"DJVU"</string>
     <string name="pref_brfiletypespecificdjvu_summary">"DJVU 特定格式设置"</string>
     <string name="pref_djvu_rendering_mode_title">"渲染模式"</string>
-    <string name="pref_djvu_rendering_mode_summary">"&quot;页面渲染模式“"</string>
-    <string name="list_djvu_rendering_mode_0">"颜色"</string>
-    <string name="list_djvu_rendering_mode_1">"黑"</string>
-    <string name="list_djvu_rendering_mode_2">"只有颜色"</string>
+    <string name="pref_djvu_rendering_mode_summary">"页面渲染模式"</string>
+    <string name="list_djvu_rendering_mode_0">"彩色"</string>
+    <string name="list_djvu_rendering_mode_1">"黑色"</string>
+    <string name="list_djvu_rendering_mode_2">"仅彩色"</string>
     <string name="list_djvu_rendering_mode_3">"仅蒙版"</string>
-    <string name="list_djvu_rendering_mode_4">"仅背景"</string>
-    <string name="list_djvu_rendering_mode_5">"仅前台"</string>
+    <string name="list_djvu_rendering_mode_4">"仅背景色"</string>
+    <string name="list_djvu_rendering_mode_5">"仅前景色"</string>
     <string name="pref_brfiletypespecificpdf_title" translatable="true">"PDF"</string>
-    <string name="pref_brfiletypespecificpdf_summary">"PDF特定格式设置"</string>
+    <string name="pref_brfiletypespecificpdf_summary">"PDF格式特定设置"</string>
     <string name="pref_customdpi_title">"使用自定义 DPI"</string>
-    <string name="pref_customdpi_summary">"定义低于 DPI值"</string>
+    <string name="pref_customdpi_summary">"定义下列每英寸点数值"</string>
     <string name="pref_xdpi_title" translatable="true">"X DPI"</string>
     <string name="pref_xdpi_summary" translatable="true">"X DPI"</string>
     <string name="pref_ydpi_title" translatable="true">"Y DPI"</string>
     <string name="pref_ydpi_summary" translatable="true">"Y DPI"</string>
     <string name="pref_monofontpack_title">"等宽字体家族"</string>
-    <string name="pref_monofontpack_summary">"定义字体包使用等宽字体家族"</string>
-    <string name="pref_sansfontpack_title">"无字体"</string>
-    <string name="pref_sansfontpack_summary">"定义字体包使用无字体"</string>
+    <string name="pref_monofontpack_summary">"指定等宽字体家族用的字体包"</string>
+    <string name="pref_sansfontpack_title">"无衬线字体"</string>
+    <string name="pref_sansfontpack_summary">"指定无衬线字体用的字体包"</string>
     <string name="pref_seriffontpack_title">"衬线字体家族"</string>
-    <string name="pref_seriffontpack_summary">"定义字体包使用衬线字体家族"</string>
+    <string name="pref_seriffontpack_summary">"指定衬线字体家族用的字体包"</string>
     <string name="pref_symbolfontpack_title">"符号字体"</string>
-    <string name="pref_symbolfontpack_summary">"定义字体包使用符号字体"</string>
-    <string name="pref_dingbatfontpack_title">"他的字体家族"</string>
-    <string name="pref_dingbatfontpack_summary">"定义字体包使用图片字体"</string>
+    <string name="pref_symbolfontpack_summary">"指定符号字体用的字体包"</string>
+    <string name="pref_dingbatfontpack_title">"丁贝符号字体家族"</string>
+    <string name="pref_dingbatfontpack_summary">"指定丁贝符号字体用的字体包"</string>
     <string name="pref_systemfontpack">"默认的字体"</string>
-<!--<string name="pref_slowcmyk_title">"Slow CMYK"</string>-->
-<!--<string name="pref_slowcmyk_summary">"Use slow but accurate CMYK to RGB algorithm"</string>-->
+    <string name="pref_slowcmyk_title">"慢速CMYK"</string>
+    <string name="pref_slowcmyk_summary">"使用缓慢但准确的CMYK到RGB算法"</string>
     <string name="pref_brfiletypespecificfb2_title" translatable="true">"FB2"</string>
     <string name="pref_brfiletypespecificfb2_summary">"FB2 特定格式设置"</string>
     <string name="pref_fb2_xmlparser_title">"XML解析器"</string>

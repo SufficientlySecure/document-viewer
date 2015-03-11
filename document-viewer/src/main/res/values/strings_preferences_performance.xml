@@ -31,11 +31,11 @@
     <string name="pref_bitmapsize_title">Texture bitmap size</string>
     <string name="pref_bitmapsize_summary">Defines size of texture parts</string>
 
-    <string name="list_bitmapsize_64">64 * 64</string>
-    <string name="list_bitmapsize_128">128 * 128</string>
-    <string name="list_bitmapsize_256">256 * 256</string>
-    <string name="list_bitmapsize_512">512 * 512</string>
-    <string name="list_bitmapsize_1024">1024 * 1024</string>
+    <string name="list_bitmapsize_64">"64 × 64"</string>
+    <string name="list_bitmapsize_128">"128 × 128"</string>
+    <string name="list_bitmapsize_256">"256 × 256"</string>
+    <string name="list_bitmapsize_512">"512 × 512"</string>
+    <string name="list_bitmapsize_1024">"1024 × 1024"</string>
 
     <string name="pref_heappreallocate_title">Heap preallocation</string>
     <string name="pref_heappreallocate_summary">Size in megabytes of heap preallocation at application startup</string>

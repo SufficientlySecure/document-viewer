@@ -1,7 +1,7 @@
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
-	
+
 LOCAL_MODULE    := mupdfcore
 LOCAL_SRC_FILES := \
 	$(subst $(LOCAL_PATH)/,, \
@@ -9,12 +9,11 @@ LOCAL_SRC_FILES := \
 	    $(wildcard $(LOCAL_PATH)/mupdf/source/pdf/*.c) \
 	    $(wildcard $(LOCAL_PATH)/mupdf/source/xps/*.c) \
 	    $(wildcard $(LOCAL_PATH)/mupdf/source/cbz/*.c) \
-	    $(wildcard $(LOCAL_PATH)/mupdf/source/img/*.c) \
-	    $(wildcard $(LOCAL_PATH)/mupdf/source/tiff/*.c) \
+	    $(wildcard $(LOCAL_PATH)/mupdf/source/html/*.c) \
     ) \
 	mupdf/source/pdf/js/pdf-js.c \
 	mupdf/source/pdf/js/pdf-jsimp-mu.c
-	
+
 ifeq ($(TARGET_ARCH),arm)
 LOCAL_CFLAGS += -DARCH_ARM -DARCH_THUMB -DARCH_ARM_CAN_LOAD_UNALIGNED
 endif

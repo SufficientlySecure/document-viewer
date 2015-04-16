@@ -9,12 +9,13 @@
 
 #include <mupdf/fitz.h>
 #include <mupdf/pdf.h>
-#include <mupdf/xps.h>
 
 #include <ebookdroid.h>
 
 #define FORMAT_PDF 0
 #define FORMAT_XPS 1
+#define FORMAT_CBZ 2
+#define FORMAT_EPUB 3
 
 /* Debugging helper */
 
@@ -99,18 +100,18 @@ static void mupdf_free_document(renderdocument_t* doc)
 
     if (doc->outline)
     {
-        fz_free_outline(doc->ctx, doc->outline);
+        fz_free(doc->ctx, doc->outline);
     }
     doc->outline = NULL;
 
     if (doc->document)
     {
-        fz_close_document(doc->document);
+        fz_drop_document(doc->ctx, doc->document);
     }
     doc->document = NULL;
 
     fz_flush_warnings(doc->ctx);
-    fz_free_context(doc->ctx);
+    fz_drop_context(doc->ctx);
     doc->ctx = NULL;
 
     jni_free_locks(locks);
@@ -276,22 +277,16 @@ JNI_FN(MuPdfDocument_open)(JNIEnv *env, jclass clazz, jint storememory, jint for
         mupdf_throw_exception(env, "Out of Memory");
         goto cleanup;
     }
+    fz_register_document_handlers(doc->ctx);
+
     doc->document = NULL;
     doc->outline = NULL;
 
 //    fz_set_aa_level(fz_catch(ctx), alphabits);
     doc->format = format;
-    fz_try(doc->ctx)
-    {
-    if(format == FORMAT_XPS)
-        doc->document = (fz_document*) xps_open_document(doc->ctx, filename);
-    else // FORMAT_PDF
-        doc->document = (fz_document*) pdf_open_document(doc->ctx, filename);
-
-//        doc->document = fz_open_document(doc->ctx, filename);
-    }
-    fz_catch(doc->ctx)
-    {
+    fz_try(doc->ctx) {
+        doc->document = fz_open_document(doc->ctx, filename);
+    } fz_catch(doc->ctx) {
 //        mupdf_throw_exception(env, (char*) fz_caught(doc->ctx));
         mupdf_free_document(doc);
         mupdf_throw_exception(env, "PDF file not found or corrupted");
@@ -302,11 +297,11 @@ JNI_FN(MuPdfDocument_open)(JNIEnv *env, jclass clazz, jint storememory, jint for
      * Handle encrypted PDF files
      */
 
-    if (fz_needs_password(doc->document))
+    if (fz_needs_password(doc->ctx, doc->document))
     {
         if (strlen(password))
         {
-            int ok = fz_authenticate_password(doc->document, password);
+            int ok = fz_authenticate_password(doc->ctx, doc->document, password);
             if (!ok)
             {
                 mupdf_free_document(doc);
@@ -354,8 +349,8 @@ JNI_FN(MuPdfDocument_getPageInfo)(JNIEnv *env, jclass cls, jlong handle, jint pa
 
     fz_try(doc->ctx)
     {
-    page = fz_load_page(doc->document, pageNumber - 1);
-    fz_bound_page(doc->document, page, &bounds);
+    page = fz_load_page(doc->ctx, doc->document, pageNumber - 1);
+    fz_bound_page(doc->ctx, page, &bounds);
     }
     fz_catch(doc->ctx)
     {
@@ -385,7 +380,7 @@ JNI_FN(MuPdfDocument_getPageInfo)(JNIEnv *env, jclass cls, jlong handle, jint pa
         fid = (*env)->GetFieldID(env, clazz, "version", "I");
         (*env)->SetIntField(env, cpi, fid, 0);
 
-        fz_free_page(doc->document, page);
+        fz_free(doc->ctx, page);
         return 0;
     }
     return -1;
@@ -397,7 +392,7 @@ JNI_FN(MuPdfLinks_getFirstPageLink)(JNIEnv *env, jclass clazz, jlong handle,
 {
     renderdocument_t *doc = (renderdocument_t*) (long) handle;
     renderpage_t *page = (renderpage_t*) (long) pagehandle;
-    return (jlong)(long)((page && doc)?fz_load_links(doc->document, page->page):NULL);
+    return (jlong)(long)((page && doc)?fz_load_links(doc->ctx, page->page):NULL);
 }
 
 JNIEXPORT jlong JNICALL
@@ -505,7 +500,7 @@ JNIEXPORT jint JNICALL
 JNI_FN(MuPdfDocument_getPageCount)(JNIEnv *env, jclass clazz, jlong handle)
 {
     renderdocument_t *doc = (renderdocument_t*) (long) handle;
-    return (fz_count_pages(doc->document));
+    return (fz_count_pages(doc->ctx, doc->document));
 }
 
 JNIEXPORT jlong JNICALL
@@ -541,21 +536,21 @@ JNI_FN(MuPdfPage_open)(JNIEnv *env, jclass clazz, jlong dochandle, jint pageno)
     {
         page->pageList = fz_new_display_list(ctx);
         dev = fz_new_list_device(ctx, page->pageList);
-        page->page = fz_load_page(doc->document, pageno - 1);
-        fz_run_page(doc->document, page->page, dev, &fz_identity, NULL);
+        page->page = fz_load_page(doc->ctx, doc->document, pageno - 1);
+        fz_run_page(doc->ctx, page->page, dev, &fz_identity, NULL);
     }
     fz_always(ctx)
     {
-        fz_free_device(dev);
+        fz_free(ctx, dev);
     }
     fz_catch(ctx)
     {
-        fz_free_device(dev);
+        fz_free(ctx, dev);
         fz_drop_display_list(ctx, page->pageList);
-        fz_free_page(doc->document, page->page);
+        fz_drop_page(ctx, page->page);
 
         fz_free(ctx, page);
-        fz_free_context(ctx);
+        fz_drop_context(ctx);
 
         page = NULL;
         ctx = NULL;
@@ -589,11 +584,11 @@ JNI_FN(MuPdfPage_free)(JNIEnv *env, jclass clazz, jlong dochandle, jlong handle)
 
     if (page->page)
     {
-        fz_free_page(doc->document, page->page);
+        fz_free(doc->ctx, page->page);
     }
 
     fz_free(ctx, page);
-    fz_free_context(ctx);
+    fz_drop_context(ctx);
     page = NULL;
     ctx = NULL;
 
@@ -610,7 +605,7 @@ JNI_FN(MuPdfPage_getBounds)(JNIEnv *env, jclass clazz, jlong dochandle, jlong ha
     if (!bbox)
         return;
     fz_rect page_bounds;
-    fz_bound_page(doc->document, page->page, &page_bounds);
+    fz_bound_page(doc->ctx, page->page, &page_bounds);
     // DEBUG("Bounds: %f %f %f %f", page_bounds.x0, page_bounds.y0, page_bounds.x1, page_bounds.y1);
     bbox[0] = page_bounds.x0;
     bbox[1] = page_bounds.y0;
@@ -691,11 +686,11 @@ JNI_FN(MuPdfPage_renderPageDirect)(JNIEnv *env, jobject this, jlong dochandle,
 
          dev = fz_new_draw_device(ctx, pixmap);
 
-         fz_run_display_list(page->pageList, dev, &ctm, &viewbox, NULL);
+         fz_run_display_list(doc->ctx, page->pageList, dev, &ctm, &viewbox, NULL);
     }
     fz_always(ctx)
     {
-       fz_free_device(dev);
+       fz_free(ctx, dev);
        fz_drop_pixmap(ctx, pixmap);
     }
     fz_catch(ctx)
@@ -705,16 +700,16 @@ JNI_FN(MuPdfPage_renderPageDirect)(JNIEnv *env, jobject this, jlong dochandle,
     return JNI_TRUE;
 }
 
-static int charat(fz_text_page *page, int idx)
+static int charat(fz_context *ctx, fz_text_page *page, int idx)
 {
     fz_char_and_box cab;
-    return fz_text_char_at(&cab, page, idx)->c;
+    return fz_text_char_at(ctx, &cab, page, idx)->c;
 }
 
-static fz_rect bboxcharat(fz_text_page *page, int idx)
+static fz_rect bboxcharat(fz_context *ctx, fz_text_page *page, int idx)
 {
     fz_char_and_box cab;
-    return fz_text_char_at(&cab, page, idx)->bbox;
+    return fz_text_char_at(ctx, &cab, page, idx)->bbox;
 }
 
 static int textlen(fz_text_page *page)
@@ -744,7 +739,7 @@ static int textlen(fz_text_page *page)
     return len;
 }
 
-static int match(CharacterHelper* ch, fz_text_page *page, const char *s, int n)
+static int match(fz_context *ctx, CharacterHelper* ch, fz_text_page *page, const char *s, int n)
 {
     int orig = n;
     int c;
@@ -752,16 +747,16 @@ static int match(CharacterHelper* ch, fz_text_page *page, const char *s, int n)
     while (*s)
     {
         s += fz_chartorune(&c, (char *) s);
-        if (c == ' ' && charat(page, n) == ' ')
+        if (c == ' ' && charat(ctx, page, n) == ' ')
         {
-            while (charat(page, n) == ' ')
+            while (charat(ctx, page, n) == ' ')
             {
                 n++;
             }
         }
         else
         {
-            if (c != CharacterHelper_toLowerCase(ch, charat(page, n)))
+            if (c != CharacterHelper_toLowerCase(ch, charat(ctx, page, n)))
             {
                 return 0;
             }
@@ -823,15 +818,15 @@ JNI_FN(MuPdfPage_search)(JNIEnv * env, jobject thiz, jlong dochandle, jlong page
 
         // DEBUG("MuPdfPage(%p).search(%p, %p): load page text", thiz, doc, page);
 
-        fz_bound_page(doc->document, page->page, &rect);
+        fz_bound_page(doc->ctx, page->page, &rect);
         sheet = fz_new_text_sheet(doc->ctx);
         pagetext = fz_new_text_page(doc->ctx);
         dev = fz_new_text_device(doc->ctx, sheet, pagetext);
-        fz_run_page(doc->document, page->page, dev, &fz_identity, NULL);
+        fz_run_page(doc->ctx, page->page, dev, &fz_identity, NULL);
 
         // DEBUG("MuPdfPage(%p).search(%p, %p): free text device", thiz, doc, page);
 
-        fz_free_device(dev);
+        fz_free(doc->ctx, dev);
         dev = NULL;
 
         len = textlen(pagetext);
@@ -843,13 +838,13 @@ JNI_FN(MuPdfPage_search)(JNIEnv * env, jobject thiz, jlong dochandle, jlong page
             fz_rect rr = fz_empty_rect;
             // DEBUG("MuPdfPage(%p).search(%p, %p): match %d", thiz, doc, page, pos);
 
-            n = match(&ch, pagetext, str, pos);
+            n = match(doc->ctx, &ch, pagetext, str, pos);
             if (n > 0)
             {
 //                DEBUG("MuPdfPage(%p).search(%p, %p): match found: %d, %d", thiz, doc, page, pos, n);
                 for (i = 0; i < n; i++)
                 {
-                    fz_rect tmp_rr = bboxcharat(pagetext, pos + i);
+                    fz_rect tmp_rr = bboxcharat(doc->ctx, pagetext, pos + i);
                     rr = *fz_union_rect(&rr, &tmp_rr);
                 }
 
@@ -878,15 +873,15 @@ JNI_FN(MuPdfPage_search)(JNIEnv * env, jobject thiz, jlong dochandle, jlong page
         // DEBUG("MuPdfPage(%p).search(%p, %p): free resources", thiz, doc, page);
         if (pagetext)
         {
-            fz_free_text_page(doc->ctx, pagetext);
+            fz_free(doc->ctx, pagetext);
         }
         if (sheet)
         {
-            fz_free_text_sheet(doc->ctx, sheet);
+            fz_free(doc->ctx, sheet);
         }
         if (dev)
         {
-            fz_free_device(dev);
+            fz_free(doc->ctx, dev);
         }
     }fz_catch(doc->ctx)
     {
@@ -913,7 +908,7 @@ JNI_FN(MuPdfOutline_open)(JNIEnv *env, jclass clazz, jlong dochandle)
 {
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
     if (!doc->outline)
-        doc->outline = fz_load_outline(doc->document);
+        doc->outline = fz_load_outline(doc->ctx, doc->document);
 //    DEBUG("PdfOutline.open(): return handle = %p", doc->outline);
     return (jlong) (long) doc->outline;
 }
@@ -926,7 +921,7 @@ JNI_FN(MuPdfOutline_free)(JNIEnv *env, jclass clazz, jlong dochandle)
     if (doc)
     {
         if (doc->outline)
-            fz_free_outline(doc->ctx, doc->outline);
+            fz_free(doc->ctx, doc->outline);
         doc->outline = NULL;
     }
 }

@@ -1,12 +1,12 @@
 package org.ebookdroid;
 
 import org.ebookdroid.core.codec.CodecContext;
-//import org.ebookdroid.droids.cbx.CbrContext;
-import org.ebookdroid.droids.cbx.CbzContext;
 import org.ebookdroid.droids.djvu.codec.DjvuContext;
 import org.ebookdroid.droids.fb2.codec.FB2Context;
 import org.ebookdroid.droids.mupdf.codec.PdfContext;
 import org.ebookdroid.droids.mupdf.codec.XpsContext;
+import org.ebookdroid.droids.mupdf.codec.CbzContext;
+import org.ebookdroid.droids.mupdf.codec.EpubContext;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,9 +25,9 @@ public enum CodecType {
     XPS(XpsContext.class, true, Arrays.asList("xps", "oxps"), Arrays.asList("application/vnd.ms-xpsdocument",
             "application/oxps")),
 
-    CBZ(CbzContext.class, false, Arrays.asList("cbz"), Arrays.asList("application/x-cbz")),
+    EPUB(EpubContext.class, true, Arrays.asList("epub"), Arrays.asList("application/epub+zip")),
 
-//    CBR(CbrContext.class, false, Arrays.asList("cbr"), Arrays.asList("application/x-cbr")),
+    CBZ(CbzContext.class, false, Arrays.asList("cbz"), Arrays.asList("application/x-cbz")),
 
     FB2(FB2Context.class, true, Arrays.asList("fb2", "fb2.zip"), Arrays.asList("application/x-fb2"));
 

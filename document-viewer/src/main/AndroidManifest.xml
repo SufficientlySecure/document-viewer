@@ -48,6 +48,7 @@
                 <data android:mimeType="application/oxps" />
                 <data android:mimeType="application/x-cbz" />
                 <!-- <data android:mimeType="application/x-cbr" /> -->
+                <data android:mimeType="application/epub+zip" />
                 <data android:mimeType="application/x-fb2" />
             </intent-filter>
             <!-- 
@@ -71,6 +72,7 @@
                 <data android:pathPattern=".*\\.oxps" />
                 <data android:pathPattern=".*\\.cbz" />
                 <!-- <data android:pathPattern=".*\\.cbr" /> -->
+                <data android:pathPattern=".*\\.epub" />
                 <data android:pathPattern=".*\\.fb2" />
                 <data android:pathPattern=".*\\.fb2\\.zip" />
             </intent-filter>
@@ -105,6 +107,9 @@
                 <data android:pathPattern=".*\\..*\\.cbz" />
                 <data android:pathPattern=".*\\..*\\..*\\.cbz" />
                 <!-- <data android:pathPattern=".*\\.cbr" /> -->
+                <data android:pathPattern=".*\\.epub" />
+                <data android:pathPattern=".*\\..*\\.epub" />
+                <data android:pathPattern=".*\\..*\\..*\\.epub" />
                 <data android:pathPattern=".*\\.fb2" />
                 <data android:pathPattern=".*\\..*\\.fb2" />
                 <data android:pathPattern=".*\\..*\\..*\\.fb2" />

@@ -80,23 +80,13 @@ along with Document Viewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ## C Libraries
 
-* MuPDF - a lightweight PDF and XPS viewer   
+* MuPDF - a lightweight PDF, EPUB, CBZ and XPS viewer   
   http://www.mupdf.com/  
   AGPLv3+
 
 * djvu - a lightweight DJVU viewer based on DjVuLibre  
   http://djvu.sourceforge.net/  
   GPLv2
-
-* cbx - a lightweight Comicbook viewer based on   
-    - libPng  
-    http://www.libpng.org/pub/png/libpng.html  
-    libpng License (OSI Certified)
-    - libjpeg  
-    http://libjpeg.sourceforge.net/  
-    libjpeg License
-    - GIFLIB
-    - ZLib   
     
 ## Images
 

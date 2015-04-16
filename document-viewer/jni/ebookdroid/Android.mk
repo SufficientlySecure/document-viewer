@@ -22,7 +22,6 @@ LOCAL_SRC_FILES := \
 LOCAL_C_INCLUDES := \
 	$(LOCAL_PATH)/../mupdf/mupdf/include \
 	$(LOCAL_PATH)/../mupdf/mupdf/source/fitz \
-	$(LOCAL_PATH)/../mupdf/mupdf/source/xps \
 	$(LOCAL_PATH)/../mupdf/mupdf/source/pdf \
 	$(LOCAL_PATH)/../djvu
 

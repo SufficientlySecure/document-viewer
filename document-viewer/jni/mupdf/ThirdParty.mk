@@ -120,6 +120,7 @@ LOCAL_C_INCLUDES := \
 	$(LOCAL_PATH)/mupdf/thirdparty/mujs \
 	$(LOCAL_PATH)/mupdf/thirdparty/zlib \
 	$(LOCAL_PATH)/mupdf/thirdparty/freetype/include \
+	$(LOCAL_PATH)/mupdf/thirdparty/freetype/include/freetype \
 	$(LOCAL_PATH)/mupdf/scripts/freetype \
 	$(LOCAL_PATH)/mupdf/scripts/jpeg \
 	$(LOCAL_PATH)/mupdf/scripts/openjpeg

@@ -1,8 +1,8 @@
 diff --git a/include/mupdf/fitz/context.h b/include/mupdf/fitz/context.h
-index dc13451..62b443e 100644
+index 10e28e0..f4368e7 100644
 --- a/include/mupdf/fitz/context.h
 +++ b/include/mupdf/fitz/context.h
-@@ -110,6 +110,10 @@ struct fz_context_s
+@@ -111,6 +111,10 @@ struct fz_context_s
  	fz_store *store;
  	fz_glyph_cache *glyph_cache;
  	fz_document_handler_context *handler;
@@ -14,7 +14,7 @@ index dc13451..62b443e 100644
  
  /*
 diff --git a/source/fitz/colorspace.c b/source/fitz/colorspace.c
-index 8b8f3f9..5828363 100644
+index d145be2..9329640 100644
 --- a/source/fitz/colorspace.c
 +++ b/source/fitz/colorspace.c
 @@ -1,6 +1,8 @@
@@ -26,7 +26,7 @@ index 8b8f3f9..5828363 100644
 +// EBD: context flag used instead <<<
  
  void
- fz_free_colorspace_imp(fz_context *ctx, fz_storable *cs_)
+ fz_drop_colorspace_imp(fz_context *ctx, fz_storable *cs_)
 @@ -79,7 +81,9 @@ static void rgb_to_bgr(fz_context *ctx, fz_colorspace *cs, const float *rgb, flo
  
  static void cmyk_to_rgb(fz_context *ctx, fz_colorspace *cs, const float *cmyk, float *rgb)
@@ -56,7 +56,7 @@ index 8b8f3f9..5828363 100644
  }
  
  static void rgb_to_cmyk(fz_context *ctx, fz_colorspace *cs, const float *rgb, float *cmyk)
-@@ -626,7 +634,9 @@ static void fast_cmyk_to_rgb(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
+@@ -619,7 +627,9 @@ static void fast_cmyk_to_rgb(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
  
  	while (n--)
  	{
@@ -67,7 +67,7 @@ index 8b8f3f9..5828363 100644
  		unsigned int c = s[0];
  		unsigned int m = s[1];
  		unsigned int y = s[2];
-@@ -755,11 +765,15 @@ static void fast_cmyk_to_rgb(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
+@@ -748,11 +758,15 @@ static void fast_cmyk_to_rgb(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
  		d[0] = r;
  		d[1] = g;
  		d[2] = b;
@@ -85,7 +85,7 @@ index 8b8f3f9..5828363 100644
  		d[3] = s[4];
  		s += 5;
  		d += 4;
-@@ -774,7 +788,9 @@ static void fast_cmyk_to_bgr(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
+@@ -767,7 +781,9 @@ static void fast_cmyk_to_bgr(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
  	int n = src->w * src->h;
  	while (n--)
  	{
@@ -96,7 +96,7 @@ index 8b8f3f9..5828363 100644
  		float cmyk[4], rgb[3];
  		cmyk[0] = s[0] / 255.0f;
  		cmyk[1] = s[1] / 255.0f;
-@@ -784,11 +800,15 @@ static void fast_cmyk_to_bgr(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
+@@ -777,11 +793,15 @@ static void fast_cmyk_to_bgr(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
  		d[0] = rgb[2] * 255;
  		d[1] = rgb[1] * 255;
  		d[2] = rgb[0] * 255;
@@ -114,15 +114,15 @@ index 8b8f3f9..5828363 100644
  		d[3] = s[4];
  		s += 5;
  		d += 4;
-@@ -1098,29 +1118,41 @@ cmyk2g(fz_color_converter *cc, float *dv, const float *sv)
+@@ -1090,29 +1110,41 @@ cmyk2g(fz_context *ctx, fz_color_converter *cc, float *dv, const float *sv)
  static void
- cmyk2rgb(fz_color_converter *cc, float *dv, const float *sv)
+ cmyk2rgb(fz_context *ctx, fz_color_converter *cc, float *dv, const float *sv)
  {
 -#ifdef SLOWCMYK
 +	// EBD: context flag used instead >>>
-+	if (cc->ctx->ebookdroid_slowcmyk) {
++	if (ctx->ebookdroid_slowcmyk) {
 +	// EBD: context flag used instead <<<
- 	cmyk_to_rgb(cc->ctx, NULL, sv, dv);
+ 	cmyk_to_rgb(ctx, NULL, sv, dv);
 -#else
 +	// EBD: context flag used instead >>>
 +	} else {
@@ -137,14 +137,14 @@ index 8b8f3f9..5828363 100644
  }
  
  static void
- cmyk2bgr(fz_color_converter *cc, float *dv, const float *sv)
+ cmyk2bgr(fz_context *ctx, fz_color_converter *cc, float *dv, const float *sv)
  {
 -#ifdef SLOWCMYK
 +	// EBD: context flag used instead >>>
-+	if (cc->ctx->ebookdroid_slowcmyk) {
++	if (ctx->ebookdroid_slowcmyk) {
 +	// EBD: context flag used instead <<<
  	float rgb[3];
- 	cmyk_to_rgb(cc->ctx, NULL, sv, rgb);
+ 	cmyk_to_rgb(ctx, NULL, sv, rgb);
  	dv[0] = rgb[2];
  	dv[1] = rgb[1];
  	dv[2] = rgb[0];
@@ -161,12 +161,12 @@ index 8b8f3f9..5828363 100644
 +	// EBD: context flag used instead <<<
  }
  
- void fz_lookup_color_converter(fz_color_converter *cc, fz_context *ctx, fz_colorspace *ds, fz_colorspace *ss)
+ void fz_lookup_color_converter(fz_context *ctx, fz_color_converter *cc, fz_colorspace *ds, fz_colorspace *ss)
 diff --git a/source/fitz/draw-device.c b/source/fitz/draw-device.c
-index 4592f8c..d1b3d23 100644
+index b2819a0..6a90da6 100644
 --- a/source/fitz/draw-device.c
 +++ b/source/fitz/draw-device.c
-@@ -1203,6 +1203,9 @@ fz_draw_fill_image_mask(fz_device *devp, fz_image *image, const fz_matrix *ctm,
+@@ -1201,6 +1201,9 @@ fz_draw_fill_image_mask(fz_context *ctx, fz_device *devp, fz_image *image, const
  	fz_pixmap *scaled = NULL;
  	fz_pixmap *pixmap;
  	fz_pixmap *orig_pixmap;
@@ -175,17 +175,17 @@ index 4592f8c..d1b3d23 100644
 +	// EBD: inverted mode <<<
  	int dx, dy;
  	int i;
- 	fz_context *ctx = dev->ctx;
-@@ -1248,7 +1251,23 @@ fz_draw_fill_image_mask(fz_device *devp, fz_image *image, const fz_matrix *ctm,
+ 	fz_draw_state *state = &dev->stack[dev->top];
+@@ -1245,7 +1248,23 @@ fz_draw_fill_image_mask(fz_context *ctx, fz_device *devp, fz_image *image, const
  			colorbv[i] = colorfv[i] * 255;
  		colorbv[i] = alpha * 255;
  
 -		fz_paint_image_with_color(state->dest, &state->scissor, state->shape, pixmap, &local_ctm, colorbv, !(devp->hints & FZ_DONT_INTERPOLATE_IMAGES));
 +		// EBD: inverted mode >>>
-+		if (dev->ctx->ebookdroid_nightmode) {
-+			inverted = fz_new_pixmap(dev->ctx, pixmap->colorspace, pixmap->w, pixmap->h);
++		if (ctx->ebookdroid_nightmode) {
++			inverted = fz_new_pixmap(ctx, pixmap->colorspace, pixmap->w, pixmap->h);
 +			memcpy(inverted->samples, pixmap->samples, pixmap->n * pixmap->w * pixmap->h);
-+			fz_invert_pixmap(dev->ctx, inverted);
++			fz_invert_pixmap(ctx, inverted);
 +
 +			fz_paint_image_with_color(
 +				state->dest, &state->scissor, state->shape, inverted,
@@ -200,16 +200,16 @@ index 4592f8c..d1b3d23 100644
 +		// EBD: inverted mode <<<
  
  		if (scaled)
- 			fz_drop_pixmap(dev->ctx, scaled);
-@@ -1258,6 +1277,11 @@ fz_draw_fill_image_mask(fz_device *devp, fz_image *image, const fz_matrix *ctm,
+ 			fz_drop_pixmap(ctx, scaled);
+@@ -1255,6 +1274,11 @@ fz_draw_fill_image_mask(fz_context *ctx, fz_device *devp, fz_image *image, const
  	}
  	fz_always(ctx)
  	{
 +		// EBD: inverted mode >>>
-+		if (dev->ctx->ebookdroid_nightmode) {
-+			fz_drop_pixmap(dev->ctx, inverted);
++		if (ctx->ebookdroid_nightmode) {
++			fz_drop_pixmap(ctx, inverted);
 +		}
 +		// EBD: inverted mode <<<
- 		fz_drop_pixmap(dev->ctx, orig_pixmap);
+ 		fz_drop_pixmap(ctx, orig_pixmap);
  	}
  	fz_catch(ctx)

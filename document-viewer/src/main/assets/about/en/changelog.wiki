@@ -1,5 +1,15 @@
 #labels Featured
 
+= DV v2.7 =
+
+== New features ==
+ * Chinese localization updated
+ * EPUB support added
+ * MuPdf library updated
+
+== Bug fixes ==
+ * Fix CBZ support
+
 = DV v2.6.1 =
 
 == Bug fixes ==

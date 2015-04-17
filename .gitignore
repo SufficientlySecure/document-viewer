@@ -2,7 +2,7 @@
 bin
 gen
 obj
-libs/armeabi
+document-viewer/libs/*/*.so
 lint.xml
 local.properties
 release.properties

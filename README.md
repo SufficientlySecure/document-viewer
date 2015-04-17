@@ -5,8 +5,9 @@ Document Viewer is a highly customizable document viewer for Android.
 Supports the following formats:
 * PDF
 * DjVu
+* EPUB
 * XPS (OpenXPS)
-* Comic Books (cbz) (NO support for cbr (rar compressed))
+* CBZ (Comic Books, no support for rar compressed CBR)
 * FictionBook (fb2, fb2.zip)
 
 Collaboration with electronic publication sites and access to online ebook catalogs is allowed by the supported OPDS protocol.

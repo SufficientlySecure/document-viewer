@@ -910,7 +910,7 @@ JNI_FN(MuPdfOutline_open)(JNIEnv *env, jclass clazz, jlong dochandle)
     if (!doc->outline)
         doc->outline = fz_load_outline(doc->ctx, doc->document);
 //    DEBUG("PdfOutline.open(): return handle = %p", doc->outline);
-    return (jlong) (long) doc->outline;
+    return (jlong) (uintptr_t) doc->outline;
 }
 
 JNIEXPORT void JNICALL
@@ -929,7 +929,7 @@ JNI_FN(MuPdfOutline_free)(JNIEnv *env, jclass clazz, jlong dochandle)
 JNIEXPORT jstring JNICALL
 JNI_FN(MuPdfOutline_getTitle)(JNIEnv *env, jclass clazz, jlong outlinehandle)
 {
-    fz_outline *outline = (fz_outline*) (long) outlinehandle;
+    fz_outline *outline = (fz_outline*) (uintptr_t) outlinehandle;
 //	DEBUG("PdfOutline_getTitle(%p)",outline);
     if (outline)
         return (*env)->NewStringUTF(env, outline->title);
@@ -939,7 +939,7 @@ JNI_FN(MuPdfOutline_getTitle)(JNIEnv *env, jclass clazz, jlong outlinehandle)
 JNIEXPORT jstring JNICALL
 JNI_FN(MuPdfOutline_getLink)(JNIEnv *env, jclass clazz, jlong outlinehandle, jlong dochandle)
 {
-    fz_outline *outline = (fz_outline*) (long) outlinehandle;
+    fz_outline *outline = (fz_outline*) (uintptr_t) outlinehandle;
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
 
     // DEBUG("PdfOutline_getLink(%p)",outline);
@@ -969,7 +969,7 @@ JNIEXPORT jint JNICALL
 JNI_FN(MuPdfOutline_fillLinkTargetPoint)(JNIEnv *env, jclass clazz, jlong outlinehandle,
                                                                       jfloatArray pointArray)
 {
-    fz_outline *outline = (fz_outline*) (long) outlinehandle;
+    fz_outline *outline = (fz_outline*) (uintptr_t) outlinehandle;
 
     if (!outline || outline->dest.kind != FZ_LINK_GOTO)
     {
@@ -999,16 +999,16 @@ JNI_FN(MuPdfOutline_fillLinkTargetPoint)(JNIEnv *env, jclass clazz, jlong outlin
 JNIEXPORT jlong JNICALL
 JNI_FN(MuPdfOutline_getNext)(JNIEnv *env, jclass clazz, jlong outlinehandle)
 {
-    fz_outline *outline = (fz_outline*) (long) outlinehandle;
+    fz_outline *outline = (fz_outline*) (uintptr_t) outlinehandle;
 //	DEBUG("MuPdfOutline_getNext(%p)",outline);
-    return (jlong)(long)(outline?outline->next:NULL);
+    return (jlong)(uintptr_t)(outline?outline->next:NULL);
 }
 
 JNIEXPORT jlong JNICALL
 JNI_FN(MuPdfOutline_getChild)(JNIEnv *env, jclass clazz, jlong outlinehandle)
 {
-    fz_outline *outline = (fz_outline*) (long) outlinehandle;
+    fz_outline *outline = (fz_outline*) (uintptr_t) outlinehandle;
 //	DEBUG("MuPdfOutline_getChild(%p)",outline);
-    return (jlong)(long)(outline?outline->down:NULL);
+    return (jlong)(uintptr_t)(outline?outline->down:NULL);
 }
 

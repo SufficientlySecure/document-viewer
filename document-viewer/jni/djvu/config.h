@@ -6,36 +6,11 @@
 #define CONFIG_H
 /* config.h: begin */
 
-
-/* directory "bindir" */
-#define DIR_BINDIR "/usr/local/bin"
-
-/* directory "datadir" */
-#define DIR_DATADIR "/usr/local/share"
-
-/* directory "exec_prefix" */
-#define DIR_EXEC_PREFIX "/usr/local"
-
-/* directory "libdir" */
-#define DIR_LIBDIR "/usr/local/lib"
-
-/* directory "mandir" */
-#define DIR_MANDIR "/usr/local/share/man"
-
-/* directory "prefix" */
-#define DIR_PREFIX "/usr/local"
-
 /* version string */
-#define DJVULIBRE_VERSION "3.5.22"
+#define DJVULIBRE_VERSION "3.5.27"
 
 /* define if bool is a built-in type */
 #define HAVE_BOOL 1
-
-/* Define if cothreads are available. */
-/* #undef HAVE_COTHREAD */
-
-/* Define if libgcc contains the cothread patch. */
-/* #undef HAVE_COTHREAD_PATCH */
 
 /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
    */
@@ -50,8 +25,17 @@
 /* Define to 1 if you have the `fork' function. */
 #define HAVE_FORK 1
 
+/* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
+#define HAVE_FSEEKO 1
+
+/* define if the compiler supports keyword __thread */
+#define HAVE_GCCTLS 1
+
 /* Define to 1 if you have the `gethostname' function. */
 #define HAVE_GETHOSTNAME 1
+
+/* Define to 1 if you have the <getopt.h> header file. */
+#define HAVE_GETOPT_H 1
 
 /* Define to 1 if you have the `getpagesize' function. */
 #define HAVE_GETPAGESIZE 1
@@ -59,17 +43,14 @@
 /* Define to 1 if you have the `getpwuid' function. */
 #define HAVE_GETPWUID 1
 
-/* Define if you have glib-2.0. */
-/* #undef HAVE_GLIB */
-
 /* Define to 1 if you have the iconv function. */
-/* #undef HAVE_ICONV */
+/* #define HAVE_ICONV 1 */
 
 /* Define to 1 if you have the <iconv.h> header file. */
 #define HAVE_ICONV_H 1
 
 /* define if the compiler supports intel atomic builtins */
-/* #undef HAVE_INTEL_ATOMIC_BUILTINS */
+#define HAVE_INTEL_ATOMIC_BUILTINS 1
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
@@ -79,6 +60,9 @@
 
 /* Define if you have the IJG JPEG library. */
 #define HAVE_JPEG 1
+
+/* Define to 1 if you have the <langinfo.h> header file. */
+#define HAVE_LANGINFO_H 1
 
 /* Define to 1 if you have the `m' library (-lm). */
 #define HAVE_LIBM 1
@@ -99,7 +83,7 @@
 #define HAVE_MKSTEMP 1
 
 /* Define to 1 if you have a working `mmap' system call. */
-/* #undef HAVE_MMAP */
+#define HAVE_MMAP 1
 
 /* define if the compiler implements namespaces */
 #define HAVE_NAMESPACES 1
@@ -107,14 +91,23 @@
 /* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
 /* #undef HAVE_NDIR_H */
 
+/* Define to 1 if you have the <new.h> header file. */
+/* #undef HAVE_NEW_H */
+
+/* Define to 1 if you have the `nl_langinfo' function. */
+#define HAVE_NL_LANGINFO 1
+
 /* Define if pthreads are available */
 #define HAVE_PTHREAD 1
 
 /* Define to 1 if you have the `putc_unlocked' function. */
 #define HAVE_PUTC_UNLOCKED 1
 
-/* Define to Qt version if available */
-/* #undef HAVE_QT */
+/* Define to 1 if you have the <sched.h> header file. */
+#define HAVE_SCHED_H 1
+
+/* Define to 1 if you have the `sched_yield' function. */
+#define HAVE_SCHED_YIELD 1
 
 /* Define to 1 if you have the `setenv' function. */
 #define HAVE_SETENV 1
@@ -156,6 +149,9 @@
 /* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.
    */
 /* #undef HAVE_SYS_NDIR_H */
+
+/* Define to 1 if you have the <sys/param.h> header file. */
+#define HAVE_SYS_PARAM_H 1
 
 /* Define to 1 if you have the <sys/shm.h> header file. */
 #define HAVE_SYS_SHM_H 1
@@ -205,14 +201,12 @@
 /* Define to 1 if `vfork' works. */
 #define HAVE_WORKING_VFORK 1
 
-/* Define to 1 if you have the <X11/extensions/Xext.h> header file. */
-/* #undef HAVE_X11_EXTENSIONS_XEXT_H */
+/* Define to the sub-directory in which libtool stores uninstalled libraries.
+   */
+#define LT_OBJDIR ".libs/"
 
-/* Define if you have the Xt include files. */
-/* #undef HAVE_XT */
-
-/* Define to use g++ pragmas interface/implementation */
-/* #undef NEED_GNUG_PRAGMAS */
+/* Name of package */
+#define PACKAGE "djvulibre"
 
 /* Define to the address where bug reports for this package should be sent. */
 #define PACKAGE_BUGREPORT ""
@@ -221,13 +215,16 @@
 #define PACKAGE_NAME "djvulibre"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "djvulibre 3.5.22"
+#define PACKAGE_STRING "djvulibre 3.5.27"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "djvulibre"
 
+/* Define to the home page for this package. */
+#define PACKAGE_URL ""
+
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "3.5.22"
+#define PACKAGE_VERSION "3.5.27"
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
@@ -235,11 +232,25 @@
 /* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
 #define TIME_WITH_SYS_TIME 1
 
-/* Define to 1 if the X Window System is missing or not being used. */
-/* #undef X_DISPLAY_MISSING */
+/* Version number of package */
+#define VERSION "3.5.27"
+
+/* Enable large inode numbers on Mac OS X 10.5.  */
+#ifndef _DARWIN_USE_64_BIT_INODE
+# define _DARWIN_USE_64_BIT_INODE 1
+#endif
+
+/* Number of bits in a file offset, on hosts where this is settable. */
+/* #undef _FILE_OFFSET_BITS */
+
+/* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
+/* #undef _LARGEFILE_SOURCE */
+
+/* Define for large files, on AIX-style hosts. */
+/* #undef _LARGE_FILES */
 
 /* Define for Solaris 2.5.1 so the uint32_t typedef from <sys/synch.h>,
-   <pthread.h>, or <semaphore.h> is not used. If the typedef was allowed, the
+   <pthread.h>, or <semaphore.h> is not used. If the typedef were allowed, the
    #define below would cause a syntax error. */
 /* #undef _UINT32_T */
 
@@ -265,9 +276,13 @@
 /* Define as `fork' if `vfork' does not work. */
 /* #undef vfork */
 
+
+
 /* - Miscellaneous */
 #define AUTOCONF 1
-#define UNIX 1
+#if defined(__CYGWIN32__) || !defined(_WIN32)
+# define UNIX 1
+#endif
 
 /* - BOOL */
 #if !defined(HAVE_BOOL) && !defined(bool)
@@ -297,7 +312,7 @@
 #endif
 
 /* - I18N MESSAGES HELL */
-#define HAS_CTRL_C_IN_ERR_MSG 0
+#define HAS_CTRL_C_IN_ERR_MSG 1
 
 /* - CONTAINERS */
 #ifndef HAVE_MEMBER_TEMPLATES
@@ -305,13 +320,6 @@
 #endif
 #ifndef HAVE_TYPENAME
 #define GCONTAINER_NO_TYPENAME 1
-#endif
-
-/* - COTHREAD */
-#ifdef HAVE_COTHREAD
-#ifndef HAVE_COTHREAD_PATCH
-#define NO_LIBGCC_HOOKS 1
-#endif
 #endif
 
 /* - JPEG */
@@ -324,24 +332,6 @@
 #define HAS_MEMMAP 1
 #else
 #define HAS_MEMMAP 0
-#endif
-
-/* - QT */
-#ifdef HAVE_QT
-#if HAVE_QT < 200
-#define QT1
-#elif HAVE_QT < 300
-#define QT2
-#else
-#define QT3
-#endif
-#endif
-
-/* - X STUFF */
-#ifdef HAVE_SYS_IPC_H
-#ifdef HAVE_SYS_SHM_H
-#define USE_XSHM 1
-#endif
 #endif
 
 /* config.h: end */

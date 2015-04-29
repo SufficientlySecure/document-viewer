@@ -12,7 +12,7 @@ LOCAL_CFLAGS := -DHAVE_CONFIG_H
 
 LOCAL_SRC_FILES := \
 	ebookdroidjni.c \
-	DjvuDroidBridge.cpp \
+	djvudroidbridge.cpp \
 	bytebufferbitmapbridge.c \
 	mupdfdroidbridge.c \
 	jni_concurrent.c \
@@ -23,10 +23,10 @@ LOCAL_C_INCLUDES := \
 	$(LOCAL_PATH)/../mupdf/mupdf/include \
 	$(LOCAL_PATH)/../mupdf/mupdf/source/fitz \
 	$(LOCAL_PATH)/../mupdf/mupdf/source/pdf \
-	$(LOCAL_PATH)/../djvu
+	$(LOCAL_PATH)/../djvu/djvulibre/libdjvu
 
 LOCAL_CXX_INCLUDES := \
-	$(LOCAL_PATH)/../djvu
+	$(LOCAL_PATH)/../djvu/djvulibre/libdjvu
 
 LOCAL_STATIC_LIBRARIES := djvu mupdfcore mupdfthirdparty
 

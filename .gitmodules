@@ -2,3 +2,6 @@
 	path = document-viewer/jni/mupdf/mupdf
 	url = git://git.ghostscript.com/mupdf.git
 	ignore = dirty
+[submodule "document-viewer/jni/djvu/djvulibre"]
+	path = document-viewer/jni/djvu/djvulibre
+	url = git://git.code.sf.net/p/djvu/djvulibre-git

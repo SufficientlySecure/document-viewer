@@ -40,6 +40,4 @@ LOCAL_C_INCLUDES := \
 	$(LOCAL_PATH)/mupdf/include \
 	$(LOCAL_PATH)/mupdf
 
-LOCAL_LDLIBS    := -lm -llog -ljnigraphics
-
 include $(BUILD_STATIC_LIBRARY)

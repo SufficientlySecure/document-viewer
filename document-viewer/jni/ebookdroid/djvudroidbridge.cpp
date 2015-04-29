@@ -12,6 +12,8 @@
 
 #include <android/log.h>
 
+#define JNI_DJVU_FN(A) Java_org_ebookdroid_droids_djvu_codec_ ## A
+
 #define LCTX "EBookDroid.DJVU"
 
 #define DEBUG(args...) \
@@ -76,14 +78,16 @@ void waitAndHandleMessages(JNIEnv *env, jlong contextHandle)
 #define HANDLE_TO_DOC(handle) (ddjvu_document_t*)handle
 #define HANDLE(ptr) (jlong)ptr
 
-extern "C" jlong Java_org_ebookdroid_droids_djvu_codec_DjvuContext_create(JNIEnv *env, jclass cls)
+extern "C" jlong
+JNI_DJVU_FN(DjvuContext_create)(JNIEnv *env, jclass cls)
 {
     ddjvu_context_t* context = ddjvu_context_create(LCTX);
-    DEBUG("Creating context: %x", context);
+    //DEBUG("Creating context: %x", context);
     return (jlong) context;
 }
 
-extern "C" void Java_org_ebookdroid_droids_djvu_codec_DjvuContext_free(JNIEnv *env, jclass cls, jlong contextHandle)
+extern "C" void
+JNI_DJVU_FN(DjvuContext_free)(JNIEnv *env, jclass cls, jlong contextHandle)
 {
     ddjvu_context_t* ctx = (ddjvu_context_t*) (contextHandle);
     handleMessages(env, ctx);
@@ -172,8 +176,12 @@ jint* get_djvu_hyperlink_area(ddjvu_pageinfo_t *page_info, miniexp_t sexp, int &
     return array;
 }
 
-jobject get_djvu_hyperlink_mapping(JNIEnv *jenv, ddjvu_document_t* djvu_document, ddjvu_pageinfo_t *page_info,
-                                   miniexp_t sexp)
+jobject get_djvu_hyperlink_mapping(
+    JNIEnv *jenv,
+    ddjvu_document_t* djvu_document,
+    ddjvu_pageinfo_t *page_info,
+    miniexp_t sexp
+)
 {
     miniexp_t iter;
     const char *url, *url_target;
@@ -271,8 +279,7 @@ jobject get_djvu_hyperlink_mapping(JNIEnv *jenv, ddjvu_document_t* djvu_document
 
 jobject djvu_links_get_links(JNIEnv *jenv, ddjvu_document_t* djvu_document, int page)
 {
-
-	DEBUG("djvu_links_get_links %d", page);
+    DEBUG("djvu_links_get_links %d", page);
 
     miniexp_t page_annotations = miniexp_nil;
     miniexp_t *hyperlinks = NULL, *iter = NULL;
@@ -320,8 +327,8 @@ jobject djvu_links_get_links(JNIEnv *jenv, ddjvu_document_t* djvu_document, int 
     return arrayList;
 }
 
-extern "C" jlong Java_org_ebookdroid_droids_djvu_codec_DjvuDocument_open(JNIEnv *env, jclass cls, jlong contextHandle,
-                                                                       jstring fileName)
+extern "C" jlong
+JNI_DJVU_FN(DjvuDocument_open)(JNIEnv *env, jclass cls, jlong contextHandle, jstring fileName)
 {
     const char* fileNameString = env->GetStringUTFChars(fileName, NULL);
     DEBUG("Opening document: %s", fileNameString);
@@ -340,15 +347,25 @@ extern "C" jlong Java_org_ebookdroid_droids_djvu_codec_DjvuDocument_open(JNIEnv 
     return (jlong) doc;
 }
 
-extern "C" jlong Java_org_ebookdroid_droids_djvu_codec_DjvuDocument_getPage(JNIEnv *env, jclass cls, jlong docHandle,
-                                                                          jint pageNumber)
+extern "C" jlong
+JNI_DJVU_FN(DjvuDocument_getPage)(
+    JNIEnv *env,
+    jclass cls,
+    jlong docHandle,
+    jint pageNumber
+)
 {
 	DEBUG("getPage num: %d", pageNumber);
     return (jlong) ddjvu_page_create_by_pageno((ddjvu_document_t*) docHandle, pageNumber);
 }
 
-extern "C" jobject Java_org_ebookdroid_droids_djvu_codec_DjvuPage_getPageLinks(JNIEnv *env, jclass cls,
-                                                                                 jlong docHandle, jint pageNumber)
+extern "C" jobject
+JNI_DJVU_FN(DjvuPage_getPageLinks)(
+    JNIEnv *env,
+    jclass cls,
+    jlong docHandle,
+    jint pageNumber
+)
 {
 	DEBUG("getPageLinks num: %d", pageNumber);
     return djvu_links_get_links(env, (ddjvu_document_t*) docHandle, pageNumber);
@@ -438,8 +455,15 @@ void djvu_get_djvu_words(SearchHelper& h, jobject list, miniexp_t expr, jstring 
     }
 }
 
-extern "C" jobject Java_org_ebookdroid_droids_djvu_codec_DjvuPage_getPageText(JNIEnv *jenv, jclass cls,
-                                                                                 jlong docHandle, jint pageNumber, jlong contextHandle, jstring pattern)
+extern "C" jobject
+JNI_DJVU_FN(DjvuPage_getPageText)(
+    JNIEnv *jenv,
+    jclass cls,
+    jlong docHandle,
+    jint pageNumber,
+    jlong contextHandle,
+    jstring pattern
+)
 {
     miniexp_t r = miniexp_nil;
 
@@ -471,9 +495,15 @@ extern "C" jobject Java_org_ebookdroid_droids_djvu_codec_DjvuPage_getPageText(JN
     return arrayList;
 }
 
-extern "C" jint Java_org_ebookdroid_droids_djvu_codec_DjvuDocument_getPageInfo(JNIEnv *env, jclass cls, jlong docHandle,
-                                                                             jint pageNumber, jlong contextHandle,
-                                                                             jobject cpi)
+extern "C" jint
+JNI_DJVU_FN(DjvuDocument_getPageInfo)(
+    JNIEnv *env,
+    jclass cls,
+    jlong docHandle,
+    jint pageNumber,
+    jlong contextHandle,
+    jobject cpi
+)
 {
     ddjvu_status_t r;
     ddjvu_pageinfo_t info;
@@ -500,39 +530,51 @@ extern "C" jint Java_org_ebookdroid_droids_djvu_codec_DjvuDocument_getPageInfo(J
     return 0;
 }
 
-extern "C" void Java_org_ebookdroid_droids_djvu_codec_DjvuDocument_free(JNIEnv *env, jclass cls, jlong docHandle)
+extern "C" void
+JNI_DJVU_FN(DjvuDocument_free)(JNIEnv *env, jclass cls, jlong docHandle)
 {
     ddjvu_document_release((ddjvu_document_t*) docHandle);
 }
 
-extern "C" jint Java_org_ebookdroid_droids_djvu_codec_DjvuDocument_getPageCount(JNIEnv *env, jclass cls, jlong docHandle)
+extern "C" jint
+JNI_DJVU_FN(DjvuDocument_getPageCount)(JNIEnv *env, jclass cls, jlong docHandle)
 {
     return ddjvu_document_get_pagenum(HANDLE_TO_DOC(docHandle));
 }
 
-extern "C" jboolean Java_org_ebookdroid_droids_djvu_codec_DjvuPage_isDecodingDone(JNIEnv *env, jclass cls,
-                                                                                jlong pageHandle)
+extern "C" jboolean
+JNI_DJVU_FN(DjvuPage_isDecodingDone)(JNIEnv *env, jclass cls, jlong pageHandle)
 {
     return ddjvu_page_decoding_done((ddjvu_page_t*) pageHandle);
 }
 
-extern "C" jint Java_org_ebookdroid_droids_djvu_codec_DjvuPage_getWidth(JNIEnv *env, jclass cls, jlong pageHangle)
+extern "C" jint
+JNI_DJVU_FN(DjvuPage_getWidth)(JNIEnv *env, jclass cls, jlong pageHangle)
 {
     return ddjvu_page_get_width((ddjvu_page_t*) pageHangle);
 }
 
-extern "C" jint Java_org_ebookdroid_droids_djvu_codec_DjvuPage_getHeight(JNIEnv *env, jclass cls, jlong pageHangle)
+extern "C" jint
+JNI_DJVU_FN(DjvuPage_getHeight)(JNIEnv *env, jclass cls, jlong pageHangle)
 {
     return ddjvu_page_get_height((ddjvu_page_t*) pageHangle);
 }
 
-extern "C" jboolean Java_org_ebookdroid_droids_djvu_codec_DjvuPage_renderPageDirect(JNIEnv *env, jclass cls,
-                                                                                  jlong pageHangle, jlong contextHandle, jint targetWidth,
-                                                                                  jint targetHeight, jfloat pageSliceX,
-                                                                                  jfloat pageSliceY,
-                                                                                  jfloat pageSliceWidth,
-                                                                                  jfloat pageSliceHeight,
-                                                                                  jobject byteBuffer, jint rendermode)
+extern "C" jboolean
+JNI_DJVU_FN(DjvuPage_renderPageDirect)(
+    JNIEnv *env,
+    jclass cls,
+    jlong pageHangle,
+    jlong contextHandle,
+    jint targetWidth,
+    jint targetHeight,
+    jfloat pageSliceX,
+    jfloat pageSliceY,
+    jfloat pageSliceWidth,
+    jfloat pageSliceHeight,
+    jobject byteBuffer,
+    jint rendermode
+)
 {
 	DEBUG("Rendering page bitmap");
 
@@ -568,21 +610,30 @@ extern "C" jboolean Java_org_ebookdroid_droids_djvu_codec_DjvuPage_renderPageDir
         waitAndHandleMessages(env, contextHandle);
     }
 
-    jboolean result = ddjvu_page_render(page, (ddjvu_render_mode_t) rendermode, &pageRect, &targetRect, pixelFormat,
-        targetWidth * 4, (char*) pixels);
+    jboolean result = ddjvu_page_render(
+        page,
+        (ddjvu_render_mode_t) rendermode,
+        &pageRect,
+        &targetRect,
+        pixelFormat,
+        targetWidth * 4,
+        (char*) pixels
+    );
 
     ddjvu_format_release(pixelFormat);
     return result;
 }
 
 
-extern "C" void Java_org_ebookdroid_droids_djvu_codec_DjvuPage_free(JNIEnv *env, jclass cls, jlong pageHangle)
+extern "C" void
+JNI_DJVU_FN(DjvuPage_free)(JNIEnv *env, jclass cls, jlong pageHangle)
 {
     ddjvu_page_release((ddjvu_page_t*) pageHangle);
 }
 
 //Outline
-extern "C" jlong Java_org_ebookdroid_droids_djvu_codec_DjvuOutline_open(JNIEnv *env, jclass cls, jlong docHandle)
+extern "C" jlong
+JNI_DJVU_FN(DjvuOutline_open)(JNIEnv *env, jclass cls, jlong docHandle)
 {
 //        DEBUG("DjvuOutline.open(%p)",docHandle);
     miniexp_t outline = ddjvu_document_get_outline((ddjvu_document_t*) docHandle);
@@ -599,17 +650,21 @@ extern "C" jlong Java_org_ebookdroid_droids_djvu_codec_DjvuOutline_open(JNIEnv *
     return 0;
 }
 
-extern "C" jboolean Java_org_ebookdroid_droids_djvu_codec_DjvuOutline_expConsp(JNIEnv *env, jclass cls, jlong expr)
+extern "C" jboolean
+JNI_DJVU_FN(DjvuOutline_expConsp)(JNIEnv *env, jclass cls, jlong expr)
 {
 //        DEBUG("DjvuOutline.expConsp(%p)",expr);
     return miniexp_consp((miniexp_t) expr);
 }
 
-extern "C" jstring Java_org_ebookdroid_droids_djvu_codec_DjvuOutline_getTitle(JNIEnv *env, jclass cls, jlong expr)
+extern "C" jstring
+JNI_DJVU_FN(DjvuOutline_getTitle)(JNIEnv *env, jclass cls, jlong expr)
 {
 //        DEBUG("DjvuOutline.getTitle(%p)",expr);
     miniexp_t s = miniexp_car((miniexp_t) expr);
-    if (miniexp_consp(s) && miniexp_consp(miniexp_cdr(s)) && miniexp_stringp(miniexp_car(s))
+    if (miniexp_consp(s)
+        && miniexp_consp(miniexp_cdr(s))
+        && miniexp_stringp(miniexp_car(s))
         && miniexp_stringp(miniexp_cadr(s)))
     {
         const char* buf = miniexp_to_str(miniexp_car(s));
@@ -618,12 +673,14 @@ extern "C" jstring Java_org_ebookdroid_droids_djvu_codec_DjvuOutline_getTitle(JN
     return NULL;
 }
 
-extern "C" jstring Java_org_ebookdroid_droids_djvu_codec_DjvuOutline_getLink(JNIEnv *env, jclass cls, jlong expr,
-                                                                           jlong docHandle)
+extern "C" jstring
+JNI_DJVU_FN(DjvuOutline_getLink)(JNIEnv *env, jclass cls, jlong expr, jlong docHandle)
 {
 //        DEBUG("DjvuOutline.getLinkPage(%p)",expr);
     miniexp_t s = miniexp_car((miniexp_t) expr);
-    if (miniexp_consp(s) && miniexp_consp(miniexp_cdr(s)) && miniexp_stringp(miniexp_car(s))
+    if (miniexp_consp(s)
+        && miniexp_consp(miniexp_cdr(s))
+        && miniexp_stringp(miniexp_car(s))
         && miniexp_stringp(miniexp_cadr(s)))
     {
         const char *link = miniexp_to_str(miniexp_cadr(s));
@@ -643,17 +700,21 @@ extern "C" jstring Java_org_ebookdroid_droids_djvu_codec_DjvuOutline_getLink(JNI
     return NULL;
 }
 
-extern "C" jlong Java_org_ebookdroid_droids_djvu_codec_DjvuOutline_getNext(JNIEnv *env, jclass cls, jlong expr)
+extern "C" jlong
+JNI_DJVU_FN(DjvuOutline_getNext)(JNIEnv *env, jclass cls, jlong expr)
 {
 //    DEBUG("DjvuOutline.getNext(%p)",expr);
     return (jlong) miniexp_cdr((miniexp_t) expr);
 }
 
-extern "C" jlong Java_org_ebookdroid_droids_djvu_codec_DjvuOutline_getChild(JNIEnv *env, jclass cls, jlong expr)
+extern "C" jlong
+JNI_DJVU_FN(DjvuOutline_getChild)(JNIEnv *env, jclass cls, jlong expr)
 {
 //    DEBUG("DjvuOutline.getChild(%p)",expr);
     miniexp_t s = miniexp_car((miniexp_t) expr);
-    if (miniexp_consp(s) && miniexp_consp(miniexp_cdr(s)) && miniexp_stringp(miniexp_car(s))
+    if (miniexp_consp(s)
+        && miniexp_consp(miniexp_cdr(s))
+        && miniexp_stringp(miniexp_car(s))
         && miniexp_stringp(miniexp_cadr(s)))
         return (jlong) miniexp_cddr(s);
     return 0;

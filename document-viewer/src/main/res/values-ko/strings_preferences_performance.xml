@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+<string name="pref_performance_category">성능 설정</string>
+<string name="pref_performance_category_summary">성능 관련 설정</string>
+
+<string name="pref_pagesinmemory_title">메모리 저장 페이지</string>
+<string name="pref_pagesinmemory_summary">메모리에 저장할 페이지 개수</string>
+
+<string name="pref_lowlevel_category">로우레벨 앱 우선 (문서 다시 불러온 후 적용)</string>
+<string name="pref_lowlevel_category_summary">Low level application preferences (문서 다시 불러온 후에 적용됨)</string>
+
+<string name="pref_decoding_threads_title">"디코딩 쓰레드 개수"</string>
+<string name="pref_decoding_threads_summary">"디코딩 쓰레드의 개수"</string>
+
+<string name="pref_decodethread_priority_title">디코드 쓰레드 우선순위</string>
+<string name="pref_decodethread_priority_summary">디코드 쓰레드 우선순위를 정의함</string>
+
+<string name="pref_drawthread_priority_title">GL draw 쓰레드 우선순위</string>
+<string name="pref_drawthread_priority_summary">GL draw 쓰레드 우선순위를 정의함</string>
+
+<string name="list_thread_priority_lowest">가장 낮음</string>
+<string name="list_thread_priority_lower">낮음</string>
+<string name="list_thread_priority_normal">보통</string>
+<string name="list_thread_priority_higher">높음</string>
+<string name="list_thread_priority_highest">가장 높음</string>
+
+<string name="pref_decodingonscroll_title">스크롤링 도중 디코딩</string>
+<string name="pref_decodingonscroll_summary">스크롤링이나 튕김 도중에 페이지를 디코드하도록 허용</string>
+
+<string name="pref_bitmapsize_title">텍스쳐 비트맵 크기</string>
+<string name="pref_bitmapsize_summary">텍스쳐 부분의 크기를 정의</string>
+
+<string name="list_bitmapsize_64">"64 × 64"</string>
+<string name="list_bitmapsize_128">"128 × 128"</string>
+<string name="list_bitmapsize_256">"256 × 256"</string>
+<string name="list_bitmapsize_512">"512 × 512"</string>
+<string name="list_bitmapsize_1024">"1024 × 1024"</string>
+
+<string name="pref_heappreallocate_title">Heap preallocation</string>
+<string name="pref_heappreallocate_summary">앱 시작 시의 heap preallocation 크기를 메가바이트 단위로 설정</string>
+
+<string name="pref_pdfstoragesize_title">MuPDF 내부 저장소 크기</string>
+<string name="pref_pdfstoragesize_summary">MuPDF 내부 저장소 크기를 메가바이트 단위로 설정</string>
+
+</resources>

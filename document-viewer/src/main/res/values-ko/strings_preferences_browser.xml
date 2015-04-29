@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+<string name="pref_browser_category">파일 탐색기</string>
+<string name="pref_browser_category_summary">파일 탐색기와 파일 형식 설정</string>
+
+<string name="pref_usebookcase_title">책장 보기 사용</string>
+<string name="pref_usebookcase_summary">목록 대신 책장 형식의 보기 사용</string>
+
+<string name="pref_brautoscandir_title">폴더 자동 스캔</string>
+<string name="pref_brautoscandir_summary">파일 폴더 자동 검색</string>
+
+<string name="pref_autoscanremovable_title">이동식 저장소 자동 스캔</string>
+<string name="pref_autoscanremovable_summary">삽입된 이동식 저장소 자동 스캔</string>
+
+<string name="pref_showremovable_title">이동식 저장소 표시</string>
+<string name="pref_showremovable_summary">저장소 메뉴에 이동식 저장소 표시</string>
+
+<string name="pref_showscanning_title">스캔 폴더 표시</string>
+<string name="pref_showscanning_summary">저장소 메뉴에 자동 스캔 폴더 표시</string>
+
+<string name="pref_shownotifications_title">알림 표시</string>
+<string name="pref_shownotifications_summary">추가되거나 삭제된 파일 관련 알림 표시</string>
+
+<string name="pref_cachelocation_title">캐시 위치</string>
+<string name="pref_cachelocation_summary">파일 캐시 위치</string>
+<string name="list_cachelocation_system">시스템 앱 캐시</string>
+<string name="list_cachelocation_custom">Sdcard 앱 캐시</string>
+
+<string name="pref_brbrfiletypesscreen_title">파일 형식</string>
+<string name="pref_brbrfiletypesscreen_summary">라이브러리에 표시할 파일 형식</string>
+
+<string name="pref_brfiletypedjvu_title">.djvu</string>
+<string name="pref_brfiletypedjvu_summary">DjVu 파일 표시</string>
+
+<string name="pref_brfiletypedjv_title">.djv</string>
+<string name="pref_brfiletypedjv_summary">DjV 파일 표시</string>
+
+<string name="pref_brfiletypepdf_title">.pdf</string>
+<string name="pref_brfiletypepdf_summary">PDF 파일 표시</string>
+
+<string name="pref_brfiletypexps_title">.xps</string>
+<string name="pref_brfiletypexps_summary">XPS 파일 표시</string>
+
+<string name="pref_brfiletypeoxps_title">.oxps</string>
+<string name="pref_brfiletypeoxps_summary">OXPS 파일 표시</string>
+
+<string name="pref_brfiletypecbz_title">.cbz</string>
+<string name="pref_brfiletypecbz_summary">CBZ 파일 표시</string>
+
+<string name="pref_brfiletypecbr_title">.cbr</string>
+<string name="pref_brfiletypecbr_summary">CBR 파일 표시</string>
+
+<string name="pref_brfiletypefb2_title">.fb2</string>
+<string name="pref_brfiletypefb2_summary">FB2 파일 표시</string>
+
+<string name="pref_brfiletypefb2.zip_title">.fb2.zip</string>
+<string name="pref_brfiletypefb2.zip_summary">FB2.ZIP 파일 표시</string>
+
+</resources>

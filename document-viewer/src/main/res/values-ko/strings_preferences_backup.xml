@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+<string name="pref_backup_category">백업 &amp; 복원 설정</string>
+<string name="pref_backup_category_summary">백업과 복원 설정</string>
+
+<string name="pref_backuponexit_title">앱 종료시 자동 백업</string>
+<string name="pref_backuponexit_summary">앱이 종료될 때 자동으로 설정을 백업합니다</string>
+
+<string name="pref_backuponbookclose_title">책 닫을때 자동 백업</string>
+<string name="pref_backuponbookclose_summary">문서를 닫을 때 자동으로 설정을 백업합니다</string>
+
+<string name="pref_maxnumberofautobackups_title">자동 백업 갯수</string>
+<string name="pref_maxnumberofautobackups_summary">보관할 자동 백업의 최대 숫자</string>
+
+<string name="pref_bookbackuptype_title">책 설정 백업</string>
+<string name="pref_bookbackuptype_summary">책 설정 백업</string>
+
+<string name="list_bookbackuptype_none">없음</string>
+<string name="list_bookbackuptype_recent">최근</string>
+<string name="list_bookbackuptype_all">모두</string>
+
+</resources>

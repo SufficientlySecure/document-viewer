@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+<string name="menu_close">닫기</string>
+<string name="menu_goto_page">바로가기...</string>
+<string name="menu_outline">윤곽선</string>
+<string name="menu_zoom">확대</string>
+<string name="menu_nightmode">주간/야간</string>
+<string name="menu_settings">모든 설정</string>
+<string name="menu_booksettings">책 설정</string>
+<string name="menu_cleanrecent">최근 목록 비우기</string>
+<string name="menu_add_bookmark">책갈피 추가</string>
+<string name="menu_edit_bookmark">책갈피 편집</string>
+<string name="menu_thumbnail">썸네일로 지정</string>
+<string name="menu_about">앱 정보</string>
+<string name="menu_tap_configuration">두드리기 설정</string>
+<string name="menu_key_bindings">키 설정</string>
+<string name="menu_searchbook">책 찾기</string>
+<string name="menu_searchtext">텍스트 찾기</string>
+<string name="menu_show_options_menu">옵션 메뉴 표시</string>
+<string name="menu_backupsettings">백업 &amp; 복원</string>
+<string name="menu_crop">수동 자르기</string>
+
+<string name="menu_navigation_menu">탐색...</string>
+<string name="menu_fastsettings_menu">보기...</string>
+<string name="menu_allsettings_menu">설정...</string>
+
+<string name="menu_show_library">라이브러리 표시</string>
+<string name="menu_show_recent">최근 목록 표시</string>
+<string name="menu_storages">저장소</string>
+<string name="menu_storages_filesystem">파일 시스템</string>
+<string name="menu_storages_external">SD Card</string>
+
+<string name="menu_force_portrait">세로 보기 고정</string>
+<string name="menu_force_landscape">가로 보기 고정</string>
+</resources>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+<string name="pref_navigation_category">탐색 &amp; 기록</string>
+<string name="pref_navigation_category_summary">탐색 &amp; 기록 설정</string>
+
+<string name="pref_showbookmarksmenu_summary">메뉴에 책갈피 표시</string>
+<string name="pref_showbookmarksmenu_title">탐색 메뉴에 책갈피 표시</string>
+
+<string name="pref_link_highlight_summary">"링크 강조 색상 선택"</string>
+<string name="pref_link_highlight_title">"링크 강조"</string>
+
+<string name="pref_search_highlight_summary">"검색 결과 강조 색상 선택"</string>
+<string name="pref_search_highlight_title">"검색 결과 강조"</string>
+
+<string name="pref_current_search_highlight_summary">"현재 검색 강조 색상 선택"</string>
+<string name="pref_current_search_highlight_title">"현재 검색"</string>
+
+<string name="pref_storeGotoHistory_title">탐색 기록에 바로가기 페이지 저장</string>
+<string name="pref_storeGotoHistory_summary"></string>
+
+<string name="pref_storeLinkGotoHistory_title">탐색 기록에 바로가기 링크 저장</string>
+<string name="pref_storeLinkGotoHistory_summary"></string>
+
+<string name="pref_storeOutlineGotoHistory_title">탐색 기록에 바로가기 윤곽선 링크 저장</string>
+<string name="pref_storeOutlineGotoHistory_summary"></string>
+
+<string name="pref_storeSearchGotoHistory_title">탐색 기록에 바로가기 검색 결과 저장</string>
+<string name="pref_storeSearchGotoHistory_summary"></string>
+
+</resources>

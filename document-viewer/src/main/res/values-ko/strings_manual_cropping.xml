@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+<string name="manual_cropping_title">임의 자르기 옵션 (단일 페이지 필요):</string>
+<string name="manual_cropping_current">현재 페이지만 자르기</string>
+<string name="manual_cropping_even">모든 짝수 (홀수) 페이지 자르기</string>
+<string name="manual_cropping_even_symm">짝수 홀수 페이지를 대칭으로 자르기</string>
+<string name="manual_cropping_all">모든 페이지 자르기</string>
+<string name="manual_cropping_remove_current">현재 페이지의 자르기 설정 제거</string>
+<string name="manual_cropping_remove_all">모든 자르기 설정 제거</string>
+<string name="manual_cropping_back">영역 선택으로 돌아가기</string>
+
+</resources>
+

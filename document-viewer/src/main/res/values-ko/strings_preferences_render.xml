@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+<string name="pref_rotation_title">회전 모드</string>
+<string name="pref_rotation_summary">회전 변경 방식</string>
+
+<string name="list_rotation_unspecified">지정하지 않음</string>
+<string name="list_rotation_land">가로로 강제 설정</string>
+<string name="list_rotation_port">세로로 강제 설정</string>
+<string name="list_rotation_user">사용자 지정</string>
+<string name="list_rotation_behind">백그라운드 방식 따르기</string>
+<string name="list_rotation_auto">자동</string>
+<string name="list_rotation_nosensor">센서 없음</string>
+<string name="list_rotation_sensor_landscape">가로로 강제 지정하지만 뒤집기 감지</string>
+<string name="list_rotation_sensor_portrait">세로로 강제 지정하지만 뒤집기 감지</string>
+<string name="list_rotation_reverse_landscape">뒤집힌 가로 강제 설정</string>
+<string name="list_rotation_reverse_portrait">뒤집힌 세로 강제 설정</string>
+<string name="list_rotation_full_sensor">완전히 센서에 따름</string>
+
+<string name="pref_render_category">렌더링</string>
+<string name="pref_render_category_summary">렌더링 설정</string>
+
+<string name="pref_book_category">책 설정</string>
+<string name="pref_book_category_summary">현재 책 설정</string>
+
+<string name="pref_firstpageoffset_title">첫번째 페이지 오프셋</string>
+<string name="pref_firstpageoffset_summary">사용자에게 보여지는 첫번째 페이지 색인</string>
+
+<string name="pref_splitpages_title">페이지 분리</string>
+<string name="pref_splitpages_summary">가로 방향 페이지를 두개의 세로 방향 페이지로 나눔</string>
+
+<string name="pref_splitpages_rtl_title">오른쪽에서 왼쪽으로 페이지 분리</string>
+<string name="pref_splitpages_rtl_summary">가로 방향 페이지를 두개의 세로 방향 페이지로 나눔 (오른쪽에서 왼쪽 순서)</string>
+
+<string name="pref_croppages_title">페이지 자르기 (자동)</string>
+<string name="pref_croppages_summary">내용을 최대한 확대하기 위해 자동으로 빈 여백을 잘라냄</string>
+
+<string name="pref_viewmode_title">문서 보기 모드</string>
+<string name="pref_viewmode_summary">문서를 단일 페이지 혹은 연속 스크롤로 열람</string>
+
+<string name="list_viewmode_vertical_scroll">세로 스크롤</string>
+<string name="list_viewmode_horizontal_scroll">가로 스크롤</string>
+<string name="list_viewmode_single_page">단일 페이지</string>
+
+<string name="pref_singlepage_category">단일 페이지 설정</string>
+<string name="pref_singlepage_category_summary">단일 페이지만을 위한 모드 보기</string>
+
+<string name="pref_align_title">페이지 맞춤</string>
+<string name="pref_align_summary">화면에 페이지를 맞추는 방법</string>
+
+<string name="list_align_by_width">폭에 맞춤</string>
+<string name="list_align_by_height">높이에 맞춤</string>
+<string name="list_align_auto">자동</string>
+
+<string name="pref_animationtype_title">페이지 전환</string>
+<string name="pref_animationtype_summary">단일 페이지 모드에서의 페이지 전환 애니메이션 선택</string>
+
+<string name="list_animation_none">없음</string>
+<string name="list_animation_curler_simple">단순하게 말기</string>
+<string name="list_animation_curler_dynamic">동적으로 말기</string>
+<string name="list_animation_curler_natural">자연스럽게 말기</string>
+<string name="list_animation_slider">슬라이드</string>
+<string name="list_animation_fader">페이드</string>
+<string name="list_animation_squeezer">쥐어짜기</string>
+<string name="list_animation_slider2">위로 슬라이드</string>
+
+<string name="pref_postprocessing_category">후처리 효과</string>
+<string name="pref_postprocessing_summary">페이지 표시를 향상시키기 위한 추가적 효과</string>
+
+<string name="pref_nightmode_title">야간 모드</string>
+<string name="pref_nightmode_summary">검은 배경에 흰 글씨(네거티브 이미지)</string>
+
+<string name="pref_posimages_in_nightmode_title">야간 모드에 포지티브 이미지 사용</string>
+<string name="pref_posimages_in_nightmode_summary">야간 모드에서 그레이스케일 이미지 표시(색상을 반전하지 않음)</string>
+
+<string name="pref_contrast_title">대비</string>
+<string name="pref_contrast_summary">대비 보정 레벨 (0 &#8211; 1000, 100이 기본값)</string>
+
+<string name="pref_gamma_title">감마</string>
+<string name="pref_gamma_summary">감마 보정 레벨 (0 &#8211; 200, 100이 기본값)</string>
+
+<string name="pref_exposure_title">노출</string>
+<string name="pref_exposure_summary">노출 보정 레벨 (0 &#8211; 200, 100이 기본값)</string>
+
+<string name="pref_autolevels_title">자동 레벨</string>
+<string name="pref_autolevels_summary">자동 레벨 보정 사용</string>
+
+</resources>

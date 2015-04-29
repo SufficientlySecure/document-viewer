@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+<string name="pref_brfiletypespecific_title">포맷 특정</string>
+<string name="pref_brfiletypespecific_summary">각각의 개별 파일 포맷에 대한 별도의 설정</string>
+
+<string name="pref_brfiletypespecificdjvu_title">DJVU</string>
+<string name="pref_brfiletypespecificdjvu_summary">DJVU 포맷 특정 설정</string>
+
+<string name="pref_djvu_rendering_mode_title">렌더링 모드</string>
+<string name="pref_djvu_rendering_mode_summary">페이지 렌더링 모드</string>
+
+<string name="list_djvu_rendering_mode_0">색상</string>
+<string name="list_djvu_rendering_mode_1">검정</string>
+<string name="list_djvu_rendering_mode_2">색상만</string>
+<string name="list_djvu_rendering_mode_3">마스크만</string>
+<string name="list_djvu_rendering_mode_4">배경만</string>
+<string name="list_djvu_rendering_mode_5">전경만</string>
+
+<string name="pref_brfiletypespecificpdf_title">PDF</string>
+<string name="pref_brfiletypespecificpdf_summary">PDF 포맷 특정 설정</string>
+
+<string name="pref_customdpi_title">임의의 DPI 사용</string>
+<string name="pref_customdpi_summary">임의의 DPI (Dot Per Inch) 값을 정의</string>
+
+<string name="pref_xdpi_title">X DPI</string>
+<string name="pref_xdpi_summary">가로 (X 방향) DPI</string>
+
+<string name="pref_ydpi_title">Y DPI</string>
+<string name="pref_ydpi_summary">세로 (Y 방향) DPI</string>
+
+<string name="pref_monofontpack_title">Monospace 글꼴 집합</string>
+<string name="pref_monofontpack_summary">Monospace 글꼴 집합에 어떤 글꼴 팩을 사용할 것인지 지정</string>
+
+<string name="pref_sansfontpack_title">Sans 글꼴 집합</string>
+<string name="pref_sansfontpack_summary">Sans 글꼴 집합에 어떤 글꼴 팩을 사용할 것인지 지정</string>
+
+<string name="pref_seriffontpack_title">Serif 글꼴 집합</string>
+<string name="pref_seriffontpack_summary">Serif 글꼴 집합에 어떤 글꼴 팩을 사용할 것인지 지정</string>
+
+<string name="pref_symbolfontpack_title">Symbol 글꼴 집합</string>
+<string name="pref_symbolfontpack_summary">Symbol 글꼴 집합에 어떤 글꼴 팩을 사용할 것인지 지정</string>
+
+<string name="pref_dingbatfontpack_title">Dingbat 글꼴 집합</string>
+<string name="pref_dingbatfontpack_summary">Dingbat 글꼴 집합에 어떤 글꼴 팩을 사용할 것인지 지정</string>
+
+<string name="pref_systemfontpack">기본 안드로이드 글꼴 사용</string>
+
+<string name="pref_slowcmyk_title">느린 CMYK</string>
+<string name="pref_slowcmyk_summary">느리지만 정확한 CMYK to RGB 알고리즘 사용</string>
+
+<string name="pref_brfiletypespecificfb2_title">FB2</string>
+<string name="pref_brfiletypespecificfb2_summary">FB2 포맷 특정 설정</string>
+
+<string name="pref_fb2_xmlparser_title">XML parser</string>
+<string name="pref_fb2_xmlparser_summary">XML parser</string>
+
+<string name="list_fb2_xmlparser_vtd_ex">VTD based</string>
+<string name="list_fb2_xmlparser_duckbill">Dumb &amp; Dirty</string>
+
+<string name="pref_fontsize_title">글자 크기</string>
+<string name="pref_fontsize_summary">기본 글자 크기</string>
+
+<string name="pref_fb2fontpack_title">FB2 글꼴 집합</string>
+<string name="pref_fb2fontpack_summary">FB2 렌더링에 사용할 글꼴 팩 지정</string>
+
+<string name="list_fontsize_tiny">매우 작음</string>
+<string name="list_fontsize_small">작음</string>
+<string name="list_fontsize_normal">보통</string>
+<string name="list_fontsize_large">큼</string>
+<string name="list_fontsize_huge">매우 큼</string>
+
+<string name="pref_fb2hyphen_title">Hyphenation 사용</string>
+<string name="pref_fb2hyphen_summary">실험적인 하이픈화 기능</string>
+
+<string name="pref_fb2cacheimages_title">저장소에 이미지 캐시</string>
+<string name="pref_fb2cacheimages_summary">메모리 사용량을 줄이기 위해 임시로 문서 이미지를 저장소에 보관</string>
+ </resources>

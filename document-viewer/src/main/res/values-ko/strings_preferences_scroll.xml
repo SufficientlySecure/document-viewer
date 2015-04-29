@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+<string name="pref_scroll_category">두드리기, 밀기 그리고 키</string>
+<string name="pref_scroll_category_summary">기기가 두드리기, 밀기 그리고 키 입력에 어떻게 반응해야 하는지 선택</string>
+
+<string name="pref_tapsenabled_title">두드리기 사용</string>
+<string name="pref_tapsenabled_summary">두드리기 영역 및 동작을 정의하기 위한 두드리기 설정 사용</string>
+
+<string name="pref_scroll_title">스크롤 높이</string>
+<string name="pref_scroll_summary">화면에 맞춰지지 않는 페이지의 스크롤 높이 설정(기본값: 50%%)</string>
+
+<string name="pref_touchdelay_title">터치 처리 지연</string>
+<string name="pref_touchdelay_summary">터치 처리 지연 (밀리초 단위)</string>
+
+<string name="pref_animate_scrolling_title">스크롤링 움직임</string>
+<string name="pref_animate_scrolling_summary">스크롤 모드에서 스크롤링 구현</string>
+
+</resources>

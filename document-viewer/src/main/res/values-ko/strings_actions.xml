@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+<string name="actions_verticalConfigScrollUp">뒤로 스크롤</string>
+<string name="actions_verticalConfigScrollDown">앞으로 스크롤</string>
+<string name="actions_quickZoom">빠른 확대</string>
+<string name="actions_zoomToColumn">세로단에 맞춰 확대</string>
+<string name="actions_leftTopCorner">왼쪽 상단 페이지 모서리로 스크롤</string>
+<string name="actions_rightTopCorner">오른쪽 상단 페이지 모서리로 스크롤</string>
+<string name="actions_leftBottomCorner">왼쪽 하단 페이지 모서리로 스크롤</string>
+<string name="actions_rightBottomCorner">오른쪽 하단 페이지 모서리로 스크롤</string>
+
+</resources>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+<string name="pref_opds_category">OPDS 설정</string>
+<string name="pref_opds_category_summary">OPDS 탐색기 설정</string>
+
+<string name="pref_opds_downloaddir_title">다운로드 폴더</string>
+<string name="pref_opds_downloaddir_summary">다음 위치에 다운로드</string>
+
+<string name="pref_opds_filterbooktypes_title">책 형식 필터</string>
+<string name="pref_opds_filterbooktypes_summary">지원하지 않는 책 형식 필터링</string>
+
+<string name="pref_opds_downloadarchives_title">압축된 책 다운로드</string>
+<string name="pref_opds_downloadarchives_summary">압축된 책을 다운로드함</string>
+
+<string name="pref_opds_unpackarchives_title">압축된 책 압축 해제</string>
+<string name="pref_opds_unpackarchives_summary">다운로드 끝나고 책 압축 해제</string>
+
+<string name="pref_opds_deletearchives_title">압축된 책 삭제</string>
+<string name="pref_opds_deletearchives_summary">압축 해제 후 압축된 책 삭제</string>
+
+</resources>

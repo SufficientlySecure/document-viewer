@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+<string name="bookmenu_open">다음에서 책 열기...</string>
+<string name="bookmenu_settings">책 설정 열기</string>
+<string name="bookmenu_openbookshelf">책장 표시</string>
+<string name="bookmenu_openbookfolder">책 폴더 표시</string>
+<string name="bookmenu_recentgroup">최근 목록 비우기...</string>
+<string name="bookmenu_removefromrecent">최근 목록에서 제외</string>
+<string name="bookmenu_cleardata">캐시 비우기</string>
+<string name="bookmenu_deletesettings">책 설정 제거</string>
+<string name="bookmenu_filegroup">파일 동작...</string>
+<string name="bookmenu_copy">다음으로 책 복사...</string>
+<string name="bookmenu_rename">책 이름 변경...</string>
+<string name="bookmenu_move">다음으로 책 이동...</string>
+<string name="bookmenu_delete">책 삭제</string>
+
+</resources>

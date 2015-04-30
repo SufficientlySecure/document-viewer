@@ -13,6 +13,8 @@ LOCAL_SRC_FILES := \
     ) \
 	mupdf/source/pdf/js/pdf-js.c \
 	mupdf/source/pdf/js/pdf-jsimp-mu.c
+	
+LOCAL_CFLAGS += -DNOCJK
 
 ifeq ($(TARGET_ARCH),arm)
 LOCAL_CFLAGS += -DARCH_ARM -DARCH_THUMB -DARCH_ARM_CAN_LOAD_UNALIGNED

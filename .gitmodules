@@ -5,3 +5,4 @@
 [submodule "document-viewer/jni/djvu/djvulibre"]
 	path = document-viewer/jni/djvu/djvulibre
 	url = git://git.code.sf.net/p/djvu/djvulibre-git
+	ignore = dirty

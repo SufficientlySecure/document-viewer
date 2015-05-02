@@ -45,6 +45,9 @@
     <string name="pref_brfiletypeoxps_title">.oxps</string>
     <string name="pref_brfiletypeoxps_summary">Show OXPS files</string>
 
+    <string name="pref_brfiletypeepub_title">.epub</string>
+    <string name="pref_brfiletypeepub_summary">Show EPUB files</string>
+
     <string name="pref_brfiletypecbz_title">.cbz</string>
     <string name="pref_brfiletypecbz_summary">Show CBZ files</string>
 

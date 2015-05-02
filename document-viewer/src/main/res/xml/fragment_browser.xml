@@ -92,6 +92,13 @@
         <org.emdev.ui.preference.JsonCheckBoxPreference
                 android:defaultValue="true"
                 android:key="@string/pref_brfiletypes"
+                ebookdroid:jsonProperty="epub"
+                android:summary="@string/pref_brfiletypeepub_summary"
+                android:title="@string/pref_brfiletypeepub_title" />
+
+        <org.emdev.ui.preference.JsonCheckBoxPreference
+                android:defaultValue="true"
+                android:key="@string/pref_brfiletypes"
                 ebookdroid:jsonProperty="cbz"
                 android:summary="@string/pref_brfiletypecbz_summary"
                 android:title="@string/pref_brfiletypecbz_title" />
@@ -116,5 +123,6 @@
                 ebookdroid:jsonProperty="fb2.zip"
                 android:summary="@string/pref_brfiletypefb2.zip_summary"
                 android:title="@string/pref_brfiletypefb2.zip_title" />
+
         </PreferenceCategory>
     </PreferenceScreen>

@@ -45,6 +45,9 @@
 <string name="pref_brfiletypeoxps_title">.oxps</string>
 <string name="pref_brfiletypeoxps_summary">OXPS 파일 표시</string>
 
+<string name="pref_brfiletypeepub_title">.epub</string>
+<string name="pref_brfiletypeepub_summary">EPUB 파일 표시</string>
+
 <string name="pref_brfiletypecbz_title">.cbz</string>
 <string name="pref_brfiletypecbz_summary">CBZ 파일 표시</string>
 

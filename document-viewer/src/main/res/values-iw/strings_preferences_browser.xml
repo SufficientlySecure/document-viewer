@@ -31,6 +31,8 @@
     <string name="pref_brfiletypexps_summary">"הצג קבצי XPS"</string>
 <!--<string name="pref_brfiletypeoxps_title">".oxps"</string>-->
     <string name="pref_brfiletypeoxps_summary">"הצג קבצי OXPS"</string>
+<!--<string name="pref_brfiletypeepub_title">".epub"</string>-->
+    <string name="pref_brfiletypeepub_summary">"הצג קבצי EPUB"</string>
 <!--<string name="pref_brfiletypecbz_title">".cbz"</string>-->
     <string name="pref_brfiletypecbz_summary">"הצג קבצי cbz"</string>
 <!--<string name="pref_brfiletypecbr_title">".cbr"</string>-->

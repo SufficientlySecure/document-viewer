@@ -92,6 +92,13 @@
         <org.emdev.ui.preference.JsonSwitchPreferenceEx
                 android:defaultValue="true"
                 android:key="@string/pref_brfiletypes"
+                ebookdroid:jsonProperty="epub"
+                android:summary="@string/pref_brfiletypeepub_summary"
+                android:title="@string/pref_brfiletypeepub_title" />
+
+        <org.emdev.ui.preference.JsonSwitchPreferenceEx
+                android:defaultValue="true"
+                android:key="@string/pref_brfiletypes"
                 ebookdroid:jsonProperty="cbz"
                 android:summary="@string/pref_brfiletypecbz_summary"
                 android:title="@string/pref_brfiletypecbz_title" />

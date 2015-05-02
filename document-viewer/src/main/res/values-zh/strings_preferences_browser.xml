@@ -31,6 +31,8 @@
     <string name="pref_brfiletypexps_summary">"显示XPS文件"</string>
     <string name="pref_brfiletypeoxps_title" translatable="true">".oxps"</string>
     <string name="pref_brfiletypeoxps_summary">"显示OXPS文件"</string>
+    <string name="pref_brfiletypeepub_title" translatable="true">".epub"</string>
+    <string name="pref_brfiletypeepub_summary">"显示EPUB文件"</string>
     <string name="pref_brfiletypecbz_title" translatable="true">".cbz"</string>
     <string name="pref_brfiletypecbz_summary">"显示CBZ文件"</string>
     <string name="pref_brfiletypecbr_title" translatable="true">".cbr"</string>

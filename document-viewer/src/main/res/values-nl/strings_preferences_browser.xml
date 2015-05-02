@@ -31,6 +31,8 @@
     <string name="pref_brfiletypexps_summary">"Vertoon XPS-bestanden"</string>
 <!--<string name="pref_brfiletypeoxps_title">".oxps"</string>-->
     <string name="pref_brfiletypeoxps_summary">"Vertoon OXPS-bestanden"</string>
+<!--<string name="pref_brfiletypeepub_title">".epub"</string>-->
+    <string name="pref_brfiletypeepub_summary">"Vertoon EPUB-bestanden"</string>
 <!--<string name="pref_brfiletypecbz_title">".cbz"</string>-->
     <string name="pref_brfiletypecbz_summary">"Vertoon CBZ-bestanden"</string>
 <!--<string name="pref_brfiletypecbr_title">".cbr"</string>-->

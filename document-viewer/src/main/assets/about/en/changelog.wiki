@@ -1,5 +1,13 @@
 #labels Featured
 
+= DV v2.7.1 =
+== New features ==
+* Korean localization added
+
+== Bug fixes ==
+* Fix no outline bug for PDF
+* Reduce package size
+
 = DV v2.7 =
 
 == New features ==

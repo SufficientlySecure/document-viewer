@@ -15,7 +15,8 @@
     <string name="list_lang_ru">"俄语 (Русский)"</string>
     <string name="list_lang_uk">"乌克兰语 (Український)"</string>
     <string name="list_lang_zh">"中文简体"</string>
-<!--<string name="list_lang_iw">"Hebrew (עברית)"</string>-->
+    <string name="list_lang_iw">"希伯来语 (עברית)"</string>
+    <string name="list_lang_ko">"韩语 (한국어)"</string>    
     <string name="pref_loadrecent_title">"最近加载"</string>
     <string name="pref_loadrecent_summary">"在应用程序上启动自动加载上次打开的书"</string>
     <string name="pref_confirmclose_title">"确认关闭"</string>

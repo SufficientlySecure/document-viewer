@@ -23,19 +23,20 @@ public class MuPdfLinks {
         for (long linkHandle = getFirstPageLink(docHandle, pageHandle); linkHandle != 0; linkHandle = getNextPageLink(linkHandle)) {
             final PageLink link = new PageLink();
             final int type = getPageLinkType(linkHandle);
+
+            link.rectType = 1;
+            if (fillPageLinkSourceRect(linkHandle, temp)) {
+                link.sourceRect = new RectF();
+                link.sourceRect.left = (temp[0] - pageBounds.left) / pageBounds.width();
+                link.sourceRect.top = (temp[1] - pageBounds.top) / pageBounds.height();
+                link.sourceRect.right = (temp[2] - pageBounds.left) / pageBounds.width();
+                link.sourceRect.bottom = (temp[3] - pageBounds.top) / pageBounds.height();
+            }
+
             if (type == FZ_LINK_URI) {
                 link.url = getPageLinkUrl(linkHandle);
                 links.add(link);
             } else if (type == FZ_LINK_GOTO) {
-                link.rectType = 1;
-                if (fillPageLinkSourceRect(linkHandle, temp)) {
-                    link.sourceRect = new RectF();
-                    link.sourceRect.left = (temp[0] - pageBounds.left) / pageBounds.width();
-                    link.sourceRect.top = (temp[1] - pageBounds.top) / pageBounds.height();
-                    link.sourceRect.right = (temp[2] - pageBounds.left) / pageBounds.width();
-                    link.sourceRect.bottom = (temp[3] - pageBounds.top) / pageBounds.height();
-                }
-
                 link.targetPage = getPageLinkTargetPage(linkHandle);
                 if (link.targetPage > 0) {
                     int flags = fillPageLinkTargetPoint(linkHandle, temp);

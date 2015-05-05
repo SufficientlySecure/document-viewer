@@ -20,9 +20,12 @@ import org.ebookdroid.ui.viewer.IActivityController;
 import org.ebookdroid.ui.viewer.IView;
 import org.ebookdroid.ui.viewer.IViewController;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.net.Uri;
 import android.util.FloatMath;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.KeyEvent;
@@ -581,8 +584,22 @@ public abstract class AbstractViewController extends AbstractComponentController
             LCTX.d("Page link found under tap: " + link);
         }
 
+        if (link.url != null) {
+            goToURL(link.url);
+            return true;
+        }
+
         goToLink(link.targetPage, link.targetRect, AppSettings.current().storeLinkGotoHistory);
         return true;
+    }
+
+    private void goToURL(String url) {
+        Context ctx = base.getContext();
+        Uri parsed = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, parsed);
+        if (intent.resolveActivity(ctx.getPackageManager()) != null) {
+            ctx.startActivity(intent);
+        }
     }
 
     /**

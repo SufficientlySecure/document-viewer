@@ -431,7 +431,7 @@ JNI_FN(MuPdfLinks_fillPageLinkSourceRect)(JNIEnv *env, jclass clazz, jlong linkh
 {
     fz_link *link = (fz_link*) (long) linkhandle;
 
-    if (!link || link->dest.kind != FZ_LINK_GOTO)
+    if (!link)
     {
         return JNI_FALSE;
     }

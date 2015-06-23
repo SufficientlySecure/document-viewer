@@ -58,7 +58,10 @@ public class MuPdfDocument extends AbstractCodecDocument {
     static void normalizeLinkTargetRect(final long docHandle, final int targetPage, final RectF targetRect,
             final int flags) {
 
-        if ((flags & 0x0F) == 0) {
+        // Check if flags `fz_link_flag_t_valid` (=1) and `fz_link_flag_l_valid`
+        // (=2) are set. See mupdf's `include/mupdf/fitz/link.h` for more
+        // information.
+        if ((flags & 0x03) == 0) {
             targetRect.right = targetRect.left = 0;
             targetRect.bottom = targetRect.top = 0;
             return;

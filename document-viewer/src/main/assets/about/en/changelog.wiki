@@ -1,5 +1,12 @@
 #labels Featured
 
+= DV v2.7.2 =
+== Changes ==
+* Spliting the package according to the different ABIs.
+
+== Bug fixes ==
+* Fix a small bug concerning the outlines in certain PDFs.
+
 = DV v2.7.1 =
 == New features ==
 * Korean localization added

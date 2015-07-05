@@ -25,6 +25,8 @@
         android:label="@string/app_name"
         android:theme="@style/ebookdroid"
         android:largeHeap="true">
+
+        <meta-data android:name="com.sec.android.support.multiwindow" android:value="true"/>
         <activity
             android:name="org.ebookdroid.ui.viewer.ViewerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize">
@@ -126,6 +128,7 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
             </intent-filter>
         </activity>
         <activity

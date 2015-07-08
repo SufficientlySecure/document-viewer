@@ -361,7 +361,11 @@ public abstract class AbstractViewController extends AbstractComponentController
      */
     @Override
     public final boolean dispatchKeyEvent(final KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+	if (event.isCanceled()) {
+	    return false;
+	}
+
+        if (event.getAction() == KeyEvent.ACTION_UP) {
             final Integer actionId = KeyBindingsManager.getAction(event);
             final ActionEx action = actionId != null ? getOrCreateAction(actionId) : null;
             if (action != null) {
@@ -374,11 +378,6 @@ public abstract class AbstractViewController extends AbstractComponentController
                 if (LCTX.isDebugEnabled()) {
                     LCTX.d("Key action not found: " + event);
                 }
-            }
-        } else if (event.getAction() == KeyEvent.ACTION_UP) {
-            final Integer id = KeyBindingsManager.getAction(event);
-            if (id != null) {
-                return true;
             }
         }
 

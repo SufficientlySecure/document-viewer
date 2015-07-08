@@ -722,11 +722,15 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
     }
 
     public final boolean dispatchKeyEvent(final KeyEvent event) {
+	if (event.isCanceled()) {
+	    return false;
+	}
+
         final int action = event.getAction();
         final int keyCode = event.getKeyCode();
 
         if (getManagedComponent().getSearchControls().getVisibility() == View.VISIBLE) {
-            if (action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
+            if (action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
                 toggleControls(getAction(R.id.mainmenu_search));
                 return true;
             }
@@ -737,30 +741,28 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
             return true;
         }
 
-        if (action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
-            if (event.getRepeatCount() == 0) {
-                if (getManagedComponent().getTouchView().isShown()) {
-                    ViewEffects.toggleControls(getManagedComponent().getTouchView());
-                } else if (getManagedComponent().getManualCropControls().isShown()) {
-                    ViewEffects.toggleControls(getManagedComponent().getManualCropControls());
-                } else {
+        if (action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+	    if (getManagedComponent().getTouchView().isShown()) {
+		ViewEffects.toggleControls(getManagedComponent().getTouchView());
+	    } else if (getManagedComponent().getManualCropControls().isShown()) {
+		ViewEffects.toggleControls(getManagedComponent().getManualCropControls());
+	    } else {
 
-                    if (history.goBack()) {
-                        return true;
-                    }
+		if (history.goBack()) {
+		    return true;
+		}
 
-                    if (AppSettings.current().confirmClose) {
-                        final ActionDialogBuilder builder = new ActionDialogBuilder(getManagedComponent(), this);
-                        builder.setTitle(R.string.confirmclose_title);
-                        builder.setMessage(R.string.confirmclose_msg);
-                        builder.setPositiveButton(R.id.mainmenu_close);
-                        builder.setNegativeButton().show();
-                    } else {
-                        getOrCreateAction(R.id.mainmenu_close).run();
-                    }
-                }
-            }
-            return true;
+		if (AppSettings.current().confirmClose) {
+		    final ActionDialogBuilder builder = new ActionDialogBuilder(getManagedComponent(), this);
+		    builder.setTitle(R.string.confirmclose_title);
+		    builder.setMessage(R.string.confirmclose_msg);
+		    builder.setPositiveButton(R.id.mainmenu_close);
+		    builder.setNegativeButton().show();
+		} else {
+		    getOrCreateAction(R.id.mainmenu_close).run();
+		}
+	    }
+	    return true;
         }
         return false;
     }

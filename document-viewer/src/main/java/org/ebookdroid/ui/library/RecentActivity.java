@@ -262,15 +262,15 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
     /**
      * {@inheritDoc}
      *
-     * @see android.app.Activity#onKeyDown(int, android.view.KeyEvent)
+     * @see android.app.Activity#onKeyUp(int, android.view.KeyEvent)
      */
     @Override
-    public boolean onKeyDown(final int keyCode, final KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+    public boolean onKeyUp(final int keyCode, final KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && !event.isCanceled()) {
             getController().getOrCreateAction(R.id.mainmenu_close).run();
             return true;
         }
-        return super.onKeyDown(keyCode, event);
+        return super.onKeyUp(keyCode, event);
     }
 
     void changeLibraryView(final int view) {

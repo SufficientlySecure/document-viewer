@@ -5,6 +5,22 @@ dependencies {
     compile 'com.android.support:support-v4:22.1.0'
 }
 
+import java.util.regex.Pattern
+def getVerCode() {
+    def manifestFile = file("src/main/AndroidManifest.xml")
+    def pattern = Pattern.compile("versionCode=\"(\\d+)\"")
+    def manifestText = manifestFile.getText()
+    def matcher = pattern.matcher(manifestText)
+    matcher.find()
+    def version = Integer.parseInt(matcher.group(1))
+    return version
+}
+
+// map for the version code
+ext.versionCodes = ['armeabi': 1, 'armeabi-v7a':2, 'x86':3, 'mips':4, 'arm64-v8a':5, 'x86_64':6, 'mips64':7]
+
+import com.android.build.OutputFile
+
 android {
     compileSdkVersion 22
     buildToolsVersion '22.0.1'
@@ -25,6 +41,13 @@ android {
             include 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'mips', 'mips64', 'x86', 'x86_64'
             universalApk false
         }
+    }
+
+    applicationVariants.all { variant ->
+      variant.outputs.each { output ->
+        output.versionCodeOverride =
+          project.ext.versionCodes.get(output.getFilter(OutputFile.ABI)) + getVerCode()
+      }
     }
 
     /*

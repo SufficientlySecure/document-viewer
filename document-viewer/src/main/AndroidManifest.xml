@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.sufficientlysecure.viewer"
     android:installLocation="auto"
-    android:versionCode="2720"
-    android:versionName="2.7.2">
+    android:versionCode="2730"
+    android:versionName="2.7.3">
 
     <uses-sdk
         android:minSdkVersion="8"

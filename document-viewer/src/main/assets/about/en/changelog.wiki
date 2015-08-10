@@ -1,5 +1,9 @@
 #labels Featured
 
+= DV v2.7.3 =
+== New features ==
+* Support Samsung Multi window mode.
+
 = DV v2.7.2 =
 == Changes ==
 * Spliting the package according to the different ABIs.

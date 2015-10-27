@@ -162,8 +162,10 @@ public final class GLView extends GLRootView implements IView, SurfaceHolder.Cal
      * @see org.ebookdroid.ui.viewer.IView#forceFinishScroll()
      */
     @Override
-    public void forceFinishScroll() {
+    public boolean forceFinishScroll() {
+        boolean wasFinished = scroller.isFinished();
         scroller.forceFinished(); // to stop flinging on touch
+        return !wasFinished;
     }
 
     /**

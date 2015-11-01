@@ -44,7 +44,8 @@ public class ViewStub implements IView {
     }
 
     @Override
-    public void forceFinishScroll() {
+    public boolean forceFinishScroll() {
+        return false;
     }
 
     @Override

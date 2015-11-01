@@ -28,7 +28,12 @@ public interface IView {
 
     void continueScroll();
 
-    void forceFinishScroll();
+    /**
+     * Forces the scrolling to finish
+     *
+     * @return true if this call forced the scrolling to finish, false if it was already finished
+     */
+    boolean forceFinishScroll();
 
     void scrollBy(int x, int y);
 

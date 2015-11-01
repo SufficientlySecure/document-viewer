@@ -625,6 +625,8 @@ public abstract class AbstractViewController extends AbstractComponentController
 
         protected final LogContext LCTX = LogManager.root().lctx("Gesture", false);
 
+        private boolean ignoreNextTap;
+
         /**
          * {@inheritDoc}
          *
@@ -645,7 +647,12 @@ public abstract class AbstractViewController extends AbstractComponentController
          */
         @Override
         public boolean onDown(final MotionEvent e) {
-            getView().forceFinishScroll();
+            if (getView().forceFinishScroll()) {
+                // this touch down caused scrolling to finish, so ignore the next onSingleTapConfirmed()
+                ignoreNextTap = true;
+            } else {
+                ignoreNextTap = false;
+            }
             if (LCTX.isDebugEnabled()) {
                 LCTX.d("onDown(" + e + ")");
             }
@@ -720,6 +727,10 @@ public abstract class AbstractViewController extends AbstractComponentController
         public boolean onSingleTapConfirmed(final MotionEvent e) {
             if (LCTX.isDebugEnabled()) {
                 LCTX.d("onSingleTapConfirmed(" + e + ")");
+            }
+            if (ignoreNextTap) {
+                ignoreNextTap = false;
+                return false;
             }
             return processTap(TouchManager.Touch.SingleTap, e);
         }

@@ -131,7 +131,7 @@ public class MultiTouchGestureDetector implements IGestureDetector {
     }
 
     private float distance(final PointF p0, final PointF p1) {
-        return FloatMath.sqrt(((p0.x - p1.x) * (p0.x - p1.x) + (p0.y - p1.y) * (p0.y - p1.y)));
+        return (float) Math.sqrt(((p0.x - p1.x) * (p0.x - p1.x) + (p0.y - p1.y) * (p0.y - p1.y)));
     }
 
     private PointF calculateCenter(final MotionEvent ev) {
@@ -156,6 +156,6 @@ public class MultiTouchGestureDetector implements IGestureDetector {
         final float x1 = ev.getX(1);
         final float y0 = ev.getY(0);
         final float y1 = ev.getY(1);
-        return FloatMath.sqrt(((x0 - x1) * (x0 - x1) + (y0 - y1) * (y0 - y1)));
+        return (float) Math.sqrt(((x0 - x1) * (x0 - x1) + (y0 - y1) * (y0 - y1)));
     }
 }

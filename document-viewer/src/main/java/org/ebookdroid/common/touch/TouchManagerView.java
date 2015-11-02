@@ -214,10 +214,10 @@ public class TouchManagerView extends View {
         float top = MathUtils.fmin(startPoint.y, endPoint.y);
         float bottom = MathUtils.fmax(startPoint.y, endPoint.y);
 
-        left = cellWidth * FloatMath.floor(left / xStep);
-        right = cellWidth * FloatMath.floor(right / xStep) + cellWidth;
-        top = cellHeight * FloatMath.floor(top / yStep);
-        bottom = cellHeight * FloatMath.floor(bottom / yStep) + cellHeight;
+        left = cellWidth * (float) Math.floor(left / xStep);
+        right = cellWidth * (float) Math.floor(right / xStep) + cellWidth;
+        top = cellHeight * (float) Math.floor(top / yStep);
+        bottom = cellHeight * (float) Math.floor(bottom / yStep) + cellHeight;
 
         return new Region(MathUtils.rect(left, top, right, bottom));
     }

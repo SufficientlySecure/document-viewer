@@ -74,38 +74,38 @@ public class MathUtils {
     }
 
     public static float round(final float value, final float share) {
-        return FloatMath.floor(value * share) / share;
+        return (float) Math.floor(value * share) / share;
     }
 
     public static RectF round(final RectF rect, final float share) {
-        rect.left = FloatMath.floor(rect.left * share) / share;
-        rect.top = FloatMath.floor(rect.top * share) / share;
-        rect.right = FloatMath.floor(rect.right * share) / share;
-        rect.bottom = FloatMath.floor(rect.bottom * share) / share;
+        rect.left = (float) Math.floor(rect.left * share) / share;
+        rect.top = (float) Math.floor(rect.top * share) / share;
+        rect.right = (float) Math.floor(rect.right * share) / share;
+        rect.bottom = (float) Math.floor(rect.bottom * share) / share;
         return rect;
     }
 
     public static RectF floor(final RectF rect) {
-        rect.left = FloatMath.floor(rect.left);
-        rect.top = FloatMath.floor(rect.top);
-        rect.right = FloatMath.floor(rect.right);
-        rect.bottom = FloatMath.floor(rect.bottom);
+        rect.left = (float) Math.floor(rect.left);
+        rect.top = (float) Math.floor(rect.top);
+        rect.right = (float) Math.floor(rect.right);
+        rect.bottom = (float) Math.floor(rect.bottom);
         return rect;
     }
 
     public static RectF ceil(final RectF rect) {
-        rect.left = FloatMath.ceil(rect.left);
-        rect.top = FloatMath.ceil(rect.top);
-        rect.right = FloatMath.ceil(rect.right);
-        rect.bottom = FloatMath.ceil(rect.bottom);
+        rect.left = (float) Math.ceil(rect.left);
+        rect.top = (float) Math.ceil(rect.top);
+        rect.right = (float) Math.ceil(rect.right);
+        rect.bottom = (float) Math.ceil(rect.bottom);
         return rect;
     }
 
     public static RectF round(final RectF rect) {
-        rect.left = FloatMath.floor(rect.left);
-        rect.top = FloatMath.floor(rect.top);
-        rect.right = FloatMath.ceil(rect.right);
-        rect.bottom = FloatMath.ceil(rect.bottom);
+        rect.left = (float) Math.floor(rect.left);
+        rect.top = (float) Math.floor(rect.top);
+        rect.right = (float) Math.ceil(rect.right);
+        rect.bottom = (float) Math.ceil(rect.bottom);
         return rect;
     }
 

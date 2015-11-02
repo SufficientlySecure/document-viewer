@@ -66,7 +66,7 @@ public class Vector2D extends PointF {
     }
 
     public float distance(final Vector2D other) {
-        return FloatMath.sqrt(distanceSquared(other));
+        return (float) Math.sqrt(distanceSquared(other));
     }
 
     public float absdistancex(final Vector2D other) {
@@ -82,7 +82,7 @@ public class Vector2D extends PointF {
     }
 
     public Vector2D normalize() {
-        final float magnitude = FloatMath.sqrt(dotProduct(this));
+        final float magnitude = (float) Math.sqrt(dotProduct(this));
         return new Vector2D(x / magnitude, y / magnitude);
     }
 

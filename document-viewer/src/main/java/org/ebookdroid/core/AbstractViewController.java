@@ -756,7 +756,7 @@ public abstract class AbstractViewController extends AbstractComponentController
          */
         @Override
         public void onTwoFingerPinch(final MotionEvent e, final float oldDistance, final float newDistance) {
-            final float factor = FloatMath.sqrt(newDistance / oldDistance);
+            final float factor = (float) Math.sqrt(newDistance / oldDistance);
             if (LCTX.isDebugEnabled()) {
                 LCTX.d("onTwoFingerPinch(" + oldDistance + ", " + newDistance + "): " + factor);
             }

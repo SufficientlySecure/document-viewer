@@ -66,7 +66,7 @@ public class Page {
     }
 
     private boolean setAspectRatio(final float aspectRatio) {
-        final int newAspectRatio = (int) FloatMath.floor(aspectRatio * 128);
+        final int newAspectRatio = (int) Math.floor(aspectRatio * 128);
         if (this.aspectRatio != newAspectRatio) {
             this.aspectRatio = newAspectRatio;
             return true;

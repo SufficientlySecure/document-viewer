@@ -69,7 +69,7 @@ public class GLBitmaps {
         if (size % partSize == 0) {
             return size / partSize;
         }
-        return (int) FloatMath.ceil(size / (float) partSize);
+        return (int) Math.ceil(size / (float) partSize);
     }
 
     public boolean drawGL(final GLCanvas canvas, final PagePaint paint, final PointF vb, final RectF tr, final RectF cr) {

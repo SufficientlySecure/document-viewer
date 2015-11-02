@@ -44,6 +44,6 @@ public enum TextStyle {
 
     public int getFontSize() {
         final FontSize fs = AppSettings.current().fontSize;
-        return (int) FloatMath.ceil(TEXT_SIZE * fs.factor * this.factor);
+        return (int) Math.ceil(TEXT_SIZE * fs.factor * this.factor);
     }
 }

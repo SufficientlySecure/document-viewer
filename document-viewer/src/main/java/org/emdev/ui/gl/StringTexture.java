@@ -49,12 +49,12 @@ public class StringTexture extends CanvasTexture {
         mPaint = paint;
         mMetrics = paint.getFontMetricsInt();
         mText = text;
-        mTextWidth = (int) FloatMath.ceil(mPaint.measureText(mText));
+        mTextWidth = (int) Math.ceil(mPaint.measureText(mText));
         mTextHeight = mMetrics.bottom - mMetrics.top;
 
         if (mTextWidth > mCanvasWidth) {
             mText = TextUtils.ellipsize(mText, mPaint, mCanvasWidth, TextUtils.TruncateAt.END).toString();
-            mTextWidth = (int) FloatMath.ceil(mPaint.measureText(mText));
+            mTextWidth = (int) Math.ceil(mPaint.measureText(mText));
         }
         if (!CompareUtils.equals(mText, oldText) || mTextHeight != oldTextHeight) {
             if (mBitmap != null) {

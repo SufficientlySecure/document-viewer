@@ -100,7 +100,7 @@ static void mupdf_free_document(renderdocument_t* doc)
 
     if (doc->outline)
     {
-        fz_free(doc->ctx, doc->outline);
+        fz_drop_outline(doc->ctx, doc->outline);
     }
     doc->outline = NULL;
 

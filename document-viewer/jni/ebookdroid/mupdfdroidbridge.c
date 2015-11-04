@@ -921,7 +921,7 @@ JNI_FN(MuPdfOutline_free)(JNIEnv *env, jclass clazz, jlong dochandle)
     if (doc)
     {
         if (doc->outline)
-            fz_free(doc->ctx, doc->outline);
+            fz_drop_outline(doc->ctx, doc->outline);
         doc->outline = NULL;
     }
 }

@@ -95,7 +95,7 @@ LOCAL_SRC_FILES := \
 	mupdf/thirdparty/freetype/src/base/ftsynth.c \
 	mupdf/thirdparty/freetype/src/base/ftsystem.c \
 	mupdf/thirdparty/freetype/src/base/fttype1.c \
-	mupdf/thirdparty/freetype/src/base/ftxf86.c \
+	mupdf/thirdparty/freetype/src/base/ftfntfmt.c \
 	mupdf/thirdparty/freetype/src/cff/cff.c \
 	mupdf/thirdparty/freetype/src/cid/type1cid.c \
 	mupdf/thirdparty/freetype/src/psaux/psaux.c \

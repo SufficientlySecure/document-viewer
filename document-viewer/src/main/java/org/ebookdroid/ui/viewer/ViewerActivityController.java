@@ -41,6 +41,7 @@ import org.ebookdroid.ui.viewer.views.ManualCropView;
 import org.ebookdroid.ui.viewer.views.SearchControls;
 import org.ebookdroid.ui.viewer.views.ViewEffects;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -49,6 +50,8 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.support.v4.app.TaskStackBuilder;
 import android.text.Editable;
 import android.text.InputType;
 import android.view.KeyEvent;
@@ -783,6 +786,23 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
         builder.setPositiveButton(R.string.confirmsave_yes_btn, R.id.actions_showSaveDlg);
         builder.setNegativeButton(R.string.confirmsave_no_btn, R.id.actions_doClose);
         builder.show();
+    }
+
+    @ActionMethod(ids = android.R.id.home)
+    public void navigateUp(final ActionEx action) {
+        // Standard implementation of the up button from http://developer.android.com/training/implementing-navigation/ancestral.html
+        Activity activity = getActivity();
+        Intent upIntent = NavUtils.getParentActivityIntent(activity);
+        if (NavUtils.shouldUpRecreateTask(activity, upIntent)) {
+            // e.g., this is the case when opening a pdf from the Downloads app and pressing the up button:
+            // the ViewerActivity is running in the Downloads task, so the following will start a new task
+            // to open the document-viewer library in.
+            TaskStackBuilder.create(activity)
+                    .addNextIntentWithParentStack(upIntent)
+                    .startActivities();
+        } else {
+            NavUtils.navigateUpTo(activity, upIntent);
+        }
     }
 
     @ActionMethod(ids = R.id.actions_showSaveDlg)

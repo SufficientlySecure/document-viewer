@@ -58,6 +58,12 @@ public class UIManager1x implements IUIManager {
     }
 
     @Override
+    public void setProgressSpinnerVisible(Activity activity, boolean visible) {
+        activity.setProgressBarIndeterminateVisibility(visible);
+        activity.getWindow().setFeatureInt(Window.FEATURE_INDETERMINATE_PROGRESS, visible ? 1 : 0);
+    }
+
+    @Override
     public void setFullScreenMode(final Activity activity, final View view, final boolean fullScreen) {
         data.get(activity.getComponentName()).fullScreen = fullScreen;
         final Window w = activity.getWindow();

@@ -54,7 +54,6 @@ import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -355,13 +354,8 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
 
             @Override
             public void run() {
-                try {
-                    final ViewerActivity activity = getManagedComponent();
-                    activity.setProgressBarIndeterminateVisibility(currentlyDecoding > 0);
-                    activity.getWindow().setFeatureInt(Window.FEATURE_INDETERMINATE_PROGRESS,
-                            currentlyDecoding == 0 ? 10000 : currentlyDecoding);
-                } catch (final Throwable e) {
-                }
+                final ViewerActivity activity = getManagedComponent();
+                IUIManager.instance.setProgressSpinnerVisible(activity, currentlyDecoding > 0);
             }
         };
 

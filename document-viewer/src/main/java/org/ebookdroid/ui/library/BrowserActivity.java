@@ -16,7 +16,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ExpandableListAdapter;
@@ -150,11 +149,7 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Bro
 
                 @Override
                 public void run() {
-                    try {
-                        setProgressBarIndeterminateVisibility(show);
-                        getWindow().setFeatureInt(Window.FEATURE_INDETERMINATE_PROGRESS, !show ? 10000 : 1);
-                    } catch (final Throwable e) {
-                    }
+                    IUIManager.instance.setProgressSpinnerVisible(BrowserActivity.this, show);
                 }
             });
         }

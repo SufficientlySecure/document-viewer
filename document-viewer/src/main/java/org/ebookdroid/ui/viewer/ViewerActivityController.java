@@ -849,6 +849,8 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
             TaskStackBuilder.create(activity)
                     .addNextIntentWithParentStack(upIntent)
                     .startActivities();
+
+            getActivity().finish();
         } else {
             NavUtils.navigateUpTo(activity, upIntent);
         }

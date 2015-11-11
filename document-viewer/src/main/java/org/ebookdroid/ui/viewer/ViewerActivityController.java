@@ -777,6 +777,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
             return;
         }
 
+        // TODO: These two lines appear to do nothing, "save" value is never used.
         getOrCreateAction(R.id.actions_doSaveAndClose).putValue("save", Boolean.TRUE);
         getOrCreateAction(R.id.actions_doClose).putValue("save", Boolean.FALSE);
 
@@ -790,19 +791,11 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
 
     @ActionMethod(ids = android.R.id.home)
     public void navigateUp(final ActionEx action) {
-        // Standard implementation of the up button from http://developer.android.com/training/implementing-navigation/ancestral.html
-        Activity activity = getActivity();
-        Intent upIntent = NavUtils.getParentActivityIntent(activity);
-        if (NavUtils.shouldUpRecreateTask(activity, upIntent)) {
-            // e.g., this is the case when opening a pdf from the Downloads app and pressing the up button:
-            // the ViewerActivity is running in the Downloads task, so the following will start a new task
-            // to open the document-viewer library in.
-            TaskStackBuilder.create(activity)
-                    .addNextIntentWithParentStack(upIntent)
-                    .startActivities();
-        } else {
-            NavUtils.navigateUpTo(activity, upIntent);
-        }
+        // Set a flag so that R.id.actions_doClose actually performs an "up" action instead of just closing
+        getOrCreateAction(R.id.actions_doClose).putValue("up", Boolean.TRUE);
+
+        // Show the save prompt if needed, then runs R.id.actions_doClose
+        getOrCreateAction(R.id.mainmenu_close).run();
     }
 
     @ActionMethod(ids = R.id.actions_showSaveDlg)
@@ -837,7 +830,28 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
             CacheManager.clear(m_fileName);
         }
         SettingsManager.releaseBookSettings(id, bookSettings);
-        getManagedComponent().finish();
+
+        if (getOrCreateAction(R.id.actions_doClose).getParameter("up", Boolean.FALSE).booleanValue()) {
+            goUp();
+        } else {
+            getManagedComponent().finish();
+        }
+    }
+
+    private void goUp() {
+        // Standard implementation of the up button from http://developer.android.com/training/implementing-navigation/ancestral.html
+        Activity activity = getActivity();
+        Intent upIntent = NavUtils.getParentActivityIntent(activity);
+        if (NavUtils.shouldUpRecreateTask(activity, upIntent)) {
+            // e.g., this is the case when opening a pdf from the Downloads app and pressing the up button:
+            // the ViewerActivity is running in the Downloads task, so the following will start a new task
+            // to open the document-viewer library in.
+            TaskStackBuilder.create(activity)
+                    .addNextIntentWithParentStack(upIntent)
+                    .startActivities();
+        } else {
+            NavUtils.navigateUpTo(activity, upIntent);
+        }
     }
 
     /**

@@ -23,7 +23,7 @@ public enum ContentScheme {
 
     FILE("file"),
 
-    CONTENT("content", "[E-mail Attachment]") {
+    CONTENT("content", "[E-mail Attachment]", false) {
 
         @Override
         public File loadToCache(final Uri uri, final IProgressIndicator progress) throws IOException {
@@ -48,7 +48,7 @@ public enum ContentScheme {
         }
     },
 
-    SMB("smb", "[SMB source]") {
+    SMB("smb", "[SMB source]", true) {
 
         @Override
         public File loadToCache(final Uri uri, final IProgressIndicator progress) throws IOException {
@@ -57,7 +57,7 @@ public enum ContentScheme {
         }
     },
 
-    HTTP("http", "[HTTP source]") {
+    HTTP("http", "[HTTP source]", true) {
 
         @Override
         public File loadToCache(final Uri uri, final IProgressIndicator progress) throws IOException {
@@ -65,7 +65,7 @@ public enum ContentScheme {
         }
     },
 
-    HTTPS("https", "[HTTPS source]") {
+    HTTPS("https", "[HTTPS source]", true) {
 
         @Override
         public File loadToCache(final Uri uri, final IProgressIndicator progress) throws IOException {
@@ -73,7 +73,7 @@ public enum ContentScheme {
         }
     },
 
-    UNKNOWN("", "");
+    UNKNOWN("", "", true);
 
     public final String scheme;
 
@@ -87,10 +87,10 @@ public enum ContentScheme {
         this.temporary = false;
     }
 
-    private ContentScheme(final String scheme, final String key) {
+    private ContentScheme(final String scheme, final String key, final boolean temporary) {
         this.scheme = scheme;
         this.key = key;
-        this.temporary = true;
+        this.temporary = temporary;
     }
 
     public File loadToCache(final Uri uri, final IProgressIndicator progress) throws IOException {

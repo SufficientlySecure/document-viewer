@@ -380,7 +380,7 @@ JNI_FN(MuPdfDocument_getPageInfo)(JNIEnv *env, jclass cls, jlong handle, jint pa
         fid = (*env)->GetFieldID(env, clazz, "version", "I");
         (*env)->SetIntField(env, cpi, fid, 0);
 
-        fz_free(doc->ctx, page);
+        fz_drop_page(doc->ctx, page);
         return 0;
     }
     return -1;
@@ -541,11 +541,11 @@ JNI_FN(MuPdfPage_open)(JNIEnv *env, jclass clazz, jlong dochandle, jint pageno)
     }
     fz_always(ctx)
     {
-        fz_free(ctx, dev);
+        fz_drop_device(ctx, dev);
     }
     fz_catch(ctx)
     {
-        fz_free(ctx, dev);
+        fz_drop_device(ctx, dev);
         fz_drop_display_list(ctx, page->pageList);
         fz_drop_page(ctx, page->page);
 
@@ -584,7 +584,7 @@ JNI_FN(MuPdfPage_free)(JNIEnv *env, jclass clazz, jlong dochandle, jlong handle)
 
     if (page->page)
     {
-        fz_free(doc->ctx, page->page);
+        fz_drop_page(doc->ctx, page->page);
     }
 
     fz_free(ctx, page);
@@ -690,7 +690,7 @@ JNI_FN(MuPdfPage_renderPageDirect)(JNIEnv *env, jobject this, jlong dochandle,
     }
     fz_always(ctx)
     {
-       fz_free(ctx, dev);
+       fz_drop_device(ctx, dev);
        fz_drop_pixmap(ctx, pixmap);
     }
     fz_catch(ctx)
@@ -826,7 +826,7 @@ JNI_FN(MuPdfPage_search)(JNIEnv * env, jobject thiz, jlong dochandle, jlong page
 
         // DEBUG("MuPdfPage(%p).search(%p, %p): free text device", thiz, doc, page);
 
-        fz_free(doc->ctx, dev);
+        fz_drop_device(doc->ctx, dev);
         dev = NULL;
 
         len = textlen(pagetext);
@@ -873,15 +873,15 @@ JNI_FN(MuPdfPage_search)(JNIEnv * env, jobject thiz, jlong dochandle, jlong page
         // DEBUG("MuPdfPage(%p).search(%p, %p): free resources", thiz, doc, page);
         if (pagetext)
         {
-            fz_free(doc->ctx, pagetext);
+            fz_drop_text_page(doc->ctx, pagetext);
         }
         if (sheet)
         {
-            fz_free(doc->ctx, sheet);
+            fz_drop_text_sheet(doc->ctx, sheet);
         }
         if (dev)
         {
-            fz_free(doc->ctx, dev);
+            fz_drop_device(doc->ctx, dev);
         }
     }fz_catch(doc->ctx)
     {

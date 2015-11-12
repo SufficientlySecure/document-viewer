@@ -297,8 +297,11 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
             BitmapManager.clear("on finish");
             ByteBufferManager.clear("on finish");
 
-            EBookDroidApp.onActivityClose(finishing);
-
+            if (getOrCreateAction(R.id.actions_doClose).getParameter("up", Boolean.FALSE).booleanValue()) {
+                LCTX.i("Skipping EBookDroidApp.onActivityClose(), which would kill the process, because we are currently navigating up");
+            } else {
+                EBookDroidApp.onActivityClose(finishing);
+            }
         }
     }
 
@@ -855,6 +858,8 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
 
             getActivity().finish();
         } else {
+            // Restart the existing instance of the RecentActivity rather than starting a new one   
+            upIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             NavUtils.navigateUpTo(activity, upIntent);
         }
     }

@@ -839,10 +839,13 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
     }
 
     private void goUp() {
-        // Standard implementation of the up button from http://developer.android.com/training/implementing-navigation/ancestral.html
+        // Implementation of the up button from http://developer.android.com/training/implementing-navigation/ancestral.html
+        // isTaskRoot() check works around a bug where pressing "up" does nothing when the viewer is launched
+        // by tapping on a pdf download notification in the notification list.
+        // see: http://stackoverflow.com/questions/19999619/navutils-navigateupto-does-not-start-any-activity
         Activity activity = getActivity();
         Intent upIntent = NavUtils.getParentActivityIntent(activity);
-        if (NavUtils.shouldUpRecreateTask(activity, upIntent)) {
+        if (NavUtils.shouldUpRecreateTask(activity, upIntent) || activity.isTaskRoot()) {
             // e.g., this is the case when opening a pdf from the Downloads app and pressing the up button:
             // the ViewerActivity is running in the Downloads task, so the following will start a new task
             // to open the document-viewer library in.

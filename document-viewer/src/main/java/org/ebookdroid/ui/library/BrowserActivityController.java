@@ -195,7 +195,7 @@ public class BrowserActivityController extends AbstractActivityController<Browse
 
                 @Override
                 public void run() {
-                    IUIManager.instance.setProgressSpinnerVisible(getActivity(), show);
+                    IUIManager.instance.setProgressSpinnerVisible(activity, show);
                 }
             });
         }

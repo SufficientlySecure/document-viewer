@@ -507,7 +507,7 @@ public class RecentActivityController extends AbstractActivityController<RecentA
 
                 @Override
                 public void run() {
-                    IUIManager.instance.setProgressSpinnerVisible(getActivity(), show);
+                    IUIManager.instance.setProgressSpinnerVisible(activity, show);
                 }
             });
         }

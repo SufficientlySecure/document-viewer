@@ -3,11 +3,15 @@ package org.emdev.ui.uimanager;
 import static android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN;
 
 import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.res.Configuration;
 import android.view.View;
 import android.view.Window;
+import android.widget.ProgressBar;
+
+import org.emdev.common.android.AndroidVersion;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,8 +54,7 @@ public class UIManager40x implements IUIManager {
                 window.requestFeature(Window.FEATURE_ACTION_BAR);
                 window.requestFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
                 activity.setProgressBarIndeterminate(true);
-                activity.setProgressBarIndeterminateVisibility(true);
-                window.setFeatureInt(Window.FEATURE_INDETERMINATE_PROGRESS, 1);
+                setProgressSpinnerVisible(activity, true);
             } catch (final Throwable th) {
                 LCTX.e("Error on requestFeature call: " + th.getMessage());
             }
@@ -72,6 +75,31 @@ public class UIManager40x implements IUIManager {
     @Override
     public boolean isTitleVisible(final Activity activity) {
         return data.get(activity.getComponentName()).titleVisible;
+    }
+
+    @Override
+    public void setProgressSpinnerVisible(Activity activity, boolean visible) {
+        try {
+            if (AndroidVersion.VERSION >= 21) {
+                // Activity.setProgressBarIndeterminateVisibility() seems to be a no-op on API 21+.
+                // Instead, set a progress spinner as the action bar's custom view.
+                // TODO: Make a UIManager5x?
+                ActionBar bar = activity.getActionBar();
+
+                if (bar.getCustomView() == null) {
+                    ProgressBar spinner = new ProgressBar(activity);
+                    spinner.setIndeterminate(true);
+                    bar.setCustomView(spinner);
+                }
+
+                bar.setDisplayShowCustomEnabled(visible);
+            } else {
+                activity.setProgressBarIndeterminateVisibility(visible);
+                activity.getWindow().setFeatureInt(Window.FEATURE_INDETERMINATE_PROGRESS, visible ? 1 : 0);
+            }
+        } catch (final Throwable th) {
+            LCTX.e("Error in setProgressSpinnerVisible: " + th.getMessage());
+        }
     }
 
     @Override

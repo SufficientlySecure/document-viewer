@@ -33,7 +33,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.text.Editable;
 import android.view.View;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -508,11 +507,7 @@ public class RecentActivityController extends AbstractActivityController<RecentA
 
                 @Override
                 public void run() {
-                    try {
-                        activity.setProgressBarIndeterminateVisibility(show);
-                        activity.getWindow().setFeatureInt(Window.FEATURE_INDETERMINATE_PROGRESS, !show ? 10000 : 1);
-                    } catch (final Throwable e) {
-                    }
+                    IUIManager.instance.setProgressSpinnerVisible(activity, show);
                 }
             });
         }

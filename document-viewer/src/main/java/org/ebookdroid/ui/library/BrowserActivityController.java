@@ -1,6 +1,7 @@
 package org.ebookdroid.ui.library;
 
 import org.ebookdroid.CodecType;
+import org.emdev.ui.uimanager.IUIManager;
 import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.settings.LibSettings;
@@ -22,7 +23,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.KeyEvent;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -195,11 +195,7 @@ public class BrowserActivityController extends AbstractActivityController<Browse
 
                 @Override
                 public void run() {
-                    try {
-                        activity.setProgressBarIndeterminateVisibility(show);
-                        activity.getWindow().setFeatureInt(Window.FEATURE_INDETERMINATE_PROGRESS, !show ? 10000 : 1);
-                    } catch (final Throwable e) {
-                    }
+                    IUIManager.instance.setProgressSpinnerVisible(activity, show);
                 }
             });
         }

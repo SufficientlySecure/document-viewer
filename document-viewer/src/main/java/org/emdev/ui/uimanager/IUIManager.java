@@ -41,6 +41,8 @@ public interface IUIManager {
 
     void setTitleVisible(Activity activity, boolean visible, boolean firstTime);
 
+    void setProgressSpinnerVisible(Activity activity, boolean visible);
+
     boolean isTitleVisible(Activity activity);
 
     void openOptionsMenu(final Activity activity, final View view);

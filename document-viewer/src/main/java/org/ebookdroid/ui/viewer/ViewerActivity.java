@@ -128,6 +128,10 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
         }
 
         setContentView(frameLayout);
+
+        if (!AndroidVersion.lessThan3x) {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     /**

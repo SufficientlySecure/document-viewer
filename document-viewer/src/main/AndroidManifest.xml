@@ -29,7 +29,13 @@
         <meta-data android:name="com.sec.android.support.multiwindow" android:value="true"/>
         <activity
             android:name="org.ebookdroid.ui.viewer.ViewerActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize">
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:parentActivityName="org.ebookdroid.ui.library.RecentActivity">
+
+            <!-- Parent activity metadata for API below 16 -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.ebookdroid.ui.library.RecentActivity" />
 
             <!-- 
                 Note: Intent matching isn't as easy as it looks at first sight.

@@ -1,11 +1,13 @@
 package org.emdev.common.content;
 
+import org.emdev.ui.actions.ActionEx;
 import org.sufficientlysecure.viewer.R;
 
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 
 import java.io.File;
@@ -77,20 +79,40 @@ public enum ContentScheme {
 
     public final String scheme;
 
+    /**
+     * For schemes where temporary is true, this is used as a placeholder for the filename in
+     * ViewerActivityController.
+     *
+     * @see org.ebookdroid.ui.viewer.ViewerActivityController#onPostCreate(Bundle, boolean)
+     */
     public final String key;
 
+    /**
+     * false for file:// URI's, true otherwise.
+     *
+     * @see org.ebookdroid.ui.viewer.ViewerActivityController#onPostCreate(Bundle, boolean)
+     */
     public final boolean temporary;
+
+    /**
+     * Whether a prompt should be given to save a local copy of the document for this ContentScheme.
+     *
+     * @see org.ebookdroid.ui.viewer.ViewerActivityController#closeActivity(ActionEx)
+     */
+    public final boolean promptForSave;
 
     private ContentScheme(final String scheme) {
         this.scheme = scheme;
         this.key = null;
         this.temporary = false;
+        this.promptForSave = false;
     }
 
-    private ContentScheme(final String scheme, final String key, final boolean temporary) {
+    private ContentScheme(final String scheme, final String key, final boolean promptForSave) {
         this.scheme = scheme;
         this.key = key;
-        this.temporary = temporary;
+        this.temporary = true;
+        this.promptForSave = promptForSave;
     }
 
     public File loadToCache(final Uri uri, final IProgressIndicator progress) throws IOException {

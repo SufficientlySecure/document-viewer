@@ -769,7 +769,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
 
     @ActionMethod(ids = R.id.mainmenu_close)
     public void closeActivity(final ActionEx action) {
-        if (scheme == null || !scheme.temporary) {
+        if (scheme == null || !scheme.promptForSave) {
             getOrCreateAction(R.id.actions_doClose).run();
             return;
         }

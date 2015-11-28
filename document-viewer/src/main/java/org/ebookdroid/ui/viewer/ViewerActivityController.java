@@ -752,6 +752,30 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
         return false;
     }
 
+    @ActionMethod(ids = R.id.mainmenu_share)
+    public void shareDocument(final ActionEx action) {
+        final String mimeType = codecType.mimeTypes.get(0);
+        Uri.Builder builder = new Uri.Builder();
+        Uri uri;
+        if (scheme.temporary) {
+            builder.scheme("content");
+            builder.authority("org.ebookdroid.document");
+            builder.path(m_fileName);
+            builder.query(mimeType);
+            uri = builder.build();
+        } else {
+            builder.scheme("file");
+            builder.path(m_fileName);
+            uri = builder.build();
+        }
+
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.putExtra(Intent.EXTRA_STREAM, uri);
+        share.setType(mimeType);
+
+        getManagedComponent().startActivity(Intent.createChooser(share, "Share..."));
+    }
+
     @ActionMethod(ids = R.id.mainmenu_close)
     public void closeActivity(final ActionEx action) {
         if (scheme == null || !scheme.promptForSave) {

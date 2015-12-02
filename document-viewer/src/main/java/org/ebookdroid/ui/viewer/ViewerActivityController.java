@@ -148,7 +148,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
         final AppSettings newSettings = AppSettings.current();
 
         activity.setRequestedOrientation(newSettings.rotation.getOrientation());
-        IUIManager.instance.setTitleVisible(activity, newSettings.showTitle, true);
+        IUIManager.instance.setTitleVisible(activity, newSettings.getShowTitle(), true);
 
         TouchManager.loadFromSettings(newSettings);
         KeyBindingsManager.loadFromSettings(newSettings);
@@ -164,7 +164,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
         final AppSettings newSettings = AppSettings.current();
 
         activity.setRequestedOrientation(newSettings.rotation.getOrientation());
-        IUIManager.instance.setTitleVisible(activity, newSettings.showTitle, true);
+        IUIManager.instance.setTitleVisible(activity, newSettings.getShowTitle(), true);
 
         TouchManager.loadFromSettings(newSettings);
         KeyBindingsManager.loadFromSettings(newSettings);
@@ -508,13 +508,6 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
     @ActionMethod(ids = R.id.mainmenu_fullscreen)
     public void toggleFullScreen(final ActionEx action) {
         AppSettings.toggleFullScreen();
-    }
-
-    @ActionMethod(ids = R.id.mainmenu_showtitle)
-    public void toggleTitleVisibility(final ActionEx action) {
-        if (!AndroidVersion.lessThan3x) {
-            AppSettings.toggleTitleVisibility();
-        }
     }
 
     @ActionMethod(ids = { R.id.mainmenu_force_portrait, R.id.mainmenu_force_landscape })
@@ -878,10 +871,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
 
         if (diff.isFullScreenChanged()) {
             IUIManager.instance.setFullScreenMode(activity, activity.view.getView(), newSettings.fullScreen);
-        }
-
-        if (!diff.isFirstTime() && diff.isShowTitleChanged()) {
-            IUIManager.instance.setTitleVisible(activity, newSettings.showTitle, false);
+            IUIManager.instance.setTitleVisible(activity, newSettings.getShowTitle(), false);
         }
 
         if (diff.isKeepScreenOnChanged()) {

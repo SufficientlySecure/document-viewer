@@ -29,7 +29,7 @@ public class BookSettingsActivity extends BaseSettingsActivity {
             return;
         }
 
-        setRequestedOrientation(current.getOrientation(AppSettings.current()));
+        setRequestedOrientation(current.getOrientation());
 
         SettingsManager.onBookSettingsActivityCreated(current);
 

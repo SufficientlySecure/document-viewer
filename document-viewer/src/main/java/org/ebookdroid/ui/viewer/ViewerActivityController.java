@@ -147,7 +147,6 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
     public void beforeCreate(final ViewerActivity activity) {
         final AppSettings newSettings = AppSettings.current();
 
-        activity.setRequestedOrientation(newSettings.rotation.getOrientation());
         IUIManager.instance.setTitleVisible(activity, newSettings.getShowTitle(), true);
 
         TouchManager.loadFromSettings(newSettings);
@@ -163,7 +162,6 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
     public void beforeRecreate(final ViewerActivity activity) {
         final AppSettings newSettings = AppSettings.current();
 
-        activity.setRequestedOrientation(newSettings.rotation.getOrientation());
         IUIManager.instance.setTitleVisible(activity, newSettings.getShowTitle(), true);
 
         TouchManager.loadFromSettings(newSettings);
@@ -861,13 +859,6 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
     public void onAppSettingsChanged(final AppSettings oldSettings, final AppSettings newSettings,
             final AppSettings.Diff diff) {
         final ViewerActivity activity = getManagedComponent();
-        if (diff.isRotationChanged()) {
-            if (bookSettings != null) {
-                activity.setRequestedOrientation(bookSettings.getOrientation(newSettings));
-            } else {
-                activity.setRequestedOrientation(newSettings.rotation.getOrientation());
-            }
-        }
 
         if (diff.isFullScreenChanged()) {
             IUIManager.instance.setFullScreenMode(activity, activity.view.getView(), newSettings.fullScreen);
@@ -917,7 +908,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
         }
 
         if (diff.isRotationChanged()) {
-            getManagedComponent().setRequestedOrientation(newSettings.getOrientation(AppSettings.current()));
+            getManagedComponent().setRequestedOrientation(newSettings.getOrientation());
         }
 
         if (diff.isFirstTime()) {

@@ -46,7 +46,9 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     public final boolean fullScreen;
 
-    public final boolean showTitle;
+    public boolean getShowTitle() {
+        return !fullScreen;
+    }
 
     public final boolean pageInTitle;
 
@@ -182,7 +184,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         keepScreenOn = KEEP_SCREEN_ON.getPreferenceValue(prefs);
         rotation = ROTATION.getPreferenceValue(prefs);
         fullScreen = FULLSCREEN.getPreferenceValue(prefs);
-        showTitle = SHOW_TITLE.getPreferenceValue(prefs);
         pageInTitle = SHOW_PAGE_IN_TITLE.getPreferenceValue(prefs);
         pageNumberToastPosition = PAGE_NUMBER_TOAST_POSITION.getPreferenceValue(prefs);
         zoomToastPosition = ZOOM_TOAST_POSITION.getPreferenceValue(prefs);
@@ -279,18 +280,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         try {
             final Editor edit = SettingsManager.prefs.edit();
             AppPreferences.FULLSCREEN.setPreferenceValue(edit, !current.fullScreen);
-            edit.commit();
-            onSettingsChanged();
-        } finally {
-            SettingsManager.lock.writeLock().unlock();
-        }
-    }
-
-    public static void toggleTitleVisibility() {
-        SettingsManager.lock.writeLock().lock();
-        try {
-            final Editor edit = SettingsManager.prefs.edit();
-            AppPreferences.SHOW_TITLE.setPreferenceValue(edit, !current.showTitle);
             edit.commit();
             onSettingsChanged();
         } finally {
@@ -433,7 +422,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         private static final int D_Lang = 0x0001 << 0;
         private static final int D_Rotation = 0x0001 << 1;
         private static final int D_FullScreen = 0x0001 << 2;
-        private static final int D_ShowTitle = 0x0001 << 3;
         private static final int D_PageInTitle = 0x0001 << 4;
         private static final int D_TapsEnabled = 0x0001 << 5;
         private static final int D_ScrollHeight = 0x0001 << 6;
@@ -465,9 +453,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
                 }
                 if (olds.fullScreen != news.fullScreen) {
                     mask |= D_FullScreen;
-                }
-                if (olds.showTitle != news.showTitle) {
-                    mask |= D_ShowTitle;
                 }
                 if (olds.pageInTitle != news.pageInTitle) {
                     mask |= D_PageInTitle;
@@ -519,10 +504,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
         public boolean isFullScreenChanged() {
             return 0 != (mask & D_FullScreen);
-        }
-
-        public boolean isShowTitleChanged() {
-            return 0 != (mask & D_ShowTitle);
         }
 
         public boolean isPageInTitleChanged() {

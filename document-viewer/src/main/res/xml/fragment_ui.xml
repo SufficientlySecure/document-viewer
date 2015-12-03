@@ -52,14 +52,7 @@
             android:title="@string/pref_fullscreen_title" />
 
     <CheckBoxPreference
-            android:defaultValue="@string/pref_title_defvalue"
-            android:key="@string/pref_title_id"
-            android:summary="@string/pref_title_summary"
-            android:title="@string/pref_title_title" />
-
-    <CheckBoxPreference
             android:defaultValue="@string/pref_pageintitle_defvalue"
-            android:dependency="@string/pref_title_id"
             android:key="@string/pref_pageintitle_id"
             android:summary="@string/pref_pageintitle_summary"
             android:title="@string/pref_pageintitle_title" />

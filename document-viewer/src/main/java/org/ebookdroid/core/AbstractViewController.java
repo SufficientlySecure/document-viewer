@@ -530,7 +530,16 @@ public abstract class AbstractViewController extends AbstractComponentController
             }
         }
 
-        return processActionTap(type, x, y);
+        if (processActionTap(type, x, y)) {
+            return true;
+        }
+
+        return processToggleFullscreenTap();
+    }
+
+    protected boolean processToggleFullscreenTap() {
+        AppSettings.toggleFullScreen();
+        return true;
     }
 
     protected boolean processActionTap(final TouchManager.Touch type, final float x, final float y) {

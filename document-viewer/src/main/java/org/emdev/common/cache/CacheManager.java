@@ -88,8 +88,8 @@ public class CacheManager {
         return tempfile;
     }
 
-    public static File createTempFile(final Uri uri, final UIFileCopying worker) throws IOException {
-        final File tempfile = File.createTempFile("temp", "content", s_cacheDir);
+    public static File createTempFile(final Uri uri, final String extension, final UIFileCopying worker) throws IOException {
+        final File tempfile = File.createTempFile("temp", "content." + extension, s_cacheDir);
         tempfile.deleteOnExit();
 
         final InputStream source = s_context.getContentResolver().openInputStream(uri);

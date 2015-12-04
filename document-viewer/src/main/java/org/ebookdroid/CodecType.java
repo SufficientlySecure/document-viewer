@@ -98,4 +98,8 @@ public enum CodecType {
     public static CodecType getByMimeType(final String type) {
         return mimeTypesToActivity.get(type.toLowerCase());
     }
+
+    public String getDefaultExtension() {
+        return extensions.get(0);
+    }
 }

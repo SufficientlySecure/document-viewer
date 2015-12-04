@@ -28,9 +28,9 @@ public enum ContentScheme {
     CONTENT("content", "[E-mail Attachment]", false) {
 
         @Override
-        public File loadToCache(final Uri uri, final IProgressIndicator progress) throws IOException {
+        public File loadToCache(final Uri uri, final String extension, final IProgressIndicator progress) throws IOException {
             final UIFileCopying ui = new UIFileCopying(R.string.msg_loading_book, 64 * 1024, progress);
-            return CacheManager.createTempFile(uri, ui);
+            return CacheManager.createTempFile(uri, extension, ui);
         }
 
         @Override
@@ -53,7 +53,7 @@ public enum ContentScheme {
     SMB("smb", "[SMB source]", true) {
 
         @Override
-        public File loadToCache(final Uri uri, final IProgressIndicator progress) throws IOException {
+        public File loadToCache(final Uri uri, final String extension, final IProgressIndicator progress) throws IOException {
             final UIFileCopying ui = new UIFileCopying(R.string.opds_loading_book, 64 * 1024, progress);
             return CacheManager.createTempDocument(new SmbFileInputStream(uri.toString()), uri.getLastPathSegment(), ui);
         }
@@ -62,7 +62,7 @@ public enum ContentScheme {
     HTTP("http", "[HTTP source]", true) {
 
         @Override
-        public File loadToCache(final Uri uri, final IProgressIndicator progress) throws IOException {
+        public File loadToCache(final Uri uri, final String extension, final IProgressIndicator progress) throws IOException {
             return loadFromURL(uri, progress);
         }
     },
@@ -70,7 +70,7 @@ public enum ContentScheme {
     HTTPS("https", "[HTTPS source]", true) {
 
         @Override
-        public File loadToCache(final Uri uri, final IProgressIndicator progress) throws IOException {
+        public File loadToCache(final Uri uri, final String extension, final IProgressIndicator progress) throws IOException {
             return loadFromURL(uri, progress);
         }
     },
@@ -115,7 +115,7 @@ public enum ContentScheme {
         this.promptForSave = promptForSave;
     }
 
-    public File loadToCache(final Uri uri, final IProgressIndicator progress) throws IOException {
+    public File loadToCache(final Uri uri, final String extension, final IProgressIndicator progress) throws IOException {
         return null;
     }
 

@@ -962,7 +962,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
         protected Throwable doInBackground(final String... params) {
             LCTX.d("BookLoadTask.doInBackground(): start");
             try {
-                final File cached = scheme.loadToCache(intent.getData(), this);
+                final File cached = scheme.loadToCache(intent.getData(), codecType.getDefaultExtension(), this);
                 if (cached != null) {
                     m_fileName = cached.getAbsolutePath();
                     setProgressDialogMessage(startProgressStringId);

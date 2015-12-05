@@ -95,7 +95,11 @@ public class UIManager40x implements IUIManager {
                 bar.setDisplayShowCustomEnabled(visible);
             } else {
                 activity.setProgressBarIndeterminateVisibility(visible);
-                activity.getWindow().setFeatureInt(Window.FEATURE_INDETERMINATE_PROGRESS, visible ? 1 : 0);
+                activity.getWindow()
+                .setFeatureInt(
+                    Window.FEATURE_INDETERMINATE_PROGRESS,
+                    visible ? Window.PROGRESS_VISIBILITY_ON : Window.PROGRESS_VISIBILITY_OFF
+                );
             }
         } catch (final Throwable th) {
             LCTX.e("Error in setProgressSpinnerVisible: " + th.getMessage());

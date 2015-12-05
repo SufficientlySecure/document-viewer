@@ -237,8 +237,8 @@ public class BookSettings implements CurrentPageListener {
         }
     }
 
-    public int getOrientation(final AppSettings appSettings) {
-        final RotationType defRotation = appSettings.rotation;
+    public int getOrientation() {
+        final RotationType defRotation = RotationType.UNSPECIFIED;
         return rotation != null ? rotation.getOrientation(defRotation) : defRotation.getOrientation();
     }
 

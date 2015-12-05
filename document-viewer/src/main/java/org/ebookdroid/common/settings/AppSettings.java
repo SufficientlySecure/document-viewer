@@ -42,8 +42,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     public final boolean keepScreenOn;
 
-    public final RotationType rotation;
-
     public final boolean fullScreen;
 
     public boolean getShowTitle() {
@@ -182,7 +180,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         brightnessInNightModeOnly = BRIGHTNESS_NIGHT_MODE_ONLY.getPreferenceValue(prefs);
         brightness = BRIGHTNESS.getPreferenceValue(prefs);
         keepScreenOn = KEEP_SCREEN_ON.getPreferenceValue(prefs);
-        rotation = ROTATION.getPreferenceValue(prefs);
         fullScreen = FULLSCREEN.getPreferenceValue(prefs);
         pageInTitle = SHOW_PAGE_IN_TITLE.getPreferenceValue(prefs);
         pageNumberToastPosition = PAGE_NUMBER_TOAST_POSITION.getPreferenceValue(prefs);
@@ -420,7 +417,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
     public static class Diff {
 
         private static final int D_Lang = 0x0001 << 0;
-        private static final int D_Rotation = 0x0001 << 1;
         private static final int D_FullScreen = 0x0001 << 2;
         private static final int D_PageInTitle = 0x0001 << 4;
         private static final int D_TapsEnabled = 0x0001 << 5;
@@ -447,9 +443,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
             } else if (news != null) {
                 if (CompareUtils.compare(olds.lang, news.lang) != 0) {
                     mask |= D_Lang;
-                }
-                if (olds.rotation != news.rotation) {
-                    mask |= D_Rotation;
                 }
                 if (olds.fullScreen != news.fullScreen) {
                     mask |= D_FullScreen;
@@ -496,10 +489,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
         public boolean isLangChanged() {
             return 0 != (mask & D_Lang);
-        }
-
-        public boolean isRotationChanged() {
-            return 0 != (mask & D_Rotation);
         }
 
         public boolean isFullScreenChanged() {

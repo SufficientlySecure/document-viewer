@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-<!--<string name="pref_performance_category">"Performance settings"</string>-->
-<!--<string name="pref_performance_category_summary">"Performance settings"</string>-->
+    <string name="pref_performance_category">"Performance-Einstellungen"</string>
+    <string name="pref_performance_category_summary">"Einstellungen, welche die Leistung beinflussen"</string>
     <string name="pref_pagesinmemory_title">"Seiten im Speicher"</string>
     <string name="pref_pagesinmemory_summary">"Anzahl der gespeicherten Seiten"</string>
 <!--<string name="pref_lowlevel_category">"Low level application preferences (Applied after document reload)"</string>-->
@@ -13,11 +13,11 @@
 <!--<string name="pref_decodethread_priority_summary">"Defines decode thread priority"</string>-->
 <!--<string name="pref_drawthread_priority_title">"GL draw thread priority"</string>-->
 <!--<string name="pref_drawthread_priority_summary">"Defines GL draw thread priority"</string>-->
-<!--<string name="list_thread_priority_lowest">"Lowest"</string>-->
-<!--<string name="list_thread_priority_lower">"Lower"</string>-->
-<!--<string name="list_thread_priority_normal">"Normal"</string>-->
-<!--<string name="list_thread_priority_higher">"Higher"</string>-->
-<!--<string name="list_thread_priority_highest">"Highest"</string>-->
+    <string name="list_thread_priority_lowest">"Am niedrigsten"</string>
+    <string name="list_thread_priority_lower">"Niedrig"</string>
+    <string name="list_thread_priority_normal">"Normal"</string>
+    <string name="list_thread_priority_higher">"Höher"</string>
+    <string name="list_thread_priority_highest">"Am höchsten"</string>
 <!--<string name="pref_decodingonscroll_title">"Decoding during scrolling"</string>-->
 <!--<string name="pref_decodingonscroll_summary">"Allow to decode pages during scrolling or fling"</string>-->
 <!--<string name="pref_bitmapsize_title">"Texture bitmap size"</string>-->
@@ -29,7 +29,7 @@
 <!--<string name="list_bitmapsize_1024">"1024 * 1024"</string>-->
 <!--<string name="pref_heappreallocate_title">"Heap preallocation"</string>-->
 <!--<string name="pref_heappreallocate_summary">"Size in megabytes of heap preallocation at application startup"</string>-->
-<!--<string name="pref_pdfstoragesize_title">"MuPDF internal storage size"</string>-->
-<!--<string name="pref_pdfstoragesize_summary">"Size in megabytes of MuPDF internal storage"</string>-->
+    <string name="pref_pdfstoragesize_title">"Grösse des internen MuPDF-Speichers"</string>
+    <string name="pref_pdfstoragesize_summary">"Grösse in Megabytes des den internen Speicher für MuPDF"</string>
 
 </resources>

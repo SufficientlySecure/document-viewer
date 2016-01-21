@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
@@ -177,7 +178,7 @@ public class OutlineAdapter extends BaseAdapter {
             container = convertView;
         }
         final TextView view = (TextView) container.findViewById(R.id.outline_title);
-        final View btn = container.findViewById(R.id.outline_collapse);
+        final ImageView btn = (ImageView) container.findViewById(R.id.outline_collapse);
         final View space = container.findViewById(R.id.outline_space);
         final TextView pageIndex = (TextView) container.findViewById(R.id.outline_pageindex);
 
@@ -197,15 +198,15 @@ public class OutlineAdapter extends BaseAdapter {
         }
 
         final RelativeLayout.LayoutParams sl = (LayoutParams) space.getLayoutParams();
-        sl.width = Math.min(5, item.level) * spaceWidth;
+        sl.width = item.level * spaceWidth;
         space.setLayoutParams(sl);
 
         if (states[id] == OutlineItemState.LEAF) {
             btn.setOnClickListener(voidListener);
-            btn.setBackgroundColor(Color.TRANSPARENT);
+            btn.setImageDrawable(null);
         } else {
             btn.setOnClickListener(collapseListener);
-            btn.setBackgroundResource(states[id] == OutlineItemState.EXPANDED ? R.drawable.viewer_outline_item_expanded
+            btn.setImageResource(states[id] == OutlineItemState.EXPANDED ? R.drawable.viewer_outline_item_expanded
                     : R.drawable.viewer_outline_item_collapsed);
         }
 

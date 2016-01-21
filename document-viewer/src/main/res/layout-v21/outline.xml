@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:choiceMode="singleChoice"
+    android:cacheColorHint="#00000000"
+    android:divider="@null"
+    android:paddingTop="16dp">
+    <!-- HACK: need 16dp top padding to look right with Material theme.
+         see: https://code.google.com/p/android/issues/detail?id=171512 -->
+</ListView>

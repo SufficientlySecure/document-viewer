@@ -7,18 +7,19 @@
 
     <View
         android:id="@+id/outline_space"
-        android:layout_width="48dip"
-        android:layout_height="48dip" />
+        android:layout_width="0dp"
+        android:layout_height="48dp" />
 
-    <View
+    <ImageView
         android:id="@+id/outline_collapse"
-        android:layout_width="48dip"
-        android:layout_height="48dip"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="10dip"
-        android:layout_marginRight="10dip"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_toRightOf="@id/outline_space"
-        android:background="@drawable/viewer_outline_item_expanded" />
+        android:src="@drawable/viewer_outline_item_expanded"
+        android:scaleType="center" />
 
     <TextView
         android:id="@+id/outline_pageindex"

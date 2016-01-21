@@ -35,14 +35,13 @@ public class OutlineDialog extends Dialog implements OnItemClickListener {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        LayoutUtils.maximizeWindow(getWindow());
-
         setTitle(R.string.outline_title);
 
-        final ListView listView = new ListView(getContext());
-        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        final ListView listView = (ListView) base.getActivity().getLayoutInflater().inflate(R.layout.outline, null);
 
         setContentView(listView);
+
+        LayoutUtils.maximizeWindow(getWindow()); // must be after setContentView()
 
         final BookSettings bs = base.getBookSettings();
         OutlineLink current = null;

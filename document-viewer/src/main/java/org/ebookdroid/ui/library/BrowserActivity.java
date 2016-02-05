@@ -133,14 +133,14 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Bro
     /**
      * {@inheritDoc}
      *
-     * @see android.app.Activity#onKeyDown(int, android.view.KeyEvent)
+     * @see android.app.Activity#onKeyUp(int, android.view.KeyEvent)
      */
     @Override
-    public boolean onKeyDown(final int keyCode, final KeyEvent event) {
-        if (getController().onKeyDown(keyCode, event)) {
+    public boolean onKeyUp(final int keyCode, final KeyEvent event) {
+        if (getController().onKeyUp(keyCode, event)) {
             return true;
         }
-        return super.onKeyDown(keyCode, event);
+        return super.onKeyUp(keyCode, event);
     }
 
     public void showProgress(final boolean show) {

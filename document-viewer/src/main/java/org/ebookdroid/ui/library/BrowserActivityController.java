@@ -100,8 +100,8 @@ public class BrowserActivityController extends AbstractActivityController<Browse
         showProgress(false);
     }
 
-    public boolean onKeyDown(final int keyCode, final KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+    public boolean onKeyUp(final int keyCode, final KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && !event.isCanceled()) {
             final File dir = adapter.getCurrentDirectory();
             final File parent = dir != null ? dir.getParentFile() : null;
             if (parent != null) {

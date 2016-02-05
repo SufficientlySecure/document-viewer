@@ -66,11 +66,11 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActiv
     /**
      * {@inheritDoc}
      *
-     * @see android.app.Activity#onKeyDown(int, android.view.KeyEvent)
+     * @see android.app.Activity#onKeyUp(int, android.view.KeyEvent)
      */
     @Override
-    public boolean onKeyDown(final int keyCode, final KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+    public boolean onKeyUp(final int keyCode, final KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && !event.isCanceled()) {
             final Feed current = getController().adapter.getCurrentFeed();
             if (current == null) {
                 finish();
@@ -79,7 +79,7 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActiv
             }
             return true;
         }
-        return super.onKeyDown(keyCode, event);
+        return super.onKeyUp(keyCode, event);
     }
 
     /**

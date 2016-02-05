@@ -259,20 +259,6 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
         menu.setHeaderTitle(a.name);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see android.app.Activity#onKeyUp(int, android.view.KeyEvent)
-     */
-    @Override
-    public boolean onKeyUp(final int keyCode, final KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && !event.isCanceled()) {
-            getController().getOrCreateAction(R.id.mainmenu_close).run();
-            return true;
-        }
-        return super.onKeyUp(keyCode, event);
-    }
-
     void changeLibraryView(final int view) {
         final ViewFlipper vf = getViewflipper();
         if (view == VIEW_LIBRARY) {

@@ -165,8 +165,6 @@ public class RecentActivityController extends AbstractActivityController<RecentA
             CacheManager.listeners.removeListener(this);
             SettingsManager.removeListener(this);
             MediaManager.listeners.removeListener(this);
-
-            EBookDroidApp.onActivityClose(finishing);
         }
     }
 

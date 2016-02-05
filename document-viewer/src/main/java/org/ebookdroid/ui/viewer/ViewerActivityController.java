@@ -293,12 +293,6 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
             SettingsManager.removeListener(this);
             BitmapManager.clear("on finish");
             ByteBufferManager.clear("on finish");
-
-            if (getOrCreateAction(R.id.actions_doClose).getParameter("up", Boolean.FALSE).booleanValue()) {
-                LCTX.i("Skipping EBookDroidApp.onActivityClose(), which would kill the process, because we are currently navigating up");
-            } else {
-                EBookDroidApp.onActivityClose(finishing);
-            }
         }
     }
 

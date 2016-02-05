@@ -130,16 +130,6 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
 //        }
     }
 
-    public static void onActivityClose(final boolean finishing) {
-        if (finishing && !SettingsManager.hasOpenedBooks() && !RecentActivityController.working.get()) {
-            if (instance != null) {
-                instance.onTerminate();
-            }
-            Log.i(APP_NAME, "Application finished");
-            System.exit(0);
-        }
-    }
-
     /**
      * Preallocate heap.
      *

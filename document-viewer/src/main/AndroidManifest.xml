@@ -26,6 +26,11 @@
         android:theme="@style/ebookdroid"
         android:largeHeap="true">
 
+        <provider
+            android:name="org.ebookdroid.common.provider.DocumentContentProvider"
+            android:authorities="org.ebookdroid.document"
+            android:exported="true" />
+
         <meta-data android:name="com.sec.android.support.multiwindow" android:value="true"/>
         <activity
             android:name="org.ebookdroid.ui.viewer.ViewerActivity"

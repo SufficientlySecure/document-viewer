@@ -75,6 +75,10 @@
             </menu>
     </item>
     <item
+        android:id="@+id/mainmenu_share"
+        android:icon="@drawable/common_actionbar_about"
+        android:title="@string/menu_share"/>
+    <item
         android:id="@+id/mainmenu_settings_menu"
         android:icon="@drawable/viewer_actionbar_menu_settings"
         android:title="@string/menu_allsettings_menu">

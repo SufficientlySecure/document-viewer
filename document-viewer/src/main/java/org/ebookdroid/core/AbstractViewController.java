@@ -365,21 +365,17 @@ public abstract class AbstractViewController extends AbstractComponentController
 	    return false;
 	}
 
-        if (event.getAction() == KeyEvent.ACTION_UP
-                || event.getAction() == KeyEvent.ACTION_DOWN) {
+        // By default, this is only used to handle actions_verticalConfigScrollUp and
+        // actions_verticalConfigScrollDown.
+        // The best UX for these actions is to deliver them on key down events only.
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
             final Integer actionId = KeyBindingsManager.getAction(event);
             final ActionEx action = actionId != null ? getOrCreateAction(actionId) : null;
             if (action != null) {
                 if (LCTX.isDebugEnabled()) {
                     LCTX.d("Key action: " + action.name + ", " + action.getMethod().toString());
                 }
-                // Only run the action on KeyEvent.ACTION_UP, but return true to consume the event
-                // on ACTION_DOWN or ACTION_UP.
-                // This prevents the system volume control UI from appearing on the ACTION_DOWN
-                // of a volume button.
-                if (event.getAction() == KeyEvent.ACTION_UP) {
-                    action.run();
-                }
+                action.run();
                 return true;
             } else {
                 if (LCTX.isDebugEnabled()) {

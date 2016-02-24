@@ -29,7 +29,7 @@ public class BaseEGLConfigChooser implements EGLConfigChooser {
     private static final LogContext LCTX = LogManager.root().lctx("GLConfiguration");
 
     private final int mConfigSpec[] = new int[] { EGL10.EGL_RED_SIZE, 5, EGL10.EGL_GREEN_SIZE, 6, EGL10.EGL_BLUE_SIZE,
-            5, EGL10.EGL_ALPHA_SIZE, 0, EGL10.EGL_STENCIL_SIZE, GLConfiguration.stencilRequired ? 1 : 0, EGL10.EGL_NONE };
+            5, EGL10.EGL_ALPHA_SIZE, 0, EGL10.EGL_STENCIL_SIZE, 1, EGL10.EGL_NONE };
 
     private static final int[] ATTR_ID = { EGL10.EGL_RED_SIZE, EGL10.EGL_GREEN_SIZE, EGL10.EGL_BLUE_SIZE,
             EGL10.EGL_ALPHA_SIZE, EGL10.EGL_DEPTH_SIZE, EGL10.EGL_STENCIL_SIZE, EGL10.EGL_CONFIG_ID,
@@ -37,11 +37,29 @@ public class BaseEGLConfigChooser implements EGLConfigChooser {
 
     private static final String[] ATTR_NAME = { "R", "G", "B", "A", "D", "S", "ID", "CAVEAT" };
 
+    private void setConfigValue(int key, int value) {
+        for (int i = 0; i < mConfigSpec.length; i += 2)  {
+            if (mConfigSpec[i] == key) {
+                mConfigSpec[i + 1] = value;
+                break;
+            }
+        }
+    }
+
     @Override
     public EGLConfig chooseConfig(final EGL10 egl, final EGLDisplay display) {
         final int[] numConfig = new int[1];
         if (!egl.eglChooseConfig(display, mConfigSpec, null, 0, numConfig)) {
             throw new RuntimeException("eglChooseConfig failed");
+        }
+
+        if (numConfig[0] <= 0) {
+            LCTX.i("No configurations found. Trying EGL_STENCIL_SIZE 0");
+            setConfigValue(EGL10.EGL_STENCIL_SIZE, 0);
+
+            if (!egl.eglChooseConfig(display, mConfigSpec, null, 0, numConfig)) {
+                throw new RuntimeException("eglChooseConfig failed");
+            }
         }
 
         if (numConfig[0] <= 0) {

@@ -60,8 +60,6 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
         onAppSettingsChanged(null, AppSettings.current(), null);
         onBackupSettingsChanged(null, BackupSettings.current(), null);
 
-        GLConfiguration.stencilRequired = !IS_EMULATOR;
-
         initialized.set();
     }
 

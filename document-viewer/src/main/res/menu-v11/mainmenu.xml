@@ -98,7 +98,6 @@
         android:title="@string/menu_key_bindings"/>
     <item
         android:id="@+id/mainmenu_share"
-        android:icon="@drawable/common_actionbar_about"
         android:title="@string/menu_share"/>
     <item
         android:id="@+id/mainmenu_about"

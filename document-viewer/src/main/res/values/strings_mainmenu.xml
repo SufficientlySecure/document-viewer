@@ -26,6 +26,7 @@
     <string name="menu_allsettings_menu">Settings...</string>
 
     <string name="menu_share">Share...</string>
+    <string name="menu_openwith">Open with...</string>
 
     <string name="menu_show_library">Show library</string>
     <string name="menu_show_recent">Show recent</string>

@@ -29,7 +29,8 @@
         <provider
             android:name="org.ebookdroid.common.provider.DocumentContentProvider"
             android:authorities="org.ebookdroid.document"
-            android:exported="true" />
+            android:grantUriPermissions="true"
+            android:exported="false" />
 
         <meta-data android:name="com.sec.android.support.multiwindow" android:value="true"/>
         <activity

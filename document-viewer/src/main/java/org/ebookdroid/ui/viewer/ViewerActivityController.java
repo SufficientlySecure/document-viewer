@@ -770,6 +770,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
         }
 
         Intent share = new Intent(Intent.ACTION_SEND);
+        share.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         share.putExtra(Intent.EXTRA_STREAM, uri);
         share.setType(mimeType);
 

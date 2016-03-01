@@ -97,6 +97,12 @@
         android:showAsAction="never"
         android:title="@string/menu_key_bindings"/>
     <item
+        android:id="@+id/mainmenu_share"
+        android:title="@string/menu_share"/>
+    <item
+        android:id="@+id/mainmenu_openwith"
+        android:title="@string/menu_openwith"/>
+    <item
         android:id="@+id/mainmenu_about"
         android:icon="@drawable/common_actionbar_about"
         android:showAsAction="never"

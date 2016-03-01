@@ -752,6 +752,47 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
         return false;
     }
 
+    private String getShareMimeType() {
+        return codecType.mimeTypes.get(0);
+    }
+
+    private Uri getShareURI() {
+        final String mimeType = getShareMimeType();
+        Uri.Builder builder = new Uri.Builder();
+        Uri uri;
+        if (scheme.temporary) {
+            builder.scheme("content");
+            builder.authority("org.ebookdroid.document");
+            builder.path(m_fileName);
+            builder.query(mimeType);
+            uri = builder.build();
+        } else {
+            builder.scheme("file");
+            builder.path(m_fileName);
+            uri = builder.build();
+        }
+        return uri;
+    }
+
+    @ActionMethod(ids = R.id.mainmenu_share)
+    public void shareDocument(final ActionEx action) {
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        share.putExtra(Intent.EXTRA_STREAM, getShareURI());
+        share.setType(getShareMimeType());
+
+        getManagedComponent().startActivity(Intent.createChooser(share, getManagedComponent().getString(R.string.menu_share)));
+    }
+
+    @ActionMethod(ids = R.id.mainmenu_openwith)
+    public void openWith(final ActionEx action) {
+        Intent openwith = new Intent(Intent.ACTION_VIEW);
+        openwith.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        openwith.setDataAndType(getShareURI(), getShareMimeType());
+
+        getManagedComponent().startActivity(Intent.createChooser(openwith, getManagedComponent().getString(R.string.menu_openwith)));
+    }
+
     @ActionMethod(ids = R.id.mainmenu_close)
     public void closeActivity(final ActionEx action) {
         if (scheme == null || !scheme.promptForSave) {

@@ -1,5 +1,23 @@
 #labels Featured
 
+= DV v2.7.4 =
+== New features ==
+* Tap to toggle fullscreen
+* "Share" and "Open with..." menu items added
+* Material theme on Android 5.0+
+
+== Changes ==
+* "Full screen" and "Show Title" options merged
+* No longer auto-rotate by default, removed redundant rotation modes from app settings
+* No longer show the save confirmation dialog for documents opened from other apps
+
+== Bug fixes ==
+* Allow running on devices without stencil support
+* Fix back button in the file browser exiting the app
+* German translation updates
+* Tapping to stop a fling won't trigger other actions
+* Volume keys used for scrolling no longer cause the system volume UI to appear
+
 = DV v2.7.3 =
 == New features ==
 * Support Samsung Multi window mode.

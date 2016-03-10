@@ -382,6 +382,14 @@ public abstract class AbstractViewController extends AbstractComponentController
                     LCTX.d("Key action not found: " + event);
                 }
             }
+        } else if (event.getAction() == KeyEvent.ACTION_UP) {
+            final Integer id = KeyBindingsManager.getAction(event);
+            if (id != null) {
+                // We handled the KeyEvent.ACTION_DOWN, so return true to indicate we are handling
+                // the KeyEvent.ACTION_UP as well.
+                // Returning false here causes the volume keys to beep when scrolling.
+                return true;
+            }
         }
 
         return false;

@@ -13,11 +13,11 @@
 <!--<string name="pref_decodethread_priority_summary">"Defines decode thread priority"</string>-->
 <!--<string name="pref_drawthread_priority_title">"GL draw thread priority"</string>-->
 <!--<string name="pref_drawthread_priority_summary">"Defines GL draw thread priority"</string>-->
-<!--<string name="list_thread_priority_lowest">"Lowest"</string>-->
-<!--<string name="list_thread_priority_lower">"Lower"</string>-->
-<!--<string name="list_thread_priority_normal">"Normal"</string>-->
-<!--<string name="list_thread_priority_higher">"Higher"</string>-->
-<!--<string name="list_thread_priority_highest">"Highest"</string>-->
+    <string name="list_thread_priority_lowest">"La plus basse"</string>
+    <string name="list_thread_priority_lower">"Basse"</string>
+    <string name="list_thread_priority_normal">"Normale"</string>
+    <string name="list_thread_priority_higher">"Haute"</string>
+    <string name="list_thread_priority_highest">"La plus haute"</string>
 <!--<string name="pref_decodingonscroll_title">"Decoding during scrolling"</string>-->
 <!--<string name="pref_decodingonscroll_summary">"Allow to decode pages during scrolling or fling"</string>-->
 <!--<string name="pref_bitmapsize_title">"Texture bitmap size"</string>-->

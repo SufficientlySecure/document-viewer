@@ -2,128 +2,178 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := mupdfthirdparty
-LOCAL_SRC_FILES := \
-	mupdf/thirdparty/mujs/one.c \
-	mupdf/thirdparty/jbig2dec/jbig2.c \
-	mupdf/thirdparty/jbig2dec/jbig2_arith.c \
-	mupdf/thirdparty/jbig2dec/jbig2_arith_iaid.c \
-	mupdf/thirdparty/jbig2dec/jbig2_arith_int.c \
-	mupdf/thirdparty/jbig2dec/jbig2_generic.c \
-	mupdf/thirdparty/jbig2dec/jbig2_halftone.c \
-	mupdf/thirdparty/jbig2dec/jbig2_huffman.c \
-	mupdf/thirdparty/jbig2dec/jbig2_image.c \
-	mupdf/thirdparty/jbig2dec/jbig2_metadata.c \
-	mupdf/thirdparty/jbig2dec/jbig2_mmr.c \
-	mupdf/thirdparty/jbig2dec/jbig2_page.c \
-	mupdf/thirdparty/jbig2dec/jbig2_refinement.c \
-	mupdf/thirdparty/jbig2dec/jbig2_segment.c \
-	mupdf/thirdparty/jbig2dec/jbig2_symbol_dict.c \
-	mupdf/thirdparty/jbig2dec/jbig2_text.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/bio.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/cidx_manager.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/cio.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/dwt.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/event.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/function_list.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/image.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/invert.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/j2k.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/jp2.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/mct.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/mqc.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/openjpeg.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/opj_clock.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/phix_manager.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/pi.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/ppix_manager.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/raw.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/t1.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/t1_generate_luts.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/t2.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/tcd.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/tgt.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/thix_manager.c \
-	mupdf/thirdparty/openjpeg/libopenjpeg/tpix_manager.c \
-	mupdf/thirdparty/jpeg/jaricom.c \
-	mupdf/thirdparty/jpeg/jcomapi.c \
-	mupdf/thirdparty/jpeg/jdapimin.c \
-	mupdf/thirdparty/jpeg/jdapistd.c \
-	mupdf/thirdparty/jpeg/jdarith.c \
-	mupdf/thirdparty/jpeg/jdatadst.c \
-	mupdf/thirdparty/jpeg/jdatasrc.c \
-	mupdf/thirdparty/jpeg/jdcoefct.c \
-	mupdf/thirdparty/jpeg/jdcolor.c \
-	mupdf/thirdparty/jpeg/jddctmgr.c \
-	mupdf/thirdparty/jpeg/jdhuff.c \
-	mupdf/thirdparty/jpeg/jdinput.c \
-	mupdf/thirdparty/jpeg/jdmainct.c \
-	mupdf/thirdparty/jpeg/jdmarker.c \
-	mupdf/thirdparty/jpeg/jdmaster.c \
-	mupdf/thirdparty/jpeg/jdmerge.c \
-	mupdf/thirdparty/jpeg/jdpostct.c \
-	mupdf/thirdparty/jpeg/jdsample.c \
-	mupdf/thirdparty/jpeg/jdtrans.c \
-	mupdf/thirdparty/jpeg/jerror.c \
-	mupdf/thirdparty/jpeg/jfdctflt.c \
-	mupdf/thirdparty/jpeg/jfdctfst.c \
-	mupdf/thirdparty/jpeg/jfdctint.c \
-	mupdf/thirdparty/jpeg/jidctflt.c \
-	mupdf/thirdparty/jpeg/jidctfst.c \
-	mupdf/thirdparty/jpeg/jidctint.c \
-	mupdf/thirdparty/jpeg/jmemmgr.c \
-	mupdf/thirdparty/jpeg/jquant1.c \
-	mupdf/thirdparty/jpeg/jquant2.c \
-	mupdf/thirdparty/jpeg/jutils.c \
-	mupdf/thirdparty/zlib/adler32.c \
-	mupdf/thirdparty/zlib/compress.c \
-	mupdf/thirdparty/zlib/crc32.c \
-	mupdf/thirdparty/zlib/deflate.c \
-	mupdf/thirdparty/zlib/inffast.c \
-	mupdf/thirdparty/zlib/inflate.c \
-	mupdf/thirdparty/zlib/inftrees.c \
-	mupdf/thirdparty/zlib/trees.c \
-	mupdf/thirdparty/zlib/uncompr.c \
-	mupdf/thirdparty/zlib/zutil.c \
-	mupdf/thirdparty/freetype/src/base/ftbase.c \
-	mupdf/thirdparty/freetype/src/base/ftbbox.c \
-	mupdf/thirdparty/freetype/src/base/ftbitmap.c \
-	mupdf/thirdparty/freetype/src/base/ftgasp.c \
-	mupdf/thirdparty/freetype/src/base/ftglyph.c \
-	mupdf/thirdparty/freetype/src/base/ftinit.c \
-	mupdf/thirdparty/freetype/src/base/ftstroke.c \
-	mupdf/thirdparty/freetype/src/base/ftsynth.c \
-	mupdf/thirdparty/freetype/src/base/ftsystem.c \
-	mupdf/thirdparty/freetype/src/base/fttype1.c \
-	mupdf/thirdparty/freetype/src/base/ftxf86.c \
-	mupdf/thirdparty/freetype/src/cff/cff.c \
-	mupdf/thirdparty/freetype/src/cid/type1cid.c \
-	mupdf/thirdparty/freetype/src/psaux/psaux.c \
-	mupdf/thirdparty/freetype/src/pshinter/pshinter.c \
-	mupdf/thirdparty/freetype/src/psnames/psnames.c \
-	mupdf/thirdparty/freetype/src/raster/raster.c \
-	mupdf/thirdparty/freetype/src/smooth/smooth.c \
-	mupdf/thirdparty/freetype/src/sfnt/sfnt.c \
-	mupdf/thirdparty/freetype/src/truetype/truetype.c \
-	mupdf/thirdparty/freetype/src/type1/type1.c
+MY_ROOT := $(LOCAL_PATH)/mupdf
+
+LOCAL_C_INCLUDES := \
+	$(MY_ROOT)/include/ \
+	$(MY_ROOT)/thirdparty/harfbuzz/src \
+	$(MY_ROOT)/thirdparty/jbig2dec \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg \
+	$(MY_ROOT)/thirdparty/jpeg \
+	$(MY_ROOT)/thirdparty/mujs \
+	$(MY_ROOT)/thirdparty/zlib \
+	$(MY_ROOT)/thirdparty/freetype/include \
+	$(MY_ROOT)/scripts/freetype \
+	$(MY_ROOT)/scripts/jpeg \
+	$(MY_ROOT)/scripts/openjpeg
 
 LOCAL_CFLAGS := \
 	-DFT2_BUILD_LIBRARY -DDARWIN_NO_CARBON -DHAVE_STDINT_H \
 	-DOPJ_HAVE_STDINT_H \
 	'-DFT_CONFIG_MODULES_H="slimftmodules.h"' \
-	'-DFT_CONFIG_OPTIONS_H="slimftoptions.h"'
-	
-LOCAL_C_INCLUDES := \
-	$(LOCAL_PATH)/mupdf/thirdparty/jbig2dec \
-	$(LOCAL_PATH)/mupdf/thirdparty/openjpeg/libopenjpeg \
-	$(LOCAL_PATH)/mupdf/thirdparty/jpeg \
-	$(LOCAL_PATH)/mupdf/thirdparty/mujs \
-	$(LOCAL_PATH)/mupdf/thirdparty/zlib \
-	$(LOCAL_PATH)/mupdf/thirdparty/freetype/include \
-	$(LOCAL_PATH)/mupdf/thirdparty/freetype/include/freetype \
-	$(LOCAL_PATH)/mupdf/scripts/freetype \
-	$(LOCAL_PATH)/mupdf/scripts/jpeg \
-	$(LOCAL_PATH)/mupdf/scripts/openjpeg
+	'-DFT_CONFIG_OPTIONS_H="slimftoptions.h"' \
+	-Dhb_malloc_impl=hb_malloc -Dhb_calloc_impl=hb_calloc \
+	-Dhb_realloc_impl=hb_realloc -Dhb_free_impl=hb_free \
+	-DHAVE_OT -DHAVE_UCDN -DHB_NO_MT
+ifdef NDK_PROFILER
+LOCAL_CFLAGS += -pg -DNDK_PROFILER -O2
+endif
+ifdef MEMENTO
+LOCAL_CFLAGS += -DMEMENTO -DMEMENTO_LEAKONLY
+endif
+
+LOCAL_CPP_EXTENSION := .cc
+
+
+MY_ROOT := mupdf
+
+LOCAL_MODULE := mupdfthirdparty
+LOCAL_SRC_FILES := \
+	$(MY_ROOT)/thirdparty/mujs/one.c \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-blob.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-buffer.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-buffer-serialize.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-common.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-face.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-fallback-shape.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-font.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-ft.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-ot-font.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-ot-layout.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-ot-map.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-ot-shape-complex-arabic.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-ot-shape-complex-default.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-ot-shape-complex-hangul.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-ot-shape-complex-hebrew.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-ot-shape-complex-indic-table.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-ot-shape-complex-indic.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-ot-shape-complex-myanmar.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-ot-shape-complex-thai.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-ot-shape-complex-tibetan.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-ot-shape-complex-use-table.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-ot-shape-complex-use.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-ot-shape-fallback.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-ot-shape-normalize.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-ot-shape.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-ot-tag.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-set.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-shape-plan.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-shape.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-shaper.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-ucdn.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-unicode.cc \
+	$(MY_ROOT)/thirdparty/harfbuzz/src/hb-warning.cc \
+	$(MY_ROOT)/thirdparty/jbig2dec/jbig2.c \
+	$(MY_ROOT)/thirdparty/jbig2dec/jbig2_arith.c \
+	$(MY_ROOT)/thirdparty/jbig2dec/jbig2_arith_iaid.c \
+	$(MY_ROOT)/thirdparty/jbig2dec/jbig2_arith_int.c \
+	$(MY_ROOT)/thirdparty/jbig2dec/jbig2_generic.c \
+	$(MY_ROOT)/thirdparty/jbig2dec/jbig2_halftone.c \
+	$(MY_ROOT)/thirdparty/jbig2dec/jbig2_huffman.c \
+	$(MY_ROOT)/thirdparty/jbig2dec/jbig2_image.c \
+	$(MY_ROOT)/thirdparty/jbig2dec/jbig2_metadata.c \
+	$(MY_ROOT)/thirdparty/jbig2dec/jbig2_mmr.c \
+	$(MY_ROOT)/thirdparty/jbig2dec/jbig2_page.c \
+	$(MY_ROOT)/thirdparty/jbig2dec/jbig2_refinement.c \
+	$(MY_ROOT)/thirdparty/jbig2dec/jbig2_segment.c \
+	$(MY_ROOT)/thirdparty/jbig2dec/jbig2_symbol_dict.c \
+	$(MY_ROOT)/thirdparty/jbig2dec/jbig2_text.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/bio.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/cidx_manager.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/cio.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/dwt.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/event.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/function_list.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/image.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/invert.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/j2k.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/jp2.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/mct.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/mqc.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/openjpeg.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/opj_clock.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/phix_manager.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/pi.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/ppix_manager.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/raw.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/t1.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/t1_generate_luts.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/t2.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/tcd.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/tgt.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/thix_manager.c \
+	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg/tpix_manager.c \
+	$(MY_ROOT)/thirdparty/jpeg/jaricom.c \
+	$(MY_ROOT)/thirdparty/jpeg/jcomapi.c \
+	$(MY_ROOT)/thirdparty/jpeg/jdapimin.c \
+	$(MY_ROOT)/thirdparty/jpeg/jdapistd.c \
+	$(MY_ROOT)/thirdparty/jpeg/jdarith.c \
+	$(MY_ROOT)/thirdparty/jpeg/jdatadst.c \
+	$(MY_ROOT)/thirdparty/jpeg/jdatasrc.c \
+	$(MY_ROOT)/thirdparty/jpeg/jdcoefct.c \
+	$(MY_ROOT)/thirdparty/jpeg/jdcolor.c \
+	$(MY_ROOT)/thirdparty/jpeg/jddctmgr.c \
+	$(MY_ROOT)/thirdparty/jpeg/jdhuff.c \
+	$(MY_ROOT)/thirdparty/jpeg/jdinput.c \
+	$(MY_ROOT)/thirdparty/jpeg/jdmainct.c \
+	$(MY_ROOT)/thirdparty/jpeg/jdmarker.c \
+	$(MY_ROOT)/thirdparty/jpeg/jdmaster.c \
+	$(MY_ROOT)/thirdparty/jpeg/jdmerge.c \
+	$(MY_ROOT)/thirdparty/jpeg/jdpostct.c \
+	$(MY_ROOT)/thirdparty/jpeg/jdsample.c \
+	$(MY_ROOT)/thirdparty/jpeg/jdtrans.c \
+	$(MY_ROOT)/thirdparty/jpeg/jerror.c \
+	$(MY_ROOT)/thirdparty/jpeg/jfdctflt.c \
+	$(MY_ROOT)/thirdparty/jpeg/jfdctfst.c \
+	$(MY_ROOT)/thirdparty/jpeg/jfdctint.c \
+	$(MY_ROOT)/thirdparty/jpeg/jidctflt.c \
+	$(MY_ROOT)/thirdparty/jpeg/jidctfst.c \
+	$(MY_ROOT)/thirdparty/jpeg/jidctint.c \
+	$(MY_ROOT)/thirdparty/jpeg/jmemmgr.c \
+	$(MY_ROOT)/thirdparty/jpeg/jquant1.c \
+	$(MY_ROOT)/thirdparty/jpeg/jquant2.c \
+	$(MY_ROOT)/thirdparty/jpeg/jutils.c \
+	$(MY_ROOT)/thirdparty/zlib/adler32.c \
+	$(MY_ROOT)/thirdparty/zlib/compress.c \
+	$(MY_ROOT)/thirdparty/zlib/crc32.c \
+	$(MY_ROOT)/thirdparty/zlib/deflate.c \
+	$(MY_ROOT)/thirdparty/zlib/inffast.c \
+	$(MY_ROOT)/thirdparty/zlib/inflate.c \
+	$(MY_ROOT)/thirdparty/zlib/inftrees.c \
+	$(MY_ROOT)/thirdparty/zlib/trees.c \
+	$(MY_ROOT)/thirdparty/zlib/uncompr.c \
+	$(MY_ROOT)/thirdparty/zlib/zutil.c \
+	$(MY_ROOT)/thirdparty/freetype/src/base/ftbase.c \
+	$(MY_ROOT)/thirdparty/freetype/src/base/ftbbox.c \
+	$(MY_ROOT)/thirdparty/freetype/src/base/ftbitmap.c \
+	$(MY_ROOT)/thirdparty/freetype/src/base/ftfntfmt.c \
+	$(MY_ROOT)/thirdparty/freetype/src/base/ftgasp.c \
+	$(MY_ROOT)/thirdparty/freetype/src/base/ftglyph.c \
+	$(MY_ROOT)/thirdparty/freetype/src/base/ftinit.c \
+	$(MY_ROOT)/thirdparty/freetype/src/base/ftstroke.c \
+	$(MY_ROOT)/thirdparty/freetype/src/base/ftsynth.c \
+	$(MY_ROOT)/thirdparty/freetype/src/base/ftsystem.c \
+	$(MY_ROOT)/thirdparty/freetype/src/base/fttype1.c \
+	$(MY_ROOT)/thirdparty/freetype/src/cff/cff.c \
+	$(MY_ROOT)/thirdparty/freetype/src/cid/type1cid.c \
+	$(MY_ROOT)/thirdparty/freetype/src/psaux/psaux.c \
+	$(MY_ROOT)/thirdparty/freetype/src/pshinter/pshinter.c \
+	$(MY_ROOT)/thirdparty/freetype/src/psnames/psnames.c \
+	$(MY_ROOT)/thirdparty/freetype/src/raster/raster.c \
+	$(MY_ROOT)/thirdparty/freetype/src/smooth/smooth.c \
+	$(MY_ROOT)/thirdparty/freetype/src/sfnt/sfnt.c \
+	$(MY_ROOT)/thirdparty/freetype/src/truetype/truetype.c \
+	$(MY_ROOT)/thirdparty/freetype/src/type1/type1.c
 
 #LOCAL_SRC_FILES := $(addprefix ../, $(LOCAL_SRC_FILES))
 

@@ -100,7 +100,7 @@ static void mupdf_free_document(renderdocument_t* doc)
 
     if (doc->outline)
     {
-        fz_free(doc->ctx, doc->outline);
+        fz_drop_outline(doc->ctx, doc->outline);
     }
     doc->outline = NULL;
 
@@ -380,7 +380,7 @@ JNI_FN(MuPdfDocument_getPageInfo)(JNIEnv *env, jclass cls, jlong handle, jint pa
         fid = (*env)->GetFieldID(env, clazz, "version", "I");
         (*env)->SetIntField(env, cpi, fid, 0);
 
-        fz_free(doc->ctx, page);
+        fz_drop_page(doc->ctx, page);
         return 0;
     }
     return -1;
@@ -541,11 +541,11 @@ JNI_FN(MuPdfPage_open)(JNIEnv *env, jclass clazz, jlong dochandle, jint pageno)
     }
     fz_always(ctx)
     {
-        fz_free(ctx, dev);
+        fz_drop_device(ctx, dev);
     }
     fz_catch(ctx)
     {
-        fz_free(ctx, dev);
+        fz_drop_device(ctx, dev);
         fz_drop_display_list(ctx, page->pageList);
         fz_drop_page(ctx, page->page);
 
@@ -584,7 +584,7 @@ JNI_FN(MuPdfPage_free)(JNIEnv *env, jclass clazz, jlong dochandle, jlong handle)
 
     if (page->page)
     {
-        fz_free(doc->ctx, page->page);
+        fz_drop_page(doc->ctx, page->page);
     }
 
     fz_free(ctx, page);
@@ -690,7 +690,7 @@ JNI_FN(MuPdfPage_renderPageDirect)(JNIEnv *env, jobject this, jlong dochandle,
     }
     fz_always(ctx)
     {
-       fz_free(ctx, dev);
+       fz_drop_device(ctx, dev);
        fz_drop_pixmap(ctx, pixmap);
     }
     fz_catch(ctx)
@@ -700,34 +700,34 @@ JNI_FN(MuPdfPage_renderPageDirect)(JNIEnv *env, jobject this, jlong dochandle,
     return JNI_TRUE;
 }
 
-static int charat(fz_context *ctx, fz_text_page *page, int idx)
+static int charat(fz_context *ctx, fz_stext_page *page, int idx)
 {
     fz_char_and_box cab;
-    return fz_text_char_at(ctx, &cab, page, idx)->c;
+    return fz_stext_char_at(ctx, &cab, page, idx)->c;
 }
 
-static fz_rect bboxcharat(fz_context *ctx, fz_text_page *page, int idx)
+static fz_rect bboxcharat(fz_context *ctx, fz_stext_page *page, int idx)
 {
     fz_char_and_box cab;
-    return fz_text_char_at(ctx, &cab, page, idx)->bbox;
+    return fz_stext_char_at(ctx, &cab, page, idx)->bbox;
 }
 
-static int textlen(fz_text_page *page)
+static int textlen(fz_stext_page *page)
 {
     int len = 0;
     int block_num;
 
     for (block_num = 0; block_num < page->len; block_num++)
     {
-        fz_text_block *block;
-        fz_text_line *line;
+        fz_stext_block *block;
+        fz_stext_line *line;
 
         if (page->blocks[block_num].type != FZ_PAGE_BLOCK_TEXT)
             continue;
         block = page->blocks[block_num].u.text;
         for (line = block->lines; line < block->lines + block->len; line++)
         {
-            fz_text_span *span;
+            fz_stext_span *span;
 
             for (span = line->first_span; span; span = span->next)
             {
@@ -739,7 +739,7 @@ static int textlen(fz_text_page *page)
     return len;
 }
 
-static int match(fz_context *ctx, CharacterHelper* ch, fz_text_page *page, const char *s, int n)
+static int match(fz_context *ctx, CharacterHelper* ch, fz_stext_page *page, const char *s, int n)
 {
     int orig = n;
     int c;
@@ -804,8 +804,8 @@ JNI_FN(MuPdfPage_search)(JNIEnv * env, jobject thiz, jlong dochandle, jlong page
 
     fz_rect *hit_bbox = NULL;
 
-    fz_text_sheet *sheet = NULL;
-    fz_text_page *pagetext = NULL;
+    fz_stext_sheet *sheet = NULL;
+    fz_stext_page *pagetext = NULL;
     fz_device *dev = NULL;
     int pos;
     int len;
@@ -819,14 +819,14 @@ JNI_FN(MuPdfPage_search)(JNIEnv * env, jobject thiz, jlong dochandle, jlong page
         // DEBUG("MuPdfPage(%p).search(%p, %p): load page text", thiz, doc, page);
 
         fz_bound_page(doc->ctx, page->page, &rect);
-        sheet = fz_new_text_sheet(doc->ctx);
-        pagetext = fz_new_text_page(doc->ctx);
-        dev = fz_new_text_device(doc->ctx, sheet, pagetext);
+        sheet = fz_new_stext_sheet(doc->ctx);
+        pagetext = fz_new_stext_page(doc->ctx);
+        dev = fz_new_stext_device(doc->ctx, sheet, pagetext);
         fz_run_page(doc->ctx, page->page, dev, &fz_identity, NULL);
 
         // DEBUG("MuPdfPage(%p).search(%p, %p): free text device", thiz, doc, page);
 
-        fz_free(doc->ctx, dev);
+        fz_drop_device(doc->ctx, dev);
         dev = NULL;
 
         len = textlen(pagetext);
@@ -873,15 +873,15 @@ JNI_FN(MuPdfPage_search)(JNIEnv * env, jobject thiz, jlong dochandle, jlong page
         // DEBUG("MuPdfPage(%p).search(%p, %p): free resources", thiz, doc, page);
         if (pagetext)
         {
-            fz_free(doc->ctx, pagetext);
+            fz_drop_stext_page(doc->ctx, pagetext);
         }
         if (sheet)
         {
-            fz_free(doc->ctx, sheet);
+            fz_drop_stext_sheet(doc->ctx, sheet);
         }
         if (dev)
         {
-            fz_free(doc->ctx, dev);
+            fz_drop_device(doc->ctx, dev);
         }
     }fz_catch(doc->ctx)
     {
@@ -921,7 +921,7 @@ JNI_FN(MuPdfOutline_free)(JNIEnv *env, jclass clazz, jlong dochandle)
     if (doc)
     {
         if (doc->outline)
-            fz_free(doc->ctx, doc->outline);
+            fz_drop_outline(doc->ctx, doc->outline);
         doc->outline = NULL;
     }
 }

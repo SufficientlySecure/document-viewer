@@ -27,6 +27,8 @@ class DBAdapterV6 extends DBAdapterV5 {
 
     public static final long F_SPLIT_RTL = 1 << 7;
 
+    public static final long F_ROTATION_AUTO = 1 << 8;
+
     public static final String DB_BOOK_CREATE = "create table book_settings ("
     // Book file path
             + "book varchar(1024) primary key, "
@@ -175,6 +177,9 @@ class DBAdapterV6 extends DBAdapterV5 {
         if (bs.rotation == null || bs.rotation == BookRotationType.UNSPECIFIED) {
             return 0;
         }
+        if (bs.rotation == BookRotationType.AUTOMATIC) {
+            return F_ROTAION_OVR | F_ROTATION_AUTO;
+        }
         return F_ROTAION_OVR | (bs.rotation == BookRotationType.LANDSCAPE ? F_ROTAION_LAND : 0);
     }
 
@@ -186,7 +191,11 @@ class DBAdapterV6 extends DBAdapterV5 {
         bs.autoLevels = (flags & F_AUTO_LEVELS) != 0;
 
         if ((flags & F_ROTAION_OVR) != 0) {
-            bs.rotation = (flags & F_ROTAION_LAND) != 0 ? BookRotationType.LANDSCAPE : BookRotationType.PORTRAIT;
+            if ((flags & F_ROTATION_AUTO) != 0) {
+                bs.rotation = BookRotationType.AUTOMATIC;
+            } else {
+                bs.rotation = (flags & F_ROTAION_LAND) != 0 ? BookRotationType.LANDSCAPE : BookRotationType.PORTRAIT;
+            }
         } else {
             bs.rotation = BookRotationType.UNSPECIFIED;
         }

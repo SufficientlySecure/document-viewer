@@ -7,6 +7,7 @@
     <string name="list_rotation_unspecified">Unspecified</string>
     <string name="list_rotation_land">Force landscape</string>
     <string name="list_rotation_port">Force portrait</string>
+    <string name="list_rotation_auto">Automatic</string>
 
     <string name="pref_render_category">Rendering</string>
     <string name="pref_render_category_summary">Rendering settings</string>

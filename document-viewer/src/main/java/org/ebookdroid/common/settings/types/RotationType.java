@@ -21,7 +21,11 @@ public enum RotationType implements ResourceConstant {
     /**
     *
     */
-    PORTRAIT(R.string.pref_rotation_port, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, 3);
+    PORTRAIT(R.string.pref_rotation_port, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, 3),
+    /**
+    *
+    */
+    AUTOMATIC(R.string.pref_rotation_auto, ActivityInfo.SCREEN_ORIENTATION_SENSOR, 3);
 
     private final String resValue;
 

@@ -5,6 +5,7 @@
     <string translatable="false" name="pref_rotation_unspecified">Unspecified</string>
     <string translatable="false" name="pref_rotation_land">Force landscape</string>
     <string translatable="false" name="pref_rotation_port">Force portrait</string>
+    <string translatable="false" name="pref_rotation_auto">Automatic</string>
 
     <string translatable="false" name="pref_nightmode_id">nightmode</string>
     <string translatable="false" name="pref_nightmode_defvalue">false</string>

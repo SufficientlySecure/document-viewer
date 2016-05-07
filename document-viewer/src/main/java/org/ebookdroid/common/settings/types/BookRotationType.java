@@ -18,8 +18,11 @@ public enum BookRotationType implements ResourceConstant {
     /**
     *
     */
-    PORTRAIT(R.string.pref_rotation_port, RotationType.PORTRAIT);
-
+    PORTRAIT(R.string.pref_rotation_port, RotationType.PORTRAIT),
+    /**
+     *
+     */
+    AUTOMATIC(R.string.pref_rotation_auto, RotationType.AUTOMATIC);
     private final String resValue;
 
     private final RotationType orientation;

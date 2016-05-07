@@ -13,6 +13,8 @@ MY_ROOT := $(LOCAL_PATH)/mupdf
 
 LOCAL_CFLAGS += -Wall -Wno-maybe-uninitialized
 LOCAL_CFLAGS += -DNOCJK
+# Skip noto fonts to save space. see pdf-fontfile.c
+LOCAL_CFLAGS += -DTOFU
 
 ifeq ($(TARGET_ARCH),arm)
 LOCAL_CFLAGS += -DARCH_ARM -DARCH_THUMB -DARCH_ARM_CAN_LOAD_UNALIGNED

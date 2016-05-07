@@ -294,14 +294,6 @@ public class DecodeServiceBase implements DecodeService {
                     + croppedPageBounds);
         }
 
-        task.node.page.base.runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-                viewState.ctrl.goToPage(currentPage.viewIndex, offsetX, offsetY);
-            }
-        });
-
         return croppedPageBounds;
     }
 

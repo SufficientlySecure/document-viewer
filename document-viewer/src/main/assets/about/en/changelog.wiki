@@ -1,5 +1,18 @@
 #labels Featured
 
+= DV v2.7.5 =
+== New features ==
+* Automatic rotation option added to Book Settings
+
+== Changes ==
+* MuPDF updated to 1.9a with improved EPUB support
+* Removed support for replacing PDF base fonts
+* Translation updates
+
+== Bug fixes ==
+* Fix beeps when flipping pages using volume keys
+* Fix for scrolling stopping in crop-to-page mode
+
 = DV v2.7.4 =
 == New features ==
 * Tap to toggle fullscreen

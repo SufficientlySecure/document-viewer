@@ -1,8 +1,8 @@
 diff --git a/include/mupdf/fitz/context.h b/include/mupdf/fitz/context.h
-index 10e28e0..f4368e7 100644
+index cb083f8..46d42dc 100644
 --- a/include/mupdf/fitz/context.h
 +++ b/include/mupdf/fitz/context.h
-@@ -111,6 +111,10 @@ struct fz_context_s
+@@ -113,6 +113,10 @@ struct fz_context_s
  	fz_store *store;
  	fz_glyph_cache *glyph_cache;
  	fz_document_handler_context *handler;
@@ -14,7 +14,7 @@ index 10e28e0..f4368e7 100644
  
  /*
 diff --git a/source/fitz/colorspace.c b/source/fitz/colorspace.c
-index d145be2..9329640 100644
+index 5549496..334c6f4 100644
 --- a/source/fitz/colorspace.c
 +++ b/source/fitz/colorspace.c
 @@ -1,6 +1,8 @@
@@ -56,7 +56,7 @@ index d145be2..9329640 100644
  }
  
  static void rgb_to_cmyk(fz_context *ctx, fz_colorspace *cs, const float *rgb, float *cmyk)
-@@ -619,7 +627,9 @@ static void fast_cmyk_to_rgb(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
+@@ -627,7 +635,9 @@ static void fast_cmyk_to_rgb(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
  
  	while (n--)
  	{
@@ -67,7 +67,7 @@ index d145be2..9329640 100644
  		unsigned int c = s[0];
  		unsigned int m = s[1];
  		unsigned int y = s[2];
-@@ -748,11 +758,15 @@ static void fast_cmyk_to_rgb(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
+@@ -756,11 +766,15 @@ static void fast_cmyk_to_rgb(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
  		d[0] = r;
  		d[1] = g;
  		d[2] = b;
@@ -85,7 +85,7 @@ index d145be2..9329640 100644
  		d[3] = s[4];
  		s += 5;
  		d += 4;
-@@ -767,7 +781,9 @@ static void fast_cmyk_to_bgr(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
+@@ -775,7 +789,9 @@ static void fast_cmyk_to_bgr(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
  	int n = src->w * src->h;
  	while (n--)
  	{
@@ -96,7 +96,7 @@ index d145be2..9329640 100644
  		float cmyk[4], rgb[3];
  		cmyk[0] = s[0] / 255.0f;
  		cmyk[1] = s[1] / 255.0f;
-@@ -777,11 +793,15 @@ static void fast_cmyk_to_bgr(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
+@@ -785,11 +801,15 @@ static void fast_cmyk_to_bgr(fz_context *ctx, fz_pixmap *dst, fz_pixmap *src)
  		d[0] = rgb[2] * 255;
  		d[1] = rgb[1] * 255;
  		d[2] = rgb[0] * 255;
@@ -114,7 +114,7 @@ index d145be2..9329640 100644
  		d[3] = s[4];
  		s += 5;
  		d += 4;
-@@ -1090,29 +1110,41 @@ cmyk2g(fz_context *ctx, fz_color_converter *cc, float *dv, const float *sv)
+@@ -1098,29 +1118,41 @@ cmyk2g(fz_context *ctx, fz_color_converter *cc, float *dv, const float *sv)
  static void
  cmyk2rgb(fz_context *ctx, fz_color_converter *cc, float *dv, const float *sv)
  {
@@ -163,10 +163,10 @@ index d145be2..9329640 100644
  
  void fz_lookup_color_converter(fz_context *ctx, fz_color_converter *cc, fz_colorspace *ds, fz_colorspace *ss)
 diff --git a/source/fitz/draw-device.c b/source/fitz/draw-device.c
-index b2819a0..6a90da6 100644
+index fdb631f..ff0f143 100644
 --- a/source/fitz/draw-device.c
 +++ b/source/fitz/draw-device.c
-@@ -1201,6 +1201,9 @@ fz_draw_fill_image_mask(fz_context *ctx, fz_device *devp, fz_image *image, const
+@@ -1203,6 +1203,9 @@ fz_draw_fill_image_mask(fz_context *ctx, fz_device *devp, fz_image *image, const
  	fz_pixmap *scaled = NULL;
  	fz_pixmap *pixmap;
  	fz_pixmap *orig_pixmap;
@@ -176,11 +176,11 @@ index b2819a0..6a90da6 100644
  	int dx, dy;
  	int i;
  	fz_draw_state *state = &dev->stack[dev->top];
-@@ -1245,7 +1248,23 @@ fz_draw_fill_image_mask(fz_context *ctx, fz_device *devp, fz_image *image, const
+@@ -1247,7 +1250,23 @@ fz_draw_fill_image_mask(fz_context *ctx, fz_device *devp, fz_image *image, const
  			colorbv[i] = colorfv[i] * 255;
  		colorbv[i] = alpha * 255;
  
--		fz_paint_image_with_color(state->dest, &state->scissor, state->shape, pixmap, &local_ctm, colorbv, !(devp->hints & FZ_DONT_INTERPOLATE_IMAGES));
+-		fz_paint_image_with_color(state->dest, &state->scissor, state->shape, pixmap, &local_ctm, colorbv, !(devp->hints & FZ_DONT_INTERPOLATE_IMAGES), devp->flags & FZ_DEVFLAG_GRIDFIT_AS_TILED);
 +		// EBD: inverted mode >>>
 +		if (ctx->ebookdroid_nightmode) {
 +			inverted = fz_new_pixmap(ctx, pixmap->colorspace, pixmap->w, pixmap->h);
@@ -189,19 +189,19 @@ index b2819a0..6a90da6 100644
 +
 +			fz_paint_image_with_color(
 +				state->dest, &state->scissor, state->shape, inverted,
-+				&local_ctm, colorbv, !(devp->hints & FZ_DONT_INTERPOLATE_IMAGES)
++				&local_ctm, colorbv, !(devp->hints & FZ_DONT_INTERPOLATE_IMAGES), devp->flags & FZ_DEVFLAG_GRIDFIT_AS_TILED
 +			);
 +		} else {
 +			fz_paint_image_with_color(
 +				state->dest, &state->scissor, state->shape, pixmap,
-+				&local_ctm, colorbv, !(devp->hints & FZ_DONT_INTERPOLATE_IMAGES)
++				&local_ctm, colorbv, !(devp->hints & FZ_DONT_INTERPOLATE_IMAGES), devp->flags & FZ_DEVFLAG_GRIDFIT_AS_TILED
 +			);
 +		}
 +		// EBD: inverted mode <<<
  
  		if (scaled)
  			fz_drop_pixmap(ctx, scaled);
-@@ -1255,6 +1274,11 @@ fz_draw_fill_image_mask(fz_context *ctx, fz_device *devp, fz_image *image, const
+@@ -1257,6 +1276,11 @@ fz_draw_fill_image_mask(fz_context *ctx, fz_device *devp, fz_image *image, const
  	}
  	fz_always(ctx)
  	{

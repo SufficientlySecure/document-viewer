@@ -173,21 +173,6 @@ public interface AppPreferences {
     IntegerPreferenceDefinition PDF_CUSTOM_YDPI = new IntegerPreferenceDefinition(pref_ydpi_id, pref_ydpi_defvalue,
             pref_ydpi_minvalue, pref_ydpi_maxvalue);
 
-    StringPreferenceDefinition MONO_FONT_PACK = new StringPreferenceDefinition(pref_monofontpack_id,
-            pref_monofontpack_defvalue);
-
-    StringPreferenceDefinition SANS_FONT_PACK = new StringPreferenceDefinition(pref_sansfontpack_id,
-            pref_sansfontpack_defvalue);
-
-    StringPreferenceDefinition SERIF_FONT_PACK = new StringPreferenceDefinition(pref_seriffontpack_id,
-            pref_seriffontpack_defvalue);
-
-    StringPreferenceDefinition SYMBOL_FONT_PACK = new StringPreferenceDefinition(pref_symbolfontpack_id,
-            pref_symbolfontpack_defvalue);
-
-    StringPreferenceDefinition DINGBAT_FONT_PACK = new StringPreferenceDefinition(pref_dingbatfontpack_id,
-            pref_dingbatfontpack_defvalue);
-
     BooleanPreferenceDefinition PDF_SLOW_CMYK = new BooleanPreferenceDefinition(pref_slowcmyk_id,
             pref_slowcmyk_defvalue);
 

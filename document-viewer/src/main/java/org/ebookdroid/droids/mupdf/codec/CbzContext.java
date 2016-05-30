@@ -7,7 +7,6 @@ public class CbzContext extends MuPdfContext {
 
     @Override
     public CodecDocument openDocument(final String fileName, final String password) {
-        setExternalFonts();
         return new MuPdfDocument(this, MuPdfDocument.FORMAT_CBZ, fileName, password);
     }
 }

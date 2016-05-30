@@ -144,16 +144,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     public final int yDpi;
 
-    public final String monoFontPack;
-
-    public final String sansFontPack;
-
-    public final String serifFontPack;
-
-    public final String symbolFontPack;
-
-    public final String dingbatFontPack;
-
     public final boolean slowCMYK;
 
     /* =============== FB2 Format-specific settings =============== */
@@ -229,11 +219,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         useCustomDpi = PDF_CUSTOM_DPI.getPreferenceValue(prefs);
         xDpi = PDF_CUSTOM_XDPI.getPreferenceValue(prefs);
         yDpi = PDF_CUSTOM_YDPI.getPreferenceValue(prefs);
-        monoFontPack = MONO_FONT_PACK.getPreferenceValue(prefs);
-        sansFontPack = SANS_FONT_PACK.getPreferenceValue(prefs);
-        serifFontPack = SERIF_FONT_PACK.getPreferenceValue(prefs);
-        symbolFontPack = SYMBOL_FONT_PACK.getPreferenceValue(prefs);
-        dingbatFontPack = DINGBAT_FONT_PACK.getPreferenceValue(prefs);
         slowCMYK = PDF_SLOW_CMYK.getPreferenceValue(prefs);
         /* =============== FB2 Format-specific settings =============== */
         fb2XmlParser = FB2_XML_PARSER.getPreferenceValue(prefs);

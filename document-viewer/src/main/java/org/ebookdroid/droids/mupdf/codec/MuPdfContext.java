@@ -28,38 +28,6 @@ public abstract class MuPdfContext extends AbstractCodecContext {
         super(MUPDF_FEATURES);
     }
 
-    public void setExternalFonts() {
-        final AppSettings app = AppSettings.current();
-
-        final String[] monoFonts = FontManager.getExternalFonts(app.monoFontPack, FontFamilyType.MONO);
-        LCTX.d("Mono fonts: " + Arrays.toString(monoFonts));
-
-        setMonoFonts(monoFonts[FontStyle.REGULAR.ordinal()], monoFonts[FontStyle.ITALIC.ordinal()],
-                monoFonts[FontStyle.BOLD.ordinal()], monoFonts[FontStyle.BOLD_ITALIC.ordinal()]);
-
-        final String[] sansFonts = FontManager.getExternalFonts(app.sansFontPack, FontFamilyType.SANS);
-        LCTX.d("Sans fonts: " + Arrays.toString(sansFonts));
-
-        setSansFonts(sansFonts[FontStyle.REGULAR.ordinal()], sansFonts[FontStyle.ITALIC.ordinal()],
-                sansFonts[FontStyle.BOLD.ordinal()], sansFonts[FontStyle.BOLD_ITALIC.ordinal()]);
-
-        final String[] serifFonts = FontManager.getExternalFonts(app.serifFontPack, FontFamilyType.SERIF);
-        LCTX.d("Serif fonts: " + Arrays.toString(serifFonts));
-
-        setSerifFonts(serifFonts[FontStyle.REGULAR.ordinal()], serifFonts[FontStyle.ITALIC.ordinal()],
-                serifFonts[FontStyle.BOLD.ordinal()], serifFonts[FontStyle.BOLD_ITALIC.ordinal()]);
-
-        final String symbolFont = FontManager.getExternalFont(app.symbolFontPack, FontFamilyType.SYMBOL,
-                FontStyle.REGULAR);
-        LCTX.d("Symbol font: " + symbolFont);
-        setSymbolFont(symbolFont);
-
-        final String dingbatFont = FontManager.getExternalFont(app.dingbatFontPack, FontFamilyType.DINGBAT,
-                FontStyle.REGULAR);
-        LCTX.d("Dingbat font: " + dingbatFont);
-        setDingbatFont(dingbatFont);
-    }
-
     private static native void setMonoFonts(String regular, String italic, String bold, String boldItalic);
 
     private static native void setSansFonts(String regular, String italic, String bold, String boldItalic);

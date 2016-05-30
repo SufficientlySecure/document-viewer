@@ -39,21 +39,6 @@
     <string translatable="false" name="pref_ydpi_minvalue">72</string>
     <string translatable="false" name="pref_ydpi_maxvalue">720</string>
 
-    <string translatable="false" name="pref_monofontpack_id">monofontpack</string>
-    <string translatable="false" name="pref_monofontpack_defvalue"></string>
-
-    <string translatable="false" name="pref_sansfontpack_id">sansfontpack</string>
-    <string translatable="false" name="pref_sansfontpack_defvalue"></string>
-
-    <string translatable="false" name="pref_seriffontpack_id">seriffontpack</string>
-    <string translatable="false" name="pref_seriffontpack_defvalue"></string>
-
-    <string translatable="false" name="pref_symbolfontpack_id">symbolfontpack</string>
-    <string translatable="false" name="pref_symbolfontpack_defvalue"></string>
-
-    <string translatable="false" name="pref_dingbatfontpack_id">dingbatfontpack</string>
-    <string translatable="false" name="pref_dingbatfontpack_defvalue"></string>
-
     <string translatable="false" name="pref_slowcmyk_id">slowcmyk</string>
     <string translatable="false" name="pref_slowcmyk_defvalue">false</string>
 

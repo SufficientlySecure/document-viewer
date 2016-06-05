@@ -71,6 +71,14 @@ public class TouchManager {
                 final Region r = def.addRegion(0, 90, 100, 100);
                 r.setAction(Touch.SingleTap, R.id.actions_verticalConfigScrollDown, true);
             }
+            {
+                final Region r = def.addRegion(0, 0, 10, 100); // left edge
+                r.setAction(Touch.SingleTap, R.id.actions_verticalConfigScrollUp, true);
+            }
+            {
+                final Region r = def.addRegion(90, 0, 100, 100); // right edge
+                r.setAction(Touch.SingleTap, R.id.actions_verticalConfigScrollDown, true);
+            }
 
             persist();
         }

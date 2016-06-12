@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="app_name">Document Viewer</string>
+
+    <string name="confirmclose_title">ビューアーを閉じています&#8230;</string>
+    <string name="confirmclose_msg">この文書を閉じてもよろしいですか?</string>
+    <string name="confirmsave_msg">この文書を保存してもよろしいですか?</string>
+    <string name="confirmsave_yes_btn">保存して閉じる</string>
+    <string name="confirmsave_no_btn">閉じる</string>
+
+    <string name="error_dlg_title">アプリケーションエラー</string>
+    <string name="msg_bad_intent">"不正なインテントまたはスキーム:\n%s"</string>
+    <string name="msg_no_intent_data">"インテント データがありません:\n%s"</string>
+    <string name="msg_unknown_intent_data_type">"不明なインテント データタイプ:\n%s"</string>
+
+    <string name="msg_loading_book">"本の読み込み中: %1$s&#8230;"</string>
+
+    <string name="msg_wrong_password">"パスワードが間違っています&#8230;"</string>
+    <string name="msg_password_required">"パスワードを入力&#8230;"</string>
+
+    <string name="msg_unexpected_error">"予期しないエラーが発生しました:\n%s"</string>
+
+    <string name="msg_search_text_on_page">"ページ %1$d で検索中&#8230;"</string>
+    <string name="msg_no_text_found">"テキストが見つかりません"</string>
+
+    <string name="dialog_title_goto_page">移動...</string>
+    <string name="button_goto_page">移動</string>
+    <string name="text_page">ページ</string>
+    <string name="error_close">閉じる</string>
+
+    <string name="dialog_backup_name_hint">新しいバックアップ名を入力&#8230;</string>
+    <string name="dialog_backup_backup">バックアップ&#8230;</string>
+    <string name="dialog_backup_restore">復元&#8230;</string>
+    <string name="dialog_backup_remove">削除&#8230;</string>
+
+    <string name="add_bookmark_name">ブックマークの説明を入力</string>
+    <string name="bookmark_start">開始</string>
+    <string name="bookmark_current">現在の位置</string>
+    <string name="bookmark_end">終了</string>
+    <string name="bookmark_invalid_page">ページ番号が範囲外です。正しい範囲: %1$d-%2$d</string>
+
+    <string name="bookmarks_title">ブックマーク</string>
+    <string name="clear_bookmarks_title">ブックマークをクリア</string>
+    <string name="clear_bookmarks_text">この操作は選択した本からすべてのブックマークを削除します。続けますか?</string>
+
+    <string name="del_bookmark_title">ブックマークを削除</string>
+    <string name="del_bookmark_text">このブックマークを削除しますか?</string>
+
+    <string name="clear_recent_title">最近使用したアイテムをクリア</string>
+    <string name="clear_recent_text">この操作は最近使用したリストからすべての本を削除します。続けますか?</string>
+
+    <string name="bookcase_shelves">本棚</string>
+    <string name="recent_title">最近使用した本</string>
+
+    <string name="list_clear_recent_mode_clear_recent_list">最近使用した本のリストをクリア</string>
+    <string name="list_clear_recent_mode_delete_bookmarks">すべてのブックマークを削除</string>
+    <string name="list_clear_recent_mode_delete_book_settings">すべての本の設定をクリア</string>
+    <string name="list_clear_recent_mode_delete_cached_data">キャッシュしたデータをディスクからすべて削除</string>
+
+    <string name="about_prefix">ja</string>
+    <string name="about_title">EBookDroid について</string>
+    <string name="about_commmon_title">アプリケーション情報</string>
+    <string name="about_fonts_title">フォント</string>
+    <string name="about_license_title">ライセンス</string>
+    <string name="about_3dparty_title">サードパーティー ソフトウェア</string>
+    <string name="about_changelog_title">変更履歴</string>
+    <string name="about_thanks_title">謝辞</string>
+    <string name="about_donations">寄付</string>
+
+    <string name="opds">OPDS ブラウザー</string>
+    <string name="menu_opds">OPDS ブラウザー</string>
+
+    <string name="opds_connecting">"接続中&#8230;"</string>
+    <string name="opds_loading_catalog">"カタログの読み込み中&#8230;"</string>
+    <string name="opds_loading_book">"本の読み込み中: %1$s/%2$s&#8230;"</string>
+    <string name="opds_unpacking_book">"本の展開中: %1$s/%2$s&#8230;"</string>
+
+    <string name="opds_download_complete">"本のダウンロードが完了しました: %1$s"</string>
+    <string name="opds_download_error">"本のダウンロードが失敗しました: %1$s"</string>
+
+    <string name="opds_add_new_feed">新しいフィードを追加</string>
+    <string name="opds_addfeed_title">"新しいカタログを追加中"</string>
+    <string name="opds_addfeed_msg">"カタログの別名と URL を入力"</string>
+    <string name="opds_addfeed_ok">"追加"</string>
+    <string name="opds_addfeed_alias">"別名:"</string>
+    <string name="opds_addfeed_url">"URL:"</string>
+    <string name="opds_addfeed_auth">"認証が必要"</string>
+    <string name="opds_editfeed_title">"カタログを編集"</string>
+    <string name="opds_editfeed_msg">"このカタログの別名と URL を入力"</string>
+    <string name="opds_editfeed_ok">"保存"</string>
+    <string name="opds_deletefeed_title">"カタログを削除"</string>
+    <string name="opds_deletefeed_msg">"このカタログを削除してもよろしいですか?"</string>
+    <string name="opds_deletefeed_ok">"削除"</string>
+    <string name="opds_authfeed_title">"認証"</string>
+    <string name="opds_authfeed_msg">"このカタログのユーザー名とパスワードを入力"</string>
+    <string name="opds_authfeed_username">"ユーザー名:"</string>
+    <string name="opds_authfeed_password">"パスワード:"</string>
+    <string name="opds_authfeed_ok">"ログイン"</string>
+    <string name="opds_error_title">"OPDS エラー"</string>
+    <string name="opds_error_msg">"%s"</string>
+    <string name="opds_retry_download">"再試行"</string>
+
+    <string name="book_copy_start">"本のコピー中&#8230;"</string>
+    <string name="book_copy_progress">"本のコピー中: %1$s/%2$s&#8230;"</string>
+    <string name="book_copy_complete">"本のコピーが完了しました: %s"</string>
+    <string name="book_copy_error">"本のコピーが失敗しました: %s"</string>
+
+    <string name="book_move_start">"本の移動中&#8230;"</string>
+    <string name="book_move_progress">"本の移動中: %1$s/%2$s&#8230;"</string>
+    <string name="book_move_complete">"本の移動が完了しました: %s"</string>
+    <string name="book_move_error">"本の移動が失敗しました: %s"</string>
+
+    <string name="book_rename_title">"本の名前を変更"</string>
+    <string name="book_rename_msg">"新しい本のファイル名を入力:"</string>
+
+    <string name="book_delete_title">"本を削除"</string>
+    <string name="book_delete_msg">"この本を削除してもよろしいですか?"</string>
+
+    <string name="outline_title">アウトライン</string>
+    <string name="outline_missed">アウトラインは利用できません</string>
+
+    <string name="error_page_out_of_rande">ページ番号が範囲外です。有効な範囲: 1-%1$d</string>
+
+    <string name="msg_loading">読み込み中&#8230; しばらくお待ちください</string>
+    <string name="msg_getting_page_size">ページサイズの評価中 %1$d/%2$d</string>
+
+    <string name="tap_zones_single_tap">シングルタップ</string>
+    <string name="tap_zones_double_tap">ダブルタップ</string>
+    <string name="tap_zones_long_tap">長押し</string>
+    <string name="tap_zones_two_finger_tap">二本指タップ</string>
+    <string name="tap_zones_reset">リセット</string>
+    <string name="tap_zones_delete">削除</string>
+    <string name="tap_zones_clear">クリア</string>
+
+    <string name="search_results_title">検索結果</string>
+    <string name="search_book_dlg_title">検索&#8230;</string>
+
+    <string name="folder_books_count" >"本: %1$d"</string>
+    <string name="copy_book_to_dlg_title" >"本をコピー&#8230;"</string>
+    <string name="move_book_to_dlg_title" >"本を移動&#8230;"</string>
+
+    <string name="opds_downloading_type_dlg_title">"ダウンロードする本の種類を選択"</string>
+    <string name="opds_downloading_dlg_title">"&#8230;として本をダウンロード"</string>
+    <string name="opds_downloading_dlg_raw_type">"Raw タイプ"</string>
+
+    <string name="notification_file_add">"ライブラリーに本を追加しました"</string>
+    <string name="notification_file_delete">"ライブラリーから本を削除しました"</string>
+
+    <string name="font_reminder_title">警告</string>
+    <string name="font_reminder">バージョン 1.5 から、PDF と FB2 のフォントはアプリケーションで埋め込まれなくなりました。 代わりに標準の Android フォントが使用されます。 レガシーフォントを復元したり、カスタムフォントをインストールしたい場合、Google Play ストアからフォントパッケージ インストーラを使用してください。: &lt;ul&gt;&lt;li&gt;&lt;a href=&quot;market://details?id=org.ebookdroid.fontpack.legacy&quot;&gt;レガシーフォント&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;</string>
+
+    <string name="cache_moving_text">キャッシュ済ファイルの移動中&#8230;</string>
+    <string name="cache_moving_progress">キャッシュ済ファイルの移動中 %1$d/%2$d</string>
+
+    <string name="error_invalid_view_mode">この操作は表示モード %1$s のみ利用できます</string>
+</resources>

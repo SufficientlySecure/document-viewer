@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_rotation_title">回転モード</string>
+    <string name="pref_rotation_summary">回転の変更方法</string>
+
+    <string name="list_rotation_unspecified">指定なし</string>
+    <string name="list_rotation_land">強制的に横置き</string>
+    <string name="list_rotation_port">強制的に縦置き</string>
+    <string name="list_rotation_auto">自動</string>
+
+    <string name="pref_render_category">レンダリング</string>
+    <string name="pref_render_category_summary">レンダリング設定</string>
+
+    <string name="pref_book_category">本の設定</string>
+    <string name="pref_book_category_summary">現在の本の設定</string>
+
+    <string name="pref_firstpageoffset_title">先頭ページのオフセット</string>
+    <string name="pref_firstpageoffset_summary">ユーザーに表示する先頭ページの目次</string>
+
+    <string name="pref_splitpages_title">ページを分割</string>
+    <string name="pref_splitpages_summary">横置きのページを 2 ページの縦置きに分割します</string>
+
+    <string name="pref_splitpages_rtl_title">右から左にページを分割</string>
+    <string name="pref_splitpages_rtl_summary">横置きのページを 2 ページの右から左の縦置きに分割します</string>
+
+    <string name="pref_croppages_title">ページをトリミング (自動)</string>
+    <string name="pref_croppages_summary">コンテンツの倍率を最大にするために、自動的に空の余白をトリミングします</string>
+
+    <string name="pref_viewmode_title">文書表示モード</string>
+    <string name="pref_viewmode_summary">単一ページまたは連続スクロールで文書を表示します</string>
+
+    <string name="list_viewmode_vertical_scroll">縦スクロール</string>
+    <string name="list_viewmode_horizontal_scroll">横スクロール</string>
+    <string name="list_viewmode_single_page">単一ページ</string>
+
+    <string name="pref_singlepage_category">単一ページ設定</string>
+    <string name="pref_singlepage_category_summary">単一ページ用の表示モード</string>
+
+    <string name="pref_align_title">ページ合わせ</string>
+    <string name="pref_align_summary">ページを画面に合わせる方法</string>
+
+    <string name="list_align_by_width">横幅に合わせる</string>
+    <string name="list_align_by_height">高さに合わせる</string>
+    <string name="list_align_auto">自動</string>
+
+    <string name="pref_animationtype_title">ページ遷移</string>
+    <string name="pref_animationtype_summary">単一ページモードで、ページ遷移のアニメーションを選択します</string>
+
+    <string name="list_animation_none">なし</string>
+    <string name="list_animation_curler_simple">シンプル カーラー</string>
+    <string name="list_animation_curler_dynamic">ダイナミック カーラー</string>
+    <string name="list_animation_curler_natural">ナチュラル カーラー</string>
+    <string name="list_animation_slider">スライダー</string>
+    <string name="list_animation_fader">フェードイン</string>
+    <string name="list_animation_squeezer">スクイーズ</string>
+    <string name="list_animation_slider2">スライド オーバー</string>
+
+    <string name="pref_postprocessing_category" >効果処理&#8211;後</string>
+    <string name="pref_postprocessing_summary">追加の効果で、ページ表示を強化します</string>
+
+    <string name="pref_nightmode_title">夜間モード</string>
+    <string name="pref_nightmode_summary">黒の背景に白のテキスト (ネガ画像)</string>
+
+    <string name="pref_posimages_in_nightmode_title">夜間モードでポジ画像</string>
+    <string name="pref_posimages_in_nightmode_summary">夜間モードでグレースケール画像を表示します (画像の色を反転しません)</string>
+
+    <string name="pref_contrast_title">コントラスト</string>
+    <string name="pref_contrast_summary">コントラスト補正レベル (0 &#8211; 1000, デフォルトは 100)</string>
+
+    <string name="pref_gamma_title">ガンマ</string>
+    <string name="pref_gamma_summary">ガンマ補正レベル (0 &#8211; 200, デフォルトは 100)</string>
+
+    <string name="pref_exposure_title">露出</string>
+    <string name="pref_exposure_summary">露出補正レベル (0 &#8211; 200, デフォルトは 100)</string>
+
+    <string name="pref_autolevels_title">自動レベル</string>
+    <string name="pref_autolevels_summary">自動レベル補正を使用します</string>
+
+</resources>

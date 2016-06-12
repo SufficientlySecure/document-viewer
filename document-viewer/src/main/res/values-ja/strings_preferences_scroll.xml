@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_scroll_category">タップ、スワイプ、キー</string>
+    <string name="pref_scroll_category_summary">タップ、スワイプ、キーを押した時にデバイスが応答する方法を選択します</string>
+
+    <string name="pref_tapsenabled_title">タップを有効にする</string>
+    <string name="pref_tapsenabled_summary">タップの設定を使用して、タップ領域とアクションを定義します</string>
+
+    <string name="pref_scroll_title">スクロールの高さ</string>
+    <string name="pref_scroll_summary">画面に合わないページに対してスクロールの高さを設定します (デフォルト: 50%%)</string>
+
+    <string name="pref_touchdelay_title">タッチ処理遅延</string>
+    <string name="pref_touchdelay_summary">タッチ処理遅延 (ミリ秒)</string>
+
+    <string name="pref_animate_scrolling_title">スクロールのアニメーション</string>
+    <string name="pref_animate_scrolling_summary">スクロールモードでスクロールをアニメーション化します</string>
+
+</resources>

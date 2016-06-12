@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="bookmenu_open">本を開く...</string>
+    <string name="bookmenu_settings">本の設定を表示</string>
+    <string name="bookmenu_openbookshelf">本棚を表示</string>
+    <string name="bookmenu_openbookfolder">本フォルダーを表示</string>
+    <string name="bookmenu_recentgroup">最近使用したデータをクリア...</string>
+    <string name="bookmenu_removefromrecent">最近使用したから除外</string>
+    <string name="bookmenu_cleardata">キャッシュ済データをクリア</string>
+    <string name="bookmenu_deletesettings">本の設定を削除</string>
+    <string name="bookmenu_filegroup">ファイル操作..</string>
+    <string name="bookmenu_copy">本をコピー...</string>
+    <string name="bookmenu_rename">本の名前を変更...</string>
+    <string name="bookmenu_move">本を移動...</string>
+    <string name="bookmenu_delete">本を削除</string>
+
+</resources>

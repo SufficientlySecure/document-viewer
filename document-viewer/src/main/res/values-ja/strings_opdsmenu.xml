@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="opdsupfolder">上へ</string>
+    <string name="opdsrefreshfolder">更新</string>
+    <string name="opdsprevfolder">前の章</string>
+    <string name="opdsnextfolder">次の章</string>
+    <string name="opds_feed_add">追加</string>
+    <string name="opdsclose">閉じる</string>
+
+    <string name="opds_book_download">ダウンロード</string>
+
+    <string name="opdsgoto">開く</string>
+
+    <string name="opds_feed_edit">編集</string>
+    <string name="opds_feed_delete">削除</string>
+    
+</resources>

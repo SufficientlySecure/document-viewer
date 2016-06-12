@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_brfiletypespecific_title">形式固有</string>
+    <string name="pref_brfiletypespecific_summary">個々のファイル形式に固有の設定</string>
+
+    <string name="pref_brfiletypespecificdjvu_title">DJVU</string>
+    <string name="pref_brfiletypespecificdjvu_summary">DJVU 形式固有の設定</string>
+
+    <string name="pref_djvu_rendering_mode_title">レンダリング モード</string>
+    <string name="pref_djvu_rendering_mode_summary">ページ レンダリング モード</string>
+
+    <string name="list_djvu_rendering_mode_0">カラー</string>
+    <string name="list_djvu_rendering_mode_1">黒</string>
+    <string name="list_djvu_rendering_mode_2">カラーのみ</string>
+    <string name="list_djvu_rendering_mode_3">マスクのみ</string>
+    <string name="list_djvu_rendering_mode_4">背景のみ</string>
+    <string name="list_djvu_rendering_mode_5">前景のみ</string>
+
+    <string name="pref_brfiletypespecificpdf_title">PDF</string>
+    <string name="pref_brfiletypespecificpdf_summary">PDF 形式固有の設定</string>
+
+    <string name="pref_customdpi_title">カスタム DPI を使用する</string>
+    <string name="pref_customdpi_summary">以下のカスタム DPI (ドット パー インチ) 値を定義します</string>
+
+    <string name="pref_xdpi_title">X DPI</string>
+    <string name="pref_xdpi_summary">横 (X 方向) DPI</string>
+
+    <string name="pref_ydpi_title">Y DPI</string>
+    <string name="pref_ydpi_summary">縦 (Y 方向) DPI</string>
+
+    <string name="pref_monofontpack_title">Monospace フォントファミリー</string>
+    <string name="pref_monofontpack_summary">Monospace フォントファミリーに使用するフォントパックを指定します</string>
+
+    <string name="pref_sansfontpack_title">Sans フォントファミリー</string>
+    <string name="pref_sansfontpack_summary">Sans フォントファミリーに使用するフォントパックを指定します</string>
+
+    <string name="pref_seriffontpack_title">Serif フォントファミリー</string>
+    <string name="pref_seriffontpack_summary">Serif フォントファミリーに使用するフォントパックを指定します</string>
+
+    <string name="pref_symbolfontpack_title">Symbol フォントファミリー</string>
+    <string name="pref_symbolfontpack_summary">Symbol フォントファミリーに使用するフォントパックを指定します</string>
+
+    <string name="pref_dingbatfontpack_title">Dingbat フォントファミリー</string>
+    <string name="pref_dingbatfontpack_summary">Dingbat フォントファミリーに使用するフォントパックを指定します</string>
+
+    <string name="pref_systemfontpack">デフォルト Android フォントを使用する</string>
+
+    <string name="pref_slowcmyk_title">遅い CMYK</string>
+    <string name="pref_slowcmyk_summary">遅いけれども正確な CMYK から RGB へのアルゴリズムを使用する</string>
+
+    <string name="pref_brfiletypespecificfb2_title">FB2</string>
+    <string name="pref_brfiletypespecificfb2_summary">FB2 形式固有の設定</string>
+
+    <string name="pref_fb2_xmlparser_title">XML パーサー</string>
+    <string name="pref_fb2_xmlparser_summary">XML パーサー</string>
+
+    <string name="list_fb2_xmlparser_vtd_ex">VTD ベース</string>
+    <string name="list_fb2_xmlparser_duckbill">ダム &amp; ダーティ</string>
+
+    <string name="pref_fontsize_title">フォントサイズ</string>
+    <string name="pref_fontsize_summary">ベース フォント サイズ</string>
+
+    <string name="pref_fb2fontpack_title">FB2 フォントファミリー</string>
+    <string name="pref_fb2fontpack_summary">FB2 レンダリングで使用するフォントパックを指定します</string>
+
+    <string name="list_fontsize_tiny">最小</string>
+    <string name="list_fontsize_small">小</string>
+    <string name="list_fontsize_normal">標準</string>
+    <string name="list_fontsize_large">大</string>
+    <string name="list_fontsize_huge">最大</string>
+
+    <string name="pref_fb2hyphen_title">ハイフネーションを使用する</string>
+    <string name="pref_fb2hyphen_summary">実験的なハイフネーション実装</string>
+
+    <string name="pref_fb2cacheimages_title">ディスク上にイメージをキャッシュ</string>
+    <string name="pref_fb2cacheimages_summary">メモリ使用量を減らすために、ディスク上に文書イメージを保存します</string>
+</resources>

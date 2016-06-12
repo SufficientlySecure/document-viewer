@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_browser_category">ファイルブラウザー</string>
+    <string name="pref_browser_category_summary">ファイルブラウザーとファイル種類の設定</string>
+
+    <string name="pref_usebookcase_title">本棚表示を使用する</string>
+    <string name="pref_usebookcase_summary">リストの代わりに本棚表示を使用します</string>
+
+    <string name="pref_brautoscandir_title">ディレクトリーの自動スキャン</string>
+    <string name="pref_brautoscandir_summary">ディレクトリーを自動ファイル検索します</string>
+
+    <string name="pref_autoscanremovable_title">取り外しメディアの自動スキャン</string>
+    <string name="pref_autoscanremovable_summary">挿入された取り外しメディアを自動スキャンします</string>
+
+    <string name="pref_showremovable_title">取り外しメディアを表示</string>
+    <string name="pref_showremovable_summary">ストレージメニューに取り外しメディアを表示します</string>
+
+    <string name="pref_showscanning_title">スキャンディレクトリーを表示</string>
+    <string name="pref_showscanning_summary">ストレージメニューに自動スキャンディレクトリーを表示します</string>
+
+    <string name="pref_shownotifications_title">通知を表示</string>
+    <string name="pref_shownotifications_summary">追加/削除したファイルに関して通知を表示します</string>
+
+    <string name="pref_cachelocation_title">キャッシュの場所</string>
+    <string name="pref_cachelocation_summary">ファイルキャッシュの場所</string>
+    <string name="list_cachelocation_system">システムアプリのキャッシュ</string>
+    <string name="list_cachelocation_custom">SD カードアプリのキャッシュ</string>
+
+    <string name="pref_brbrfiletypesscreen_title">ファイルの種類</string>
+    <string name="pref_brbrfiletypesscreen_summary">ライブラリーに表示するファイルの種類</string>
+
+    <string name="pref_brfiletypedjvu_title">.djvu</string>
+    <string name="pref_brfiletypedjvu_summary">DjVu ファイルを表示します</string>
+
+    <string name="pref_brfiletypedjv_title">.djv</string>
+    <string name="pref_brfiletypedjv_summary">DjV ファイルを表示します</string>
+
+    <string name="pref_brfiletypepdf_title">.pdf</string>
+    <string name="pref_brfiletypepdf_summary">PDF ファイルを表示します</string>
+
+    <string name="pref_brfiletypexps_title">.xps</string>
+    <string name="pref_brfiletypexps_summary">XPS ファイルを表示します</string>
+
+    <string name="pref_brfiletypeoxps_title">.oxps</string>
+    <string name="pref_brfiletypeoxps_summary">OXPS ファイルを表示します</string>
+
+    <string name="pref_brfiletypeepub_title">.epub</string>
+    <string name="pref_brfiletypeepub_summary">EPUB ファイルを表示します</string>
+
+    <string name="pref_brfiletypecbz_title">.cbz</string>
+    <string name="pref_brfiletypecbz_summary">CBZ ファイルを表示します</string>
+
+    <string name="pref_brfiletypecbr_title">.cbr</string>
+    <string name="pref_brfiletypecbr_summary">CBR ファイルを表示します</string>
+
+    <string name="pref_brfiletypefb2_title">.fb2</string>
+    <string name="pref_brfiletypefb2_summary">FB2 ファイルを表示します</string>
+
+    <string name="pref_brfiletypefb2.zip_title">.fb2.zip</string>
+    <string name="pref_brfiletypefb2.zip_summary">FB2.ZIP ファイルを表示します</string>
+
+</resources>

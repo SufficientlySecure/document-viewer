@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_backup_category">バックアップ &amp; 復元設定</string>
+    <string name="pref_backup_category_summary">バックアップと復元の設定</string>
+
+    <string name="pref_backuponexit_title">アプリ終了時に自動バックアップ</string>
+    <string name="pref_backuponexit_summary">アプリケーションの終了時に、自動的にバックアップする設定</string>
+
+    <string name="pref_backuponbookclose_title">本を閉じた時に自動バックアップ</string>
+    <string name="pref_backuponbookclose_summary">文書を閉じた時に、自動的にバックアップする設定</string>
+
+    <string name="pref_maxnumberofautobackups_title">自動バックアップの数</string>
+    <string name="pref_maxnumberofautobackups_summary">保存する自動バックアップの最大数</string>
+
+    <string name="pref_bookbackuptype_title">本の設定のバックアップ</string>
+    <string name="pref_bookbackuptype_summary">本の設定のバックアップ</string>
+
+    <string name="list_bookbackuptype_none">なし</string>
+    <string name="list_bookbackuptype_recent">最近使用した</string>
+    <string name="list_bookbackuptype_all">すべて</string>
+
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="manual_cropping_title">カスタム トリミング オプション (単一のページが必要):</string>
+    <string name="manual_cropping_current">現在のページのみトリミング</string>
+    <string name="manual_cropping_even">すべての偶数 (奇数) ページをトリミング</string>
+    <string name="manual_cropping_even_symm">対称的に、各偶数と奇数ページをトリミング</string>
+	<string name="manual_cropping_all">すべてのページをトリミング</string>
+    <string name="manual_cropping_remove_current">現在のページからトリミング設定を削除</string>
+    <string name="manual_cropping_remove_all">すべてのトリミング設定を削除</string>
+    <string name="manual_cropping_back">範囲選択に戻る</string>
+
+</resources>

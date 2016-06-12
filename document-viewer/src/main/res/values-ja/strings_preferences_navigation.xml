@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_navigation_category">ナビゲーション &amp; 履歴</string>
+    <string name="pref_navigation_category_summary">ナビゲーション &amp; 履歴の設定</string>
+
+    <string name="pref_showbookmarksmenu_summary">メニューにブックマークを表示</string>
+    <string name="pref_showbookmarksmenu_title">ナビゲーションメニューにブックマークを表示します</string>
+
+    <string name="pref_link_highlight_summary">"リンク ハイライト表示の選択した色"</string>
+    <string name="pref_link_highlight_title">"リンク ハイライト"</string>
+
+    <string name="pref_search_highlight_summary">"検索結果ハイライト表示の選択した色"</string>
+    <string name="pref_search_highlight_title">"検索ハイライト"</string>
+
+    <string name="pref_current_search_highlight_summary">"現在の検索結果ハイライト表示の選択した色"</string>
+    <string name="pref_current_search_highlight_title">"現在の検索ハイライト"</string>
+
+    <string name="pref_storeGotoHistory_title">移動ページをナビゲーション履歴に保存</string>
+    <string name="pref_storeGotoHistory_summary"></string>
+
+    <string name="pref_storeLinkGotoHistory_title">移動リンクをナビゲーション履歴に保存</string>
+    <string name="pref_storeLinkGotoHistory_summary"></string>
+
+    <string name="pref_storeOutlineGotoHistory_title">移動アウトラインをナビゲーション履歴に保存</string>
+    <string name="pref_storeOutlineGotoHistory_summary"></string>
+
+    <string name="pref_storeSearchGotoHistory_title">移動検索結果をナビゲーション履歴に保存</string>
+    <string name="pref_storeSearchGotoHistory_summary"></string>
+
+</resources>

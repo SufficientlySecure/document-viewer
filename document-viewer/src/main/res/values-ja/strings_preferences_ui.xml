@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_ui_category">ユーザーインターフェイス</string>
+    <string name="pref_ui_category_summary">ユーザーインターフェイス設定</string>
+
+    <string name="pref_lang_title">言語</string>
+    <string name="pref_lang_summary">ユーザーインターフェイスの言語 (再起動が必要)</string>
+
+    <string name="list_lang_default">System</string>
+    <string name="list_lang_en">English</string>
+    <string name="list_lang_de">German (Deutsch)</string>
+    <string name="list_lang_es">Spanish (Español)</string>
+    <string name="list_lang_fr">French (Française)</string>
+    <string name="list_lang_it">Italian (Italiano)</string>
+    <string name="list_lang_nl">Dutch (Nederlands)</string>
+    <string name="list_lang_ru">Russian (Русский)</string>
+    <string name="list_lang_uk">Ukrainian (Український)</string>
+    <string name="list_lang_zh">Chinese Simplified (中文简体)</string>
+    <string name="list_lang_iw">Hebrew (עברית)</string>
+    <string name="list_lang_ko">Korean (한국어)</string>
+    <string name="list_lang_ja">Japanese (日本語)</string>
+
+    <string name="pref_loadrecent_title">最近使用した本を読み込む</string>
+    <string name="pref_loadrecent_summary">アプリ起動時に、最後に開いた本を読み込みます</string>
+
+    <string name="pref_confirmclose_title">閉じる時に確認</string>
+    <string name="pref_confirmclose_summary">戻るを押した時に、閉じる確認をします</string>
+
+    <string name="pref_brightness_title">輝度</string>
+    <string name="pref_brightness_summary">画像全体の明るさを設定します (0&#8211;100)</string>
+
+    <string name="pref_brightnessnightmodeonly_title">夜間モードの輝度</string>
+    <string name="pref_brightnessnightmodeonly_summary">夜間モードでのみ設定する、明るさの設定</string>
+
+    <string name="pref_keepscreenon_title">画面をオンのままにする</string>
+    <string name="pref_keepscreenon_summary">読書時に画面をオフにしません (休止状態にしません)</string>
+
+    <string name="pref_fullscreen_title">全画面</string>
+    <string name="pref_fullscreen_summary">ステータスバーを非表示にします</string>
+
+    <string name="pref_title_title">タイトルを表示</string>
+    <string name="pref_title_summary">文書のタイトルを表示します (文書を再度開く必要があります)</string>
+
+    <string name="pref_pageintitle_title">タイトルにページ</string>
+    <string name="pref_pageintitle_summary">タイトルバーにページ番号を表示します</string>
+
+    <string name="pref_pagenumbertoastposition_title">ページ番号トーストの位置</string>
+    <string name="pref_pagenumbertoastposition_summary">ページ番号トーストの位置</string>
+
+    <string name="pref_zoomtoastposition_title">ズーム トーストの位置</string>
+    <string name="pref_zoomtoastposition_summary">ズーム トーストの位置</string>
+
+    <string name="list_toastposition_invisible">表示しない</string>
+    <string name="list_toastposition_lefttop">左上角</string>
+    <string name="list_toastposition_righttop">右上角</string>
+    <string name="list_toastposition_leftbottom">左下角</string>
+    <string name="list_toastposition_bottom">下</string>
+    <string name="list_toastposition_righbottom">右下角</string>
+
+    <string name="pref_showanimicon_title">アニメーション アイコンを表示</string>
+    <string name="pref_showanimicon_summary">アニメーションやドラッグが有効になっている時に、アニメーションやドラッグ アイコンを表示します</string>
+
+</resources>

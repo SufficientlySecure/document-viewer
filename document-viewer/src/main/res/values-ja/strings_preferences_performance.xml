@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_performance_category">パフォーマンス設定</string>
+    <string name="pref_performance_category_summary">パフォーマンス設定</string>
+
+    <string name="pref_pagesinmemory_title">メモリー中のページ数</string>
+    <string name="pref_pagesinmemory_summary">メモリーに保存するページ数</string>
+
+    <string name="pref_lowlevel_category">低レベル アプリケーション設定 (文書を再読み込みした後に適用されます)</string>
+    <string name="pref_lowlevel_category_summary">低レベル アプリケーション設定 (文書を再読み込みした後に適用されます)</string>
+
+    <string name="pref_decoding_threads_title">"デコード スレッドの数"</string>
+    <string name="pref_decoding_threads_summary">"デコード スレッドの数"</string>
+
+    <string name="pref_decodethread_priority_title">デコード スレッド優先度</string>
+    <string name="pref_decodethread_priority_summary">デコード スレッド優先度を定義します</string>
+
+    <string name="pref_drawthread_priority_title">GL 描画スレッド優先度</string>
+    <string name="pref_drawthread_priority_summary">GL 描画スレッド優先度を定義します</string>
+
+    <string name="list_thread_priority_lowest">最低</string>
+    <string name="list_thread_priority_lower">低</string>
+    <string name="list_thread_priority_normal">標準</string>
+    <string name="list_thread_priority_higher">高</string>
+    <string name="list_thread_priority_highest">最高</string>
+
+    <string name="pref_decodingonscroll_title">スクロール中にデコード</string>
+    <string name="pref_decodingonscroll_summary">スクロール中またはジャンプ中のページのデコードを許可します</string>
+
+    <string name="pref_bitmapsize_title">テクスチャ ビットマップ サイズ</string>
+    <string name="pref_bitmapsize_summary">テクスチャ部分のサイズを定義します</string>
+
+    <string name="list_bitmapsize_64">"64 × 64"</string>
+    <string name="list_bitmapsize_128">"128 × 128"</string>
+    <string name="list_bitmapsize_256">"256 × 256"</string>
+    <string name="list_bitmapsize_512">"512 × 512"</string>
+    <string name="list_bitmapsize_1024">"1024 × 1024"</string>
+
+    <string name="pref_heappreallocate_title">ヒープ事前割り当て</string>
+    <string name="pref_heappreallocate_summary">アプリケーション起動時のヒープ事前割り当てのサイズ (M バイト)</string>
+
+    <string name="pref_pdfstoragesize_title">MuPDF 内部ストレージ サイズ</string>
+    <string name="pref_pdfstoragesize_summary">MuPDF 内部ストレージのサイズ (M バイト)</string>
+
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="actions_verticalConfigScrollUp">後ろにスクロール</string>
+    <string name="actions_verticalConfigScrollDown">前にスクロール/string>
+    <string name="actions_quickZoom">クイックズーム</string>
+    <string name="actions_zoomToColumn">カラムにズーム</string>
+    <string name="actions_leftTopCorner">左上ページ角にスクロール</string>
+    <string name="actions_rightTopCorner">右上ページ角にスクロール</string>
+    <string name="actions_leftBottomCorner">左下ページ角にスクロール</string>
+    <string name="actions_rightBottomCorner">右下ページ角にスクロール</string>
+
+</resources>

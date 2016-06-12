@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="menu_close">閉じる</string>
+    <string name="menu_goto_page">移動...</string>
+    <string name="menu_outline">アウトライン</string>
+    <string name="menu_zoom">ズーム</string>
+    <string name="menu_nightmode">日中/夜間</string>
+    <string name="menu_settings">すべての設定</string>
+    <string name="menu_booksettings">本の設定</string>
+    <string name="menu_cleanrecent">最近使用したをクリア</string>
+    <string name="menu_add_bookmark">ブックマークを追加</string>
+    <string name="menu_edit_bookmark">ブックマークを編集</string>
+    <string name="menu_thumbnail">サムネイルとして設定</string>
+    <string name="menu_about">アプリについて</string>
+    <string name="menu_tap_configuration">タップの設定</string>
+    <string name="menu_key_bindings">キーの設定</string>
+    <string name="menu_searchbook">本を検索</string>
+    <string name="menu_searchtext">文字列の検索</string>
+    <string name="menu_show_options_menu">オプションメニューを表示</string>
+    <string name="menu_backupsettings">バックアップ &amp; 復元</string>
+    <string name="menu_crop">手動クロップ</string>
+
+    <string name="menu_navigation_menu">ナビゲーション...</string>
+    <string name="menu_fastsettings_menu">表示...</string>
+    <string name="menu_allsettings_menu">設定...</string>
+
+    <string name="menu_share">共有...</string>
+    <string name="menu_openwith">...で開く</string>
+
+    <string name="menu_show_library">ライブラリーを表示</string>
+    <string name="menu_show_recent">最近使用したを表示</string>
+    <string name="menu_storages">ストレージ</string>
+    <string name="menu_storages_filesystem">ファイルシステム</string>
+    <string name="menu_storages_external">SD カード</string>
+
+    <string name="menu_force_portrait">強制的に縦向き</string>
+    <string name="menu_force_landscape">強制的に横向き</string>
+</resources>

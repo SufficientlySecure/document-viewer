@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_opds_category">OPDS 設定</string>
+    <string name="pref_opds_category_summary">OPDS ブラウザー設定</string>
+
+    <string name="pref_opds_downloaddir_title">ダウンロード フォルダー</string>
+    <string name="pref_opds_downloaddir_summary">ダウンロード先</string>
+
+    <string name="pref_opds_filterbooktypes_title">本の種類をフィルダー</string>
+    <string name="pref_opds_filterbooktypes_summary">サポートしない本の種類を除外します</string>
+
+    <string name="pref_opds_downloadarchives_title">ZIP された本をダウンロード</string>
+    <string name="pref_opds_downloadarchives_summary">ZIP された本をダウンロードします</string>
+
+    <string name="pref_opds_unpackarchives_title">ZIP された本を展開</string>
+    <string name="pref_opds_unpackarchives_summary">ダウンロードした後に ZIP された本を展開します</string>
+
+    <string name="pref_opds_deletearchives_title">ZIP された本を削除</string>
+    <string name="pref_opds_deletearchives_summary">展開した後に ZIP された本を削除します</string>
+
+</resources>

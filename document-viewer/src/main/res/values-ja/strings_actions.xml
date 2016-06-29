@@ -2,7 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="actions_verticalConfigScrollUp">後ろにスクロール</string>
-    <string name="actions_verticalConfigScrollDown">前にスクロール/string>
+    <string name="actions_verticalConfigScrollDown">前にスクロール</string>
     <string name="actions_quickZoom">クイックズーム</string>
     <string name="actions_zoomToColumn">カラムにズーム</string>
     <string name="actions_leftTopCorner">左上ページ角にスクロール</string>

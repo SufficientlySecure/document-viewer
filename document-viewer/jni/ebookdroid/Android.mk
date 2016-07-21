@@ -33,4 +33,14 @@ LOCAL_STATIC_LIBRARIES := djvu mupdfcore mupdfthirdparty
 # uses Android log and z library (Android-3 Native API)
 LOCAL_LDLIBS := -llog -lz
 
+# Hack to work around "error: undefined reference to 'sigsetjmp'" link errors 
+# when linking x86 and mips libebookdroid.so with NDK r12b.
+# Seems to be an old bug resurfaced? https://code.google.com/p/android/issues/detail?id=19851
+ifeq ($(TARGET_ARCH_ABI),x86)
+	LOCAL_ALLOW_UNDEFINED_SYMBOLS := true
+endif # TARGET_ARCH_ABI == x86
+ifeq ($(TARGET_ARCH_ABI),mips)
+	LOCAL_ALLOW_UNDEFINED_SYMBOLS := true
+endif # TARGET_ARCH_ABI == mips
+
 include $(BUILD_SHARED_LIBRARY)

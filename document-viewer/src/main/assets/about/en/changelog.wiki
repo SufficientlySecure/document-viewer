@@ -1,5 +1,13 @@
 #labels Featured
 
+= DV v2.7.6 =
+== New features ==
+* Japanese translation
+
+== Bug fixes ==
+* Fix crash on launch on API 24
+* Fix build with NDK r12b
+
 = DV v2.7.5 =
 == New features ==
 * Automatic rotation option added to Book Settings

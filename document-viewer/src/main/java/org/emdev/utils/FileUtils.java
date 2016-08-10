@@ -24,19 +24,24 @@ public final class FileUtils {
     private static ArrayList<String> aliasesPR = new ArrayList<String>();
 
     static {
-        for (final File f : new File("/").listFiles()) {
-            if (f.isDirectory()) {
-                try {
-                    final String cp = f.getCanonicalPath();
-                    final String ap = f.getAbsolutePath();
-                    if (!cp.equals(ap)) {
-                        aliases.add(ap);
-                        aliasesPR.add(ap + "/");
-                        mounts.add(cp);
-                        mountsPR.add("/");
+        File root = new File("/");
+        File[] rootList = root.listFiles();
+
+        if (rootList != null) {
+            for (final File f : rootList) {
+                if (f.isDirectory()) {
+                    try {
+                        final String cp = f.getCanonicalPath();
+                        final String ap = f.getAbsolutePath();
+                        if (!cp.equals(ap)) {
+                            aliases.add(ap);
+                            aliasesPR.add(ap + "/");
+                            mounts.add(cp);
+                            mountsPR.add("/");
+                        }
+                    } catch (final IOException ex) {
+                        System.err.println(ex.getMessage());
                     }
-                } catch (final IOException ex) {
-                    System.err.println(ex.getMessage());
                 }
             }
         }

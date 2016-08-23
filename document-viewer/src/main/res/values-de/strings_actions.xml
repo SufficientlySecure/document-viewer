@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-<!--<string name="actions_verticalConfigScrollUp">"Scroll Back"</string>-->
-<!--<string name="actions_verticalConfigScrollDown">"Scroll Forward"</string>-->
-<!--<string name="actions_quickZoom">"Quick zoom"</string>-->
-<!--<string name="actions_zoomToColumn">"Zoom to column"</string>-->
-<!--<string name="actions_leftTopCorner">"Scroll to left top page corner"</string>-->
-<!--<string name="actions_rightTopCorner">"Scroll to right top page corner"</string>-->
-<!--<string name="actions_leftBottomCorner">"Scroll to left bottom page corner"</string>-->
-<!--<string name="actions_rightBottomCorner">"Scroll to right bottom page corner"</string>-->
+<string name="actions_verticalConfigScrollUp">"Bildlauf zurück"</string>-->
+    <string name="actions_verticalConfigScrollDown">"Bildlauf vorwärts"</string>
+    <string name="actions_quickZoom">"Schnelle Vergrößerung"</string>
+    <string name="actions_zoomToColumn">"Auf Spaltenbreite vergrößern"</string>-->
+    <string name="actions_leftTopCorner">"Springe auf Seite nach links oben"</string>-->
+    <string name="actions_rightTopCorner">"Springe auf Seite nach rechts oben"</string>
+    <string name="actions_leftBottomCorner">"Springe auf Seite nach links unten"</string>-->
+    <string name="actions_rightBottomCorner">"Springe auf Seite nach rechts unten"</string>-->
 
 </resources>

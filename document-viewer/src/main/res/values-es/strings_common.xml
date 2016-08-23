@@ -4,9 +4,9 @@
 <!--<string name="app_name">"Document Viewer"</string>-->
     <string name="confirmclose_title">"Cerrando visor…"</string>
     <string name="confirmclose_msg">"¿Realmente quieres cerrar el visor?"</string>
-<!--<string name="confirmsave_msg">"Would you like to save this document?"</string>-->
-<!--<string name="confirmsave_yes_btn">"Save and close"</string>-->
-<!--<string name="confirmsave_no_btn">"Close"</string>-->
+    <string name="confirmsave_msg">"¿Queréis almacenar este documento?"</string>
+    <string name="confirmsave_yes_btn">"Almacenar y cerrar"</string>
+    <string name="confirmsave_no_btn">"Cerrar"</string>-->
     <string name="error_dlg_title">"Error en la aplicación"</string>
     <string name="msg_bad_intent">"Intent o esquema erróneos:\n%s"</string>
     <string name="msg_no_intent_data">"No hay datos en el Intent:\n%s"</string>
@@ -27,7 +27,7 @@
     <string name="dialog_backup_remove">"Eliminar…"</string>
     <string name="add_bookmark_name">"Introduzca una descripción para el marcador"</string>
     <string name="bookmark_start">"Inicio"</string>
-<!--<string name="bookmark_current">"Current position"</string>-->
+    <string name="bookmark_current">"Posición actual"</string>
     <string name="bookmark_end">"Fin"</string>
     <string name="bookmark_invalid_page">"Número de página inválido. Rango: %1$d-%2$d"</string>
     <string name="bookmarks_title">"Marcadores"</string>
@@ -43,7 +43,7 @@
     <string name="list_clear_recent_mode_delete_bookmarks">"Eliminar todos los marcadores"</string>
     <string name="list_clear_recent_mode_delete_book_settings">"Eliminar todos los ajustes de los libros"</string>
     <string name="list_clear_recent_mode_delete_cached_data">"Eliminar todos los archivos almacenados en caché"</string>
-<!--<string name="about_prefix">"en"</string>-->
+    <string name="about_prefix">"es"</string>
     <string name="about_title">"Acerca del programa"</string>
     <string name="about_commmon_title">"Información general"</string>
     <string name="about_fonts_title">"Fuentes"</string>
@@ -51,7 +51,7 @@
     <string name="about_3dparty_title">"Software de terceros"</string>
     <string name="about_changelog_title">"Modificaciones"</string>
     <string name="about_thanks_title">"Agradecimientos"</string>
-<!--<string name="about_donations">"Donations"</string>-->
+    <string name="about_donations">"Donativos"</string>-->
     <string name="opds">"Navegador OPDS"</string>
     <string name="menu_opds">"Navegador OPDS"</string>
     <string name="opds_connecting">"Conectando…"</string>
@@ -119,6 +119,6 @@
     <string name="font_reminder">"A partir de la versión 1.5, las fuentes de PDF y FB2 ya no están incluidas en la aplicación. Se usarán las fuentes estándar del sistema. Si quieres restablecer las fuentes antiguas o instalar otras, utiliza por favor los paquetes de instalación de fuentes de la Play Store: &lt;ul&gt;&lt;li&gt;&lt;a href=&quot;market://details?id=org.ebookdroid.fontpack.legacy&quot;&gt;Fuentes antiguas&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;"</string>
     <string name="cache_moving_text">"Moviendo los archivos en memoria…"</string>
     <string name="cache_moving_progress">"Moviendo los archivos en memoria %1$d/%2$d"</string>
-<!--<string name="error_invalid_view_mode">"This action is only available in view mode %1$s"</string>-->
+    <string name="error_invalid_view_mode">"Esta acción solamente está disponible en el modo de vista %1$s"</string>
 
 </resources>

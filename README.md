@@ -1,5 +1,9 @@
 # Document Viewer
 
+[<img src="https://f-droid.org/badge/get-it-on.png"
+      alt="Get it on F-Droid"
+      height="80">](https://f-droid.org/app/org.sufficientlysecure.viewer)
+
 Document Viewer is a highly customizable document viewer for Android.
 
 Supports the following formats:

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-<!--<string name="opdsupfolder">"Up"</string>-->
+    <string name="opdsupfolder">"Nach oben"</string>
     <string name="opdsrefreshfolder">"Aktualisieren"</string>
     <string name="opdsprevfolder">"Vorher. Abschnitt"</string>
     <string name="opdsnextfolder">"Nächster Abschnitt"</string>

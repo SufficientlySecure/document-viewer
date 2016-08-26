@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-<!--<string name="manual_cropping_title">"Custom crop options (requires single page):"</string>-->
-<!--<string name="manual_cropping_current">"Crop current page only"</string>-->
-<!--<string name="manual_cropping_even">"Crop all even (odd) pages"</string>-->
-<!--<string name="manual_cropping_even_symm">"Crop even and odd pages, symmetrically"</string>-->
-<!--<string name="manual_cropping_all">"Crop all pages"</string>-->
-<!--<string name="manual_cropping_remove_current">"Remove crop settings from current page(s)"</string>-->
-<!--<string name="manual_cropping_remove_all">"Remove all crop setting"</string>-->
-<!--<string name="manual_cropping_back">"Return to area selection"</string>-->
+    <string name="manual_cropping_title">"Eigene Zuschnittsoptionen (benötigt Einzelseite):"</string>
+    <string name="manual_cropping_current">"Nur aktuelle Seite zuschneiden"</string>
+    <string name="manual_cropping_even">"Alle geraden (ungeraden) S. zuschneiden"</string>
+    <string name="manual_cropping_even_symm">"Gerade und ungerade S. symmetrisch zuschn."</string>
+    <string name="manual_cropping_all">"Alle Seiten zuschneiden"</string>
+    <string name="manual_cropping_remove_current">"Zuschnittseinstellungen von aktueller/n S. entf."</string>
+    <string name="manual_cropping_remove_all">"Alle Zuschnittseinstellungen entf."</string>
+    <string name="manual_cropping_back">"Kehre zu Bereichsauswahl zurück"</string>
 
 </resources>

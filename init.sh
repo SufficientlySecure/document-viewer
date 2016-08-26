@@ -1,6 +1,7 @@
 #!/bin/bash
 
 git submodule update --init --recursive --force
+git submodule foreach --recursive git clean -dfx
 
 cd document-viewer/jni/mupdf/mupdf
 make generate

@@ -43,6 +43,6 @@
     <string name="list_toastposition_bottom">"Unten"</string>
     <string name="list_toastposition_righbottom">"Rechts unten"</string>
     <string name="pref_showanimicon_title">"Animationstyp anzeigen"</string>
-    <string name="pref_showanimicon_summary">"Animationstyp anzeigen, wenn Animation oder Drag and Drop-Funktion zugänglich sind"</string>
+    <string name="pref_showanimicon_summary">"Animationstyp anzeigen, wenn Funktionen 'Blättern' oder 'Ziehen' zugänglich sind"</string>
 
 </resources>

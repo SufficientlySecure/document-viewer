@@ -22,8 +22,10 @@ ext.versionCodes = ['armeabi': 1, 'armeabi-v7a':2, 'x86':3, 'mips':4, 'arm64-v8a
 import com.android.build.OutputFile
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion '24.0.1'
+    compileSdkVersion 24
+    buildToolsVersion '24.0.2'
+
+    useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         minSdkVersion 8

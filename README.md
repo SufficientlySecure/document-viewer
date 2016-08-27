@@ -18,6 +18,8 @@ Collaboration with electronic publication sites and access to online ebook catal
 
 FAQ, information about supported MIME types, and available Intents can be found in the [Wiki](https://github.com/dschuermann/document-viewer/wiki).
 
+## [Changelog](https://raw.githubusercontent.com/SufficientlySecure/document-viewer/HEAD/document-viewer/src/main/assets/about/en/changelog.wiki)
+
 ## Development
 
 Document Viewer is a fork of the last GPL version of EBookDroid (http://code.google.com/p/ebookdroid/).

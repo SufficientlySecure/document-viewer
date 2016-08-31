@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="actions_verticalConfigScrollUp">"Deslazar hacia arriba"</string>
+    <string name="actions_verticalConfigScrollUp">"Desplazar hacia arriba"</string>
     <string name="actions_verticalConfigScrollDown">"Desplazar hacia abajo"</string>
     <string name="actions_quickZoom">"Ampliación rápida"</string>
     <string name="actions_zoomToColumn">"Ampliar a columna"</string>
-<!--<string name="actions_leftTopCorner">"Scroll to left top page corner"</string>-->
-<!--<string name="actions_rightTopCorner">"Scroll to right top page corner"</string>-->
-<!--<string name="actions_leftBottomCorner">"Scroll to left bottom page corner"</string>-->
-<!--<string name="actions_rightBottomCorner">"Scroll to right bottom page corner"</string>-->
+    <string name="actions_leftTopCorner">"Desplazar hacia la esquina arriba a la izquierda"</string>
+    <string name="actions_rightTopCorner">"Desplazar hacia la esquina arriba a la derecha"</string>
+    <string name="actions_leftBottomCorner">"Desplazar hacia la esquina abajo a la izquierda"</string>
+    <string name="actions_rightBottomCorner">"Desplazar hacia la esquina abajo a la derecha"</string>
 
 </resources>

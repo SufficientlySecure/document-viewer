@@ -7,7 +7,7 @@
     <string name="list_rotation_land">"Forzar apaisado"</string>
     <string name="list_rotation_port">"Forzar retrato"</string>
     <string name="list_rotation_user">"Usuario"</string>
-<!--<string name="list_rotation_behind">"Inherit from background"</string>-->
+    <string name="list_rotation_behind">"Heredar del fondo"</string>-->
     <string name="list_rotation_auto">"Automático"</string>
     <string name="list_rotation_nosensor">"Pasar de sensores"</string>
     <string name="list_rotation_sensor_landscape">"Sensor apaisado"</string>
@@ -19,12 +19,12 @@
     <string name="pref_render_category_summary">"Configuración de la Representación"</string>
     <string name="pref_book_category">"Configuración del libro"</string>
     <string name="pref_book_category_summary">"Configuración para el libro actual"</string>
-<!--<string name="pref_firstpageoffset_title">"First page offset"</string>-->
-<!--<string name="pref_firstpageoffset_summary">"Index of first page shown to user"</string>-->
+    <string name="pref_firstpageoffset_title">"Distancia de primera página"</string>
+    <string name="pref_firstpageoffset_summary">"Indice de la primera página presentada al usuario"</string>-->
     <string name="pref_splitpages_title">"Dividir páginas"</string>
     <string name="pref_splitpages_summary">"Dividir páginas apaisadas en dos de tipo retrato"</string>
-<!--<string name="pref_splitpages_rtl_title">"Split pages right-to-left"</string>-->
-<!--<string name="pref_splitpages_rtl_summary">"Split landscape pages into two portrait pages right-to-left"</string>-->
+    <string name="pref_splitpages_rtl_title">"Dividir páginas derecha-a-izquierda"</string>
+    <string name="pref_splitpages_rtl_summary">"Dividir páginas apaisadas con dirección derecha-a-izquierda en dos de tipo retrato"</string>
     <string name="pref_croppages_title">"Recortar las páginas"</string>
     <string name="pref_croppages_summary">"Recortar los márgenes de las páginas (experimental)"</string>
     <string name="pref_viewmode_title">"Modo de visualizado"</string>
@@ -56,11 +56,11 @@
     <string name="pref_posimages_in_nightmode_title">"Imágenes positivas en modo nocturno"</string>
     <string name="pref_posimages_in_nightmode_summary">"Mostrar las imágenes en escala de grises en modo nocturno (no invertir los colores de la imagen)"</string>
     <string name="pref_contrast_title">"Contraste"</string>
-    <string name="pref_contrast_summary">"Nivel de corrección de contraste (0 – 1000, 100 por defecto)"</string>
-<!--<string name="pref_gamma_title">"Gamma"</string>-->
-<!--<string name="pref_gamma_summary">"Gamma correction level (0 – 200, 100 by default)"</string>-->
+    <string name="pref_contrast_summary">"Nivel de corrección de contraste (0–1000, 100 por defecto)"</string>
+    <string name="pref_gamma_title">"Gamma"</string>
+    <string name="pref_gamma_summary">"Nivel de corrección de gamma (0–200, 100 por defecto)"</string>
     <string name="pref_exposure_title">"Exposición"</string>
-    <string name="pref_exposure_summary">"Nivel de corrección de exposición (0 – 200, 100 por defecto)"</string>
+    <string name="pref_exposure_summary">"Nivel de corrección de exposición (0–200, 100 por defecto)"</string>
     <string name="pref_autolevels_title">"Auto ajustar niveles"</string>
     <string name="pref_autolevels_summary">"Ajustar automáticamente los niveles de corrección"</string>
 

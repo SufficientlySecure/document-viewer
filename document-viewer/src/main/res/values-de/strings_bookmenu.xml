@@ -6,7 +6,7 @@
     <string name="bookmenu_openbookshelf">"Büchergestell zeigen"</string>
     <string name="bookmenu_openbookfolder">"Zeige Speicherort"</string>
     <string name="bookmenu_recentgroup">"Verlauf löschen"</string>
-<!--<string name="bookmenu_removefromrecent">"Exclude from recents"</string>-->
+    <string name="bookmenu_removefromrecent">"Aus Verlauf ausschließen"</string>
     <string name="bookmenu_cleardata">"Cache leeren"</string>
     <string name="bookmenu_deletesettings">"Buchteinstellungen entfernen"</string>
     <string name="bookmenu_filegroup">"Dateioperationen"</string>

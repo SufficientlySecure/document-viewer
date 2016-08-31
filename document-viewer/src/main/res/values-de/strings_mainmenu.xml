@@ -4,7 +4,7 @@
     <string name="menu_close">"Schließen"</string>
     <string name="menu_goto_page">"Seite"</string>
     <string name="menu_outline">"Inhaltsverzeichnis"</string>
-<!--<string name="menu_zoom">"Zoom"</string>-->
+    <string name="menu_zoom">"Vergrößern"</string>
     <string name="menu_nightmode">"Tag/Nacht"</string>
     <string name="menu_settings">"Alle Einstellungen"</string>
     <string name="menu_booksettings">"Bucheinstellungen"</string>
@@ -14,7 +14,7 @@
     <string name="menu_thumbnail">"Als Deckblatt einstellen"</string>
     <string name="menu_about">"Info"</string>
     <string name="menu_tap_configuration">"Taps konfigurieren"</string>
-<!--<string name="menu_key_bindings">"Configure keys"</string>-->
+    <string name="menu_key_bindings">"Tasten konfigurieren"</string>
     <string name="menu_searchbook">"Bücher suchen"</string>
     <string name="menu_searchtext">"Text suchen"</string>
     <string name="menu_show_options_menu">"Optionsmenü anzeigen"</string>

@@ -1,35 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="pref_performance_category">"Performance-Einstellungen"</string>
+    <string name="pref_performance_category">"Leistungs-Einstellungen"</string>
     <string name="pref_performance_category_summary">"Einstellungen, welche die Leistung beinflussen"</string>
-    <string name="pref_pagesinmemory_title">"Seiten im Speicher"</string>
-    <string name="pref_pagesinmemory_summary">"Anzahl der gespeicherten Seiten"</string>
-<!--<string name="pref_lowlevel_category">"Low level application preferences (Applied after document reload)"</string>-->
-<!--<string name="pref_lowlevel_category_summary">"Low level application preferences (Applied after document reload)"</string>-->
-<!--<string name="pref_decoding_threads_title">"Number of decoding threads"</string>-->
-<!--<string name="pref_decoding_threads_summary">"Number of decoding threads"</string>-->
-<!--<string name="pref_decodethread_priority_title">"Decode thread priority"</string>-->
-<!--<string name="pref_decodethread_priority_summary">"Defines decode thread priority"</string>-->
-<!--<string name="pref_drawthread_priority_title">"GL draw thread priority"</string>-->
-<!--<string name="pref_drawthread_priority_summary">"Defines GL draw thread priority"</string>-->
+    <string name="pref_pagesinmemory_title">"Seiten im Arbeitsspeicher"</string>
+    <string name="pref_pagesinmemory_summary">"Anzahl der im Arbeitsspeicher abgelegten Seiten"</string>
+    <string name="pref_lowlevel_category">"Tiefgreifende Programmoptionen (sichtbar nach erneutem Laden des Dokuments)"</string>-->
+    <string name="pref_lowlevel_category_summary">"Tiefgreifende Programmoptionen (sichtbar nach erneutem Laden des Dokuments)"</string>
+    <string name="pref_decoding_threads_title">"Anzahl Dekodierungs-Threads"</string>
+    <string name="pref_decoding_threads_summary">"Anzahl der Threads für die Dekodierung"</string>
+    <string name="pref_decodethread_priority_title">"Vorrang Dekodierungs-Thread"</string>
+    <string name="pref_decodethread_priority_summary">"Bestimmt den Vorrang des Dekodierungs-Threads"</string>
+    <string name="pref_drawthread_priority_title">"Vorrang GL-Darstellungs-Thread"</string>
+    <string name="pref_drawthread_priority_summary">"Bestimmt den Vorrang des Threads für die Darstellung durch GL"</string>
     <string name="list_thread_priority_lowest">"Am niedrigsten"</string>
     <string name="list_thread_priority_lower">"Niedrig"</string>
     <string name="list_thread_priority_normal">"Normal"</string>
     <string name="list_thread_priority_higher">"Höher"</string>
     <string name="list_thread_priority_highest">"Am höchsten"</string>
-<!--<string name="pref_decodingonscroll_title">"Decoding during scrolling"</string>-->
-<!--<string name="pref_decodingonscroll_summary">"Allow to decode pages during scrolling or fling"</string>-->
-<!--<string name="pref_bitmapsize_title">"Texture bitmap size"</string>-->
-<!--<string name="pref_bitmapsize_summary">"Defines size of texture parts"</string>-->
+
+    <string name="pref_decodingonscroll_title">"Dekodieren beim Verschieben"</string>-->
+    <string name="pref_decodingonscroll_summary">"Dekodieren der Seiten beim Verschieben oder Blättern zulassen"</string>
+    <string name="pref_bitmapsize_title">"Größe Textur-Bitmaps"</string>-->
+    <string name="pref_bitmapsize_summary">"Bestimmt die Größe der Texturteile"</string>-->
 <!--<string name="list_bitmapsize_64">"64 * 64"</string>-->
 <!--<string name="list_bitmapsize_128">"128 * 128"</string>-->
 <!--<string name="list_bitmapsize_256">"256 * 256"</string>-->
 <!--<string name="list_bitmapsize_512">"512 * 512"</string>-->
 <!--<string name="list_bitmapsize_1024">"1024 * 1024"</string>-->
-<!--<string name="pref_heappreallocate_title">"Heap preallocation"</string>-->
-<!--<string name="pref_heappreallocate_summary">"Size in megabytes of heap preallocation at application startup"</string>-->
-    <string name="pref_pdfstoragesize_title">"Grösse des internen MuPDF-Speichers"</string>
-    <string name="pref_pdfstoragesize_summary">"Grösse in Megabytes des den internen Speicher für MuPDF"</string>
+    <string name="pref_heappreallocate_title">"Heap-Zuteilung"</string>-->
+    <string name="pref_heappreallocate_summary">"Größe der Speicherzuteilung für den Heap beim Programmstart (in MB)"</string>-->
+    <string name="pref_pdfstoragesize_title">"Größe MuPDF-Speicher"</string>
+    <string name="pref_pdfstoragesize_summary">"Größe des internen Speichers für MuPDF (in MB)"</string>
 
 </resources>

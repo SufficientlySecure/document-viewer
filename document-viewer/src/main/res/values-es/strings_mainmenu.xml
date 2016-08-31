@@ -23,11 +23,11 @@
     <string name="menu_navigation_menu">"Navegación..."</string>
     <string name="menu_fastsettings_menu">"Ver..."</string>
     <string name="menu_allsettings_menu">"Ajuster..."</string>
-<!--<string name="menu_show_library">"Show library"</string>-->
-<!--<string name="menu_show_recent">"Show recent"</string>-->
-<!--<string name="menu_storages">"Storages"</string>-->
-<!--<string name="menu_storages_filesystem">"File System"</string>-->
-<!--<string name="menu_storages_external">"SD Card"</string>-->
+    <string name="menu_show_library">"Mostrar la biblioteca"</string>-->
+    <string name="menu_show_recent">"Mostrar recientes"</string>
+    <string name="menu_storages">"Almcenamientos"</string>
+    <string name="menu_storages_filesystem">"Sistema de ficheros"</string>
+    <string name="menu_storages_external">"Tarjeta de memoria SD"</string>-->
     <string name="menu_force_portrait">"Forzar retrato"</string>
     <string name="menu_force_landscape">"Forzar apaisado"</string>
 

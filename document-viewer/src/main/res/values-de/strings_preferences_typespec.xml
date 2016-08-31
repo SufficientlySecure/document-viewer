@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-##WIP#
+
     <string name="pref_brfiletypespecific_title">"Sondereinstellungen"</string>
     <string name="pref_brfiletypespecific_summary">"Formatspezifische Einstellungen"</string>
 <!--<string name="pref_brfiletypespecificdjvu_title">"DJVU"</string>-->

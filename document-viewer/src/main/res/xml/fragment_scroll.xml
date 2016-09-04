@@ -24,4 +24,10 @@
             android:summary="@string/pref_animate_scrolling_summary"
             android:title="@string/pref_animate_scrolling_title" />
 
+    <CheckBoxPreference
+        android:defaultValue="@string/pref_volumekeyscrolling_defvalue"
+        android:key="@string/pref_volumekeyscrolling_id"
+        android:summary="@string/pref_volumekeyscrolling_summary"
+        android:title="@string/pref_volumekeyscrolling_title" />
+
 </PreferenceScreen>

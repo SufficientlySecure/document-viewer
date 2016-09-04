@@ -62,6 +62,9 @@ public interface AppPreferences {
     BooleanPreferenceDefinition ANIMATE_SCROLLING = new BooleanPreferenceDefinition(pref_animate_scrolling_id,
             pref_animate_scrolling_defvalue);
 
+    BooleanPreferenceDefinition VOLUME_KEY_SCROLLING = new BooleanPreferenceDefinition(pref_volumekeyscrolling_id,
+            pref_volumekeyscrolling_defvalue);
+
     /* =============== Navigation & history settings =============== */
 
     BooleanPreferenceDefinition SHOW_BOOKMARKs_MENU = new BooleanPreferenceDefinition(pref_showbookmarksmenu_id,

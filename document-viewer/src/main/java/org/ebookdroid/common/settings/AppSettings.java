@@ -64,6 +64,8 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     public final boolean animateScrolling;
 
+    public final boolean volumeKeyScrolling;
+
     /* =============== Tap & Keyboard settings =============== */
 
     public final String tapProfiles;
@@ -179,6 +181,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         tapsEnabled = TAPS_ENABLED.getPreferenceValue(prefs);
         scrollHeight = SCROLL_HEIGHT.getPreferenceValue(prefs);
         animateScrolling = ANIMATE_SCROLLING.getPreferenceValue(prefs);
+        volumeKeyScrolling = VOLUME_KEY_SCROLLING.getPreferenceValue(prefs);
         /* =============== Navigation & History settings =============== */
         showBookmarksInMenu = SHOW_BOOKMARKs_MENU.getPreferenceValue(prefs);
         linkHighlightColor = LINK_HIGHLIGHT_COLOR.getPreferenceValue(prefs);

@@ -365,6 +365,15 @@ public abstract class AbstractViewController extends AbstractComponentController
 	    return false;
 	}
 
+        // Special case to ignore KeyEvent.KEYCODE_VOLUME_UP and KeyEvent.KEYCODE_VOLUME_DOWN
+        // if the app setting is disabled
+        final int eventKeyCode = event.getKeyCode();
+        if (!AppSettings.current().volumeKeyScrolling
+            && (eventKeyCode == KeyEvent.KEYCODE_VOLUME_UP
+                || eventKeyCode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
+            return false;
+        }
+
         // By default, this is only used to handle actions_verticalConfigScrollUp and
         // actions_verticalConfigScrollDown.
         // The best UX for these actions is to deliver them on key down events only.

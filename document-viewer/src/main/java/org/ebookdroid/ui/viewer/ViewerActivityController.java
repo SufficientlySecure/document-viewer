@@ -219,6 +219,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
             bookTitle = ContentScheme.getDefaultResourceName(data, "");
             codecType = CodecType.getByUri(bookTitle);
         }
+        bookTitle = StringUtils.cleanupTitle(bookTitle);
 
         if (codecType == null) {
             final String type = intent.getType();
@@ -360,6 +361,34 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
         getView().post(r);
     }
 
+    public String getPageNumberString() {
+        final int pageCount = documentModel.getPageCount();
+        PageIndex currentIndex = documentModel.getCurrentIndex();
+        String pageText = "";
+        if (pageCount > 0) {
+            final int offset = bookSettings != null ? bookSettings.firstPageOffset : 1;
+            if (offset == 1) {
+                pageText = (currentIndex.viewIndex + 1) + "/" + pageCount;
+            } else {
+                pageText = offset + "/" + (currentIndex.viewIndex + offset) + "/" + (pageCount - 1 + offset);
+            }
+        }
+        return pageText;
+    }
+
+    public String getWindowTitle() {
+        final AppSettings app = AppSettings.current();
+        if (app.pageInTitle) {
+            return "(" + getPageNumberString()  + ") " + bookTitle;
+        } else {
+            return bookTitle;
+        }
+    }
+
+    public void setWindowTitle() {
+        getManagedComponent().getWindow().setTitle(getWindowTitle());
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -372,17 +401,8 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
 
             @Override
             public void run() {
-                final int pageCount = documentModel.getPageCount();
-                String pageText = "";
-                if (pageCount > 0) {
-                    final int offset = bookSettings != null ? bookSettings.firstPageOffset : 1;
-                    if (offset == 1) {
-                        pageText = (newIndex.viewIndex + 1) + "/" + pageCount;
-                    } else {
-                        pageText = offset + "/" + (newIndex.viewIndex + offset) + "/" + (pageCount - 1 + offset);
-                    }
-                }
-                getManagedComponent().currentPageChanged(pageText, bookTitle);
+                setWindowTitle();
+                getManagedComponent().currentPageChanged(getPageNumberString());
                 SettingsManager.currentPageChanged(bookSettings, oldIndex, newIndex);
             }
         };
@@ -409,11 +429,6 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
         } catch (final Throwable th) {
             th.printStackTrace();
         }
-    }
-
-    public void setWindowTitle() {
-        bookTitle = StringUtils.cleanupTitle(bookTitle);
-        getManagedComponent().getWindow().setTitle(bookTitle);
     }
 
     @ActionMethod(ids = R.id.actions_openOptionsMenu)
@@ -898,6 +913,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
         if (diff.isFullScreenChanged()) {
             IUIManager.instance.setFullScreenMode(activity, activity.view.getView(), newSettings.fullScreen);
             IUIManager.instance.setTitleVisible(activity, newSettings.getShowTitle(), false);
+            setWindowTitle();
         }
 
         if (diff.isKeepScreenOnChanged()) {

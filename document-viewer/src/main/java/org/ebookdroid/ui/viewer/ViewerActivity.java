@@ -183,14 +183,13 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
         return touchView;
     }
 
-    public void currentPageChanged(final String pageText, final String bookTitle) {
+    public void currentPageChanged(final String pageText) {
         if (LengthUtils.isEmpty(pageText)) {
             return;
         }
 
         final AppSettings app = AppSettings.current();
         if (IUIManager.instance.isTitleVisible(this) && app.pageInTitle) {
-            getWindow().setTitle("(" + pageText + ") " + bookTitle);
             return;
         }
 

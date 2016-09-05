@@ -235,10 +235,16 @@ public class SinglePageController extends AbstractViewController {
 
     private void invalidatePageSize(final PageAlign pageAlign, final Page page, final int width, final int height) {
         final RectF pageBounds = calcPageBounds(pageAlign, page.getAspectRatio(), width, height);
+        // if the screen is larger than the page, center the page within the screen
         final float pageWidth = pageBounds.width();
         if (width > pageWidth) {
             final float widthDelta = (width - pageWidth) / 2;
             pageBounds.offset(widthDelta, 0);
+        }
+        final float pageHeight= pageBounds.height();
+        if (height > pageHeight) {
+            final float heightDelta = (height - pageHeight) / 2;
+            pageBounds.offset(0, heightDelta);
         }
         page.setBounds(pageBounds);
     }

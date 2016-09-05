@@ -550,6 +550,11 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
         }
     }
 
+    @ActionMethod(ids = R.id.mainmenu_singlepage)
+    public void toggleSinglePage(final ActionEx action) {
+        SettingsManager.toggleSinglePage(bookSettings);
+    }
+
     @ActionMethod(ids = R.id.mainmenu_bookmark)
     public void showBookmarkDialog(final ActionEx action) {
         final int page = documentModel.getCurrentViewPageIndex();

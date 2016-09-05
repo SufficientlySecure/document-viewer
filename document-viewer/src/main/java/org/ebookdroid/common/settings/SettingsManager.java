@@ -268,6 +268,8 @@ public class SettingsManager {
         }
     }
 
+    // TODO: Factor out common code from these
+
     public static void setBookRotation(final BookSettings current, final BookRotationType mode) {
         if (current == null) {
             return;
@@ -324,6 +326,22 @@ public class SettingsManager {
         try {
             final BookSettings olds = new BookSettings(current);
             current.cropPages = !current.cropPages;
+            current.lastChanged = System.currentTimeMillis();
+            db.storeBookSettings(current);
+            applyBookSettingsChanges(olds, current);
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    public static void toggleSinglePage(final BookSettings current) {
+        if (current == null) {
+            return;
+        }
+        lock.writeLock().lock();
+        try {
+            final BookSettings olds = new BookSettings(current);
+            current.viewMode = (current.viewMode == DocumentViewMode.SINGLE_PAGE ? DocumentViewMode.VERTICALL_SCROLL : DocumentViewMode.SINGLE_PAGE);
             current.lastChanged = System.currentTimeMillis();
             db.storeBookSettings(current);
             applyBookSettingsChanges(olds, current);

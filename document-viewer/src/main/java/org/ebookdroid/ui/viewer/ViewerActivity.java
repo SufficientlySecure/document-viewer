@@ -1,5 +1,6 @@
 package org.ebookdroid.ui.viewer;
 
+import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.books.BookSettings;
@@ -330,6 +331,8 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
         ActionMenuHelper.setMenuItemChecked(menu, bs.cropPages, R.id.mainmenu_croppages);
         ActionMenuHelper.setMenuItemChecked(menu, bs.splitPages, R.id.mainmenu_splitpages,
                 R.drawable.viewer_menu_split_pages, R.drawable.viewer_menu_split_pages_off);
+        ActionMenuHelper.setMenuItemChecked(menu, bs.viewMode == DocumentViewMode.SINGLE_PAGE,
+                R.id.mainmenu_singlepage);
 
         final DecodeService ds = getController().getDecodeService();
 

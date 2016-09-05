@@ -30,4 +30,10 @@
         android:summary="@string/pref_volumekeyscrolling_summary"
         android:title="@string/pref_volumekeyscrolling_title" />
 
+    <org.emdev.ui.preference.SwitchPreferenceEx
+        android:defaultValue="@string/pref_tapfullscreen_defvalue"
+        android:key="@string/pref_tapfullscreen_id"
+        android:summary="@string/pref_tapfullscreen_summary"
+        android:title="@string/pref_tapfullscreen_title" />
+
 </PreferenceScreen>

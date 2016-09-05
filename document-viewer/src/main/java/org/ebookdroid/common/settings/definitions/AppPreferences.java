@@ -65,6 +65,9 @@ public interface AppPreferences {
     BooleanPreferenceDefinition VOLUME_KEY_SCROLLING = new BooleanPreferenceDefinition(pref_volumekeyscrolling_id,
             pref_volumekeyscrolling_defvalue);
 
+    BooleanPreferenceDefinition TAP_TOGGLES_FULLSCREEN = new BooleanPreferenceDefinition(pref_tapfullscreen_id,
+            pref_tapfullscreen_defvalue);
+
     /* =============== Navigation & history settings =============== */
 
     BooleanPreferenceDefinition SHOW_BOOKMARKs_MENU = new BooleanPreferenceDefinition(pref_showbookmarksmenu_id,

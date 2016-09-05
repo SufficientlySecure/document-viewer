@@ -15,4 +15,8 @@
     <string translatable="false" name="pref_volumekeyscrolling_id">volumekeyscrolling</string>
     <string translatable="false" name="pref_volumekeyscrolling_defvalue">true</string>
 
+    <string translatable="false" name="pref_tapfullscreen_id">tapfullscreen</string>
+    <string translatable="false" name="pref_tapfullscreen_defvalue">true</string>
+
+
 </resources>

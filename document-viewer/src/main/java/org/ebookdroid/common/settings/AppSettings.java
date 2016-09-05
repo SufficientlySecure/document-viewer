@@ -66,6 +66,8 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     public final boolean volumeKeyScrolling;
 
+    public final boolean tapTogglesFullscreen;
+
     /* =============== Tap & Keyboard settings =============== */
 
     public final String tapProfiles;
@@ -182,6 +184,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         scrollHeight = SCROLL_HEIGHT.getPreferenceValue(prefs);
         animateScrolling = ANIMATE_SCROLLING.getPreferenceValue(prefs);
         volumeKeyScrolling = VOLUME_KEY_SCROLLING.getPreferenceValue(prefs);
+        tapTogglesFullscreen = TAP_TOGGLES_FULLSCREEN.getPreferenceValue(prefs);
         /* =============== Navigation & History settings =============== */
         showBookmarksInMenu = SHOW_BOOKMARKs_MENU.getPreferenceValue(prefs);
         linkHighlightColor = LINK_HIGHLIGHT_COLOR.getPreferenceValue(prefs);

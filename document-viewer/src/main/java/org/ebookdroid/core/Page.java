@@ -135,9 +135,16 @@ public class Page {
     public void getBounds(final float zoom, RectF target) {
         MathUtils.zoom(bounds, zoom, target);
 
+        // If the unzoomed page fit on screen with room to spare, re-center the zoomed page
+        // TODO: clarify these calculations
         final BookSettings bs = base.getBookSettings();
-        if (bs != null && bs.viewMode == DocumentViewMode.SINGLE_PAGE && bounds.left > 0) {
-            target.offset((bounds.left + bounds.right)*(1 - zoom)/2, 0);
+        if (bs != null && bs.viewMode == DocumentViewMode.SINGLE_PAGE) {
+            if (bounds.left > 0) {
+                target.offset((bounds.left + bounds.right) * (1 - zoom) / 2, 0);
+            }
+            if (bounds.top > 0) {
+                target.offset(0, (bounds.top + bounds.bottom) * (1 - zoom) / 2);
+            }
         }
     }
 

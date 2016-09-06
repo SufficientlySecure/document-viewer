@@ -1,5 +1,7 @@
 package org.ebookdroid.core;
 
+import android.graphics.PointF;
+
 import org.ebookdroid.ui.viewer.IViewController.InvalidateSizeReason;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -74,7 +76,7 @@ public class EventPool {
     }
 
     public static AbstractEventZoom<?> newEventZoom(final AbstractViewController ctrl, final float oldZoom,
-            final float newZoom, final boolean committed) {
+            final float newZoom, final boolean committed, PointF center) {
         AbstractEventZoom<?> event = null;
         if (newZoom > oldZoom) {
             event = zoomInEvents.poll();
@@ -87,7 +89,7 @@ public class EventPool {
                 event = new EventZoomOut(zoomOutEvents);
             }
         }
-        event.init(ctrl, oldZoom, newZoom, committed);
+        event.init(ctrl, oldZoom, newZoom, committed, center);
         return event;
     }
 }

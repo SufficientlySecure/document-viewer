@@ -11,6 +11,7 @@ import org.ebookdroid.ui.viewer.IView;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -106,15 +107,22 @@ public final class GLView extends GLRootView implements IView, SurfaceHolder.Cal
      * @see org.ebookdroid.ui.viewer.IView#invalidateScroll(float, float)
      */
     @Override
-    public final void invalidateScroll(final float newZoom, final float oldZoom) {
+    public final void invalidateScroll(final float newZoom, final float oldZoom, @Nullable PointF center) {
         stopScroller();
 
         final float ratio = newZoom / oldZoom;
-        final float halfWidth = getWidth() / 2.0f;
-        final float halfHeight = getHeight() / 2.0f;
 
-        final int x = (int) ((getScrollX() + halfWidth) * ratio - halfWidth);
-        final int y = (int) ((getScrollY() + halfHeight) * ratio - halfHeight);
+        float centerX, centerY;
+        if (center == null) {
+            centerX = getWidth() / 2.0f;
+            centerY = getHeight() / 2.0f;
+        } else {
+            centerX = center.x;
+            centerY = center.y;
+        }
+
+        final int x = (int) ((getScrollX() + centerX) * ratio - centerX);
+        final int y = (int) ((getScrollY() + centerY) * ratio - centerY);
 
         // if (LCTX.isDebugEnabled()) {
         // LCTX.d("invalidateScroll(" + newZoom + ", " + oldZoom + "): " + x + ", " + y);

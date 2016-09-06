@@ -8,8 +8,10 @@ import org.ebookdroid.ui.viewer.IActivityController;
 import org.ebookdroid.ui.viewer.IView;
 import org.ebookdroid.ui.viewer.IViewController;
 
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -20,7 +22,7 @@ public class ViewContollerStub implements IViewController {
     public static final ViewContollerStub STUB = new ViewContollerStub();
 
     @Override
-    public void zoomChanged(final float oldZoom, final float newZoom, final boolean committed) {
+    public void zoomChanged(final float oldZoom, final float newZoom, final boolean committed, @Nullable PointF center) {
     }
 
     @Override

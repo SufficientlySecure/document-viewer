@@ -2,6 +2,7 @@ package org.ebookdroid.core;
 
 import org.ebookdroid.common.settings.SettingsManager;
 
+import android.graphics.PointF;
 import android.graphics.RectF;
 
 import java.util.Queue;
@@ -20,11 +21,13 @@ public abstract class AbstractEventZoom<E extends AbstractEventZoom<E>> extends 
 
     public boolean committed;
 
+    public PointF center;
+
     protected AbstractEventZoom(final Queue<E> eventQueue) {
         this.eventQueue = eventQueue;
     }
 
-    final void init(final AbstractViewController ctrl, final float oldZoom, final float newZoom, final boolean committed) {
+    final void init(final AbstractViewController ctrl, final float oldZoom, final float newZoom, final boolean committed, PointF center) {
         this.viewState = ViewState.get(ctrl, newZoom);
         this.ctrl = ctrl;
 
@@ -35,12 +38,13 @@ public abstract class AbstractEventZoom<E extends AbstractEventZoom<E>> extends 
         this.newLevel = PageTreeLevel.getLevel(newZoom);
 
         this.committed = committed;
-
+        this.center = center;
     }
 
     @SuppressWarnings("unchecked")
     final void release() {
         this.ctrl = null;
+        this.center = null;
         this.viewState = null;
         this.oldLevel = null;
         this.newLevel = null;
@@ -58,7 +62,7 @@ public abstract class AbstractEventZoom<E extends AbstractEventZoom<E>> extends 
     public final ViewState process() {
         try {
             if (!committed) {
-                ctrl.getView().invalidateScroll(newZoom, oldZoom);
+                ctrl.getView().invalidateScroll(newZoom, oldZoom, center);
                 viewState.update();
             }
 

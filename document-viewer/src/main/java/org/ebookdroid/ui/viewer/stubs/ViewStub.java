@@ -7,6 +7,7 @@ import org.ebookdroid.ui.viewer.IView;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 public class ViewStub implements IView {
@@ -28,7 +29,7 @@ public class ViewStub implements IView {
     }
 
     @Override
-    public void invalidateScroll(final float newZoom, final float oldZoom) {
+    public void invalidateScroll(final float newZoom, final float oldZoom, @Nullable PointF center) {
     }
 
     @Override

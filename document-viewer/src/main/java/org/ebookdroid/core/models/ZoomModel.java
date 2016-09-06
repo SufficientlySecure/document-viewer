@@ -1,5 +1,8 @@
 package org.ebookdroid.core.models;
 
+import android.graphics.PointF;
+import android.support.annotation.Nullable;
+
 import org.ebookdroid.core.events.ZoomListener;
 
 import org.emdev.utils.MathUtils;
@@ -27,31 +30,39 @@ public class ZoomModel extends ListenerProxy {
     }
 
     public void setZoom(final float zoom) {
-        setZoom(zoom, false);
+        setZoom(zoom, null);
+    }
+
+    public void setZoom(final float zoom, @Nullable PointF center) {
+        setZoom(zoom, false, center);
         final float newZoom = adjust(zoom);
         final float oldZoom = this.currentZoom;
         if (newZoom != oldZoom) {
             isCommited = false;
             this.currentZoom = newZoom;
-            this.<ZoomListener> getListener().zoomChanged(oldZoom, newZoom, false);
+            this.<ZoomListener> getListener().zoomChanged(oldZoom, newZoom, false, center);
         }
     }
 
     public void setZoom(final float zoom, final boolean commitImmediately) {
+        setZoom(zoom, commitImmediately, null);
+    }
+
+    public void setZoom(final float zoom, final boolean commitImmediately, @Nullable PointF center) {
         final float newZoom = adjust(zoom);
         final float oldZoom = this.currentZoom;
         if (newZoom != oldZoom || commitImmediately) {
             isCommited = commitImmediately;
             this.currentZoom = newZoom;
-            this.<ZoomListener> getListener().zoomChanged(oldZoom, newZoom, commitImmediately);
+            this.<ZoomListener> getListener().zoomChanged(oldZoom, newZoom, commitImmediately, center);
             if (commitImmediately) {
                 this.initialZoom = this.currentZoom;
             }
         }
     }
 
-    public void scaleZoom(final float factor) {
-        setZoom(currentZoom * factor, false);
+    public void scaleZoom(final float factor, PointF center) {
+        setZoom(currentZoom * factor, false, center);
     }
 
     public void scaleAndCommitZoom(final float factor) {
@@ -65,7 +76,7 @@ public class ZoomModel extends ListenerProxy {
     public void commit() {
         if (!isCommited) {
             isCommited = true;
-            this.<ZoomListener> getListener().zoomChanged(initialZoom, currentZoom, true);
+            this.<ZoomListener> getListener().zoomChanged(initialZoom, currentZoom, true, null);
             initialZoom = currentZoom;
         }
     }

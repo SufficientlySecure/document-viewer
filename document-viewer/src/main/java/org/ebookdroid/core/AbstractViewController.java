@@ -26,6 +26,7 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.util.FloatMath;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.KeyEvent;
@@ -202,13 +203,13 @@ public abstract class AbstractViewController extends AbstractComponentController
      * @see org.ebookdroid.core.events.ZoomListener#zoomChanged(float, float, boolean)
      */
     @Override
-    public final void zoomChanged(final float oldZoom, final float newZoom, final boolean committed) {
+    public final void zoomChanged(final float oldZoom, final float newZoom, final boolean committed, @Nullable PointF center) {
         if (!isShown) {
             return;
         }
 
         inZoom.set(!committed);
-        EventPool.newEventZoom(this, oldZoom, newZoom, committed).process().release();
+        EventPool.newEventZoom(this, oldZoom, newZoom, committed, center).process().release();
 
         if (committed) {
             base.getManagedComponent().zoomChanged(newZoom);
@@ -792,7 +793,8 @@ public abstract class AbstractViewController extends AbstractComponentController
             if (LCTX.isDebugEnabled()) {
                 LCTX.d("onTwoFingerPinch(" + oldDistance + ", " + newDistance + "): " + factor);
             }
-            base.getZoomModel().scaleZoom(factor);
+            PointF center = new PointF(e.getX(), e.getY());
+            base.getZoomModel().scaleZoom(factor, center);
         }
 
         /**

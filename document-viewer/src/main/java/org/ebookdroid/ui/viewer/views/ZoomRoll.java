@@ -10,7 +10,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.Rect;
+import android.support.annotation.Nullable;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
@@ -120,7 +122,7 @@ public class ZoomRoll extends View implements ZoomListener {
     }
 
     @Override
-    public void zoomChanged(float oldZoom, float newZoom, boolean committed) {
+    public void zoomChanged(float oldZoom, float newZoom, boolean committed, @Nullable PointF center) {
         postInvalidate();
     }
 

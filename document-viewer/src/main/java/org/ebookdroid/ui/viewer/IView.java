@@ -5,6 +5,7 @@ import org.ebookdroid.core.ViewState;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import org.emdev.common.log.LogContext;
@@ -20,7 +21,7 @@ public interface IView {
 
     void invalidateScroll();
 
-    void invalidateScroll(final float newZoom, final float oldZoom);
+    void invalidateScroll(final float newZoom, final float oldZoom, @Nullable PointF center);
 
     void startPageScroll(final int dx, final int dy);
 

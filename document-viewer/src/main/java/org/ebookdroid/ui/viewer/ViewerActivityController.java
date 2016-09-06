@@ -2,6 +2,7 @@ package org.ebookdroid.ui.viewer;
 
 import org.ebookdroid.CodecType;
 import org.ebookdroid.EBookDroidApp;
+import org.emdev.ui.uimanager.UIManagerAppCompat;
 import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.ByteBufferManager;
@@ -148,7 +149,6 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
         final AppSettings newSettings = AppSettings.current();
 
         activity.setRequestedOrientation(newSettings.rotation.getOrientation());
-        IUIManager.instance.setTitleVisible(activity, newSettings.getShowTitle(), true);
 
         TouchManager.loadFromSettings(newSettings);
         KeyBindingsManager.loadFromSettings(newSettings);
@@ -164,7 +164,6 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
         final AppSettings newSettings = AppSettings.current();
 
         activity.setRequestedOrientation(newSettings.rotation.getOrientation());
-        IUIManager.instance.setTitleVisible(activity, newSettings.getShowTitle(), true);
 
         TouchManager.loadFromSettings(newSettings);
         KeyBindingsManager.loadFromSettings(newSettings);
@@ -181,6 +180,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
         final AppSettings appSettings = AppSettings.current();
 
         IUIManager.instance.setFullScreenMode(activity, getManagedComponent().view.getView(), appSettings.fullScreen);
+        UIManagerAppCompat.setToolbarVisible(activity, appSettings.getShowTitle());
 
         createAction(R.id.mainmenu_crop).putValue("view", activity.getManualCropControls()).putValue("mode",
                 DocumentViewMode.SINGLE_PAGE);
@@ -356,7 +356,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
             @Override
             public void run() {
                 final ViewerActivity activity = getManagedComponent();
-                IUIManager.instance.setProgressSpinnerVisible(activity, currentlyDecoding > 0);
+                UIManagerAppCompat.setProgressSpinnerVisible(activity, currentlyDecoding > 0);
             }
         };
 
@@ -388,7 +388,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
     }
 
     public void setWindowTitle() {
-        getManagedComponent().getWindow().setTitle(getWindowTitle());
+        getManagedComponent().getSupportActionBar().setTitle(getWindowTitle());
     }
 
     /**
@@ -435,7 +435,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
 
     @ActionMethod(ids = R.id.actions_openOptionsMenu)
     public void openOptionsMenu(final ActionEx action) {
-        IUIManager.instance.openOptionsMenu(getManagedComponent(), getManagedComponent().view.getView());
+        UIManagerAppCompat.openOptionsMenu(getManagedComponent(), getManagedComponent().view.getView());
     }
 
     @ActionMethod(ids = R.id.actions_gotoOutlineItem)
@@ -588,7 +588,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
             bookSettings.bookmarks.add(new Bookmark(name, documentModel.getCurrentIndex(), pos.x, pos.y));
             Collections.sort(bookSettings.bookmarks);
             SettingsManager.storeBookSettings(bookSettings);
-            IUIManager.instance.invalidateOptionsMenu(getManagedComponent());
+            UIManagerAppCompat.invalidateOptionsMenu(getManagedComponent());
             state.release();
         }
     }
@@ -725,7 +725,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
                 mcv.initControls();
             }
         }
-        IUIManager.instance.invalidateOptionsMenu(getManagedComponent());
+        UIManagerAppCompat.invalidateOptionsMenu(getManagedComponent());
     }
 
     public final boolean dispatchKeyEvent(final KeyEvent event) {
@@ -926,7 +926,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
 
         if (diff.isFullScreenChanged()) {
             IUIManager.instance.setFullScreenMode(activity, activity.view.getView(), newSettings.fullScreen);
-            IUIManager.instance.setTitleVisible(activity, newSettings.getShowTitle(), false);
+            UIManagerAppCompat.setToolbarVisible(activity, newSettings.getShowTitle());
             setWindowTitle();
         }
 
@@ -946,7 +946,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
             getDocumentController().updateMemorySettings();
         }
 
-        IUIManager.instance.invalidateOptionsMenu(getManagedComponent());
+        UIManagerAppCompat.invalidateOptionsMenu(getManagedComponent());
     }
 
     /**
@@ -997,7 +997,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
 
         currentPageChanged(PageIndex.NULL, documentModel.getCurrentIndex());
 
-        IUIManager.instance.invalidateOptionsMenu(getManagedComponent());
+        UIManagerAppCompat.invalidateOptionsMenu(getManagedComponent());
     }
 
     final class BookLoadTask extends BaseAsyncTask<String, Throwable> implements Runnable, IProgressIndicator {

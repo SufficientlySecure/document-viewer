@@ -6,6 +6,7 @@ import org.ebookdroid.ui.about.AboutActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,7 +20,7 @@ import org.emdev.ui.actions.ActionMenuHelper;
 import org.emdev.ui.actions.ActionMethod;
 
 public abstract class AbstractActionActivity<A extends Activity, C extends AbstractActivityController<A>> extends
-        Activity implements ActivityEvents {
+        AppCompatActivity implements ActivityEvents {
 
     private static final AtomicLong SEQ = new AtomicLong();
 
@@ -42,7 +43,7 @@ public abstract class AbstractActionActivity<A extends Activity, C extends Abstr
     }
 
     @Override
-    public final Object onRetainNonConfigurationInstance() {
+    public final Object onRetainCustomNonConfigurationInstance() {
         return getController();
     }
 

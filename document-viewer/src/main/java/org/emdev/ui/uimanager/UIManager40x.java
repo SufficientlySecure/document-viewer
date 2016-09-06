@@ -3,10 +3,10 @@ package org.emdev.ui.uimanager;
 import static android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN;
 
 import android.annotation.TargetApi;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.res.Configuration;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.widget.ProgressBar;
@@ -47,66 +47,6 @@ public class UIManager40x implements IUIManager {
     };
 
     @Override
-    public void setTitleVisible(final Activity activity, final boolean visible, final boolean firstTime) {
-        if (firstTime) {
-            try {
-                final Window window = activity.getWindow();
-                window.requestFeature(Window.FEATURE_ACTION_BAR);
-                window.requestFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-                activity.setProgressBarIndeterminate(true);
-                setProgressSpinnerVisible(activity, true);
-            } catch (final Throwable th) {
-                LCTX.e("Error on requestFeature call: " + th.getMessage());
-            }
-        }
-        try {
-            if (visible) {
-                activity.getActionBar().show();
-            } else {
-                activity.getActionBar().hide();
-            }
-            activity.invalidateOptionsMenu();
-            data.get(activity.getComponentName()).titleVisible = visible;
-        } catch (final Throwable th) {
-            LCTX.e("Error on requestFeature call: " + th.getMessage());
-        }
-    }
-
-    @Override
-    public boolean isTitleVisible(final Activity activity) {
-        return data.get(activity.getComponentName()).titleVisible;
-    }
-
-    @Override
-    public void setProgressSpinnerVisible(Activity activity, boolean visible) {
-        try {
-            if (AndroidVersion.VERSION >= 21) {
-                // Activity.setProgressBarIndeterminateVisibility() seems to be a no-op on API 21+.
-                // Instead, set a progress spinner as the action bar's custom view.
-                // TODO: Make a UIManager5x?
-                ActionBar bar = activity.getActionBar();
-
-                if (bar.getCustomView() == null) {
-                    ProgressBar spinner = new ProgressBar(activity);
-                    spinner.setIndeterminate(true);
-                    bar.setCustomView(spinner);
-                }
-
-                bar.setDisplayShowCustomEnabled(visible);
-            } else {
-                activity.setProgressBarIndeterminateVisibility(visible);
-                activity.getWindow()
-                .setFeatureInt(
-                    Window.FEATURE_INDETERMINATE_PROGRESS,
-                    visible ? Window.PROGRESS_VISIBILITY_ON : Window.PROGRESS_VISIBILITY_OFF
-                );
-            }
-        } catch (final Throwable th) {
-            LCTX.e("Error in setProgressSpinnerVisible: " + th.getMessage());
-        }
-    }
-
-    @Override
     public void setFullScreenMode(final Activity activity, final View view, final boolean fullScreen) {
         data.get(activity.getComponentName()).statusBarHidden = fullScreen;
         final Window w = activity.getWindow();
@@ -130,20 +70,6 @@ public class UIManager40x implements IUIManager {
 
     protected int getHideSysUIFlags(final Activity activity) {
         return STANDARD_SYS_UI_FLAGS;
-    }
-
-    @Override
-    public void openOptionsMenu(final Activity activity, final View view) {
-        if (data.get(activity.getComponentName()).titleVisible) {
-            activity.openOptionsMenu();
-        } else {
-            view.showContextMenu();
-        }
-    }
-
-    @Override
-    public void invalidateOptionsMenu(final Activity activity) {
-        activity.invalidateOptionsMenu();
     }
 
     @Override
@@ -183,7 +109,6 @@ public class UIManager40x implements IUIManager {
     }
 
     private static class Data {
-        boolean titleVisible = true;
         boolean statusBarHidden = false;
     }
 }

@@ -1,5 +1,6 @@
 package org.ebookdroid.ui.opds;
 
+import org.emdev.ui.uimanager.UIManagerAppCompat;
 import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.opds.model.Book;
 import org.ebookdroid.opds.model.Entry;
@@ -7,6 +8,7 @@ import org.ebookdroid.opds.model.Feed;
 import org.ebookdroid.opds.model.Link;
 
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -51,6 +53,9 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActiv
         setContentView(R.layout.opds);
         setActionForView(R.id.opdsaddfeed);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        
         final OPDSActivityController c = getController();
 
         list = (ExpandableListView) findViewById(R.id.opdslist);
@@ -196,21 +201,12 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActiv
         final boolean canPrev = feed != null && feed.prev != null;
 
         if (menu != null) {
-            if (AndroidVersion.lessThan3x) {
-                ActionMenuHelper.setMenuItemEnabled(menu, canUp, R.id.opdsupfolder,
-                        R.drawable.opds_menu_nav_up_enabled, R.drawable.opds_menu_nav_up_disabled);
-                ActionMenuHelper.setMenuItemEnabled(menu, canNext, R.id.opdsnextfolder,
-                        R.drawable.opds_menu_nav_next_enabled, R.drawable.opds_menu_nav_next_disabled);
-                ActionMenuHelper.setMenuItemEnabled(menu, canPrev, R.id.opdsprevfolder,
-                        R.drawable.opds_menu_nav_prev_enabled, R.drawable.opds_menu_nav_prev_disabled);
-            } else {
-                ActionMenuHelper.setMenuItemEnabled(menu, canUp, R.id.opdsupfolder,
-                        R.drawable.opds_actionbar_nav_up_enabled, R.drawable.opds_actionbar_nav_up_disabled);
-                ActionMenuHelper.setMenuItemEnabled(menu, canNext, R.id.opdsnextfolder,
-                        R.drawable.opds_actionbar_nav_next_enabled, R.drawable.opds_actionbar_nav_next_disabled);
-                ActionMenuHelper.setMenuItemEnabled(menu, canPrev, R.id.opdsprevfolder,
-                        R.drawable.opds_actionbar_nav_prev_enabled, R.drawable.opds_actionbar_nav_prev_disabled);
-            }
+            ActionMenuHelper.setMenuItemEnabled(menu, canUp, R.id.opdsupfolder,
+                    R.drawable.opds_actionbar_nav_up_enabled, R.drawable.opds_actionbar_nav_up_disabled);
+            ActionMenuHelper.setMenuItemEnabled(menu, canNext, R.id.opdsnextfolder,
+                    R.drawable.opds_actionbar_nav_next_enabled, R.drawable.opds_actionbar_nav_next_disabled);
+            ActionMenuHelper.setMenuItemEnabled(menu, canPrev, R.id.opdsprevfolder,
+                    R.drawable.opds_actionbar_nav_prev_enabled, R.drawable.opds_actionbar_nav_prev_disabled);
         }
     }
 
@@ -219,12 +215,12 @@ public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActiv
     }
 
     protected void onCurrrentFeedChanged(final Feed feed) {
-        IUIManager.instance.invalidateOptionsMenu(this);
+        UIManagerAppCompat.invalidateOptionsMenu(this);
         setTitle(getFeedTitle(feed));
         findViewById(R.id.opdsaddfeed).setVisibility(feed != null ? View.GONE : View.VISIBLE);
     }
 
     protected void onFeedLoaded(final Feed feed) {
-        IUIManager.instance.invalidateOptionsMenu(this);
+        UIManagerAppCompat.invalidateOptionsMenu(this);
     }
 }

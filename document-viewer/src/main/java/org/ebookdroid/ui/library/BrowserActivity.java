@@ -1,5 +1,6 @@
 package org.ebookdroid.ui.library;
 
+import org.emdev.ui.uimanager.UIManagerAppCompat;
 import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.common.settings.SettingsManager;
 import org.ebookdroid.common.settings.books.BookSettings;
@@ -8,6 +9,7 @@ import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.ui.library.views.FileBrowserView;
 
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -42,7 +44,6 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Bro
     private static final String CURRENT_DIRECTORY = "currentDirectory";
 
     ViewFlipper viewflipper;
-    TextView header;
 
     public BrowserActivity() {
         super(false, ON_CREATE);
@@ -65,12 +66,13 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Bro
      */
     @Override
     protected void onCreateImpl(final Bundle savedInstanceState) {
-        IUIManager.instance.setTitleVisible(this, !AndroidVersion.lessThan3x, true);
         setContentView(R.layout.browser);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         final BrowserActivityController c = getController();
 
-        header = (TextView) findViewById(R.id.browsertext);
         viewflipper = (ViewFlipper) findViewById(R.id.browserflip);
         viewflipper.addView(LayoutUtils.fillInParent(viewflipper, new FileBrowserView(c, c.adapter)));
     }
@@ -114,20 +116,9 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Bro
     }
 
     void setTitle(final File dir) {
-
         final String path = dir.getAbsolutePath();
-        if (AndroidVersion.lessThan3x) {
-            header.setText(path);
-            final ImageView view = (ImageView) findViewById(R.id.browserupfolder);
-            if (view != null) {
-                final boolean hasParent = dir.getParentFile() != null;
-                view.setImageResource(hasParent ? R.drawable.browser_actionbar_nav_up_enabled
-                        : R.drawable.browser_actionbar_nav_up_disabled);
-            }
-        } else {
-            setTitle(path);
-            IUIManager.instance.invalidateOptionsMenu(this);
-        }
+        setTitle(path);
+        UIManagerAppCompat.invalidateOptionsMenu(this);
     }
 
     /**
@@ -144,15 +135,13 @@ public class BrowserActivity extends AbstractActionActivity<BrowserActivity, Bro
     }
 
     public void showProgress(final boolean show) {
-        if (!AndroidVersion.lessThan3x) {
-            runOnUiThread(new Runnable() {
+        runOnUiThread(new Runnable() {
 
-                @Override
-                public void run() {
-                    IUIManager.instance.setProgressSpinnerVisible(BrowserActivity.this, show);
-                }
-            });
-        }
+            @Override
+            public void run() {
+                UIManagerAppCompat.setProgressSpinnerVisible(BrowserActivity.this, show);
+            }
+        });
     }
 
     /**

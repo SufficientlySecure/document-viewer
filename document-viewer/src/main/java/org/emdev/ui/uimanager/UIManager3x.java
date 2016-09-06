@@ -6,6 +6,7 @@ import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.ComponentName;
 import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 
@@ -52,43 +53,6 @@ public class UIManager3x implements IUIManager {
     };
 
     @Override
-    public void setTitleVisible(final Activity activity, final boolean visible, final boolean firstTime) {
-        if (firstTime) {
-            try {
-                final Window window = activity.getWindow();
-                window.requestFeature(Window.FEATURE_ACTION_BAR);
-                window.requestFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-                activity.setProgressBarIndeterminate(true);
-                activity.setProgressBarIndeterminateVisibility(true);
-                window.setFeatureInt(Window.FEATURE_INDETERMINATE_PROGRESS, 1);
-            } catch (final Throwable th) {
-                LCTX.e("Error on requestFeature call: " + th.getMessage());
-            }
-        }
-        try {
-            if (visible) {
-                activity.getActionBar().show();
-            } else {
-                activity.getActionBar().hide();
-            }
-            data.get(activity.getComponentName()).titleVisible = visible;
-        } catch (final Throwable th) {
-            LCTX.e("Error on requestFeature call: " + th.getMessage());
-        }
-    }
-
-    @Override
-    public boolean isTitleVisible(final Activity activity) {
-        return data.get(activity.getComponentName()).titleVisible;
-    }
-
-    @Override
-    public void setProgressSpinnerVisible(Activity activity, boolean visible) {
-        activity.setProgressBarIndeterminateVisibility(visible);
-        activity.getWindow().setFeatureInt(Window.FEATURE_INDETERMINATE_PROGRESS, visible ? 1 : 0);
-    }
-
-    @Override
     public void setFullScreenMode(final Activity activity, final View view, final boolean fullScreen) {
         data.get(activity.getComponentName()).fullScreen = fullScreen;
         if (fullScreen) {
@@ -96,16 +60,6 @@ public class UIManager3x implements IUIManager {
         } else {
             startSystemUI(activity);
         }
-    }
-
-    @Override
-    public void openOptionsMenu(final Activity activity, final View view) {
-        activity.openOptionsMenu();
-    }
-
-    @Override
-    public void invalidateOptionsMenu(final Activity activity) {
-        activity.invalidateOptionsMenu();
     }
 
     @Override

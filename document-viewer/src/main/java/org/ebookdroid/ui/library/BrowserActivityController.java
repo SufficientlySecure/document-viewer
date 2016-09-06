@@ -2,6 +2,7 @@ package org.ebookdroid.ui.library;
 
 import org.ebookdroid.CodecType;
 import org.emdev.ui.uimanager.IUIManager;
+import org.emdev.ui.uimanager.UIManagerAppCompat;
 import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.settings.LibSettings;
@@ -189,16 +190,12 @@ public class BrowserActivityController extends AbstractActivityController<Browse
     @Override
     public void showProgress(final boolean show) {
         final BrowserActivity activity = getManagedComponent();
-
-        if (!AndroidVersion.lessThan3x) {
-            activity.runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    IUIManager.instance.setProgressSpinnerVisible(activity, show);
-                }
-            });
-        }
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                UIManagerAppCompat.setProgressSpinnerVisible(activity, show);
+            }
+        });
     }
 
     /**

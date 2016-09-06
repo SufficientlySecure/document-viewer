@@ -1,5 +1,6 @@
 package org.ebookdroid.ui.viewer.dialogs;
 
+import org.emdev.ui.uimanager.UIManagerAppCompat;
 import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.books.BookSettings;
@@ -108,7 +109,7 @@ public class GoToPageDialog extends Dialog {
         final ListView bookmarks = (ListView) findViewById(R.id.bookmarks);
         bookmarks.setAdapter(null);
         adapter = null;
-        IUIManager.instance.invalidateOptionsMenu(base.getManagedComponent());
+        UIManagerAppCompat.invalidateOptionsMenu(base.getManagedComponent());
     }
 
     @ActionMethod(ids = R.id.goToButton)

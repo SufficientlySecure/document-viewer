@@ -5,6 +5,8 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
+    <include layout="@layout/toolbar_actionbar" />
+
     <ExpandableListView
         android:id="@+id/opdslist"
         android:layout_width="fill_parent"

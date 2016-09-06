@@ -2,6 +2,7 @@ package org.ebookdroid.ui.library;
 
 import org.ebookdroid.CodecType;
 import org.ebookdroid.EBookDroidApp;
+import org.emdev.ui.uimanager.UIManagerAppCompat;
 import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.cache.CacheManager.ICacheListener;
@@ -493,22 +494,13 @@ public class RecentActivityController extends AbstractActivityController<RecentA
     @Override
     public void showProgress(final boolean show) {
         final RecentActivity activity = getManagedComponent();
-        final ProgressBar progress = (ProgressBar) activity.findViewById(R.id.recentprogress);
-        if (progress != null) {
-            if (show) {
-                progress.setVisibility(View.VISIBLE);
-            } else {
-                progress.setVisibility(View.GONE);
-            }
-        } else {
-            activity.runOnUiThread(new Runnable() {
+        activity.runOnUiThread(new Runnable() {
 
-                @Override
-                public void run() {
-                    IUIManager.instance.setProgressSpinnerVisible(activity, show);
-                }
-            });
-        }
+            @Override
+            public void run() {
+                UIManagerAppCompat.setProgressSpinnerVisible(activity, show);
+            }
+        });
     }
 
     /**
@@ -597,7 +589,7 @@ public class RecentActivityController extends AbstractActivityController<RecentA
                 }
             }
         } finally {
-            IUIManager.instance.invalidateOptionsMenu(getManagedComponent());
+            UIManagerAppCompat.invalidateOptionsMenu(getManagedComponent());
         }
     }
 
@@ -646,14 +638,14 @@ public class RecentActivityController extends AbstractActivityController<RecentA
                 if (LibSettings.current().autoScanRemovableMedia) {
                     bookshelfAdapter.startScan(path);
                 }
-                IUIManager.instance.invalidateOptionsMenu(getManagedComponent());
+                UIManagerAppCompat.invalidateOptionsMenu(getManagedComponent());
             }
             return;
         }
 
         if (oldState != null && oldState.readable) {
             bookshelfAdapter.removeAll(path);
-            IUIManager.instance.invalidateOptionsMenu(getManagedComponent());
+            UIManagerAppCompat.invalidateOptionsMenu(getManagedComponent());
         }
     }
 }

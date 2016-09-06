@@ -39,16 +39,6 @@ public interface IUIManager {
 
     void setFullScreenMode(Activity activity, View view, boolean fullScreen);
 
-    void setTitleVisible(Activity activity, boolean visible, boolean firstTime);
-
-    void setProgressSpinnerVisible(Activity activity, boolean visible);
-
-    boolean isTitleVisible(Activity activity);
-
-    void openOptionsMenu(final Activity activity, final View view);
-
-    void invalidateOptionsMenu(final Activity activity);
-
     void onMenuOpened(Activity activity);
 
     void onMenuClosed(Activity activity);

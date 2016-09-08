@@ -27,7 +27,7 @@ public class SettingsActivity extends BaseSettingsActivity {
             final String fileName = PathFromUri.retrieve(getContentResolver(), uri);
             BookSettings current = SettingsManager.getBookSettings(fileName);
             if (current != null) {
-                setRequestedOrientation(current.getOrientation());
+                setRequestedOrientation(current.getOrientation(AppSettings.current()));
             }
         }
 

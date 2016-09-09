@@ -5,7 +5,7 @@
     android:title="@string/pref_render_category" >
 
     <ListPreference
-            android:defaultValue="@string/pref_rotation_auto"
+            android:defaultValue="@string/pref_rotation_unspecified"
             android:entries="@array/pref_rotation_entries_10"
             android:entryValues="@array/pref_rotation_values_10"
             android:key="@string/pref_rotation_id"

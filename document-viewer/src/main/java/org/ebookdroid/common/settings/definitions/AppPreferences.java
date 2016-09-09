@@ -37,7 +37,7 @@ public interface AppPreferences {
             pref_keepscreenon_defvalue);
 
     EnumPreferenceDefinition<RotationType> ROTATION = new EnumPreferenceDefinition<RotationType>(RotationType.class,
-            pref_rotation_id, pref_rotation_auto);
+            pref_rotation_id, pref_rotation_unspecified);
 
     BooleanPreferenceDefinition FULLSCREEN = new BooleanPreferenceDefinition(pref_fullscreen_id,
             pref_fullscreen_defvalue);

@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string translatable="false" name="pref_rotation_id">rotation</string>
+    <!-- "rotation" defaulted to "Automatic" which was considered a bug:
+         https://github.com/SufficientlySecure/document-viewer/issues/147
+
+         Changing the key to "rotation_2" so we can reset the setting to "Unspecified". -->
+    <string translatable="false" name="pref_rotation_id">rotation_2</string>
     <string translatable="false" name="pref_rotation_unspecified">Unspecified</string>
     <string translatable="false" name="pref_rotation_land">Force landscape</string>
     <string translatable="false" name="pref_rotation_port">Force portrait</string>

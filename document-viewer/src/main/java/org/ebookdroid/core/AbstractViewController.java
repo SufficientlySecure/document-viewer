@@ -22,12 +22,14 @@ import org.ebookdroid.ui.viewer.IViewController;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.FloatMath;
+import android.util.TypedValue;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -50,6 +52,10 @@ public abstract class AbstractViewController extends AbstractComponentController
     protected static final LogContext LCTX = LogManager.root().lctx("View", false);
 
     public static final int DOUBLE_TAP_TIME = 500;
+    /**
+     * Allow tapping on links up to this many dp outside of the link rectangle
+     */
+    private static final float LINK_TAP_THRESHOLD_DP = 10.0f;
 
     private static final Float FZERO = Float.valueOf(0);
 
@@ -579,6 +585,7 @@ public abstract class AbstractViewController extends AbstractComponentController
     }
 
     protected final boolean processLinkTap(final float x, final float y) {
+        final float threshold_px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, LINK_TAP_THRESHOLD_DP, base.getContext().getResources().getDisplayMetrics());
         final float zoom = base.getZoomModel().getZoom();
         final RectF rect = new RectF(x, y, x, y);
         rect.offset(getScrollX(), getScrollY());
@@ -590,6 +597,15 @@ public abstract class AbstractViewController extends AbstractComponentController
                 page.getBounds(zoom, bounds);
                 if (RectF.intersects(bounds, rect)) {
                     if (LengthUtils.isNotEmpty(page.links)) {
+                        for (final PageLink link : page.links) {
+                            if (processLinkTap(page, link, bounds, rect)) {
+                                return true;
+                            }
+                        }
+
+                        // Didn't tap exactly within any link. Try enlarging the tap rectangle
+                        rect.inset(-threshold_px, -threshold_px);
+
                         for (final PageLink link : page.links) {
                             if (processLinkTap(page, link, bounds, rect)) {
                                 return true;

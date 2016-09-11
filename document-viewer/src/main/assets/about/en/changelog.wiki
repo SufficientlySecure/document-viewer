@@ -1,5 +1,24 @@
 #labels Featured
 
+= DV v2.7.7 =
+
+== New features ==
+* Spanish translation
+* German translation updates
+* Add preference for disabling "Tap to toggle fullscreen"
+* Add preference for disabling volume key scrolling
+* Add tap areas on the left and right sides of the screen for page turning
+* Restore rotation option in App Settings
+
+== Changes ==
+* Make links in documents easier to tap
+* Center pages vertically in Single Page mode
+* Add Single Page mode checkbox to the toolbar menu
+
+== Bug fixes ==
+* Fix incorrect page number in toolbar when leaving fullscreen mode
+* Fix zoom gesture to zoom around the touch midpoint
+
 = DV v2.7.6 =
 == New features ==
 * Japanese translation

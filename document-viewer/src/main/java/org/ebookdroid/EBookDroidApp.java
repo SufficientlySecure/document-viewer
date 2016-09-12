@@ -1,5 +1,8 @@
 package org.ebookdroid;
 
+import org.acra.ACRA;
+import org.acra.ReportingInteractionMode;
+import org.acra.annotation.ReportsCrashes;
 import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.common.bitmaps.ByteBufferManager;
 import org.ebookdroid.common.cache.CacheManager;
@@ -27,6 +30,11 @@ import org.emdev.ui.gl.GLConfiguration;
 import org.emdev.utils.concurrent.Flag;
 import org.sufficientlysecure.viewer.R;
 
+@ReportsCrashes(mailTo = "fixme",
+        mode = ReportingInteractionMode.DIALOG,
+        resDialogCommentPrompt = R.string.crash_dialog_comment_prompt,
+        resDialogText = R.string.crash_dialog_text,
+        resDialogTitle = R.string.crash_dialog_title)
 public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeListener, IBackupSettingsChangeListener,
         ILibSettingsChangeListener {
 
@@ -159,4 +167,11 @@ public class EBookDroidApp extends BaseDroidApp implements IAppSettingsChangeLis
         return null;
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+
+        // The following line triggers the initialization of ACRA
+        ACRA.init(this);
+    }
 }

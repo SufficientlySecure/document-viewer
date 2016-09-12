@@ -1,69 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <org.ebookdroid.ui.library.views.BookcaseView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/Bookcase"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    >
 
-    <LinearLayout
-        android:id="@+id/BookcaseCaption"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/recent_bookcase_shelf_caption"
-        android:orientation="horizontal" >
-
-        <ImageButton
-            android:id="@+id/ShelfLeftButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/recent_bookcase_title_margin"
-            android:layout_marginTop="@dimen/recent_bookcase_title_margin"
-            android:background="@android:color/transparent"
-            android:onClick="onButtonClick"
-            android:src="@drawable/recent_bookcase_nav_prev" />
-
-        <TextView
-            android:id="@+id/ShelfCaption"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="fill_horizontal"
-            android:layout_marginBottom="@dimen/recent_bookcase_title_margin"
-            android:layout_marginTop="@dimen/recent_bookcase_title_margin"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:clickable="true"
-            android:ellipsize="marquee"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:gravity="center"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:onClick="onButtonClick"
-            android:shadowColor="#DD000000"
-            android:shadowDx="2"
-            android:shadowDy="-2"
-            android:shadowRadius="1.5"
-            android:singleLine="true"
-            android:text="Recent books"
-            android:textColor="#DDD"
-            android:textSize="40dp" />
-
-        <ImageButton
-            android:id="@+id/ShelfRightButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/recent_bookcase_title_margin"
-            android:layout_marginTop="@dimen/recent_bookcase_title_margin"
-            android:background="@android:color/transparent"
-            android:onClick="onButtonClick"
-            android:src="@drawable/recent_bookcase_nav_next" />
-    </LinearLayout>
+        app:tabMode="scrollable"
+        app:tabGravity="fill"
+        android:background="?attr/colorPrimary"
+        />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/Shelves"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/BookcaseCaption"
+        android:layout_below="@id/tabs"
         android:layout_gravity="fill" />
 
 </org.ebookdroid.ui.library.views.BookcaseView>

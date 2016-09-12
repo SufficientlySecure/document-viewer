@@ -99,6 +99,19 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
     @Override
     protected void onResumeImpl() {
         UIManagerAppCompat.invalidateOptionsMenu(this);
+
+        // HACK: invalidating the adapter when the tab view is not visible seems to leave
+        // the scroll position in the wrong place.
+        Handler h = new Handler(Looper.getMainLooper());
+        h.post(new Runnable() {
+            @Override
+            public void run() {
+                final TabLayout tl = (TabLayout) findViewById(R.id.tabs);
+                if (tl != null) {
+                    tl.setScrollPosition(tl.getSelectedTabPosition(), 0.0f, true);
+                }
+            }
+        });
     }
 
     /**

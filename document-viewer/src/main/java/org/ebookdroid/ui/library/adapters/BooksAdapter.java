@@ -184,6 +184,11 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
         return list != null ? LengthUtils.safeString(list.name) : "";
     }
 
+    @Override
+    public CharSequence getPageTitle(final int position) {
+        return getListName(position);
+    }
+
     public String getListPath(final int currentList) {
         checkServiceAdapters();
         final BookShelfAdapter list = getList(currentList);

@@ -424,8 +424,7 @@ public class RecentActivityController extends AbstractActivityController<RecentA
         getManagedComponent().startActivity(intent);
     }
 
-    @ActionMethod(ids = R.id.ShelfCaption)
-    public void showSelectShelfDlg(final ActionEx action) {
+    public void showSelectShelfDlg() {
         final List<String> names = bookshelfAdapter.getListNames();
 
         if (LengthUtils.isNotEmpty(names)) {
@@ -440,16 +439,6 @@ public class RecentActivityController extends AbstractActivityController<RecentA
     public void selectShelf(final ActionEx action) {
         final Integer item = action.getParameter(IActionController.DIALOG_ITEM_PROPERTY);
         getManagedComponent().showBookshelf(item);
-    }
-
-    @ActionMethod(ids = R.id.ShelfLeftButton)
-    public void selectPrevShelf(final ActionEx action) {
-        getManagedComponent().showPrevBookshelf();
-    }
-
-    @ActionMethod(ids = R.id.ShelfRightButton)
-    public void selectNextShelf(final ActionEx action) {
-        getManagedComponent().showNextBookshelf();
     }
 
     @ActionMethod(ids = { R.id.recent_showlibrary, R.id.recent_showrecent })

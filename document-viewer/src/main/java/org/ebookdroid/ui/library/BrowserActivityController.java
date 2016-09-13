@@ -22,6 +22,7 @@ import org.ebookdroid.ui.viewer.ViewerActivity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.view.KeyEvent;
 import android.widget.EditText;
@@ -296,7 +297,7 @@ public class BrowserActivityController extends AbstractActivityController<Browse
         }
 
         final FileUtils.FilePath path = FileUtils.parseFilePath(file.getAbsolutePath(), CodecType.getAllExtensions());
-        final EditText input = new EditText(getManagedComponent());
+        final EditText input = new AppCompatEditText(getManagedComponent());
         input.setSingleLine();
         input.setText(path.name);
         input.selectAll();

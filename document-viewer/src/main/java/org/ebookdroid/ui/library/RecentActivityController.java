@@ -32,6 +32,7 @@ import org.ebookdroid.ui.viewer.ViewerActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
@@ -241,7 +242,7 @@ public class RecentActivityController extends AbstractActivityController<RecentA
     public void showSearchDlg(final ActionEx action) {
         final ActionDialogBuilder builder = new ActionDialogBuilder(getContext(), this);
 
-        final EditText input = new EditText(getManagedComponent());
+        final EditText input = new AppCompatEditText(getManagedComponent());
         input.setSingleLine();
         input.setText(LengthUtils.safeString(bookshelfAdapter.getSearchQuery()));
         input.selectAll();
@@ -307,7 +308,7 @@ public class RecentActivityController extends AbstractActivityController<RecentA
         }
 
         final FileUtils.FilePath file = FileUtils.parseFilePath(book.path, CodecType.getAllExtensions());
-        final EditText input = new EditText(getManagedComponent());
+        final EditText input = new AppCompatEditText(getManagedComponent());
         input.setSingleLine();
         input.setText(file.name);
         input.selectAll();

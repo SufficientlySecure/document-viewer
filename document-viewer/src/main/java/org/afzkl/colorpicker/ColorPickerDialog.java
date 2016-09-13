@@ -18,9 +18,9 @@ package org.afzkl.colorpicker;
 
 import org.sufficientlysecure.viewer.R;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;

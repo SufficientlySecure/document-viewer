@@ -53,6 +53,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.InputType;
 import android.view.KeyEvent;
@@ -300,7 +301,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
     }
 
     public void askPassword(final String fileName, final int promtId) {
-        final EditText input = new EditText(getManagedComponent());
+        final EditText input = new AppCompatEditText(getManagedComponent());
         input.setSingleLine(true);
         input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 

@@ -4,16 +4,19 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.text.TextPaint;
 
-public enum PagePaint {
+public class PagePaint {
 
-    /**
-     *
-     */
-    DAY(Color.BLACK, Color.WHITE, Color.BLACK),
-    /**
-     *
-     */
-    NIGHT(Color.WHITE, Color.BLACK, Color.BLACK);
+    public static PagePaint Day() {
+        return new PagePaint(Color.BLACK, Color.WHITE, Color.BLACK);
+    }
+
+    public static PagePaint Night() {
+        return new PagePaint(Color.WHITE, Color.BLACK, Color.BLACK);
+    }
+
+    public static PagePaint TintedDay(int fillColor) {
+        return new PagePaint(Color.BLACK, fillColor, Color.BLACK);
+    }
 
     public final Paint bitmapPaint;
     public final TextPaint textPaint = new TextPaint();

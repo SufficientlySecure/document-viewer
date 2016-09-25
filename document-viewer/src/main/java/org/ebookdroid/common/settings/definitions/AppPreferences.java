@@ -134,6 +134,10 @@ public interface AppPreferences {
 
     BooleanPreferenceDefinition NIGHT_MODE = new BooleanPreferenceDefinition(pref_nightmode_id, pref_nightmode_defvalue);
 
+    BooleanPreferenceDefinition TINT = new BooleanPreferenceDefinition(pref_tint_id, pref_tint_defvalue);
+
+    IntegerPreferenceDefinition TINT_COLOR = new IntegerPreferenceDefinition(pref_tint_color_id, pref_tint_color_defvalue);
+
     BooleanPreferenceDefinition NIGHT_MODE_POS_IMAGES = new BooleanPreferenceDefinition(pref_posimages_in_nightmode_id,
             pref_posimages_in_nightmode_defvalue);
 

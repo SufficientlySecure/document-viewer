@@ -10,6 +10,7 @@ import org.ebookdroid.core.models.DocumentModel.PageIterator;
 import org.ebookdroid.ui.viewer.IView;
 import org.ebookdroid.ui.viewer.IViewController;
 
+import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
@@ -28,6 +29,8 @@ public class ViewState {
 
     public boolean nightMode;
     public boolean positiveImagesInNightMode;
+    public boolean tint;
+    public int tintColor;
     public float zoom;
     public PageAlign pageAlign;
     public PagePaint paint;
@@ -119,8 +122,12 @@ public class ViewState {
         this.model = dc.getBase().getDocumentModel();
         this.nightMode = book != null ? book.nightMode : app.nightMode;
         this.positiveImagesInNightMode = book != null ? book.positiveImagesInNightMode : app.positiveImagesInNightMode;
+        this.tint = book != null ? book.tint : app.tint;
+        this.tintColor = book != null ? book.tintColor : app.tintColor;
         this.pageAlign = DocumentViewMode.getPageAlign(book);
-        this.paint = this.nightMode ? PagePaint.NIGHT : PagePaint.DAY;
+        this.paint = this.tint ? PagePaint.TintedDay(this.tintColor)
+                : (this.nightMode ? PagePaint.Night()
+                    : PagePaint.Day());
         this.paint.bitmapPaint.setFilterBitmap(false);
 
         this.zoom = zoom;

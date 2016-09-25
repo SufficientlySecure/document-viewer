@@ -86,6 +86,17 @@
             android:summary="@string/pref_posimages_in_nightmode_summary"
             android:title="@string/pref_posimages_in_nightmode_title" />
 
+        <org.emdev.ui.preference.SwitchPreferenceEx
+            android:defaultValue="@string/pref_tint_defvalue"
+            android:key="@string/pref_book_tint_id"
+            android:summary="@string/pref_tint_summary"
+            android:title="@string/pref_tint_title" />
+
+        <org.emdev.ui.preference.ColorPickerPreference
+            android:key="@string/pref_book_tint_color_id"
+            android:summary="@string/pref_tint_color_summary"
+            android:title="@string/pref_tint_color_title" />
+
         <org.emdev.ui.preference.SeekBarPreference
             android:defaultValue="@string/pref_contrast_defvalue"
             android:key="@string/pref_book_contrast_id"

@@ -12,6 +12,10 @@
 
     <string translatable="false" name="pref_book_posimages_in_nightmode_id">book-posimages-in-nightmode</string>
 
+    <string translatable="false" name="pref_book_tint_id">book_tint</string>
+    
+    <string translatable="false" name="pref_book_tint_color_id">book_tint_color</string>
+
     <string translatable="false" name="pref_book_contrast_id">book_contrast</string>
 
     <string translatable="false" name="pref_book_gamma_id">book_gamma</string>

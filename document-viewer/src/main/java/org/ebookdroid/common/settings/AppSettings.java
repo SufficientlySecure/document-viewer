@@ -116,6 +116,10 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     public final boolean nightMode;
 
+    public final boolean tint;
+
+    public final int tintColor;
+
     public boolean positiveImagesInNightMode;
 
     final int contrast;
@@ -211,6 +215,8 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         pdfStorageSize = PDF_STORAGE_SIZE.getPreferenceValue(prefs);
         /* =============== Default rendering settings =============== */
         nightMode = NIGHT_MODE.getPreferenceValue(prefs);
+        tint = TINT.getPreferenceValue(prefs);
+        tintColor = TINT_COLOR.getPreferenceValue(prefs);
         positiveImagesInNightMode = NIGHT_MODE_POS_IMAGES.getPreferenceValue(prefs);
         contrast = CONTRAST.getPreferenceValue(prefs);
         gamma = GAMMA.getPreferenceValue(prefs);
@@ -307,6 +313,8 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
     static void setDefaultSettings(final BookSettings bs) {
         bs.nightMode = current.nightMode;
         bs.positiveImagesInNightMode = current.positiveImagesInNightMode;
+        bs.tint = current.tint;
+        bs.tintColor = current.tintColor;
         bs.contrast = current.contrast;
         bs.gamma = current.gamma;
         bs.exposure = current.exposure;
@@ -323,6 +331,8 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         final SharedPreferences prefs = SettingsManager.prefs;
         bs.nightMode = BOOK_NIGHT_MODE.getPreferenceValue(prefs, current.nightMode);
         bs.positiveImagesInNightMode = BOOK_NIGHT_MODE_POS_IMAGES.getPreferenceValue(prefs, current.positiveImagesInNightMode);
+        bs.tint = BOOK_TINT.getPreferenceValue(prefs, current.tint);
+        bs.tintColor = BOOK_TINT_COLOR.getPreferenceValue(prefs, current.tintColor);
         bs.contrast = BOOK_CONTRAST.getPreferenceValue(prefs, current.contrast);
         bs.gamma = BOOK_GAMMA.getPreferenceValue(prefs, current.gamma);
         bs.exposure = BOOK_EXPOSURE.getPreferenceValue(prefs, current.exposure);
@@ -343,6 +353,8 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         edit.remove(BOOK.key);
         edit.remove(BOOK_NIGHT_MODE.key);
         edit.remove(BOOK_NIGHT_MODE_POS_IMAGES.key);
+        edit.remove(BOOK_TINT.key);
+        edit.remove(BOOK_TINT_COLOR.key);
         edit.remove(BOOK_CONTRAST.key);
         edit.remove(BOOK_GAMMA.key);
         edit.remove(BOOK_EXPOSURE.key);
@@ -364,6 +376,8 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         BOOK.setPreferenceValue(edit, bs.fileName);
         BOOK_NIGHT_MODE.setPreferenceValue(edit, bs.nightMode);
         BOOK_NIGHT_MODE_POS_IMAGES.setPreferenceValue(edit, bs.positiveImagesInNightMode);
+        BOOK_TINT.setPreferenceValue(edit, bs.tint);
+        BOOK_TINT_COLOR.setPreferenceValue(edit, bs.tintColor);
         BOOK_CONTRAST.setPreferenceValue(edit, bs.contrast);
         BOOK_GAMMA.setPreferenceValue(edit, bs.gamma);
         BOOK_EXPOSURE.setPreferenceValue(edit, bs.exposure);

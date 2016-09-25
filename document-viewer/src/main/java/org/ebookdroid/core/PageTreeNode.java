@@ -11,6 +11,7 @@ import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.models.DecodingProgressModel;
 import org.ebookdroid.ui.viewer.IViewController;
 
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.RectF;
@@ -164,6 +165,8 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             final AppSettings app = AppSettings.current();
             final BookSettings bs = page.base.getBookSettings();
             final boolean invert = bs != null ? bs.nightMode : app.nightMode;
+            final boolean tint = bs != null ? bs.tint : app.tint;
+            final int tintColor = bs != null ? bs.tintColor : app.tintColor;
 
             if (bs != null) {
                 bitmap.applyEffects(bs);
@@ -172,7 +175,10 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
                 bitmap.invert();
             }
 
-            final PagePaint paint = invert ? PagePaint.NIGHT : PagePaint.DAY;
+            final PagePaint paint = tint ? PagePaint.TintedDay(tintColor)
+                    : (invert ? PagePaint.Night()
+                        : PagePaint.Day());
+
             final GLBitmaps bitmaps = new GLBitmaps(fullId, bitmap, paint);
 
             holder.setBitmap(bitmaps);

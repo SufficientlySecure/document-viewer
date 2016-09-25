@@ -36,6 +36,10 @@ import static org.sufficientlysecure.viewer.R.string.pref_posimages_in_nightmode
 import static org.sufficientlysecure.viewer.R.string.pref_rotation_unspecified;
 import static org.sufficientlysecure.viewer.R.string.pref_splitpages_defvalue;
 import static org.sufficientlysecure.viewer.R.string.pref_splitpages_rtl_defvalue;
+import static org.sufficientlysecure.viewer.R.string.pref_tint_color_defvalue;
+import static org.sufficientlysecure.viewer.R.string.pref_book_tint_color_id;
+import static org.sufficientlysecure.viewer.R.string.pref_tint_defvalue;
+import static org.sufficientlysecure.viewer.R.string.pref_book_tint_id;
 import static org.sufficientlysecure.viewer.R.string.pref_viewmode_vertical_scroll;
 
 import org.ebookdroid.common.settings.types.BookRotationType;
@@ -60,6 +64,10 @@ public interface BookPreferences {
     BooleanPreferenceDefinition BOOK_NIGHT_MODE = new BooleanPreferenceDefinition(pref_book_nightmode_id, pref_nightmode_defvalue);
 
     BooleanPreferenceDefinition BOOK_NIGHT_MODE_POS_IMAGES = new BooleanPreferenceDefinition(pref_book_posimages_in_nightmode_id, pref_posimages_in_nightmode_defvalue);
+
+    BooleanPreferenceDefinition BOOK_TINT = new BooleanPreferenceDefinition(pref_book_tint_id, pref_tint_defvalue);
+
+    IntegerPreferenceDefinition BOOK_TINT_COLOR = new IntegerPreferenceDefinition(pref_book_tint_color_id, pref_tint_color_defvalue);
 
     IntegerPreferenceDefinition BOOK_CONTRAST = new IntegerPreferenceDefinition(pref_book_contrast_id,
             pref_contrast_defvalue, pref_contrast_minvalue, pref_contrast_maxvalue);

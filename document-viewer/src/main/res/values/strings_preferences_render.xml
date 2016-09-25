@@ -73,6 +73,12 @@
     <string name="pref_posimages_in_nightmode_title">Positive images in night mode</string>
     <string name="pref_posimages_in_nightmode_summary">Show gray-scaled images in night mode (do not invert image colors)</string>
 
+    <string name="pref_tint_title">Tint</string>
+    <string name="pref_tint_summary">Tint the page color using the color specified below</string>
+
+    <string name="pref_tint_color_title">Tint color</string>
+    <string name="pref_tint_color_summary">Color to tint pages with</string>
+
     <string name="pref_contrast_title">Contrast</string>
     <string name="pref_contrast_summary">Contrast correction level (0 &#8211; 1000, 100 by default)</string>
 

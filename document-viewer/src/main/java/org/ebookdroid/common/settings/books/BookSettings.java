@@ -59,6 +59,10 @@ public class BookSettings implements CurrentPageListener {
 
     public boolean positiveImagesInNightMode;
 
+    public boolean tint;
+
+    public int tintColor;
+
     public int contrast = AppPreferences.CONTRAST.defValue;
 
     public int gamma = AppPreferences.GAMMA.defValue;
@@ -90,6 +94,8 @@ public class BookSettings implements CurrentPageListener {
         this.offsetY = current.offsetY;
         this.nightMode = current.nightMode;
         this.positiveImagesInNightMode = current.positiveImagesInNightMode;
+        this.tint = current.tint;
+        this.tintColor = current.tintColor;
         this.contrast = current.contrast;
         this.gamma = current.gamma;
         this.exposure = current.exposure;
@@ -121,6 +127,8 @@ public class BookSettings implements CurrentPageListener {
         this.offsetY = current.offsetY;
         this.nightMode = current.nightMode;
         this.positiveImagesInNightMode = current.positiveImagesInNightMode;
+        this.tint = current.tint;
+        this.tintColor = current.tintColor;
         this.contrast = current.contrast;
         this.gamma = current.gamma;
         this.exposure = current.exposure;
@@ -159,6 +167,8 @@ public class BookSettings implements CurrentPageListener {
         this.offsetY = (float) object.getDouble("offsetY");
         this.nightMode = object.getBoolean("nightMode");
         this.positiveImagesInNightMode = object.optBoolean("positiveImagesInNightMode", false);
+        this.tint = object.optBoolean("tint", false);
+        this.tintColor = object.optInt("tintColor", 0);
         this.contrast = object.getInt("contrast");
         this.gamma = object.optInt("gamma", AppPreferences.GAMMA.defValue);
         this.exposure = object.getInt("exposure");
@@ -194,6 +204,8 @@ public class BookSettings implements CurrentPageListener {
         obj.put("offsetY", offsetY);
         obj.put("nightMode", nightMode);
         obj.put("positiveImagesInNightMode", positiveImagesInNightMode);
+        obj.put("tint", tint);
+        obj.put("tintColor", tintColor);
         obj.put("contrast", contrast);
         obj.put("gamma", gamma);
         obj.put("exposure", exposure);
@@ -256,9 +268,10 @@ public class BookSettings implements CurrentPageListener {
         private static final short D_PositiveImagesInNightMode = 0x0001 << 11;
         private static final short D_Rotation = 0x0001 << 12;
         private static final short D_Gamma = 0x0001 << 13;
+        private static final short D_Tint = 0x0001 << 14;
 
         private static final short D_Effects = D_Contrast | D_Exposure | D_NightMode | D_PositiveImagesInNightMode
-                | D_AutoLevels | D_Gamma;
+                | D_AutoLevels | D_Gamma | D_Tint;
 
         private short mask;
         private final boolean firstTime;
@@ -300,6 +313,12 @@ public class BookSettings implements CurrentPageListener {
                 }
                 if (olds.positiveImagesInNightMode != news.positiveImagesInNightMode) {
                     mask |= D_PositiveImagesInNightMode;
+                }
+                if (olds.tint != news.tint) {
+                    mask |= D_Tint;
+                }
+                if (olds.tintColor != news.tintColor) {
+                    mask |= D_Tint;
                 }
                 if (olds.autoLevels != news.autoLevels) {
                     mask |= D_AutoLevels;

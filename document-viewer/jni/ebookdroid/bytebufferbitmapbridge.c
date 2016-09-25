@@ -65,6 +65,38 @@ Java_org_ebookdroid_common_bitmaps_ByteBufferBitmap_nativeInvert(JNIEnv* env, jc
     }
 }
 
+/**
+ * Tints the page to the given color (e.g. sepia tint)
+ * Just multiplies the colors.
+ * TODO: do something smarter? 
+ */
+JNIEXPORT void JNICALL
+Java_org_ebookdroid_common_bitmaps_ByteBufferBitmap_nativeTint(JNIEnv* env, jclass classObject, jobject srcBuffer,
+                                                                 jint width, jint height, jint c)
+{
+    int i;
+
+    uint8_t* src;
+    src = (uint8_t*) ((*env)->GetDirectBufferAddress(env, srcBuffer));
+    if (!src)
+    {
+        ERROR("Can not get direct buffer");
+        return;
+    }
+
+    const uint8_t a = (uint8_t) ((c >> 24) & 0xFF);
+    const uint8_t r = (uint8_t) ((c >> 16) & 0xFF);
+    const uint8_t g = (uint8_t) ((c >> 8) & 0xFF);
+    const uint8_t b = (uint8_t) (c & 0xFF);
+
+    for (i = 0; i < width * height * 4; i += 4)
+    {
+        src[i]     = (src[i] * r)     / 255;
+        src[i + 1] = (src[i + 1] * g) / 255;
+        src[i + 2] = (src[i + 2] * b) / 255;
+    }
+}
+
 JNIEXPORT void JNICALL
 Java_org_ebookdroid_common_bitmaps_ByteBufferBitmap_nativeFillAlpha(JNIEnv* env, jclass classObject, jobject srcBuffer,
                                                                     jint width, jint height, jint value)

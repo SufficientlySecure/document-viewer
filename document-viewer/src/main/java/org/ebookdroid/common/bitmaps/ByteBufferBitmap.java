@@ -4,6 +4,7 @@ import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.definitions.AppPreferences;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Rect;
 
 import java.nio.ByteBuffer;
@@ -90,6 +91,10 @@ public final class ByteBufferBitmap {
                 autoLevels();
             }
         }
+
+        if (bs.tint && bs.tintColor != AppPreferences.TINT_COLOR.defValue) {
+            tint(bs.tintColor);
+        }
     }
 
     public void copyPixelsFrom(final ByteBufferBitmap src, final int left, final int top, final int width,
@@ -136,6 +141,10 @@ public final class ByteBufferBitmap {
         nativeInvert(pixels, width, height);
     }
 
+    public void tint(int c) {
+        nativeTint(pixels, width, height, c);
+    }
+
     public int getAvgLum() {
         return nativeAvgLum(pixels, width, height);
     }
@@ -167,6 +176,8 @@ public final class ByteBufferBitmap {
     }
 
     private static native void nativeInvert(ByteBuffer src, int width, int height);
+
+    private static native void nativeTint(ByteBuffer src, int width, int height, int color);
 
     private static native void nativeFillAlpha(ByteBuffer src, int width, int height, int value);
 

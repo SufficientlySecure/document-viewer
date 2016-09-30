@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="ebookdroid"
-           parent="android:Theme.Material">
-    </style>
+    <style name="ebookdroid_prefs" parent="android:Theme.Material"/>
 
 </resources>

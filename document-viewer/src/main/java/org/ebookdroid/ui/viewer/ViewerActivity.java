@@ -1,6 +1,7 @@
 package org.ebookdroid.ui.viewer;
 
 import org.ebookdroid.common.settings.types.DocumentViewMode;
+import org.emdev.ui.uimanager.UIManagerAppCompat;
 import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.books.BookSettings;
@@ -18,6 +19,7 @@ import org.ebookdroid.ui.viewer.views.SearchControls;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -102,7 +104,9 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
         getWindowManager().getDefaultDisplay().getMetrics(DM);
         LCTX.i("XDPI=" + DM.xdpi + ", YDPI=" + DM.ydpi);
 
-        frameLayout = new FrameLayout(this);
+        View rootLayout = getLayoutInflater().inflate(R.layout.viewer, null);
+
+        frameLayout = (FrameLayout) rootLayout.findViewById(R.id.framelayout);
 
         view = ViewStub.STUB;
 
@@ -128,11 +132,13 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
             builder.show();
         }
 
-        setContentView(frameLayout);
+        setContentView(rootLayout);
 
-        if (!AndroidVersion.lessThan3x) {
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     /**
@@ -190,7 +196,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
         }
 
         final AppSettings app = AppSettings.current();
-        if (IUIManager.instance.isTitleVisible(this) && app.pageInTitle) {
+        if (UIManagerAppCompat.isToolbarVisible(this) && app.pageInTitle) {
             return;
         }
 
@@ -289,7 +295,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
     }
 
     protected boolean hasNormalMenu() {
-        return AndroidVersion.lessThan4x || IUIManager.instance.isTabletUi(this) || AppSettings.current().getShowTitle();
+        return IUIManager.instance.isTabletUi(this) || AppSettings.current().getShowTitle();
     }
 
     /**

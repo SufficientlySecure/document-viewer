@@ -2,6 +2,7 @@ package org.ebookdroid.ui.library;
 
 import org.ebookdroid.CodecType;
 import org.ebookdroid.EBookDroidApp;
+import org.emdev.ui.uimanager.UIManagerAppCompat;
 import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.cache.CacheManager.ICacheListener;
@@ -31,6 +32,7 @@ import org.ebookdroid.ui.viewer.ViewerActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
@@ -240,7 +242,7 @@ public class RecentActivityController extends AbstractActivityController<RecentA
     public void showSearchDlg(final ActionEx action) {
         final ActionDialogBuilder builder = new ActionDialogBuilder(getContext(), this);
 
-        final EditText input = new EditText(getManagedComponent());
+        final EditText input = new AppCompatEditText(getManagedComponent());
         input.setSingleLine();
         input.setText(LengthUtils.safeString(bookshelfAdapter.getSearchQuery()));
         input.selectAll();
@@ -306,7 +308,7 @@ public class RecentActivityController extends AbstractActivityController<RecentA
         }
 
         final FileUtils.FilePath file = FileUtils.parseFilePath(book.path, CodecType.getAllExtensions());
-        final EditText input = new EditText(getManagedComponent());
+        final EditText input = new AppCompatEditText(getManagedComponent());
         input.setSingleLine();
         input.setText(file.name);
         input.selectAll();
@@ -423,8 +425,7 @@ public class RecentActivityController extends AbstractActivityController<RecentA
         getManagedComponent().startActivity(intent);
     }
 
-    @ActionMethod(ids = R.id.ShelfCaption)
-    public void showSelectShelfDlg(final ActionEx action) {
+    public void showSelectShelfDlg() {
         final List<String> names = bookshelfAdapter.getListNames();
 
         if (LengthUtils.isNotEmpty(names)) {
@@ -439,16 +440,6 @@ public class RecentActivityController extends AbstractActivityController<RecentA
     public void selectShelf(final ActionEx action) {
         final Integer item = action.getParameter(IActionController.DIALOG_ITEM_PROPERTY);
         getManagedComponent().showBookshelf(item);
-    }
-
-    @ActionMethod(ids = R.id.ShelfLeftButton)
-    public void selectPrevShelf(final ActionEx action) {
-        getManagedComponent().showPrevBookshelf();
-    }
-
-    @ActionMethod(ids = R.id.ShelfRightButton)
-    public void selectNextShelf(final ActionEx action) {
-        getManagedComponent().showNextBookshelf();
     }
 
     @ActionMethod(ids = { R.id.recent_showlibrary, R.id.recent_showrecent })
@@ -493,22 +484,13 @@ public class RecentActivityController extends AbstractActivityController<RecentA
     @Override
     public void showProgress(final boolean show) {
         final RecentActivity activity = getManagedComponent();
-        final ProgressBar progress = (ProgressBar) activity.findViewById(R.id.recentprogress);
-        if (progress != null) {
-            if (show) {
-                progress.setVisibility(View.VISIBLE);
-            } else {
-                progress.setVisibility(View.GONE);
-            }
-        } else {
-            activity.runOnUiThread(new Runnable() {
+        activity.runOnUiThread(new Runnable() {
 
-                @Override
-                public void run() {
-                    IUIManager.instance.setProgressSpinnerVisible(activity, show);
-                }
-            });
-        }
+            @Override
+            public void run() {
+                UIManagerAppCompat.setProgressSpinnerVisible(activity, show);
+            }
+        });
     }
 
     /**
@@ -597,7 +579,7 @@ public class RecentActivityController extends AbstractActivityController<RecentA
                 }
             }
         } finally {
-            IUIManager.instance.invalidateOptionsMenu(getManagedComponent());
+            UIManagerAppCompat.invalidateOptionsMenu(getManagedComponent());
         }
     }
 
@@ -646,14 +628,14 @@ public class RecentActivityController extends AbstractActivityController<RecentA
                 if (LibSettings.current().autoScanRemovableMedia) {
                     bookshelfAdapter.startScan(path);
                 }
-                IUIManager.instance.invalidateOptionsMenu(getManagedComponent());
+                UIManagerAppCompat.invalidateOptionsMenu(getManagedComponent());
             }
             return;
         }
 
         if (oldState != null && oldState.readable) {
             bookshelfAdapter.removeAll(path);
-            IUIManager.instance.invalidateOptionsMenu(getManagedComponent());
+            UIManagerAppCompat.invalidateOptionsMenu(getManagedComponent());
         }
     }
 }

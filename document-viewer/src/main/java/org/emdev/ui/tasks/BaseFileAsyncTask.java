@@ -1,7 +1,7 @@
 package org.emdev.ui.tasks;
 
-import android.app.AlertDialog;
 import android.content.Context;
+import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
 import java.io.File;

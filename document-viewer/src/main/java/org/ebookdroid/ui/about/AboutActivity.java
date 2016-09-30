@@ -8,6 +8,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,7 @@ import org.emdev.utils.LayoutUtils;
 import org.emdev.utils.LengthUtils;
 import org.emdev.utils.wiki.Wiki;
 
-public class AboutActivity extends Activity {
+public class AboutActivity extends AppCompatActivity {
 
     private static final Part[] PARTS = {
             // Start

@@ -1,5 +1,6 @@
 package org.ebookdroid.ui.library;
 
+import org.emdev.ui.uimanager.UIManagerAppCompat;
 import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.common.settings.LibSettings;
 import org.ebookdroid.common.settings.books.BookSettings;
@@ -15,6 +16,10 @@ import org.ebookdroid.ui.library.views.LibraryView;
 import org.ebookdroid.ui.library.views.RecentBooksView;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.design.widget.TabLayout;
+import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -55,7 +60,6 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
 
     private ViewFlipper viewflipper;
 
-    ImageView libraryButton;
     BookcaseView bookcaseView;
     RecentBooksView recentBooksView;
     LibraryView libraryView;
@@ -81,14 +85,10 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
      */
     @Override
     protected void onCreateImpl(final Bundle savedInstanceState) {
-        IUIManager.instance.setTitleVisible(this, !AndroidVersion.lessThan3x, true);
-
         setContentView(R.layout.recent);
 
-        if (AndroidVersion.lessThan3x) {
-            // Old layout with custom title bar
-            libraryButton = (ImageView) findViewById(R.id.recent_showlibrary);
-        }
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
     }
 
     /**
@@ -98,7 +98,20 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
      */
     @Override
     protected void onResumeImpl() {
-        IUIManager.instance.invalidateOptionsMenu(this);
+        UIManagerAppCompat.invalidateOptionsMenu(this);
+
+        // HACK: invalidating the adapter when the tab view is not visible seems to leave
+        // the scroll position in the wrong place.
+        Handler h = new Handler(Looper.getMainLooper());
+        h.post(new Runnable() {
+            @Override
+            public void run() {
+                final TabLayout tl = (TabLayout) findViewById(R.id.tabs);
+                if (tl != null) {
+                    tl.setScrollPosition(tl.getSelectedTabPosition(), 0.0f, true);
+                }
+            }
+        });
     }
 
     /**
@@ -263,14 +276,8 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
         final ViewFlipper vf = getViewflipper();
         if (view == VIEW_LIBRARY) {
             vf.setDisplayedChild(VIEW_LIBRARY);
-            if (libraryButton != null) {
-                libraryButton.setImageResource(R.drawable.recent_actionbar_recent);
-            }
         } else {
             vf.setDisplayedChild(VIEW_RECENT);
-            if (libraryButton != null) {
-                libraryButton.setImageResource(R.drawable.recent_actionbar_library);
-            }
         }
     }
 
@@ -305,10 +312,6 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
             bookcaseView.init(bookshelfAdapter, recentAdapter);
         }
         vf.addView(bookcaseView, 0);
-
-        if (libraryButton != null) {
-            libraryButton.setImageResource(R.drawable.recent_actionbar_library);
-        }
     }
 
     void showLibrary(final LibraryAdapter libraryAdapter, final RecentAdapter recentAdapter) {
@@ -325,10 +328,6 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
         vf.removeAllViews();
         vf.addView(recentBooksView, VIEW_RECENT);
         vf.addView(libraryView, VIEW_LIBRARY);
-
-        if (libraryButton != null) {
-            libraryButton.setImageResource(R.drawable.recent_actionbar_library);
-        }
 
         if (recentAdapter.getCount() == 0) {
             changeLibraryView(VIEW_LIBRARY);

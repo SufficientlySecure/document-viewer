@@ -150,12 +150,15 @@
             android:launchMode="singleTask" />
         <activity
             android:name="org.ebookdroid.ui.settings.SettingsActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
-        <activity android:name="org.ebookdroid.ui.settings.FragmentedSettingsActivity" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@style/ebookdroid_prefs"/>
+        <activity android:name="org.ebookdroid.ui.settings.FragmentedSettingsActivity"
+            android:theme="@style/ebookdroid_prefs"/>
         <activity
             android:name="org.ebookdroid.ui.settings.BookSettingsActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:theme="@style/ebookdroid_prefs"/>
         <activity
             android:name="org.ebookdroid.ui.library.BrowserActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -163,11 +166,12 @@
         <activity
             android:name="org.ebookdroid.ui.about.AboutActivity"
             android:icon="@drawable/application_icon"
-            android:theme="@android:style/Theme.Dialog" />
+            android:theme="@style/Theme.AppCompat.Dialog" />
         <activity
             android:name="org.ebookdroid.ui.library.dialogs.FolderDlg"
             android:icon="@drawable/application_icon"
-            android:theme="@android:style/Theme.Dialog" />
+            android:theme="@style/Theme.AppCompat.Dialog" />
+
     </application>
 
 </manifest>

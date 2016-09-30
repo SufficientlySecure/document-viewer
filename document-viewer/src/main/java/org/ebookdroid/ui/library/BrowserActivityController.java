@@ -2,6 +2,7 @@ package org.ebookdroid.ui.library;
 
 import org.ebookdroid.CodecType;
 import org.emdev.ui.uimanager.IUIManager;
+import org.emdev.ui.uimanager.UIManagerAppCompat;
 import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.common.cache.CacheManager;
 import org.ebookdroid.common.settings.LibSettings;
@@ -21,6 +22,7 @@ import org.ebookdroid.ui.viewer.ViewerActivity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.view.KeyEvent;
 import android.widget.EditText;
@@ -189,16 +191,12 @@ public class BrowserActivityController extends AbstractActivityController<Browse
     @Override
     public void showProgress(final boolean show) {
         final BrowserActivity activity = getManagedComponent();
-
-        if (!AndroidVersion.lessThan3x) {
-            activity.runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    IUIManager.instance.setProgressSpinnerVisible(activity, show);
-                }
-            });
-        }
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                UIManagerAppCompat.setProgressSpinnerVisible(activity, show);
+            }
+        });
     }
 
     /**
@@ -299,7 +297,7 @@ public class BrowserActivityController extends AbstractActivityController<Browse
         }
 
         final FileUtils.FilePath path = FileUtils.parseFilePath(file.getAbsolutePath(), CodecType.getAllExtensions());
-        final EditText input = new EditText(getManagedComponent());
+        final EditText input = new AppCompatEditText(getManagedComponent());
         input.setSingleLine();
         input.setText(path.name);
         input.selectAll();

@@ -44,6 +44,9 @@ public final class UIManagerAppCompat {
     }
 
     public static void invalidateOptionsMenu(final AppCompatActivity activity) {
-        activity.getSupportActionBar().invalidateOptionsMenu();
+        ActionBar actionBar = activity.getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.invalidateOptionsMenu();
+        }
     }
 }

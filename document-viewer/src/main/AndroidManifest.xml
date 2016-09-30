@@ -6,10 +6,6 @@
     android:versionCode="2770"
     android:versionName="2.7.7">
 
-    <uses-sdk
-        android:minSdkVersion="8"
-        android:targetSdkVersion="22" />
-
     <!-- 0x00010001: OpenGL ES 1.1 -->
     <uses-feature
         android:glEsVersion="0x00010001"

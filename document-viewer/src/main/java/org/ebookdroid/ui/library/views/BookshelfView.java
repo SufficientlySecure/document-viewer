@@ -44,39 +44,13 @@ import org.emdev.utils.LayoutUtils;
 
 public class BookshelfView extends GridView implements OnItemClickListener {
 
-    private static Bitmap mShelfBackground;
-    private static Bitmap mShelfBackgroundLeft;
-    private static Bitmap mShelfBackgroundRight;
-    private static int mShelfWidth;
-    private static int mShelfHeight;
-
-    private static final Decoration web;
-    private static final Decoration pine;
-
     private final IBrowserActivity base;
     private final BookShelfAdapter adapter;
-    private final Calendar now;
 
     final String path;
 
-    static {
-        final Bitmap shelfBackground = BitmapManager.getResource(R.drawable.recent_bookcase_shelf_panel);
-        if (shelfBackground != null) {
-            mShelfWidth = shelfBackground.getWidth();
-            mShelfHeight = shelfBackground.getHeight();
-            mShelfBackground = shelfBackground;
-        }
-
-        mShelfBackgroundLeft = BitmapManager.getResource(R.drawable.recent_bookcase_shelf_panel_left);
-        mShelfBackgroundRight = BitmapManager.getResource(R.drawable.recent_bookcase_shelf_panel_right);
-
-        web = new Decoration(R.drawable.recent_bookcase_web_left, R.drawable.recent_bookcase_web_right, 15, 15);
-        pine = new Decoration(R.drawable.recent_bookcase_pine_left, R.drawable.recent_bookcase_pine_right, 0, 0);
-    }
-
     public BookshelfView(final IBrowserActivity base, final View shelves, final BookShelfAdapter adapter) {
         super(base.getContext());
-        this.now = new GregorianCalendar();
         this.base = base;
         this.adapter = adapter;
         this.path = adapter != null ? adapter.getPath() : "";
@@ -120,41 +94,6 @@ public class BookshelfView extends GridView implements OnItemClickListener {
     }
 
     @Override
-    protected void dispatchDraw(final Canvas canvas) {
-        final int count = getChildCount();
-        int top = count > 0 ? getChildAt(0).getTop() : 0;
-        final int shelfWidth = mShelfWidth;
-        final int shelfHeight = mShelfHeight;
-        final int width = getWidth();
-        final int height = getHeight();
-
-        for (int y = top; y < height; y += shelfHeight) {
-            for (int x = 0; x < width; x += shelfWidth) {
-                canvas.drawBitmap(mShelfBackground, x, y, null);
-            }
-            canvas.drawBitmap(mShelfBackgroundLeft, 0, y, null);
-            canvas.drawBitmap(mShelfBackgroundRight, width - 15, y, null);
-        }
-
-        top = (count > 0) ? getChildAt(count - 1).getTop() + shelfHeight : 0;
-        drawDecorations(canvas, top, shelfHeight, width);
-
-        super.dispatchDraw(canvas);
-    }
-
-    public void drawDecorations(final Canvas canvas, final int top, final int shelfHeight, final int width) {
-        now.setTimeInMillis(System.currentTimeMillis());
-        final int date = now.get(Calendar.DATE);
-        final int month = now.get(Calendar.MONTH);
-
-        if ((date >= 23 && month == Calendar.DECEMBER) || (date <= 13 && month == Calendar.JANUARY)) {
-            pine.draw(canvas, top, shelfHeight, width);
-        } else {
-            web.draw(canvas, top, shelfHeight, width);
-        }
-    }
-
-    @Override
     public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
         final BookNode node = adapter != null ? (BookNode) adapter.getItem(position) : null;
         if (node != null) {
@@ -173,25 +112,6 @@ public class BookshelfView extends GridView implements OnItemClickListener {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         if (adapter != null) {
             adapter.measuring = false;
-        }
-    }
-
-    private static class Decoration {
-        final Bitmap left;
-        final Bitmap right;
-        final int lOffset;
-        final int rOffset;
-
-        public Decoration(int leftId, int rightId, int leftOffset, int rightOffset) {
-            this.left = BitmapManager.getResource(leftId);
-            this.right = BitmapManager.getResource(rightId);
-            this.lOffset = leftOffset;
-            this.rOffset = right.getWidth() + rightOffset;
-        }
-
-        public void draw(final Canvas canvas, final int top, final int shelfHeight, final int width) {
-            canvas.drawBitmap(left, lOffset, top + 1, null);
-            canvas.drawBitmap(right, width - rOffset, top + shelfHeight + 1, null);
         }
     }
 }

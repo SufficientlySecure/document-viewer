@@ -198,7 +198,7 @@ Java_org_ebookdroid_common_bitmaps_ByteBufferBitmap_nativeAvgLum(JNIEnv* env, jc
     if (!src)
     {
         ERROR("Can not get direct buffer");
-        return;
+        return 0;
     }
 
     for (i = 0; i < width * height * 4; i += 4)

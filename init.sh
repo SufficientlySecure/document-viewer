@@ -4,6 +4,7 @@ git submodule update --init --recursive --force
 git submodule foreach --recursive git clean -dfx
 
 cd document-viewer/jni/mupdf/mupdf
+patch -p1 < ../overrides/clang_incbin_broken.patch
 make generate
 #patch -p1 < ../overrides/fonts.patch
 patch -p1 < ../overrides/nightmode_slowcmyk.patch

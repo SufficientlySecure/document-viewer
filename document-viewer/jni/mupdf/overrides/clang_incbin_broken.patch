@@ -1,0 +1,13 @@
+diff --git a/scripts/fontdump.c b/scripts/fontdump.c
+index dddbac7..813f50f 100644
+--- a/scripts/fontdump.c
++++ b/scripts/fontdump.c
+@@ -49,7 +49,7 @@ main(int argc, char **argv)
+ 
+ 	fprintf(fo, "#ifndef __STRICT_ANSI__\n");
+ 	fprintf(fo, "#if defined(__linux__) || defined(__FreeBSD__) || defined(__OpenBSD__)\n");
+-	fprintf(fo, "#if !defined(__ICC)\n");
++	fprintf(fo, "#if !defined(__ICC) && !defined(__clang__)\n"); // see: https://llvm.org/bugs/show_bug.cgi?id=26897
+ 	fprintf(fo, "#define HAVE_INCBIN\n");
+ 	fprintf(fo, "#endif\n");
+ 	fprintf(fo, "#endif\n");

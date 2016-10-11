@@ -32,7 +32,11 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter, I
     private SQLiteDatabase m_db;
 
     public DBSettingsManager(final Context context) {
-        super(context, context.getPackageName() + ".settings", null, DB_VERSION);
+        this(context, context.getPackageName() + ".settings");
+    }
+
+    public DBSettingsManager(final Context context, String fileName) {
+        super(context, fileName, null, DB_VERSION);
         adapter = createAdapter(DB_VERSION);
         try {
             m_db = getWritableDatabase();

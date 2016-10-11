@@ -75,4 +75,11 @@ public class Bookmark implements Comparable<Bookmark> {
         return res;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Bookmark))
+            return false;
+
+        return compareTo((Bookmark)obj) == 0;
+    }
 }

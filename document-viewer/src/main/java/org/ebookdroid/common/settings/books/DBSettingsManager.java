@@ -231,11 +231,6 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter, I
     }
 
     @Override
-    public boolean deleteBookmarks(final String book, final List<Bookmark> bookmarks) {
-        return adapter.deleteBookmarks(book, bookmarks);
-    }
-
-    @Override
     public String key() {
         return BACKUP_KEY;
     }

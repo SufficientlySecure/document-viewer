@@ -38,8 +38,6 @@ interface IDBAdapter {
 
     boolean updateBookmarks(BookSettings book);
 
-    boolean deleteBookmarks(String book, List<Bookmark> bookmarks);
-
     boolean deleteAllBookmarks();
 
     boolean removeBookFromRecents(BookSettings bs);

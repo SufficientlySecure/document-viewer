@@ -250,11 +250,6 @@ class DBAdapterV1 implements IDBAdapter {
     }
 
     @Override
-    public boolean deleteBookmarks(final String book, final List<Bookmark> bookmarks) {
-        return false;
-    }
-
-    @Override
     public boolean clearRecent() {
         try {
             final SQLiteDatabase db = manager.getWritableDatabase();

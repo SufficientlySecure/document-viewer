@@ -24,7 +24,7 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter, I
 
     public static final String BACKUP_KEY = "recent-books";
 
-    public static final int DB_VERSION = 8;
+    public static final int DB_VERSION = DBAdapterV9.VERSION;
 
     private final IDBAdapter adapter;
 
@@ -84,8 +84,10 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter, I
             case DBAdapterV7.VERSION:
                 return new DBAdapterV7(this);
             case DBAdapterV8.VERSION:
-            default:
                 return new DBAdapterV8(this);
+            case DBAdapterV9.VERSION:
+            default:
+                return new DBAdapterV9(this);
         }
     }
 

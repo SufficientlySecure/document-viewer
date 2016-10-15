@@ -17,12 +17,16 @@ import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.hamcrest.Matchers.not;
@@ -33,9 +37,10 @@ public class DBSettingsManagerTest {
     private DBSettingsManager m_manager;
 
     private BookSettings m_bs;
+    private BookSettings m_bs2;
 
-    private BookSettings sampleBookSettings() {
-        BookSettings bs = new BookSettings(BS_FILENAME);
+    private BookSettings sampleBookSettings(String filename) {
+        BookSettings bs = new BookSettings(filename);
         // FIXME: shouldn't need to set these
         bs.rotation = BookRotationType.UNSPECIFIED;
         bs.viewMode = DocumentViewMode.VERTICALL_SCROLL;
@@ -52,7 +57,8 @@ public class DBSettingsManagerTest {
         assertThat(m_manager, is(notNullValue()));
         assertThat(m_manager.deleteAll(), is(true));
 
-        m_bs = sampleBookSettings();
+        m_bs = sampleBookSettings(BS_FILENAME);
+        m_bs2 = sampleBookSettings(BS_FILENAME2);
 
         m_b1 = new Bookmark("bookmark", new PageIndex(12, 34), 5.0f, 10.0f);
         m_b1_dup = new Bookmark("bookmark", new PageIndex(12, 34), 5.0f, 10.0f);
@@ -65,6 +71,7 @@ public class DBSettingsManagerTest {
     }
 
     private static final String BS_FILENAME = "testfilename.pdf";
+    private static final String BS_FILENAME2 = "testfilename2.pdf";
 
     private void checkDefaults(BookSettings bs, long expectedLastUpdated) {
         assertThat(bs, is(notNullValue()));
@@ -105,7 +112,7 @@ public class DBSettingsManagerTest {
     @Test
     public void testPersistDefaultObject() {
         final long creationTime = System.currentTimeMillis();
-        BookSettings bs = sampleBookSettings();
+        BookSettings bs = sampleBookSettings(BS_FILENAME);
         checkDefaults(bs, creationTime);
 
         assertThat(m_manager.getBookSettings(BS_FILENAME), is(nullValue()));
@@ -305,5 +312,72 @@ public class DBSettingsManagerTest {
 
         m_bs.typeSpecific = null;
         assertThat(roundTrip(m_bs).typeSpecific, is(nullValue()));
+    }
+
+    @Test
+    public void testLastChanged() {
+        final long bs_originalLastUpdated = m_bs.lastUpdated;
+
+        // first, save without setting `lastChanged`
+        assertThat(m_bs.lastChanged, is(0L));
+        assertThat(m_manager.storeBookSettings(m_bs), is(true));
+        assertThat(m_bs.lastUpdated, is(bs_originalLastUpdated));
+
+        // second, set `lastChanged` to trigger `lastUpdated` to be updated to the current time
+        m_bs.lastChanged = 1L;
+        assertThat(m_manager.storeBookSettings(m_bs), is(true));
+        assertThat(m_bs.lastUpdated, is(greaterThan(bs_originalLastUpdated)));
+    }
+
+    @Test
+    public void testTwoRecentBooks() {
+        m_bs.lastChanged = 1L; // trigger `lastUpdated` to be updated to the current time
+        assertThat(m_manager.storeBookSettings(m_bs), is(true));
+        m_bs2.lastChanged = 1L; // trigger `lastUpdated` to be updated to the current time
+        assertThat(m_manager.storeBookSettings(m_bs2), is(true));
+
+        Set<String> expectedFilenames = new HashSet<String>(Arrays.asList(BS_FILENAME, BS_FILENAME2));
+        assertThat(expectedFilenames, hasSize(2));
+
+        assertThat(m_manager.getAllBooks().keySet(), is(expectedFilenames));
+        assertThat(m_manager.getRecentBooks(true).keySet(), is(expectedFilenames));
+
+        Set<String> filename2Set = new HashSet<String>(Arrays.asList(BS_FILENAME2));
+        assertThat(m_manager.getRecentBooks(false).keySet(), is(filename2Set));
+    }
+
+    @Test
+    public void testNoRecentBooks() {
+        assertThat(m_bs.lastUpdated, is(greaterThan(0L)));
+        m_bs.lastUpdated = 0L; // mark is as "not recent"
+        assertThat(m_bs.lastChanged, is(0L));
+        assertThat(m_manager.storeBookSettings(m_bs), is(true));
+
+        assertThat(m_manager.getRecentBooks(true).values(), is(empty()));
+    }
+
+    @Test
+    public void testOneRecentBook() {
+        m_bs.lastUpdated = 0L; // mark is as "not recent"
+        assertThat(m_bs.lastChanged, is(0L));
+        assertThat(m_manager.storeBookSettings(m_bs), is(true));
+
+        assertThat(m_bs2.lastUpdated, is(greaterThan(0L)));
+        assertThat(m_manager.storeBookSettings(m_bs2), is(true));
+
+        Set<String> expectedAll = new HashSet<String>(Arrays.asList(BS_FILENAME, BS_FILENAME2));
+        Set<String> expectedRecent = new HashSet<String>(Arrays.asList(BS_FILENAME2));
+
+        assertThat(m_manager.getAllBooks().keySet(), is(expectedAll));
+        assertThat(m_manager.getRecentBooks(true).keySet(), is(expectedRecent));
+        assertThat(m_manager.getRecentBooks(false).keySet(), is(expectedRecent));
+    }
+
+    @Test
+    public void testNonPersistentBookSettings() {
+        m_bs.persistent = false;
+        assertThat(m_manager.storeBookSettings(m_bs), is(false));
+        assertThat(m_manager.getBookSettings(BS_FILENAME), is(nullValue()));
+        assertThat(m_manager.getAllBooks().keySet(), is(empty()));
     }
 }

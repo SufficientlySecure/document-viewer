@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -185,9 +186,8 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter, I
         return adapter.getBookSettings(fileName);
     }
 
-    @Override
     public boolean storeBookSettings(final BookSettings bs) {
-        return bs.persistent ? adapter.storeBookSettings(bs) : false;
+        return bs.persistent ? adapter.storeBookSettings(Collections.singletonList(bs)) : false;
     }
 
     @Override

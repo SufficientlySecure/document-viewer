@@ -47,15 +47,6 @@ interface IDBAdapter {
     BookSettings getBookSettings(String fileName);
 
     /**
-     * Persists the given book settings.
-     *
-     * If bs.lastChanged is greater than 0, sets bs.lastUpdated to the current time.
-     * @param bs
-     * @return true on success
-     */
-    boolean storeBookSettings(BookSettings bs);
-
-    /**
      * Persists the given list of book settings.
      *
      * For each book, if book.lastChanged is greater than 0, sets book.lastUpdated to the current time.

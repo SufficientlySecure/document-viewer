@@ -15,12 +15,16 @@ import java.util.Map;
 
 import org.emdev.common.backup.BackupManager;
 import org.emdev.common.backup.IBackupAgent;
+import org.emdev.common.log.LogContext;
+import org.emdev.common.log.LogManager;
 import org.emdev.utils.LengthUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter, IBackupAgent {
+public class DBSettingsManager extends SQLiteOpenHelper implements IBackupAgent {
+
+    private static final LogContext LCTX = LogManager.root().lctx("DBSettingsManager");
 
     public static final String BACKUP_KEY = "recent-books";
 
@@ -60,11 +64,6 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter, I
     @Override
     public void onCreate(final SQLiteDatabase db) {
         adapter.onCreate(db);
-    }
-
-    @Override
-    public void onDestroy(final SQLiteDatabase db) {
-        adapter.onDestroy(db);
     }
 
     protected IDBAdapter createAdapter(final int version) {
@@ -173,17 +172,14 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter, I
         }
     }
 
-    @Override
     public Map<String, BookSettings> getAllBooks() {
         return adapter.getAllBooks();
     }
 
-    @Override
     public Map<String, BookSettings> getRecentBooks(final boolean all) {
         return adapter.getRecentBooks(all);
     }
 
-    @Override
     public BookSettings getBookSettings(final String fileName) {
         return adapter.getBookSettings(fileName);
     }
@@ -192,37 +188,30 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IDBAdapter, I
         return bs.persistent ? adapter.storeBookSettings(Collections.singletonList(bs)) : false;
     }
 
-    @Override
     public boolean storeBookSettings(final List<BookSettings> list) {
         return adapter.storeBookSettings(list);
     }
 
-    @Override
     public boolean restoreBookSettings(Collection<BookSettings> c) {
         return adapter.restoreBookSettings(c);
     }
 
-    @Override
     public boolean clearRecent() {
         return adapter.clearRecent();
     }
 
-    @Override
     public boolean removeBookFromRecents(final BookSettings bs) {
         return adapter.removeBookFromRecents(bs);
     }
 
-    @Override
     public void delete(final BookSettings current) {
         adapter.delete(current);
     }
 
-    @Override
     public boolean deleteAll() {
         return adapter.deleteAll();
     }
 
-    @Override
     public boolean deleteAllBookmarks() {
         return adapter.deleteAllBookmarks();
     }

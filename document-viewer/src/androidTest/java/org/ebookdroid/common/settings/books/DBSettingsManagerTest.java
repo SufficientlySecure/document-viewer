@@ -9,13 +9,16 @@ import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.core.curl.PageAnimationType;
+import org.hamcrest.Matchers;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -229,6 +232,36 @@ public class DBSettingsManagerTest {
     }
 
     @Test
+    public void testDeleteAllBookmarks() {
+        m_bs.bookmarks.add(m_b1);
+        m_bs2.bookmarks.add(m_b2);
+        assertThat(m_manager.storeBookSettings(Arrays.asList(m_bs, m_bs2)), is(true));
+
+        assertThat(m_manager.getBookSettings(BS_FILENAME).bookmarks, is(Arrays.asList(m_b1)));
+        assertThat(m_manager.getBookSettings(BS_FILENAME2).bookmarks, is(Arrays.asList(m_b2)));
+
+        assertThat(m_manager.deleteAllBookmarks(), is(true));
+
+        assertThat(m_manager.getBookSettings(BS_FILENAME).bookmarks, is(empty()));
+        assertThat(m_manager.getBookSettings(BS_FILENAME2).bookmarks, is(empty()));
+    }
+
+    @Test
+    public void testUpdateBookmarks() {
+        assertThat(m_manager.storeBookSettings(Arrays.asList(m_bs, m_bs2)), is(true));
+
+        // make a change that updateBookmarks() should not save
+        m_bs.contrast = 600;
+        // and a change that it should
+        m_bs.bookmarks.add(m_b1);
+
+        assertThat(m_manager.updateBookmarks(m_bs), is(true));
+
+        assertThat(m_manager.getBookSettings(BS_FILENAME).bookmarks, is(Arrays.asList(m_b1)));
+        assertThat(m_manager.getBookSettings(BS_FILENAME).contrast, is(not(600)));
+    }
+
+    @Test
     public void testCropPages() {
         for (boolean testValue : new boolean[] { true, false }) {
             m_bs.cropPages = testValue;
@@ -330,6 +363,18 @@ public class DBSettingsManagerTest {
     }
 
     @Test
+    public void testRestoreBookSettings() {
+        m_bs.lastChanged = 1L;
+        m_bs.lastUpdated = 123L;
+        assertThat(m_manager.restoreBookSettings(Collections.singletonList(m_bs)), is(true));
+        assertThat(m_bs.lastChanged, is(1L));
+        assertThat(m_bs.lastUpdated, is(123L));
+
+        assertThat(m_manager.getBookSettings(BS_FILENAME).lastChanged, is(0L));
+        assertThat(m_manager.getBookSettings(BS_FILENAME).lastUpdated, is(123L));
+    }
+
+    @Test
     public void testTwoRecentBooks() {
         m_bs.lastChanged = 1L; // trigger `lastUpdated` to be updated to the current time
         assertThat(m_manager.storeBookSettings(m_bs), is(true));
@@ -357,6 +402,37 @@ public class DBSettingsManagerTest {
     }
 
     @Test
+    public void testRemoveBookFromRecents() {
+        assertThat(m_manager.storeBookSettings(m_bs), is(true));
+        assertThat(m_manager.storeBookSettings(m_bs2), is(true));
+
+        Set<String> expectedAll = new HashSet<String>(Arrays.asList(BS_FILENAME, BS_FILENAME2));
+        assertThat(m_manager.getRecentBooks(true).keySet(), is(expectedAll));
+
+        // mark `m_bs` as not recent
+        assertThat(m_manager.getBookSettings(BS_FILENAME).lastUpdated, is(not(0L)));
+        assertThat(m_manager.removeBookFromRecents(m_bs), is(true));
+        assertThat(m_manager.getBookSettings(BS_FILENAME).lastUpdated, is(0L));
+
+        Set<String> expectedAfterBsRemoved = new HashSet<String>(Arrays.asList(BS_FILENAME2));
+        assertThat(m_manager.getRecentBooks(true).keySet(), is(expectedAfterBsRemoved));
+    }
+
+    @Test
+    public void testClearRecent() {
+        assertThat(m_manager.storeBookSettings(m_bs), is(true));
+        assertThat(m_manager.storeBookSettings(m_bs2), is(true));
+
+        Set<String> expectedAll = new HashSet<String>(Arrays.asList(BS_FILENAME, BS_FILENAME2));
+        assertThat(m_manager.getRecentBooks(true).keySet(), is(expectedAll));
+
+        assertThat(m_manager.clearRecent(), is(true));
+
+        assertThat(m_manager.getRecentBooks(true).keySet(), is(empty()));
+        assertThat(m_manager.getAllBooks().keySet(), is(expectedAll));
+    }
+
+    @Test
     public void testOneRecentBook() {
         m_bs.lastUpdated = 0L; // mark is as "not recent"
         assertThat(m_bs.lastChanged, is(0L));
@@ -378,6 +454,20 @@ public class DBSettingsManagerTest {
         m_bs.persistent = false;
         assertThat(m_manager.storeBookSettings(m_bs), is(false));
         assertThat(m_manager.getBookSettings(BS_FILENAME), is(nullValue()));
+        assertThat(m_manager.getAllBooks().keySet(), is(empty()));
+    }
+
+    @Test
+    public void testDeleteBook() {
+        assertThat(m_manager.storeBookSettings(Arrays.asList(m_bs, m_bs2)), is(true));
+
+        Set<String> expectedAll = new HashSet<String>(Arrays.asList(BS_FILENAME, BS_FILENAME2));
+        Set<String> expectedAfterDeletion = new HashSet<String>(Arrays.asList(BS_FILENAME2));
+
+        assertThat(m_manager.getAllBooks().keySet(), is(expectedAll));
+        m_manager.delete(m_bs);
+        assertThat(m_manager.getAllBooks().keySet(), is(expectedAfterDeletion));
+        m_manager.delete(m_bs2);
         assertThat(m_manager.getAllBooks().keySet(), is(empty()));
     }
 }

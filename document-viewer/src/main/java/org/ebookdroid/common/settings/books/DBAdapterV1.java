@@ -200,27 +200,6 @@ class DBAdapterV1 implements IDBAdapter {
     }
 
     @Override
-    public final boolean updateBookmarks(final BookSettings book) {
-        try {
-            final SQLiteDatabase db = manager.getWritableDatabase();
-            try {
-                db.beginTransaction();
-
-                updateBookmarks(book, db);
-
-                db.setTransactionSuccessful();
-
-                return true;
-            } finally {
-                endTransaction(db);
-            }
-        } catch (final Throwable th) {
-            LCTX.e("Update bookmarks failed: ", th);
-        }
-        return false;
-    }
-
-    @Override
     public boolean clearRecent() {
         try {
             final SQLiteDatabase db = manager.getWritableDatabase();

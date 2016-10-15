@@ -81,13 +81,6 @@ interface IDBAdapter {
     boolean deleteAll();
 
     /**
-     * Saves bookmarks for the given book
-     * @param book
-     * @return true on success
-     */
-    boolean updateBookmarks(BookSettings book);
-
-    /**
      * Delete all bookmarks
      * @return true on success
      */

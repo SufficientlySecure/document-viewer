@@ -247,21 +247,6 @@ public class DBSettingsManagerTest {
     }
 
     @Test
-    public void testUpdateBookmarks() {
-        assertThat(m_manager.storeBookSettings(Arrays.asList(m_bs, m_bs2)), is(true));
-
-        // make a change that updateBookmarks() should not save
-        m_bs.contrast = 600;
-        // and a change that it should
-        m_bs.bookmarks.add(m_b1);
-
-        assertThat(m_manager.updateBookmarks(m_bs), is(true));
-
-        assertThat(m_manager.getBookSettings(BS_FILENAME).bookmarks, is(Arrays.asList(m_b1)));
-        assertThat(m_manager.getBookSettings(BS_FILENAME).contrast, is(not(600)));
-    }
-
-    @Test
     public void testCropPages() {
         for (boolean testValue : new boolean[] { true, false }) {
             m_bs.cropPages = testValue;

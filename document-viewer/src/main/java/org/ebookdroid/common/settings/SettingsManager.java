@@ -415,7 +415,6 @@ public class SettingsManager {
             AppSettings.fillBookSettings(current);
             if (current.persistent) {
                 db.storeBookSettings(current);
-                db.updateBookmarks(current);
             }
             applyBookSettingsChanges(oldBS, current);
         } finally {
@@ -428,7 +427,6 @@ public class SettingsManager {
         try {
             final BookSettings bs = new BookSettings(target.getAbsolutePath(), settings);
             db.storeBookSettings(bs);
-            db.updateBookmarks(bs);
             return bs;
         } finally {
             lock.writeLock().unlock();
@@ -442,7 +440,6 @@ public class SettingsManager {
         lock.readLock().lock();
         try {
             db.storeBookSettings(current);
-            db.updateBookmarks(current);
         } finally {
             lock.readLock().unlock();
         }

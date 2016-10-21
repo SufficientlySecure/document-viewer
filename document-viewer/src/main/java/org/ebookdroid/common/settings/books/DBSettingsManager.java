@@ -40,7 +40,13 @@ public class DBSettingsManager extends SQLiteOpenHelper implements IBackupAgent 
         this(context, context.getPackageName() + ".settings");
     }
 
-    public DBSettingsManager(final Context context, String fileName) {
+    /**
+     * Used in DBSettingsManagerTest
+     *
+     * @param context
+     * @param fileName
+     */
+    DBSettingsManager(final Context context, String fileName) {
         super(context, fileName, null, DB_VERSION);
         adapter = createAdapter(DB_VERSION);
         try {

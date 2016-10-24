@@ -52,4 +52,6 @@
 
     <string translatable="false" name="pref_book_animation_type_id">book_animationType</string>
 
+    <string translatable="false" name="pref_book_rtl_id">book_rtl</string>
+
 </resources>

@@ -171,4 +171,7 @@
         <item>@string/pref_animation_type_slider2</item>
     </string-array>
 
+    <string translatable="false" name="pref_rtl_id">rtl</string>
+    <string translatable="false" name="pref_rtl_defvalue">false</string>
+
 </resources>

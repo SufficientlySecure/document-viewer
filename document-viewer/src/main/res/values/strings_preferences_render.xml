@@ -91,4 +91,6 @@
     <string name="pref_autolevels_title">Auto levels</string>
     <string name="pref_autolevels_summary">Use auto levels correction</string>
 
+    <string name="pref_rtl_title">Right-to-left</string>
+    <string name="pref_rtl_summary">Page order for Horizontal scroll and Single Page modes</string>
 </resources>

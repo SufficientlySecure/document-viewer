@@ -170,6 +170,8 @@ public interface AppPreferences {
     EnumPreferenceDefinition<PageAnimationType> ANIMATION_TYPE = new EnumPreferenceDefinition<PageAnimationType>(
             PageAnimationType.class, pref_animation_type_id, pref_animation_type_none);
 
+    BooleanPreferenceDefinition RTL = new BooleanPreferenceDefinition(pref_rtl_id, pref_rtl_defvalue);
+
     /* =============== DjVU Format-specific settings =============== */
 
     IntegerPreferenceDefinition DJVU_RENDERING_MODE = new IntegerPreferenceDefinition(pref_djvu_rendering_mode_id,

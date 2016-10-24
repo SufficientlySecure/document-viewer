@@ -36,4 +36,6 @@ public class BooleanPreferenceDefinition extends BasePreferenceDefinition<Boolea
         final String value = root.optString(key);
         setPreferenceValue(edit, value != null ? Boolean.parseBoolean(value) : defValue);
     }
+
+    public boolean getDefaultValue() { return defValue; }
 }

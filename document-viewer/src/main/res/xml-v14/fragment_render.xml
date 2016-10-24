@@ -39,6 +39,12 @@
             android:summary="@string/pref_viewmode_summary"
             android:title="@string/pref_viewmode_title" />
 
+    <org.emdev.ui.preference.SwitchPreferenceEx
+        android:defaultValue="@string/pref_rtl_defvalue"
+        android:key="@string/pref_rtl_id"
+        android:summary="@string/pref_rtl_summary"
+        android:title="@string/pref_rtl_title" />
+
     <PreferenceCategory
         android:summary="@string/pref_singlepage_category_summary"
         android:title="@string/pref_singlepage_category" >

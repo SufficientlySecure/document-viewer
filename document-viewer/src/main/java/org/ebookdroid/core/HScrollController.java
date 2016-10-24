@@ -10,6 +10,11 @@ import org.ebookdroid.ui.viewer.IActivityController;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public class HScrollController extends AbstractScrollController {
 
     public HScrollController(final IActivityController base) {
@@ -65,6 +70,11 @@ public class HScrollController extends AbstractScrollController {
         }
     }
 
+    private boolean isRightToLeft() {
+        final BookSettings bs = base.getBookSettings();
+        return bs.rtl;
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -74,7 +84,8 @@ public class HScrollController extends AbstractScrollController {
     public final Rect getScrollLimits() {
         final int width = getWidth();
         final int height = getHeight();
-        final Page lpo = model.getLastPageObject();
+        final Page lpo = isRightToLeft() ? model.getPageObject(0) : model.getLastPageObject();
+
         final float zoom = getBase().getZoomModel().getZoom();
 
         final int right = lpo != null ? (int) lpo.getBounds(zoom).right - width : 0;
@@ -104,26 +115,30 @@ public class HScrollController extends AbstractScrollController {
         final BookSettings bookSettings = base.getBookSettings();
         final PageAlign pageAlign = DocumentViewMode.getPageAlign(bookSettings);
 
-        if (changedPage == null) {
+        if (changedPage == null || isRightToLeft()) {
             float widthAccum = 0;
-            for (final Page page : model.getPages()) {
+
+            List<Page> pages = new ArrayList<Page>(Arrays.asList(model.getPages()));
+            if (isRightToLeft()) {
+                Collections.reverse(pages);
+            }
+
+            for (final Page page : pages) {
                 final RectF pageBounds = calcPageBounds(pageAlign, page.getAspectRatio(), width, height);
                 pageBounds.offset(widthAccum, 0);
                 page.setBounds(pageBounds);
                 widthAccum += pageBounds.width() + 3;
             }
         } else {
+            // TODO: Implement this for the isRightToLeft() case
             float widthAccum = changedPage.getBounds(1.0f).left;
-            final PageIterator pages = model.getPages(changedPage.index.viewIndex);
-            try {
-                for (final Page page : pages) {
-                    final RectF pageBounds = calcPageBounds(pageAlign, page.getAspectRatio(), width, height);
-                    pageBounds.offset(widthAccum, 0);
-                    page.setBounds(pageBounds);
-                    widthAccum += pageBounds.width() + 3;
-                }
-            } finally {
-                pages.release();
+            List<Page> pages = model.getPageList(changedPage.index.viewIndex, model.getPageCount());
+
+            for (final Page page : pages) {
+                final RectF pageBounds = calcPageBounds(pageAlign, page.getAspectRatio(), width, height);
+                pageBounds.offset(widthAccum, 0);
+                page.setBounds(pageBounds);
+                widthAccum += pageBounds.width() + 3;
             }
         }
     }

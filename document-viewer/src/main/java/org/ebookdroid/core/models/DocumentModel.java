@@ -30,6 +30,8 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -98,6 +100,15 @@ public class DocumentModel extends ListenerProxy {
         pi.end = Math.min(end, pages.length);
         iterators.set(null);
         return pi;
+    }
+
+    public List<Page> getPageList(final int start, final int end) {
+        if (start >= 0 && end <= pages.length && start <= end) {
+            return new ArrayList<>(Arrays.asList(pages).subList(start, end));
+        } else {
+            LCTX.e("invalid args to getPageList");
+            return Collections.emptyList();
+        }
     }
 
     public int getPageCount() {

@@ -1,5 +1,6 @@
 package org.ebookdroid.core.curl;
 
+import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.core.EventGLDraw;
 import org.ebookdroid.core.Page;
 import org.ebookdroid.core.SinglePageController;
@@ -80,8 +81,13 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
         return pageIndex == this.foreIndex || pageIndex == this.backIndex;
     }
 
+    private boolean isRightToLeft() {
+        final BookSettings bs = view.base.getBookSettings();
+        return bs.rtl;
+    }
+
     /**
-     * Swap to next view
+     * Swap to next (more accurately, right) view
      */
     protected ViewState nextView(final ViewState viewState) {
         if (viewState.model == null) {
@@ -92,8 +98,13 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
         if (pageCount == 0) {
             return viewState;
         }
-        foreIndex = viewState.pages.currentIndex % pageCount;
-        backIndex = (foreIndex + 1) % pageCount;
+        if (isRightToLeft()) {
+            foreIndex = viewState.pages.currentIndex % pageCount;
+            backIndex = (pageCount + viewState.pages.currentIndex - 1) % pageCount;
+        } else {
+            foreIndex = viewState.pages.currentIndex % pageCount;
+            backIndex = (foreIndex + 1) % pageCount;
+        }
 
         final Page forePage = viewState.model.getPageObject(foreIndex);
         final Page backPage = viewState.model.getPageObject(backIndex);
@@ -101,7 +112,7 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
     }
 
     /**
-     * Swap to previous view
+     * Swap to previous (more accurately, left) view
      */
     protected ViewState previousView(final ViewState viewState) {
         if (viewState.model == null) {
@@ -113,8 +124,13 @@ public abstract class AbstractPageAnimator extends SinglePageView implements Pag
             return viewState;
         }
 
-        backIndex = viewState.pages.currentIndex % pageCount;
-        foreIndex = (pageCount + backIndex - 1) % pageCount;
+        if (isRightToLeft()) {
+            backIndex = viewState.pages.currentIndex % pageCount;
+            foreIndex = (viewState.pages.currentIndex + 1) % pageCount;
+        } else {
+            backIndex = viewState.pages.currentIndex % pageCount;
+            foreIndex = (pageCount + backIndex - 1) % pageCount;
+        }
 
         final Page forePage = viewState.model.getPageObject(foreIndex);
         final Page backPage = viewState.model.getPageObject(backIndex);

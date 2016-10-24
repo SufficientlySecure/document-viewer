@@ -2,6 +2,7 @@ package org.ebookdroid.common.settings.books;
 
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.definitions.AppPreferences;
+import org.ebookdroid.common.settings.definitions.BookPreferences;
 import org.ebookdroid.common.settings.types.BookRotationType;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
@@ -71,6 +72,8 @@ public class BookSettings implements CurrentPageListener {
 
     public boolean autoLevels;
 
+    public boolean rtl;
+
     public JSONObject typeSpecific;
 
     public BookSettings(final BookSettings current) {
@@ -100,6 +103,7 @@ public class BookSettings implements CurrentPageListener {
         this.gamma = current.gamma;
         this.exposure = current.exposure;
         this.autoLevels = current.autoLevels;
+        this.rtl = current.rtl;
         try {
             this.typeSpecific = current.typeSpecific != null ? new JSONObject(current.typeSpecific.toString()) : null;
         } catch (JSONException e) {
@@ -133,6 +137,7 @@ public class BookSettings implements CurrentPageListener {
         this.gamma = current.gamma;
         this.exposure = current.exposure;
         this.autoLevels = current.autoLevels;
+        this.rtl = current.rtl;
         try {
             this.typeSpecific = current.typeSpecific != null ? new JSONObject(current.typeSpecific.toString()) : null;
         } catch (JSONException e) {
@@ -173,6 +178,7 @@ public class BookSettings implements CurrentPageListener {
         this.gamma = object.optInt("gamma", AppPreferences.GAMMA.defValue);
         this.exposure = object.getInt("exposure");
         this.autoLevels = object.getBoolean("autoLevels");
+        this.rtl = object.optBoolean("rtl", BookPreferences.BOOK_RTL.getDefaultValue());
 
         final JSONArray bookmarks = object.optJSONArray("bookmarks");
         if (LengthUtils.isNotEmpty(bookmarks)) {
@@ -210,6 +216,7 @@ public class BookSettings implements CurrentPageListener {
         obj.put("gamma", gamma);
         obj.put("exposure", exposure);
         obj.put("autoLevels", autoLevels);
+        obj.put("rtl", rtl);
 
         final JSONArray bookmarks = new JSONArray();
         obj.put("bookmarks", bookmarks);
@@ -256,30 +263,31 @@ public class BookSettings implements CurrentPageListener {
 
     public static class Diff {
 
-        private static final short D_SplitPages = 0x0001 << 2;
-        private static final short D_ViewMode = 0x0001 << 3;
-        private static final short D_PageAlign = 0x0001 << 4;
-        private static final short D_AnimationType = 0x0001 << 5;
-        private static final short D_CropPages = 0x0001 << 6;
-        private static final short D_Contrast = 0x0001 << 7;
-        private static final short D_Exposure = 0x0001 << 8;
-        private static final short D_NightMode = 0x0001 << 9;
-        private static final short D_AutoLevels = 0x0001 << 10;
-        private static final short D_PositiveImagesInNightMode = 0x0001 << 11;
-        private static final short D_Rotation = 0x0001 << 12;
-        private static final short D_Gamma = 0x0001 << 13;
-        private static final short D_Tint = 0x0001 << 14;
+        private static final int D_SplitPages = 0x0001 << 2;
+        private static final int D_ViewMode = 0x0001 << 3;
+        private static final int D_PageAlign = 0x0001 << 4;
+        private static final int D_AnimationType = 0x0001 << 5;
+        private static final int D_CropPages = 0x0001 << 6;
+        private static final int D_Contrast = 0x0001 << 7;
+        private static final int D_Exposure = 0x0001 << 8;
+        private static final int D_NightMode = 0x0001 << 9;
+        private static final int D_AutoLevels = 0x0001 << 10;
+        private static final int D_PositiveImagesInNightMode = 0x0001 << 11;
+        private static final int D_Rotation = 0x0001 << 12;
+        private static final int D_Gamma = 0x0001 << 13;
+        private static final int D_Tint = 0x0001 << 14;
+        private static final int D_RTL = 0x0001 << 15;
 
-        private static final short D_Effects = D_Contrast | D_Exposure | D_NightMode | D_PositiveImagesInNightMode
+        private static final int D_Effects = D_Contrast | D_Exposure | D_NightMode | D_PositiveImagesInNightMode
                 | D_AutoLevels | D_Gamma | D_Tint;
 
-        private short mask;
+        private int mask;
         private final boolean firstTime;
 
         public Diff(final BookSettings olds, final BookSettings news) {
             firstTime = olds == null;
             if (firstTime) {
-                mask = (short) 0xFFFF;
+                mask = 0xFFFFFFFF;
             } else if (news != null) {
                 if (olds.splitPages != news.splitPages || olds.splitRTL != news.splitRTL) {
                     mask |= D_SplitPages;
@@ -322,6 +330,9 @@ public class BookSettings implements CurrentPageListener {
                 }
                 if (olds.autoLevels != news.autoLevels) {
                     mask |= D_AutoLevels;
+                }
+                if (olds.rtl != news.rtl) {
+                    mask |= D_RTL;
                 }
             }
         }
@@ -380,6 +391,10 @@ public class BookSettings implements CurrentPageListener {
 
         public boolean isEffectsChanged() {
             return 0 != (mask & (D_Effects));
+        }
+
+        public boolean isRTLChanged() {
+            return 0 != (mask & (D_RTL));
         }
     }
 }

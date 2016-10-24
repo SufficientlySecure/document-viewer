@@ -142,6 +142,8 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     final PageAnimationType animationType;
 
+    final boolean rtl;
+
     /* =============== DjVU Format-specific settings =============== */
 
     public final int djvuRenderingMode;
@@ -228,6 +230,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         viewMode = VIEW_MODE.getPreferenceValue(prefs);
         pageAlign = PAGE_ALIGN.getPreferenceValue(prefs);
         animationType = ANIMATION_TYPE.getPreferenceValue(prefs);
+        rtl = RTL.getPreferenceValue(prefs);
         /* =============== DjVU Format-specific settings =============== */
         djvuRenderingMode = DJVU_RENDERING_MODE.getPreferenceValue(prefs);
         /* =============== PDF Format-specific settings =============== */
@@ -325,6 +328,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         bs.viewMode = current.viewMode;
         bs.pageAlign = current.pageAlign;
         bs.animationType = current.animationType;
+        bs.rtl = current.rtl;
     }
 
     static void fillBookSettings(final BookSettings bs) {
@@ -345,6 +349,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         bs.pageAlign = BOOK_PAGE_ALIGN.getPreferenceValue(prefs, current.pageAlign);
         bs.animationType = BOOK_ANIMATION_TYPE.getPreferenceValue(prefs, current.animationType);
         bs.firstPageOffset = BOOK_FIRST_PAGE_OFFSET.getPreferenceValue(prefs);
+        bs.rtl = BOOK_RTL.getPreferenceValue(prefs, current.rtl);
     }
 
     static void clearPseudoBookSettings() {
@@ -367,6 +372,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         edit.remove(BOOK_PAGE_ALIGN.key);
         edit.remove(BOOK_ANIMATION_TYPE.key);
         edit.remove(BOOK_FIRST_PAGE_OFFSET.key);
+        edit.remove(BOOK_RTL.key);
         edit.commit();
     }
 
@@ -390,6 +396,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         BOOK_PAGE_ALIGN.setPreferenceValue(edit, bs.pageAlign);
         BOOK_ANIMATION_TYPE.setPreferenceValue(edit, bs.animationType);
         BOOK_FIRST_PAGE_OFFSET.setPreferenceValue(edit, bs.firstPageOffset);
+        BOOK_RTL.setPreferenceValue(edit, bs.rtl);
         edit.commit();
     }
 

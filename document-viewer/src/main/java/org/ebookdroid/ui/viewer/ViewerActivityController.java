@@ -964,7 +964,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
         }
 
         boolean redrawn = false;
-        if (diff.isViewModeChanged() || diff.isSplitPagesChanged() || diff.isCropPagesChanged()) {
+        if (diff.isViewModeChanged() || diff.isSplitPagesChanged() || diff.isCropPagesChanged() || diff.isRTLChanged()) {
             redrawn = true;
             final IViewController newDc = switchDocumentController(newSettings);
             if (!diff.isFirstTime() && newDc != null) {

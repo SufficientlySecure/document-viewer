@@ -18,6 +18,7 @@ import static org.sufficientlysecure.viewer.R.string.pref_book_id;
 import static org.sufficientlysecure.viewer.R.string.pref_book_nightmode_id;
 import static org.sufficientlysecure.viewer.R.string.pref_book_posimages_in_nightmode_id;
 import static org.sufficientlysecure.viewer.R.string.pref_book_rotation_id;
+import static org.sufficientlysecure.viewer.R.string.pref_book_rtl_id;
 import static org.sufficientlysecure.viewer.R.string.pref_book_splitpages_id;
 import static org.sufficientlysecure.viewer.R.string.pref_book_splitpages_rtl_id;
 import static org.sufficientlysecure.viewer.R.string.pref_book_viewmode_id;
@@ -34,6 +35,7 @@ import static org.sufficientlysecure.viewer.R.string.pref_exposure_minvalue;
 import static org.sufficientlysecure.viewer.R.string.pref_nightmode_defvalue;
 import static org.sufficientlysecure.viewer.R.string.pref_posimages_in_nightmode_defvalue;
 import static org.sufficientlysecure.viewer.R.string.pref_rotation_unspecified;
+import static org.sufficientlysecure.viewer.R.string.pref_rtl_defvalue;
 import static org.sufficientlysecure.viewer.R.string.pref_splitpages_defvalue;
 import static org.sufficientlysecure.viewer.R.string.pref_splitpages_rtl_defvalue;
 import static org.sufficientlysecure.viewer.R.string.pref_tint_color_defvalue;
@@ -101,4 +103,5 @@ public interface BookPreferences {
     EnumPreferenceDefinition<PageAnimationType> BOOK_ANIMATION_TYPE = new EnumPreferenceDefinition<PageAnimationType>(
             PageAnimationType.class, pref_book_animation_type_id, pref_animation_type_none);
 
+    BooleanPreferenceDefinition BOOK_RTL= new BooleanPreferenceDefinition(pref_book_rtl_id, pref_rtl_defvalue);
 }

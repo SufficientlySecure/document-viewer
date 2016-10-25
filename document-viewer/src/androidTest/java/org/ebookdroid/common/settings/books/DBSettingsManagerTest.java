@@ -56,7 +56,7 @@ public class DBSettingsManagerTest {
 
     @Before
     public void setup() {
-        m_manager = new DBSettingsManager(InstrumentationRegistry.getTargetContext(), "DBSettingsManagerTest.settings");
+        m_manager = new DBSettingsManager(InstrumentationRegistry.getTargetContext(), null); // null for in-memory
         assertThat(m_manager, is(notNullValue()));
         assertThat(m_manager.deleteAll(), is(true));
 
@@ -332,6 +332,17 @@ public class DBSettingsManagerTest {
         assertThat(roundTrip(m_bs).typeSpecific, is(nullValue()));
     }
 
+    private void sleep(long ms) {
+        final long start = System.currentTimeMillis();
+
+        while ((System.currentTimeMillis() - start) < ms) {
+            try {
+                Thread.sleep(System.currentTimeMillis() - start);
+            } catch (InterruptedException e) {
+            }
+        }
+    }
+
     @Test
     public void testLastChanged() {
         final long bs_originalLastUpdated = m_bs.lastUpdated;
@@ -340,6 +351,8 @@ public class DBSettingsManagerTest {
         assertThat(m_bs.lastChanged, is(0L));
         assertThat(m_manager.storeBookSettings(m_bs), is(true));
         assertThat(m_bs.lastUpdated, is(bs_originalLastUpdated));
+
+        sleep(1);
 
         // second, set `lastChanged` to trigger `lastUpdated` to be updated to the current time
         m_bs.lastChanged = 1L;
@@ -363,6 +376,9 @@ public class DBSettingsManagerTest {
     public void testTwoRecentBooks() {
         m_bs.lastChanged = 1L; // trigger `lastUpdated` to be updated to the current time
         assertThat(m_manager.storeBookSettings(m_bs), is(true));
+
+        sleep(1);
+
         m_bs2.lastChanged = 1L; // trigger `lastUpdated` to be updated to the current time
         assertThat(m_manager.storeBookSettings(m_bs2), is(true));
 

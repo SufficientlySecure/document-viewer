@@ -12,6 +12,7 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -304,6 +305,7 @@ public final class GLView extends GLRootView implements IView, SurfaceHolder.Cal
      * @see org.ebookdroid.ui.viewer.IView#waitForInitialization()
      */
     @Override
+    @WorkerThread
     public final void waitForInitialization() {
         while (!layoutFlag.get()) {
             layoutFlag.waitFor(TimeUnit.SECONDS, 1);

@@ -28,6 +28,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
 import android.util.FloatMath;
 import android.util.TypedValue;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -145,6 +146,7 @@ public abstract class AbstractViewController extends AbstractComponentController
      * @see org.ebookdroid.ui.viewer.IViewController#init(org.ebookdroid.ui.viewer.IActivityController.IBookLoadTask)
      */
     @Override
+    @WorkerThread
     public final void init(final IProgressIndicator task) {
         if (!isInitialized) {
             try {

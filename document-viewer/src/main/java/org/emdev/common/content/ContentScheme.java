@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.WorkerThread;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +29,7 @@ public enum ContentScheme {
     CONTENT("content", "[E-mail Attachment]", false) {
 
         @Override
+        @WorkerThread
         public File loadToCache(final Uri uri, final String extension, final IProgressIndicator progress) throws IOException {
             final UIFileCopying ui = new UIFileCopying(R.string.msg_loading_book, 64 * 1024, progress);
             return CacheManager.createTempFile(uri, extension, ui);
@@ -53,6 +55,7 @@ public enum ContentScheme {
     SMB("smb", "[SMB source]", true) {
 
         @Override
+        @WorkerThread
         public File loadToCache(final Uri uri, final String extension, final IProgressIndicator progress) throws IOException {
             final UIFileCopying ui = new UIFileCopying(R.string.opds_loading_book, 64 * 1024, progress);
             return CacheManager.createTempDocument(new SmbFileInputStream(uri.toString()), uri.getLastPathSegment(), ui);
@@ -62,6 +65,7 @@ public enum ContentScheme {
     HTTP("http", "[HTTP source]", true) {
 
         @Override
+        @WorkerThread
         public File loadToCache(final Uri uri, final String extension, final IProgressIndicator progress) throws IOException {
             return loadFromURL(uri, progress);
         }
@@ -70,6 +74,7 @@ public enum ContentScheme {
     HTTPS("https", "[HTTPS source]", true) {
 
         @Override
+        @WorkerThread
         public File loadToCache(final Uri uri, final String extension, final IProgressIndicator progress) throws IOException {
             return loadFromURL(uri, progress);
         }
@@ -115,6 +120,7 @@ public enum ContentScheme {
         this.promptForSave = promptForSave;
     }
 
+    @WorkerThread
     public File loadToCache(final Uri uri, final String extension, final IProgressIndicator progress) throws IOException {
         return null;
     }

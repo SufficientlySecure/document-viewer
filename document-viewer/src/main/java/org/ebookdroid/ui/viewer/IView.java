@@ -6,6 +6,7 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
 import android.view.View;
 
 import org.emdev.common.log.LogContext;
@@ -50,6 +51,7 @@ public interface IView {
 
     boolean isLayoutLocked();
 
+    @WorkerThread
     void waitForInitialization();
 
     void onDestroy();

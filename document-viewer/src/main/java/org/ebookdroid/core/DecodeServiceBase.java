@@ -19,6 +19,7 @@ import org.ebookdroid.ui.viewer.IViewController.InvalidateSizeReason;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.annotation.WorkerThread;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -76,6 +77,7 @@ public class DecodeServiceBase implements DecodeService {
     }
 
     @Override
+    @WorkerThread
     public void open(final String fileName, final String password) {
         document = codecContext.openDocument(fileName, password);
     }

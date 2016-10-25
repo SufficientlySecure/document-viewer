@@ -51,6 +51,7 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.AnyThread;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.AppCompatEditText;
@@ -681,6 +682,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
      * @see org.ebookdroid.ui.viewer.IActivityController#getView()
      */
     @Override
+    @AnyThread
     public final IView getView() {
         return getManagedComponent().view;
     }

@@ -8,6 +8,7 @@ import org.ebookdroid.core.events.ZoomListener;
 
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.annotation.WorkerThread;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -15,6 +16,7 @@ import org.emdev.ui.progress.IProgressIndicator;
 
 public interface IViewController extends ZoomListener {
 
+    @WorkerThread
     void init(IProgressIndicator bookLoadTask);
 
     void show();

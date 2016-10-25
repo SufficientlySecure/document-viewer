@@ -28,6 +28,7 @@ import org.ebookdroid.ui.viewer.IView;
 
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.support.annotation.WorkerThread;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,6 +79,7 @@ public class DocumentModel extends ListenerProxy {
         }
     }
 
+    @WorkerThread
     public void open(final String fileName, final String password) {
         decodeService.open(fileName, password);
     }
@@ -225,6 +227,7 @@ public class DocumentModel extends ListenerProxy {
         }
     }
 
+    @WorkerThread
     public void initPages(final IActivityController base, final IProgressIndicator task) {
         recyclePages();
 

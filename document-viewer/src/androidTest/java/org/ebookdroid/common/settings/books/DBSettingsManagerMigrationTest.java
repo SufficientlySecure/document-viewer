@@ -31,14 +31,6 @@ public class DBSettingsManagerMigrationTest {
     private static final String BOOK_TYPE_SPECIFIC_JSON = "{\"foo\":\"bar\"}";
     private static final String BOOK2_TYPE_SPECIFIC_JSON = "{\"foo\":\"baz\"}";
 
-    private static JSONObject parseJSON(String json) {
-        try {
-            return new JSONObject(json);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private static List<Bookmark> createBook1Bookmarks() {
         ArrayList<Bookmark> bookmarks = new ArrayList<>();
         bookmarks.add(new Bookmark("bookmark", new PageIndex(12, 34), 5.0f, 10.0f));
@@ -68,7 +60,7 @@ public class DBSettingsManagerMigrationTest {
         bs.gamma = 15;
         bs.exposure = 10;
         bs.autoLevels = true;
-        bs.typeSpecific = parseJSON(BOOK_TYPE_SPECIFIC_JSON);
+        bs.typeSpecific = TestUtils.parseJSON(BOOK_TYPE_SPECIFIC_JSON);
         return bs;
     }
 
@@ -128,7 +120,7 @@ public class DBSettingsManagerMigrationTest {
         bs.gamma = 4;
         bs.exposure = 3;
         bs.autoLevels = false;
-        bs.typeSpecific = parseJSON(BOOK2_TYPE_SPECIFIC_JSON);
+        bs.typeSpecific = TestUtils.parseJSON(BOOK2_TYPE_SPECIFIC_JSON);
         return bs;
     }
 

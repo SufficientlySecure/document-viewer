@@ -9,6 +9,7 @@ dependencies {
     androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
     androidTestCompile 'com.android.support:support-annotations:25.0.0'
     androidTestCompile 'com.android.support.test:runner:0.5'
+    androidTestCompile 'commons-io:commons-io:2.5'
 }
 
 import java.util.regex.Pattern

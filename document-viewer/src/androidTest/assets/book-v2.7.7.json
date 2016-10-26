@@ -1,0 +1,26 @@
+{
+  "fileName": "x.pdf",
+  "lastUpdated": 1477463637283,
+  "firstPageOffset": 1,
+  "currentPage": {
+    "docIndex": 2,
+    "viewIndex": 2
+  },
+  "zoom": 100,
+  "splitPages": false,
+  "splitRTL": false,
+  "rotation": "UNSPECIFIED",
+  "viewMode": "VERTICALL_SCROLL",
+  "pageAlign": "WIDTH",
+  "animationType": "NONE",
+  "cropPages": false,
+  "offsetX": 0,
+  "offsetY": 0.4187299907207489,
+  "nightMode": false,
+  "positiveImagesInNightMode": false,
+  "contrast": 100,
+  "gamma": 100,
+  "exposure": 100,
+  "autoLevels": false,
+  "bookmarks": []
+}

@@ -51,7 +51,7 @@ Java_org_ebookdroid_core_crop_PageCropper_nativeGetCropBounds(JNIEnv* env, jclas
     if (!src)
     {
         ERROR("Can not get direct buffer");
-        return;
+        return NULL;
     }
 
     RectFHelper rectfh;
@@ -90,7 +90,7 @@ Java_org_ebookdroid_core_crop_PageCropper_nativeGetColumn(JNIEnv* env, jclass cl
     if (!src)
     {
         ERROR("Can not get direct buffer");
-        return;
+        return NULL;
     }
 
     RectFHelper rectfh;

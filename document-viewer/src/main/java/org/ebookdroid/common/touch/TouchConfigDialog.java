@@ -53,7 +53,7 @@ public class TouchConfigDialog extends Dialog {
 
         final ActionSelectionListener actionListener = new ActionSelectionListener();
 
-        actionsAdapter = new ActionsAdapter(getContext(), R.array.list_actions_ids, R.array.list_actions_labels);
+        actionsAdapter = new ActionsAdapter(getContext());
 
         stList = (Spinner) this.findViewById(R.id.tapZonesConfigSingleAction);
         stList.setAdapter(actionsAdapter);

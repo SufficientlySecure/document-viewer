@@ -13,7 +13,7 @@ public class ActionsAdapter extends BaseAdapter {
     private final String[] actionIds;
     private final String[] actionLabels;
 
-    public ActionsAdapter(final Context context, final int actionIdsRes, final int actionLabelsRes) {
+    public ActionsAdapter(final Context context) {
         actionIds = context.getResources().getStringArray(R.array.list_actions_ids);
         actionLabels = context.getResources().getStringArray(R.array.list_actions_labels);
     }

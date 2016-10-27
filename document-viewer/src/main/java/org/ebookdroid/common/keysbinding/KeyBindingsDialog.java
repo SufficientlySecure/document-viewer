@@ -36,7 +36,7 @@ public class KeyBindingsDialog extends Dialog {
 
         setTitle("Keys binding");
 
-        actionsAdapter = new ActionsAdapter(getContext(), R.array.list_actions_ids, R.array.list_actions_labels);
+        actionsAdapter = new ActionsAdapter(getContext());
 
         final ExpandableListView list = new ExpandableListView(getContext());
         final KeyGroups groups = initKeyActions();

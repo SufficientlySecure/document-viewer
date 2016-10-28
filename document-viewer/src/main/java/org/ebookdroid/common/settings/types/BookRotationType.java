@@ -5,6 +5,9 @@ import org.sufficientlysecure.viewer.R;
 import org.emdev.BaseDroidApp;
 import org.emdev.utils.enums.ResourceConstant;
 
+/**
+ * TODO: Replace this enum with RotationType, no need for BookRotationType
+ */
 public enum BookRotationType implements ResourceConstant {
 
     /**
@@ -22,7 +25,12 @@ public enum BookRotationType implements ResourceConstant {
     /**
      *
      */
-    AUTOMATIC(R.string.pref_rotation_auto, RotationType.AUTOMATIC);
+    AUTOMATIC(R.string.pref_rotation_auto, RotationType.AUTOMATIC),
+
+    REVERSE_LANDSCAPE(R.string.pref_rotation_reverse_landscape, RotationType.REVERSE_LANDSCAPE),
+
+    REVERSE_PORTRAIT(R.string.pref_rotation_reverse_portrait, RotationType.REVERSE_PORTRAIT);
+
     private final String resValue;
 
     private final RotationType orientation;

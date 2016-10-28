@@ -92,6 +92,13 @@ public class ActionMenuHelper {
         }
     }
 
+    public static void setMenuItemEnabled(final Menu menu, final boolean enabled, final int viewId) {
+        final MenuItem v = menu.findItem(viewId);
+        if (v != null) {
+            v.setEnabled(enabled);
+        }
+    }
+
     public static void setMenuItemChecked(final Menu menu, final boolean checked, final int viewId) {
         final MenuItem v = menu.findItem(viewId);
         if (v != null) {

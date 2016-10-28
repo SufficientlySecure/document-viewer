@@ -2,6 +2,7 @@ package org.ebookdroid.ui.viewer;
 
 import org.ebookdroid.CodecType;
 import org.ebookdroid.EBookDroidApp;
+import org.emdev.ui.actions.ActionMenuHelper;
 import org.emdev.ui.uimanager.UIManagerAppCompat;
 import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.common.bitmaps.BitmapManager;
@@ -189,8 +190,6 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
         createAction(R.id.mainmenu_zoom).putValue("view", activity.getZoomControls());
         createAction(R.id.mainmenu_search).putValue("view", activity.getSearchControls());
         createAction(R.id.actions_toggleTouchManagerView).putValue("view", activity.getTouchView());
-        createAction(R.id.mainmenu_force_portrait).putValue("mode", BookRotationType.PORTRAIT);
-        createAction(R.id.mainmenu_force_landscape).putValue("mode", BookRotationType.LANDSCAPE);
 
         if (recreated) {
             return;
@@ -521,13 +520,44 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
         AppSettings.toggleFullScreen();
     }
 
-    @ActionMethod(ids = { R.id.mainmenu_force_portrait, R.id.mainmenu_force_landscape })
-    public void forceOrientation(final ActionEx action) {
-        final BookRotationType mode = action.getParameter("mode");
-        if (bookSettings.rotation == mode) {
+    @ActionMethod(ids = R.id.mainmenu_force_portrait)
+    public void forcePortrait(final ActionEx action) {
+        if (bookSettings.rotation == BookRotationType.PORTRAIT
+                || bookSettings.rotation == BookRotationType.REVERSE_PORTRAIT) {
             SettingsManager.setBookRotation(bookSettings, BookRotationType.UNSPECIFIED);
         } else {
-            SettingsManager.setBookRotation(bookSettings, mode);
+            SettingsManager.setBookRotation(bookSettings, BookRotationType.PORTRAIT);
+        }
+    }
+
+    @ActionMethod(ids = { R.id.mainmenu_force_landscape })
+    public void forceLandscape(final ActionEx action) {
+        if (bookSettings.rotation == BookRotationType.LANDSCAPE
+                || bookSettings.rotation == BookRotationType.REVERSE_LANDSCAPE) {
+            SettingsManager.setBookRotation(bookSettings, BookRotationType.UNSPECIFIED);
+        } else {
+            SettingsManager.setBookRotation(bookSettings, BookRotationType.LANDSCAPE);
+        }
+    }
+
+    private static BookRotationType reversedOrientation(BookRotationType rotation) {
+        if (rotation == BookRotationType.PORTRAIT) {
+            return BookRotationType.REVERSE_PORTRAIT;
+        } else if (rotation == BookRotationType.REVERSE_PORTRAIT) {
+            return BookRotationType.PORTRAIT;
+        } else if (rotation == BookRotationType.LANDSCAPE) {
+            return BookRotationType.REVERSE_LANDSCAPE;
+        } else if (rotation == BookRotationType.REVERSE_LANDSCAPE) {
+            return BookRotationType.LANDSCAPE;
+        }
+        return null;
+    }
+
+    @ActionMethod(ids = R.id.mainmenu_reverse_orientation)
+    public void reverseOrientation(final ActionEx action) {
+        BookRotationType newRotation = reversedOrientation(bookSettings.rotation);
+        if (newRotation != null) {
+            SettingsManager.setBookRotation(bookSettings, newRotation);
         }
     }
 

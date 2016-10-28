@@ -329,10 +329,21 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
             return;
         }
 
-        ActionMenuHelper.setMenuItemChecked(menu, bs.rotation == BookRotationType.PORTRAIT,
+        ActionMenuHelper.setMenuItemChecked(menu,
+                (bs.rotation == BookRotationType.PORTRAIT || bs.rotation == BookRotationType.REVERSE_PORTRAIT),
                 R.id.mainmenu_force_portrait);
-        ActionMenuHelper.setMenuItemChecked(menu, bs.rotation == BookRotationType.LANDSCAPE,
+        ActionMenuHelper.setMenuItemChecked(menu,
+                (bs.rotation == BookRotationType.LANDSCAPE || bs.rotation == BookRotationType.REVERSE_LANDSCAPE),
                 R.id.mainmenu_force_landscape);
+        ActionMenuHelper.setMenuItemChecked(menu,
+                (bs.rotation == BookRotationType.REVERSE_LANDSCAPE || bs.rotation == BookRotationType.REVERSE_PORTRAIT),
+                R.id.mainmenu_reverse_orientation);
+        ActionMenuHelper.setMenuItemEnabled(menu,
+                (bs.rotation == BookRotationType.PORTRAIT
+                || bs.rotation == BookRotationType.REVERSE_PORTRAIT
+                || bs.rotation == BookRotationType.LANDSCAPE
+                || bs.rotation == BookRotationType.REVERSE_LANDSCAPE),
+                R.id.mainmenu_reverse_orientation);
         ActionMenuHelper.setMenuItemChecked(menu, bs.nightMode, R.id.mainmenu_nightmode);
         ActionMenuHelper.setMenuItemChecked(menu, bs.cropPages, R.id.mainmenu_croppages);
         ActionMenuHelper.setMenuItemChecked(menu, bs.splitPages, R.id.mainmenu_splitpages,

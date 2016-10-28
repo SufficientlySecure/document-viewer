@@ -48,6 +48,10 @@
                 android:icon="@drawable/viewer_menu_force_landscape"
                 android:title="@string/menu_force_landscape"/>
             <item
+                android:id="@+id/mainmenu_reverse_orientation"
+                android:checkable="true"
+                android:title="@string/menu_reverse_orientation"/>
+            <item
                 android:id="@+id/mainmenu_singlepage"
                 android:checkable="true"
                 android:title="@string/menu_singlepage"/>

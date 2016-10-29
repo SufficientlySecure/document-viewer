@@ -39,6 +39,7 @@ float getTopBound(uint8_t* src, int width, int height, int avgLum);
 float getRightBound(uint8_t* src, int width, int height, int avgLum);
 float getRightColumnBound(uint8_t* src, int width, int height, int avgLum, float x, float y);
 float getBottomBound(uint8_t* src, int width, int height, int avgLum);
+int isRectWhite(uint8_t* src, int width, int height, int sub_x, int sub_y, int sub_w, int sub_h, int avgLum);
 
 JNIEXPORT jobject JNICALL
 Java_org_ebookdroid_core_crop_PageCropper_nativeGetCropBounds(JNIEnv* env, jclass clz, jobject pixels, jint width,

@@ -13,7 +13,7 @@ public enum BookRotationType implements ResourceConstant {
     /**
     *
     */
-    UNSPECIFIED(R.string.pref_rotation_unspecified, null),
+    UNSPECIFIED(R.string.pref_rotation_unspecified, RotationType.UNSPECIFIED),
     /**
     *
     */
@@ -45,7 +45,7 @@ public enum BookRotationType implements ResourceConstant {
         return resValue;
     }
 
-    public int getOrientation(final RotationType defRotation) {
-        return orientation != null ? orientation.getOrientation() : defRotation.getOrientation();
+    public int getOrientation() {
+        return orientation.getOrientation();
     }
 }

@@ -26,7 +26,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *jvm, void *reserved)
     DEBUG("Unloading EBookDroid JNI library based on MuPDF and DjVuLibre");
 }
 
-JNIEXPORT jboolean JNICALL
+JNIEXPORT void JNICALL
 Java_org_ebookdroid_EBookDroidLibraryLoader_free(JNIEnv *env, jobject this)
 {
     DEBUG("Free EBookDroid JNI library");

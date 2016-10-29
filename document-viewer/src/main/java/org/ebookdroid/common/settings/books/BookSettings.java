@@ -3,7 +3,6 @@ package org.ebookdroid.common.settings.books;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.definitions.AppPreferences;
 import org.ebookdroid.common.settings.definitions.BookPreferences;
-import org.ebookdroid.common.settings.types.BookRotationType;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.common.settings.types.RotationType;
@@ -40,7 +39,7 @@ public class BookSettings implements CurrentPageListener {
 
     public boolean splitRTL;
 
-    public BookRotationType rotation;
+    public RotationType rotation;
 
     public DocumentViewMode viewMode;
 
@@ -163,7 +162,7 @@ public class BookSettings implements CurrentPageListener {
         this.zoom = object.getInt("zoom");
         this.splitPages = object.getBoolean("splitPages");
         this.splitRTL = object.optBoolean("splitRTL", false);
-        this.rotation = EnumUtils.getByName(BookRotationType.class, object, "rotation", BookRotationType.UNSPECIFIED);
+        this.rotation = EnumUtils.getByName(RotationType.class, object, "rotation", RotationType.UNSPECIFIED);
         this.viewMode = EnumUtils.getByName(DocumentViewMode.class, object, "viewMode", DocumentViewMode.VERTICALL_SCROLL);
         this.pageAlign = EnumUtils.getByName(PageAlign.class, object, "pageAlign", PageAlign.AUTO);
         this.animationType = EnumUtils.getByName(PageAnimationType.class, object, "animationType", PageAnimationType.NONE);
@@ -257,7 +256,7 @@ public class BookSettings implements CurrentPageListener {
     }
 
     public int getOrientation(final AppSettings appSettings) {
-        if (rotation == null || rotation == BookRotationType.UNSPECIFIED) {
+        if (rotation == null || rotation == RotationType.UNSPECIFIED) {
             final RotationType defRotation = appSettings.rotation;
             return defRotation.getOrientation();
         }

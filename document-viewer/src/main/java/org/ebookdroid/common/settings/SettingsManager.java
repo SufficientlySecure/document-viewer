@@ -8,9 +8,9 @@ import org.ebookdroid.common.settings.listeners.IBookSettingsChangeListener;
 import org.ebookdroid.common.settings.listeners.ILibSettingsChangeListener;
 import org.ebookdroid.common.settings.listeners.IOpdsSettingsChangeListener;
 import org.ebookdroid.common.settings.listeners.IRecentBooksChangedListener;
-import org.ebookdroid.common.settings.types.BookRotationType;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
+import org.ebookdroid.common.settings.types.RotationType;
 import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.core.curl.PageAnimationType;
 
@@ -270,7 +270,7 @@ public class SettingsManager {
 
     // TODO: Factor out common code from these
 
-    public static void setBookRotation(final BookSettings current, final BookRotationType mode) {
+    public static void setBookRotation(final BookSettings current, final RotationType mode) {
         if (current == null) {
             return;
         }

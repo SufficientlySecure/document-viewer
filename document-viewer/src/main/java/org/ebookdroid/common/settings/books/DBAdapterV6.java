@@ -1,8 +1,8 @@
 package org.ebookdroid.common.settings.books;
 
-import org.ebookdroid.common.settings.types.BookRotationType;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
+import org.ebookdroid.common.settings.types.RotationType;
 import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.core.curl.PageAnimationType;
 
@@ -174,13 +174,13 @@ class DBAdapterV6 extends DBAdapterV5 {
     }
 
     protected long getRotationFlags(final BookSettings bs) {
-        if (bs.rotation == null || bs.rotation == BookRotationType.UNSPECIFIED) {
+        if (bs.rotation == null || bs.rotation == RotationType.UNSPECIFIED) {
             return 0;
         }
-        if (bs.rotation == BookRotationType.AUTOMATIC) {
+        if (bs.rotation == RotationType.AUTOMATIC) {
             return F_ROTAION_OVR | F_ROTATION_AUTO;
         }
-        return F_ROTAION_OVR | (bs.rotation == BookRotationType.LANDSCAPE ? F_ROTAION_LAND : 0);
+        return F_ROTAION_OVR | (bs.rotation == RotationType.LANDSCAPE ? F_ROTAION_LAND : 0);
     }
 
     protected void setFlags(final BookSettings bs, final long flags) {
@@ -192,12 +192,12 @@ class DBAdapterV6 extends DBAdapterV5 {
 
         if ((flags & F_ROTAION_OVR) != 0) {
             if ((flags & F_ROTATION_AUTO) != 0) {
-                bs.rotation = BookRotationType.AUTOMATIC;
+                bs.rotation = RotationType.AUTOMATIC;
             } else {
-                bs.rotation = (flags & F_ROTAION_LAND) != 0 ? BookRotationType.LANDSCAPE : BookRotationType.PORTRAIT;
+                bs.rotation = (flags & F_ROTAION_LAND) != 0 ? RotationType.LANDSCAPE : RotationType.PORTRAIT;
             }
         } else {
-            bs.rotation = BookRotationType.UNSPECIFIED;
+            bs.rotation = RotationType.UNSPECIFIED;
         }
 
         bs.splitRTL = (flags & F_SPLIT_RTL) != 0;

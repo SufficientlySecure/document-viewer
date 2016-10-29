@@ -4,9 +4,9 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.ebookdroid.common.settings.definitions.AppPreferences;
-import org.ebookdroid.common.settings.types.BookRotationType;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
+import org.ebookdroid.common.settings.types.RotationType;
 import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.core.curl.PageAnimationType;
 import org.hamcrest.Matchers;
@@ -45,7 +45,7 @@ public class DBSettingsManagerTest {
     private BookSettings sampleBookSettings(String filename) {
         BookSettings bs = new BookSettings(filename);
         // FIXME: shouldn't need to set these
-        bs.rotation = BookRotationType.UNSPECIFIED;
+        bs.rotation = RotationType.UNSPECIFIED;
         bs.viewMode = DocumentViewMode.VERTICALL_SCROLL;
         return bs;
     }
@@ -87,7 +87,7 @@ public class DBSettingsManagerTest {
         assertThat(bs.zoom, is(100));
         assertThat(bs.splitPages, is(false));
         assertThat(bs.splitRTL, is(false));
-        assertThat(bs.rotation, is(BookRotationType.UNSPECIFIED));
+        assertThat(bs.rotation, is(RotationType.UNSPECIFIED));
         assertThat(bs.viewMode, is(DocumentViewMode.VERTICALL_SCROLL));
         assertThat(bs.pageAlign, is(PageAlign.AUTO));
         assertThat(bs.animationType, is(PageAnimationType.NONE));
@@ -169,7 +169,7 @@ public class DBSettingsManagerTest {
 
     @Test
     public void testRotation() {
-        for (BookRotationType testValue : BookRotationType.values()) {
+        for (RotationType testValue : RotationType.values()) {
             m_bs.rotation = testValue;
             assertThat(roundTrip(m_bs).rotation, is(testValue));
         }

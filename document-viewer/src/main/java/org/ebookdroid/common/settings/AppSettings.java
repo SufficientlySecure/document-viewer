@@ -4,7 +4,6 @@ import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.definitions.AppPreferences;
 import org.ebookdroid.common.settings.definitions.BookPreferences;
 import org.ebookdroid.common.settings.listeners.IAppSettingsChangeListener;
-import org.ebookdroid.common.settings.types.BookRotationType;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.FontSize;
 import org.ebookdroid.common.settings.types.PageAlign;
@@ -344,7 +343,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         bs.splitPages = BOOK_SPLIT_PAGES.getPreferenceValue(prefs, current.splitPages);
         bs.splitRTL = BOOK_SPLIT_RTL.getPreferenceValue(prefs, current.splitRTL);
         bs.cropPages = BOOK_CROP_PAGES.getPreferenceValue(prefs, current.cropPages);
-        bs.rotation = BOOK_ROTATION.getPreferenceValue(prefs, BookRotationType.UNSPECIFIED);
+        bs.rotation = BOOK_ROTATION.getPreferenceValue(prefs, RotationType.UNSPECIFIED);
         bs.viewMode = BOOK_VIEW_MODE.getPreferenceValue(prefs, current.viewMode);
         bs.pageAlign = BOOK_PAGE_ALIGN.getPreferenceValue(prefs, current.pageAlign);
         bs.animationType = BOOK_ANIMATION_TYPE.getPreferenceValue(prefs, current.animationType);

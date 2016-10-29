@@ -1,12 +1,12 @@
 package org.ebookdroid.ui.viewer;
 
 import org.ebookdroid.common.settings.types.DocumentViewMode;
+import org.ebookdroid.common.settings.types.RotationType;
 import org.emdev.ui.uimanager.UIManagerAppCompat;
 import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.common.settings.books.BookSettings;
 import org.ebookdroid.common.settings.books.Bookmark;
-import org.ebookdroid.common.settings.types.BookRotationType;
 import org.ebookdroid.common.settings.types.ToastPosition;
 import org.ebookdroid.common.touch.TouchManagerView;
 import org.ebookdroid.core.DecodeService;
@@ -330,19 +330,19 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
         }
 
         ActionMenuHelper.setMenuItemChecked(menu,
-                (bs.rotation == BookRotationType.PORTRAIT || bs.rotation == BookRotationType.REVERSE_PORTRAIT),
+                (bs.rotation == RotationType.PORTRAIT || bs.rotation == RotationType.REVERSE_PORTRAIT),
                 R.id.mainmenu_force_portrait);
         ActionMenuHelper.setMenuItemChecked(menu,
-                (bs.rotation == BookRotationType.LANDSCAPE || bs.rotation == BookRotationType.REVERSE_LANDSCAPE),
+                (bs.rotation == RotationType.LANDSCAPE || bs.rotation == RotationType.REVERSE_LANDSCAPE),
                 R.id.mainmenu_force_landscape);
         ActionMenuHelper.setMenuItemChecked(menu,
-                (bs.rotation == BookRotationType.REVERSE_LANDSCAPE || bs.rotation == BookRotationType.REVERSE_PORTRAIT),
+                (bs.rotation == RotationType.REVERSE_LANDSCAPE || bs.rotation == RotationType.REVERSE_PORTRAIT),
                 R.id.mainmenu_reverse_orientation);
         ActionMenuHelper.setMenuItemEnabled(menu,
-                (bs.rotation == BookRotationType.PORTRAIT
-                || bs.rotation == BookRotationType.REVERSE_PORTRAIT
-                || bs.rotation == BookRotationType.LANDSCAPE
-                || bs.rotation == BookRotationType.REVERSE_LANDSCAPE),
+                (bs.rotation == RotationType.PORTRAIT
+                || bs.rotation == RotationType.REVERSE_PORTRAIT
+                || bs.rotation == RotationType.LANDSCAPE
+                || bs.rotation == RotationType.REVERSE_LANDSCAPE),
                 R.id.mainmenu_reverse_orientation);
         ActionMenuHelper.setMenuItemChecked(menu, bs.nightMode, R.id.mainmenu_nightmode);
         ActionMenuHelper.setMenuItemChecked(menu, bs.cropPages, R.id.mainmenu_croppages);

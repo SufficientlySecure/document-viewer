@@ -4,9 +4,9 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.ebookdroid.common.settings.types.BookRotationType;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
+import org.ebookdroid.common.settings.types.RotationType;
 import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.core.curl.PageAnimationType;
 import org.json.JSONException;
@@ -46,7 +46,7 @@ public class DBSettingsManagerMigrationTest {
         bs.zoom = 55;
         bs.splitPages = true;
         bs.splitRTL = true;
-        bs.rotation = BookRotationType.AUTOMATIC;
+        bs.rotation = RotationType.AUTOMATIC;
         bs.viewMode = DocumentViewMode.HORIZONTAL_SCROLL;
         bs.pageAlign = PageAlign.HEIGHT;
         bs.animationType = PageAnimationType.CURLER;
@@ -75,7 +75,7 @@ public class DBSettingsManagerMigrationTest {
         assertThat(bs.zoom, is(55));
         assertThat(bs.splitPages, is(true));
         assertThat(bs.splitRTL, is(true));
-        assertThat(bs.rotation, is(BookRotationType.AUTOMATIC));
+        assertThat(bs.rotation, is(RotationType.AUTOMATIC));
         assertThat(bs.viewMode, is(DocumentViewMode.HORIZONTAL_SCROLL));
         assertThat(bs.pageAlign, is(PageAlign.HEIGHT));
         assertThat(bs.animationType, is(PageAnimationType.CURLER));
@@ -106,7 +106,7 @@ public class DBSettingsManagerMigrationTest {
         bs.zoom = 0;
         bs.splitPages = false;
         bs.splitRTL = false;
-        bs.rotation = BookRotationType.UNSPECIFIED;
+        bs.rotation = RotationType.UNSPECIFIED;
         bs.viewMode = DocumentViewMode.SINGLE_PAGE;
         bs.pageAlign = PageAlign.AUTO;
         bs.animationType = PageAnimationType.NONE;
@@ -135,7 +135,7 @@ public class DBSettingsManagerMigrationTest {
         assertThat(bs.zoom, is(0));
         assertThat(bs.splitPages, is(false));
         assertThat(bs.splitRTL, is(false));
-        assertThat(bs.rotation, is(BookRotationType.UNSPECIFIED));
+        assertThat(bs.rotation, is(RotationType.UNSPECIFIED));
         assertThat(bs.viewMode, is(DocumentViewMode.SINGLE_PAGE));
         assertThat(bs.pageAlign, is(PageAlign.AUTO));
         assertThat(bs.animationType, is(PageAnimationType.NONE));

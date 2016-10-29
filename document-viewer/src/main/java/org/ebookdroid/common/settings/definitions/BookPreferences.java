@@ -44,9 +44,9 @@ import static org.sufficientlysecure.viewer.R.string.pref_tint_defvalue;
 import static org.sufficientlysecure.viewer.R.string.pref_book_tint_id;
 import static org.sufficientlysecure.viewer.R.string.pref_viewmode_vertical_scroll;
 
-import org.ebookdroid.common.settings.types.BookRotationType;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
+import org.ebookdroid.common.settings.types.RotationType;
 import org.ebookdroid.core.curl.PageAnimationType;
 
 import org.emdev.common.settings.base.BooleanPreferenceDefinition;
@@ -91,8 +91,8 @@ public interface BookPreferences {
     BooleanPreferenceDefinition BOOK_CROP_PAGES = new BooleanPreferenceDefinition(pref_book_croppages_id,
             pref_croppages_defvalue);
 
-    EnumPreferenceDefinition<BookRotationType> BOOK_ROTATION = new EnumPreferenceDefinition<BookRotationType>(
-            BookRotationType.class, pref_book_rotation_id, pref_rotation_unspecified);
+    EnumPreferenceDefinition<RotationType> BOOK_ROTATION = new EnumPreferenceDefinition<RotationType>(
+            RotationType.class, pref_book_rotation_id, pref_rotation_unspecified);
 
     EnumPreferenceDefinition<DocumentViewMode> BOOK_VIEW_MODE = new EnumPreferenceDefinition<DocumentViewMode>(
             DocumentViewMode.class, pref_book_viewmode_id, pref_viewmode_vertical_scroll);

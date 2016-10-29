@@ -5,9 +5,9 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.apache.commons.io.IOUtils;
-import org.ebookdroid.common.settings.types.BookRotationType;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
 import org.ebookdroid.common.settings.types.PageAlign;
+import org.ebookdroid.common.settings.types.RotationType;
 import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.core.curl.PageAnimationType;
 import org.hamcrest.CoreMatchers;
@@ -67,7 +67,7 @@ public class BookSettingsTest {
         assertThat(bs.zoom, is(100));
         assertThat(bs.splitPages, is(false));
         assertThat(bs.splitRTL, is(false));
-        assertThat(bs.rotation, is(BookRotationType.UNSPECIFIED));
+        assertThat(bs.rotation, is(RotationType.UNSPECIFIED));
         assertThat(bs.viewMode, is(DocumentViewMode.VERTICALL_SCROLL));
         assertThat(bs.pageAlign, is(PageAlign.WIDTH));
         assertThat(bs.animationType, is(PageAnimationType.NONE));

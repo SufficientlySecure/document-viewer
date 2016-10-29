@@ -534,7 +534,7 @@ JNI_FN(MuPdfPage_open)(JNIEnv *env, jclass clazz, jlong dochandle, jint pageno)
 
     fz_try(ctx)
     {
-        page->pageList = fz_new_display_list(ctx);
+        page->pageList = fz_new_display_list(ctx, NULL);
         dev = fz_new_list_device(ctx, page->pageList);
         page->page = fz_load_page(doc->ctx, doc->document, pageno - 1);
         fz_run_page(doc->ctx, page->page, dev, &fz_identity, NULL);
@@ -674,17 +674,22 @@ JNI_FN(MuPdfPage_renderPageDirect)(JNIEnv *env, jobject this, jlong dochandle,
 
     //add check for night mode and set global variable accordingly
     ctx->ebookdroid_nightmode = nightmode;
+    // FIXME: This seems to be necessary; why is doc->ctx different than ctx?
+    doc->ctx->ebookdroid_nightmode = nightmode;
 
+    // TODO: slowcmyk patch no longer applies cleanly to mupdf, so this was disabled
     //add check for slowcmyk mode and set global variable accordingly
-    ctx->ebookdroid_slowcmyk = slowcmyk;
+    //ctx->ebookdroid_slowcmyk = slowcmyk;
 
     fz_try(ctx)
     {
-         pixmap = fz_new_pixmap_with_data(ctx, fz_device_rgb(ctx), viewbox.x1 - viewbox.x0, viewbox.y1 - viewbox.y0, pixels);
+         const int w = viewbox.x1 - viewbox.x0;
+         const int h = viewbox.y1 - viewbox.y0;
+         pixmap = fz_new_pixmap_with_data(ctx, fz_device_rgb(ctx), w, h, 1, 4 * w, pixels);
 
          fz_clear_pixmap_with_value(ctx, pixmap, 0xff);
 
-         dev = fz_new_draw_device(ctx, pixmap);
+         dev = fz_new_draw_device(ctx, NULL, pixmap);
 
          fz_run_display_list(doc->ctx, page->pageList, dev, &ctm, &viewbox, NULL);
     }
@@ -820,8 +825,8 @@ JNI_FN(MuPdfPage_search)(JNIEnv * env, jobject thiz, jlong dochandle, jlong page
 
         fz_bound_page(doc->ctx, page->page, &rect);
         sheet = fz_new_stext_sheet(doc->ctx);
-        pagetext = fz_new_stext_page(doc->ctx);
-        dev = fz_new_stext_device(doc->ctx, sheet, pagetext);
+        pagetext = fz_new_stext_page(doc->ctx, NULL);
+        dev = fz_new_stext_device(doc->ctx, sheet, pagetext, NULL);
         fz_run_page(doc->ctx, page->page, dev, &fz_identity, NULL);
 
         // DEBUG("MuPdfPage(%p).search(%p, %p): free text device", thiz, doc, page);
@@ -1011,4 +1016,3 @@ JNI_FN(MuPdfOutline_getChild)(JNIEnv *env, jclass clazz, jlong outlinehandle)
 //	DEBUG("MuPdfOutline_getChild(%p)",outline);
     return (jlong)(uintptr_t)(outline?outline->down:NULL);
 }
-

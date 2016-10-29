@@ -11,7 +11,7 @@ include $(CLEAR_VARS)
 
 MY_ROOT := $(LOCAL_PATH)/mupdf
 
-LOCAL_CFLAGS += -Wall -Wno-maybe-uninitialized
+LOCAL_CFLAGS += -Wall
 LOCAL_CFLAGS += -DNOCJK
 # Skip noto fonts to save space. see pdf-fontfile.c
 LOCAL_CFLAGS += -DTOFU
@@ -36,7 +36,7 @@ endif
 LOCAL_C_INCLUDES := \
 	$(MY_ROOT)/thirdparty/harfbuzz/src \
 	$(MY_ROOT)/thirdparty/jbig2dec \
-	$(MY_ROOT)/thirdparty/openjpeg/libopenjpeg \
+	$(MY_ROOT)/thirdparty/openjpeg/src/lib/openjp2 \
 	$(MY_ROOT)/thirdparty/jpeg \
 	$(MY_ROOT)/thirdparty/mujs \
 	$(MY_ROOT)/thirdparty/zlib \
@@ -44,12 +44,12 @@ LOCAL_C_INCLUDES := \
 	$(MY_ROOT)/source/fitz \
 	$(MY_ROOT)/source/pdf \
 	$(MY_ROOT)/source/xps \
+	$(MY_ROOT)/source/svg \
 	$(MY_ROOT)/source/cbz \
 	$(MY_ROOT)/source/img \
 	$(MY_ROOT)/source/tiff \
 	$(MY_ROOT)/scripts/freetype \
 	$(MY_ROOT)/scripts/jpeg \
-	$(MY_ROOT)/scripts/openjpeg \
 	$(MY_ROOT)/generated \
 	$(MY_ROOT)/resources \
 	$(MY_ROOT)/include \
@@ -67,13 +67,12 @@ LOCAL_SRC_FILES := \
 		$(wildcard $(MY_ROOT)/source/fitz/*.c) \
 		$(wildcard $(MY_ROOT)/source/pdf/*.c) \
 		$(wildcard $(MY_ROOT)/source/xps/*.c) \
+		$(wildcard $(MY_ROOT)/source/svg/*.c) \
 		$(wildcard $(MY_ROOT)/source/cbz/*.c) \
 		$(wildcard $(MY_ROOT)/source/gprf/*.c) \
 		$(wildcard $(MY_ROOT)/source/html/*.c) \
 		$(wildcard $(MY_ROOT)/generated/*.c) \
 	)
-LOCAL_SRC_FILES += \
-	mupdf/source/pdf/js/pdf-js.c \
 
 ifdef SUPPORT_GPROOF
 LOCAL_SHARED_LIBRARIES := gsso

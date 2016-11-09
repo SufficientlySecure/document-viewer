@@ -95,34 +95,6 @@ public class TouchManager {
         }
     }
 
-    public static void setActionEnabled(final String profile, final int id, final boolean enabled) {
-        final TouchProfile tp = profiles.get(profile);
-        for (final Region r : tp.regions) {
-            for (final ActionRef a : r.actions) {
-                if (a != null && a.id == id) {
-                    a.enabled = enabled;
-                }
-            }
-        }
-    }
-
-    public static void setActionEnabled(final String profile, final int id, final boolean enabled, final int left,
-            final int top, final int right, final int bottom) {
-        final TouchProfile tp = profiles.get(profile);
-        for (final Region r : tp.regions) {
-            for (final ActionRef a : r.actions) {
-                if (a != null && a.id == id) {
-                    a.enabled = enabled;
-                    r.rect.left = left;
-                    r.rect.top = top;
-                    r.rect.right = right;
-                    r.rect.bottom = bottom;
-                    return;
-                }
-            }
-        }
-    }
-
     public static Integer getAction(final Touch type, final float x, final float y, final float width,
             final float height) {
         return AppSettings.current().tapsEnabled ? stack.peek().getAction(type, x, y, width, height) : null;
@@ -138,23 +110,7 @@ public class TouchManager {
         return stack.isEmpty() ? null : stack.peek();
     }
 
-    public static TouchProfile pushProfile(final String name) {
-        final TouchProfile prev = stack.isEmpty() ? null : stack.peek();
-        final TouchProfile tp = profiles.get(name);
-        if (tp != null) {
-            stack.addFirst(tp);
-        }
-        return prev;
-    }
-
-    public static TouchProfile popProfile() {
-        if (stack.size() > 1) {
-            stack.removeFirst();
-        }
-        return stack.peek();
-    }
-
-    public static JSONObject toJSON() throws JSONException {
+    private static JSONObject toJSON() throws JSONException {
         final JSONObject object = new JSONObject();
         final JSONArray array = new JSONArray();
         for (final TouchProfile p : profiles.values()) {

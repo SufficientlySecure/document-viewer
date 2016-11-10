@@ -17,6 +17,7 @@
 
 package org.afzkl.colorpicker.views;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -35,6 +36,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import org.afzkl.colorpicker.drawables.AlphaPatternDrawable;
+import org.emdev.common.android.AndroidVersion;
 
 /**
  * Displays a color picker to the user and allow them
@@ -154,8 +156,21 @@ public class ColorPickerView extends View{
 		super(context, attrs, defStyle);
 		init();
 	}
-		
+
+	@TargetApi(11)
+	private void disableHWAccel() {
+		if (AndroidVersion.VERSION >= 11) {
+			// ComposeShader is broken with hardware acceleration, so disable it
+			// See:
+			// https://github.com/SufficientlySecure/document-viewer/issues/222
+			// https://developer.android.com/guide/topics/graphics/hardware-accel.html
+			setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+		}
+	}
+
 	private void init(){
+		disableHWAccel();
+
 		mDensity = getContext().getResources().getDisplayMetrics().density;
 		PALETTE_CIRCLE_TRACKER_RADIUS *= mDensity;		
 		RECTANGLE_TRACKER_OFFSET *= mDensity;

@@ -6,7 +6,8 @@
         android:id="@+id/recentmenu_searchBook"
         android:alphabeticShortcut="s"
         android:icon="@drawable/recent_actionbar_searchbook"
-        app:showAsAction="always"
+        app:showAsAction="always|collapseActionView"
+        app:actionViewClass="android.support.v7.widget.SearchView"
         android:title="@string/menu_searchbook"/>
     <item
         android:id="@+id/recent_showlibrary"

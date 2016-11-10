@@ -238,23 +238,6 @@ public class RecentActivityController extends AbstractActivityController<RecentA
         }
     }
 
-    @ActionMethod(ids = R.id.recentmenu_searchBook)
-    public void showSearchDlg(final ActionEx action) {
-        final ActionDialogBuilder builder = new ActionDialogBuilder(getContext(), this);
-
-        final EditText input = new AppCompatEditText(getManagedComponent());
-        input.setSingleLine();
-        input.setText(LengthUtils.safeString(bookshelfAdapter.getSearchQuery()));
-        input.selectAll();
-
-        builder.setTitle(R.string.search_book_dlg_title);
-        builder.setView(input);
-        builder.setPositiveButton(android.R.string.search_go, R.id.actions_searchBook,
-                new EditableValue("input", input));
-        builder.setNegativeButton();
-        builder.show();
-    }
-
     @ActionMethod(ids = R.id.actions_searchBook)
     public void searchBook(final ActionEx action) {
         final Editable value = action.getParameter("input");

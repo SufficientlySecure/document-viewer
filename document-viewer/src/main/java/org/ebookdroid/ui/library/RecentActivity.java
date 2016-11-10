@@ -1,5 +1,7 @@
 package org.ebookdroid.ui.library;
 
+import org.emdev.ui.actions.ActionEx;
+import org.emdev.ui.actions.params.Constant;
 import org.emdev.ui.uimanager.UIManagerAppCompat;
 import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.common.settings.LibSettings;
@@ -19,7 +21,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableStringBuilder;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -123,6 +128,24 @@ public class RecentActivity extends AbstractActionActivity<RecentActivity, Recen
     public boolean onCreateOptionsMenu(final Menu menu) {
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.recentmenu, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.recentmenu_searchBook);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                ActionEx a = getController().getOrCreateAction(R.id.actions_searchBook);
+                a.addParameter(new Constant("input", new SpannableStringBuilder(query)));
+                a.run();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
         return true;
     }
 

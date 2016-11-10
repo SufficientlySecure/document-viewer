@@ -12,9 +12,6 @@ public class MuPdfLinks {
     private static final int FZ_LINK_NONE = 0;
     private static final int FZ_LINK_GOTO = 1;
     private static final int FZ_LINK_URI = 2;
-    private static final int FZ_LINK_LAUNCH = 3;
-    private static final int FZ_LINK_NAMED = 4;
-    private static final int FZ_LINK_GOTOR = 5;
 
     private static final float[] temp = new float[4];
 
@@ -22,7 +19,7 @@ public class MuPdfLinks {
         final List<PageLink> links = new ArrayList<PageLink>();
         for (long linkHandle = getFirstPageLink(docHandle, pageHandle); linkHandle != 0; linkHandle = getNextPageLink(linkHandle)) {
             final PageLink link = new PageLink();
-            final int type = getPageLinkType(linkHandle);
+            final int type = getPageLinkType(docHandle, linkHandle);
 
             link.rectType = 1;
             if (fillPageLinkSourceRect(linkHandle, temp)) {
@@ -37,13 +34,10 @@ public class MuPdfLinks {
                 link.url = getPageLinkUrl(linkHandle);
                 links.add(link);
             } else if (type == FZ_LINK_GOTO) {
-                link.targetPage = getPageLinkTargetPage(linkHandle);
+                link.targetPage = getPageLinkTargetPage(docHandle, linkHandle);
                 if (link.targetPage > 0) {
-                    int flags = fillPageLinkTargetPoint(linkHandle, temp);
                     link.targetRect = new RectF();
-                    link.targetRect.left = temp[0];
-                    link.targetRect.top = temp[1];
-                    MuPdfDocument.normalizeLinkTargetRect(docHandle, link.targetPage, link.targetRect, flags);
+                    MuPdfDocument.normalizeLinkTargetRect(docHandle, link.targetPage, link.targetRect);
                 }
 
                 links.add(link);
@@ -58,14 +52,12 @@ public class MuPdfLinks {
 
     private static native long getNextPageLink(long linkhandle);
 
-    private static native int getPageLinkType(long linkhandle);
+    private static native int getPageLinkType(long dochandle, long linkhandle);
 
     private static native String getPageLinkUrl(long linkhandle);
 
     private static native boolean fillPageLinkSourceRect(long linkhandle, float[] bounds);
 
-    private static native int getPageLinkTargetPage(long linkhandle);
-
-    private static native int fillPageLinkTargetPoint(long linkhandle, float[] point);
+    private static native int getPageLinkTargetPage(long dochandle, long linkhandle);
 
 }

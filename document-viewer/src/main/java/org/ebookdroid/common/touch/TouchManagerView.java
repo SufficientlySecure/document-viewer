@@ -38,8 +38,6 @@ public class TouchManagerView extends View {
     private final ActionController<TouchManagerView> actions;
     private final DefaultGestureDetector detector;
 
-    private TouchProfile profile;
-
     private final Paint rPaint = new Paint();
 
     public TouchManagerView(final IActivityController base) {
@@ -62,19 +60,14 @@ public class TouchManagerView extends View {
         gridPaint.setColor(Color.GREEN);
     }
 
-    @Override
-    public void setVisibility(final int visibility) {
-        if (visibility == View.VISIBLE) {
-            profile = TouchManager.topProfile();
-        } else {
-            profile = null;
-        }
-        super.setVisibility(visibility);
+    private TouchProfile getProfile() {
+        return TouchManager.topProfile();
     }
 
     @Override
     protected void onDraw(final Canvas canvas) {
         super.onDraw(canvas);
+        TouchProfile profile = getProfile();
         if (profile == null) {
             return;
         }
@@ -145,6 +138,7 @@ public class TouchManagerView extends View {
     private Region current;
 
     protected void processRegion() {
+        TouchProfile profile = getProfile();
         if (profile != null) {
             if (startPoint != null && endPoint != null) {
                 current = getOrCreareRegion(startPoint, endPoint);
@@ -164,6 +158,7 @@ public class TouchManagerView extends View {
     }
 
     protected Region getOrCreareRegion(final PointF startPoint, final PointF endPoint) {
+        TouchProfile profile = getProfile();
         final Region selected = getRegion(startPoint, endPoint);
         for (final Region r : profile.regions) {
             if (r.getRect().equals(selected.getRect())) {
@@ -264,6 +259,7 @@ public class TouchManagerView extends View {
 
         @Override
         public boolean onSingleTapConfirmed(final MotionEvent e) {
+            TouchProfile profile = getProfile();
             if (profile != null) {
                 current = profile.getRegion(e.getX(), e.getY(), getWidth(), getHeight());
                 if (LCTX.isDebugEnabled()) {

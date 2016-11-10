@@ -41,6 +41,13 @@ Select everything for the newest SDK
 5. Build native libraries with ``cd document-viewer; ndk-build``
 6. Execute ``./gradlew build``
 
+### NDK Debugging
+
+1. ``cd document-viewer; ndk-build -j8 NDK_DEBUG=1``
+2. From Android Studio: Run -> Debug... to build and install the APK and launch it on the device. 
+3. ``cp src/main/AndroidManifest.xml . # Hack required for ndk-gdb to find everything``
+4. ``ndk-gdb``
+
 ### Development with Android Studio
 
 I am using the newest [Android Studio](http://developer.android.com/sdk/installing/studio.html) for development. Development with Eclipse is currently not possible because I am using the new [project structure](http://developer.android.com/sdk/installing/studio-tips.html).

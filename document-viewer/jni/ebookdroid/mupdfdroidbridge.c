@@ -800,12 +800,13 @@ JNI_FN(MuPdfPage_search)(JNIEnv * env, jobject thiz, jlong dochandle, jlong page
 
         fz_bound_page(doc->ctx, page->page, &rect);
         sheet = fz_new_stext_sheet(doc->ctx);
-        pagetext = fz_new_stext_page(doc->ctx, NULL);
+        pagetext = fz_new_stext_page(doc->ctx, &rect);
         dev = fz_new_stext_device(doc->ctx, sheet, pagetext, NULL);
         fz_run_page(doc->ctx, page->page, dev, &fz_identity, NULL);
 
         // DEBUG("MuPdfPage(%p).search(%p, %p): free text device", thiz, doc, page);
 
+        fz_close_device(doc->ctx, dev);
         fz_drop_device(doc->ctx, dev);
         dev = NULL;
 

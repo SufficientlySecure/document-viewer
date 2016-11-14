@@ -55,10 +55,22 @@ public class MuPdfDocument extends AbstractCodecDocument {
         free(documentHandle);
     }
 
-    static void normalizeLinkTargetRect(final long docHandle, final int targetPage, final RectF targetRect) {
-        targetRect.right = targetRect.left = 0;
-        targetRect.bottom = targetRect.top = 0;
-        return;
+    static void normalizeLinkTargetRect(final long docHandle, final int targetPage, final RectF targetRect,
+            final int flags) {
+        
+        final CodecPageInfo cpi = new CodecPageInfo();
+        MuPdfDocument.getPageInfo(docHandle, targetPage, cpi);
+
+        final float left = targetRect.left;
+        final float top = targetRect.top;
+
+        if (((cpi.rotation / 90) % 2) != 0) {
+            targetRect.right = targetRect.left = left / cpi.height;
+            targetRect.bottom = targetRect.top = top / cpi.width;
+        } else {
+            targetRect.right = targetRect.left = left / cpi.width;
+            targetRect.bottom = targetRect.top = top / cpi.height;
+        }
     }
 
     native static int getPageInfo(long docHandle, int pageNumber, CodecPageInfo cpi);

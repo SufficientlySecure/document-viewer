@@ -468,7 +468,42 @@ JNI_FN(MuPdfLinks_getPageLinkTargetPage)(JNIEnv *env, jclass clazz, jlong handle
     if (!link)
         return -1;
 
-    return fz_resolve_link(doc->ctx, doc->document, link->uri);
+    return fz_resolve_link(doc->ctx, doc->document, link->uri, NULL, NULL);
+}
+
+JNIEXPORT jint JNICALL
+JNI_FN(MuPdfLinks_fillPageLinkTargetPoint)(JNIEnv *env, jclass clazz, jlong handle, jlong linkhandle,
+                                                                      jfloatArray pointArray)
+{
+    renderdocument_t *doc = (renderdocument_t*) (long) handle;
+    fz_link *link = (fz_link*) (long) linkhandle;
+
+    if (!link || fz_is_external_link(doc->ctx, link->uri))
+    {
+        return 0;
+    }
+
+    jfloat *point = (*env)->GetPrimitiveArrayCritical(env, pointArray, 0);
+    if (!point)
+    {
+        return 0;
+    }
+
+    float x = 0.0f, y = 0.0f;
+    int pageNum = fz_resolve_link(doc->ctx, doc->document, link->uri, &x, &y);
+
+//    DEBUG("MuPdfLinks_fillPageLinkTargetPoint(): %d %x (%f, %f) - (%f, %f)",
+//          link->dest.ld.gotor.page,
+//          link->dest.ld.gotor.flags,
+//          link->dest.ld.gotor.lt.x, link->dest.ld.gotor.lt.y,
+//          link->dest.ld.gotor.rb.x, link->dest.ld.gotor.rb.y);
+
+    point[0] = x;
+    point[1] = y;
+
+    (*env)->ReleasePrimitiveArrayCritical(env, pointArray, point, 0);
+
+    return 0;
 }
 
 JNIEXPORT jint JNICALL
@@ -934,13 +969,48 @@ JNI_FN(MuPdfOutline_getLink)(JNIEnv *env, jclass clazz, jlong outlinehandle, jlo
     }
     else
     {
-        int resolved = fz_resolve_link(doc->ctx, doc->document, outline->uri);
+        int resolved = fz_resolve_link(doc->ctx, doc->document, outline->uri, NULL, NULL);
 
         char linkbuf[128];
         snprintf(linkbuf, sizeof(linkbuf), "#%d", resolved + 1);
         // DEBUG("PdfOutline_getLink goto = %s",linkbuf);
         return (*env)->NewStringUTF(env, linkbuf);
     }
+}
+
+JNIEXPORT jint JNICALL
+JNI_FN(MuPdfOutline_fillLinkTargetPoint)(JNIEnv *env, jclass clazz, jlong dochandle, jlong outlinehandle,
+                                                                      jfloatArray pointArray)
+{
+    renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
+    fz_outline *outline = (fz_outline*) (uintptr_t) outlinehandle;
+
+    if (!outline || fz_is_external_link(doc->ctx, outline->uri))
+    {
+        return 0;
+    }
+
+    jfloat *point = (*env)->GetPrimitiveArrayCritical(env, pointArray, 0);
+    if (!point)
+    {
+        return 0;
+    }
+
+    float x = 0.0f, y = 0.0f;
+    int pageNum = fz_resolve_link(doc->ctx, doc->document, outline->uri, &x, &y);
+
+//    DEBUG("MuPdfOutline_fillLinkTargetPoint(): %d %x (%f, %f) - (%f, %f)",
+//          outline->dest.ld.gotor.page,
+//          outline->dest.ld.gotor.flags,
+//          outline->dest.ld.gotor.lt.x, outline->dest.ld.gotor.lt.y,
+//          outline->dest.ld.gotor.rb.x, outline->dest.ld.gotor.rb.y);
+
+    point[0] = x;
+    point[1] = y;
+
+    (*env)->ReleasePrimitiveArrayCritical(env, pointArray, point, 0);
+
+    return 0;
 }
 
 JNIEXPORT jlong JNICALL

@@ -183,7 +183,7 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
         final AppSettings appSettings = AppSettings.current();
 
         IUIManager.instance.setFullScreenMode(activity, getManagedComponent().view.getView(), appSettings.fullScreen);
-        UIManagerAppCompat.setToolbarVisible(activity, appSettings.getShowTitle());
+        UIManagerAppCompat.setToolbarVisible(activity, appSettings.showTitle);
 
         createAction(R.id.mainmenu_crop).putValue("view", activity.getManualCropControls()).putValue("mode",
                 DocumentViewMode.SINGLE_PAGE);
@@ -538,6 +538,11 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
         } else {
             SettingsManager.setBookRotation(bookSettings, RotationType.LANDSCAPE);
         }
+    }
+
+    @ActionMethod(ids = R.id.mainmenu_showtitle)
+    public void toggleTitleVisibility(final ActionEx action) {
+        AppSettings.toggleTitleVisibility();
     }
 
     private static RotationType reversedOrientation(RotationType rotation) {
@@ -959,8 +964,12 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
 
         if (diff.isFullScreenChanged()) {
             IUIManager.instance.setFullScreenMode(activity, activity.view.getView(), newSettings.fullScreen);
-            UIManagerAppCompat.setToolbarVisible(activity, newSettings.getShowTitle());
+            UIManagerAppCompat.setToolbarVisible(activity, newSettings.showTitle);
             setWindowTitle();
+        }
+
+        if (!diff.isFirstTime() && diff.isShowTitleChanged()) {
+            UIManagerAppCompat.setToolbarVisible(activity, newSettings.showTitle);
         }
 
         if (diff.isKeepScreenOnChanged()) {

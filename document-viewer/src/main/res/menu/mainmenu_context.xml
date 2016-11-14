@@ -35,6 +35,11 @@
                 android:icon="@drawable/viewer_menu_fullscreen"
                 android:title="@string/pref_fullscreen_title"/>
             <item
+                android:id="@+id/mainmenu_showtitle"
+                android:checkable="true"
+                android:icon="@drawable/viewer_menu_showtitle"
+                android:title="@string/pref_title_title"/>
+            <item
                 android:id="@+id/mainmenu_force_portrait"
                 android:checkable="true"
                 android:icon="@drawable/viewer_menu_force_portrait"

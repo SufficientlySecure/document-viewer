@@ -295,7 +295,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
     }
 
     protected boolean hasNormalMenu() {
-        return IUIManager.instance.isTabletUi(this) || AppSettings.current().getShowTitle();
+        return IUIManager.instance.isTabletUi(this) || AppSettings.current().showTitle;
     }
 
     /**
@@ -320,6 +320,12 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
         final AppSettings as = AppSettings.current();
 
         ActionMenuHelper.setMenuItemChecked(menu, as.fullScreen, R.id.mainmenu_fullscreen);
+
+        if (!AndroidVersion.lessThan3x) {
+            ActionMenuHelper.setMenuItemChecked(menu, as.showTitle, R.id.mainmenu_showtitle);
+        } else {
+            ActionMenuHelper.setMenuItemVisible(menu, false, R.id.mainmenu_showtitle);
+        }
 
         ActionMenuHelper
                 .setMenuItemChecked(menu, getZoomControls().getVisibility() == View.VISIBLE, R.id.mainmenu_zoom);

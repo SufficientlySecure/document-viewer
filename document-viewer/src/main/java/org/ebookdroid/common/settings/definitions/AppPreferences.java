@@ -42,6 +42,8 @@ public interface AppPreferences {
     BooleanPreferenceDefinition FULLSCREEN = new BooleanPreferenceDefinition(pref_fullscreen_id,
             pref_fullscreen_defvalue);
 
+    BooleanPreferenceDefinition SHOW_TITLE = new BooleanPreferenceDefinition(pref_title_id, pref_title_defvalue);
+
     BooleanPreferenceDefinition SHOW_PAGE_IN_TITLE = new BooleanPreferenceDefinition(pref_pageintitle_id,
             pref_pageintitle_defvalue);
 

@@ -286,10 +286,14 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
     }
 
     public static void toggleTitleVisibility() {
+        setTitleVisibility(!current.showTitle);
+    }
+
+    public static void setTitleVisibility(boolean visible) {
         SettingsManager.lock.writeLock().lock();
         try {
             final Editor edit = SettingsManager.prefs.edit();
-            AppPreferences.SHOW_TITLE.setPreferenceValue(edit, !current.showTitle);
+            AppPreferences.SHOW_TITLE.setPreferenceValue(edit, visible);
             edit.commit();
             onSettingsChanged();
         } finally {

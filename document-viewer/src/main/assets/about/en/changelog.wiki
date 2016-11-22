@@ -14,7 +14,9 @@
 * Color picker renders properly
 
 == Changes ==
+* Updated bookshelf search UI
 * MuPDF updated to 1.10
+* Slow CMYK option no longer supported (patch incompatible with recent MuPDF)
 
 = DV v2.7.8 =
 

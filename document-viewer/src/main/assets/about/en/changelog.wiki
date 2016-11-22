@@ -1,5 +1,21 @@
 #labels Featured
 
+= DV v2.7.9 =
+
+== New features ==
+* "Reverse Orientation" setting
+* Restored "Show Title" option which was removed previously
+* EPUB supports hyperlinks
+
+== Bug fixes ==
+* Fix for "Configure Keys" and "Configure Taps" binding the wrong action
+* Fix "Configure Taps" screen not saving changes
+* Fix "Positive images in night mode"
+* Color picker renders properly
+
+== Changes ==
+* MuPDF updated to 1.10
+
 = DV v2.7.8 =
 
 == New features ==

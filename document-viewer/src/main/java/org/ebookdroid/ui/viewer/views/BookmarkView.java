@@ -104,6 +104,9 @@ public class BookmarkView extends TextView {
             final MotionEvent cancel = MotionEvent.obtain(e);
             cancel.setAction(MotionEvent.ACTION_CANCEL);
             detector.onTouchEvent(cancel);
+			if (cancel != null) {
+				cancel.recycle();
+			}
         }
 
         /**

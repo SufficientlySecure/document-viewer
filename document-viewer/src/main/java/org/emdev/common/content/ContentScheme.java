@@ -45,6 +45,9 @@ public enum ContentScheme {
                     final String attachmentFileName = c.getString(fileNameColumnId);
                     return LengthUtils.safeString(attachmentFileName, key);
                 }
+				if (c != null) {
+					c.close();
+				}
             } catch (final Throwable th) {
                 th.printStackTrace();
             }

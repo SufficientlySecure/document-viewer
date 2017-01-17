@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_scroll_category">Stuknięcia, gesty i klawisze</string>
+    <string name="pref_scroll_category_summary">Wybierz jak urządzenie powinno reagować na stuknięcia, gesty i naciśnięcia klawiszy</string>
+
+    <string name="pref_tapsenabled_title">Włącz stuknięcia</string>
+    <string name="pref_tapsenabled_summary">Użyj Konfiguracji stuknięć, aby zdefiniować strefy i akcje stuknięć</string>
+
+    <string name="pref_scroll_title">Wysokość przewijania</string>
+    <string name="pref_scroll_summary">Ustaw wysokość przewijania dla stron, które nie mieszczą się w ekranie (domyślnie: 50%%)</string>
+
+    <string name="pref_touchdelay_title">Opóźnienie przetwarzania dotyku</string>
+    <string name="pref_touchdelay_summary">Opóźnienie przetwarzania dotyku (w milisekundach)</string>
+
+    <string name="pref_animate_scrolling_title">Animowane przewijanie</string>
+    <string name="pref_animate_scrolling_summary">Animowane przewijanie w trybach przewijania</string>
+
+    <string name="pref_volumekeyscrolling_title">Przewijanie przyciskami głośności</string>
+    <string name="pref_volumekeyscrolling_summary">Użyj przycisków głośności do przewijania, zamiast do regulacji głośności</string>
+
+    <string name="pref_tapfullscreen_title">Stuknięcie przełącza pełny ekran</string>
+    <string name="pref_tapfullscreen_summary">Przełącz tryb pełnego ekranu stuknięciem gdziekolwiek w ekran z wyjątkiem stref stuknięcia i odnośników</string>
+
+</resources>

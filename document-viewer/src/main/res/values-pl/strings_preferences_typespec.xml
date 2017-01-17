@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_brfiletypespecific_title">Specyficzne dla formatów</string>
+    <string name="pref_brfiletypespecific_summary">Ustawienia specyficzne dla każdego formatu plików</string>
+
+    <string name="pref_brfiletypespecificdjvu_title">DJVU</string>
+    <string name="pref_brfiletypespecificdjvu_summary">Ustawienia specyficzne formatu DJVU</string>
+
+    <string name="pref_djvu_rendering_mode_title">Tryb renderowania</string>
+    <string name="pref_djvu_rendering_mode_summary">Tryb renderowania strony</string>
+
+    <string name="list_djvu_rendering_mode_0">Kolor</string>
+    <string name="list_djvu_rendering_mode_1">Czarny</string>
+    <string name="list_djvu_rendering_mode_2">Tylko kolor</string>
+    <string name="list_djvu_rendering_mode_3">Tylko maska</string>
+    <string name="list_djvu_rendering_mode_4">Tylko tło</string>
+    <string name="list_djvu_rendering_mode_5">Tylko plan przedni</string>
+
+    <string name="pref_brfiletypespecificpdf_title">PDF</string>
+    <string name="pref_brfiletypespecificpdf_summary">Ustawienia specyficzne formatu PDF</string>
+
+    <string name="pref_customdpi_title">Użyj własnego DPI</string>
+    <string name="pref_customdpi_summary">Zdefiniuj własne wartości DPI (punktów na cal) poniżej</string>
+
+    <string name="pref_xdpi_title">X DPI</string>
+    <string name="pref_xdpi_summary">Poziome (kierunek X) DPI</string>
+
+    <string name="pref_ydpi_title">Y DPI</string>
+    <string name="pref_ydpi_summary">Pionowe (kierunek Y) DPI</string>
+
+    <string name="pref_monofontpack_title">Rodzina krojów maszynowych</string>
+    <string name="pref_monofontpack_summary">Zdefiniuj rodzinę krojów pisma używaną jako rodzinę krojów maszynowych (monospace)</string>
+
+    <string name="pref_sansfontpack_title">Rodzina krojów bezszeryfowych</string>
+    <string name="pref_sansfontpack_summary">Zdefiniuj rodzinę krojów pisma używaną jako rodzinę krojów bezszeryfowych</string>
+
+    <string name="pref_seriffontpack_title">Rodzina krojów szeryfowych</string>
+    <string name="pref_seriffontpack_summary">Zdefiniuj rodzinę krojów pisma używaną jako rodzinę krojów szeryfowych</string>
+
+    <string name="pref_symbolfontpack_title">Rodzina krojów symboli</string>
+    <string name="pref_symbolfontpack_summary">Zdefiniuj rodzinę krojów pisma używaną jako rodzinę krojów symboli</string>
+
+    <string name="pref_dingbatfontpack_title">Rodzina krojów ozdób</string>
+    <string name="pref_dingbatfontpack_summary">Zdefiniuj rodzinę krojów pisma używaną jako rodzinę krojów ozdób drukarskich (dingbat)</string>
+
+    <string name="pref_systemfontpack">Użyj domyślnych krojów Androida</string>
+
+    <string name="pref_slowcmyk_title">Powolny CMYK</string>
+    <string name="pref_slowcmyk_summary">Użyj powolnego ale dokładnego algorytmu CMYK do RGB</string>
+
+    <string name="pref_brfiletypespecificfb2_title">FB2</string>
+    <string name="pref_brfiletypespecificfb2_summary">Ustawienia specyficzne formatu FB2</string>
+
+    <string name="pref_fb2_xmlparser_title">XML parser</string>
+    <string name="pref_fb2_xmlparser_summary">XML parser</string>
+
+    <string name="list_fb2_xmlparser_vtd_ex">VTD based</string>
+    <string name="list_fb2_xmlparser_duckbill">Dumb &amp; Dirty</string>
+
+    <string name="pref_fontsize_title">Rozmiar krojów pisma</string>
+    <string name="pref_fontsize_summary">Podstawowy rozmiar krojów pisma</string>
+
+    <string name="pref_fb2fontpack_title">Rodzina krojów FB2</string>
+    <string name="pref_fb2fontpack_summary">Zdefiniuj zestaw krojów pisma używany do renderowania FB2</string>
+
+    <string name="list_fontsize_tiny">Najmniejszy</string>
+    <string name="list_fontsize_small">Mały</string>
+    <string name="list_fontsize_normal">Średni</string>
+    <string name="list_fontsize_large">Duży</string>
+    <string name="list_fontsize_huge">Olbrzymi</string>
+
+    <string name="pref_fb2hyphen_title">Włącz sylabowanie</string>
+    <string name="pref_fb2hyphen_summary">Eksperymentalna implementacja sylabowania</string>
+
+    <string name="pref_fb2cacheimages_title">Przechowuj obrazy na dysku</string>
+    <string name="pref_fb2cacheimages_summary">Przechowuj tymczasowo obrazy dokumentów na dysku, aby zmniejszyć użycie pamięci</string>
+</resources>

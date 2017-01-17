@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_backup_category">Ustawienia kopii zapasowych</string>
+    <string name="pref_backup_category_summary">Ustawienia tworzenia i przywracania kopii zapasowych</string>
+
+    <string name="pref_backuponexit_title">Automatyczna kopia przy zamykaniu</string>
+    <string name="pref_backuponexit_summary">Automatycznie tworzy kopię ustawień przy zamykaniu programu</string>
+
+    <string name="pref_backuponbookclose_title">Automatyczna kopia przy zamykaniu książki</string>
+    <string name="pref_backuponbookclose_summary">Automatycznie tworzy kopię ustawień przy zamykaniu dokumentu</string>
+
+    <string name="pref_maxnumberofautobackups_title">Liczba automatycznych kopii</string>
+    <string name="pref_maxnumberofautobackups_summary">Maksymalna liczba automatycznych kopii zapasowych do przychowywania</string>
+
+    <string name="pref_bookbackuptype_title">Kopia zapasowa ustawień książek</string>
+    <string name="pref_bookbackuptype_summary">Kopia zapasowa ustawień książek</string>
+
+    <string name="list_bookbackuptype_none">Żadne</string>
+    <string name="list_bookbackuptype_recent">Ostatnie</string>
+    <string name="list_bookbackuptype_all">Wszystkie</string>
+
+</resources>

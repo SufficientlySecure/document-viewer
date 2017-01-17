@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_rotation_title">Tryb obracania</string>
+    <string name="pref_rotation_summary">Jak zarządzać obracaniem</string>
+
+    <string name="list_rotation_unspecified">Nieokreślony</string>
+    <string name="list_rotation_land">Wymuszony poziomy</string>
+    <string name="list_rotation_port">Wymuszony pionowy</string>
+    <string name="list_rotation_user">Użytkownika</string>
+    <string name="list_rotation_behind">Dziedziczony po tle</string>
+    <string name="list_rotation_auto">Automatyczny</string>
+    <string name="list_rotation_nosensor">Brak czujnika</string>
+    <string name="list_rotation_sensor_landscape">Wymuszony poziomy ale wykrywaj odwrócenie</string>
+    <string name="list_rotation_sensor_portrait">Wymuszony pionowy ale wykrywaj odwrócenie</string>
+    <string name="list_rotation_reverse_landscape">Wymuszony odwwrotny poziomy</string>
+    <string name="list_rotation_reverse_portrait">Wymuszony odwrotny pionowy</string>
+    <string name="list_rotation_full_sensor">Zawsze czujnik</string>
+
+    <string name="pref_render_category">Renderowanie</string>
+    <string name="pref_render_category_summary">Ustawienia renderowania</string>
+
+    <string name="pref_book_category">Ustawienia książki</string>
+    <string name="pref_book_category_summary">Ustawienia obecnej książki</string>
+
+    <string name="pref_firstpageoffset_title">Przesunięcie pierwszej strony</string>
+    <string name="pref_firstpageoffset_summary">Widoczny dla użytkownika numer indeksu pierwszej strony</string>
+
+    <string name="pref_splitpages_title">Dziel strony</string>
+    <string name="pref_splitpages_summary">Dziel poziome strony na dwie pionowe</string>
+
+    <string name="pref_splitpages_rtl_title">Dziel strony od prawej do lewej</string>
+    <string name="pref_splitpages_rtl_summary">Dziel poziome strony na dwie pionowe strony od prawej do lewej</string>
+
+    <string name="pref_croppages_title">Automatyczne przycinanie</string>
+    <string name="pref_croppages_summary">Automatycznie obcina puste marginesy aby zmaksymalizować widoczną treść</string>
+
+    <string name="pref_viewmode_title">Tryb widoku dokumentu</string>
+    <string name="pref_viewmode_summary">Pokazuj dokument jako pojedyncze strony lub jako przewijalny ciąg stron</string>
+
+    <string name="list_viewmode_vertical_scroll">Przewijalny w pionie</string>
+    <string name="list_viewmode_horizontal_scroll">Przewijalny w poziomie</string>
+    <string name="list_viewmode_single_page">Pojedyncza strona</string>
+
+    <string name="pref_singlepage_category">Ustawienia pojedynczej strony</string>
+    <string name="pref_singlepage_category_summary">Tryby widoku tylko dla pojedynczej strony</string>
+
+    <string name="pref_align_title">Dopasowywanie strona</string>
+    <string name="pref_align_summary">W jaki sposób dopasowywać strony do ekranu</string>
+
+    <string name="list_align_by_width">Rozciągaj do szerokości</string>
+    <string name="list_align_by_height">Rozciągaj do wysokości</string>
+    <string name="list_align_auto">Automatycznie</string>
+
+    <string name="pref_animationtype_title">Przejścia stron</string>
+    <string name="pref_animationtype_summary">Wybierz animacje przejść stron w widoku dla trybu pojedynczej strony</string>
+
+    <string name="list_animation_none">Brak</string>
+    <string name="list_animation_curler_simple">Proste zwijanie</string>
+    <string name="list_animation_curler_dynamic">Dynamiczne zwijanie</string>
+    <string name="list_animation_curler_natural">Naturalne zwijanie</string>
+    <string name="list_animation_slider">Przesuwanie</string>
+    <string name="list_animation_fader">Zanikanie</string>
+    <string name="list_animation_squeezer">Ściskanie</string>
+    <string name="list_animation_slider2">Przesuwanie górą</string>
+
+    <string name="pref_postprocessing_category" >Dodatkowe efekty</string>
+    <string name="pref_postprocessing_summary">Dodatkowe efekty (postprocessing) zwiększające czytelność</string>
+
+    <string name="pref_nightmode_title">Tryb nocny</string>
+    <string name="pref_nightmode_summary">Biały tekst na czarnym tle (odwrócone kolory)</string>
+
+    <string name="pref_posimages_in_nightmode_title">Normalne obrazy w trybie nocnym</string>
+    <string name="pref_posimages_in_nightmode_summary">Pokazuj obrazki w skali szarości w trybie nocnym (nie odwracaj kolorów)</string>
+
+    <string name="pref_tint_title">Zabarwienie</string>
+    <string name="pref_tint_summary">Barw strony używając koloru zdefiniowanego poniżej</string>
+
+    <string name="pref_tint_color_title">Kolor zabarwienia</string>
+    <string name="pref_tint_color_summary">Barw strony kolorem</string>
+
+    <string name="pref_contrast_title">Kontrast</string>
+    <string name="pref_contrast_summary">Poziom korekcji kontrastu (0 &#8211; 1000, domyślnie 100)</string>
+
+    <string name="pref_gamma_title">Gamma</string>
+    <string name="pref_gamma_summary">Poziom korekcji gammy (0 &#8211; 200, domyślnie 100)</string>
+
+    <string name="pref_exposure_title">Ekspozycja</string>
+    <string name="pref_exposure_summary">Poziom korekcji ekspozycji (0 &#8211; 200, domyślnie 100)</string>
+
+    <string name="pref_autolevels_title">Automatyczny</string>
+    <string name="pref_autolevels_summary">Użyj automatycznych poziomów korekcji</string>
+
+    <string name="pref_rtl_title">Od prawej do lewej</string>
+    <string name="pref_rtl_summary">Kolejnośc stron w trybach Przewijalny poziomo i Pojedyncza strona</string>
+</resources>

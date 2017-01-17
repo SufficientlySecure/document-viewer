@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="app_name">Document Viewer</string>
+
+    <string name="confirmclose_title">Zamykanie czytnika&#8230;</string>
+    <string name="confirmclose_msg">Czy na pewno chcesz zamknąć ten dokument?</string>
+    <string name="confirmsave_msg">Czy chciałbyś zapisać ten dokument?</string>
+    <string name="confirmsave_yes_btn">Zapisz i zamknij</string>
+    <string name="confirmsave_no_btn">Zamknij</string>
+
+    <string name="error_dlg_title">Błąd aplikacji</string>
+    <string name="msg_bad_intent">"Błędny zamiar lub schemat:\n%s"</string>
+    <string name="msg_no_intent_data">"Brak zamierzanych danych:\n%s"</string>
+    <string name="msg_unknown_intent_data_type">"Nieznany zamierzony typ danych:\n%s"</string>
+
+    <string name="msg_loading_book">"Wczytywanie książki: %1$s&#8230;"</string>
+
+    <string name="msg_wrong_password">"Błędne hasło&#8230;"</string>
+    <string name="msg_password_required">"Wpisz hasło&#8230;"</string>
+
+    <string name="msg_unexpected_error">"Wystąpił nieoczekiwany błąd:\n%s"</string>
+
+    <string name="msg_search_text_on_page">"Wuszukiwanie na stronie %1$d&#8230;"</string>
+    <string name="msg_no_text_found">"Nie znaleziono tekstu"</string>
+
+    <string name="dialog_title_goto_page">Idź do...</string>
+    <string name="button_goto_page">Idź</string>
+    <string name="text_page">Strona</string>
+    <string name="error_close">Zamknij</string>
+
+    <string name="dialog_backup_name_hint">Wpisz nazwę kopii zapasowej&#8230;</string>
+    <string name="dialog_backup_backup">Twórz kopię&#8230;</string>
+    <string name="dialog_backup_restore">Przywróć&#8230;</string>
+    <string name="dialog_backup_remove">Usuń&#8230;</string>
+
+    <string name="add_bookmark_name">Wpisz opis zakładki</string>
+    <string name="bookmark_start">Początek</string>
+    <string name="bookmark_current">Obecne położenie</string>
+    <string name="bookmark_end">Koniec</string>
+    <string name="bookmark_invalid_page">Numer strony poza zakresem. Poprawny zakres: %1$d-%2$d</string>
+
+    <string name="bookmarks_title">Zakładki</string>
+    <string name="clear_bookmarks_title">Usuń zakładki</string>
+    <string name="clear_bookmarks_text">Ta akcja usunie wszystkie zakładki z wybranej książki. Czy kontynuować?</string>
+
+    <string name="del_bookmark_title">Usuń zakładkę</string>
+    <string name="del_bookmark_text">Czy usunąć tą zakładkę?</string>
+
+    <string name="clear_recent_title">Wyczyść ostatnie elementy</string>
+    <string name="clear_recent_text">Ta akcja usunie listę ostatnich książek. Czy kontynuować?</string>
+
+    <string name="bookcase_shelves">Biblioteczka</string>
+    <string name="recent_title">Ostatnie książki</string>
+
+    <string name="list_clear_recent_mode_clear_recent_list">Wyczyść listę ostatnich książek</string>
+    <string name="list_clear_recent_mode_delete_bookmarks">Usuń wszystkie zakładki</string>
+    <string name="list_clear_recent_mode_delete_book_settings">Usuń wszystkie ustawienia książek</string>
+    <string name="list_clear_recent_mode_delete_cached_data">Usuń wszystkie dane tymczasowe</string>
+
+    <string name="about_prefix">en</string>
+    <string name="about_title">O EBookDroid</string>
+    <string name="about_commmon_title">Informacje o programie</string>
+    <string name="about_fonts_title">Kroje pisma</string>
+    <string name="about_license_title">Licencja</string>
+    <string name="about_3dparty_title">Oprogramowanie firm trzecich</string>
+    <string name="about_changelog_title">Lista zmian</string>
+    <string name="about_thanks_title">Podziękowania</string>
+    <string name="about_donations">Dotacje</string>
+
+    <string name="opds">Przeglądarka OPDS</string>
+    <string name="menu_opds">Przeglądarka OPDS</string>
+
+    <string name="opds_connecting">"Łączenie&#8230;"</string>
+    <string name="opds_loading_catalog">"Wczytywanie katalogu&#8230;"</string>
+    <string name="opds_loading_book">"Wczytywanie książki: %1$s/%2$s&#8230;"</string>
+    <string name="opds_unpacking_book">"Rozpakowywanie książki: %1$s/%2$s&#8230;"</string>
+
+    <string name="opds_download_complete">"Zakończono pobieranie książki: %1$s"</string>
+    <string name="opds_download_error">"Pobieranie nie powiodło się: %1$s"</string>
+
+    <string name="opds_add_new_feed">Dodaj nową subskrypcję</string>
+    <string name="opds_addfeed_title">"Dodaj nowy katalog"</string>
+    <string name="opds_addfeed_msg">"Wpisz etykietę i adres katalogu"</string>
+    <string name="opds_addfeed_ok">"Dodaj"</string>
+    <string name="opds_addfeed_alias">"Etykieta:"</string>
+    <string name="opds_addfeed_url">"Adres:"</string>
+    <string name="opds_addfeed_auth">"Wymagana autoryzacja"</string>
+    <string name="opds_editfeed_title">"Edytuj katalog"</string>
+    <string name="opds_editfeed_msg">"Wpisz etykietę i adres dla tego katalogu"</string>
+    <string name="opds_editfeed_ok">"Zapisz"</string>
+    <string name="opds_deletefeed_title">"Usuń katalog"</string>
+    <string name="opds_deletefeed_msg">"Czy na pewno chcesz usunąć ten katalog?"</string>
+    <string name="opds_deletefeed_ok">"Usuń"</string>
+    <string name="opds_authfeed_title">"Autoryzacja"</string>
+    <string name="opds_authfeed_msg">"Wpisz nazwę użytkownika i hasło tego katalogu"</string>
+    <string name="opds_authfeed_username">"Użytkownik:"</string>
+    <string name="opds_authfeed_password">"Hasło:"</string>
+    <string name="opds_authfeed_ok">"Zaloguj się"</string>
+    <string name="opds_error_title">"Błąd OPDS"</string>
+    <string name="opds_error_msg">"%s"</string>
+    <string name="opds_retry_download">"Spróbuj ponownie"</string>
+
+    <string name="book_copy_start">"Kopiowanie książki&#8230;"</string>
+    <string name="book_copy_progress">"Kopiowanie książki: %1$s/%2$s&#8230;"</string>
+    <string name="book_copy_complete">"Kopiowanie książki zakończone: %s"</string>
+    <string name="book_copy_error">"Kopiowanie nie powiodło się: %s"</string>
+
+    <string name="book_move_start">"Przenoszenie książki&#8230;"</string>
+    <string name="book_move_progress">"Przenoszenie książki: %1$s/%2$s&#8230;"</string>
+    <string name="book_move_complete">"Przenoszenie książki zakończone: %s"</string>
+    <string name="book_move_error">"Przenoszenie nie powiodło się: %s"</string>
+
+    <string name="book_rename_title">"Zmień nazwę książki"</string>
+    <string name="book_rename_msg">"Wpisz nową nazwę książki:"</string>
+
+    <string name="book_delete_title">"Usuń książkę"</string>
+    <string name="book_delete_msg">"Czy na pewno chcesz usunąć tę książkę?"</string>
+
+    <string name="outline_title">Zarys</string>
+    <string name="outline_missed">Zarys niedostępny</string>
+
+    <string name="error_page_out_of_rande">Numer strony poza zakresem. Poprawny zakres: 1-%1$d</string>
+
+    <string name="msg_loading">Ładowanie&#8230; proszę czekać</string>
+    <string name="msg_getting_page_size">Oszacowywanie rozmiaru strony %1$d/%2$d</string>
+
+    <string name="tap_zones_single_tap">Pojedyncze stuknięcie</string>
+    <string name="tap_zones_double_tap">Podwójne stuknięcie</string>
+    <string name="tap_zones_long_tap">Długie stuknięcie</string>
+    <string name="tap_zones_two_finger_tap">Stuknięcie dwoma palcami</string>
+    <string name="tap_zones_reset">Resetuj</string>
+    <string name="tap_zones_delete">Usuń</string>
+    <string name="tap_zones_clear">Wyczyść</string>
+
+    <string name="search_results_title">Wyniki wyszukiwania</string>
+    <string name="search_book_dlg_title">Znaleziono&#8230;</string>
+
+    <string name="folder_books_count" >"Książki: %1$d"</string>
+    <string name="copy_book_to_dlg_title" >"Kopiuj książkę do&#8230;"</string>
+    <string name="move_book_to_dlg_title" >"Przenieś książkę do&#8230;"</string>
+
+    <string name="opds_downloading_type_dlg_title">"Wybierz typ książki do ściągnięcia"</string>
+    <string name="opds_downloading_dlg_title">"Pobieranie książki jako&#8230;"</string>
+    <string name="opds_downloading_dlg_raw_type">"Typ surowy"</string>
+
+    <string name="notification_file_add">"Dodano plik do biblioteki"</string>
+    <string name="notification_file_delete">"Usunięto plik z biblioteki"</string>
+
+    <string name="font_reminder_title">Ostrzeżenie</string>
+    <string name="font_reminder">Począwszy od wersji 1.5, kroje pisma PDF i FB2 nie są już dołączane do aplikacji. Zamiast tego są używane standardowe kroje pisma Androida. Jeżeli chcesz przywrócić stare kroje pisma lub zainstalować własne, użyj proszę instalatora paczki krojów pisma ze sklepu Google Play: &lt;ul&gt;&lt;li&gt;&lt;a href=&quot;market://details?id=org.ebookdroid.fontpack.legacy&quot;&gt;Stare kroje pisma&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;</string>
+
+    <string name="cache_moving_text">Przenoszenie zapisanych plików&#8230;</string>
+    <string name="cache_moving_progress">Przenoszenie zapisanych plików %1$d/%2$d</string>
+
+    <string name="error_invalid_view_mode">Ta czynność tylko dostępna tylko w trybie widoku %1$s</string>
+</resources>

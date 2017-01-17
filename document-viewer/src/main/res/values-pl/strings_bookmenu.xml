@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="bookmenu_open">Otwórz książkę na...</string>
+    <string name="bookmenu_settings">Ustawienia książki</string>
+    <string name="bookmenu_openbookshelf">Otwórz biblioteczkę</string>
+    <string name="bookmenu_openbookfolder">Otwórz folder</string>
+    <string name="bookmenu_recentgroup">Wyczyść historię...</string>
+    <string name="bookmenu_removefromrecent">Usuń z historii</string>
+    <string name="bookmenu_cleardata">Usuń dane tymczasowe</string>
+    <string name="bookmenu_deletesettings">Usuń ustawienia książek</string>
+    <string name="bookmenu_filegroup">Operacje na plikach...</string>
+    <string name="bookmenu_copy">Kopiuj książkę do...</string>
+    <string name="bookmenu_rename">Zmień nazwę książki...</string>
+    <string name="bookmenu_move">Przenieś książkę do...</string>
+    <string name="bookmenu_delete">Usuń książkę</string>
+
+</resources>

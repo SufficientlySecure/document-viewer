@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_navigation_category">Nawigacja i historia</string>
+    <string name="pref_navigation_category_summary">Ustawienia nawigacji i historii</string>
+
+    <string name="pref_showbookmarksmenu_summary">Pokaż zakładki w menu</string>
+    <string name="pref_showbookmarksmenu_title">Pokazuje zakładki w menu nawigacji</string>
+
+    <string name="pref_link_highlight_summary">"Wybrany kolor podświetlenia odnośników"</string>
+    <string name="pref_link_highlight_title">"Podświetlenie odnośników"</string>
+
+    <string name="pref_search_highlight_summary">"Wybrany kolor podświetlenia wyników wyszukiwania"</string>
+    <string name="pref_search_highlight_title">"Podświetlenie wyszukiwania"</string>
+
+    <string name="pref_current_search_highlight_summary">"Wybrany kolor podświetlenia obecnego wyniku wyszukiwania"</string>
+    <string name="pref_current_search_highlight_title">"Podświetlenie obecnego wuszukiwania"</string>
+
+    <string name="pref_storeGotoHistory_title">Zapisz przejścia do strony w historii nawigacji</string>
+    <string name="pref_storeGotoHistory_summary"></string>
+
+    <string name="pref_storeLinkGotoHistory_title">Zapisz przejścia do odnośnika w historii nawigacji</string>
+    <string name="pref_storeLinkGotoHistory_summary"></string>
+
+    <string name="pref_storeOutlineGotoHistory_title">Zapisz przejścia do odnośnika obrysu w historii nawigacji</string>
+    <string name="pref_storeOutlineGotoHistory_summary"></string>
+
+    <string name="pref_storeSearchGotoHistory_title">Zapisz przejścia do wyników wyszukiwania w historii nawigacji</string>
+    <string name="pref_storeSearchGotoHistory_summary"></string>
+
+</resources>

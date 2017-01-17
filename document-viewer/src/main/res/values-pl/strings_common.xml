@@ -153,5 +153,5 @@
     <string name="cache_moving_text">Przenoszenie zapisanych plików&#8230;</string>
     <string name="cache_moving_progress">Przenoszenie zapisanych plików %1$d/%2$d</string>
 
-    <string name="error_invalid_view_mode">Ta czynność tylko dostępna tylko w trybie widoku %1$s</string>
+    <string name="error_invalid_view_mode">Ta czynność jest dostępna tylko w trybie widoku %1$s</string>
 </resources>

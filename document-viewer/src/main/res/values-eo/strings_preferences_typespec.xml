@@ -62,7 +62,7 @@
     <string name="pref_fontsize_summary">Grando de fundamenta tiparo</string>
 
     <string name="pref_fb2fontpack_title">FB2 tipar-familioj</string>
-    <string name="pref_fb2fontpack_summary">Agordu kiujn tiparan familion uzi por FB2 bildgado</string>
+    <string name="pref_fb2fontpack_summary">Agordu kiun tiparan familion uzi por FB2 bildgado</string>
 
     <string name="list_fontsize_tiny">Eteta</string>
     <string name="list_fontsize_small">Eta</string>

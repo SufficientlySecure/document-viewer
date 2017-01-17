@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_navigation_category">Navigado kaj historio</string>
+    <string name="pref_navigation_category_summary">Agordoj de navigado kaj historio</string>
+
+    <string name="pref_showbookmarksmenu_summary">Montri legosignojn en menuo</string>
+    <string name="pref_showbookmarksmenu_title">Montras legosignojn en navigada menuo</string>
+
+    <string name="pref_link_highlight_summary">"Elektita koloro por marki ligilojn"</string>
+    <string name="pref_link_highlight_title">"Marko de ligiloj"</string>
+
+    <string name="pref_search_highlight_summary">"Elektita koloro por marki serĉ-rezultojn"</string>
+    <string name="pref_search_highlight_title">"Marko de serĉ-rezultoj"</string>
+
+    <string name="pref_current_search_highlight_summary">"Elektita koloro por marki nunan serĉ-rezulton"</string>
+    <string name="pref_current_search_highlight_title">"Marko de nuna serĉ-rezulto"</string>
+
+    <string name="pref_storeGotoHistory_title">Konservi iron al paĝo en navigada historio</string>
+    <string name="pref_storeGotoHistory_summary"></string>
+
+    <string name="pref_storeLinkGotoHistory_title">Konservi iron al al ligilo en navigada historio</string>
+    <string name="pref_storeLinkGotoHistory_summary"></string>
+
+    <string name="pref_storeOutlineGotoHistory_title">Konservi iron al skema ligilo en navigada historio</string>
+    <string name="pref_storeOutlineGotoHistory_summary"></string>
+
+    <string name="pref_storeSearchGotoHistory_title">Konservi iron al serĉ-rezulto en navigada historio</string>
+    <string name="pref_storeSearchGotoHistory_summary"></string>
+
+</resources>

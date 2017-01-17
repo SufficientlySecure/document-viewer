@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="opdsupfolder">Supren</string>
+    <string name="opdsrefreshfolder">Aktualigi</string>
+    <string name="opdsprevfolder">Antaŭa dosierujo</string>
+    <string name="opdsnextfolder">Sekva dosierujo</string>
+    <string name="opds_feed_add">Aldoni</string>
+    <string name="opdsclose">Fermi</string>
+
+    <string name="opds_book_download">Elŝuti</string>
+
+    <string name="opdsgoto">Malfermi</string>
+
+    <string name="opds_feed_edit">Redakti</string>
+    <string name="opds_feed_delete">Forigi</string>
+    
+</resources>

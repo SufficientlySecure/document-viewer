@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="app_name">Document Viewer</string>
+
+    <string name="confirmclose_title">Fermado de vidigilo&#8230;</string>
+    <string name="confirmclose_msg">Ĉu vi certe volas fermi tiun ĉi dokumenton?</string>
+    <string name="confirmsave_msg">Ĉu vi volas konservi tiun ĉi dokumenton?</string>
+    <string name="confirmsave_yes_btn">Konservi kaj fermi</string>
+    <string name="confirmsave_no_btn">Fermi</string>
+
+    <string name="error_dlg_title">Aplikaĵa eraro</string>
+    <string name="msg_bad_intent">"Erara intenco aŭ skemo:\n%s"</string>
+    <string name="msg_no_intent_data">"Neniu intenca datumo:\n%s"</string>
+    <string name="msg_unknown_intent_data_type">"Nekonta speco de intenca datumo:\n%s"</string>
+
+    <string name="msg_loading_book">"Ŝargado de libro: %1$s&#8230;"</string>
+
+    <string name="msg_wrong_password">"Erara pasvorto&#8230;"</string>
+    <string name="msg_password_required">"Entajpu pasvorton&#8230;"</string>
+
+    <string name="msg_unexpected_error">"Senatenda eraro okazis:\n%s"</string>
+
+    <string name="msg_search_text_on_page">"Serĉado sur paĝo %1$d&#8230;"</string>
+    <string name="msg_no_text_found">"Teksto ne trovita"</string>
+
+    <string name="dialog_title_goto_page">Iri al...</string>
+    <string name="button_goto_page">Iri</string>
+    <string name="text_page">Paĝo</string>
+    <string name="error_close">Fermi</string>
+
+    <string name="dialog_backup_name_hint">Entajpu nomon por sekurkopio&#8230;</string>
+    <string name="dialog_backup_backup">Sekurkopii&#8230;</string>
+    <string name="dialog_backup_restore">Restarigi&#8230;</string>
+    <string name="dialog_backup_remove">Forigi&#8230;</string>
+
+    <string name="add_bookmark_name">Entajpu priskribon por legosigno</string>
+    <string name="bookmark_start">Komenco</string>
+    <string name="bookmark_current">Nuna pozicio</string>
+    <string name="bookmark_end">Fino</string>
+    <string name="bookmark_invalid_page">Paĝnumero ekstervarieja. Ĝusta variejo: %1$d-%2$d</string>
+
+    <string name="bookmarks_title">Legosignoj</string>
+    <string name="clear_bookmarks_title">Vakigi legosignojn</string>
+    <string name="clear_bookmarks_text">Tio ĉi forigos ĉiujn legosignojn de elektita libro. Ĉu pluigi?</string>
+
+    <string name="del_bookmark_title">Forigi legosignon</string>
+    <string name="del_bookmark_text">Ĉu forigi tiun ĉi legosignon?</string>
+
+    <string name="clear_recent_title">Vakigi lastajn</string>
+    <string name="clear_recent_text">Tio ĉi vakigos liston de lastaj libroj. Ĉu pluigi?</string>
+
+    <string name="bookcase_shelves">Biblioteko</string>
+    <string name="recent_title">Lastaj libroj</string>
+
+    <string name="list_clear_recent_mode_clear_recent_list">Vakigi liston de lastaj libroj</string>
+    <string name="list_clear_recent_mode_delete_bookmarks">Forigi ĉiujn legosignojn</string>
+    <string name="list_clear_recent_mode_delete_book_settings">Forigi ĉiujn librajn agordojn</string>
+    <string name="list_clear_recent_mode_delete_cached_data">Forigi ĉiujn kaŝmemoritajn datumojn</string>
+
+    <string name="about_prefix">en</string>
+    <string name="about_title">Pri EBookDroid</string>
+    <string name="about_commmon_title">Aplikaĵaj informoj</string>
+    <string name="about_fonts_title">Tiparoj</string>
+    <string name="about_license_title">Permesilo</string>
+    <string name="about_3dparty_title">Fremda programaro</string>
+    <string name="about_changelog_title">Ŝanĝoprotokolo</string>
+    <string name="about_thanks_title">Dankoj</string>
+    <string name="about_donations">Donaco</string>
+
+    <string name="opds">OPDS-foliumilo</string>
+    <string name="menu_opds">OPDS-foliumilo</string>
+
+    <string name="opds_connecting">"Konektado&#8230;"</string>
+    <string name="opds_loading_catalog">"Ŝargado de katalogo&#8230;"</string>
+    <string name="opds_loading_book">"Ŝargado de libro: %1$s/%2$s&#8230;"</string>
+    <string name="opds_unpacking_book">"Eltirado de libro: %1$s/%2$s&#8230;"</string>
+
+    <string name="opds_download_complete">"Elŝuto de libro kompleta: %1$s"</string>
+    <string name="opds_download_error">"Elŝuto de libro malsukcesis: %1$s"</string>
+
+    <string name="opds_add_new_feed">Aldoni novan fluon</string>
+    <string name="opds_addfeed_title">"Aldoni novan katalogon"</string>
+    <string name="opds_addfeed_msg">"Entajpu etikedon kaj adreson por nova katalogo"</string>
+    <string name="opds_addfeed_ok">"Aldoni"</string>
+    <string name="opds_addfeed_alias">"Etikedo:"</string>
+    <string name="opds_addfeed_url">"Adreso:"</string>
+    <string name="opds_addfeed_auth">"Rajtigo postulata"</string>
+    <string name="opds_editfeed_title">"Redakti katalogon"</string>
+    <string name="opds_editfeed_msg">"Entajpu etikedon kaj adreson por tiu ĉi katalogo"</string>
+    <string name="opds_editfeed_ok">"Konservi"</string>
+    <string name="opds_deletefeed_title">"Forigi katalogon"</string>
+    <string name="opds_deletefeed_msg">"Ĉu vi certe volas forigi tiun ĉi katalogon?"</string>
+    <string name="opds_deletefeed_ok">"Forigi"</string>
+    <string name="opds_authfeed_title">"Rajtigo"</string>
+    <string name="opds_authfeed_msg">"Entajpu uzantnomon kaj posvorton por tiu ĉi katalogo"</string>
+    <string name="opds_authfeed_username">"Uzantnomo:"</string>
+    <string name="opds_authfeed_password">"Pasvorto:"</string>
+    <string name="opds_authfeed_ok">"Ensaluti"</string>
+    <string name="opds_error_title">"OPDS-eraro"</string>
+    <string name="opds_error_msg">"%s"</string>
+    <string name="opds_retry_download">"Reprovi"</string>
+
+    <string name="book_copy_start">"Kopiado de libro&#8230;"</string>
+    <string name="book_copy_progress">"Kopiado de libro: %1$s/%2$s&#8230;"</string>
+    <string name="book_copy_complete">"Kopiado de libro finita: %s"</string>
+    <string name="book_copy_error">"Kopiado de libro malsukcesa: %s"</string>
+
+    <string name="book_move_start">"Movado de libro&#8230;"</string>
+    <string name="book_move_progress">"Movado de libro: %1$s/%2$s&#8230;"</string>
+    <string name="book_move_complete">"Movado de libro finita: %s"</string>
+    <string name="book_move_error">"Movado de libro malsukcesa: %s"</string>
+
+    <string name="book_rename_title">"Alinomi libron"</string>
+    <string name="book_rename_msg">"Entajpu novan nomon por libr-dosiero:"</string>
+
+    <string name="book_delete_title">"Forigi libron"</string>
+    <string name="book_delete_msg">"Ĉu vi certe volas forigi tiun ĉi libron?"</string>
+
+    <string name="outline_title">Skemo</string>
+    <string name="outline_missed">Neniu skemo disponebla</string>
+
+    <string name="error_page_out_of_rande">Paĝnumero ekstervarieja. Ĝusta variejo: 1-%1$d</string>
+
+    <string name="msg_loading">Ŝargado&#8230; bonvolu atendi</string>
+    <string name="msg_getting_page_size">Antaŭkalkulado de paĝ-grando %1$d/%2$d</string>
+
+    <string name="tap_zones_single_tap">Unuobla frapeto</string>
+    <string name="tap_zones_double_tap">Duobla frapeto</string>
+    <string name="tap_zones_long_tap">Longa frapeto</string>
+    <string name="tap_zones_two_finger_tap">Du-fingra frapeto</string>
+    <string name="tap_zones_reset">Restarigi</string>
+    <string name="tap_zones_delete">Forigi</string>
+    <string name="tap_zones_clear">Vakigi</string>
+
+    <string name="search_results_title">Serĉ-rezultoj</string>
+    <string name="search_book_dlg_title">Serĉi&#8230;</string>
+
+    <string name="folder_books_count" >"Libroj: %1$d"</string>
+    <string name="copy_book_to_dlg_title" >"Kopii libron al&#8230;"</string>
+    <string name="move_book_to_dlg_title" >"Movi libron al&#8230;"</string>
+
+    <string name="opds_downloading_type_dlg_title">"Elektu specon de libro por elŝuti"</string>
+    <string name="opds_downloading_dlg_title">"Elŝutado de libro kiel&#8230;"</string>
+    <string name="opds_downloading_dlg_raw_type">"Kruda speco"</string>
+
+    <string name="notification_file_add">"Dosiero aldonita al biblioteko"</string>
+    <string name="notification_file_delete">"Dosiero forigita el biblioteko"</string>
+
+    <string name="font_reminder_title">Averto</string>
+    <string name="font_reminder">De antaŭ versio 1.5, PDF kaj FB2 tiparoj ne estas plu enigitaj en la programo. Anstataŭ tio, normaj androidaj tiparoj estas uzataj. Se vi volas restarigi malnovajn tiparojn, bonvolu uzi inslalilon de tiparoj el vendejo Google Play: &lt;ul&gt;&lt;li&gt;&lt;a href=&quot;market://details?id=org.ebookdroid.fontpack.legacy&quot;&gt;Malnovaj tiparoj&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;</string>
+
+    <string name="cache_moving_text">Movado de kaŝmemoritaj dosieroj&#8230;</string>
+    <string name="cache_moving_progress">Movado de kaŝmemoritaj dosieroj %1$d/%2$d</string>
+
+    <string name="error_invalid_view_mode">Tiu ĉi ago estas nur disponebla dum vida reĝimo %1$s</string>
+</resources>

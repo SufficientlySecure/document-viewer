@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_rotation_title">Turniĝo</string>
+    <string name="pref_rotation_summary">Kiamaniere ŝanĝi turniĝon</string>
+
+    <string name="list_rotation_unspecified">Nedefinita</string>
+    <string name="list_rotation_land">Devigi horizontalan</string>
+    <string name="list_rotation_port">Devigi vertikalan</string>
+    <string name="list_rotation_user">Propra</string>
+    <string name="list_rotation_behind">Heredita post fono</string>
+    <string name="list_rotation_auto">Aŭtomata</string>
+    <string name="list_rotation_nosensor">Sen sentilo</string>
+    <string name="list_rotation_sensor_landscape">Devigi horizontalan sed detekti inverson</string>
+    <string name="list_rotation_sensor_portrait">Devigi vertikalan sed detekti inverson</string>
+    <string name="list_rotation_reverse_landscape">Devigi inversan horizontalan</string>
+    <string name="list_rotation_reverse_portrait">Devigi inversan vertikalan</string>
+    <string name="list_rotation_full_sensor">Tute per sentilo</string>
+
+    <string name="pref_render_category">Bildigado</string>
+    <string name="pref_render_category_summary">Agordoj de bildigado</string>
+
+    <string name="pref_book_category">Libraj agordoj</string>
+    <string name="pref_book_category_summary">Agordoj de nuna libro</string>
+
+    <string name="pref_firstpageoffset_title">Deŝovo de unua paĝo</string>
+    <string name="pref_firstpageoffset_summary">Montrata por uzanto indeks-numero de unua paĝo</string>
+
+    <string name="pref_splitpages_title">Dividi paĝojn</string>
+    <string name="pref_splitpages_summary">Dividas horizontalajn paĝojn al du vertikalaj paĝoj</string>
+
+    <string name="pref_splitpages_rtl_title">Dividi paĝojn dekstre-al-maldekstre</string>
+    <string name="pref_splitpages_rtl_summary">Dividas horizontalajn paĝojn al du vertikalaj paĝoj dekstre-al-maldekstre</string>
+
+    <string name="pref_croppages_title">Aŭtomate pritondi paĝojn</string>
+    <string name="pref_croppages_summary">Aŭtomate pritondas malplenajn marĝenojn por maksimumigi pligrandigon de enhavo</string>
+
+    <string name="pref_viewmode_title">Dokumenta vidmaniero</string>
+    <string name="pref_viewmode_summary">Vidu dokumenton kiel unuoblan paĝon aŭ seninterrompe rulumeblan</string>
+
+    <string name="list_viewmode_vertical_scroll">Vertikale rulumebla</string>
+    <string name="list_viewmode_horizontal_scroll">Horizontale rulumebla</string>
+    <string name="list_viewmode_single_page">Unuobla paĝo</string>
+
+    <string name="pref_singlepage_category">Agordoj de unuobla paĝo</string>
+    <string name="pref_singlepage_category_summary">Vidu reĝimojn nur por unuobla paĝo</string>
+
+    <string name="pref_align_title">Paĝa adapto</string>
+    <string name="pref_align_summary">Kiel adapti paĝojn al ekrano</string>
+
+    <string name="list_align_by_width">Adapti al larĝo</string>
+    <string name="list_align_by_height">Adapti al alto</string>
+    <string name="list_align_auto">Aŭtomate</string>
+
+    <string name="pref_animationtype_title">Paĝa transpaso</string>
+    <string name="pref_animationtype_summary">Elektu movbildon por paĝa transpaso en unuobla paĝa reĝimo</string>
+
+    <string name="list_animation_none">Nenia</string>
+    <string name="list_animation_curler_simple">Simple volvita</string>
+    <string name="list_animation_curler_dynamic">Vigle volvita</string>
+    <string name="list_animation_curler_natural">Nature volvita</string>
+    <string name="list_animation_slider">Ŝovita</string>
+    <string name="list_animation_fader">Maldissolvita</string>
+    <string name="list_animation_squeezer">Kunpremita</string>
+    <string name="list_animation_slider2">Ŝovita supre</string>
+
+    <string name="pref_postprocessing_category" >Posttraktadaj efektoj</string>
+    <string name="pref_postprocessing_summary">Kromaj efektoj por plibonigi paĝan vidon</string>
+
+    <string name="pref_nightmode_title">Nokta reĝimo</string>
+    <string name="pref_nightmode_summary">Blanka teksto sur nigra fono (inverskolore)</string>
+
+    <string name="pref_posimages_in_nightmode_title">Ne-inverskoloraj bildoj en nokta reĝimo</string>
+    <string name="pref_posimages_in_nightmode_summary">Montras grizskalajn bildojn en nokta reĝimo (ne inversigas kolorojn de bildoj)</string>
+
+    <string name="pref_tint_title">Koloretigi</string>
+    <string name="pref_tint_summary">Ete kolorigas paĝon per koloro difinita sube</string>
+
+    <string name="pref_tint_color_title">Koloreto</string>
+    <string name="pref_tint_color_summary">Koloro por plenigi paĝojn</string>
+
+    <string name="pref_contrast_title">Kontrasto</string>
+    <string name="pref_contrast_summary">Korekta nivelo de konstrasto (0 &#8211; 1000, implicite 100)</string>
+
+    <string name="pref_gamma_title">Gamo</string>
+    <string name="pref_gamma_summary">Korekta nivelo de gamo (0 &#8211; 200, implicite 100)</string>
+
+    <string name="pref_exposure_title">Ekspono</string>
+    <string name="pref_exposure_summary">Korekta nivelo de ekspono (0 &#8211; 200, implicite 100)</string>
+
+    <string name="pref_autolevels_title">Aŭtomataj niveloj</string>
+    <string name="pref_autolevels_summary">Uzas aŭtamatan korekton de niveloj</string>
+
+    <string name="pref_rtl_title">Dekstre-al-maldekstre</string>
+    <string name="pref_rtl_summary">Ordigo de paĝoj por reĝimoj /'horizontala rulumado/' kaj /'unuobla paĝo/'</string>
+</resources>

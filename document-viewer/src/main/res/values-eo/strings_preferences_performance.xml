@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_performance_category">Rendimentaj agordoj</string>
+    <string name="pref_performance_category_summary">Agordoj de rendimento</string>
+
+    <string name="pref_pagesinmemory_title">Paĝoj en memoro</string>
+    <string name="pref_pagesinmemory_summary">Nombro da paĝoj konservitaj en memoro</string>
+
+    <string name="pref_lowlevel_category">Profund-nivelaj aplikaĵaj agordoj (aplikitaj post reŝargo de dokumento)</string>
+    <string name="pref_lowlevel_category_summary">Profund-nivelaj aplikaĵaj agordoj (aplikitaj post reŝargo de dokumento)</string>
+
+    <string name="pref_decoding_threads_title">"Nombro da malkodantaj fadenoj"</string>
+    <string name="pref_decoding_threads_summary">"Nombro da malkodantaj fadenoj"</string>
+
+    <string name="pref_decodethread_priority_title">Prioritato de malkodanta fadeno</string>
+    <string name="pref_decodethread_priority_summary">Agordu prioritaton de malkodanta fadeno</string>
+
+    <string name="pref_drawthread_priority_title">Prioritato de GL-bildiganta fadeno</string>
+    <string name="pref_drawthread_priority_summary">Agordu prioritaton de GL-bildiganta (GL draw) fadeno</string>
+
+    <string name="list_thread_priority_lowest">Malplej alta</string>
+    <string name="list_thread_priority_lower">Malpli alta</string>
+    <string name="list_thread_priority_normal">Meza</string>
+    <string name="list_thread_priority_higher">Pli alta</string>
+    <string name="list_thread_priority_highest">Plej alta</string>
+
+    <string name="pref_decodingonscroll_title">Malkodi dum rulumado</string>
+    <string name="pref_decodingonscroll_summary">Permesas malkodi paĝojn dum rulumado</string>
+
+    <string name="pref_bitmapsize_title">Grando de tekstura rastrumo</string>
+    <string name="pref_bitmapsize_summary">Agordu grandon de teksturaj elementoj</string>
+
+    <string name="list_bitmapsize_64">"64 × 64"</string>
+    <string name="list_bitmapsize_128">"128 × 128"</string>
+    <string name="list_bitmapsize_256">"256 × 256"</string>
+    <string name="list_bitmapsize_512">"512 × 512"</string>
+    <string name="list_bitmapsize_1024">"1024 × 1024"</string>
+
+    <string name="pref_heappreallocate_title">Staka antaŭatribuado</string>
+    <string name="pref_heappreallocate_summary">Grando en megabitokoj (MB) de staka antaŭatribuado (heap preallocation) je starto de programo</string>
+
+    <string name="pref_pdfstoragesize_title">Grando de MuPDF-a interna memoro</string>
+    <string name="pref_pdfstoragesize_summary">Grando en megabitokoj (MB) de MuPDF interna memoro</string>
+
+</resources>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_browser_category">Dosier-esplorilo</string>
+    <string name="pref_browser_category_summary">Agordoj de dosier-esplorilo kaj dosiertipoj</string>
+
+    <string name="pref_usebookcase_title">Uzi liborŝrankan vidon</string>
+    <string name="pref_usebookcase_summary">Uzas libroŝrankan vidon anstataŭ listojn</string>
+
+    <string name="pref_brautoscandir_title">Aŭtomate skani dosierujojn</string>
+    <string name="pref_brautoscandir_summary">Dosierujoj aŭtomate observataj pri dosieroj</string>
+
+    <string name="pref_autoscanremovable_title">Aŭtomate skani demeteblajn</string>
+    <string name="pref_autoscanremovable_summary">Aŭtomate skanas enmetitajn demeteblajn memorilojn</string>
+
+    <string name="pref_showremovable_title">Montri demeteblajn</string>
+    <string name="pref_showremovable_summary">Montras demeteblajn memorilojn en menuo de memoro</string>
+
+    <string name="pref_showscanning_title">Montri Skani dosierujojn</string>
+    <string name="pref_showscanning_summary">Montras opcion por aŭtomate skani dosierujojn en menuo de memoro</string>
+
+    <string name="pref_shownotifications_title">Montri sciigojn</string>
+    <string name="pref_shownotifications_summary">Montras sciigojn pri aldonitaj/forigitaj dosieroj</string>
+
+    <string name="pref_cachelocation_title">Loko por kaŝmemoro</string>
+    <string name="pref_cachelocation_summary">Loko por kaŝmemoraj dosieroj</string>
+    <string name="list_cachelocation_system">Sistem-aplikaĵa kaŝmemoro</string>
+    <string name="list_cachelocation_custom">SD-kard-aplikaĵa kaŝmemoro</string>
+
+    <string name="pref_brbrfiletypesscreen_title">Dosiertipoj</string>
+    <string name="pref_brbrfiletypesscreen_summary">Dosiertipoj videblaj en biblioteko</string>
+
+    <string name="pref_brfiletypedjvu_title">.djvu</string>
+    <string name="pref_brfiletypedjvu_summary">Montras DjVu-dosierojn</string>
+
+    <string name="pref_brfiletypedjv_title">.djv</string>
+    <string name="pref_brfiletypedjv_summary">Montras DjV-dosierojn</string>
+
+    <string name="pref_brfiletypepdf_title">.pdf</string>
+    <string name="pref_brfiletypepdf_summary">Montras PDF-dosierojn</string>
+
+    <string name="pref_brfiletypexps_title">.xps</string>
+    <string name="pref_brfiletypexps_summary">Montras XPS-dosierojn</string>
+
+    <string name="pref_brfiletypeoxps_title">.oxps</string>
+    <string name="pref_brfiletypeoxps_summary">Montras OXPS-dosierojn</string>
+
+    <string name="pref_brfiletypeepub_title">.epub</string>
+    <string name="pref_brfiletypeepub_summary">Montras EPUB-dosierojn</string>
+
+    <string name="pref_brfiletypecbz_title">.cbz</string>
+    <string name="pref_brfiletypecbz_summary">Montras CBZ-dosierojn</string>
+
+    <string name="pref_brfiletypecbr_title">.cbr</string>
+    <string name="pref_brfiletypecbr_summary">Montras CBR-dosierojn</string>
+
+    <string name="pref_brfiletypefb2_title">.fb2</string>
+    <string name="pref_brfiletypefb2_summary">Montras FB2-dosierojn</string>
+
+    <string name="pref_brfiletypefb2.zip_title">.fb2.zip</string>
+    <string name="pref_brfiletypefb2.zip_summary">Montras FB2.ZIP-dosierojn</string>
+
+</resources>

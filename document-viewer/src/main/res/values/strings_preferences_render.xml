@@ -53,7 +53,7 @@
     <string name="list_align_auto">Automatic</string>
 
     <string name="pref_animationtype_title">Page transition</string>
-    <string name="pref_animationtype_summary">Select the animation for page transition in sigle page mode</string>
+    <string name="pref_animationtype_summary">Select the animation for page transition in single page mode</string>
 
     <string name="list_animation_none">None</string>
     <string name="list_animation_curler_simple">Simple curler</string>

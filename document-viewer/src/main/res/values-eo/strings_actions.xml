@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="actions_verticalConfigScrollUp">Rulumi supren</string>
+    <string name="actions_verticalConfigScrollDown">Rulumi suben</string>
+    <string name="actions_quickZoom">Rapida pligrandigo</string>
+    <string name="actions_zoomToColumn">Pligrandigi ĝis kolumnoj</string>
+    <string name="actions_leftTopCorner">Rulumi ĝis maldekstra supra angulo de paĝo</string>
+    <string name="actions_rightTopCorner">Rulumi ĝis dekstra supra angulo de paĝo</string>
+    <string name="actions_leftBottomCorner">Rulumi ĝis maldekstra malsupra angulo de paĝo</string>
+    <string name="actions_rightBottomCorner">Rulumi ĝis dekstra malsupra angulo de paĝo</string>
+
+</resources>

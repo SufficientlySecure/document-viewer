@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_ui_category">Interfejs użytkownika</string>
+    <string name="pref_ui_category_summary">Ustawienia interfejsu użytkownika</string>
+
+    <string name="pref_lang_title">Język</string>
+    <string name="pref_lang_summary">Język interfejsu użytkownika (wymagany restart)</string>
+
+    <string name="list_lang_default">Systemowy</string>
+    <string name="list_lang_en">Angielski (English)</string>
+    <string name="list_lang_de">Niemiecki (Deutsch)</string>
+    <string name="list_lang_es">Hiszpański (Español)</string>
+    <string name="list_lang_fr">Francuski (Française)</string>
+    <string name="list_lang_it">Włoski (Italiano)</string>
+    <string name="list_lang_nl">Holenderski (Nederlands)</string>
+    <string name="list_lang_ru">Rosyjski (Русский)</string>
+    <string name="list_lang_uk">Ukraiński (Український)</string>
+    <string name="list_lang_zh">Chiński uproszczony (中文简体)</string>
+    <string name="list_lang_iw">Hebrajski (עברית)</string>
+    <string name="list_lang_ko">Koreański (한국어)</string>
+    <string name="list_lang_eo">Esperanto</string>
+	<string name="list_lang_pl">Polski</string>
+
+    <string name="pref_loadrecent_title">Załaduj poprzedni</string>
+    <string name="pref_loadrecent_summary">Wczytaj ostatnio otwartą książkę podczas startu aplikacji</string>
+
+    <string name="pref_confirmclose_title">Potwierdź zamykanie</string>
+    <string name="pref_confirmclose_summary">Pytaj o zamknięcie przy naciśnięciu przycisku cofnij</string>
+
+    <string name="pref_brightness_title">Jasność</string>
+    <string name="pref_brightness_summary">Ustaw całkowitą jasność (0&#8211;100)</string>
+
+    <string name="pref_brightnessnightmodeonly_title">Jasność w trybie nocnym</string>
+    <string name="pref_brightnessnightmodeonly_summary">Zastosuj ustawienia jasności tylko w trybie nocnym</string>
+
+    <string name="pref_keepscreenon_title">Zawsze włączony ekran</string>
+    <string name="pref_keepscreenon_summary">Nie wyłączaj ekranu podczas czytania (nie hibernuj)</string>
+
+    <string name="pref_fullscreen_title">Pełny ekran</string>
+    <string name="pref_fullscreen_summary">Ukrywa pasek statusu</string>
+
+    <string name="pref_title_title">Pokaż tytuł</string>
+    <string name="pref_title_summary">Wyświetla tytuł dokumentu (wymaga ponownego otwarcia dokumentu)</string>
+
+    <string name="pref_pageintitle_title">Strona w tytule</string>
+    <string name="pref_pageintitle_summary">Wyświetla numer strony w pasku tytułu</string>
+
+    <string name="pref_pagenumbertoastposition_title">Pozycja dymka z numerem strony</string>
+    <string name="pref_pagenumbertoastposition_summary">Pozycja dymka z numerem strony</string>
+
+    <string name="pref_zoomtoastposition_title">Pozycja dymka powiększenia</string>
+    <string name="pref_zoomtoastposition_summary">Pozycja dymka powiększenia</string>
+
+    <string name="list_toastposition_invisible">Nie pokazuj</string>
+    <string name="list_toastposition_lefttop">Lewy górny róg</string>
+    <string name="list_toastposition_righttop">Prawy górny róg</string>
+    <string name="list_toastposition_leftbottom">Lewy dolny róg</string>
+    <string name="list_toastposition_bottom">Na dole</string>
+    <string name="list_toastposition_righbottom">Prawy dolny róg</string>
+
+    <string name="pref_showanimicon_title">Pokaż animowaną ikonę</string>
+    <string name="pref_showanimicon_summary">Pokaż animację lub ikonę przesuwania gdy animacje lub przesuwanie jest włączone</string>
+
+</resources>

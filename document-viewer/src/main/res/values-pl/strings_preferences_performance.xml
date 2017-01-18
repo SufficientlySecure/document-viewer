@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_performance_category">Ustawienia wydajności</string>
+    <string name="pref_performance_category_summary">Ustawienia wydajności</string>
+
+    <string name="pref_pagesinmemory_title">Stron w pamięci</string>
+    <string name="pref_pagesinmemory_summary">Liczba stron przechowywanych w pamięci</string>
+
+    <string name="pref_lowlevel_category">Niskopoziomowe ustawienia aplikacji (zastosowane po ponownym otwarciu dokumentu)</string>
+    <string name="pref_lowlevel_category_summary">Niskopoziomowe ustawienia aplikacji (zastosowane po ponownym otwarciu dokumentu)</string>
+
+    <string name="pref_decoding_threads_title">"Liczba wątków dekodujących"</string>
+    <string name="pref_decoding_threads_summary">"Liczba wątków dekodujących"</string>
+
+    <string name="pref_decodethread_priority_title">Priorytet wątka dokodującego</string>
+    <string name="pref_decodethread_priority_summary">Definiuje priorytet wątka dekodującego</string>
+
+    <string name="pref_drawthread_priority_title">Priorytet dekodowania rysowania GL</string>
+    <string name="pref_drawthread_priority_summary">Definiuje priorytet dekodowania wątka rysowania GL</string>
+
+    <string name="list_thread_priority_lowest">Najniższy</string>
+    <string name="list_thread_priority_lower">Niski</string>
+    <string name="list_thread_priority_normal">Normalny</string>
+    <string name="list_thread_priority_higher">Wysoki</string>
+    <string name="list_thread_priority_highest">Najwyższy</string>
+
+    <string name="pref_decodingonscroll_title">Dekodowanie podczas przewijania</string>
+    <string name="pref_decodingonscroll_summary">Zezwól na dekodowanie stron podczas przewijania</string>
+
+    <string name="pref_bitmapsize_title">Rozmiar tekstur bitmap</string>
+    <string name="pref_bitmapsize_summary">Definiuje rozmiar części tekstur</string>
+
+    <string name="list_bitmapsize_64">"64 × 64"</string>
+    <string name="list_bitmapsize_128">"128 × 128"</string>
+    <string name="list_bitmapsize_256">"256 × 256"</string>
+    <string name="list_bitmapsize_512">"512 × 512"</string>
+    <string name="list_bitmapsize_1024">"1024 × 1024"</string>
+
+    <string name="pref_heappreallocate_title">Wstępne przypisywanie stosu</string>
+    <string name="pref_heappreallocate_summary">Rozmiar w megabajtach (MB) wstępnego przypisywania stosu (heap preallocation) przy starcie programu</string>
+
+    <string name="pref_pdfstoragesize_title">Rozmiar pamięci wewnętrznej MuPDF</string>
+    <string name="pref_pdfstoragesize_summary">Rozmiar w megabajtach (MB) pamięci wewnętrznej MuPDF</string>
+
+</resources>

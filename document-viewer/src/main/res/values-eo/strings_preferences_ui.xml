@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_ui_category">Fasado</string>
+    <string name="pref_ui_category_summary">Agordoj de fasado</string>
+
+    <string name="pref_lang_title">Lingvo</string>
+    <string name="pref_lang_summary">Fasada lingvo (restarto postulata)</string>
+
+    <string name="list_lang_default">Sistema</string>
+    <string name="list_lang_en">Angla (English)</string>
+    <string name="list_lang_de">Germana (Deutsch)</string>
+    <string name="list_lang_es">Hispana (Español)</string>
+    <string name="list_lang_fr">Franca (Française)</string>
+    <string name="list_lang_it">Itala (Italiano)</string>
+    <string name="list_lang_nl">Nederlanda (Nederlands)</string>
+    <string name="list_lang_ru">Rusa (Русский)</string>
+    <string name="list_lang_uk">Ukraina (Український)</string>
+    <string name="list_lang_zh">Ĉina simpligita (中文简体)</string>
+    <string name="list_lang_iw">Hebrea (עברית)</string>
+    <string name="list_lang_ko">Korea (한국어)</string>
+    <string name="list_lang_eo">Esperanto</string>
+	<string name="list_lang_pl">Pola (Polski)</string>
+
+    <string name="pref_loadrecent_title">Montri lastatempan</string>
+    <string name="pref_loadrecent_summary">Malfermas laste malfermitan libron je starto de programo</string>
+
+    <string name="pref_confirmclose_title">Konfirmi fermon</string>
+    <string name="pref_confirmclose_summary">Petas pri fermo je premo de reen-butono</string>
+
+    <string name="pref_brightness_title">Heleco</string>
+    <string name="pref_brightness_summary">Agordu tutan helecon de ekrano (0&#8211;100)</string>
+
+    <string name="pref_brightnessnightmodeonly_title">Heleco en nokta reĝimo</string>
+    <string name="pref_brightnessnightmodeonly_summary">Agordu helecon nur por nokta reĝimo</string>
+
+    <string name="pref_keepscreenon_title">Igi ekranon ŝaltita</string>
+    <string name="pref_keepscreenon_summary">Ne malaktivigas ekranon dum legado (ne dormetas)</string>
+
+    <string name="pref_fullscreen_title">Plenekrano</string>
+    <string name="pref_fullscreen_summary">Kaŝas statan breton</string>
+
+    <string name="pref_title_title">Montri titolon</string>
+    <string name="pref_title_summary">Montras titolon de dokumento (remalfermo de dokumento postulata)</string>
+
+    <string name="pref_pageintitle_title">Paĝo en titolo</string>
+    <string name="pref_pageintitle_summary">Montras paĝnumeron en titola breto</string>
+
+    <string name="pref_pagenumbertoastposition_title">Pozicio de paĝnumera atentigo</string>
+    <string name="pref_pagenumbertoastposition_summary">Pozicio de paĝnumera atentigo</string>
+
+    <string name="pref_zoomtoastposition_title">Pozicio de pligrandiga atentigo</string>
+    <string name="pref_zoomtoastposition_summary">Pozicio de atentigo de pligrandigo (zomo)</string>
+
+    <string name="list_toastposition_invisible">Ne montri</string>
+    <string name="list_toastposition_lefttop">Maldekstra supra angulo</string>
+    <string name="list_toastposition_righttop">Dekstra supra angulo</string>
+    <string name="list_toastposition_leftbottom">Maldekstra malsupra angulo</string>
+    <string name="list_toastposition_bottom">Malsupre</string>
+    <string name="list_toastposition_righbottom">Dekstra malsupra angulo</string>
+
+    <string name="pref_showanimicon_title">Montri movbildan piktogramon</string>
+    <string name="pref_showanimicon_summary">Montras movbildan aŭ ŝovadan piktogramon kiam movbildoj aŭ ŝovado estas aktivaj</string>
+
+</resources>

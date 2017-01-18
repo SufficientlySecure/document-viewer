@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="manual_cropping_title">Propraj agordoj de pritondado (postulas unuoblan paĝon):</string>
+    <string name="manual_cropping_current">Pritondi nur nunan paĝon</string>
+    <string name="manual_cropping_even">Pritondi ĉiujn parajn (neparajn) paĝojn</string>
+    <string name="manual_cropping_even_symm">Pritondi simetrie parajn kaj neparajn paĝojn</string>
+	<string name="manual_cropping_all">Pritondi ĉiujn paĝojn</string>
+    <string name="manual_cropping_remove_current">Forigi agordojn de pritondado de nuna(j) paĝo(j)</string>
+    <string name="manual_cropping_remove_all">Forigi ĉiujn agordojn de pritondado</string>
+    <string name="manual_cropping_back">Reveni al elekto de areo</string>
+
+</resources>

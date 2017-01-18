@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_brfiletypespecific_title">Dosiertip-specifaj</string>
+    <string name="pref_brfiletypespecific_summary">Agordoj specifaj por iu dosiertipo</string>
+
+    <string name="pref_brfiletypespecificdjvu_title">DJVU</string>
+    <string name="pref_brfiletypespecificdjvu_summary">DJVU-dosiertipaj specifaj agordoj</string>
+
+    <string name="pref_djvu_rendering_mode_title">Reĝimo de bildigado</string>
+    <string name="pref_djvu_rendering_mode_summary">Reĝimo de bildigado de paĝo</string>
+
+    <string name="list_djvu_rendering_mode_0">Kolora</string>
+    <string name="list_djvu_rendering_mode_1">Nigra</string>
+    <string name="list_djvu_rendering_mode_2">Nur kolora</string>
+    <string name="list_djvu_rendering_mode_3">Nur masko</string>
+    <string name="list_djvu_rendering_mode_4">Nur fono</string>
+    <string name="list_djvu_rendering_mode_5">Nur malfono</string>
+
+    <string name="pref_brfiletypespecificpdf_title">PDF</string>
+    <string name="pref_brfiletypespecificpdf_summary">PDF-dosiertipaj specifaj agordoj</string>
+
+    <string name="pref_customdpi_title">Uzi propran DPI</string>
+    <string name="pref_customdpi_summary">Agordu proprajn DPI (punktoj en colo) valorojn sube</string>
+
+    <string name="pref_xdpi_title">X DPI</string>
+    <string name="pref_xdpi_summary">Horizontala (X-direkto) DPI</string>
+
+    <string name="pref_ydpi_title">Y DPI</string>
+    <string name="pref_ydpi_summary">Vertikala (Y-direkto) DPI</string>
+
+    <string name="pref_monofontpack_title">Egellarĝa tipar-familio</string>
+    <string name="pref_monofontpack_summary">Agordu kiujn tiparojn uzi por egallarĝa (monospace) tipara familio</string>
+
+    <string name="pref_sansfontpack_title">Senserifa tipar-familio</string>
+    <string name="pref_sansfontpack_summary">Agordu kiujn tiparojn uzi por senserifa tipara familio</string>
+
+    <string name="pref_seriffontpack_title">Serifa tipar-familio</string>
+    <string name="pref_seriffontpack_summary">Agordu kiujn tiparojn uzi por serifa tipara familio</string>
+
+    <string name="pref_symbolfontpack_title">Simbola tipar-familio</string>
+    <string name="pref_symbolfontpack_summary">Agordu kiujn tiparojn uzi por simbola tipara familio</string>
+
+    <string name="pref_dingbatfontpack_title">Vinjeta tipar-familio</string>
+    <string name="pref_dingbatfontpack_summary">Agordu kiujn tiparojn uzi por vinjeta (dingbat) tipara familio</string>
+
+    <string name="pref_systemfontpack">Uzi implicitajn Androidajn tiparojn</string>
+
+    <string name="pref_slowcmyk_title">Malrapida CMYK</string>
+    <string name="pref_slowcmyk_summary">Uzas malrapidan sed akuratan CMYK al RGB algoritmon</string>
+
+    <string name="pref_brfiletypespecificfb2_title">FB2</string>
+    <string name="pref_brfiletypespecificfb2_summary">FB2-dosiertipaj specifaj agordoj</string>
+
+    <string name="pref_fb2_xmlparser_title">XML-malkomponilo</string>
+    <string name="pref_fb2_xmlparser_summary">XML malkomponilo (parser)</string>
+
+    <string name="list_fb2_xmlparser_vtd_ex">VTD based</string>
+    <string name="list_fb2_xmlparser_duckbill">Dumb &amp; Dirty</string>
+
+    <string name="pref_fontsize_title">Tipara grando</string>
+    <string name="pref_fontsize_summary">Grando de fundamenta tiparo</string>
+
+    <string name="pref_fb2fontpack_title">FB2 tipar-familioj</string>
+    <string name="pref_fb2fontpack_summary">Agordu kiun tiparan familion uzi por FB2 bildgado</string>
+
+    <string name="list_fontsize_tiny">Eteta</string>
+    <string name="list_fontsize_small">Eta</string>
+    <string name="list_fontsize_normal">Meza</string>
+    <string name="list_fontsize_large">Granda</string>
+    <string name="list_fontsize_huge">Grandega</string>
+
+    <string name="pref_fb2hyphen_title">Aktivigi silabigadon</string>
+    <string name="pref_fb2hyphen_summary">Eksperimenta realigo de silabigado</string>
+
+    <string name="pref_fb2cacheimages_title">Kaŝmemorigi bildojn en disko</string>
+    <string name="pref_fb2cacheimages_summary">Portempe konservas bildojn de dokumentoj en disko por etigi uzadon de memoro</string>
+</resources>

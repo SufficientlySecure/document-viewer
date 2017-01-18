@@ -125,7 +125,10 @@ class DBAdapterV1 implements IDBAdapter {
                         if (c.moveToFirst()) {
                             final BookSettings bs = createBookSettings(c);
                             loadBookmarks(bs, db);
-                            return bs;
+                            if (c != null) {
+								c.close();
+							}
+							return bs;
                         }
                     } finally {
                         close(c);

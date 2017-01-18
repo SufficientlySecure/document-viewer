@@ -5,7 +5,7 @@
     <string name="pref_scroll_category_summary">Elektu kiel la aparato respondos al frapetoj, ŝovumoj kaj klav-premoj</string>
 
     <string name="pref_tapsenabled_title">Aktivigi frapetojn</string>
-    <string name="pref_tapsenabled_summary">Uzu /'Konfiguri frapetojn/' por difini frapet-regionojn kaj agojn</string>
+    <string name="pref_tapsenabled_summary">Uzu \'Konfiguri frapetojn\' por difini frapet-regionojn kaj agojn</string>
 
     <string name="pref_scroll_title">Rulumada alto</string>
     <string name="pref_scroll_summary">Agordu alton de rulumado por paĝoj, kiuj trograndas en ekrano (implicite: 50%%)</string>

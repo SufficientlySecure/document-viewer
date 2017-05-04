@@ -3,8 +3,8 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_C_INCLUDES := \
-	$(LOCAL_PATH)/../mupdf/mupdf/thirdparty/jpeg \
-	$(LOCAL_PATH)/../mupdf/mupdf/scripts/jpeg \
+	$(LOCAL_PATH)/../mupdf/mupdf/thirdparty/libjpeg \
+	$(LOCAL_PATH)/../mupdf/mupdf/scripts/libjpeg \
 	$(LOCAL_PATH)/djvulibre/libdjvu \
 	$(LOCAL_PATH)
 

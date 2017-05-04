@@ -1,5 +1,5 @@
 diff --git a/include/mupdf/fitz/context.h b/include/mupdf/fitz/context.h
-index 47aa8fa..ce76bf4 100644
+index 35f4f74f..6bd4661d 100644
 --- a/include/mupdf/fitz/context.h
 +++ b/include/mupdf/fitz/context.h
 @@ -125,6 +125,9 @@ struct fz_context_s
@@ -13,28 +13,19 @@ index 47aa8fa..ce76bf4 100644
  
  /*
 diff --git a/source/fitz/draw-device.c b/source/fitz/draw-device.c
-index f587d38..3bdc401 100644
+index 25323b15..4aa04295 100644
 --- a/source/fitz/draw-device.c
 +++ b/source/fitz/draw-device.c
-@@ -1363,6 +1363,9 @@ fz_draw_fill_image(fz_context *ctx, fz_device *devp, fz_image *image, const fz_m
- 	fz_matrix local_ctm = concat(in_ctm, &dev->transform);
- 	fz_pixmap *converted = NULL;
- 	fz_pixmap *scaled = NULL;
-+	// EBD: inverted mode >>>
-+	fz_pixmap *inverted = NULL;
-+	// EBD: inverted mode <<<
- 	fz_pixmap *pixmap;
- 	fz_pixmap *orig_pixmap;
- 	int after;
-@@ -1475,6 +1478,15 @@ fz_draw_fill_image(fz_context *ctx, fz_device *devp, fz_image *image, const fz_m
+@@ -1344,6 +1344,16 @@ fz_draw_fill_image(fz_context *ctx, fz_device *devp, fz_image *image, const fz_m
  			}
  		}
  
 +		// EBD: inverted mode >>>
 +		if (ctx->ebookdroid_nightmode) {
-+			inverted = fz_new_pixmap(ctx, pixmap->colorspace, pixmap->w, pixmap->h, pixmap->alpha);
++			fz_pixmap *inverted = fz_new_pixmap(ctx, pixmap->colorspace, pixmap->w, pixmap->h, pixmap->alpha);
 +			memcpy(inverted->samples, pixmap->samples, pixmap->stride * pixmap->h);
 +			fz_invert_pixmap(ctx, inverted);
++			fz_drop_pixmap(ctx, pixmap);
 +			pixmap = inverted;
 +		}
 +		// EBD: inverted mode <<<
@@ -42,13 +33,3 @@ index f587d38..3bdc401 100644
  		fz_paint_image(state->dest, &state->scissor, state->shape, pixmap, &local_ctm, alpha * 255, !(devp->hints & FZ_DONT_INTERPOLATE_IMAGES), devp->flags & FZ_DEVFLAG_GRIDFIT_AS_TILED);
  
  		if (state->blendmode & FZ_BLEND_KNOCKOUT)
-@@ -1484,6 +1496,9 @@ fz_draw_fill_image(fz_context *ctx, fz_device *devp, fz_image *image, const fz_m
- 	{
- 		fz_drop_pixmap(ctx, scaled);
- 		fz_drop_pixmap(ctx, converted);
-+		// EBD: inverted mode >>>
-+		fz_drop_pixmap(ctx, inverted);
-+		// EBD: inverted mode <<<
- 		fz_drop_pixmap(ctx, orig_pixmap);
- 	}
- 	fz_catch(ctx)

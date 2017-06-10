@@ -28,7 +28,7 @@ We need your support to fix outstanding bugs, join development by forking the pr
 
 ## Building
 
-**NOTE: NDK r14b is unable to compile Document Viewer. For now, you need to use r13b. (See [#245](https://github.com/SufficientlySecure/document-viewer/issues/245))**
+**NOTE: NDK r14b fails to compile DV - use r15 or r13b. (See [#245](https://github.com/SufficientlySecure/document-viewer/issues/245))**
 
 ### Build with Gradle
 

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="manual_cropping_title">Własne ustawienia przycinania (wymaga pojedynczej strony):</string>
+    <string name="manual_cropping_current">Przytnij tylko obecną stronę</string>
+    <string name="manual_cropping_even">Przytnij wszystkie parzyste (nieparzyste) strony</string>
+    <string name="manual_cropping_even_symm">Przytnij symetrycznie strony parzyste i nieparzyste</string>
+	<string name="manual_cropping_all">Przytnij wszystkie strony</string>
+    <string name="manual_cropping_remove_current">Usuń ustawienia przycinania z obecnych stron</string>
+    <string name="manual_cropping_remove_all">Usuń wszystkie ustawienia przycinania</string>
+    <string name="manual_cropping_back">Powrót do wyboru obszaru</string>
+
+</resources>

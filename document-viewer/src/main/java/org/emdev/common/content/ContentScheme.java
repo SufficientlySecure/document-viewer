@@ -43,8 +43,10 @@ public enum ContentScheme {
                 final int fileNameColumnId = c.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME);
                 if (fileNameColumnId >= 0) {
                     final String attachmentFileName = c.getString(fileNameColumnId);
+                    c.close();
                     return LengthUtils.safeString(attachmentFileName, key);
                 }
+                c.close();
             } catch (final Throwable th) {
                 th.printStackTrace();
             }

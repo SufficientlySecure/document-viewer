@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_opds_category">Ustawienia OPDS</string>
+    <string name="pref_opds_category_summary">Ustawienia przeglądarki OPDS</string>
+
+    <string name="pref_opds_downloaddir_title">Pobierz katalog</string>
+    <string name="pref_opds_downloaddir_summary">Pobierz do</string>
+
+    <string name="pref_opds_filterbooktypes_title">Filtruj typy książek</string>
+    <string name="pref_opds_filterbooktypes_summary">Nie pokazuj niewspieranych typów książek</string>
+
+    <string name="pref_opds_downloadarchives_title">Pobierz skompresowane książki</string>
+    <string name="pref_opds_downloadarchives_summary">Pobiera skompresowane książki</string>
+
+    <string name="pref_opds_unpackarchives_title">Rozpakuj skompresowane książki</string>
+    <string name="pref_opds_unpackarchives_summary">Rozpakowuje skompresowane książki po pobraniu</string>
+
+    <string name="pref_opds_deletearchives_title">Usuń skompresowane książki</string>
+    <string name="pref_opds_deletearchives_summary">Usuwa skompresowane książki po rozpakowaniu</string>
+
+</resources>

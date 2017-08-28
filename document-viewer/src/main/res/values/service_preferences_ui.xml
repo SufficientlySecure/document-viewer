@@ -15,7 +15,8 @@
     <string name="pref_lang_zh" translatable="false">"zh"</string>
     <string name="pref_lang_iw" translatable="false">"iw"</string>
     <string name="pref_lang_ko" translatable="false">"ko"</string>
-
+    <string name="pref_lang_eo" translatable="false">"eo"</string>
+    <string name="pref_lang_pl" translatable="false">"pl"</string>   
 <!--
 Order according to application statistics from Market:
 
@@ -44,6 +45,8 @@ Others						33,711	13.00 %
         <item>@string/list_lang_zh</item>
         <item>@string/list_lang_iw</item>
         <item>@string/list_lang_ko</item>
+        <item>@string/list_lang_eo</item>
+        <item>@string/list_lang_pl</item>
     </string-array>
 
     <string-array name="pref_lang_values" translatable="false">
@@ -59,6 +62,8 @@ Others						33,711	13.00 %
         <item>@string/pref_lang_zh</item>
         <item>@string/pref_lang_iw</item>
         <item>@string/pref_lang_ko</item>
+        <item>@string/pref_lang_eo</item>
+        <item>@string/pref_lang_pl</item>
     </string-array>
 
     <string translatable="false" name="pref_loadrecent_id">loadrecent</string>

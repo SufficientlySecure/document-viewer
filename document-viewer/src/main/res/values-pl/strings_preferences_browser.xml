@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_browser_category">Przeglądarka plików</string>
+    <string name="pref_browser_category_summary">Ustawienia przeglądarki plików i formatów</string>
+
+    <string name="pref_usebookcase_title">Użyj widoku biblioteczki</string>
+    <string name="pref_usebookcase_summary">Używa widoku biblioteczki zamiast list</string>
+
+    <string name="pref_brautoscandir_title">Automatycznie skanuj katalogi</string>
+    <string name="pref_brautoscandir_summary">Katalogi obserwowane pod kątem plików</string>
+
+    <string name="pref_autoscanremovable_title">Automatycznie skanuj wymienne</string>
+    <string name="pref_autoscanremovable_summary">Automatycznie skanuj obecne nośniki wymienne</string>
+
+    <string name="pref_showremovable_title">Pokaż wymienne</string>
+    <string name="pref_showremovable_summary">Pokaż nośniki wymienne w menu pamięci</string>
+
+    <string name="pref_showscanning_title">Pokaż Skanuj katalogi</string>
+    <string name="pref_showscanning_summary">Pokaż Automatycznie skanuj katalogi w menu pamięci</string>
+
+    <string name="pref_shownotifications_title">Pokaż powiadomienia</string>
+    <string name="pref_shownotifications_summary">Pokaż powiadomienia dotyczące dodanych/usuniętych plików</string>
+
+    <string name="pref_cachelocation_title">Pamięć podręczna</string>
+    <string name="pref_cachelocation_summary">Miejsce przechowywania plików tymczasowych</string>
+    <string name="list_cachelocation_system">System app cache</string>
+    <string name="list_cachelocation_custom">Sdcard app cache</string>
+
+    <string name="pref_brbrfiletypesscreen_title">Typy plików</string>
+    <string name="pref_brbrfiletypesscreen_summary">Typy plików widoczne w bibliotece</string>
+
+    <string name="pref_brfiletypedjvu_title">.djvu</string>
+    <string name="pref_brfiletypedjvu_summary">Pokaż pliki DjVu</string>
+
+    <string name="pref_brfiletypedjv_title">.djv</string>
+    <string name="pref_brfiletypedjv_summary">Pokaż pliki DjV</string>
+
+    <string name="pref_brfiletypepdf_title">.pdf</string>
+    <string name="pref_brfiletypepdf_summary">Pokaż pliki PDF</string>
+
+    <string name="pref_brfiletypexps_title">.xps</string>
+    <string name="pref_brfiletypexps_summary">Pokaż pliki XPS</string>
+
+    <string name="pref_brfiletypeoxps_title">.oxps</string>
+    <string name="pref_brfiletypeoxps_summary">Pokaż pliki OXPS</string>
+
+    <string name="pref_brfiletypeepub_title">.epub</string>
+    <string name="pref_brfiletypeepub_summary">Pokaż pliki EPUB</string>
+
+    <string name="pref_brfiletypecbz_title">.cbz</string>
+    <string name="pref_brfiletypecbz_summary">Pokaż pliki CBZ</string>
+
+    <string name="pref_brfiletypecbr_title">.cbr</string>
+    <string name="pref_brfiletypecbr_summary">Pokaż pliki CBR</string>
+
+    <string name="pref_brfiletypefb2_title">.fb2</string>
+    <string name="pref_brfiletypefb2_summary">Pokaż pliki FB2</string>
+
+    <string name="pref_brfiletypefb2.zip_title">.fb2.zip</string>
+    <string name="pref_brfiletypefb2.zip_summary">Pokaż pliki FB2.ZIP</string>
+
+</resources>

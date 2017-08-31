@@ -42,49 +42,4 @@
     <string translatable="false" name="pref_slowcmyk_id">slowcmyk</string>
     <string translatable="false" name="pref_slowcmyk_defvalue">false</string>
 
-    <string translatable="false" name="pref_fb2_xmlparser_id">fb2xmlparser</string>
-    <string translatable="false" name="pref_fb2_xmlparser_vtd_ex">VTDEx</string>
-    <string translatable="false" name="pref_fb2_xmlparser_duckbill">Duckbill</string>
-
-    <string-array name="pref_fb2_xmlparser_entries" translatable="false">
-        <item>@string/list_fb2_xmlparser_vtd_ex</item>
-        <item>@string/list_fb2_xmlparser_duckbill</item>
-    </string-array>
-    <string-array name="pref_fb2_xmlparser_values" translatable="false">
-        <item>@string/pref_fb2_xmlparser_vtd_ex</item>
-        <item>@string/pref_fb2_xmlparser_duckbill</item>
-    </string-array>
-
-
-    <string translatable="false" name="pref_fb2fontpack_id">fb2fontpack</string>
-    <string translatable="false" name="pref_fb2fontpack_defvalue">System, sans</string>
-
-    <string translatable="false" name="pref_fontsize_id">fontsize</string>
-    <string translatable="false" name="pref_fontsize_tiny">TINY</string>
-    <string translatable="false" name="pref_fontsize_small">SMALL</string>
-    <string translatable="false" name="pref_fontsize_normal">NORMAL</string>
-    <string translatable="false" name="pref_fontsize_large">LARGE</string>
-    <string translatable="false" name="pref_fontsize_huge">HUGE</string>
-
-    <string-array name="pref_fontsize_entries" translatable="false">
-        <item>@string/list_fontsize_tiny</item>
-        <item>@string/list_fontsize_small</item>
-        <item>@string/list_fontsize_normal</item>
-        <item>@string/list_fontsize_large</item>
-        <item>@string/list_fontsize_huge</item>
-    </string-array>
-    <string-array name="pref_fontsize_values" translatable="false">
-        <item>@string/pref_fontsize_tiny</item>
-        <item>@string/pref_fontsize_small</item>
-        <item>@string/pref_fontsize_normal</item>
-        <item>@string/pref_fontsize_large</item>
-        <item>@string/pref_fontsize_huge</item>
-    </string-array>
-
-    <string translatable="false" name="pref_fb2hyphen_id">fb2hyphen</string>
-    <string translatable="false" name="pref_fb2hyphen_defvalue">false</string>
-
-    <string translatable="false" name="pref_fb2cacheimages_id">fb2cacheimages</string>
-    <string translatable="false" name="pref_fb2cacheimages_defvalue">false</string>
-
 </resources>

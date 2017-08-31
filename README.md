@@ -12,7 +12,7 @@ Supports the following formats:
 * EPUB
 * XPS (OpenXPS)
 * CBZ (Comic Books, no support for rar compressed CBR)
-* FictionBook (fb2, fb2.zip)
+* FictionBook (fb2)
 
 Collaboration with electronic publication sites and access to online ebook catalogs is allowed by the supported OPDS protocol.
 
@@ -87,11 +87,6 @@ along with Document Viewer.  If not, see <http://www.gnu.org/licenses/>.
 * Color Picker by Daniel Nilsson  
   http://code.google.com/p/color-picker-view/  
   Apache License v2
-
-* VDT-XML by XimpleWare  
-  http://vtd-xml.sourceforge.net/  
-  GPLv2+
-
 
 ## C Libraries
 

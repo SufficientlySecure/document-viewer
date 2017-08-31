@@ -17,7 +17,7 @@ public enum OPDSBookType {
     /**
      *
      */
-    FB2(true, "application/fb2", "text/fb2+xml"),
+    FB2(false, "application/fb2", "text/fb2+xml"),
     /**
      *
      */

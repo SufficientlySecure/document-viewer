@@ -3,7 +3,6 @@ package org.ebookdroid.common.settings.definitions;
 import static org.sufficientlysecure.viewer.R.string.*;
 
 import org.ebookdroid.common.settings.types.DocumentViewMode;
-import org.ebookdroid.common.settings.types.FontSize;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.common.settings.types.RotationType;
 import org.ebookdroid.common.settings.types.ToastPosition;
@@ -13,7 +12,6 @@ import org.emdev.common.settings.base.BooleanPreferenceDefinition;
 import org.emdev.common.settings.base.EnumPreferenceDefinition;
 import org.emdev.common.settings.base.IntegerPreferenceDefinition;
 import org.emdev.common.settings.base.StringPreferenceDefinition;
-import org.emdev.common.xml.XmlParsers;
 
 public interface AppPreferences {
 
@@ -192,20 +190,4 @@ public interface AppPreferences {
 
     BooleanPreferenceDefinition PDF_SLOW_CMYK = new BooleanPreferenceDefinition(pref_slowcmyk_id,
             pref_slowcmyk_defvalue);
-
-    /* =============== FB2 Format-specific settings =============== */
-
-    EnumPreferenceDefinition<XmlParsers> FB2_XML_PARSER = new EnumPreferenceDefinition<XmlParsers>(XmlParsers.class,
-            pref_fb2_xmlparser_id, pref_fb2_xmlparser_duckbill);
-
-    StringPreferenceDefinition FB2_FONT_PACK = new StringPreferenceDefinition(pref_fb2fontpack_id,
-            pref_fb2fontpack_defvalue);
-
-    EnumPreferenceDefinition<FontSize> FB2_FONT_SIZE = new EnumPreferenceDefinition<FontSize>(FontSize.class,
-            pref_fontsize_id, pref_fontsize_normal);
-
-    BooleanPreferenceDefinition FB2_HYPHEN = new BooleanPreferenceDefinition(pref_fb2hyphen_id, pref_fb2hyphen_defvalue);
-
-    BooleanPreferenceDefinition FB2_CACHE_IMAGES = new BooleanPreferenceDefinition(pref_fb2cacheimages_id,
-            pref_fb2cacheimages_defvalue);
 }

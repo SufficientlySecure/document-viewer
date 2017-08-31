@@ -2,7 +2,7 @@ package org.ebookdroid;
 
 import org.ebookdroid.core.codec.CodecContext;
 import org.ebookdroid.droids.djvu.codec.DjvuContext;
-import org.ebookdroid.droids.fb2.codec.FB2Context;
+import org.ebookdroid.droids.mupdf.codec.FB2Context;
 import org.ebookdroid.droids.mupdf.codec.PdfContext;
 import org.ebookdroid.droids.mupdf.codec.XpsContext;
 import org.ebookdroid.droids.mupdf.codec.CbzContext;
@@ -29,7 +29,7 @@ public enum CodecType {
 
     CBZ(CbzContext.class, false, Arrays.asList("cbz"), Arrays.asList("application/x-cbz")),
 
-    FB2(FB2Context.class, true, Arrays.asList("fb2", "fb2.zip"), Arrays.asList("application/x-fb2"));
+    FB2(FB2Context.class, true, Arrays.asList("fb2"), Arrays.asList("application/x-fb2"));
 
     private final static Map<String, CodecType> extensionToActivity;
 

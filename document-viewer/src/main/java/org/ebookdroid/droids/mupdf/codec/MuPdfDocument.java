@@ -16,6 +16,7 @@ public class MuPdfDocument extends AbstractCodecDocument {
     public static final int FORMAT_XPS = 1;
     public static final int FORMAT_CBZ = 2;
     public static final int FORMAT_EPUB = 3;
+    public static final int FORMAT_FB2 = 4;
 
     MuPdfDocument(final MuPdfContext context, final int format, final String fname, final String pwd) {
         super(context, open(AppSettings.current().pdfStorageSize << 20, format, fname, pwd));

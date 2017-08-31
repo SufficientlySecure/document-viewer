@@ -5,7 +5,6 @@ import org.ebookdroid.common.settings.definitions.AppPreferences;
 import org.ebookdroid.common.settings.definitions.BookPreferences;
 import org.ebookdroid.common.settings.listeners.IAppSettingsChangeListener;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
-import org.ebookdroid.common.settings.types.FontSize;
 import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.common.settings.types.RotationType;
 import org.ebookdroid.common.settings.types.ToastPosition;
@@ -17,7 +16,6 @@ import android.content.SharedPreferences.Editor;
 import org.emdev.common.backup.BackupManager;
 import org.emdev.common.backup.IBackupAgent;
 import org.emdev.common.settings.backup.SettingsBackupHelper;
-import org.emdev.common.xml.XmlParsers;
 import org.emdev.utils.CompareUtils;
 import org.json.JSONObject;
 
@@ -155,18 +153,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
 
     public final boolean slowCMYK;
 
-    /* =============== FB2 Format-specific settings =============== */
-
-    public final XmlParsers fb2XmlParser;
-
-    public final String fb2FontPack;
-
-    public final FontSize fontSize;
-
-    public final boolean fb2HyphenEnabled;
-
-    public final boolean fb2CacheImagesOnDisk;
-
     /* =============================================== */
 
     private AppSettings() {
@@ -236,12 +222,6 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         xDpi = PDF_CUSTOM_XDPI.getPreferenceValue(prefs);
         yDpi = PDF_CUSTOM_YDPI.getPreferenceValue(prefs);
         slowCMYK = PDF_SLOW_CMYK.getPreferenceValue(prefs);
-        /* =============== FB2 Format-specific settings =============== */
-        fb2XmlParser = FB2_XML_PARSER.getPreferenceValue(prefs);
-        fb2FontPack = FB2_FONT_PACK.getPreferenceValue(prefs);
-        fontSize = FB2_FONT_SIZE.getPreferenceValue(prefs);
-        fb2HyphenEnabled = FB2_HYPHEN.getPreferenceValue(prefs);
-        fb2CacheImagesOnDisk = FB2_CACHE_IMAGES.getPreferenceValue(prefs);
     }
 
     /* =============== UI settings =============== */

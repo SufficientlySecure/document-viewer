@@ -91,7 +91,9 @@ public final class ByteBufferBitmap {
                 autoLevels();
             }
         }
+    }
 
+    public void applyTint(final BookSettings bs) {
         if (bs.tint && bs.tintColor != AppPreferences.TINT_COLOR.defValue) {
             tint(bs.tintColor);
         }

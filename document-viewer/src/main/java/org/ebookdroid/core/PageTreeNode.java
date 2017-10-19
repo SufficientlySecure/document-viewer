@@ -174,6 +174,9 @@ public class PageTreeNode implements DecodeService.DecodeCallback {
             if (invert) {
                 bitmap.invert();
             }
+            if (bs != null) {
+                bitmap.applyTint(bs);
+            }
 
             final PagePaint paint = tint ? PagePaint.TintedDay(tintColor)
                     : (invert ? PagePaint.Night()

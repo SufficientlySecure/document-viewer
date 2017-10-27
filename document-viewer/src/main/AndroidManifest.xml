@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.sufficientlysecure.viewer"
     android:installLocation="auto"
-    android:versionCode="2790"
-    android:versionName="2.7.9">
+    android:versionCode="2800"
+    android:versionName="2.8.0">
 
     <!-- 0x00010001: OpenGL ES 1.1 -->
     <uses-feature

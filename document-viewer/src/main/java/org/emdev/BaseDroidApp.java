@@ -121,13 +121,8 @@ public class BaseDroidApp extends Application {
     }
 
     protected File getAppStorage(final String appPackage) {
-        File dir = EXT_STORAGE;
-        if (dir != null) {
-            final File appDir = new File(dir, "." + appPackage);
-            if (appDir.isDirectory() || appDir.mkdir()) {
-                dir = appDir;
-            }
-        } else {
+        File dir = context.getExternalFilesDir(null);
+        if (dir == null) {
             dir = context.getFilesDir();
         }
         dir.mkdirs();

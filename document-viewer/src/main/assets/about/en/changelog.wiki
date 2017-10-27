@@ -1,5 +1,16 @@
 #labels Featured
 
+= DV v2.8.0 =
+
+* Don't create "/sdcard/.org.sufficientlysecure.viewer" directory. 
+ * Backups are now stored in "/sdcard/Android/data/org.sufficientlysecure.viewer/files/"
+ * The new directory will be deleted when DV is uninstalled
+* Esperanto and Polish translations
+* MuPDF updated to 1.11 + vulnerability fixes
+* FB2 support now uses MuPDF
+* Fix night mode being used with tint
+* Enable CJK and SIL fonts
+
 = DV v2.7.9 =
 
 == New features ==

@@ -1,5 +1,9 @@
 #labels Featured
 
+= DV v2.8.1 =
+
+* Update build tools to 27.0.1 to work around Cyanogenmod boot loop
+
 = DV v2.8.0 =
 
 * Don't create "/sdcard/.org.sufficientlysecure.viewer" directory. 

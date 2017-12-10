@@ -33,4 +33,6 @@
 
 <string name="menu_force_portrait">세로 보기 고정</string>
 <string name="menu_force_landscape">가로 보기 고정</string>
+
+<string name="menu_show_files">"Show files"</string> <!-- needs_translation -->
 </resources>

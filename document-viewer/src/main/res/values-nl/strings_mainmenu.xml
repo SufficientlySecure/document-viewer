@@ -31,4 +31,5 @@
     <string name="menu_force_portrait">"Portret lijst rotatie"</string>
     <string name="menu_force_landscape">"Landelijk lijst rotatie"</string>
 <string name="menu_show_files">"Show files"</string> <!-- needs_translation -->
+<string name="menu_search">"Search"</string> <!-- needs_translation -->
 </resources>

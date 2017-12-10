@@ -14,19 +14,19 @@
         android:alphabeticShortcut="l"
         android:icon="@drawable/recent_actionbar_library"
         app:showAsAction="ifRoom"
-        android:title="Show library"/>
+        android:title="@string/menu_show_library"/>
     <item
         android:id="@+id/recent_showrecent"
         android:alphabeticShortcut="l"
         android:icon="@drawable/recent_actionbar_recent"
         app:showAsAction="ifRoom"
-        android:title="Show recent"/>
+        android:title="@string/menu_show_library"/>
     <item
         android:id="@+id/recent_showbrowser"
         android:alphabeticShortcut="l"
         android:icon="@drawable/recent_actionbar_filebrowser"
         app:showAsAction="ifRoom"
-        android:title="Show files"/>
+        android:title="@string/menu_show_files"/>
     <item
         android:id="@+id/mainmenu_opds"
         android:alphabeticShortcut="o"

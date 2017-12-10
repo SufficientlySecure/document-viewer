@@ -31,4 +31,5 @@
     <string name="menu_force_portrait">"לאלץ את מסך לגובה"</string>
     <string name="menu_force_landscape">"לאלץ את מסך לרוחב"</string>
     <string name="menu_show_files">"Show files"</string> <!-- needs_translation -->
+    <string name="menu_search">"Search"</string> <!-- needs_translation -->
 </resources>

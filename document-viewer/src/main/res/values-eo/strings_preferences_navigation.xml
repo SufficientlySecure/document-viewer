@@ -5,7 +5,7 @@
     <string name="pref_navigation_category_summary">Agordoj de navigado kaj historio</string>
 
     <string name="pref_showbookmarksmenu_summary">Montri legosignojn en menuo</string>
-    <string name="pref_showbookmarksmenu_title">Montras legosignojn en navigada menuo</string>
+    <string name="pref_showbookmarksmenu_title">Montri legosignojn en navigada menuo</string>
 
     <string name="pref_link_highlight_summary">"Elektita koloro por marki ligilojn"</string>
     <string name="pref_link_highlight_title">"Marko de ligiloj"</string>

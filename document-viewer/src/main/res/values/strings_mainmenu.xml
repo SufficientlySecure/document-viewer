@@ -2,7 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="menu_close">Close</string>
-    <string name="menu_goto_page">Go to...</string>
+    <string name="menu_goto_page">Go to…</string>
     <string name="menu_outline">Outline</string>
     <string name="menu_zoom">Zoom</string>
     <string name="menu_nightmode">Day/Night</string>
@@ -26,14 +26,15 @@
     <string name="menu_fastsettings_menu">View...</string>
     <string name="menu_allsettings_menu">Settings...</string>
 
-    <string name="menu_share">Share...</string>
-    <string name="menu_openwith">Open with...</string>
+    <string name="menu_share">Share…</string>
+    <string name="menu_openwith">Open with…</string>
 
     <string name="menu_show_library">Show library</string>
     <string name="menu_show_recent">Show recent</string>
     <string name="menu_storages">Storages</string>
     <string name="menu_storages_filesystem">File System</string>
     <string name="menu_storages_external">SD Card</string>
+    <string name="menu_show_files">Show files</string>
 
     <string name="menu_force_portrait">Force portrait</string>
     <string name="menu_force_landscape">Force landscape</string>

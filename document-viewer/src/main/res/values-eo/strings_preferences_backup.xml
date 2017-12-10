@@ -5,10 +5,10 @@
     <string name="pref_backup_category_summary">Agordoj pri fari kaj restarigi sekurkopion</string>
 
     <string name="pref_backuponexit_title">Aŭtomate sekurkopii je fermado</string>
-    <string name="pref_backuponexit_summary">Aŭtomate sekurkopias agordojn je fermado de aplikaĵo</string>
+    <string name="pref_backuponexit_summary">Aŭtomate sekurkopii agordojn je fermado de aplikaĵo</string>
 
     <string name="pref_backuponbookclose_title">Aŭtomate sekurkopii je fermado de libro</string>
-    <string name="pref_backuponbookclose_summary">Aŭtomate sekurkopias agordojn je fermado de dokumento</string>
+    <string name="pref_backuponbookclose_summary">Aŭtomate sekurkopii agordojn je fermado de dokumento</string>
 
     <string name="pref_maxnumberofautobackups_title">Kiom da aŭtomataj sekurkopioj</string>
     <string name="pref_maxnumberofautobackups_summary">Maksimuma nombro da aŭtomataj sekurkopioj por teni</string>
@@ -16,8 +16,8 @@
     <string name="pref_bookbackuptype_title">Sekurkopii librajn agordojn</string>
     <string name="pref_bookbackuptype_summary">Sekurkopio de libraj agordoj</string>
 
-    <string name="list_bookbackuptype_none">Neniu</string>
-    <string name="list_bookbackuptype_recent">Lastaj</string>
-    <string name="list_bookbackuptype_all">Ĉiuj</string>
+    <string name="list_bookbackuptype_none">neniu</string>
+    <string name="list_bookbackuptype_recent">lastaj</string>
+    <string name="list_bookbackuptype_all">ĉiuj</string>
 
 </resources>

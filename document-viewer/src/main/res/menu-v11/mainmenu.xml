@@ -15,7 +15,7 @@
             <item
                 android:id="@+id/mainmenu_search"
                 android:icon="@drawable/viewer_menu_searchtext"
-                android:title="Search"/>
+                android:title="@string/menu_search"/>
             <item
                 android:id="@+id/mainmenu_bookmark"
                 android:icon="@drawable/viewer_menu_bookmark_add"

@@ -8,15 +8,15 @@
     <string name="pref_opds_downloaddir_summary">Elŝuti al</string>
 
     <string name="pref_opds_filterbooktypes_title">Filtri specojn de libroj</string>
-    <string name="pref_opds_filterbooktypes_summary">Kaŝas nesubtenatajn specojn de libroj</string>
+    <string name="pref_opds_filterbooktypes_summary">Kaŝi nesubtenatajn specojn de libroj</string>
 
     <string name="pref_opds_downloadarchives_title">Elŝuti densigitajn librojn</string>
-    <string name="pref_opds_downloadarchives_summary">Elŝutas zip-dosierajn librojn</string>
+    <string name="pref_opds_downloadarchives_summary">Elŝuti zip-dosierajn librojn</string>
 
     <string name="pref_opds_unpackarchives_title">Malpaki densigitajn librojn</string>
-    <string name="pref_opds_unpackarchives_summary">Malpakas zip-dosierajn librojn post elŝuto</string>
+    <string name="pref_opds_unpackarchives_summary">Malpaki zip-dosierajn librojn post elŝuto</string>
 
     <string name="pref_opds_deletearchives_title">Forigi densigitajn librojn</string>
-    <string name="pref_opds_deletearchives_summary">Forigas zip-dosierajn librojn post malpako</string>
+    <string name="pref_opds_deletearchives_summary">Forigi zip-dosierajn librojn post malpako</string>
 
 </resources>

@@ -30,5 +30,6 @@
 <!--<string name="menu_storages_external">"SD Card"</string>-->
     <string name="menu_force_portrait">"Форсувати портрет"</string>
     <string name="menu_force_landscape">"Форсувати альбом"</string>
-
+    <string name="menu_show_files">"Show files"</string> <!-- needs_translation -->
+    <string name="menu_search">"Search"</string> <!-- needs_translation -->
 </resources>

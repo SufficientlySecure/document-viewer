@@ -36,4 +36,6 @@
 
     <string name="menu_force_portrait">強制的に縦向き</string>
     <string name="menu_force_landscape">強制的に横向き</string>
+    
+    <string name="menu_show_files">"Show files"</string> <!-- needs_translation -->
 </resources>

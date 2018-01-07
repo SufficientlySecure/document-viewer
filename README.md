@@ -59,7 +59,7 @@ I am using the newest [Android Studio](http://developer.android.com/sdk/installi
 
 ## Font Pack
 
-To save space in the main app, additional fonts can be installed using the [Document Viewer Fontpack](https://github.com/dschuermann/document-viewer-fontpack).
+The [Document Viewer Fontpack](https://github.com/PrivacyApps/document-viewer-fontpack) is no longer supported. Our MuPDF patches to support this no longer apply cleanly, so support for the font pack was dropped.
 
 # Licenses
 Document Viewer is licensed under the GPLv3+.  

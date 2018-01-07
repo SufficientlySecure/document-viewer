@@ -32,7 +32,6 @@ public class AboutActivity extends AppCompatActivity {
     private static final Part[] PARTS = {
             // Start
             new Part(R.string.about_commmon_title, Format.HTML, "common.html"),
-            new Part(R.string.about_fonts_title, Format.HTML, "fonts.html"),
             new Part(R.string.about_license_title, Format.HTML, "license.html"),
             new Part(R.string.about_3dparty_title, Format.HTML, "3rdparty.html"),
             new Part(R.string.about_changelog_title, Format.WIKI, "changelog.wiki"),

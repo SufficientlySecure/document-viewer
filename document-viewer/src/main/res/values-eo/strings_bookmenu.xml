@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="bookmenu_open">Malfermi libron ĉe...</string>
+    <string name="bookmenu_open">Malfermi libron ĉe…</string>
     <string name="bookmenu_settings">Montri librajn agordojn</string>
     <string name="bookmenu_openbookshelf">Montri libroŝrankon</string>
     <string name="bookmenu_openbookfolder">Montri librujon</string>
-    <string name="bookmenu_recentgroup">Vakigi lastatempajn datumojn...</string>
+    <string name="bookmenu_recentgroup">Forviŝi lastatempajn datumojn…</string>
     <string name="bookmenu_removefromrecent">Forigi de lastatempaj</string>
-    <string name="bookmenu_cleardata">Vakigi kaŝmemoritajn datumojn</string>
+    <string name="bookmenu_cleardata">Forviŝi kaŝmemoritajn datumojn</string>
     <string name="bookmenu_deletesettings">Forigi librajn agordojn</string>
-    <string name="bookmenu_filegroup">Dosieraj operacioj...</string>
-    <string name="bookmenu_copy">Kopii libron al...</string>
-    <string name="bookmenu_rename">Alinomi libron...</string>
-    <string name="bookmenu_move">Movi libron al...</string>
+    <string name="bookmenu_filegroup">Dosieraj operacioj…</string>
+    <string name="bookmenu_copy">Kopii libron al…</string>
+    <string name="bookmenu_rename">Alinomi libron…</string>
+    <string name="bookmenu_move">Movi libron al…</string>
     <string name="bookmenu_delete">Forigi libron</string>
 
 </resources>

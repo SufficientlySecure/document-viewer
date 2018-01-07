@@ -2,13 +2,13 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="pref_scroll_category">Frapetoj, ŝovumoj kaj klavoj</string>
-    <string name="pref_scroll_category_summary">Elektu kiel la aparato respondos al frapetoj, ŝovumoj kaj klav-premoj</string>
+    <string name="pref_scroll_category_summary">Elekti kiel la aparato respondos al frapetoj, ŝovumoj kaj klav-premoj</string>
 
     <string name="pref_tapsenabled_title">Aktivigi frapetojn</string>
-    <string name="pref_tapsenabled_summary">Uzu \'Agordi frapetojn\' por difini frapet-regionojn kaj agojn</string>
+    <string name="pref_tapsenabled_summary">Uzu “agordi frapetojn” por difini frapet-regionojn kaj agojn</string>
 
     <string name="pref_scroll_title">Rulumada alto</string>
-    <string name="pref_scroll_summary">Agordu alton de rulumado por paĝoj, kiuj trograndas en ekrano (implicite: 50%%)</string>
+    <string name="pref_scroll_summary">Agordi alton de rulumado por paĝoj, kiuj trograndas en la ekrano (implicite: 50%%)</string>
 
     <string name="pref_touchdelay_title">Prokrasto de tuŝ-trakto</string>
     <string name="pref_touchdelay_summary">Prokrasto de tuŝ-trakto (en milisekundoj)</string>
@@ -17,9 +17,9 @@
     <string name="pref_animate_scrolling_summary">Animita rulumado en rulumada reĝimo</string>
 
     <string name="pref_volumekeyscrolling_title">Rulumi per son-klavoj</string>
-    <string name="pref_volumekeyscrolling_summary">Uzas sonfortecajn klavojn por rulumi anastataŭ por agordi sonfortecon</string>
+    <string name="pref_volumekeyscrolling_summary">Uzi sonfortecajn klavojn por rulumi anastataŭ por agordi sonfortecon</string>
 
     <string name="pref_tapfullscreen_title">Frapeto enigas plenekranon</string>
-    <string name="pref_tapfullscreen_summary">Ŝaltu plenekranon per frapi iam ajn ekstere frap-regiono aŭ ligilo</string>
+    <string name="pref_tapfullscreen_summary">Ŝalti plenekranon per frapi iam ajn ekstere frap-regiono aŭ ligilo</string>
 
 </resources>

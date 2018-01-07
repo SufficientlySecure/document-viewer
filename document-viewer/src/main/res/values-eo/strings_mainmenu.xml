@@ -2,38 +2,40 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="menu_close">Fermi</string>
-    <string name="menu_goto_page">Iri al...</string>
+    <string name="menu_goto_page">Iri al…</string>
     <string name="menu_outline">Skemo</string>
     <string name="menu_zoom">Pligrandigo</string>
     <string name="menu_nightmode">Taga/nokta</string>
     <string name="menu_settings">Ĉiuj agordoj</string>
-    <string name="menu_booksettings">Libraj agordoj</string>
-    <string name="menu_cleanrecent">Vakigi lastajn</string>
+    <string name="menu_booksettings">Agordoj de libro</string>
+    <string name="menu_cleanrecent">Forviŝi lastajn</string>
     <string name="menu_add_bookmark">Aldoni legosignon</string>
     <string name="menu_edit_bookmark">Redakti legosignon</string>
     <string name="menu_thumbnail">Agordi kiel miniaturon</string>
     <string name="menu_about">Pri</string>
     <string name="menu_tap_configuration">Agordi frapetojn</string>
     <string name="menu_key_bindings">Agordi klavojn</string>
-    <string name="menu_searchbook">Serĉi librojn</string>
+    <string name="menu_searchbook">Serĉi libron</string>
     <string name="menu_searchtext">Serĉi tekston</string>
     <string name="menu_show_options_menu">Montri menuon de agordoj</string>
     <string name="menu_backupsettings">Sekurkopio</string>
     <string name="menu_crop">Pritondi permane</string>
     <string name="menu_singlepage">Unuobla paĝo</string>
+    <string name="menu_search">Serĉi</string>
 
-    <string name="menu_navigation_menu">Navigado...</string>
-    <string name="menu_fastsettings_menu">Vido...</string>
-    <string name="menu_allsettings_menu">Agordoj...</string>
+    <string name="menu_navigation_menu">Navigado…</string>
+    <string name="menu_fastsettings_menu">Vido…</string>
+    <string name="menu_allsettings_menu">Agordoj…</string>
 
-    <string name="menu_share">Kunhavigi...</string>
-    <string name="menu_openwith">Malfermi per...</string>
+    <string name="menu_share">Kunhavigi…</string>
+    <string name="menu_openwith">Malfermi per…</string>
 
     <string name="menu_show_library">Montri bibliotekon</string>
     <string name="menu_show_recent">Montri lastajn</string>
     <string name="menu_storages">Memoroj</string>
     <string name="menu_storages_filesystem">Dosier-sistemo</string>
     <string name="menu_storages_external">SD-karto</string>
+    <string name="menu_show_files">Montri dosierojn</string>
 
     <string name="menu_force_portrait">Devigi vertikalan</string>
     <string name="menu_force_landscape">Devigi horizontalan</string>

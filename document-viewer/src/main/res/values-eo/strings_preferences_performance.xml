@@ -14,22 +14,22 @@
     <string name="pref_decoding_threads_summary">"Nombro da malkodantaj fadenoj"</string>
 
     <string name="pref_decodethread_priority_title">Prioritato de malkodanta fadeno</string>
-    <string name="pref_decodethread_priority_summary">Agordu prioritaton de malkodanta fadeno</string>
+    <string name="pref_decodethread_priority_summary">Agordi prioritaton de malkodanta fadeno</string>
 
     <string name="pref_drawthread_priority_title">Prioritato de GL-bildiganta fadeno</string>
-    <string name="pref_drawthread_priority_summary">Agordu prioritaton de GL-bildiganta (GL draw) fadeno</string>
+    <string name="pref_drawthread_priority_summary">Agordi prioritaton de GL-bildiganta (GL draw) fadeno</string>
 
-    <string name="list_thread_priority_lowest">Malplej alta</string>
-    <string name="list_thread_priority_lower">Malpli alta</string>
-    <string name="list_thread_priority_normal">Meza</string>
-    <string name="list_thread_priority_higher">Pli alta</string>
-    <string name="list_thread_priority_highest">Plej alta</string>
+    <string name="list_thread_priority_lowest">malplej alta</string>
+    <string name="list_thread_priority_lower">malpli alta</string>
+    <string name="list_thread_priority_normal">meza</string>
+    <string name="list_thread_priority_higher">pli alta</string>
+    <string name="list_thread_priority_highest">plej alta</string>
 
     <string name="pref_decodingonscroll_title">Malkodi dum rulumado</string>
-    <string name="pref_decodingonscroll_summary">Permesas malkodi paĝojn dum rulumado</string>
+    <string name="pref_decodingonscroll_summary">Permesi malkodi paĝojn dum rulumado</string>
 
     <string name="pref_bitmapsize_title">Grando de tekstura rastrumo</string>
-    <string name="pref_bitmapsize_summary">Agordu grandon de teksturaj elementoj</string>
+    <string name="pref_bitmapsize_summary">Agordi grandon de teksturaj elementoj</string>
 
     <string name="list_bitmapsize_64">"64 × 64"</string>
     <string name="list_bitmapsize_128">"128 × 128"</string>

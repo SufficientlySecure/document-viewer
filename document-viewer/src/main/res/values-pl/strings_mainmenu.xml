@@ -2,7 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="menu_close">Zamknij</string>
-    <string name="menu_goto_page">Idź do...</string>
+    <string name="menu_goto_page">Idź do…</string>
     <string name="menu_outline">Zarys</string>
     <string name="menu_zoom">Powiększenie</string>
     <string name="menu_nightmode">Dzienny/nocny</string>
@@ -21,21 +21,23 @@
     <string name="menu_backupsettings">Kopia zapasowa</string>
     <string name="menu_crop">Ręczne przycinanie</string>
     <string name="menu_singlepage">Pojedyncza strona</string>
+    <string name="menu_search">Wyszukaj</string>
 
-    <string name="menu_navigation_menu">Nawigacja...</string>
-    <string name="menu_fastsettings_menu">Widok...</string>
-    <string name="menu_allsettings_menu">Ustawienia...</string>
+    <string name="menu_navigation_menu">Nawigacja…</string>
+    <string name="menu_fastsettings_menu">Widok…</string>
+    <string name="menu_allsettings_menu">Ustawienia…</string>
 
-    <string name="menu_share">Udostępnij...</string>
-    <string name="menu_openwith">Otwórz za pomocą...</string>
+    <string name="menu_share">Udostępnij…</string>
+    <string name="menu_openwith">Otwórz za pomocą…</string>
 
     <string name="menu_show_library">Pokaż bibliotekę</string>
     <string name="menu_show_recent">Pokaż ostatnie</string>
     <string name="menu_storages">Pamięć</string>
     <string name="menu_storages_filesystem">System plików</string>
     <string name="menu_storages_external">Karta SD</string>
+    <string name="menu_show_files">Pokaż pliki</string>
 
     <string name="menu_force_portrait">Wymuś pionową</string>
-    <string name="menu_force_landscape">Wumuś poziomą</string>
+    <string name="menu_force_landscape">Wymuś poziomą</string>
     <string name="menu_reverse_orientation">Odwrócona orientacja</string>
 </resources>

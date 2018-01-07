@@ -30,5 +30,6 @@
 <!--<string name="menu_storages_external">"SD Card"</string>-->
     <string name="menu_force_portrait">"Forza modalità ritratto"</string>
     <string name="menu_force_landscape">"Forza modalità album"</string>
-
+    <string name="menu_show_files">"Show files"</string> <!-- needs_translation -->
+    <string name="menu_search">"Search"</string> <!-- needs_translation -->
 </resources>

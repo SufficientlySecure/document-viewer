@@ -23,28 +23,28 @@
 	<string name="list_lang_pl">Pola (Polski)</string>
 
     <string name="pref_loadrecent_title">Montri lastatempan</string>
-    <string name="pref_loadrecent_summary">Malfermas laste malfermitan libron je starto de programo</string>
+    <string name="pref_loadrecent_summary">Malfermi laste malfermitan libron je starto de programo</string>
 
     <string name="pref_confirmclose_title">Konfirmi fermon</string>
-    <string name="pref_confirmclose_summary">Petas pri fermo je premo de reen-butono</string>
+    <string name="pref_confirmclose_summary">Petai pri fermo je premo de reen-butono</string>
 
     <string name="pref_brightness_title">Heleco</string>
-    <string name="pref_brightness_summary">Agordu tutan helecon de ekrano (0&#8211;100)</string>
+    <string name="pref_brightness_summary">Agordi tutan helecon de ekrano (0&#8211;100)</string>
 
     <string name="pref_brightnessnightmodeonly_title">Heleco en nokta reĝimo</string>
-    <string name="pref_brightnessnightmodeonly_summary">Agordu helecon nur por nokta reĝimo</string>
+    <string name="pref_brightnessnightmodeonly_summary">Agordi helecon nur por nokta reĝimo</string>
 
     <string name="pref_keepscreenon_title">Igi ekranon ŝaltita</string>
-    <string name="pref_keepscreenon_summary">Ne malaktivigas ekranon dum legado (ne dormetas)</string>
+    <string name="pref_keepscreenon_summary">Ne malaktivigi ekranon dum legado (ne dormeti)</string>
 
     <string name="pref_fullscreen_title">Plenekrano</string>
-    <string name="pref_fullscreen_summary">Kaŝas statan breton</string>
+    <string name="pref_fullscreen_summary">Kaŝi statan breton</string>
 
     <string name="pref_title_title">Montri titolon</string>
-    <string name="pref_title_summary">Montras titolon de dokumento (remalfermo de dokumento postulata)</string>
+    <string name="pref_title_summary">Montri titolon de dokumento (remalfermo de dokumento postulata)</string>
 
     <string name="pref_pageintitle_title">Paĝo en titolo</string>
-    <string name="pref_pageintitle_summary">Montras paĝnumeron en titola breto</string>
+    <string name="pref_pageintitle_summary">Montri paĝnumeron en titola breto</string>
 
     <string name="pref_pagenumbertoastposition_title">Pozicio de paĝnumera atentigo</string>
     <string name="pref_pagenumbertoastposition_summary">Pozicio de paĝnumera atentigo</string>
@@ -52,14 +52,14 @@
     <string name="pref_zoomtoastposition_title">Pozicio de pligrandiga atentigo</string>
     <string name="pref_zoomtoastposition_summary">Pozicio de atentigo de pligrandigo (zomo)</string>
 
-    <string name="list_toastposition_invisible">Ne montri</string>
-    <string name="list_toastposition_lefttop">Maldekstra supra angulo</string>
-    <string name="list_toastposition_righttop">Dekstra supra angulo</string>
-    <string name="list_toastposition_leftbottom">Maldekstra malsupra angulo</string>
-    <string name="list_toastposition_bottom">Malsupre</string>
-    <string name="list_toastposition_righbottom">Dekstra malsupra angulo</string>
+    <string name="list_toastposition_invisible">ne montri</string>
+    <string name="list_toastposition_lefttop">maldekstra supra angulo</string>
+    <string name="list_toastposition_righttop">dekstra supra angulo</string>
+    <string name="list_toastposition_leftbottom">maldekstra malsupra angulo</string>
+    <string name="list_toastposition_bottom">malsupre</string>
+    <string name="list_toastposition_righbottom">dekstra malsupra angulo</string>
 
     <string name="pref_showanimicon_title">Montri movbildan piktogramon</string>
-    <string name="pref_showanimicon_summary">Montras movbildan aŭ ŝovadan piktogramon kiam movbildoj aŭ ŝovado estas aktivaj</string>
+    <string name="pref_showanimicon_summary">Montri movbildan aŭ ŝovadan piktogramon kiam movbildoj aŭ ŝovado estas aktivaj</string>
 
 </resources>

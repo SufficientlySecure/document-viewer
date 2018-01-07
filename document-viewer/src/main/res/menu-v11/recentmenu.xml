@@ -20,7 +20,7 @@
         android:alphabeticShortcut="l"
         android:icon="@drawable/recent_actionbar_recent"
         app:showAsAction="ifRoom"
-        android:title="@string/menu_show_library"/>
+        android:title="@string/menu_show_recent"/>
     <item
         android:id="@+id/recent_showbrowser"
         android:alphabeticShortcut="l"

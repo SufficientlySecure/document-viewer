@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-
     <string name="pref_scroll_category">"Antippen, wischen und Tasten"</string>
     <string name="pref_scroll_category_summary">"Einstellen, wie das Gerät auf Antippen und Wischen des Bildschirms sowie Tastendrücke reagiert"</string>
     <string name="pref_tapsenabled_title">"Antippen aktivieren"</string>
@@ -9,7 +8,10 @@
     <string name="pref_scroll_summary">"Höhe des Bilddurchlaufs auf Seiten, die nicht auf den Bildschirm passen"</string>
     <string name="pref_touchdelay_title">"Verzögerung Touch-Verarbeitung"</string>
     <string name="pref_touchdelay_summary">"Verzögerung für die Verarbeitung von Bildschirmberührungen (in Millisekunden)"</string>
-    <string name="pref_animate_scrolling_title">"Scroll-Animation"</string>-->
-    <string name="pref_animate_scrolling_summary">"Den Bildlauf animieren"</string>-->
-
+    <string name="pref_animate_scrolling_title">"Scroll-Animation"</string>
+    <string name="pref_animate_scrolling_summary">"Den Bildlauf animieren"</string>
+    <string name="pref_volumekeyscrolling_title">Lautstärketasten-Bildlauf</string>
+    <string name="pref_volumekeyscrolling_summary">Lautstärketasten zum Scrollen verwenden</string>
+    <string name="pref_tapfullscreen_title">Antippen schaltet Vollbildmodus um</string>
+    <string name="pref_tapfullscreen_summary">Vollbildmodus umschalten durch Antippen</string>
 </resources>

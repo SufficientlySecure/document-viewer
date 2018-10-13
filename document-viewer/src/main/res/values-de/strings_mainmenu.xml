@@ -8,10 +8,10 @@
     <string name="menu_nightmode">"Tag/Nacht"</string>
     <string name="menu_settings">"Alle Einstellungen"</string>
     <string name="menu_booksettings">"Bucheinstellungen"</string>
-    <string name="menu_cleanrecent">"Daten löschen"</string>
+    <string name="menu_cleanrecent">Verlauf leeren</string>
     <string name="menu_add_bookmark">"Lesezeichen setzen"</string>
     <string name="menu_edit_bookmark">"Lesezeichen bearbeiten"</string>
-    <string name="menu_thumbnail">"Als Deckblatt einstellen"</string>
+    <string name="menu_thumbnail">Als Deckblatt setzen</string>
     <string name="menu_about">"Info"</string>
     <string name="menu_tap_configuration">"Taps konfigurieren"</string>
     <string name="menu_key_bindings">"Tasten konfigurieren"</string>
@@ -30,6 +30,9 @@
     <string name="menu_storages_external">"SD-Karte"</string>
     <string name="menu_force_portrait">"Portrait erzwingen"</string>
     <string name="menu_force_landscape">"Album erzwingen"</string>
-    <string name="menu_show_files">"Show files"</string> <!-- needs_translation -->
-    <string name="menu_search">"Search"</string> <!-- needs_translation -->
+    <string name="menu_show_files">"Dateien anzeigen"</string>
+    <string name="menu_search">Suche</string>
+    <string name="menu_share">Teilen...</string>
+    <string name="menu_openwith">Öffnen mit...</string>
+    <string name="menu_reverse_orientation">Bildschirmausrichtung invertieren</string>
 </resources>

@@ -14,7 +14,7 @@
     <string name="list_rotation_sensor_portrait">"Erzwinge Hochformat; reagiere auf Umdrehen"</string>
     <string name="list_rotation_reverse_landscape">"Erzwinge umgekehrtes Querformat"</string>
     <string name="list_rotation_reverse_portrait">"Erzwinge umgekehrtes Hochformat"</string>
-    <string name="list_rotation_full_sensor">"Ganz nach Ausrichtungs-Fühler"</string>
+    <string name="list_rotation_full_sensor">Ganz nach Ausrichtungs-Sensor</string>
     <string name="pref_render_category">"Darstellung"</string>
     <string name="pref_render_category_summary">"Darstellungseinstellungen"</string>
     <string name="pref_book_category">"Bucheinstellungen"</string>
@@ -55,6 +55,10 @@
     <string name="pref_nightmode_summary">"Weiße Buchstaben auf schwarzem Hintergrund"</string>
     <string name="pref_posimages_in_nightmode_title">"Positiv-Abbildungen im Nachtmodus"</string>
     <string name="pref_posimages_in_nightmode_summary">"Graustufen-Abbildungen (Farben nicht umkehren)"</string>
+    <string name="pref_tint_summary">Seiten mit der unten angegeben Farbe einfärben</string>
+    <string name="pref_tint_color_title">Farbton</string>
+    <string name="pref_tint_title">Einfärbung</string>
+    <string name="pref_tint_color_summary">Farbe, mit der Seiten eingefärbt werden</string>
     <string name="pref_contrast_title">"Kontrast"</string>
     <string name="pref_contrast_summary">"Wert der Kontrast-Korrektur (0–1000, Voreinstellung: 100)"</string>
     <string name="pref_gamma_title">"Gamma"</string>
@@ -63,5 +67,6 @@
     <string name="pref_exposure_summary">"Wert der Belichtungskorrektur (0–200, Voreinstellung: 100)"</string>
     <string name="pref_autolevels_title">"Autom. Werte"</string>
     <string name="pref_autolevels_summary">"Verwende automatische Wertekorrektur"</string>
-
+    <string name="pref_rtl_title">Rechts nach Links</string>
+    <string name="pref_rtl_summary">Seitenreihenfolge für Waagrechte Schriftrolle und Einzelseitenmodus</string>
 </resources>

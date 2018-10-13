@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="bookmenu_open">"Öffne bei Seite ..."</string>
+    <string name="bookmenu_open">Öffne auf Seite ...</string>
     <string name="bookmenu_settings">"Bucheinstellungen"</string>
-    <string name="bookmenu_openbookshelf">"Büchergestell zeigen"</string>
+    <string name="bookmenu_openbookshelf">Bücherregal zeigen</string>
     <string name="bookmenu_openbookfolder">"Zeige Speicherort"</string>
     <string name="bookmenu_recentgroup">"Verlauf löschen"</string>
     <string name="bookmenu_removefromrecent">"Aus Verlauf ausschließen"</string>
     <string name="bookmenu_cleardata">"Cache leeren"</string>
-    <string name="bookmenu_deletesettings">"Buchteinstellungen entfernen"</string>
+    <string name="bookmenu_deletesettings">Bucheinstellungen entfernen</string>
     <string name="bookmenu_filegroup">"Dateioperationen"</string>
     <string name="bookmenu_copy">"Kopieren"</string>
     <string name="bookmenu_rename">"Umbenennen"</string>

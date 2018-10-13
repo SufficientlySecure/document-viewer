@@ -16,10 +16,14 @@
     <string name="list_lang_uk">"Ukrainisch (Український)"</string>
     <string name="list_lang_zh">"Chinesisch (中文简体)"</string>
     <string name="list_lang_iw">"Hebräisch (עברית)"</string>
+    <string name="list_lang_default">System-Sprache</string>
+    <string name="list_lang_ko">Koreanisch (한국어)</string>
+    <string name="list_lang_eo">Esperanto</string>
+    <string name="list_lang_pl">Polnisch (Polski)</string>
     <string name="pref_loadrecent_title">"Letztes öffnen"</string>
     <string name="pref_loadrecent_summary">"Beim Start das zuletzt gelesene Buch öffnen"</string>
     <string name="pref_confirmclose_title">"Schließen bestätigen"</string>
-    <string name="pref_confirmclose_summary">"Schließbestätigung nach dem Drücken von 'Zurück'"</string>
+    <string name="pref_confirmclose_summary">Schließen bestätigen nach Drücken von \'Zurück\'</string>
     <string name="pref_brightness_title">"Helligkeit"</string>
     <string name="pref_brightness_summary">"Einstellungen der Gesamtbildhelligkeit (0–100)"</string>
     <string name="pref_brightnessnightmodeonly_title">"Helligkeit im Nachtmodus"</string>
@@ -27,7 +31,7 @@
     <string name="pref_keepscreenon_title">"Bildschirm nicht ausschalten"</string>
     <string name="pref_keepscreenon_summary">"Nicht in den Schlafmodus umschalten"</string>
     <string name="pref_fullscreen_title">"Vollbildschirm"</string>
-    <string name="pref_fullscreen_summary">"Statuszeile ausblenden."</string>
+    <string name="pref_fullscreen_summary">Statuszeile ausblenden</string>
     <string name="pref_title_title">"Titel"</string>
     <string name="pref_title_summary">"Titel anzeigen. Neuöffnung des Dokuments erforderlich"</string>
     <string name="pref_pageintitle_title">"Seite im Titel"</string>

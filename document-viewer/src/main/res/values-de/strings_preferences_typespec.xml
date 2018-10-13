@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-
     <string name="pref_brfiletypespecific_title">"Sondereinstellungen"</string>
     <string name="pref_brfiletypespecific_summary">"Formatspezifische Einstellungen"</string>
-<!--<string name="pref_brfiletypespecificdjvu_title">"DJVU"</string>-->
-    <string name="pref_brfiletypespecificdjvu_summary">"Einstellungen betr. DJVU-Format"</string>
-    <string name="pref_djvu_rendering_mode_title">"Abzeichnungsmodus"</string>
-    <string name="pref_djvu_rendering_mode_summary">"Seitenabzeichnungsmodus"</string>
+    <string name="pref_brfiletypespecificdjvu_title">DJVU</string>-
+    <string name="pref_brfiletypespecificdjvu_summary">Einstellungen zum DJVU-Format</string>
+    <string name="pref_djvu_rendering_mode_title">Darstellungsmodus</string>
+    <string name="pref_djvu_rendering_mode_summary">Seitendarstellungsmodus</string>
     <string name="list_djvu_rendering_mode_0">"Farbe"</string>
     <string name="list_djvu_rendering_mode_1">"Schwarz/weiß"</string>
     <string name="list_djvu_rendering_mode_2">"Nur Farbe"</string>
     <string name="list_djvu_rendering_mode_3">"Nur Maske"</string>
     <string name="list_djvu_rendering_mode_4">"Nur Hintergrundschicht"</string>
     <string name="list_djvu_rendering_mode_5">"Nur Hauptschicht"</string>
-<!--<string name="pref_brfiletypespecificpdf_title">"PDF"</string>-->
-    <string name="pref_brfiletypespecificpdf_summary">"Einstellungen betr. PDF-Format"</string>
+    <string name="pref_brfiletypespecificpdf_title">"PDF"</string>
+    <string name="pref_brfiletypespecificpdf_summary">Einstellungen zum PDF-Format</string>
     <string name="pref_customdpi_title">"Angepasste DPI-Werte"</string>
-    <string name="pref_customdpi_summary">"Angepasste DPI('Dot Per Inch')-Werte unten festlegen"</string>
+    <string name="pref_customdpi_summary">Angepasste DPI(\'Pixel pro Zoll\')-Werte unten festlegen</string>
     <string name="pref_xdpi_title">"x-DPI"</string>
     <string name="pref_xdpi_summary">"Horizontaler (in x-Richtung) DPI-Wert"</string>
     <string name="pref_ydpi_title">"y-DPI"</string>
@@ -34,12 +33,12 @@
     <string name="pref_systemfontpack">"Android-Standardschriftarten verwenden"</string>
     <string name="pref_slowcmyk_title">"Langsames CMYK"</string>
     <string name="pref_slowcmyk_summary">"Verwende langsamen aber genauen Algorithmus für CMYK-nach-RGB"</string>
-<!--<string name="pref_brfiletypespecificfb2_title">"FB2"</string>-->
-    <string name="pref_brfiletypespecificfb2_summary">"Einstellungen betr. FB2-Format"</string>
+    <string name="pref_brfiletypespecificfb2_title">FB2</string>
+    <string name="pref_brfiletypespecificfb2_summary">Einstellungen zum FB2-Format</string>
     <string name="pref_fb2_xmlparser_title">"XML-Parser"</string>
     <string name="pref_fb2_xmlparser_summary">"Routine für XML-Analyse"</string>
     <string name="list_fb2_xmlparser_vtd_ex">"Basierend auf VTD"</string>
-    <string name="list_fb2_xmlparser_duckbill">"Doof &amp; Dreckig"</string>
+    <string name="list_fb2_xmlparser_duckbill">Dumm & Dreckig</string>
     <string name="pref_fontsize_title">"Schriftgröße"</string>
     <string name="pref_fontsize_summary">"Ausgangsschriftgöße"</string>
     <string name="pref_fb2fontpack_title">"FB2-Schriftart"</string>
@@ -50,7 +49,7 @@
     <string name="list_fontsize_large">"Groß"</string>
     <string name="list_fontsize_huge">"Riesig"</string>
     <string name="pref_fb2hyphen_title">"Silbentrennung einschalten"</string>
-    <string name="pref_fb2hyphen_summary">"Experimentelle Anwendung von Silbentrennung"</string>
+    <string name="pref_fb2hyphen_summary">Experimentelle Silbentrennungsmethode</string>
     <string name="pref_fb2cacheimages_title">"Bilder zwischenspeichern"</string>
     <string name="pref_fb2cacheimages_summary">"Zur Entlastung des Arbeitsspeichers Dokument-Abbildungen temporär auf Datenträger ablegen"</string>
 

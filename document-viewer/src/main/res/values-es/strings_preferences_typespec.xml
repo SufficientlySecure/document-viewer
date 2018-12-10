@@ -3,55 +3,76 @@
 
     <string name="pref_brfiletypespecific_title">"Ajustes específicos"</string>
     <string name="pref_brfiletypespecific_summary">"Ajustes específicos para cada formato"</string>
-<!--<string name="pref_brfiletypespecificdjvu_title">"DJVU"</string>-->
+
+    <string name="pref_brfiletypespecificdjvu_title">DJVU</string>
     <string name="pref_brfiletypespecificdjvu_summary">"Ajustes para DJVU"</string>
+
     <string name="pref_djvu_rendering_mode_title">"Modo de representación"</string>
     <string name="pref_djvu_rendering_mode_summary">"Modo de representación de la página"</string>
-    <string name="list_djvu_rendering_mode_0" translatable="true">"Color"</string>
+
+    <string name="list_djvu_rendering_mode_0">"Color"</string>
     <string name="list_djvu_rendering_mode_1">"Blanco y Negro"</string>
     <string name="list_djvu_rendering_mode_2">"Sólo el color"</string>
     <string name="list_djvu_rendering_mode_3">"Sólo la máscara"</string>
     <string name="list_djvu_rendering_mode_4">"Sólo la capa de fondo"</string>
     <string name="list_djvu_rendering_mode_5">"Sólo la capa principal"</string>
-<!--<string name="pref_brfiletypespecificpdf_title">"PDF"</string>-->
+
+    <string name="pref_brfiletypespecificpdf_title">PDF</string>
     <string name="pref_brfiletypespecificpdf_summary">"Opciones específicas para PDF"</string>
+
     <string name="pref_customdpi_title">"Personalizar DPI"</string>
     <string name="pref_customdpi_summary">"Definir los valores personalizados de DPI a continuación"</string>
+
     <string name="pref_xdpi_title">"DPI en X"</string>
     <string name="pref_xdpi_summary">"DPI Horizontal (dirección X)"</string>
+
     <string name="pref_ydpi_title">"DPI en Y"</string>
     <string name="pref_ydpi_summary">"DPI Vertical (dirección Y)"</string>
+
     <string name="pref_monofontpack_title">"Fuentes Monospace"</string>
     <string name="pref_monofontpack_summary">"Define el paquete de fuentes monospace a utilizar"</string>
+
     <string name="pref_sansfontpack_title">"Fuentes Sans"</string>
     <string name="pref_sansfontpack_summary">"Define el paquete de fuentes sans a utilizar"</string>
+
     <string name="pref_seriffontpack_title">"Fuentes Serif"</string>
     <string name="pref_seriffontpack_summary">"Define el paquete de fuentes serif a utilizar"</string>
+
     <string name="pref_symbolfontpack_title">"Fuentes Symbol"</string>
     <string name="pref_symbolfontpack_summary">"Define el paquete de fuentes symbol a utilizar"</string>
+
     <string name="pref_dingbatfontpack_title">"Fuentes Dingbat"</string>
     <string name="pref_dingbatfontpack_summary">"Define el paquete de fuentes dingbat a utilizar"</string>
+
     <string name="pref_systemfontpack">"Fuentes Android por defecto"</string>
+
     <string name="pref_slowcmyk_title">"CMYK lento"</string>
     <string name="pref_slowcmyk_summary">"Emplear el algoritmo de conversión lento pero preciso CMYK a RGB"</string>
-<!--<string name="pref_brfiletypespecificfb2_title">"FB2"</string>-->
+
+    <string name="pref_brfiletypespecificfb2_title">FB2</string>
     <string name="pref_brfiletypespecificfb2_summary">"Opciones específicas para FB2"</string>
+
     <string name="pref_fb2_xmlparser_title">"Intérprete XML"</string>
     <string name="pref_fb2_xmlparser_summary">"Intérprete XML"</string>
+
     <string name="list_fb2_xmlparser_vtd_ex">"Basado en VTD"</string>
     <string name="list_fb2_xmlparser_duckbill">"Tonto &amp; Sucio"</string>
+
     <string name="pref_fontsize_title">"Tamaño de la fuente"</string>
     <string name="pref_fontsize_summary">"Tamaño base de la fuente"</string>
+
     <string name="pref_fb2fontpack_title">"Fuentes FB2"</string>
     <string name="pref_fb2fontpack_summary">"Define el paquete de fuentes para el renderizado de FB2"</string>
+
     <string name="list_fontsize_tiny">"Diminuta"</string>
     <string name="list_fontsize_small">"Pequeña"</string>
-    <string name="list_fontsize_normal" translatable="true">"Normal"</string>
+    <string name="list_fontsize_normal">"Normal"</string>
     <string name="list_fontsize_large">"Grande"</string>
     <string name="list_fontsize_huge">"Enorme"</string>
+
     <string name="pref_fb2hyphen_title">"Habilitar separación silábica"</string>
     <string name="pref_fb2hyphen_summary">"Activar el soporte experimental para la separación silábica"</string>
+
     <string name="pref_fb2cacheimages_title">"Caché de imágenes"</string>
     <string name="pref_fb2cacheimages_summary">"Almacenar temporalmente las images de los documentos en disco para reducir el consumo de memoria"</string>
-
 </resources>

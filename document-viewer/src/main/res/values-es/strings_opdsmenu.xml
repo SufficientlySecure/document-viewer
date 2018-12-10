@@ -7,9 +7,12 @@
     <string name="opdsnextfolder">"Sección siguiente"</string>
     <string name="opds_feed_add">"Añadir"</string>
     <string name="opdsclose">"Cerrar"</string>
+
     <string name="opds_book_download">"Descargar"</string>
+
     <string name="opdsgoto">"Abrir"</string>
+
     <string name="opds_feed_edit">"Modificar"</string>
     <string name="opds_feed_delete">"Borrar"</string>
-
+    
 </resources>

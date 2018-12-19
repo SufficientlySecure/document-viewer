@@ -38,7 +38,7 @@
     <string name="pref_fb2_xmlparser_title">"XML-Parser"</string>
     <string name="pref_fb2_xmlparser_summary">"Routine für XML-Analyse"</string>
     <string name="list_fb2_xmlparser_vtd_ex">"Basierend auf VTD"</string>
-    <string name="list_fb2_xmlparser_duckbill">Dumm & Dreckig</string>
+    <string name="list_fb2_xmlparser_duckbill">Dumm &amp; Dreckig</string>
     <string name="pref_fontsize_title">"Schriftgröße"</string>
     <string name="pref_fontsize_summary">"Ausgangsschriftgöße"</string>
     <string name="pref_fb2fontpack_title">"FB2-Schriftart"</string>

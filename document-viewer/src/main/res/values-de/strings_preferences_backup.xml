@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="pref_backup_category">Sichern & Wiederherstellen</string>
+    <string name="pref_backup_category">"Sichern &amp; Wiederherstellen"</string>
     <string name="pref_backup_category_summary">"Optionen zum Sichern und Wiederherstellen"</string>
     <string name="pref_backuponexit_title">"Autom. Sichern beim Verlassen"</string>
     <string name="pref_backuponexit_summary">"Sichere die Einstellungen automatisch beim Verlassen der Anwendung"</string>

@@ -2,8 +2,8 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string translatable="false" name="pref_pagesinmemory_id">pagesinmemory</string>
-    <string translatable="false" name="pref_pagesinmemory_defvalue">0</string>
-    <string translatable="false" name="pref_pagesinmemory_minvalue">0</string>
+    <string translatable="false" name="pref_pagesinmemory_defvalue">4</string>
+    <string translatable="false" name="pref_pagesinmemory_minvalue">1</string>
     <string translatable="false" name="pref_pagesinmemory_maxvalue">16</string>
 
     <string translatable="false" name="pref_decodethread_priority_id">decodethread_priority</string>

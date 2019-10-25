@@ -1,67 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="pref_rotation_title">"Modo de rotación"</string>
-    <string name="pref_rotation_summary">"Cómo actúa la rotación"</string>
-    <string name="list_rotation_unspecified">"Sin especificar"</string>
-    <string name="list_rotation_land">"Forzar apaisado"</string>
-    <string name="list_rotation_port">"Forzar retrato"</string>
-    <string name="list_rotation_user">"Usuario"</string>
-    <string name="list_rotation_behind">"Heredar del fondo"</string>-->
-    <string name="list_rotation_auto">"Automático"</string>
-    <string name="list_rotation_nosensor">"Pasar de sensores"</string>
-    <string name="list_rotation_sensor_landscape">"Sensor apaisado"</string>
-    <string name="list_rotation_sensor_portrait">"Sensor retrato"</string>
-    <string name="list_rotation_reverse_landscape">"Modo apaisado invertido"</string>
-    <string name="list_rotation_reverse_portrait">"Modo retrato invertido"</string>
-    <string name="list_rotation_full_sensor">"Sensor completo"</string>
-    <string name="pref_render_category">"Representación"</string>
-    <string name="pref_render_category_summary">"Configuración de la Representación"</string>
-    <string name="pref_book_category">"Configuración del libro"</string>
-    <string name="pref_book_category_summary">"Configuración para el libro actual"</string>
-    <string name="pref_firstpageoffset_title">"Distancia de primera página"</string>
-    <string name="pref_firstpageoffset_summary">"Indice de la primera página presentada al usuario"</string>-->
-    <string name="pref_splitpages_title">"Dividir páginas"</string>
-    <string name="pref_splitpages_summary">"Dividir páginas apaisadas en dos de tipo retrato"</string>
-    <string name="pref_splitpages_rtl_title">"Dividir páginas derecha-a-izquierda"</string>
-    <string name="pref_splitpages_rtl_summary">"Dividir páginas apaisadas con dirección derecha-a-izquierda en dos de tipo retrato"</string>
-    <string name="pref_croppages_title">"Recortar las páginas"</string>
-    <string name="pref_croppages_summary">"Recortar los márgenes de las páginas (experimental)"</string>
-    <string name="pref_viewmode_title">"Modo de visualizado"</string>
-    <string name="pref_viewmode_summary">"Cómo visualizar el paginado del documento"</string>
-    <string name="list_viewmode_vertical_scroll">"Desplazamiento vertical"</string>
-    <string name="list_viewmode_horizontal_scroll">"Desplazamiento horizontal"</string>
-    <string name="list_viewmode_single_page">"Página única"</string>
-    <string name="pref_singlepage_category">"Configuración de página única"</string>
-    <string name="pref_singlepage_category_summary">"Ajustes para el modo de página única"</string>
-    <string name="pref_align_title">"Modo de alineación de página"</string>
-    <string name="pref_align_summary">"Cómo alinear las páginas"</string>
-    <string name="list_align_by_width">"Según anchura"</string>
-    <string name="list_align_by_height">"Según altura"</string>
-    <string name="list_align_auto">"Automático"</string>
-    <string name="pref_animationtype_title">"Animación"</string>
-    <string name="pref_animationtype_summary">"Seleccione el tipo de animación para las transiciones"</string>
-    <string name="list_animation_none">"Ninguno"</string>
-    <string name="list_animation_curler_simple">"Transición simple"</string>
-    <string name="list_animation_curler_dynamic">"Transición dinámica"</string>
-    <string name="list_animation_curler_natural">"Transición natural"</string>
-    <string name="list_animation_slider">"Desplazamiento"</string>
-    <string name="list_animation_fader">"Fundido"</string>
-    <string name="list_animation_squeezer">"Compresión"</string>
-    <string name="list_animation_slider2">"Otro desplazamiento"</string>
-    <string name="pref_postprocessing_category">"Efectos post–proceso"</string>
-    <string name="pref_postprocessing_summary">"Efectos de post–procesado"</string>
-    <string name="pref_nightmode_title">"Modo nocturno"</string>
-    <string name="pref_nightmode_summary">"Letras blancas sobre fondo negro"</string>
-    <string name="pref_posimages_in_nightmode_title">"Imágenes positivas en modo nocturno"</string>
-    <string name="pref_posimages_in_nightmode_summary">"Mostrar las imágenes en escala de grises en modo nocturno (no invertir los colores de la imagen)"</string>
-    <string name="pref_contrast_title">"Contraste"</string>
-    <string name="pref_contrast_summary">"Nivel de corrección de contraste (0–1000, 100 por defecto)"</string>
-    <string name="pref_gamma_title">"Gamma"</string>
-    <string name="pref_gamma_summary">"Nivel de corrección de gamma (0–200, 100 por defecto)"</string>
-    <string name="pref_exposure_title">"Exposición"</string>
-    <string name="pref_exposure_summary">"Nivel de corrección de exposición (0–200, 100 por defecto)"</string>
-    <string name="pref_autolevels_title">"Auto ajustar niveles"</string>
-    <string name="pref_autolevels_summary">"Ajustar automáticamente los niveles de corrección"</string>
+    <string name="pref_rotation_title">Modo de rotación</string>
+    <string name="pref_rotation_summary">Cómo actúa la rotación</string>
 
+    <string name="list_rotation_unspecified">Sin especificar</string>
+    <string name="list_rotation_land">Forzar apaisado</string>
+    <string name="list_rotation_port">Forzar retrato</string>
+    <string name="list_rotation_user">Usuario</string>
+    <string name="list_rotation_behind">Heredar del fondo<string>
+    <string name="list_rotation_auto">Automático</string>
+    <string name="list_rotation_nosensor">Sin sensor</string>
+    <string name="list_rotation_sensor_landscape">Forzar apaisado pero sensor de inversión</string>
+    <string name="list_rotation_sensor_portrait">Forzar retrato pero sensor de inversión</string>
+    <string name="list_rotation_reverse_landscape">Modo apaisado invertido</string>
+    <string name="list_rotation_reverse_portrait">Modo retrato invertido</string>
+    <string name="list_rotation_full_sensor">Sensor completo</string>
+
+    <string name="pref_render_category">Representación</string>
+    <string name="pref_render_category_summary">Configuración de la Representación</string>
+
+    <string name="pref_book_category">Configuración del libro</string>
+    <string name="pref_book_category_summary">Configuración para el libro actual</string>
+
+    <string name="pref_firstpageoffset_title">Distancia de primera página</string>
+    <string name="pref_firstpageoffset_summary">Índice de la primera página presentada al usuario<string>
+
+    <string name="pref_splitpages_title">Dividir páginas</string>
+    <string name="pref_splitpages_summary">Dividir páginas apaisadas en dos de tipo retrato</string>
+
+    <string name="pref_splitpages_rtl_title">Dividir páginas derecha-a-izquierda</string>
+    <string name="pref_splitpages_rtl_summary">Dividir páginas apaisadas con dirección derecha-a-izquierda en dos de tipo retrato</string>
+
+    <string name="pref_croppages_title">Recortar las páginas</string>
+    <string name="pref_croppages_summary">Recortar los márgenes de las páginas para maximizar el contenido mostrado</string>
+
+    <string name="pref_viewmode_title">Modo de visualizado</string>
+    <string name="pref_viewmode_summary">Visualizar el documento como páginas únicas o como un desplazamiento continuo</string>
+
+    <string name="list_viewmode_vertical_scroll">Desplazamiento vertical</string>
+    <string name="list_viewmode_horizontal_scroll">Desplazamiento horizontal</string>
+    <string name="list_viewmode_single_page">Página única</string>
+
+    <string name="pref_singlepage_category">Configuración de página única</string>
+    <string name="pref_singlepage_category_summary">Ajustes para el modo de página única</string>
+
+    <string name="pref_align_title">Modo de alineación de página</string>
+    <string name="pref_align_summary">Cómo alinear las páginas</string>
+
+    <string name="list_align_by_width">Según anchura</string>
+    <string name="list_align_by_height">Según altura</string>
+    <string name="list_align_auto">Automático</string>
+
+    <string name="pref_animationtype_title">Transición de páginas</string>
+    <string name="pref_animationtype_summary">Seleccione la animación para las transiciones en el modo de página única</string>
+
+    <string name="list_animation_none">Ninguno</string>
+    <string name="list_animation_curler_simple">Transición simple</string>
+    <string name="list_animation_curler_dynamic">Transición dinámica</string>
+    <string name="list_animation_curler_natural">Transición natural</string>
+    <string name="list_animation_slider">Desplazamiento</string>
+    <string name="list_animation_fader">Fundido</string>
+    <string name="list_animation_squeezer">Compresión</string>
+    <string name="list_animation_slider2">Otro desplazamiento</string>
+
+    <string name="pref_postprocessing_category">Efectos post&#8211;proceso</string>
+    <string name="pref_postprocessing_summary">Efectos adicionales para mejorar la visualización de páginas</string>
+
+    <string name="pref_nightmode_title">Modo nocturno</string>
+    <string name="pref_nightmode_summary">Letras blancas sobre fondo negro (negativo de imagen)</string>
+
+    <string name="pref_posimages_in_nightmode_title">Imágenes positivas en modo nocturno</string>
+    <string name="pref_posimages_in_nightmode_summary">Mostrar las imágenes en escala de grises en modo nocturno (no invertir los colores de la imagen)</string>
+
+    <string name="pref_tint_title">Tinte</string>
+    <string name="pref_tint_summary">Teñir el color de la página usando el color especificado abajo</string>
+
+    <string name="pref_tint_color_title">Color del tinte</string>
+    <string name="pref_tint_color_summary">Color con el que teñir las páginas</string>
+
+    <string name="pref_contrast_title">Contraste</string>
+    <string name="pref_contrast_summary">Nivel de corrección de contraste (0 &#8211; 1000, 100 por defecto)</string>
+
+    <string name="pref_gamma_title">Gamma</string>
+    <string name="pref_gamma_summary">Nivel de corrección de gamma (0 &#8211; 200, 100 por defecto)</string>
+
+    <string name="pref_exposure_title">Exposición</string>
+    <string name="pref_exposure_summary">Nivel de corrección de exposición (0 &#8211; 200, 100 por defecto)</string>
+
+    <string name="pref_autolevels_title">Auto ajustar niveles</string>
+    <string name="pref_autolevels_summary">Ajustar automáticamente los niveles de corrección</string>
+
+    <string name="pref_rtl_title">Derecha-a-izquierda</string>
+    <string name="pref_rtl_summary">Orden de página para modos de desplazamiento horizontal y de página única</string>
 </resources>

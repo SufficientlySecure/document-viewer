@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="opdsupfolder">"Arriba"</string>
-    <string name="opdsrefreshfolder">"Refrescar"</string>
-    <string name="opdsprevfolder">"Sección anterior"</string>
-    <string name="opdsnextfolder">"Sección siguiente"</string>
-    <string name="opds_feed_add">"Añadir"</string>
-    <string name="opdsclose">"Cerrar"</string>
-    <string name="opds_book_download">"Descargar"</string>
-    <string name="opdsgoto">"Abrir"</string>
-    <string name="opds_feed_edit">"Modificar"</string>
-    <string name="opds_feed_delete">"Borrar"</string>
+    <string name="opdsupfolder">Arriba</string>
+    <string name="opdsrefreshfolder">Refrescar</string>
+    <string name="opdsprevfolder">Sección anterior</string>
+    <string name="opdsnextfolder">Sección siguiente</string>
+    <string name="opds_feed_add">Añadir</string>
+    <string name="opdsclose">Cerrar</string>
 
+    <string name="opds_book_download">Descargar</string>
+
+    <string name="opdsgoto">Abrir</string>
+
+    <string name="opds_feed_edit">Modificar</string>
+    <string name="opds_feed_delete">Borrar</string>
+    
 </resources>

@@ -1,35 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="pref_performance_category">"Ajustes de rendimiento"</string>
-    <string name="pref_performance_category_summary">"Mejorar el rendimiento ajustando determinados parámetros"</string>
-    <string name="pref_pagesinmemory_title">"Páginas en memoria"</string>
-    <string name="pref_pagesinmemory_summary">"Número de páginas a almacenar en memoria"</string>
-    <string name="pref_lowlevel_category">"Preferencias de bajo nivel"</string>
-    <string name="pref_lowlevel_category_summary">"Preferencias de bajo nivel para la aplicación (se aplican tras recargar el documento)"</string>
-    <string name="pref_decoding_threads_title">"Hilos para la decodificación"</string>
-    <string name="pref_decoding_threads_summary">"Número de hilos usados en el proceso de decodificación"</string>
-    <string name="pref_decodethread_priority_title">"Prioridad del hilo de decodificación"</string>
-    <string name="pref_decodethread_priority_summary">"Define la prioridad del hilo encargado de la decodificación"</string>
-    <string name="pref_drawthread_priority_title">"Prioridad del hilo de dibujo"</string>
-    <string name="pref_drawthread_priority_summary">"Define la prioridad del hilo encargado del dibujo en pantalla"</string>
-    <string name="list_thread_priority_lowest">"Baja"</string>
-    <string name="list_thread_priority_lower">"Debajo de lo normal"</string>
-    <string name="list_thread_priority_normal" translatable="true">"Normal"</string>
-    <string name="list_thread_priority_higher">"Arriba de lo normal"</string>
-    <string name="list_thread_priority_highest">"Alta"</string>
-    <string name="pref_decodingonscroll_title">"Decodificar durante desplazamiento"</string>-->
-    <string name="pref_decodingonscroll_summary">"Permitir la decodificación de páginas cuando este desplazando o hojeando en el documento."</string>
-    <string name="pref_bitmapsize_title">"Tamaño de la texturas"</string>
-    <string name="pref_bitmapsize_summary">"Define el tamaño de las texturas"</string>
-<!--<string name="list_bitmapsize_64">"64 * 64"</string>-->
-<!--<string name="list_bitmapsize_128">"128 * 128"</string>-->
-<!--<string name="list_bitmapsize_256">"256 * 256"</string>-->
-<!--<string name="list_bitmapsize_512">"512 * 512"</string>-->
-<!--<string name="list_bitmapsize_1024">"1024 * 1024"</string>-->
-    <string name="pref_heappreallocate_title">"Reserva de Heap"</string>
-    <string name="pref_heappreallocate_summary">"Tamaño en MB de la reserva de Heap durante el inicio de la aplicación"</string>
-    <string name="pref_pdfstoragesize_title">"Tamaño de almacenamiento interno de MuPDF"</string>
-    <string name="pref_pdfstoragesize_summary">"Tamaño en MB para el almacenamiento interno de MuPDF"</string>
+    <string name="pref_performance_category">Ajustes de rendimiento</string>
+    <string name="pref_performance_category_summary">Mejorar el rendimiento ajustando determinados parámetros</string>
+
+    <string name="pref_pagesinmemory_title">Páginas en memoria</string>
+    <string name="pref_pagesinmemory_summary">Número de páginas a almacenar en memoria</string>
+
+    <string name="pref_lowlevel_category">Preferencias de bajo nivel</string>
+    <string name="pref_lowlevel_category_summary">Preferencias de bajo nivel para la aplicación (se aplican tras recargar el documento)</string>
+
+    <string name="pref_decoding_threads_title">Hilos para la decodificación</string>
+    <string name="pref_decoding_threads_summary">Número de hilos usados en el proceso de decodificación</string>
+
+    <string name="pref_decodethread_priority_title">Prioridad del hilo de decodificación</string>
+    <string name="pref_decodethread_priority_summary">Define la prioridad del hilo encargado de la decodificación</string>
+
+    <string name="pref_drawthread_priority_title">Prioridad del hilo de dibujo</string>
+    <string name="pref_drawthread_priority_summary">Define la prioridad del hilo encargado del dibujo en pantalla</string>
+
+    <string name="list_thread_priority_lowest">La más baja</string>
+    <string name="list_thread_priority_lower">Más baja</string>
+    <string name="list_thread_priority_normal">Normal</string>
+    <string name="list_thread_priority_higher">Alta</string>
+    <string name="list_thread_priority_highest">La más alta</string>
+
+    <string name="pref_decodingonscroll_title">Decodificar durante desplazamiento<string>
+    <string name="pref_decodingonscroll_summary">Permitir la decodificación de páginas cuando este desplazando o hojeando en el documento.</string>
+
+    <string name="pref_bitmapsize_title">Tamaño de la texturas</string>
+    <string name="pref_bitmapsize_summary">Define el tamaño de las texturas</string>
+
+    <string name="list_bitmapsize_64">64 x 64<string>
+    <string name="list_bitmapsize_128">128 x 128<string>
+    <string name="list_bitmapsize_256">256 x 256<string>
+    <string name="list_bitmapsize_512">512 x 512<string>
+    <string name="list_bitmapsize_1024">1024 x 1024<string>
+
+    <string name="pref_heappreallocate_title">Reserva de Heap</string>
+    <string name="pref_heappreallocate_summary">Tamaño en megabytes de la reserva de Heap durante el inicio de la aplicación</string>
+
+    <string name="pref_pdfstoragesize_title">Tamaño de almacenamiento interno de MuPDF</string>
+    <string name="pref_pdfstoragesize_summary">Tamaño en megabytes para el almacenamiento interno de MuPDF</string>
 
 </resources>

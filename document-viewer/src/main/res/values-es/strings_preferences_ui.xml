@@ -1,48 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="pref_ui_category">"Interfaz de usuario"</string>
-    <string name="pref_ui_category_summary">"Configuración de la interfaz de usuario"</string>
-    <string name="pref_lang_title">"Idioma"</string>
-    <string name="pref_lang_summary">"Idioma para la interfaz de usuario (necesario reiniciar)"</string>
-    <string name="list_lang_default">"Sistema"</string>
-    <string name="list_lang_en">"Inglés (English)"</string>
-    <string name="list_lang_de">"Alemán (Deutsch)"</string>
-    <string name="list_lang_es">"Español"</string>
-    <string name="list_lang_fr">"Francés (Française)"</string>
-    <string name="list_lang_it">"Italiano (Italiano)"</string>
-    <string name="list_lang_nl">"Holandés (Nederlands)"</string>
-    <string name="list_lang_ru">"Ruso (Русский)"</string>
-    <string name="list_lang_uk">"Ukraniano (Український)"</string>
-    <string name="list_lang_zh">"Chino (中文简体)"</string>
-    <string name="list_lang_iw">"Hebreo (עברית)"</string>
-    <string name="pref_loadrecent_title">"Abrir reciente"</string>
-    <string name="pref_loadrecent_summary">"Al arrancar, abrir automáticamente el último libro"</string>
-    <string name="pref_confirmclose_title">"Confirmar cerrar"</string>
-    <string name="pref_confirmclose_summary">"Confirmar el cierre al presionar Volver"</string>
-    <string name="pref_brightness_title">"Brillo"</string>
-    <string name="pref_brightness_summary">"Establecer la Intensidad general de la imagen (0–100)"</string>
-    <string name="pref_brightnessnightmodeonly_title">"Brillo en modo nocturno"</string>
-    <string name="pref_brightnessnightmodeonly_summary">"Aplicar la configuración de brillo sólo para el modo nocturno"</string>
-    <string name="pref_keepscreenon_title">"No apagar la pantalla"</string>
-    <string name="pref_keepscreenon_summary">"Mantener la pantalla siempre encendida"</string>
-    <string name="pref_fullscreen_title">"Pantalla completa"</string>
-    <string name="pref_fullscreen_summary">"Ocultar la barra de estado."</string>
-    <string name="pref_title_title">"Mostrar título"</string>
-    <string name="pref_title_summary">"Mostrar título. Se necesita reabrir el documento"</string>
-    <string name="pref_pageintitle_title">"Página en el título"</string>
-    <string name="pref_pageintitle_summary">"Mostrar número de página actual en el encabezado"</string>
-    <string name="pref_pagenumbertoastposition_title">"Posición del número de página"</string>
-    <string name="pref_pagenumbertoastposition_summary">"Posición de la tostada con el número de página"</string>
-    <string name="pref_zoomtoastposition_title">"Posición del aumento"</string>
-    <string name="pref_zoomtoastposition_summary">"Posición de la tostada con el aumento aplicado"</string>
-    <string name="list_toastposition_invisible" translatable="true">"Invisible"</string>
-    <string name="list_toastposition_lefttop">"Esquina superior izquierda"</string>
-    <string name="list_toastposition_righttop">"Esquina superior derecha"</string>
-    <string name="list_toastposition_leftbottom">"Esquina inferior izquierda"</string>
-    <string name="list_toastposition_bottom">"Zona inferior de la pantalla"</string>
-    <string name="list_toastposition_righbottom">"Esquina inferior derecha"</string>
-    <string name="pref_showanimicon_title">"Mostrar icono de animación"</string>
-    <string name="pref_showanimicon_summary">"Mostrar animación o icono de desplazamiento si están activados"</string>
+    <string name="pref_ui_category">Interfaz de usuario</string>
+    <string name="pref_ui_category_summary">Configuración de la interfaz de usuario</string>
+
+    <string name="pref_lang_title">Idioma</string>
+    <string name="pref_lang_summary">Idioma para la interfaz de usuario (necesario reiniciar)</string>
+
+    <string name="list_lang_default">Sistema</string>
+    <string name="list_lang_en">Inglés (English)</string>
+    <string name="list_lang_de">Alemán (Deutsch)</string>
+    <string name="list_lang_es">Español</string>
+    <string name="list_lang_fr">Francés (Française)</string>
+    <string name="list_lang_it">Italiano (Italiano)</string>
+    <string name="list_lang_nl">Holandés (Nederlands)</string>
+    <string name="list_lang_ru">Ruso (Русский)</string>
+    <string name="list_lang_uk">Ukraniano (Український)</string>
+    <string name="list_lang_zh">Chino simplificado (中文简体)</string>
+    <string name="list_lang_iw">Hebreo (עברית)</string>
+    <string name="list_lang_ko">Coreano (한국어)</string>
+    <string name="list_lang_eo">Esperanto</string>
+    <string name="list_lang_pl">Polaco (Polski)</string>
+    
+    <string name="pref_loadrecent_title">Abrir reciente</string>
+    <string name="pref_loadrecent_summary">Al arrancar, abrir automáticamente el último libro</string>
+
+    <string name="pref_confirmclose_title">Confirmar cerrar</string>
+    <string name="pref_confirmclose_summary">Confirmar el cierre al presionar Volver</string>
+
+    <string name="pref_brightness_title">Brillo</string>
+    <string name="pref_brightness_summary">Establecer la Intensidad general de la imagen (0&#8211;100)</string>
+
+    <string name="pref_brightnessnightmodeonly_title">Brillo en modo nocturno</string>
+    <string name="pref_brightnessnightmodeonly_summary">Aplicar la configuración de brillo sólo para el modo nocturno</string>
+
+    <string name="pref_keepscreenon_title">Mantener la pantalla encendida</string>
+    <string name="pref_keepscreenon_summary">No apagar la pantalla al leer (no hibernar)</string>
+
+    <string name="pref_fullscreen_title">Pantalla completa</string>
+    <string name="pref_fullscreen_summary">Ocultar la barra de estado</string>
+
+    <string name="pref_title_title">Mostrar título</string>
+    <string name="pref_title_summary">Mostrar título. Se necesita reabrir el documento</string>
+
+    <string name="pref_pageintitle_title">Página en el título</string>
+    <string name="pref_pageintitle_summary">Mostrar número de página actual en el encabezado</string>
+
+    <string name="pref_pagenumbertoastposition_title">Posición del número de página</string>
+    <string name="pref_pagenumbertoastposition_summary">Posición de la tostada con el número de página</string>
+
+    <string name="pref_zoomtoastposition_title">Posición del aumento</string>
+    <string name="pref_zoomtoastposition_summary">Posición de la tostada con el aumento aplicado</string>
+
+    <string name="list_toastposition_invisible" translatable="true">Invisible</string>
+    <string name="list_toastposition_lefttop">Esquina superior izquierda</string>
+    <string name="list_toastposition_righttop">Esquina superior derecha</string>
+    <string name="list_toastposition_leftbottom">Esquina inferior izquierda</string>
+    <string name="list_toastposition_bottom">Zona inferior de la pantalla</string>
+    <string name="list_toastposition_righbottom">Esquina inferior derecha</string>
+
+    <string name="pref_showanimicon_title">Mostrar icono de animación</string>
+    <string name="pref_showanimicon_summary">Mostrar animación o icono de desplazamiento si están activados</string>
 
 </resources>

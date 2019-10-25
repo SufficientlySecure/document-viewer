@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="pref_backup_category">"Copia seguridad y restauración"</string>
-    <string name="pref_backup_category_summary">"Preferencias de Copia de seguridad y restauración"</string>
-    <string name="pref_backuponexit_title">"Copia de seguridad al salir"</string>
-    <string name="pref_backuponexit_summary">"Se realizará automáticamente una copia de seguridad de las preferencias al salir de la aplicación"</string>
-    <string name="pref_backuponbookclose_title">"Copia de seguridad al cerrar libro"</string>
-    <string name="pref_backuponbookclose_summary">"Se realizará una copia de seguridad de las preferencias al cerrar el libro"</string>
-    <string name="pref_maxnumberofautobackups_title">"Número de copias automáticas"</string>
-    <string name="pref_maxnumberofautobackups_summary">"Número máximo de copias de seguridad automáticas"</string>
-    <string name="pref_bookbackuptype_title">"Copia de los ajustes del libro"</string>
-    <string name="pref_bookbackuptype_summary">"Copia de los ajustes del libro"</string>
-    <string name="list_bookbackuptype_none">"Ninguno"</string>
-    <string name="list_bookbackuptype_recent">"Reciente"</string>
-    <string name="list_bookbackuptype_all">"Todo"</string>
+    <string name="pref_backup_category">Copia seguridad y restauración</string>
+    <string name="pref_backup_category_summary">Preferencias de Copia de seguridad y restauración</string>
+
+    <string name="pref_backuponexit_title">Copia de seguridad al salir</string>
+    <string name="pref_backuponexit_summary">Se realizará automáticamente una copia de seguridad de las preferencias al salir de la aplicación</string>
+
+    <string name="pref_backuponbookclose_title">Copia de seguridad al cerrar libro</string>
+    <string name="pref_backuponbookclose_summary">Se realizará una copia de seguridad de las preferencias al cerrar el libro</string>
+
+    <string name="pref_maxnumberofautobackups_title">Número de copias automáticas</string>
+    <string name="pref_maxnumberofautobackups_summary">Número máximo de copias de seguridad automáticas</string>
+
+    <string name="pref_bookbackuptype_title">Copia de los ajustes del libro</string>
+    <string name="pref_bookbackuptype_summary">Copia de los ajustes del libro</string>
+
+    <string name="list_bookbackuptype_none">Ninguno</string>
+    <string name="list_bookbackuptype_recent">Reciente</string>
+    <string name="list_bookbackuptype_all">Todo</string>
 
 </resources>

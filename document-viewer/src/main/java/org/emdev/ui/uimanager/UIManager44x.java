@@ -29,7 +29,7 @@ public class UIManager44x extends UIManager40x {
 
     @Override
     protected int getHideSysUIFlags(final Activity activity) {
-        return isTabletUi(activity) ? STANDARD_SYS_UI_FLAGS : EXT_SYS_UI_FLAGS;
+        return EXT_SYS_UI_FLAGS;
     }
 
 }

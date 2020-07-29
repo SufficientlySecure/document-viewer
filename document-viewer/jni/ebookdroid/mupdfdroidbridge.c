@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <android/log.h>
 
@@ -16,6 +17,7 @@
 #define FORMAT_XPS 1
 #define FORMAT_CBZ 2
 #define FORMAT_EPUB 3
+#define MAX_PAGE_SEARCH 1024
 
 /* Debugging helper */
 
@@ -96,7 +98,7 @@ static void mupdf_free_document(renderdocument_t* doc)
         return;
     }
 
-    fz_locks_context *locks = doc->ctx->locks;
+    fz_locks_context locks = doc->ctx->locks;
 
     if (doc->outline)
     {
@@ -114,7 +116,8 @@ static void mupdf_free_document(renderdocument_t* doc)
     fz_drop_context(doc->ctx);
     doc->ctx = NULL;
 
-    jni_free_locks(locks);
+    /* TODO find out why this fails; check for leaks */
+    /* jni_free_locks(&locks); */
 
     free(doc);
     doc = NULL;
@@ -350,7 +353,7 @@ JNI_FN(MuPdfDocument_getPageInfo)(JNIEnv *env, jclass cls, jlong handle, jint pa
     fz_try(doc->ctx)
     {
     page = fz_load_page(doc->ctx, doc->document, pageNumber - 1);
-    fz_bound_page(doc->ctx, page, &bounds);
+    bounds = fz_bound_page(doc->ctx, page);
     }
     fz_catch(doc->ctx)
     {
@@ -468,7 +471,7 @@ JNI_FN(MuPdfLinks_getPageLinkTargetPage)(JNIEnv *env, jclass clazz, jlong handle
     if (!link)
         return -1;
 
-    return fz_resolve_link(doc->ctx, doc->document, link->uri, NULL, NULL);
+    return fz_resolve_link(doc->ctx, doc->document, link->uri, NULL, NULL).page;
 }
 
 JNIEXPORT jint JNICALL
@@ -490,7 +493,7 @@ JNI_FN(MuPdfLinks_fillPageLinkTargetPoint)(JNIEnv *env, jclass clazz, jlong hand
     }
 
     float x = 0.0f, y = 0.0f;
-    int pageNum = fz_resolve_link(doc->ctx, doc->document, link->uri, &x, &y);
+    int pageNum = fz_resolve_link(doc->ctx, doc->document, link->uri, &x, &y).page;
 
 //    DEBUG("MuPdfLinks_fillPageLinkTargetPoint(): %d %x (%f, %f) - (%f, %f)",
 //          link->dest.ld.gotor.page,
@@ -544,10 +547,10 @@ JNI_FN(MuPdfPage_open)(JNIEnv *env, jclass clazz, jlong dochandle, jint pageno)
 
     fz_try(ctx)
     {
-        page->pageList = fz_new_display_list(ctx, NULL);
+        page->pageList = fz_new_display_list_from_page(ctx, page->page);
         dev = fz_new_list_device(ctx, page->pageList);
         page->page = fz_load_page(doc->ctx, doc->document, pageno - 1);
-        fz_run_page(doc->ctx, page->page, dev, &fz_identity, NULL);
+        fz_run_page(doc->ctx, page->page, dev, fz_identity, NULL);
     }
     fz_always(ctx)
     {
@@ -614,8 +617,7 @@ JNI_FN(MuPdfPage_getBounds)(JNIEnv *env, jclass clazz, jlong dochandle, jlong ha
     jfloat *bbox = (*env)->GetPrimitiveArrayCritical(env, bounds, 0);
     if (!bbox)
         return;
-    fz_rect page_bounds;
-    fz_bound_page(doc->ctx, page->page, &page_bounds);
+    fz_rect page_bounds = fz_bound_page(doc->ctx, page->page);
     // DEBUG("Bounds: %f %f %f %f", page_bounds.x0, page_bounds.y0, page_bounds.x1, page_bounds.y1);
     bbox[0] = page_bounds.x0;
     bbox[1] = page_bounds.y0;
@@ -683,9 +685,9 @@ JNI_FN(MuPdfPage_renderPageDirect)(JNIEnv *env, jobject this, jlong dochandle,
     // way to do this
 
     //add check for night mode and set global variable accordingly
-    ctx->ebookdroid_nightmode = nightmode;
+    /* ctx->ebookdroid_nightmode = nightmode; */
     // FIXME: This seems to be necessary; why is doc->ctx different than ctx?
-    doc->ctx->ebookdroid_nightmode = nightmode;
+    /* doc->ctx->ebookdroid_nightmode = nightmode; */
 
     // TODO: slowcmyk patch no longer applies cleanly to mupdf, so this was disabled
     //add check for slowcmyk mode and set global variable accordingly
@@ -695,13 +697,15 @@ JNI_FN(MuPdfPage_renderPageDirect)(JNIEnv *env, jobject this, jlong dochandle,
     {
          const int w = viewbox.x1 - viewbox.x0;
          const int h = viewbox.y1 - viewbox.y0;
-         pixmap = fz_new_pixmap_with_data(ctx, fz_device_rgb(ctx), w, h, 1, 4 * w, pixels);
+         pixmap = fz_new_pixmap_with_data(ctx, fz_device_rgb(ctx), w, h,
+                                          fz_page_separations(ctx, page->page),
+                                          1, 4 * w, pixels);
 
          fz_clear_pixmap_with_value(ctx, pixmap, 0xff);
 
-         dev = fz_new_draw_device(ctx, NULL, pixmap);
+         dev = fz_new_draw_device(ctx, fz_identity, pixmap);
 
-         fz_run_display_list(doc->ctx, page->pageList, dev, &ctm, &viewbox, NULL);
+         fz_run_display_list(doc->ctx, page->pageList, dev, ctm, viewbox, NULL);
     }
     fz_always(ctx)
     {
@@ -715,71 +719,71 @@ JNI_FN(MuPdfPage_renderPageDirect)(JNIEnv *env, jobject this, jlong dochandle,
     return JNI_TRUE;
 }
 
-static int charat(fz_context *ctx, fz_stext_page *page, int idx)
-{
-    fz_char_and_box cab;
-    return fz_stext_char_at(ctx, &cab, page, idx)->c;
-}
+/* static int charat(fz_context *ctx, fz_stext_page *page, int idx) */
+/* { */
+/*     fz_char_and_box cab; */
+/*     return fz_stext_char_at(ctx, &cab, page, idx)->c; */
+/* } */
 
-static fz_rect bboxcharat(fz_context *ctx, fz_stext_page *page, int idx)
-{
-    fz_char_and_box cab;
-    return fz_stext_char_at(ctx, &cab, page, idx)->bbox;
-}
+/* static fz_rect bboxcharat(fz_context *ctx, fz_stext_page *page, int idx) */
+/* { */
+/*     fz_char_and_box cab; */
+/*     return fz_stext_char_at(ctx, &cab, page, idx)->bbox; */
+/* } */
 
-static int textlen(fz_stext_page *page)
-{
-    int len = 0;
-    int block_num;
+/* static int textlen(fz_stext_page *page) */
+/* { */
+/*     int len = 0; */
+/*     int block_num; */
 
-    for (block_num = 0; block_num < page->len; block_num++)
-    {
-        fz_stext_block *block;
-        fz_stext_line *line;
+/*     for (block_num = 0; block_num < page->len; block_num++) */
+/*     { */
+/*         fz_stext_block *block; */
+/*         fz_stext_line *line; */
 
-        if (page->blocks[block_num].type != FZ_PAGE_BLOCK_TEXT)
-            continue;
-        block = page->blocks[block_num].u.text;
-        for (line = block->lines; line < block->lines + block->len; line++)
-        {
-            fz_stext_span *span;
+/*         if (page->blocks[block_num].type != FZ_PAGE_BLOCK_TEXT) */
+/*             continue; */
+/*         block = page->blocks[block_num].u.text; */
+/*         for (line = block->lines; line < block->lines + block->len; line++) */
+/*         { */
+/*             fz_stext_span *span; */
 
-            for (span = line->first_span; span; span = span->next)
-            {
-                len += span->len;
-            }
-            len++; /* pseudo-newline */
-        }
-    }
-    return len;
-}
+/*             for (span = line->first_span; span; span = span->next) */
+/*             { */
+/*                 len += span->len; */
+/*             } */
+/*             len++; /\* pseudo-newline *\/ */
+/*         } */
+/*     } */
+/*     return len; */
+/* } */
 
-static int match(fz_context *ctx, CharacterHelper* ch, fz_stext_page *page, const char *s, int n)
-{
-    int orig = n;
-    int c;
+/* static int match(fz_context *ctx, CharacterHelper* ch, fz_stext_page *page, const char *s, int n) */
+/* { */
+/*     int orig = n; */
+/*     int c; */
 
-    while (*s)
-    {
-        s += fz_chartorune(&c, (char *) s);
-        if (c == ' ' && charat(ctx, page, n) == ' ')
-        {
-            while (charat(ctx, page, n) == ' ')
-            {
-                n++;
-            }
-        }
-        else
-        {
-            if (c != CharacterHelper_toLowerCase(ch, charat(ctx, page, n)))
-            {
-                return 0;
-            }
-            n++;
-        }
-    }
-    return n - orig;
-}
+/*     while (*s) */
+/*     { */
+/*         s += fz_chartorune(&c, (char *) s); */
+/*         if (c == ' ' && charat(ctx, page, n) == ' ') */
+/*         { */
+/*             while (charat(ctx, page, n) == ' ') */
+/*             { */
+/*                 n++; */
+/*             } */
+/*         } */
+/*         else */
+/*         { */
+/*             if (c != CharacterHelper_toLowerCase(ch, charat(ctx, page, n))) */
+/*             { */
+/*                 return 0; */
+/*             } */
+/*             n++; */
+/*         } */
+/*     } */
+/*     return n - orig; */
+/* } */
 
 JNIEXPORT jobjectArray JNICALL
 JNI_FN(MuPdfPage_search)(JNIEnv * env, jobject thiz, jlong dochandle, jlong pagehandle,
@@ -788,7 +792,7 @@ JNI_FN(MuPdfPage_search)(JNIEnv * env, jobject thiz, jlong dochandle, jlong page
 
     renderdocument_t *doc = (renderdocument_t*) (long) dochandle;
     renderpage_t *page = (renderpage_t*) (long) pagehandle;
-    // DEBUG("MuPdfPage(%p).search(%p, %p)", thiz, doc, page);
+    /* DEBUG("MuPdfPage(%p).search(%p, %p)", thiz, doc, page); */
 
     if (!doc || !page)
     {
@@ -800,6 +804,7 @@ JNI_FN(MuPdfPage_search)(JNIEnv * env, jobject thiz, jlong dochandle, jlong page
     {
         return NULL;
     }
+    /* DEBUG("MuPdfPage(%p).search(%s)", thiz, str); */
 
     ArrayListHelper alh;
     PageTextBoxHelper ptbh;
@@ -811,7 +816,7 @@ JNI_FN(MuPdfPage_search)(JNIEnv * env, jobject thiz, jlong dochandle, jlong page
         return NULL;
     }
     jobject arrayList = ArrayListHelper_create(&alh);
-    // DEBUG("MuPdfPage(%p).search(%p, %p): array: %p", thiz, doc, page, arrayList);
+    /* DEBUG("MuPdfPage(%p).search(%p, %p): array: %p", thiz, doc, page, arrayList); */
     if (!arrayList)
     {
         return NULL;
@@ -819,9 +824,9 @@ JNI_FN(MuPdfPage_search)(JNIEnv * env, jobject thiz, jlong dochandle, jlong page
 
     fz_rect *hit_bbox = NULL;
 
-    fz_stext_sheet *sheet = NULL;
     fz_stext_page *pagetext = NULL;
     fz_device *dev = NULL;
+    fz_quad quads[MAX_PAGE_SEARCH];
     int pos;
     int len;
     int i, n;
@@ -829,72 +834,52 @@ JNI_FN(MuPdfPage_search)(JNIEnv * env, jobject thiz, jlong dochandle, jlong page
 
     fz_try(doc->ctx)
     {
-        fz_rect rect;
+        /* DEBUG("MuPdfPage(%p).search(%p, %p): load page text", thiz, doc, page); */
 
-        // DEBUG("MuPdfPage(%p).search(%p, %p): load page text", thiz, doc, page);
+        fz_rect rect = fz_bound_page(doc->ctx, page->page);
+        pagetext = fz_new_stext_page(doc->ctx, rect);
+        dev = fz_new_stext_device(doc->ctx, pagetext, NULL);
+        fz_run_page(doc->ctx, page->page, dev, fz_identity, NULL);
 
-        fz_bound_page(doc->ctx, page->page, &rect);
-        sheet = fz_new_stext_sheet(doc->ctx);
-        pagetext = fz_new_stext_page(doc->ctx, &rect);
-        dev = fz_new_stext_device(doc->ctx, sheet, pagetext, NULL);
-        fz_run_page(doc->ctx, page->page, dev, &fz_identity, NULL);
+        hit_count = fz_search_stext_page(doc->ctx, pagetext, str, quads, MAX_PAGE_SEARCH);
 
-        // DEBUG("MuPdfPage(%p).search(%p, %p): free text device", thiz, doc, page);
+        /* DEBUG("MuPdfPage(%p).search(%p, %p): found %d", thiz, doc, page, hit_count); */
 
-        fz_close_device(doc->ctx, dev);
-        fz_drop_device(doc->ctx, dev);
-        dev = NULL;
-
-        len = textlen(pagetext);
-
-        // DEBUG("MuPdfPage(%p).search(%p, %p): text length: %d", thiz, doc, page, len);
-
-        for (pos = 0; pos < len; pos++)
+        for (i = 0; i < hit_count; i++)
         {
-            fz_rect rr = fz_empty_rect;
-            // DEBUG("MuPdfPage(%p).search(%p, %p): match %d", thiz, doc, page, pos);
-
-            n = match(doc->ctx, &ch, pagetext, str, pos);
-            if (n > 0)
-            {
-//                DEBUG("MuPdfPage(%p).search(%p, %p): match found: %d, %d", thiz, doc, page, pos, n);
-                for (i = 0; i < n; i++)
+                int coords[4];
+                /* struct fz_quad { fz_point ul, ur, ll, lr; }; */
+                coords[0] = (quads[i].ul.x);
+                coords[1] = (quads[i].ul.y);
+                coords[2] = (quads[i].lr.x);
+                coords[3] = (quads[i].lr.y);
+                /* struct fz_rect {float x0, y0; float x1, y1;}; */
+                /* Shrink search rectangle */
+                // DEBUG("MuPdfPage(%p).search(%p, %p): found rectangle (%d, %d - %d, %d)", thiz, doc, page, coords[0], coords[1], coords[2], coords[3]); */
+                jobject ptb = PageTextBoxHelper_create(&ptbh);
+                if (ptb)
                 {
-                    fz_rect tmp_rr = bboxcharat(doc->ctx, pagetext, pos + i);
-                    rr = *fz_union_rect(&rr, &tmp_rr);
-                }
-
-                if (!fz_is_empty_rect(&rr))
-                {
-                    int coords[4];
-                    coords[0] = (rr.x0);
-                    coords[1] = (rr.y0);
-                    coords[2] = (rr.x1);
-                    coords[3] = (rr.y1);
-//                    DEBUG("MuPdfPage(%p).search(%p, %p): found rectangle (%d, %d - %d, %d)", thiz, doc, page, coords[0], coords[1], coords[2], coords[3]);
-                    jobject ptb = PageTextBoxHelper_create(&ptbh);
-                    if (ptb)
-                    {
                         // DEBUG("MuPdfPage(%p).search(%p, %p): rect %p", thiz, doc, page, ptb);
                         PageTextBoxHelper_setRect(&ptbh, ptb, coords);
                         // PageTextBoxHelper_setText(&ptbh, ptb, txt);
                         // DEBUG("MuPdfPage(%p).search(%p, %p): add rect %p to array %p", thiz, doc, page, ptb, arrayList);
                         ArrayListHelper_add(&alh, arrayList, ptb);
-                    }
                 }
-            }
         }
+        fz_close_device(doc->ctx, dev);
+        fz_drop_device(doc->ctx, dev);
+        dev = NULL;
     } fz_always(doc->ctx)
     {
-        // DEBUG("MuPdfPage(%p).search(%p, %p): free resources", thiz, doc, page);
+/*         // DEBUG("MuPdfPage(%p).search(%p, %p): free resources", thiz, doc, page); */
         if (pagetext)
         {
             fz_drop_stext_page(doc->ctx, pagetext);
         }
-        if (sheet)
-        {
-            fz_drop_stext_sheet(doc->ctx, sheet);
-        }
+/*         if (sheet) */
+/*         { */
+/*             fz_drop_stext_sheet(doc->ctx, sheet); */
+/*         } */
         if (dev)
         {
             fz_drop_device(doc->ctx, dev);
@@ -969,7 +954,7 @@ JNI_FN(MuPdfOutline_getLink)(JNIEnv *env, jclass clazz, jlong outlinehandle, jlo
     }
     else
     {
-        int resolved = fz_resolve_link(doc->ctx, doc->document, outline->uri, NULL, NULL);
+        int resolved = fz_resolve_link(doc->ctx, doc->document, outline->uri, NULL, NULL).page;
 
         char linkbuf[128];
         snprintf(linkbuf, sizeof(linkbuf), "#%d", resolved + 1);
@@ -997,7 +982,7 @@ JNI_FN(MuPdfOutline_fillLinkTargetPoint)(JNIEnv *env, jclass clazz, jlong dochan
     }
 
     float x = 0.0f, y = 0.0f;
-    int pageNum = fz_resolve_link(doc->ctx, doc->document, outline->uri, &x, &y);
+    int pageNum = fz_resolve_link(doc->ctx, doc->document, outline->uri, &x, &y).page;
 
 //    DEBUG("MuPdfOutline_fillLinkTargetPoint(): %d %x (%f, %f) - (%f, %f)",
 //          outline->dest.ld.gotor.page,

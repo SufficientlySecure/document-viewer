@@ -3,17 +3,16 @@ bin
 gen
 obj
 document-viewer/libs/*/*.so
-lint.xml
 local.properties
 release.properties
 ant.properties
 *.class
 *.apk
+.cxx
 
 #Gradle
 .gradle
 build
-gradle.properties
 gradle-app.setting
 
 #Maven
@@ -29,3 +28,7 @@ pom.xml.*
 #IntelliJ IDEA
 .idea
 *.iml
+
+#LSP
+.ccls-cache
+java_*.hprof

@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdlib.h>
 #include <jni.h>
 #include <stdint.h>
 #include <math.h>

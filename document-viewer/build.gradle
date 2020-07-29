@@ -23,6 +23,25 @@ def getVerCode() {
     return version
 }
 
+task buildFontsTask(type: Exec) {
+        workingDir "$projectDir/jni/mupdf/mupdf/"
+        commandLine 'make', 'generate'
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name == 'externalNativeBuildDebug' ||
+        task.name == 'externalNativeBuildRelease') {
+        task.dependsOn 'buildFontsTask'
+    }
+}
+
+task cleanFontsTask(type: Exec) {
+    workingDir "$projectDir/jni/mupdf/mupdf/"
+    commandLine 'make', 'nuke'
+}
+
+clean.dependsOn cleanFontsTask
+
 // map for the version code
 //ext.versionCodes = ['armeabi': 1, 'armeabi-v7a':2, 'x86':3, 'mips':4, 'arm64-v8a':5, 'x86_64':6, 'mips64':7]
 ext.versionCodes = ['armeabi-v7a':2, 'x86':3, 'arm64-v8a':5, 'x86_64':6]
@@ -34,14 +53,25 @@ android {
     // copied from: https://github.com/kontalk/androidclient
     // temporarly introduced to fix Cyanogenmod bug
     // https://issuetracker.google.com/issues/64434571#comment35
-    buildToolsVersion '28.0.3'
 
     useLibrary 'org.apache.http.legacy'
+
+    externalNativeBuild {
+        ndkBuild {
+            path 'jni/Android.mk'
+        }
+    }
 
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 28
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        externalNativeBuild {
+            ndkBuild {
+                arguments "-j8"
+            }
+        }
     }
 
     sourceSets.main {
@@ -77,7 +107,7 @@ android {
             project.hasProperty('signingKeyAlias') &&
             project.hasProperty('signingKeyPassword')) {
         println "Found sign properties in gradle.properties! Signing build…"
-        
+
         signingConfigs {
             release {
                 storeFile file(signingStoreLocation)
@@ -91,10 +121,18 @@ android {
     } else {
         buildTypes.release.signingConfig = null
     }
-    
+
     // Do not abort build if lint finds errors
     lintOptions {
         abortOnError false
     }
-}
 
+    packagingOptions {
+        exclude 'document-viewer/jni/djvu/djvulibre'
+        exclude 'document-viewer/jni/mupdf/mupdf'
+        exclude 'document-viewer/obj/local/armeabi-v7a/libmupdf_java.so'
+        exclude 'document-viewer/obj/local/x86_64/libmupdf_java.so'
+        exclude 'document-viewer/obj/local/x86/libmupdf_java.so'
+        exclude 'document-viewer/obj/local/arm64-v8a/libmupdf_java.so'
+    }
+}

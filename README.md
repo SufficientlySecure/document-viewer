@@ -33,19 +33,17 @@ We need your support to fix outstanding bugs, join development by forking the pr
 ### Build with Gradle
 
 1. Have Android SDK "tools", "platform-tools", and "build-tools" directories in your PATH (http://developer.android.com/sdk/index.html)
-2. Open the Android SDK Manager (shell command: ``android``).  
-Expand the Tools directory and select "Android SDK Build-tools" newest version.  
-Expand the Extras directory and install "Android Support Repository"  
+2 Open the Android SDK Manager (shell command: ``android``).
+Expand the Tools directory and select "Android SDK Build-tools" newest version.
+Expand the Extras directory and install "Android Support Repository"
 Select everything for the newest SDK
 3. Export ANDROID_HOME pointing to your Android SDK
-5. Pull in submodules with ``./init.sh``
-5. Build native libraries with ``cd document-viewer; ndk-build``
-6. Execute ``./gradlew build``
+4. Execute ``./gradlew build``
 
 ### NDK Debugging
 
 1. ``cd document-viewer; ndk-build -j8 NDK_DEBUG=1``
-2. From Android Studio: Run -> Debug... to build and install the APK and launch it on the device. 
+2. From Android Studio: Run -> Debug... to build and install the APK and launch it on the device.
 3. ``cp src/main/AndroidManifest.xml . # Hack required for ndk-gdb to find everything``
 4. ``ndk-gdb``
 
@@ -62,7 +60,7 @@ I am using the newest [Android Studio](http://developer.android.com/sdk/installi
 The [Document Viewer Fontpack](https://github.com/PrivacyApps/document-viewer-fontpack) is no longer supported. Our MuPDF patches to support this no longer apply cleanly, so support for the font pack was dropped.
 
 # Licenses
-Document Viewer is licensed under the GPLv3+.  
+Document Viewer is licensed under the GPLv3+.
 The file LICENSE includes the full license text.
 
 ## Details
@@ -80,26 +78,26 @@ You should have received a copy of the GNU General Public License
 along with Document Viewer.  If not, see <http://www.gnu.org/licenses/>.
 
 ## Java Libraries
-* JCIFS  
-  http://jcifs.samba.org/  
+* JCIFS
+  http://jcifs.samba.org/
   LGPL v2.1
 
-* Color Picker by Daniel Nilsson  
-  http://code.google.com/p/color-picker-view/  
+* Color Picker by Daniel Nilsson
+  http://code.google.com/p/color-picker-view/
   Apache License v2
 
 ## C Libraries
 
-* MuPDF - a lightweight PDF, EPUB, CBZ and XPS viewer   
-  http://www.mupdf.com/  
+* MuPDF - a lightweight PDF, EPUB, CBZ and XPS viewer
+  http://www.mupdf.com/
   AGPLv3+
 
-* djvu - a lightweight DJVU viewer based on DjVuLibre  
-  http://djvu.sourceforge.net/  
+* djvu - a lightweight DJVU viewer based on DjVuLibre
+  http://djvu.sourceforge.net/
   GPLv2
-    
+
 ## Images
 
-* application_icon.svg  
-  http://rrze-icon-set.berlios.de/  
+* application_icon.svg
+  http://rrze-icon-set.berlios.de/
   Creative Commons Attribution Share-Alike licence 3.0

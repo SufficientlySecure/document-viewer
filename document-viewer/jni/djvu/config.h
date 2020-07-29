@@ -6,11 +6,15 @@
 #define CONFIG_H
 /* config.h: begin */
 
+
 /* version string */
 #define DJVULIBRE_VERSION "3.5.27"
 
 /* define if bool is a built-in type */
 #define HAVE_BOOL 1
+
+/* Define to 1 if you have the <cpuid.h> header file. */
+#define HAVE_CPUID_H 1
 
 /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
    */
@@ -201,8 +205,7 @@
 /* Define to 1 if `vfork' works. */
 #define HAVE_WORKING_VFORK 1
 
-/* Define to the sub-directory in which libtool stores uninstalled libraries.
-   */
+/* Define to the sub-directory where libtool stores uninstalled libraries. */
 #define LT_OBJDIR ".libs/"
 
 /* Name of package */

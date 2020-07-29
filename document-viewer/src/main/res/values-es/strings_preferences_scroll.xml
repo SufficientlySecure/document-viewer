@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="pref_scroll_category">"Táctil y desplazamientos"</string>
-    <string name="pref_scroll_category_summary">"Configuración táctil y desplazamientos"</string>
-    <string name="pref_tapsenabled_title">"Habilitar toques"</string>
-    <string name="pref_tapsenabled_summary">"Utilice la configuración de toques para definir regiones y acciones"</string>
-    <string name="pref_scroll_title">"Longitud del desplazamiento"</string>
-    <string name="pref_scroll_summary">"Ajuste la longitud del desplazamiento"</string>
-    <string name="pref_touchdelay_title">"Demora al procesar toque"</string>
-    <string name="pref_touchdelay_summary">"Demora al procesar toque (en milisegundos)"</string>
-    <string name="pref_animate_scrolling_title">"Animar desplazamiento"</string>
-    <string name="pref_animate_scrolling_summary">"Animar desplazamiento durante los modos de desplazamiento"</string>
+    <string name="pref_scroll_category">Táctil y desplazamientos</string>
+    <string name="pref_scroll_category_summary">Configuración táctil y desplazamientos</string>
+
+    <string name="pref_tapsenabled_title">Habilitar toques</string>
+    <string name="pref_tapsenabled_summary">Utilice la configuración de toques para definir regiones y acciones</string>
+
+    <string name="pref_scroll_title">Longitud del desplazamiento</string>
+    <string name="pref_scroll_summary">Ajuste la longitud del desplazamiento</string>
+
+    <string name="pref_touchdelay_title">Demora al procesar toque</string>
+    <string name="pref_touchdelay_summary">Demora al procesar toque (en milisegundos)</string>
+
+    <string name="pref_animate_scrolling_title">Animar desplazamiento</string>
+    <string name="pref_animate_scrolling_summary">Animar desplazamiento durante los modos de desplazamiento</string>
+
+    <string name="pref_volumekeyscrolling_title">Desplazamiento con botones de volumen</string>
+    <string name="pref_volumekeyscrolling_summary">Usar los botones de volumen para el desplazamiento en lugar de para ajustar el volumen</string>
+
+    <string name="pref_tapfullscreen_title">Toque alterna pantalla completa</string>
+    <string name="pref_tapfullscreen_summary">Alternar pantalla completa con un toque en cualquier zona de toque o hiperenlace</string>
 
 </resources>

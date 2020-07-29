@@ -1,35 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="menu_close">"Cerrar"</string>
-    <string name="menu_goto_page">"Ir a Página"</string>
-    <string name="menu_outline">"Sumario"</string>
-    <string name="menu_zoom">"Ampliar"</string>
-    <string name="menu_nightmode">"Día/Noche"</string>
-    <string name="menu_settings">"Todos los ajustes"</string>
-    <string name="menu_booksettings">"Configuración del libro"</string>
-    <string name="menu_cleanrecent">"Borrar los datos"</string>
-    <string name="menu_add_bookmark">"Añadir marcador"</string>
-    <string name="menu_edit_bookmark">"Modificar marcador"</string>
-    <string name="menu_thumbnail">"Colocar como miniatura"</string>
-    <string name="menu_about">"Acerca de"</string>
-    <string name="menu_tap_configuration">"Configurar toque"</string>
-    <string name="menu_key_bindings">"Atajos de teclado"</string>
-    <string name="menu_searchbook">"Buscar"</string>
-    <string name="menu_searchtext">"Buscar"</string>
-    <string name="menu_show_options_menu">"Mostrar menú de opciones"</string>
-    <string name="menu_backupsettings">"Configuración de Copias de seguridad y Respaldo"</string>
-    <string name="menu_crop">"Ajuste manual"</string>
-    <string name="menu_navigation_menu">"Navegación..."</string>
-    <string name="menu_fastsettings_menu">"Ver..."</string>
-    <string name="menu_allsettings_menu">"Ajuster..."</string>
-    <string name="menu_show_library">"Mostrar la biblioteca"</string>-->
-    <string name="menu_show_recent">"Mostrar recientes"</string>
-    <string name="menu_storages">"Almcenamientos"</string>
-    <string name="menu_storages_filesystem">"Sistema de ficheros"</string>
-    <string name="menu_storages_external">"Tarjeta de memoria SD"</string>-->
-    <string name="menu_force_portrait">"Forzar retrato"</string>
-    <string name="menu_force_landscape">"Forzar apaisado"</string>
-    <string name="menu_show_files">"Show files"</string> <!-- needs_translation -->
-    <string name="menu_search">"Search"</string> <!-- needs_translation -->
+    <string name="menu_close">Cerrar</string>
+    <string name="menu_goto_page">Ir a página</string>
+    <string name="menu_outline">Sumario</string>
+    <string name="menu_zoom">Ampliar</string>
+    <string name="menu_nightmode">Día/Noche</string>
+    <string name="menu_settings">Todos los ajustes</string>
+    <string name="menu_booksettings">Ajustes del libro</string>
+    <string name="menu_cleanrecent">Borrar recientes</string>
+    <string name="menu_add_bookmark">Añadir marcador</string>
+    <string name="menu_edit_bookmark">Modificar marcador</string>
+    <string name="menu_thumbnail">Colocar como miniatura</string>
+    <string name="menu_about">Acerca de</string>
+    <string name="menu_tap_configuration">Configurar toque</string>
+    <string name="menu_key_bindings">Atajos de teclado</string>
+    <string name="menu_searchbook">Buscar libros</string>
+    <string name="menu_searchtext">Buscar texto</string>
+    <string name="menu_show_options_menu">Mostrar menú de opciones</string>
+    <string name="menu_backupsettings">Copia de seguridad y restauración</string>
+    <string name="menu_crop">Recorte manual</string>
+    <string name="menu_singlepage">Página única</string>
+    <string name="menu_search">Buscar</string>
+
+    <string name="menu_navigation_menu">Navegación…</string>
+    <string name="menu_fastsettings_menu">Ver…</string>
+    <string name="menu_allsettings_menu">Ajustes…</string>
+
+    <string name="menu_share">Compartir…</string>
+    <string name="menu_openwith">Abrir con…</string>
+
+    <string name="menu_show_library">Mostrar la biblioteca</string>
+    <string name="menu_show_recent">Mostrar recientes</string>
+    <string name="menu_storages">Almacenamiento</string>
+    <string name="menu_storages_filesystem">Sistema de archivos</string>
+    <string name="menu_storages_external">Tarjeta de memoria SD</string>
+    <string name="menu_show_files">Mostrar archivos</string>
+
+    <string name="menu_force_portrait">Forzar retrato</string>
+    <string name="menu_force_landscape">Forzar apaisado</string>
+    <string name="menu_reverse_orientation">Invertir la orientación</string>
 </resources>

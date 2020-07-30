@@ -25,17 +25,17 @@
     <string name="list_thread_priority_higher">Alta</string>
     <string name="list_thread_priority_highest">La más alta</string>
 
-    <string name="pref_decodingonscroll_title">Decodificar durante desplazamiento<string>
+    <string name="pref_decodingonscroll_title">Decodificar durante desplazamiento</string>
     <string name="pref_decodingonscroll_summary">Permitir la decodificación de páginas cuando este desplazando o hojeando en el documento.</string>
 
     <string name="pref_bitmapsize_title">Tamaño de la texturas</string>
     <string name="pref_bitmapsize_summary">Define el tamaño de las texturas</string>
 
-    <string name="list_bitmapsize_64">64 x 64<string>
-    <string name="list_bitmapsize_128">128 x 128<string>
-    <string name="list_bitmapsize_256">256 x 256<string>
-    <string name="list_bitmapsize_512">512 x 512<string>
-    <string name="list_bitmapsize_1024">1024 x 1024<string>
+    <string name="list_bitmapsize_64">64 x 64</string>
+    <string name="list_bitmapsize_128">128 x 128</string>
+    <string name="list_bitmapsize_256">256 x 256</string>
+    <string name="list_bitmapsize_512">512 x 512</string>
+    <string name="list_bitmapsize_1024">1024 x 1024</string>
 
     <string name="pref_heappreallocate_title">Reserva de Heap</string>
     <string name="pref_heappreallocate_summary">Tamaño en megabytes de la reserva de Heap durante el inicio de la aplicación</string>

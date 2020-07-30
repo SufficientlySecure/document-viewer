@@ -17,7 +17,7 @@
     <string name="pref_showremovable_summary">Mostrar medios extraíbles en el menu de almacenamiento</string>
 
     <string name="pref_showscanning_title">Mostrar directorios escaneados</string>
-    <string name="pref_showscanning_summary">Mostrar directorios para búsqueda automática en el menu de almacenamiento<string>
+    <string name="pref_showscanning_summary">Mostrar directorios para búsqueda automática en el menu de almacenamiento</string>
 
     <string name="pref_shownotifications_title">Mostrar notificaciones</string>
     <string name="pref_shownotifications_summary">Mostrar notificaciónes acerca de archivos añadidos/eliminados</string>

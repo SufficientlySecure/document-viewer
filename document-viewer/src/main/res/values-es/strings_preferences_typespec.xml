@@ -4,7 +4,7 @@
     <string name="pref_brfiletypespecific_title">Ajustes específicos</string>
     <string name="pref_brfiletypespecific_summary">Ajustes específicos para cada formato</string>
 
-    <string name="pref_brfiletypespecificdjvu_title">DJVU<string>
+    <string name="pref_brfiletypespecificdjvu_title">DJVU</string>
     <string name="pref_brfiletypespecificdjvu_summary">Ajustes para DJVU</string>
 
     <string name="pref_djvu_rendering_mode_title">Modo de representación</string>
@@ -17,7 +17,7 @@
     <string name="list_djvu_rendering_mode_4">Solo la capa de fondo</string>
     <string name="list_djvu_rendering_mode_5">Solo la capa principal</string>
 
-    <string name="pref_brfiletypespecificpdf_title">PDF<string>
+    <string name="pref_brfiletypespecificpdf_title">PDF</string>
     <string name="pref_brfiletypespecificpdf_summary">Opciones específicas para PDF</string>
 
     <string name="pref_customdpi_title">Personalizar DPI</string>
@@ -49,7 +49,7 @@
     <string name="pref_slowcmyk_title">CMYK lento</string>
     <string name="pref_slowcmyk_summary">Emplear el algoritmo de conversión lento pero preciso CMYK a RGB</string>
 
-    <string name="pref_brfiletypespecificfb2_title">FB2<string>
+    <string name="pref_brfiletypespecificfb2_title">FB2</string>
     <string name="pref_brfiletypespecificfb2_summary">Opciones específicas para FB2</string>
 
     <string name="pref_fb2_xmlparser_title">Intérprete XML</string>

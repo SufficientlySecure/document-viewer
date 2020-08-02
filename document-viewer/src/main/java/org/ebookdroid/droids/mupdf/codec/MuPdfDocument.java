@@ -17,31 +17,46 @@ import android.graphics.RectF;
 import java.util.List;
 import java.util.ArrayList;
 
+import java.io.File;
+
 public class MuPdfDocument extends AbstractCodecDocument {
 
     protected final Document documentHandle;
+    protected final String acceleratorPath;
 
     MuPdfDocument(final MuPdfContext context, final String fname, final String pwd) {
         super(context);
-        documentHandle = Document.openDocument(fname);
+        acceleratorPath = getAcceleratorPath(fname);
+        if (acceleratorValid(fname, acceleratorPath))
+			documentHandle = Document.openDocument(fname, acceleratorPath);
+		else
+			documentHandle = Document.openDocument(fname);
+
         if (documentHandle.needsPassword()) {
             documentHandle.authenticatePassword(pwd);
         }
+        documentHandle.saveAccelerator(acceleratorPath);
     }
 
     @Override
     public List<OutlineLink> getOutline() {
-        return MuPdfOutline.getOutline(this);
+        final List<OutlineLink> list = MuPdfOutline.getOutline(this);
+        documentHandle.saveAccelerator(acceleratorPath);
+        return list;
     }
 
     @Override
     public MuPdfPage getPage(final int pageNumber) {
-         return new MuPdfPage(documentHandle.loadPage(pageNumber));
+        final MuPdfPage page = new MuPdfPage(documentHandle.loadPage(pageNumber));
+        documentHandle.saveAccelerator(acceleratorPath);
+        return page;
     }
 
     @Override
     public int getPageCount() {
-         return documentHandle.countPages();
+        final int pages = documentHandle.countPages();
+        documentHandle.saveAccelerator(acceleratorPath);
+        return pages;
     }
 
     @Override
@@ -53,6 +68,7 @@ public class MuPdfDocument extends AbstractCodecDocument {
         info.dpi = 0;
         info.rotation = 0;
         info.version = 0;
+        documentHandle.saveAccelerator(acceleratorPath);
         return info;
     }
 
@@ -76,4 +92,19 @@ public class MuPdfDocument extends AbstractCodecDocument {
             rect.bottom = rect.top = top / cpi.height;
         }
     }
+
+    protected static String getAcceleratorPath(String documentPath) {
+		String acceleratorName = documentPath.substring(1);
+		acceleratorName = acceleratorName.replace(File.separatorChar, '%');
+		acceleratorName = acceleratorName.replace('\\', '%');
+		acceleratorName = acceleratorName.replace(':', '%');
+		String tmpdir = System.getProperty("java.io.tmpdir");
+		return new StringBuffer(tmpdir).append(File.separatorChar).append(acceleratorName).append(".accel").toString();
+	}
+
+    protected static boolean acceleratorValid(String documentPath, String acceleratorPath) {
+		long documentModified = new File(documentPath).lastModified();
+		long acceleratorModified = new File(acceleratorPath).lastModified();
+		return acceleratorModified != 0 && acceleratorModified > documentModified;
+	}
 }

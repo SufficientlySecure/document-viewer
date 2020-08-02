@@ -27,14 +27,4 @@ public abstract class MuPdfContext extends AbstractCodecContext {
     public MuPdfContext() {
         super(MUPDF_FEATURES);
     }
-
-    private static native void setMonoFonts(String regular, String italic, String bold, String boldItalic);
-
-    private static native void setSansFonts(String regular, String italic, String bold, String boldItalic);
-
-    private static native void setSerifFonts(String regular, String italic, String bold, String boldItalic);
-
-    private static native void setSymbolFont(String regular);
-
-    private static native void setDingbatFont(String regular);
 }

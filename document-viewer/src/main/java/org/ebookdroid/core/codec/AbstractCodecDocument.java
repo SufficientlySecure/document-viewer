@@ -10,11 +10,8 @@ public abstract class AbstractCodecDocument implements CodecDocument {
 
     protected final AbstractCodecContext context;
 
-    protected final long documentHandle;
-
-    protected AbstractCodecDocument(final AbstractCodecContext context, final long documentHandle) {
+    protected AbstractCodecDocument(final AbstractCodecContext context) {
         this.context = context;
-        this.documentHandle = documentHandle;
     }
 
     @Override

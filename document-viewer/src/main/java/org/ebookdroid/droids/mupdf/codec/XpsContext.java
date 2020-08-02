@@ -7,6 +7,6 @@ public class XpsContext extends MuPdfContext {
 
     @Override
     public CodecDocument openDocument(final String fileName, final String password) {
-        return new MuPdfDocument(this, MuPdfDocument.FORMAT_XPS, fileName, password);
+        return new MuPdfDocument(this, fileName, password);
     }
 }

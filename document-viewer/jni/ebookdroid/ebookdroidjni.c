@@ -2,8 +2,6 @@
 #include <dlfcn.h>
 #include <android/log.h>
 
-#include <mupdf/fitz.h>
-
 #define LCTX "EBookDroid"
 
 #define DEBUG(args...) \

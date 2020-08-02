@@ -15,17 +15,12 @@ LOCAL_SRC_FILES := \
 	ebookdroidjni.c \
 	bytebufferbitmapbridge.c \
 	PageCropper.c \
-	javahelpers.c \
-	jni_concurrent.c \
-	mupdfdroidbridge.c
+	javahelpers.c
 
 LOCAL_C_INCLUDES := \
-	$(LOCAL_PATH)/../djvu/djvulibre/libdjvu \
-	$(LOCAL_PATH)/../mupdf/mupdf/include \
-	$(LOCAL_PATH)/../mupdf/mupdf/source/fitz \
-	$(LOCAL_PATH)/../mupdf/mupdf/source/pdf
+	$(LOCAL_PATH)/../djvu/djvulibre/libdjvu
 
-LOCAL_STATIC_LIBRARIES := djvu mupdf_core mupdf_thirdparty
+LOCAL_STATIC_LIBRARIES := djvu mupdf_java
 
 # uses Android log and z library (Android-3 Native API)
 LOCAL_LDLIBS := -llog -lz

@@ -14,8 +14,11 @@ import org.emdev.utils.LengthUtils;
 
 public class DjvuDocument extends AbstractCodecDocument {
 
+    final long documentHandle;
+
     DjvuDocument(final DjvuContext djvuContext, final String fileName) {
-        super(djvuContext, open(djvuContext.getContextHandle(), fileName));
+        super(djvuContext);
+        this.documentHandle = open(djvuContext.getContextHandle(), fileName);
     }
 
     @Override

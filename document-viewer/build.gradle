@@ -43,8 +43,8 @@ task cleanFontsTask(type: Exec) {
 clean.dependsOn cleanFontsTask
 
 // map for the version code
-//ext.versionCodes = ['armeabi': 1, 'armeabi-v7a':2, 'x86':3, 'mips':4, 'arm64-v8a':5, 'x86_64':6, 'mips64':7]
-ext.versionCodes = ['armeabi-v7a':2, 'x86':3, 'arm64-v8a':5, 'x86_64':6]
+ext.versionCodes = ['armeabi': 1, 'armeabi-v7a':2, 'x86':3, 'mips':4, 'arm64-v8a':5, 'x86_64':6, 'mips64':7]
+// ext.versionCodes = ['armeabi-v7a':2, 'x86':3, 'arm64-v8a':5, 'x86_64':6]
 
 import com.android.build.OutputFile
 

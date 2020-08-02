@@ -9,13 +9,13 @@ import org.ebookdroid.core.codec.OutlineLink;
 import org.ebookdroid.droids.mupdf.codec.MuPdfPage;
 
 import com.artifex.mupdf.fitz.Document;
-import com.artifex.mupdf.fitz.Outline;
 import com.artifex.mupdf.fitz.Page;
 import com.artifex.mupdf.fitz.Rect;
 
 import android.graphics.RectF;
 
 import java.util.List;
+import java.util.ArrayList;
 
 public class MuPdfDocument extends AbstractCodecDocument {
 
@@ -29,11 +29,10 @@ public class MuPdfDocument extends AbstractCodecDocument {
         }
     }
 
-    // @Override
-    // public List<OutlineLink> getOutline() {
-    //     final MuPdfOutline ou = new MuPdfOutline();
-    //     return ou.getOutline(documentHandle);
-    // }
+    @Override
+    public List<OutlineLink> getOutline() {
+        return MuPdfOutline.getOutline(this);
+    }
 
     @Override
     public MuPdfPage getPage(final int pageNumber) {
@@ -62,21 +61,19 @@ public class MuPdfDocument extends AbstractCodecDocument {
         documentHandle.destroy();
     }
 
-    static void normalizeLinkTargetRect(final long docHandle, final int targetPage, final RectF targetRect,
-            final int flags) {
+    public void normalizeLinkTargetRect(final int page, final RectF rect) {
 
-        // final CodecPageInfo cpi = new CodecPageInfo();
-        // MuPdfDocument.getPageInfo(docHandle, targetPage, cpi);
+        final CodecPageInfo cpi = getPageInfo(page);
 
-        // final float left = targetRect.left;
-        // final float top = targetRect.top;
+        final float left = rect.left;
+        final float top = rect.top;
 
-        // if (((cpi.rotation / 90) % 2) != 0) {
-        //     targetRect.right = targetRect.left = left / cpi.height;
-        //     targetRect.bottom = targetRect.top = top / cpi.width;
-        // } else {
-        //     targetRect.right = targetRect.left = left / cpi.width;
-        //     targetRect.bottom = targetRect.top = top / cpi.height;
-        // }
+        if (((cpi.rotation / 90) % 2) != 0) {
+            rect.right = rect.left = left / cpi.height;
+            rect.bottom = rect.top = top / cpi.width;
+        } else {
+            rect.right = rect.left = left / cpi.width;
+            rect.bottom = rect.top = top / cpi.height;
+        }
     }
 }

@@ -21,10 +21,12 @@ public enum CodecType {
 
     PDF(PdfContext.class, true, Arrays.asList("pdf"), Arrays.asList("application/pdf")),
 
-    DJVU(DjvuContext.class, false, Arrays.asList("djvu", "djv"), Arrays.asList("image/djvu", "image/vnd.djvu", "image/x-djvu")),
+    DJVU(DjvuContext.class, false, Arrays.asList("djvu", "djv"), Arrays.asList("image/djvu",
+                                                                               "image/vnd.djvu",
+                                                                               "image/x-djvu")),
 
     XPS(XpsContext.class, true, Arrays.asList("xps", "oxps"), Arrays.asList("application/vnd.ms-xpsdocument",
-            "application/oxps")),
+                                                                            "application/oxps")),
 
     EPUB(EpubContext.class, true, Arrays.asList("epub"), Arrays.asList("application/epub+zip")),
 

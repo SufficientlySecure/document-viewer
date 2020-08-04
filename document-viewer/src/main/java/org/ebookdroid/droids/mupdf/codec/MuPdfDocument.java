@@ -24,6 +24,8 @@ public class MuPdfDocument extends AbstractCodecDocument {
     protected final Document documentHandle;
     protected final String acceleratorPath;
 
+    private List<OutlineLink> docOutline;
+
     MuPdfDocument(final MuPdfContext context, final String fname, final String pwd) {
         super(context);
         acceleratorPath = getAcceleratorPath(fname);
@@ -40,14 +42,16 @@ public class MuPdfDocument extends AbstractCodecDocument {
 
     @Override
     public List<OutlineLink> getOutline() {
-        final List<OutlineLink> list = MuPdfOutline.getOutline(this);
-        documentHandle.saveAccelerator(acceleratorPath);
-        return list;
+        if (docOutline == null) {
+            docOutline = MuPdfOutline.getOutline(this);
+            documentHandle.saveAccelerator(acceleratorPath);
+        }
+        return docOutline;
     }
 
     @Override
     public MuPdfPage getPage(final int pageNumber) {
-        final MuPdfPage page = new MuPdfPage(documentHandle.loadPage(pageNumber));
+        final MuPdfPage page = new MuPdfPage(this, documentHandle.loadPage(pageNumber));
         documentHandle.saveAccelerator(acceleratorPath);
         return page;
     }

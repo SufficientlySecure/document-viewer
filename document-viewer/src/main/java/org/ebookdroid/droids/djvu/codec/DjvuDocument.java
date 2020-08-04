@@ -14,7 +14,9 @@ import org.emdev.utils.LengthUtils;
 
 public class DjvuDocument extends AbstractCodecDocument {
 
-    final long documentHandle;
+    protected final long documentHandle;
+
+    private List<OutlineLink> docOutline;
 
     DjvuDocument(final DjvuContext djvuContext, final String fileName) {
         super(djvuContext);
@@ -23,8 +25,11 @@ public class DjvuDocument extends AbstractCodecDocument {
 
     @Override
     public List<OutlineLink> getOutline() {
-        final DjvuOutline ou = new DjvuOutline();
-        return ou.getOutline(documentHandle);
+        if (docOutline == null) {
+            final DjvuOutline ou = new DjvuOutline();
+            docOutline = ou.getOutline(documentHandle);
+        }
+        return docOutline;
     }
 
     @Override

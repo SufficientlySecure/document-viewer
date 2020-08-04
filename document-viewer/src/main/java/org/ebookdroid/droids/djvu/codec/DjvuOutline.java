@@ -10,11 +10,12 @@ public class DjvuOutline {
     private long docHandle;
 
     public List<OutlineLink> getOutline(final long dochandle) {
-        final List<OutlineLink> ls = new ArrayList<OutlineLink>();
+        final ArrayList<OutlineLink> ls = new ArrayList<OutlineLink>(20);  // this number seems reasonable
         docHandle = dochandle;
         final long expr = open(docHandle);
         ttOutline(ls, expr, 0);
-        return ls;
+        ls.trimToSize();
+        return (List<OutlineLink>) ls;
     }
 
     private void ttOutline(final List<OutlineLink> ls, long expr, int level) {

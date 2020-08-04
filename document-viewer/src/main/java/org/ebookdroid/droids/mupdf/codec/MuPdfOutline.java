@@ -7,39 +7,34 @@ import com.artifex.mupdf.fitz.Outline;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import java.util.regex.Pattern;
 
 import android.graphics.RectF;
 
 public class MuPdfOutline {
 
-    private final static Pattern regex = Pattern.compile("\\d+");
-
     public static List<OutlineLink> getOutline(final MuPdfDocument doc) {
         final Outline[] ol = doc.documentHandle.loadOutline();
-        final int allocCount = ol != null ? 2*ol.length : 0;
-        final List<OutlineLink> ls = new ArrayList<>(allocCount);
+        final int allocCount = ol != null ? 5 * ol.length : 0;
+        final ArrayList<OutlineLink> ls = new ArrayList<>(allocCount);
         if (ol != null) {
             for (Outline o : ol) {
                 ttOutline(doc, o, ls, 0);
             }
         }
-        return ls;
+        ls.trimToSize();
+        return (List<OutlineLink>) ls;
     }
 
     private static void ttOutline(final MuPdfDocument doc, final Outline ol,
                                   final List<OutlineLink> list, int level) {
-        final Scanner s = new Scanner(ol.uri);
-        final String page = s.findInLine(regex);
-        final String x = s.findInLine(regex);
-        final String y = s.findInLine(regex);
-        s.close();
-        OutlineLink link = new OutlineLink(ol.title, "#" + page, level);
+        final String[] parts = ol.uri.split(",");
+        OutlineLink link = new OutlineLink(ol.title, parts[0], level);
         link.targetRect = new RectF();
-        link.targetRect.left = x != null ? Float.parseFloat(x) : 0;
-        link.targetRect.top = y != null ? Float.parseFloat(y) : 0;
-        doc.normalizeLinkTargetRect(Integer.parseInt(page), link.targetRect);
+        if (parts.length >= 3) {
+            link.targetRect.left = Float.parseFloat(parts[1]);
+            link.targetRect.top = Float.parseFloat(parts[2]);
+        }
+        doc.normalizeLinkTargetRect(Integer.parseInt(parts[0].substring(1)), link.targetRect);
         list.add(link);
         if (ol.down != null) {
             for (Outline o : ol.down) {

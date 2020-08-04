@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.artifex.mupdf.fitz.ColorSpace;
+import com.artifex.mupdf.fitz.Document;
 import com.artifex.mupdf.fitz.Matrix;
 import com.artifex.mupdf.fitz.Page;
 import com.artifex.mupdf.fitz.android.AndroidDrawDevice;
@@ -28,6 +29,7 @@ import org.emdev.utils.LengthUtils;
 
 public class MuPdfPage extends AbstractCodecPage {
 
+    private final MuPdfDocument documentHandle;
     private final Page pageHandle;
     private boolean recicled;
 
@@ -35,8 +37,9 @@ public class MuPdfPage extends AbstractCodecPage {
     final int actualWidth;
     final int actualHeight;
 
-    public MuPdfPage(final Page pageHandle) {
+    public MuPdfPage(final MuPdfDocument documentHandle, final Page pageHandle) {
         this.pageHandle = pageHandle;
+        this.documentHandle = documentHandle;
         this.pageBounds = getBounds();
         this.recicled = false;
         this.actualWidth = (int) pageBounds.width();
@@ -111,10 +114,10 @@ public class MuPdfPage extends AbstractCodecPage {
         return new RectF(box.x0, box.y0, box.x1, box.y1);
     }
 
-    // @Override
-    // public List<PageLink> getPageLinks() {
-    //     return MuPdfLinks.getPageLinks(docHandle, pageHandle, pageBounds);
-    // }
+    @Override
+    public List<PageLink> getPageLinks() {
+        return MuPdfLinks.getPageLinks(documentHandle, pageHandle, pageBounds);
+    }
 
     // @Override
     // public List<? extends RectF> searchText(final String pattern) {

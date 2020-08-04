@@ -20,15 +20,11 @@ import java.util.List;
 import java.util.Set;
 
 import com.artifex.mupdf.fitz.ColorSpace;
-import com.artifex.mupdf.fitz.Document;
-import com.artifex.mupdf.fitz.DrawDevice;
 import com.artifex.mupdf.fitz.Matrix;
 import com.artifex.mupdf.fitz.Page;
-import com.artifex.mupdf.fitz.Pixmap;
 import com.artifex.mupdf.fitz.android.AndroidDrawDevice;
 
 import org.emdev.utils.LengthUtils;
-import org.emdev.utils.MatrixUtils;
 
 public class MuPdfPage extends AbstractCodecPage {
 
@@ -38,8 +34,6 @@ public class MuPdfPage extends AbstractCodecPage {
     final RectF pageBounds;
     final int actualWidth;
     final int actualHeight;
-
-    private final static boolean USE_DIRECT = true;
 
     public MuPdfPage(final Page pageHandle) {
         this.pageHandle = pageHandle;
@@ -61,19 +55,36 @@ public class MuPdfPage extends AbstractCodecPage {
 
     @Override
     public ByteBufferBitmap renderBitmap(final ViewState viewState, final int width, final int height,
-            final RectF pageSliceBounds) {
-        final Matrix matrixArray = calculateFz(width, height, pageSliceBounds);
-        return render(viewState, new Rect(0, 0, width, height), matrixArray);
-    }
+                                         final RectF pageSliceBounds) {
+        if (isRecycled()) {
+            throw new RuntimeException("The page has been recycled before: " + this);
+        }
 
-    private Matrix calculateFz(final int width, final int height, final RectF pageSliceBounds) {
-        final Matrix matrix = new Matrix();
-        // This should be corrected
-        matrix.scale(width / pageBounds.width(), height / pageBounds.height());
-        matrix.translate(-pageSliceBounds.left * width, -pageSliceBounds.top * height);
-        matrix.scale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height());
+        // Original code (android.graphics.Matrix):
+        //
+        // final Matrix matrix = MatrixUtils.get();
+        // matrix.postScale(width / pageBounds.width(), height / pageBounds.height());
+        // a.translate(-pageSliceBounds.left * width, -pageSliceBounds.top * height);
+        // matrix.postTranslate(-pageSliceBounds.left * width, -pageSliceBounds.top * height);
+        //
+        // MuPDF's version of Matrix does scale and translate differently
 
-        return matrix;
+        final com.artifex.mupdf.fitz.Matrix ctm = new com.artifex.mupdf.fitz.Matrix();
+        ctm.scale(width / pageBounds.width(), height / pageBounds.height());
+        ctm.scale(1 / pageSliceBounds.width(), 1 / pageSliceBounds.height());
+        ctm.e = -pageSliceBounds.left * width / pageSliceBounds.width();
+        ctm.f = -pageSliceBounds.top * height / pageSliceBounds.height();
+
+		Bitmap bm = Bitmap.createBitmap(width, height,
+                                        Bitmap.Config.ARGB_8888);
+        AndroidDrawDevice dev = new AndroidDrawDevice(bm, 0, 0, 0, 0, width, height);
+		pageHandle.run(dev, ctm, null);
+		dev.close();
+		dev.destroy();
+
+        final ByteBufferBitmap bmp = ByteBufferBitmap.get(bm);
+
+        return bmp;
     }
 
     @Override
@@ -98,17 +109,6 @@ public class MuPdfPage extends AbstractCodecPage {
     private RectF getBounds() {
         final com.artifex.mupdf.fitz.Rect box = pageHandle.getBounds();
         return new RectF(box.x0, box.y0, box.x1, box.y1);
-    }
-
-    public ByteBufferBitmap render(final ViewState viewState, final Rect viewbox, final Matrix ctm) {
-        if (isRecycled()) {
-            throw new RuntimeException("The page has been recycled before: " + this);
-        }
-
-        final Bitmap bm = AndroidDrawDevice.drawPage(pageHandle, ctm);
-        final ByteBufferBitmap bmp = ByteBufferBitmap.get(bm);
-
-        return bmp;
     }
 
     // @Override

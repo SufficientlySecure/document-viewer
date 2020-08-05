@@ -30,9 +30,9 @@ public class MuPdfLinks {
                     link.url = li.uri;
                 } else {
                     final String[] parts = li.uri.split(",");
-                    final int pageNum = Integer.parseInt(parts[0].substring(1));
+                    final int pageNum = Integer.parseInt(parts[0].substring(1)) - 1;
                     link.rectType = 1;
-                    link.targetPage = pageNum - 1;
+                    link.targetPage = pageNum;
                     link.targetRect = new RectF();
                     if (parts.length >= 3) {
                         link.targetRect.left = Float.parseFloat(parts[1]);

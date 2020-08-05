@@ -22,7 +22,7 @@ public class BooleanPreferenceDefinition extends BasePreferenceDefinition<Boolea
 
     public boolean getPreferenceValue(final SharedPreferences prefs, final boolean defValue) {
         if (!prefs.contains(key)) {
-            prefs.edit().putBoolean(key, defValue).commit();
+            prefs.edit().putBoolean(key, defValue).apply();
         }
         return prefs.getBoolean(key, defValue);
     }

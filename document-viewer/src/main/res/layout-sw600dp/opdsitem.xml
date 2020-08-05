@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res/org.sufficientlysecure.viewer"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal" >
@@ -28,9 +28,11 @@
         android:ellipsize="marquee"
         android:gravity="center_vertical"
         android:singleLine="true"
-        android:textSize="30dip" />
+        android:textSize="30dip"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@id/opdsItemIcon" />
 
-    <org.emdev.ui.widget.TextViewMultilineEllipse
+    <TextViewMultilineEllipse
         android:id="@+id/opdsDescription"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -39,6 +41,8 @@
         android:layout_below="@id/opdsItemText"
         android:layout_toRightOf="@id/opdsItemIcon"
         app:textSize="26dip"
-        app:maxLines="5"/>
+        app:maxLines="5"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@id/opdsItemIcon" />
 
 </RelativeLayout>

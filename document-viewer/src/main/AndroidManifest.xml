@@ -21,7 +21,8 @@
         android:label="@string/app_name"
         android:theme="@style/ebookdroid"
         android:largeHeap="true"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        android:fullBackupContent="@xml/backup_descriptor">
 
         <uses-library android:name="org.apache.http.legacy" android:required="false" />
 
@@ -53,7 +54,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.ebookdroid.ui.library.RecentActivity" />
 
-            <!-- 
+            <!--
                 Note: Intent matching isn't as easy as it looks at first sight.
                 All <data> tags are merged by Android! <intent-filter> tags are OR'ed
              -->
@@ -75,9 +76,9 @@
                 <data android:mimeType="application/epub+zip" />
                 <data android:mimeType="application/x-fb2" />
             </intent-filter>
-            <!-- 
+            <!--
                 Allow opening directly from browser for schemes http, https, and samba.
-                Matching with mimeTypes here would result in direct opening of pdfs without user interaction!!! 
+                Matching with mimeTypes here would result in direct opening of pdfs without user interaction!!!
             -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

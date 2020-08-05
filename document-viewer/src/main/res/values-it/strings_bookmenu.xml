@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="bookmenu_open">"Apri il libro a..."</string>
+    <string name="bookmenu_open">"Apri il libro a…"</string>
     <string name="bookmenu_settings">"Mostra impostazioni libro"</string>
     <string name="bookmenu_openbookshelf">"Visualizza libreria"</string>
     <string name="bookmenu_openbookfolder">"Visualizza cartelle"</string>
-    <string name="bookmenu_recentgroup">"Gestisci recenti..."</string>
+    <string name="bookmenu_recentgroup">"Gestisci recenti…"</string>
     <string name="bookmenu_removefromrecent">"Escludi dai recenti"</string>
     <string name="bookmenu_cleardata">"Cancella cache dati"</string>
     <string name="bookmenu_deletesettings">"Rimuovi impostazioni libro"</string>
-    <string name="bookmenu_filegroup">"Operazioni sui file..."</string>
-    <string name="bookmenu_copy">"Copia libro in..."</string>
-    <string name="bookmenu_rename">"Rinomina libro..."</string>
-    <string name="bookmenu_move">"Sposta libro in..."</string>
+    <string name="bookmenu_filegroup">"Operazioni sui file…"</string>
+    <string name="bookmenu_copy">"Copia libro in…"</string>
+    <string name="bookmenu_rename">"Rinomina libro…"</string>
+    <string name="bookmenu_move">"Sposta libro in…"</string>
     <string name="bookmenu_delete">"Cancella libro"</string>
 
 </resources>

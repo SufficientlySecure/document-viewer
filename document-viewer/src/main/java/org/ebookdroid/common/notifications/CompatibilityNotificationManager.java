@@ -5,7 +5,7 @@ import org.sufficientlysecure.viewer.R;
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.content.Intent;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 
 import org.emdev.BaseDroidApp;
 

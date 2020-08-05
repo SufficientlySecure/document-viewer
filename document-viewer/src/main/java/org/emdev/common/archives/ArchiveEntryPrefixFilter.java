@@ -1,6 +1,7 @@
 package org.emdev.common.archives;
 
 import java.util.Set;
+import java.util.Locale;
 
 import org.emdev.common.filesystem.FilePrefixFilter;
 
@@ -15,6 +16,6 @@ public class ArchiveEntryPrefixFilter extends FilePrefixFilter {
     }
 
     public final boolean accept(final ArchiveEntry archiveEntry) {
-        return acceptImpl(archiveEntry.getName().toLowerCase());
+        return acceptImpl(archiveEntry.getName().toLowerCase(Locale.ROOT));
     }
 }

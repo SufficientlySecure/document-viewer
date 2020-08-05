@@ -22,14 +22,13 @@ import org.ebookdroid.ui.viewer.IViewController;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
-import android.support.annotation.Nullable;
-import android.support.annotation.WorkerThread;
-import android.util.FloatMath;
+import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
+
 import android.util.TypedValue;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.KeyEvent;

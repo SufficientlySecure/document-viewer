@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tab_bookmarks"
+    android:id="@+id/tab_bookmarks_base"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_gravity="center"
@@ -26,7 +26,9 @@
             android:layout_height="48dip"
             android:layout_marginLeft="4dip"
             android:layout_marginRight="2dip"
-            android:background="@drawable/viewer_goto_dlg_bookmark_add" />
+            android:background="@drawable/viewer_goto_dlg_bookmark_add"
+            android:layout_marginStart="4dip"
+            android:layout_marginEnd="2dip" />
 
         <TextView
             android:layout_width="fill_parent"
@@ -47,7 +49,9 @@
             android:layout_height="48dip"
             android:layout_marginLeft="2dip"
             android:layout_marginRight="4dip"
-            android:background="@drawable/viewer_goto_dlg_bookmark_remove_all" />
+            android:background="@drawable/viewer_goto_dlg_bookmark_remove_all"
+            android:layout_marginStart="2dip"
+            android:layout_marginEnd="4dip" />
     </LinearLayout>
 
     <ListView

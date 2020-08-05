@@ -24,7 +24,7 @@
     <string name="msg_search_text_on_page">"ページ %1$d で検索中&#8230;"</string>
     <string name="msg_no_text_found">"テキストが見つかりません"</string>
 
-    <string name="dialog_title_goto_page">移動...</string>
+    <string name="dialog_title_goto_page">移動…</string>
     <string name="button_goto_page">移動</string>
     <string name="text_page">ページ</string>
     <string name="error_close">閉じる</string>

@@ -8,7 +8,7 @@ import org.ebookdroid.core.events.ZoomListener;
 
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.support.annotation.WorkerThread;
+import androidx.annotation.WorkerThread;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 

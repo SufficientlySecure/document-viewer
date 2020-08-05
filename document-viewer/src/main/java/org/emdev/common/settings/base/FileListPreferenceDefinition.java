@@ -25,7 +25,7 @@ public class FileListPreferenceDefinition extends BasePreferenceDefinition<Set<S
     @Override
     public Set<String> getPreferenceValue(final SharedPreferences prefs) {
         if (!prefs.contains(key)) {
-            prefs.edit().putString(key, defValue).commit();
+            prefs.edit().putString(key, defValue).apply();
         }
         return StringUtils.split(File.pathSeparator, prefs.getString(key, defValue));
     }

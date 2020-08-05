@@ -44,6 +44,8 @@
         android:layout_marginLeft="8dip"
         android:layout_marginRight="2dip"
         android:layout_marginTop="2dip"
-        android:background="@drawable/viewer_goto_dlg_bookmark_remove" />
+        android:background="@drawable/viewer_goto_dlg_bookmark_remove"
+        android:layout_marginStart="8dip"
+        android:layout_marginEnd="2dip" />
 
 </LinearLayout>

@@ -5,6 +5,7 @@ import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import org.emdev.utils.LengthUtils;
@@ -23,12 +24,12 @@ public class FileExtensionFilter implements FileFilter, FilenameFilter {
 
     @Override
     public final boolean accept(final File file) {
-        return acceptImpl(file.getName().toLowerCase());
+        return acceptImpl(file.getName().toLowerCase(Locale.ROOT));
     }
 
     @Override
     public boolean accept(final File dir, final String name) {
-        return acceptImpl(name.toLowerCase());
+        return acceptImpl(name.toLowerCase(Locale.ROOT));
     }
 
     public boolean accept(final String name) {
@@ -38,7 +39,7 @@ public class FileExtensionFilter implements FileFilter, FilenameFilter {
         if (!new File(name).exists()) {
             return false;
         }
-        return acceptImpl(name.toLowerCase());
+        return acceptImpl(name.toLowerCase(Locale.ROOT));
     }
 
     protected boolean acceptImpl(final String name) {
@@ -49,7 +50,7 @@ public class FileExtensionFilter implements FileFilter, FilenameFilter {
         }
         return false;
     }
-    
+
     protected boolean acceptImpl(final String name, final String ext) {
         return name != null && name.endsWith("." + ext);
     }

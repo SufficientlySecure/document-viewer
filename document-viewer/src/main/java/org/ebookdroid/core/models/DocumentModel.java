@@ -28,7 +28,7 @@ import org.ebookdroid.ui.viewer.IView;
 
 import android.graphics.PointF;
 import android.graphics.RectF;
-import android.support.annotation.WorkerThread;
+import androidx.annotation.WorkerThread;
 
 import java.util.ArrayList;
 import java.util.Arrays;

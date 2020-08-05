@@ -38,7 +38,7 @@ public class IntegerPreferenceDefinition extends BasePreferenceDefinition<Intege
 
     public int getPreferenceValue(final SharedPreferences prefs, final int defValue) {
         if (!prefs.contains(key)) {
-            prefs.edit().putString(key, Integer.toString(defValue)).commit();
+            prefs.edit().putString(key, Integer.toString(defValue)).apply();
         }
         int value = defValue;
         try {

@@ -19,7 +19,8 @@
         android:layout_marginRight="16dp"
         android:layout_toRightOf="@id/outline_space"
         android:src="@drawable/viewer_outline_item_expanded"
-        android:scaleType="center" />
+        android:scaleType="center"
+        android:layout_toEndOf="@id/outline_space" />
 
     <TextView
         android:id="@+id/outline_pageindex"
@@ -28,7 +29,8 @@
         android:layout_alignParentRight="true"
         android:ellipsize="marquee"
         android:gravity="center"
-        android:text="101" />
+        android:text="101"
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:id="@+id/outline_title"
@@ -38,6 +40,8 @@
         android:layout_toLeftOf="@id/outline_pageindex"
         android:ellipsize="marquee"
         android:gravity="center_vertical"
-        android:text="Outline item text" />
+        android:text="Outline item text"
+        android:layout_toEndOf="@id/outline_collapse"
+        android:layout_toStartOf="@id/outline_pageindex" />
 
 </RelativeLayout>

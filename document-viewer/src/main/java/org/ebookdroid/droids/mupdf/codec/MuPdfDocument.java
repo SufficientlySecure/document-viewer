@@ -58,7 +58,7 @@ public class MuPdfDocument extends AbstractCodecDocument {
 
     static void normalizeLinkTargetRect(final long docHandle, final int targetPage, final RectF targetRect,
             final int flags) {
-        
+
         final CodecPageInfo cpi = new CodecPageInfo();
         MuPdfDocument.getPageInfo(docHandle, targetPage, cpi);
 

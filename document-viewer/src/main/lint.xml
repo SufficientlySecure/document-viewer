@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="Assert">
+      <ignore path="src/main/java/org/emdev/utils/collections/*.java" />
+      <ignore path="src/main/java/org/emdev/utils/base64/Base64.java" />
+      <ignore path="src/main/java/org/ebookdroid/core/PageTreeNode.java" />
+    </issue>
+
+    <issue id="HardcodedText" severity="error" />
+
+    <!-- ignore for now -->
+    <issue id="MissingTranslation" severity="ignore" />
+
+    <!-- ignore for now -->
+    <issue id="Typos" severity="ignore" />
+</lint>

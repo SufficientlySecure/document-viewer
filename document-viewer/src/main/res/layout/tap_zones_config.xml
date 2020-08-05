@@ -96,18 +96,21 @@
 
             <Button
                 android:id="@+id/tapZonesConfigReset"
+                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="0dip"
                 android:layout_weight="1"
                 android:text="@string/tap_zones_reset" />
 
             <Button
                 android:id="@+id/tapZonesConfigDelete"
+                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="0dip"
                 android:layout_weight="1"
                 android:text="@string/tap_zones_delete" />
 
             <Button
                 android:id="@+id/tapZonesConfigClear"
+                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="0dip"
                 android:layout_weight="1"
                 android:text="@string/tap_zones_clear" />

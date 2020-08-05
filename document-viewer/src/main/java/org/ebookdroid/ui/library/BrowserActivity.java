@@ -9,7 +9,7 @@ import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.ui.library.views.FileBrowserView;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -23,8 +23,6 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import java.io.File;
@@ -32,10 +30,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.emdev.common.android.AndroidVersion;
 import org.emdev.ui.AbstractActionActivity;
 import org.emdev.ui.actions.ActionMenuHelper;
-import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.utils.LayoutUtils;
 import org.emdev.utils.LengthUtils;
 

@@ -17,9 +17,11 @@ import org.ebookdroid.ui.viewer.views.ManualCropView;
 import org.ebookdroid.ui.viewer.views.PageViewZoomControls;
 import org.ebookdroid.ui.viewer.views.SearchControls;
 
+import java.util.Locale;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -33,7 +35,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import org.emdev.common.android.AndroidVersion;
 import org.emdev.ui.AbstractActionActivity;
 import org.emdev.ui.actions.ActionDialogBuilder;
 import org.emdev.ui.actions.ActionMenuHelper;
@@ -224,7 +225,7 @@ public class ViewerActivity extends AbstractActionActivity<ViewerActivity, Viewe
             return;
         }
 
-        final String zoomText = String.format("%.2f", zoom) + "x";
+        final String zoomText = String.format(Locale.ROOT, "%.2f", zoom) + "x";
 
         if (zoomToast != null) {
             zoomToast.setText(zoomText);

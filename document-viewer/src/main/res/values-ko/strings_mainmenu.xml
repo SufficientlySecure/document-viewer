@@ -2,7 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
 <string name="menu_close">닫기</string>
-<string name="menu_goto_page">바로가기...</string>
+<string name="menu_goto_page">바로가기…</string>
 <string name="menu_outline">윤곽선</string>
 <string name="menu_zoom">확대</string>
 <string name="menu_nightmode">주간/야간</string>
@@ -21,9 +21,9 @@
 <string name="menu_backupsettings">백업 &amp; 복원</string>
 <string name="menu_crop">수동 자르기</string>
 
-<string name="menu_navigation_menu">탐색...</string>
-<string name="menu_fastsettings_menu">보기...</string>
-<string name="menu_allsettings_menu">설정...</string>
+<string name="menu_navigation_menu">탐색…</string>
+<string name="menu_fastsettings_menu">보기…</string>
+<string name="menu_allsettings_menu">설정…</string>
 
 <string name="menu_show_library">라이브러리 표시</string>
 <string name="menu_show_recent">최근 목록 표시</string>

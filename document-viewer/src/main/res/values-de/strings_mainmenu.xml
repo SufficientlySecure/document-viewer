@@ -21,8 +21,8 @@
     <string name="menu_backupsettings">"Sichern &amp; Wiederherstellen"</string>
     <string name="menu_crop">"Manuell beschneiden"</string>
 <!--<string name="menu_navigation_menu">"Navigation..."</string>-->
-    <string name="menu_fastsettings_menu">"Ansicht..."</string>
-    <string name="menu_allsettings_menu">"Einstellungen..."</string>
+    <string name="menu_fastsettings_menu">"Ansicht…"</string>
+    <string name="menu_allsettings_menu">"Einstellungen…"</string>
     <string name="menu_show_library">"Bibliothek anzeigen"</string>
     <string name="menu_show_recent">"Zuletzt verwendet"</string>
     <string name="menu_storages">"Speicherorte"</string>
@@ -32,7 +32,7 @@
     <string name="menu_force_landscape">"Album erzwingen"</string>
     <string name="menu_show_files">"Dateien anzeigen"</string>
     <string name="menu_search">Suche</string>
-    <string name="menu_share">Teilen...</string>
-    <string name="menu_openwith">Öffnen mit...</string>
+    <string name="menu_share">Teilen…</string>
+    <string name="menu_openwith">Öffnen mit…</string>
     <string name="menu_reverse_orientation">Bildschirmausrichtung invertieren</string>
 </resources>

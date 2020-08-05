@@ -13,6 +13,7 @@ import java.nio.channels.WritableByteChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Locale;
 
 import org.emdev.ui.progress.IProgressIndicator;
 
@@ -52,11 +53,11 @@ public final class FileUtils {
 
     public static final String getFileSize(final long size) {
         if (size > 1073741824) {
-            return String.format("%.2f", size / 1073741824.0) + " GB";
+            return String.format(Locale.getDefault(), "%.2f", size / 1073741824.0) + " GB";
         } else if (size > 1048576) {
-            return String.format("%.2f", size / 1048576.0) + " MB";
+            return String.format(Locale.getDefault(), "%.2f", size / 1048576.0) + " MB";
         } else if (size > 1024) {
-            return String.format("%.2f", size / 1024.0) + " KB";
+            return String.format(Locale.getDefault(), "%.2f", size / 1024.0) + " KB";
         } else {
             return size + " B";
         }

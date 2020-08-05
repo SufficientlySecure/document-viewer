@@ -258,7 +258,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         try {
             final Editor edit = SettingsManager.prefs.edit();
             AppPreferences.FULLSCREEN.setPreferenceValue(edit, !current.fullScreen);
-            edit.commit();
+            edit.apply();
             onSettingsChanged();
         } finally {
             SettingsManager.lock.writeLock().unlock();
@@ -274,7 +274,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         try {
             final Editor edit = SettingsManager.prefs.edit();
             AppPreferences.SHOW_TITLE.setPreferenceValue(edit, visible);
-            edit.commit();
+            edit.apply();
             onSettingsChanged();
         } finally {
             SettingsManager.lock.writeLock().unlock();
@@ -286,7 +286,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         try {
             final Editor edit = SettingsManager.prefs.edit();
             AppPreferences.TAP_PROFILES.setPreferenceValue(edit, profiles);
-            edit.commit();
+            edit.apply();
             onSettingsChanged();
         } finally {
             SettingsManager.lock.writeLock().unlock();
@@ -298,7 +298,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         try {
             final Editor edit = SettingsManager.prefs.edit();
             AppPreferences.KEY_BINDINGS.setPreferenceValue(edit, json);
-            edit.commit();
+            edit.apply();
             onSettingsChanged();
         } finally {
             SettingsManager.lock.writeLock().unlock();
@@ -367,7 +367,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         edit.remove(BOOK_ANIMATION_TYPE.key);
         edit.remove(BOOK_FIRST_PAGE_OFFSET.key);
         edit.remove(BOOK_RTL.key);
-        edit.commit();
+        edit.apply();
     }
 
     static void updatePseudoBookSettings(final BookSettings bs) {
@@ -391,7 +391,7 @@ public class AppSettings implements AppPreferences, BookPreferences, IBackupAgen
         BOOK_ANIMATION_TYPE.setPreferenceValue(edit, bs.animationType);
         BOOK_FIRST_PAGE_OFFSET.setPreferenceValue(edit, bs.firstPageOffset);
         BOOK_RTL.setPreferenceValue(edit, bs.rtl);
-        edit.commit();
+        edit.apply();
     }
 
     static Diff onSettingsChanged() {

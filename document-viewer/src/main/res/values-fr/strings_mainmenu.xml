@@ -21,8 +21,8 @@
     <string name="menu_backupsettings">"Sauvegarde &amp; Restauration"</string>
     <string name="menu_crop">"Redimensionnement manuel"</string>
 <!--<string name="menu_navigation_menu">"Navigation..."</string>-->
-    <string name="menu_fastsettings_menu">"Voir..."</string>
-    <string name="menu_allsettings_menu">"Paramètres..."</string>
+    <string name="menu_fastsettings_menu">"Voir…"</string>
+    <string name="menu_allsettings_menu">"Paramètres…"</string>
     <string name="menu_show_library">"Afficher la bibliotèque"</string>
     <string name="menu_show_recent">"Afficher récents"</string>
 <!--<string name="menu_storages">"Storages"</string>-->

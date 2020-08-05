@@ -5,14 +5,14 @@
     <string name="bookmenu_settings">"הגדרות תצוגה של הספר"</string>
     <string name="bookmenu_openbookshelf">"הצג מדף הספר"</string>
     <string name="bookmenu_openbookfolder">"הצג תיקייה הספר "</string>
-    <string name="bookmenu_recentgroup">"למחוק את הנתונים ..."</string>
+    <string name="bookmenu_recentgroup">"למחוק את הנתונים …"</string>
     <string name="bookmenu_removefromrecent">"להוציא מהאחרונים"</string>
     <string name="bookmenu_cleardata">"נקה את נתוני המטמון"</string>
     <string name="bookmenu_deletesettings">"מחק את הספר"</string>
-    <string name="bookmenu_filegroup">"פעולות קבצים ..."</string>
-    <string name="bookmenu_copy">"העתק את הספר ..."</string>
-    <string name="bookmenu_rename">"שנה את שם הספר ..."</string>
-    <string name="bookmenu_move">"הזז את הספר ..."</string>
+    <string name="bookmenu_filegroup">"פעולות קבצים …"</string>
+    <string name="bookmenu_copy">"העתק את הספר …"</string>
+    <string name="bookmenu_rename">"שנה את שם הספר …"</string>
+    <string name="bookmenu_move">"הזז את הספר …"</string>
     <string name="bookmenu_delete">"הסר את הספר"</string>
 
 </resources>

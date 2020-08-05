@@ -11,6 +11,7 @@ import org.ebookdroid.droids.mupdf.codec.EpubContext;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,13 +40,13 @@ public enum CodecType {
         extensionToActivity = new HashMap<String, CodecType>();
         for (final CodecType a : values()) {
             for (final String ext : a.extensions) {
-                extensionToActivity.put(ext.toLowerCase(), a);
+                extensionToActivity.put(ext.toLowerCase(Locale.ROOT), a);
             }
         }
         mimeTypesToActivity = new HashMap<String, CodecType>();
         for (final CodecType a : values()) {
             for (final String type : a.mimeTypes) {
-                mimeTypesToActivity.put(type.toLowerCase(), a);
+                mimeTypesToActivity.put(type.toLowerCase(Locale.ROOT), a);
             }
         }
     }
@@ -82,7 +83,7 @@ public enum CodecType {
         if (LengthUtils.isEmpty(uri)) {
             return null;
         }
-        final String uriString = uri.toLowerCase();
+        final String uriString = uri.toLowerCase(Locale.ROOT);
         for (final String ext : extensionToActivity.keySet()) {
             if (uriString.endsWith("." + ext)) {
                 return extensionToActivity.get(ext);
@@ -92,11 +93,11 @@ public enum CodecType {
     }
 
     public static CodecType getByExtension(final String ext) {
-        return extensionToActivity.get(ext.toLowerCase());
+        return extensionToActivity.get(ext.toLowerCase(Locale.ROOT));
     }
 
     public static CodecType getByMimeType(final String type) {
-        return mimeTypesToActivity.get(type.toLowerCase());
+        return mimeTypesToActivity.get(type.toLowerCase(Locale.ROOT));
     }
 
     public String getDefaultExtension() {

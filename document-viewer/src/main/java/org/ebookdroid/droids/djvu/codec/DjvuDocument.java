@@ -8,6 +8,7 @@ import org.ebookdroid.core.codec.PageTextBox;
 import android.graphics.RectF;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.emdev.utils.LengthUtils;
 
@@ -61,7 +62,10 @@ public class DjvuDocument extends AbstractCodecDocument {
 
     @Override
     public List<? extends RectF> searchText(final int pageNuber, final String pattern) {
-        final List<PageTextBox> list = DjvuPage.getPageText(documentHandle, pageNuber, context.getContextHandle(), pattern.toLowerCase());
+        final List<PageTextBox> list = DjvuPage.getPageText(documentHandle,
+                                                            pageNuber,
+                                                            context.getContextHandle(),
+                                                            pattern.toLowerCase(Locale.ROOT));
         if (LengthUtils.isNotEmpty(list)) {
             CodecPageInfo cpi = getPageInfo(pageNuber);
             for (final PageTextBox ptb : list) {

@@ -6,7 +6,7 @@ import org.ebookdroid.ui.library.adapters.BrowserAdapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,7 +26,7 @@ import org.emdev.ui.actions.IActionController;
 import org.emdev.ui.actions.params.AbstractActionParameter;
 import org.emdev.utils.LayoutUtils;
 
-public class FolderDlg implements AdapterView.OnItemClickListener {
+public class FolderDlg extends android.app.Activity implements AdapterView.OnItemClickListener {
 
     public static final String SELECTED_FOLDER = "selected";
 

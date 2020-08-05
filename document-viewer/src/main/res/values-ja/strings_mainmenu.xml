@@ -2,7 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="menu_close">閉じる</string>
-    <string name="menu_goto_page">移動...</string>
+    <string name="menu_goto_page">移動…</string>
     <string name="menu_outline">アウトライン</string>
     <string name="menu_zoom">ズーム</string>
     <string name="menu_nightmode">日中/夜間</string>
@@ -21,12 +21,12 @@
     <string name="menu_backupsettings">バックアップ &amp; 復元</string>
     <string name="menu_crop">手動クロップ</string>
 
-    <string name="menu_navigation_menu">ナビゲーション...</string>
-    <string name="menu_fastsettings_menu">表示...</string>
-    <string name="menu_allsettings_menu">設定...</string>
+    <string name="menu_navigation_menu">ナビゲーション…</string>
+    <string name="menu_fastsettings_menu">表示…</string>
+    <string name="menu_allsettings_menu">設定…</string>
 
-    <string name="menu_share">共有...</string>
-    <string name="menu_openwith">...で開く</string>
+    <string name="menu_share">共有…</string>
+    <string name="menu_openwith">…で開く</string>
 
     <string name="menu_show_library">ライブラリーを表示</string>
     <string name="menu_show_recent">最近使用したを表示</string>

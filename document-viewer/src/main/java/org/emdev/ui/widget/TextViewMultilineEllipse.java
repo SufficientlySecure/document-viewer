@@ -81,9 +81,9 @@ public class TextViewMultilineEllipse extends View {
         init();
 
         TypedArray a = context.obtainStyledAttributes(attrs,
-                R.styleable.org_emdev_ui_widget_TextViewMultilineEllipse);
+                R.styleable.TextViewMultilineEllipse);
 
-        CharSequence s = a.getString(R.styleable.org_emdev_ui_widget_TextViewMultilineEllipse_text);
+        CharSequence s = a.getString(R.styleable.TextViewMultilineEllipse_text);
         if (s != null) {
             setText(s.toString());
         }
@@ -91,14 +91,14 @@ public class TextViewMultilineEllipse extends View {
         // Retrieve the color(s) to be used for this view and apply them.
         // Note, if you only care about supporting a single color, that you
         // can instead call a.getColor() and pass that to setTextColor().
-        setTextColor(a.getColorStateList(R.styleable.org_emdev_ui_widget_TextViewMultilineEllipse_textColor));
+        setTextColor(a.getColorStateList(R.styleable.TextViewMultilineEllipse_textColor));
 
-        int textSize = a.getDimensionPixelOffset(R.styleable.org_emdev_ui_widget_TextViewMultilineEllipse_textSize, 0);
+        int textSize = a.getDimensionPixelOffset(R.styleable.TextViewMultilineEllipse_textSize, 0);
         if (textSize > 0) {
             setTextSize(textSize);
         }
 
-        mMaxLines = a.getInt(R.styleable.org_emdev_ui_widget_TextViewMultilineEllipse_maxLines, -1);
+        mMaxLines = a.getInt(R.styleable.TextViewMultilineEllipse_maxLines, -1);
 
         a.recycle();
     }
@@ -386,7 +386,7 @@ public class TextViewMultilineEllipse extends View {
                         mTextPaint.setColor(mColorEllipsizeMore);
                         if (mRightAlignEllipsizeMoreString) {
                             // Seems to not be right...
-                            canvas.drawText(mStrEllipsisMore, canvas.getWidth()
+                            canvas.drawText(mStrEllipsisMore, getWidth()
                                     - (breaker.getLengthEllipsisMore() + getPaddingRight() + getPaddingLeft()), y,
                                     mTextPaint);
                         } else {
@@ -399,7 +399,7 @@ public class TextViewMultilineEllipse extends View {
             }
 
             y += (-mAscent + mTextPaint.descent());
-            if (y > canvas.getHeight()) {
+            if (y > getHeight()) {
                 break;
             }
         }

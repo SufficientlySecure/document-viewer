@@ -6,12 +6,9 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.res.Configuration;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
-import android.widget.ProgressBar;
-
-import org.emdev.common.android.AndroidVersion;
 
 import java.util.HashMap;
 import java.util.Map;

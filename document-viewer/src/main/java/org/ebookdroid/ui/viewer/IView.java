@@ -5,8 +5,8 @@ import org.ebookdroid.core.ViewState;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.support.annotation.Nullable;
-import android.support.annotation.WorkerThread;
+import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 import android.view.View;
 
 import org.emdev.common.log.LogContext;

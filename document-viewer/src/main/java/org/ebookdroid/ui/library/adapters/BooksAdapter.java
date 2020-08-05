@@ -8,8 +8,8 @@ import org.ebookdroid.ui.library.views.BookshelfView;
 
 import android.database.DataSetObserver;
 import android.os.Parcelable;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -526,7 +527,7 @@ public class BooksAdapter extends PagerAdapter implements FileSystemScanner.List
         if (LengthUtils.isEmpty(searchQuery)) {
             return false;
         }
-        final String bookTitle = StringUtils.cleanupTitle(node.name).toLowerCase();
+        final String bookTitle = StringUtils.cleanupTitle(node.name).toLowerCase(Locale.ROOT);
         final int pos = bookTitle.indexOf(searchQuery);
         return pos >= 0;
     }

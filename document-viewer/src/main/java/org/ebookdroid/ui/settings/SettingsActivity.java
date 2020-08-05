@@ -50,7 +50,7 @@ public class SettingsActivity extends BaseSettingsActivity {
             final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             final SharedPreferences.Editor editor = preferences.edit();
             editor.clear();
-            editor.commit();
+            editor.apply();
 
             setPreferenceScreen(createPreferences());
         }

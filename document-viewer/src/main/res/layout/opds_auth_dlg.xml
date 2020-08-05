@@ -8,13 +8,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dip"
-        android:text="@string/opds_authfeed_username" />
+        android:text="@string/opds_authfeed_username"
+        android:layout_marginStart="10dip" />
 
     <EditText
         android:id="@+id/opds_auth_editUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10" >
+        android:ems="10"
+        android:inputType="text">
 
         <requestFocus />
     </EditText>
@@ -23,7 +25,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dip"
-        android:text="@string/opds_authfeed_password" />
+        android:text="@string/opds_authfeed_password"
+        android:layout_marginStart="10dip" />
 
     <EditText
         android:id="@+id/opds_auth_editPassword"

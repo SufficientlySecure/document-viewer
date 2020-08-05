@@ -13,7 +13,9 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="1dip"
         android:layout_marginRight="2dip"
-        android:src="@drawable/browser_item_book" />
+        android:src="@drawable/browser_item_book"
+        android:layout_marginStart="1dip"
+        android:layout_marginEnd="2dip" />
 
     <TextView
         android:id="@+id/browserItemText"
@@ -21,7 +23,9 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@id/browserItemIcon"
-        android:gravity="center_vertical"/>
+        android:gravity="center_vertical"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@id/browserItemIcon" />
 
     <TextView
         android:id="@+id/browserItemInfo"
@@ -31,7 +35,9 @@
         android:layout_below="@id/browserItemText"
         android:layout_toRightOf="@id/browserItemIcon"
         android:ellipsize="marquee"
-        android:gravity="center_vertical|left"/>
+        android:gravity="center_vertical|left"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@id/browserItemIcon" />
 
     <TextView
         android:id="@+id/browserItemfileSize"
@@ -40,6 +46,8 @@
         android:layout_alignParentRight="true"
         android:layout_below="@id/browserItemText"
         android:layout_toRightOf="@id/browserItemIcon"
-        android:gravity="center_vertical|right"/>
+        android:gravity="center_vertical|right"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@id/browserItemIcon" />
 
 </RelativeLayout>

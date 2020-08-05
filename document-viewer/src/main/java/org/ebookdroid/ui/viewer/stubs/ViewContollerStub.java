@@ -11,7 +11,7 @@ import org.ebookdroid.ui.viewer.IViewController;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 

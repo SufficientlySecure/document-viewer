@@ -20,14 +20,13 @@ import org.ebookdroid.ui.library.views.RecentBooksView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.tabs.TabLayout;
+import androidx.core.view.MenuItemCompat;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import android.text.SpannableStringBuilder;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,7 +38,6 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
-import android.widget.ImageView;
 import android.widget.ViewFlipper;
 
 import java.io.File;
@@ -50,11 +48,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.emdev.BaseDroidApp;
-import org.emdev.common.android.AndroidVersion;
 import org.emdev.common.filesystem.MediaManager;
 import org.emdev.ui.AbstractActionActivity;
 import org.emdev.ui.actions.ActionMenuHelper;
-import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.utils.FileUtils;
 import org.emdev.utils.LengthUtils;
 

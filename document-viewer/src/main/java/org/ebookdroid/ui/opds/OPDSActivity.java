@@ -8,7 +8,7 @@ import org.ebookdroid.opds.model.Feed;
 import org.ebookdroid.opds.model.Link;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -18,11 +18,9 @@ import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 
-import org.emdev.common.android.AndroidVersion;
 import org.emdev.ui.AbstractActionActivity;
 import org.emdev.ui.actions.ActionMenuHelper;
 import org.emdev.ui.actions.params.Constant;
-import org.emdev.ui.uimanager.IUIManager;
 
 public class OPDSActivity extends AbstractActionActivity<OPDSActivity, OPDSActivityController> {
 

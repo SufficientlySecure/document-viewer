@@ -9,6 +9,7 @@ import org.ebookdroid.ui.viewer.IViewController;
 import android.graphics.RectF;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -41,7 +42,7 @@ public class SearchModel {
     }
 
     public void setPattern(final String pattern) {
-        final String p = pattern != null ? pattern.toLowerCase() : null;
+        final String p = pattern != null ? pattern.toLowerCase(Locale.getDefault()) : null;
         if (!CompareUtils.equals(this.pattern, p)) {
             if (LCTX.isDebugEnabled()) {
                 LCTX.d("SearchModel.setPattern(" + p + ")");

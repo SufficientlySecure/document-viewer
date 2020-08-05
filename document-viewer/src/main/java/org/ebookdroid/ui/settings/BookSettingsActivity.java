@@ -41,7 +41,7 @@ public class BookSettingsActivity extends BaseSettingsActivity {
             final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             final SharedPreferences.Editor editor = preferences.edit();
             editor.clear();
-            editor.commit();
+            editor.apply();
 
             PreferenceManager.setDefaultValues(this, R.xml.fragment_book, true);
             addPreferencesFromResource(R.xml.fragment_book);

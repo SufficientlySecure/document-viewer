@@ -35,7 +35,9 @@
         android:layout_alignRight="@id/color_picker_view"
         android:layout_below="@id/color_picker_view"
         android:layout_marginTop="10dp"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:layout_alignStart="@id/color_picker_view"
+        android:layout_alignEnd="@id/color_picker_view">
 
         <org.afzkl.colorpicker.views.ColorPanelView
             android:id="@+id/old_color_panel"

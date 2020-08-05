@@ -12,7 +12,9 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="1dip"
         android:layout_marginRight="2dip"
-        android:src="@drawable/recent_item_book" />
+        android:src="@drawable/recent_item_book"
+        android:layout_marginStart="1dip"
+        android:layout_marginEnd="2dip" />
 
     <TextView
         android:id="@+id/recentItemName"
@@ -20,7 +22,9 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/recentItemIcon"
-        android:gravity="center_vertical" />
+        android:gravity="center_vertical"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/recentItemIcon" />
 
     <TextView
         android:id="@+id/recentItemInfo"
@@ -29,7 +33,9 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/recentItemName"
         android:layout_toRightOf="@+id/recentItemIcon"
-        android:gravity="top|left" />
+        android:gravity="top|left"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/recentItemIcon" />
 
     <TextView
         android:id="@+id/recentItemfileSize"
@@ -38,6 +44,8 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/recentItemName"
         android:layout_toRightOf="@+id/recentItemIcon"
-        android:gravity="top|right" />
+        android:gravity="top|right"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/recentItemIcon" />
 
 </RelativeLayout>

@@ -1,7 +1,7 @@
 package org.ebookdroid.core.events;
 
 import android.graphics.PointF;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public interface ZoomListener {
 

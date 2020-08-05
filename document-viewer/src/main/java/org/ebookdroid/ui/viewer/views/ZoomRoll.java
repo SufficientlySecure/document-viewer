@@ -5,6 +5,8 @@ import org.ebookdroid.common.bitmaps.BitmapManager;
 import org.ebookdroid.core.events.ZoomListener;
 import org.ebookdroid.core.models.ZoomModel;
 
+import java.util.Locale;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -12,7 +14,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
@@ -73,7 +75,7 @@ public class ZoomRoll extends View implements ZoomListener {
         textPaint.setColor(Color.BLACK);
         textPaint.setTextSize(24);
         textPaint.setAntiAlias(true);
-        String zoomText = String.format("%.2f", zoomModel.getZoom());
+        String zoomText = String.format(Locale.ROOT, "%.2f", zoomModel.getZoom());
         canvas.drawText(zoomText+"x", 6, getHeight() / 2 + 12, textPaint);
     }
 

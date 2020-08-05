@@ -1,7 +1,6 @@
 package org.ebookdroid.ui.library;
 
 import org.ebookdroid.CodecType;
-import org.emdev.ui.uimanager.IUIManager;
 import org.emdev.ui.uimanager.UIManagerAppCompat;
 import org.sufficientlysecure.viewer.R;
 import org.ebookdroid.common.cache.CacheManager;
@@ -22,7 +21,7 @@ import org.ebookdroid.ui.viewer.ViewerActivity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatEditText;
 import android.text.Editable;
 import android.view.KeyEvent;
 import android.widget.EditText;
@@ -33,7 +32,6 @@ import java.io.FileFilter;
 import java.util.Set;
 
 import org.emdev.BaseDroidApp;
-import org.emdev.common.android.AndroidVersion;
 import org.emdev.common.filesystem.CompositeFilter;
 import org.emdev.common.filesystem.DirectoryFilter;
 import org.emdev.common.filesystem.PathFromUri;

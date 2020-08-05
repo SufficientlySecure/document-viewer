@@ -1,7 +1,7 @@
 package org.ebookdroid.common.settings.books;
 
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.ebookdroid.common.settings.definitions.AppPreferences;
 import org.ebookdroid.common.settings.types.DocumentViewMode;
@@ -9,14 +9,12 @@ import org.ebookdroid.common.settings.types.PageAlign;
 import org.ebookdroid.common.settings.types.RotationType;
 import org.ebookdroid.core.PageIndex;
 import org.ebookdroid.core.curl.PageAnimationType;
-import org.hamcrest.Matchers;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;

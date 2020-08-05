@@ -23,7 +23,7 @@ public class StringPreferenceDefinition extends BasePreferenceDefinition<String>
 
     public String getPreferenceValue(final SharedPreferences prefs, final String defValue) {
         if (!prefs.contains(key)) {
-            prefs.edit().putString(key, defValue).commit();
+            prefs.edit().putString(key, defValue).apply();
         }
         return prefs.getString(key, defValue);
     }

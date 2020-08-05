@@ -10,7 +10,7 @@
         <attr name="maxValue" format="integer" />
     </declare-styleable>
 
-    <declare-styleable name="org.emdev.ui.widget.TextViewMultilineEllipse">
+    <declare-styleable name="TextViewMultilineEllipse">
         <attr name="text" format="string" />
         <attr name="textColor" format="color" />
         <attr name="textSize" format="dimension" />

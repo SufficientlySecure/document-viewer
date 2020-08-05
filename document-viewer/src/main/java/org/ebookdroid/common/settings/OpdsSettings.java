@@ -61,7 +61,7 @@ public class OpdsSettings implements OpdsPreferences, IBackupAgent {
         try {
             final Editor edit = SettingsManager.prefs.edit();
             OpdsPreferences.OPDS_CATALOGS.setPreferenceValue(edit, opdsCatalogs);
-            edit.commit();
+            edit.apply();
             final OpdsSettings oldSettings = current;
             current = new OpdsSettings();
             applySettingsChanges(oldSettings, current);

@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -34,7 +35,7 @@ public class BackupManager {
     private static final FileExtensionFilter BACKUP_FILTER = new FileExtensionFilter("jso");
 
     private static final CompositeFilter AUTO_BACKUP_FILTER = new CompositeFilter(true, new FilePrefixFilter(Type.AUTO
-            .name().toLowerCase() + "."), BACKUP_FILTER);
+            .name().toLowerCase(Locale.ROOT) + "."), BACKUP_FILTER);
 
     private static final Map<String, IBackupAgent> agents = new TreeMap<String, IBackupAgent>();
 

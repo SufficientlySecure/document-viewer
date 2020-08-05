@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="bookmenu_open">Öffne auf Seite ...</string>
+    <string name="bookmenu_open">Öffne auf Seite …</string>
     <string name="bookmenu_settings">"Bucheinstellungen"</string>
     <string name="bookmenu_openbookshelf">Bücherregal zeigen</string>
     <string name="bookmenu_openbookfolder">"Zeige Speicherort"</string>

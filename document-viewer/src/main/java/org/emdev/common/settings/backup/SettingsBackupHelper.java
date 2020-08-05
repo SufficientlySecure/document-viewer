@@ -67,7 +67,7 @@ public class SettingsBackupHelper {
                 BackupManager.LCTX.e("Error on [" + key + "] settings restore: " + ex.getMessage());
             }
         }
-        edit.commit();
+        edit.apply();
     }
 
 }

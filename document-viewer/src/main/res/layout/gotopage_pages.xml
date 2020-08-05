@@ -26,9 +26,10 @@
             android:layout_weight="1"
             android:inputType="number"
             android:minEms="4"
-            android:numeric="integer"
             android:textSize="24dip"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_marginStart="4dip"
+            android:layout_marginEnd="2dip" />
 
         <LinearLayout
             android:id="@+id/goToButton"
@@ -37,14 +38,17 @@
             android:layout_marginLeft="2dip"
             android:layout_marginRight="4dip"
             android:layout_weight="1"
-            android:background="@drawable/viewer_goto_dlg_goto_background" >
+            android:background="@drawable/viewer_goto_dlg_goto_background"
+            android:layout_marginEnd="4dip"
+            android:layout_marginStart="2dip">
 
             <ImageView
                 android:layout_width="48dip"
                 android:layout_height="48dip"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="8dip"
-                android:src="@drawable/viewer_goto_dlg_goto" />
+                android:src="@drawable/viewer_goto_dlg_goto"
+                android:layout_marginStart="8dip" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -56,7 +60,9 @@
                 android:gravity="center_vertical"
                 android:text="@string/button_goto_page"
                 android:textSize="24dip"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_marginStart="4dip"
+                android:layout_marginEnd="8dip" />
         </LinearLayout>
     </LinearLayout>
 
@@ -77,7 +83,10 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dip"
-            android:background="@drawable/components_seekbar_minus" />
+            android:background="@drawable/components_seekbar_minus"
+            android:layout_marginEnd="4dip"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="4dp" />
 
         <LinearLayout
             android:id="@+id/seekbar_plus"
@@ -86,7 +95,8 @@
             android:layout_alignParentRight="true"
             android:layout_marginLeft="4dip"
             android:layout_marginRight="4dip"
-            android:background="@drawable/components_seekbar_plus" />
+            android:background="@drawable/components_seekbar_plus"
+            android:layout_alignParentEnd="true" />
 
         <SeekBar
             android:id="@+id/seekbar"
@@ -98,7 +108,9 @@
             android:layout_toRightOf="@id/seekbar_minus"
             android:gravity="center"
             android:maxHeight="48dip"
-            android:minHeight="48dip" />
+            android:minHeight="48dip"
+            android:layout_toStartOf="@id/seekbar_plus"
+            android:layout_toEndOf="@id/seekbar_minus" />
     </RelativeLayout>
 
 </LinearLayout>

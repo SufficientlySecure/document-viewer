@@ -137,7 +137,7 @@ public class JsonSwitchPreferenceEx extends SwitchPreference {
                 object.put(jsonProperty, value);
                 final SharedPreferences.Editor editor = prefs.edit();
                 def.setPreferenceValue(editor, object);
-                editor.commit();
+                editor.apply();
             } catch (final JSONException ex) {
             }
 

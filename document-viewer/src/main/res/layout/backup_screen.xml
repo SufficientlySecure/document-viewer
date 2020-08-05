@@ -14,7 +14,10 @@
         android:layout_marginRight="8dip"
         android:layout_marginTop="8dip"
         android:maxLines="1"
-        android:text="@string/dialog_backup_backup" />
+        android:text="@string/dialog_backup_backup"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="8dip"
+        android:layout_alignStart="@+id/removeBackupButton" />
 
     <Button
         android:id="@+id/restoreBackupButton"
@@ -27,7 +30,10 @@
         android:layout_marginRight="8dip"
         android:layout_marginTop="8dip"
         android:maxLines="1"
-        android:text="@string/dialog_backup_restore" />
+        android:text="@string/dialog_backup_restore"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="8dip"
+        android:layout_alignStart="@+id/removeBackupButton" />
 
     <Button
         android:id="@+id/removeBackupButton"
@@ -39,7 +45,9 @@
         android:layout_marginRight="8dip"
         android:layout_marginTop="8dip"
         android:maxLines="1"
-        android:text="@string/dialog_backup_remove" />
+        android:text="@string/dialog_backup_remove"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="8dip" />
 
     <EditText
         android:id="@+id/newBackupNameEdit"
@@ -52,7 +60,10 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:hint="@string/dialog_backup_name_hint"
-        android:lines="1" />
+        android:lines="1"
+        android:inputType="text"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@id/backupButton" />
 
     <ListView
         android:id="@+id/backupsList"
@@ -64,6 +75,8 @@
         android:layout_toLeftOf="@id/restoreBackupButton"
         android:choiceMode="multipleChoice"
         android:clickable="true"
-        android:overScrollMode="ifContentScrolls" />
+        android:overScrollMode="ifContentScrolls"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@id/restoreBackupButton" />
 
 </RelativeLayout>

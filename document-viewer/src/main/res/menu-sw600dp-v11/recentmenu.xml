@@ -6,25 +6,25 @@
         android:id="@+id/recentmenu_searchBook"
         android:alphabeticShortcut="s"
         android:icon="@drawable/recent_actionbar_searchbook"
-        app:showAsAction="always|collapseActionView"
-        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="ifRoom|collapseActionView"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
         android:title="@string/menu_searchbook"/>
     <item
         android:id="@+id/recent_showlibrary"
         android:alphabeticShortcut="l"
         android:icon="@drawable/recent_actionbar_library"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:title="@string/menu_show_library"/>
     <item
         android:id="@+id/recent_showrecent"
         android:alphabeticShortcut="l"
         android:icon="@drawable/recent_actionbar_recent"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:title="@string/menu_show_recent"/>
     <item
         android:id="@+id/recent_storage_menu"
         android:icon="@drawable/recent_actionbar_menu_storages"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:title="@string/menu_storages">
         <menu>
             <item
@@ -41,7 +41,7 @@
         android:id="@+id/mainmenu_opds"
         android:alphabeticShortcut="o"
         android:icon="@drawable/recent_actionbar_opdsbrowser"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:title="@string/menu_opds"/>
     <item
         android:id="@+id/recentmenu_cleanrecent"

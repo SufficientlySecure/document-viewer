@@ -1,6 +1,7 @@
 package org.emdev.common.xml.tags;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 import org.emdev.common.xml.IXmlTagFactory;
 import org.emdev.utils.collections.SymbolTree;
@@ -23,7 +24,7 @@ public class BaseXmlTagFactory implements IXmlTagFactory {
     public XmlTag getTagByName(final String name) {
         XmlTag tag = tagsByName.get(name);
         if (tag == null) {
-            final String upperCaseName = name.toLowerCase().intern();
+            final String upperCaseName = name.toLowerCase(Locale.ROOT).intern();
             tag = tagsByName.get(upperCaseName);
             if (tag == null) {
                 tag = XmlTag.UNKNOWN;

@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dip"
-        android:text="@string/opds_addfeed_alias" />
+        android:text="@string/opds_addfeed_alias"
+        android:layout_marginStart="10dip" />
 
     <EditText
         android:id="@+id/editAlias"
@@ -26,7 +27,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dip"
-        android:text="@string/opds_addfeed_url" />
+        android:text="@string/opds_addfeed_url"
+        android:layout_marginStart="10dip" />
 
     <EditText
         android:id="@+id/editURL"
@@ -41,7 +43,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dip"
         android:checked="true"
-        android:text="@string/opds_addfeed_auth" >
+        android:text="@string/opds_addfeed_auth"
+        android:layout_marginStart="10dip">
     </CheckBox>
 
     <TextView
@@ -49,7 +52,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dip"
-        android:text="@string/opds_authfeed_username" />
+        android:text="@string/opds_authfeed_username"
+        android:layout_marginStart="10dip" />
 
     <EditText
         android:id="@+id/editUsername"
@@ -64,7 +68,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dip"
-        android:text="@string/opds_authfeed_password" />
+        android:text="@string/opds_authfeed_password"
+        android:layout_marginStart="10dip" />
 
     <EditText
         android:id="@+id/editPassword"

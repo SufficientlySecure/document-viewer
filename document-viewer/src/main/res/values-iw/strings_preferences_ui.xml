@@ -21,7 +21,7 @@
     <string name="pref_confirmclose_title">"מאשר את סגירת הספרים"</string>
     <string name="pref_confirmclose_summary">"בקשת אישור לסגירת הספר בעת הלחיצה על כפתור חזור"</string>
     <string name="pref_brightness_title">"בהירות"</string>
-    <string name="pref_brightness_summary">"כוונון הבהירות הכוללת של התמונה (0-100)"</string>
+    <string name="pref_brightness_summary">"כוונון הבהירות הכוללת של התמונה (0–100)"</string>
     <string name="pref_brightnessnightmodeonly_title">"בהירות בלילה"</string>
     <string name="pref_brightnessnightmodeonly_summary">"החל בהירות רק במצב הלילה"</string>
     <string name="pref_keepscreenon_title">"אל תכבה את המסך"</string>

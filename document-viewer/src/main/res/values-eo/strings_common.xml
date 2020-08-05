@@ -24,7 +24,7 @@
     <string name="msg_search_text_on_page">"Serĉado sur paĝo %1$d&#8230;"</string>
     <string name="msg_no_text_found">"Teksto ne trovita"</string>
 
-    <string name="dialog_title_goto_page">Iri al...</string>
+    <string name="dialog_title_goto_page">Iri al…</string>
     <string name="button_goto_page">Iri</string>
     <string name="text_page">Paĝo</string>
     <string name="error_close">Fermi</string>

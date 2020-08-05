@@ -79,7 +79,7 @@ public class LibSettings implements LibPreferences, IBackupAgent {
             if (add && dirs.add(dir) || dirs.remove(dir)) {
                 final Editor edit = SettingsManager.prefs.edit();
                 LibPreferences.AUTO_SCAN_DIRS.setPreferenceValue(edit, dirs);
-                edit.commit();
+                edit.apply();
                 final LibSettings oldSettings = current;
                 current = new LibSettings();
                 applySettingsChanges(oldSettings, current);
@@ -94,7 +94,7 @@ public class LibSettings implements LibPreferences, IBackupAgent {
         try {
             final Editor edit = SettingsManager.prefs.edit();
             LibPreferences.SEARCH_BOOK_QUERY.setPreferenceValue(edit, searchQuery);
-            edit.commit();
+            edit.apply();
             final LibSettings oldSettings = current;
             current = new LibSettings();
             applySettingsChanges(oldSettings, current);

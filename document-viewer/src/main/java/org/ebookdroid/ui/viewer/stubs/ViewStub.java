@@ -7,7 +7,7 @@ import org.ebookdroid.ui.viewer.IView;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.View;
 
 public class ViewStub implements IView {

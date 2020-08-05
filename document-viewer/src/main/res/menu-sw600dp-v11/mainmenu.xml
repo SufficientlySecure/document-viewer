@@ -5,7 +5,7 @@
     <item
         android:id="@+id/mainmenu_nav_menu"
         android:icon="@drawable/viewer_actionbar_menu_navigation"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:title="@string/menu_navigation_menu">
         <menu>
             <item
@@ -32,7 +32,7 @@
     <item
         android:id="@+id/mainmenu_fastsettings_menu"
         android:icon="@drawable/viewer_actionbar_menu_fastsettings"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:title="@string/menu_fastsettings_menu">
         <menu>
             <item
@@ -45,7 +45,7 @@
                 android:id="@+id/mainmenu_showtitle"
                 android:checkable="true"
                 android:icon="@drawable/viewer_menu_showtitle"
-                android:showAsAction="ifRoom"
+                app:showAsAction="ifRoom"
                 android:title="@string/pref_title_title"/>
             <item
                 android:id="@+id/mainmenu_force_portrait"
@@ -99,7 +99,7 @@
     <item
         android:id="@+id/mainmenu_settings_menu"
         android:icon="@drawable/viewer_actionbar_menu_settings"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:title="@string/menu_allsettings_menu">
         <menu>
             <item
@@ -123,21 +123,21 @@
     </item>
     <item
         android:id="@+id/mainmenu_share"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:title="@string/menu_share"/>
     <item
         android:id="@+id/mainmenu_openwith"
-        android:showAsAction="never"
+        app:showAsAction="never"
         android:title="@string/menu_openwith"/>
     <item
         android:id="@+id/mainmenu_about"
         android:icon="@drawable/common_actionbar_about"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:title="@string/menu_about"/>
     <item
         android:id="@+id/mainmenu_close"
         android:icon="@drawable/common_actionbar_close"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:title="@string/menu_close"/>
 
 </menu>

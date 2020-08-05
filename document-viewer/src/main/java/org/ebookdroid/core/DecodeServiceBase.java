@@ -19,7 +19,7 @@ import org.ebookdroid.ui.viewer.IViewController.InvalidateSizeReason;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.support.annotation.WorkerThread;
+import androidx.annotation.WorkerThread;
 
 import java.util.ArrayList;
 import java.util.Comparator;

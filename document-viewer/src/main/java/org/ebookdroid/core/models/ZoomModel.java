@@ -1,7 +1,7 @@
 package org.ebookdroid.core.models;
 
 import android.graphics.PointF;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import org.ebookdroid.core.events.ZoomListener;
 

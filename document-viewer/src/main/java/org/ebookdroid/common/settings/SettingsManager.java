@@ -474,7 +474,7 @@ public class SettingsManager {
 
     public static void setInitialFlags(final int flag) {
         final int old = prefs.getInt(INITIAL_FLAGS, 0);
-        prefs.edit().putInt(INITIAL_FLAGS, old | flag).commit();
+        prefs.edit().putInt(INITIAL_FLAGS, old | flag).apply();
     }
 
     private static class BookSettingsUpdate extends Thread {

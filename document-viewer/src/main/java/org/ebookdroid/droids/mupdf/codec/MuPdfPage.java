@@ -10,10 +10,10 @@ import org.ebookdroid.core.codec.PageTextBox;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.graphics.RectF;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -23,6 +23,8 @@ import com.artifex.mupdf.fitz.ColorSpace;
 import com.artifex.mupdf.fitz.Document;
 import com.artifex.mupdf.fitz.Matrix;
 import com.artifex.mupdf.fitz.Page;
+import com.artifex.mupdf.fitz.Quad;
+import com.artifex.mupdf.fitz.Rect;
 import com.artifex.mupdf.fitz.android.AndroidDrawDevice;
 
 import org.emdev.utils.LengthUtils;
@@ -119,24 +121,19 @@ public class MuPdfPage extends AbstractCodecPage {
         return MuPdfLinks.getPageLinks(documentHandle, pageHandle, pageBounds);
     }
 
-    // @Override
-    // public List<? extends RectF> searchText(final String pattern) {
-    //     final List<PageTextBox> rects = search(docHandle, pageHandle, pattern);
-    //     if (LengthUtils.isNotEmpty(rects)) {
-    //         final Set<String> temp = new HashSet<String>();
-    //         final Iterator<PageTextBox> iter = rects.iterator();
-    //         while (iter.hasNext()) {
-    //             final PageTextBox b = iter.next();
-    //             if (temp.add(b.toString())) {
-    //                 b.left = (b.left - pageBounds.left) / pageBounds.width();
-    //                 b.top = (b.top - pageBounds.top) / pageBounds.height();
-    //                 b.right = (b.right - pageBounds.left) / pageBounds.width();
-    //                 b.bottom = (b.bottom - pageBounds.top) / pageBounds.height();
-    //             } else {
-    //                 iter.remove();
-    //             }
-    //         }
-    //     }
-    //     return rects;
-    // }
+    @Override
+    public List<? extends RectF> searchText(final String pattern) {
+        final Quad[] hits = pageHandle.search(pattern);
+        final ArrayList<RectF> rects = new ArrayList<RectF>(hits != null ? hits.length : 0);
+        if (hits != null) {
+            for (Quad hit : hits) {
+                final Rect rect = hit.toRect();
+                rects.add(new RectF((rect.x0 - pageBounds.left) / pageBounds.width(),
+                                    (rect.y0 - pageBounds.top) / pageBounds.height(),
+                                    (rect.x1 - pageBounds.left) / pageBounds.width(),
+                                    (rect.y1 - pageBounds.top) / pageBounds.height()));
+            }
+        }
+        return rects;
+    }
 }

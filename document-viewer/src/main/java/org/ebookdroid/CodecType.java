@@ -2,11 +2,8 @@ package org.ebookdroid;
 
 import org.ebookdroid.core.codec.CodecContext;
 import org.ebookdroid.droids.djvu.codec.DjvuContext;
-import org.ebookdroid.droids.mupdf.codec.FB2Context;
+import org.ebookdroid.droids.mupdf.codec.MuPdfContext;
 import org.ebookdroid.droids.mupdf.codec.PdfContext;
-import org.ebookdroid.droids.mupdf.codec.XpsContext;
-import org.ebookdroid.droids.mupdf.codec.CbzContext;
-import org.ebookdroid.droids.mupdf.codec.EpubContext;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,14 +22,14 @@ public enum CodecType {
                                                                                "image/vnd.djvu",
                                                                                "image/x-djvu")),
 
-    XPS(XpsContext.class, true, Arrays.asList("xps", "oxps"), Arrays.asList("application/vnd.ms-xpsdocument",
+    XPS(MuPdfContext.class, true, Arrays.asList("xps", "oxps"), Arrays.asList("application/vnd.ms-xpsdocument",
                                                                             "application/oxps")),
 
-    EPUB(EpubContext.class, true, Arrays.asList("epub"), Arrays.asList("application/epub+zip")),
+    EPUB(MuPdfContext.class, true, Arrays.asList("epub"), Arrays.asList("application/epub+zip")),
 
-    CBZ(CbzContext.class, false, Arrays.asList("cbz"), Arrays.asList("application/x-cbz")),
+    CBZ(MuPdfContext.class, false, Arrays.asList("cbz"), Arrays.asList("application/x-cbz")),
 
-    FB2(FB2Context.class, true, Arrays.asList("fb2"), Arrays.asList("application/x-fb2"));
+    FB2(MuPdfContext.class, true, Arrays.asList("fb2"), Arrays.asList("application/x-fb2"));
 
     private final static Map<String, CodecType> extensionToActivity;
 

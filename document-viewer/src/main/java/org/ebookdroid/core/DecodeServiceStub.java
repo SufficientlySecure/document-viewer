@@ -24,7 +24,7 @@ public class DecodeServiceStub implements DecodeService {
      * @see org.ebookdroid.core.DecodeService#open(java.lang.String, java.lang.String)
      */
     @Override
-    public void open(final String fileName, final String password) {
+    public void open(final String fileName) {
     }
 
     /**
@@ -93,6 +93,16 @@ public class DecodeServiceStub implements DecodeService {
      */
     @Override
     public void recycle() {
+    }
+
+    @Override
+    public Boolean needsPassword() {
+        return false;
+    }
+
+    @Override
+    public Boolean authenticate(final String password) {
+        return true;
     }
 
     /**

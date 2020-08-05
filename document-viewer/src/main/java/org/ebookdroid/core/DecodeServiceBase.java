@@ -78,8 +78,8 @@ public class DecodeServiceBase implements DecodeService {
 
     @Override
     @WorkerThread
-    public void open(final String fileName, final String password) {
-        document = codecContext.openDocument(fileName, password);
+    public void open(final String fileName) {
+        document = codecContext.openDocument(fileName);
     }
 
     @Override
@@ -370,6 +370,16 @@ public class DecodeServiceBase implements DecodeService {
         if (isRecycled.compareAndSet(false, true)) {
             executor.recycle();
         }
+    }
+
+    @Override
+    public Boolean needsPassword() {
+        return document.needsPassword();
+    }
+
+    @Override
+    public Boolean authenticate(final String password) {
+        return document.authenticate(password);
     }
 
     protected int getCacheSize() {

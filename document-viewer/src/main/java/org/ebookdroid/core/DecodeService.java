@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface DecodeService extends CodecFeatures {
 
-    void open(String fileName, String password);
+    void open(String fileName);
 
     void decodePage(ViewState viewState, PageTreeNode node);
 
@@ -32,6 +32,10 @@ public interface DecodeService extends CodecFeatures {
     CodecPageInfo getPageInfo(int pageIndex);
 
     void recycle();
+
+    Boolean needsPassword();
+
+    Boolean authenticate(String password);
 
     void updateViewState(ViewState viewState);
 

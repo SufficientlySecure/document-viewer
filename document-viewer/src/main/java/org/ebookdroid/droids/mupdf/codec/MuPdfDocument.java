@@ -6,8 +6,6 @@ import org.ebookdroid.core.codec.CodecPage;
 import org.ebookdroid.core.codec.CodecPageInfo;
 import org.ebookdroid.core.codec.OutlineLink;
 
-import org.ebookdroid.droids.mupdf.codec.MuPdfPage;
-
 import com.artifex.mupdf.fitz.Document;
 import com.artifex.mupdf.fitz.Page;
 import com.artifex.mupdf.fitz.Rect;
@@ -26,7 +24,7 @@ public class MuPdfDocument extends AbstractCodecDocument {
 
     private List<OutlineLink> docOutline;
 
-    MuPdfDocument(final MuPdfContext context, final String fname, final String pwd) {
+    MuPdfDocument(final MuPdfContext context, final String fname) {
         super(context);
         acceleratorPath = getAcceleratorPath(fname);
         if (acceleratorValid(fname, acceleratorPath))
@@ -34,9 +32,6 @@ public class MuPdfDocument extends AbstractCodecDocument {
 		else
 			documentHandle = Document.openDocument(fname);
 
-        if (documentHandle.needsPassword()) {
-            documentHandle.authenticatePassword(pwd);
-        }
         documentHandle.saveAccelerator(acceleratorPath);
     }
 
@@ -79,6 +74,20 @@ public class MuPdfDocument extends AbstractCodecDocument {
     @Override
     protected void freeDocument() {
         documentHandle.destroy();
+    }
+
+    @Override
+    public Boolean needsPassword() {
+        return documentHandle.needsPassword();
+    }
+
+    @Override
+    public Boolean authenticate(final String password) {
+        return documentHandle.authenticatePassword(password);
+    }
+
+    public Boolean isPDF() {
+        return documentHandle.isPDF();
     }
 
     public void normalizeLinkTargetRect(final int page, final RectF rect) {

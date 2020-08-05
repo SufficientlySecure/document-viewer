@@ -37,6 +37,16 @@ public abstract class AbstractCodecDocument implements CodecDocument {
     }
 
     @Override
+    public Boolean needsPassword() {
+        return false;
+    }
+
+    @Override
+    public Boolean authenticate(final String password) {
+        return true;
+    }
+
+    @Override
     public final CodecContext getContext() {
         return context;
     }

@@ -1064,12 +1064,18 @@ public class ViewerActivityController extends AbstractActivityController<ViewerA
                     setProgressDialogMessage(startProgressStringId);
                 }
                 getView().waitForInitialization();
-                documentModel.open(m_fileName, m_password);
+                documentModel.open(m_fileName);
+                if (documentModel.needsPassword()) {
+                    if (m_password == "") {
+                        return new MuPdfPasswordException(false, "Password required");
+                    } else {
+                        if (!documentModel.authenticate(m_password)) {
+                            return new MuPdfPasswordException(true, "Wrong password");
+                        }
+                    }
+                }
                 getDocumentController().init(this);
                 return null;
-            } catch (final MuPdfPasswordException pex) {
-                LCTX.i(pex.getMessage());
-                return pex;
             } catch (final Exception e) {
                 LCTX.e(e.getMessage(), e);
                 return e;

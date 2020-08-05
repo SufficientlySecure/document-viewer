@@ -80,8 +80,16 @@ public class DocumentModel extends ListenerProxy {
     }
 
     @WorkerThread
-    public void open(final String fileName, final String password) {
-        decodeService.open(fileName, password);
+    public void open(final String fileName) {
+        decodeService.open(fileName);
+    }
+
+    public Boolean needsPassword() {
+        return decodeService.needsPassword();
+    }
+
+    public Boolean authenticate(final String password) {
+        return decodeService.authenticate(password);
     }
 
     public Page[] getPages() {

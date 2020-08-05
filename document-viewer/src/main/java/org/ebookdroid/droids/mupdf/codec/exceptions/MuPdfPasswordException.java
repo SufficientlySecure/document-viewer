@@ -9,7 +9,7 @@ public class MuPdfPasswordException extends RuntimeException {
 
     private final boolean wrongPasswordEntered;
 
-    protected MuPdfPasswordException(final boolean wrongPasswordEntered, final String message) {
+    public MuPdfPasswordException(final boolean wrongPasswordEntered, final String message) {
         super(message);
         this.wrongPasswordEntered = wrongPasswordEntered;
     }

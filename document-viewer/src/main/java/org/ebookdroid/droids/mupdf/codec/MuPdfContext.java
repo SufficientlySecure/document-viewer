@@ -3,6 +3,7 @@ package org.ebookdroid.droids.mupdf.codec;
 import org.ebookdroid.EBookDroidLibraryLoader;
 import org.ebookdroid.common.settings.AppSettings;
 import org.ebookdroid.core.codec.AbstractCodecContext;
+import org.ebookdroid.core.codec.CodecDocument;
 
 import java.util.Arrays;
 
@@ -12,7 +13,11 @@ import org.emdev.common.fonts.data.FontStyle;
 import org.emdev.common.log.LogContext;
 import org.emdev.common.log.LogManager;
 
-public abstract class MuPdfContext extends AbstractCodecContext {
+public class MuPdfContext extends AbstractCodecContext {
+
+    public CodecDocument openDocument(final String fileName) {
+        return new MuPdfDocument(this, fileName);
+    }
 
     public static final LogContext LCTX = LogManager.root().lctx("MuPdf");
 

@@ -21,7 +21,11 @@ public interface CodecDocument extends CodecFeatures {
 
     CodecPageInfo getUnifiedPageInfo();
 
-    List<? extends RectF> searchText(int pageNuber, final String pattern);
+    Boolean needsPassword();
+
+    Boolean authenticate(String password);
+
+    List<? extends RectF> searchText(int pageNuber, String pattern);
 
     List<OutlineLink> getOutline();
 

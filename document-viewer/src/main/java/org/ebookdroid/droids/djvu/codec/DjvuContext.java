@@ -22,7 +22,7 @@ public class DjvuContext extends AbstractCodecContext {
     }
 
     @Override
-    public DjvuDocument openDocument(final String fileName, final String password) {
+    public DjvuDocument openDocument(final String fileName) {
         return new DjvuDocument(this, fileName);
     }
 

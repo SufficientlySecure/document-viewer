@@ -14,6 +14,8 @@ Supports the following formats:
 * CBZ (Comic Books, no support for rar compressed CBR)
 * FictionBook (fb2)
 
+This is a great project
+
 Collaboration with electronic publication sites and access to online ebook catalogs is allowed by the supported OPDS protocol.
 
 FAQ, information about supported MIME types, and available Intents can be found in the [Wiki](https://github.com/dschuermann/document-viewer/wiki).

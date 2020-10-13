@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="opdsupfolder">A susu</string>
+    <string name="opdsrefreshfolder">Annoa</string>
+    <string name="opdsprevfolder">Setzione anteposta</string>
+    <string name="opdsnextfolder">Setzione imbeniente</string>
+    <string name="opds_feed_add">Annanghe</string>
+    <string name="opdsclose">Serra</string>
+
+    <string name="opds_book_download">Iscàrriga</string>
+
+    <string name="opdsgoto">Aberi</string>
+
+    <string name="opds_feed_edit">Modìfica</string>
+    <string name="opds_feed_delete">Iscantzella</string>
+    
+</resources>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_scroll_category">Tocos, trisinadas e teclas</string>
+    <string name="pref_scroll_category_summary">Issèbera comente su dispositivu diat dèpere reagire a sos tocos, sas trisinadas e a s\'incarcada de sas teclas</string>
+
+    <string name="pref_tapsenabled_title">Abìlita sos tocos</string>
+    <string name="pref_tapsenabled_summary">Imprea sas cunfiguratziones de tocu pro definire sas regiones e sas atziones de tocu</string>
+
+    <string name="pref_scroll_title">Artària pro s\'iscurrimentu</string>
+    <string name="pref_scroll_summary">Imposta s\'artària pro s\'iscurrimentu pro sas pàginas chi no istant intreas in s\'ischermu (predefinida: 50%%)</string>
+
+    <string name="pref_touchdelay_title">Ritardu de protzessamentu de su tocu</string>
+    <string name="pref_touchdelay_summary">Ritardu de protzessamentu de su tocu (in millisegundos)</string>
+
+    <string name="pref_animate_scrolling_title">Ànima s\'iscurrimentu</string>
+    <string name="pref_animate_scrolling_summary">Ànima s\'operatzione de iscurrimentu in sas modalidades chi lu permitint</string>
+
+    <string name="pref_volumekeyscrolling_title">Iscurrimentu cun sos butones de su volume</string>
+    <string name="pref_volumekeyscrolling_summary">Imprea sos butones de su volume pro iscùrrere in logu de regolare su volume</string>
+
+    <string name="pref_tapfullscreen_title">Su tocu ativat o bogat s\'ischermu intreu</string>
+    <string name="pref_tapfullscreen_summary">Cola a s\'ischermu intreu tochende in cale si siat logu in foras de una zona de tocu o de unu ligàmene</string>
+
+</resources>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_ui_category">Interfache de s\'impreadore</string>
+    <string name="pref_ui_category_summary">Impostatzione de s\'interfache de s\'impreadore</string>
+
+    <string name="pref_lang_title">Limba</string>
+    <string name="pref_lang_summary">Limba de interfache de s\'impreadore (depes torrare a allùghere s\'aplicatzione)</string>
+
+    <string name="list_lang_default">Sistema</string>
+    <string name="list_lang_en">Inglesu (English)</string>
+    <string name="list_lang_de">Tedescu (Deutsch)</string>
+    <string name="list_lang_es">Ispagnolu (Español)</string>
+    <string name="list_lang_fr">Frantzesu (Française)</string>
+    <string name="list_lang_it">Italianu (Italiano)</string>
+    <string name="list_lang_nl">Olandesu (Nederlands)</string>
+    <string name="list_lang_ru">Russu (Русский)</string>
+    <string name="list_lang_uk">Ucrainu (Український)</string>
+    <string name="list_lang_zh">Tzinesu semplificadu (中文简体)</string>
+    <string name="list_lang_iw">Ebràicu (עברית)</string>
+    <string name="list_lang_ko">Coreanu (한국어)</string>
+    <string name="list_lang_eo">Esperanto</string>
+    <string name="list_lang_pl">Polacu (Polski)</string>
+    <string name="list_lang_sc">Sardu</string>
+    
+    <string name="pref_loadrecent_title">Aberi reghente</string>
+    <string name="pref_loadrecent_summary">Cando allughes s\'aplicatzione càrriga s\'ùrtimu libru abertu</string>
+
+    <string name="pref_confirmclose_title">Cunfirma sa serradura</string>
+    <string name="pref_confirmclose_summary">Pedi una cunfirma pro serrare a pustis de àere incarcatu Torra a palas</string>
+
+    <string name="pref_brightness_title">Luminosidade</string>
+    <string name="pref_brightness_summary">Impostatziones generales de sa luminosidade de s\'immàgine (0-100)</string>
+
+    <string name="pref_brightnessnightmodeonly_title">Luminosidade in sa modalidade noturna</string>
+    <string name="pref_brightnessnightmodeonly_summary">Àplica sas impostatziones de sa luminosidade a sa modalidade noturna ebbia</string>
+
+    <string name="pref_keepscreenon_title">Mantene s\'ischermu allutu</string>
+    <string name="pref_keepscreenon_summary">No istudes s\'ischermu cando ses leghende (no ibernes)</string>
+
+    <string name="pref_fullscreen_title">Ischermu intreu</string>
+    <string name="pref_fullscreen_summary">Cua sa barra de istadu</string>
+
+    <string name="pref_title_title">Ammustra su tìtulu</string>
+    <string name="pref_title_summary">Ammustra su tìtulu de su documentu (bisòngiat chi torres a abèrrere su documentu)</string>
+
+    <string name="pref_pageintitle_title">Pàgina in tìtulu</string>
+    <string name="pref_pageintitle_summary">Ammustra su nùmeru de sa pàgina in sa barra de su tìtulu</string>
+
+    <string name="pref_pagenumbertoastposition_title">Positzione de s\'indicadore de su nùmeru de pàgina</string>
+    <string name="pref_pagenumbertoastposition_summary">Positzione de s\'indicadore de su nùmeru de pàgina</string>
+
+    <string name="pref_zoomtoastposition_title">Positzione de s\'indicadore de s\'ismanniamentu</string>
+    <string name="pref_zoomtoastposition_summary">Positzione de s\'indicadore de s\'ismanniamentu</string>
+
+    <string name="list_toastposition_invisible">No ammustres</string>
+    <string name="list_toastposition_lefttop">In artu a manca</string>
+    <string name="list_toastposition_righttop">In artu a destra</string>
+    <string name="list_toastposition_leftbottom">In bassu a manca</string>
+    <string name="list_toastposition_bottom">In bassu</string>
+    <string name="list_toastposition_righbottom">In bassu a destra</string>
+
+    <string name="pref_showanimicon_title">Ammustra s\'icona de animatzione</string>
+    <string name="pref_showanimicon_summary">Ammustra s\'icona de s\'animatzione o de sa trisinadura si sunt abilitadas</string>
+
+</resources>

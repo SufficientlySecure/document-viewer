@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_performance_category">Ajustes de rendimiento</string>
+    <string name="pref_performance_category_summary">Mejorar el rendimiento ajustando determinados parámetros</string>
+
+    <string name="pref_pagesinmemory_title">Páginas en memoria</string>
+    <string name="pref_pagesinmemory_summary">Número de páginas a almacenar en memoria</string>
+
+    <string name="pref_lowlevel_category">Preferencias de bajo nivel</string>
+    <string name="pref_lowlevel_category_summary">Preferencias de bajo nivel para la aplicación (se aplican tras recargar el documento)</string>
+
+    <string name="pref_decoding_threads_title">"Nùmeru de filos (threads) de decodìfica"</string>
+    <string name="pref_decoding_threads_summary">"Nùmeru de filos (threads) de decodìfica"</string>
+
+    <string name="pref_decodethread_priority_title">Prioridade de sos filos de decodìfica</string>
+    <string name="pref_decodethread_priority_summary">Dillinda sa prioridade de sos filos (threads) de decodìfica</string>
+
+    <string name="pref_drawthread_priority_title">Prioridade filos de disinnu superfìtzies</string>
+    <string name="pref_drawthread_priority_summary">Dillindat sa prioridade de sos filos (threads) de disinnu GL pro sas superfìtzies</string>
+
+    <string name="list_thread_priority_lowest">Bassa meda</string>
+    <string name="list_thread_priority_lower">Bassa</string>
+    <string name="list_thread_priority_normal">Normale</string>
+    <string name="list_thread_priority_higher">Arta</string>
+    <string name="list_thread_priority_highest">Arta meda</string>
+
+    <string name="pref_decodingonscroll_title">Decodìfica durante s\'iscurridura</string>
+    <string name="pref_decodingonscroll_summary">Permite sa decodìfica de sas pàginas durante s\'iscurridura o su làntziu</string>
+
+    <string name="pref_bitmapsize_title">Mannària de sa mapa de bit de sas tessiduras</string>
+    <string name="pref_bitmapsize_summary">Dillindat sa mannària de sos cumponentes de sas tessiduras</string>
+
+    <string name="list_bitmapsize_64">64 x 64</string>
+    <string name="list_bitmapsize_128">128 x 128</string>
+    <string name="list_bitmapsize_256">256 x 256</string>
+    <string name="list_bitmapsize_512">512 x 512</string>
+    <string name="list_bitmapsize_1024">1024 x 1024</string>
+
+    <string name="pref_heappreallocate_title">Preallocatzione de s\'archiviatzione dinàmica (heap)</string>
+    <string name="pref_heappreallocate_summary">Mannària in megabytes de sa preallocatzione de s\'archiviatzione dinàmica (heap) a s\'allughìngiu de s\'aplicatzione</string>
+
+    <string name="pref_pdfstoragesize_title">Mannària de sa memòria interna MuPDF</string>
+    <string name="pref_pdfstoragesize_summary">Mannària in megabytes de sa memòria interna MuPDF</string>
+
+</resources>

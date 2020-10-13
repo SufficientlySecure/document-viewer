@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="actions_verticalConfigScrollUp">Iscurre cara a palas</string>>
+    <string name="actions_verticalConfigScrollDown">Iscurre cara a in antis</string>>
+    <string name="actions_quickZoom">Ismanniamentu lestru</string>>
+    <string name="actions_zoomToColumn">Adata a sa colonna</string>>
+    <string name="actions_leftTopCorner">Iscurre cara a s\'àngulu in artu a manca</string>>
+    <string name="actions_rightTopCorner">Iscurre cara a s\'àngulu in artu a destra</string>>
+    <string name="actions_leftBottomCorner">Iscurre cara a s\'àngulu in bassu a manca</string>>
+    <string name="actions_rightBottomCorner">Iscurre cara a s\'àngulu in bassu a destra</string>>
+
+</resources>

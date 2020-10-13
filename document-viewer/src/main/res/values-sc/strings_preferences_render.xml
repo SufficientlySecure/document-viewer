@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_rotation_title">Modalidade de rotatzione</string>
+    <string name="pref_rotation_summary">Comente mudare sa rotatzione</string>
+
+    <string name="list_rotation_unspecified">Non dillindadu</string>
+    <string name="list_rotation_land">Fortza orizontale</string>
+    <string name="list_rotation_port">Fortza verticale</string>
+    <string name="list_rotation_user">Impreadore</string>
+    <string name="list_rotation_behind">Piga dae s\'isfundu</string>
+    <string name="list_rotation_auto">Automàtica</string>
+    <string name="list_rotation_nosensor">Chene sensore (manuale)</string>
+    <string name="list_rotation_sensor_landscape">Fortza orizontale ma cun furriadura de su sensore</string>
+    <string name="list_rotation_sensor_portrait">Fortza verticale ma cun furriadura de su sensore</string>
+    <string name="list_rotation_reverse_landscape">Fortza orizontale furriadu</string>
+    <string name="list_rotation_reverse_portrait">Fortza verticale furriadu</string>
+    <string name="list_rotation_full_sensor">Gestida dae su sensore</string>
+
+    <string name="pref_render_category">Rapresentatzione</string>
+    <string name="pref_render_category_summary">Impostatziones de rapresentatzione</string>
+
+    <string name="pref_book_category">Impostatziones de su libru</string>
+    <string name="pref_book_category_summary">Impostatziones de su libru atuale</string>
+
+    <string name="pref_firstpageoffset_title">Iscostiamentu de sa prima pàgina</string>
+    <string name="pref_firstpageoffset_summary">Ìnditze de sa prima pàgina ammustrada a s\'impreadore</string>
+
+    <string name="pref_splitpages_title">Partzi sas pàginas</string>
+    <string name="pref_splitpages_summary">Partzi sas pàginas orizontales in duas pàginas verticales</string>
+
+    <string name="pref_splitpages_rtl_title">Partzi sas pàginas dae destra a manca</string>
+    <string name="pref_splitpages_rtl_summary">Partzi sas pàginas orizontales in duas pàginas verticales dae destra a manca</string>
+
+    <string name="pref_croppages_title">Ritàllia sas pàginas (auto)</string>
+    <string name="pref_croppages_summary">Sega automaticamente sos oros bòidos in manera de massimizare s\'ismanniamentu de su cuntenutu</string>
+
+    <string name="pref_viewmode_title">Modalidade de visualizatzione de su documentu</string>
+    <string name="pref_viewmode_summary">Pòmpia su documentu comente pàginas sìngulas o comente iscurrimentu sighidu</string>
+
+    <string name="list_viewmode_vertical_scroll">Iscurridura verticale</string>
+    <string name="list_viewmode_horizontal_scroll">Iscurridura orizontale</string>
+    <string name="list_viewmode_single_page">Pàgina sìngula</string>
+
+    <string name="pref_singlepage_category">Impostatziones a pagina sìngula</string>
+    <string name="pref_singlepage_category_summary">Modalidade de visualizatzione a pàgina sìngula ebbia</string>
+
+    <string name="pref_align_title">Adatamentu de sas pàginas</string>
+    <string name="pref_align_summary">Comente adatare sas pàginas a s\'ischermu</string>
+
+    <string name="list_align_by_width">Adata a sa largària</string>
+    <string name="list_align_by_height">Adata a s\'artària</string>
+    <string name="list_align_auto">Automàticu</string>
+
+    <string name="pref_animationtype_title">Transitzione de sas pàginas</string>
+    <string name="pref_animationtype_summary">Ischerta s\'animatzione pro sa transitzione de sas pàginas in sa modalidade a pàgina sìngula</string>
+
+    <string name="list_animation_none">Peruna</string>
+    <string name="list_animation_curler_simple">Transitzione simpre</string>
+    <string name="list_animation_curler_dynamic">Transitzione dinàmica</string>
+    <string name="list_animation_curler_natural">Transitzione naturale</string>
+    <string name="list_animation_slider">Iscurre</string>
+    <string name="list_animation_fader">Solobra</string>
+    <string name="list_animation_squeezer">Abbàtiga</string>
+    <string name="list_animation_slider2">Iscurre a subra</string>
+
+    <string name="pref_postprocessing_category">Efetos de post-protzessamentu</string>
+    <string name="pref_postprocessing_summary">Efetos additzionales pro megiorare sa visualizatzione de sas pàginas</string>
+
+    <string name="pref_nightmode_title">Modalidade noturna</string>
+    <string name="pref_nightmode_summary">Testu biancu in s\'isfundu nieddu (immàgine negativa)</string>
+
+    <string name="pref_posimages_in_nightmode_title">Immàgines positivas in sa modalidade noturna</string>
+    <string name="pref_posimages_in_nightmode_summary">Ammustra una versione a iscalas de murru de sas immàgines in sa modalidade noturna (non fùrries sos colores de sas immàgines)</string>
+
+    <string name="pref_tint_title">Intinghe</string>
+    <string name="pref_tint_summary">Intinghe su colore de sa pàgina impreende su colore dillindadu inoghe in suta</string>
+
+    <string name="pref_tint_color_title">Colore de tinta</string>
+    <string name="pref_tint_color_summary">Colore de impreare pro intìnghere sas pàginas</string>
+
+    <string name="pref_contrast_title">Cuntrastu</string>
+    <string name="pref_contrast_summary">Livellu de curretzione de su cuntrastu (0 – 1000, predefinidu= 100)</string>
+
+    <string name="pref_gamma_title">Gamma</string>
+    <string name="pref_gamma_summary">Livellu de curretzione gamma (0 – 200, predefinidu = 100)</string>
+
+    <string name="pref_exposure_title">Espositzione</string>
+    <string name="pref_exposure_summary">Curretzione de su livellu de espositzione (0 – 200, predefinidu = 100)</string>
+
+    <string name="pref_autolevels_title">Livellos automàticos</string>
+    <string name="pref_autolevels_summary">Imprea sa curretzione automàtica de sos livellos</string>
+
+    <string name="pref_rtl_title">Dae destra a manca</string>
+    <string name="pref_rtl_summary">Òrdine de sas pàginas pro s\'iscurrimentu orizontale e sas modalidades a pàgina sìngula</string>
+</resources>

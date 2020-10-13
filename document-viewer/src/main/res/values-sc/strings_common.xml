@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="app_name">Leghidore de documentos</string>
+
+    <string name="confirmclose_title">Serrende su visualizadore…</string>
+    <string name="confirmclose_msg">Cheres serrare a beru custu documentu?</string>
+    <string name="confirmsave_msg">Cheres sarvare custu documentu?</string>
+    <string name="confirmsave_yes_btn">Sarva e serra</string>
+    <string name="confirmsave_no_btn">Serra</string>
+
+    <string name="error_dlg_title">Errore de s\'aplicatzione</string>
+    <string name="msg_bad_intent">"Faddina de intentu o de ischema:\n%s"</string>
+    <string name="msg_no_intent_data">"Perunu datu de intentu:\n%s"</string>
+    <string name="msg_unknown_intent_data_type">"Casta de datos de intentu disconnota:\n%s"</string>
+
+    <string name="msg_loading_book">"Carrighende su libru: %1$s…"</string>
+
+    <string name="msg_wrong_password">"Crae isballiada…"</string>
+    <string name="msg_password_required">"Inserta sa crae de intrada…"</string>
+
+    <string name="msg_unexpected_error">"B\'at àpidu un\'errore no isetadu:\n%s"</string>
+
+    <string name="msg_search_text_on_page">"Chirchende in sa pàgina %1$d…"</string>
+    <string name="msg_no_text_found">"Testu no agatadu"</string>
+
+    <string name="dialog_title_goto_page">Bae a...</string>
+    <string name="button_goto_page">Bae</string>
+    <string name="text_page">Pàgina</string>
+    <string name="error_close">Serra</string>
+
+    <string name="dialog_backup_name_hint">Inserta unu nùmene nou pro sa còpia de seguresa…</string>
+    <string name="dialog_backup_backup">Còpia de seguresa…</string>
+    <string name="dialog_backup_restore">Riprìstina…</string>
+    <string name="dialog_backup_remove">Boga…</string>
+
+    <string name="add_bookmark_name">Inserta una descritzione pro su sinnalibru</string>
+    <string name="bookmark_start">Incumintzu</string>
+    <string name="bookmark_current">Positzione atuale</string>
+    <string name="bookmark_end">Acabu</string>
+    <string name="bookmark_invalid_page">Nùmeru de pàgina in foras de s\'intervallu. Intervallu vàlidu: %1$d-%2$d</string>
+
+    <string name="bookmarks_title">Sinnalibros</string>
+    <string name="clear_bookmarks_title">Boga sos sinnalibros</string>
+    <string name="clear_bookmarks_text">Custa atzione at a bogare totu sos sinnalibros dae su libru ischertadu. Cheres sighire?</string>
+
+    <string name="del_bookmark_title">Boga su sinnalibru</string>
+    <string name="del_bookmark_text">Cheres bogare custu sinnalibru?</string>
+
+    <string name="clear_recent_title">Boga sos elementos reghentes</string>
+    <string name="clear_recent_text">Custa atzione at a bogare totu sos libros dae sa lista de sos reghentes. Cheres sighire?</string>
+
+    <string name="bookcase_shelves">Parastàgios</string>
+    <string name="recent_title">Libros reghentes</string>
+
+    <string name="list_clear_recent_mode_clear_recent_list">Isbòida sa lista de sos libros reghentes</string>
+    <string name="list_clear_recent_mode_delete_bookmarks">Iscantzella totu sos sinnalibros</string>
+    <string name="list_clear_recent_mode_delete_book_settings">Isbòida totu sas impostatziones de sos libros</string>
+    <string name="list_clear_recent_mode_delete_cached_data">Iscantzella dae su discu totu sos datos in sa memòria temporànea</string>
+
+    <string name="about_prefix">sc</string>
+    <string name="about_title">In subra de EbookDroid</string>
+    <string name="about_commmon_title">Informatziones de s\'aplicatzione</string>
+    <string name="about_fonts_title">Caràteres</string>
+    <string name="about_license_title">Litzèntzia</string>
+    <string name="about_3dparty_title">Programmas de tertzas partes</string>
+    <string name="about_changelog_title">Cronologia de sas modìficas</string>
+    <string name="about_thanks_title">Ringratziamentos</string>
+    <string name="about_donations">Donatziones</string>
+
+    <string name="opds">Esploradore OPDS</string>
+    <string name="menu_opds">Navigadore OPDS</string>
+
+    <string name="opds_connecting">"Connetende…"</string>
+    <string name="opds_loading_catalog">"Carrighende su catàlogu…"</string>
+    <string name="opds_loading_book">"Carrighende su libru: %1$s/%2$s…"</string>
+    <string name="opds_unpacking_book">"Ispachetende su libru: %1$s/%2$s…"</string>
+
+    <string name="opds_download_complete">"Iscarrigamentu de su libru acabadu: %1$s"</string>
+    <string name="opds_download_error">"Iscarrigamentu de su libru fallidu: %1$s"</string>
+
+    <string name="opds_add_new_feed">Annanghe una fonte (feed) noa</string>
+    <string name="opds_addfeed_title">"Annanghende su catàlogu nou"</string>
+    <string name="opds_addfeed_msg">"Inserta un\'àlias e un\'URL pro su catàlogu"</string>
+    <string name="opds_addfeed_ok">"Annanghe"</string>
+    <string name="opds_addfeed_alias" translatable="true">"Àlias:"</string>
+    <string name="opds_addfeed_url" translatable="true">"URL:"</string>
+    <string name="opds_addfeed_auth">"Autorizatzione pedida"</string>
+    <string name="opds_editfeed_title">"Modìfica su catàlogu"</string>
+    <string name="opds_editfeed_msg">"Inserta s\'àlias e s\'URL pro custu catàlogu"</string>
+    <string name="opds_editfeed_ok">"Sarba"</string>
+    <string name="opds_deletefeed_title">"Iscantzella su catàlogu"</string>
+    <string name="opds_deletefeed_msg">"Cheres a beru iscantzellare custu catàlogu?"</string>
+    <string name="opds_deletefeed_ok">"Iscantzella"</string>
+    <string name="opds_authfeed_title">"Autorizatzione"</string>
+    <string name="opds_authfeed_msg">"Inserta su nùmene de impreadore e sa crae de intrada pro custu catàlogu"</string>
+    <string name="opds_authfeed_username">"Nùmene impreadore:"</string>
+    <string name="opds_authfeed_password">"Crae:"</string>
+    <string name="opds_authfeed_ok">"Intra"</string>
+    <string name="opds_error_title">"Errore OPDS"</string>
+    <string name="opds_error_msg" translatable="true">"%s"</string>
+    <string name="opds_retry_download">"Torra a proare"</string>
+
+    <string name="book_copy_start">"Copiende su libru…"</string>
+    <string name="book_copy_progress">"Copiende su libru: %1$s/%2$s…"</string>
+    <string name="book_copy_complete">"Còpia de su libru acabada: %s"</string>
+    <string name="book_copy_error">"Còpia de su libru fallida: %s"</string>
+
+    <string name="book_move_start">"Tramudende su libru…"</string>
+    <string name="book_move_progress">"Tramudende su libru: %1$s/%2$s…"</string>
+    <string name="book_move_complete">"Tramudòngiu de su libru acabadu: %s"</string>
+    <string name="book_move_error">"Tramudòngiu de su libru fallidu: %s"</string>
+
+    <string name="book_rename_title">"Muda su nùmene de su libru"</string>
+    <string name="book_rename_msg">"Inserta su nùmene nou pro su libru:"</string>
+
+    <string name="book_delete_title">"Iscantzella su libru"</string>
+    <string name="book_delete_msg">"Ses seguru de chèrrere iscantzellare custu libru?"</string>
+
+    <string name="outline_title">Ìnditze</string>
+    <string name="outline_missed">Ìnditze no a disponimentu</string>
+
+    <string name="error_page_out_of_rande">Nùmeru de pàgina in foras de s\'intervallu. Intervallu vàlidu: 1-%1$d</string>
+
+    <string name="msg_loading">Carrighende… Iseta, pro praghere</string>
+    <string name="msg_getting_page_size">Analizende sa mannària de sa pàgina %1$d/%2$d</string>
+
+    <string name="tap_zones_single_tap">Tocu sìngulu</string>
+    <string name="tap_zones_double_tap">Tocu dòpiu</string>
+    <string name="tap_zones_long_tap">Tocu longu</string>
+    <string name="tap_zones_two_finger_tap">Tocu a duos pòddighes</string>
+    <string name="tap_zones_reset">Reseta</string>
+    <string name="tap_zones_delete">Iscantzella</string>
+    <string name="tap_zones_clear">Isbòida</string>
+
+    <string name="search_results_title">Resurtados de chirca</string>
+    <string name="search_book_dlg_title">Chirca…</string>
+
+    <string name="folder_books_count">"Libros: %1$d"</string>
+    <string name="copy_book_to_dlg_title">"Còpia su libru in…"</string>
+    <string name="move_book_to_dlg_title">"Tràmuda su libru a…"</string>
+
+    <string name="opds_downloading_type_dlg_title">"Iscàrriga sa casta de libru de iscarrigare"</string>
+    <string name="opds_downloading_dlg_title">"Iscarrighende su libru comente…"</string>
+    <string name="opds_downloading_dlg_raw_type">"Casta Raw"</string>
+
+    <string name="notification_file_add">"Documentu annànghidu a sa biblioteca"</string>
+    <string name="notification_file_delete">"Documentu bogadu dae sa biblioteca"</string>
+
+    <string name="font_reminder_title">Dae cara</string>
+    <string name="font_reminder">Incumintzende cun sa versione 1.5, sos caràteres PDF e F2B non sunt prus incorporados in s\'aplicatzione. In logu issoro benint impreados sos caràteres standard de Android. Si cheres ripristinare sos caràteres betzos imprea sos installadores de pachetes dae su Google Play Market: &lt;ul&gt;&lt;li&gt;&lt;a href="market://details?id=org.ebookdroid.fontpack.legacy"&gt;Legacy fonts&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;</string>
+
+    <string name="cache_moving_text">Tramudende sos documentos in memòria temporànea…</string>
+    <string name="cache_moving_progress">Tramudende sos documentos in memòria temporànea %1$d/%2$d</string>
+
+    <string name="error_invalid_view_mode">Custa atzione est a disponimentu petzi in sa modalidade de visualizatzione %1$s</string>
+
+    <string name="error_write_external_storage_permission">Su leghidore de documentos tenet bisòngiu de su permissu WRITE_EXTERNAL_STORAGE</string>
+</resources>

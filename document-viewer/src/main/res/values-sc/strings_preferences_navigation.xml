@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_navigation_category">Navigatzione e cronologia</string>
+    <string name="pref_navigation_category_summary">Impostatziones de navigatzione e cronologia</string>
+
+    <string name="pref_showbookmarksmenu_summary">Ammustra sos sinnalibros in su menù</string>
+    <string name="pref_showbookmarksmenu_title">Ammustra sos sinnalibros in su menù de navigatzione</string>
+
+    <string name="pref_link_highlight_summary">"Ischerta su colore pro evidentziare sos ligàmenes"</string>
+    <string name="pref_link_highlight_title">"Evidentziatzione de sos ligàmenes"</string>
+
+    <string name="pref_search_highlight_summary">"Colore ischertadu pro s\'evidentziatzione de sos resurtados de chirca"</string>
+    <string name="pref_search_highlight_title">"Evidentziatzione de sa chirca"</string>
+
+    <string name="pref_current_search_highlight_summary">"Imposta su colore pro evidentziare sos resurtados de chirca atuales"</string>
+    <string name="pref_current_search_highlight_title">"Evidentziatzione de sa chirca atuale"</string>
+
+    <string name="pref_storeGotoHistory_title">Sarva sos brincos de pàgina in sa cronologia de navigatzione</string>
+    <string name="pref_storeGotoHistory_summary"></string>
+
+    <string name="pref_storeLinkGotoHistory_title">Sarva sos brincos a sos ligàmenes in sa cronologia de navigatzione</string>
+    <string name="pref_storeLinkGotoHistory_summary"></string>
+
+    <string name="pref_storeOutlineGotoHistory_title">Sarva sos brincos a sos ligàmenes de s\'ìnditze in sa cronologia de navigatzione</string>
+    <string name="pref_storeOutlineGotoHistory_summary"></string>
+
+    <string name="pref_storeSearchGotoHistory_title">Sarva sos brincos a sos resurtados de chirca in sa cronologia de navigatzione</string>
+    <string name="pref_storeSearchGotoHistory_summary"></string>
+
+</resources>

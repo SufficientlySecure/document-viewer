@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="menu_close">Serra</string>
+    <string name="menu_goto_page">Bae a…</string>
+    <string name="menu_outline">Ìnditze</string>
+    <string name="menu_zoom">Ismanniamentu</string>
+    <string name="menu_nightmode">Die/Note</string>
+    <string name="menu_settings">Totu sas impostatziones</string>
+    <string name="menu_booksettings">Impostatziones de su libru</string>
+    <string name="menu_cleanrecent">Isbòida sa lista de sos reghentes</string>
+    <string name="menu_add_bookmark">Annanghe unu sinnalibru</string>
+    <string name="menu_edit_bookmark">Modìfica su sinnalibru</string>
+    <string name="menu_thumbnail">Imposta comente cobertedda</string>
+    <string name="menu_about">Informatziones</string>
+    <string name="menu_tap_configuration">Configura sos tocos</string>
+    <string name="menu_key_bindings">Cunfigura sas teclas</string>
+    <string name="menu_searchbook">Agata libros</string>
+    <string name="menu_searchtext">Agata testu</string>
+    <string name="menu_show_options_menu">Ammustra su menù de sas optziones</string>
+    <string name="menu_backupsettings">Còpia de seguresa e riprìstinu</string>
+    <string name="menu_crop">Ritàlliu manuale</string>
+    <string name="menu_singlepage">Pàgina sìngula</string>
+    <string name="menu_search">Chirca</string>
+
+    <string name="menu_navigation_menu">Navigatzione…</string>
+    <string name="menu_fastsettings_menu">Vista…</string>
+    <string name="menu_allsettings_menu">Impostatziones…</string>
+
+    <string name="menu_share">Cumpartzi…</string>
+    <string name="menu_openwith">Aberi cun…</string>
+
+    <string name="menu_show_library">Ammustra sa biblioteca</string>
+    <string name="menu_show_recent">Ammustra sos reghentes</string>
+    <string name="menu_storages">Memòrias</string>
+    <string name="menu_storages_filesystem">Sistema de documentos</string>
+    <string name="menu_storages_external">Ischeda SD</string>
+    <string name="menu_show_files">Ammustra sos documentos</string>
+
+    <string name="menu_force_portrait">Fortza verticale</string>
+    <string name="menu_force_landscape">Fortza orizontale</string>
+    <string name="menu_reverse_orientation">Orientamentu furriadu</string>
+</resources>

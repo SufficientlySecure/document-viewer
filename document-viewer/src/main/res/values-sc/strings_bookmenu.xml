@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="bookmenu_open">Aberi su libru in...</string>
+    <string name="bookmenu_settings">Ammustra sas impostatziones de su libru</string>
+    <string name="bookmenu_openbookshelf">Ammustra su parastàgiu de su libru</string>
+    <string name="bookmenu_openbookfolder">Ammustra sa cartella de su libru</string>
+    <string name="bookmenu_recentgroup">Isbòida sos datos reghentes...</string>
+    <string name="bookmenu_removefromrecent">Esclue dae sos reghentes</string>
+    <string name="bookmenu_cleardata">Isbòida sos datos in sa memòria temporànea</string>
+    <string name="bookmenu_deletesettings">Iscantzella sas impostatziones de su libru</string>
+    <string name="bookmenu_filegroup">Operatziones in su documentu...</string>
+    <string name="bookmenu_copy">Còpia su libru in...</string>
+    <string name="bookmenu_rename">Càmbia de nùmene su libru...</string>
+    <string name="bookmenu_move">Tràmuda su libru a...</string>
+    <string name="bookmenu_delete">Iscantzella su libru</string>
+
+</resources>

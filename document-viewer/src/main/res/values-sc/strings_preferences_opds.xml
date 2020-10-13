@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_opds_category">Impostatziones OPDS</string>
+    <string name="pref_opds_category_summary">Impostatziones de su navigadore OPDS (Open Publication Distribution System)</string>
+
+    <string name="pref_opds_downloaddir_title">Cartella de iscarrigamentu</string>
+    <string name="pref_opds_downloaddir_summary">Iscàrriga in</string>
+
+    <string name="pref_opds_filterbooktypes_title">Filtra sas castas de libros</string>
+    <string name="pref_opds_filterbooktypes_summary">Filtra sas castas de libros non suportadas</string>
+
+    <string name="pref_opds_downloadarchives_title">Iscàrriga sos libros cumprimidos</string>
+    <string name="pref_opds_downloadarchives_summary">Iscàrriga sos libros cumprimidos</string>
+
+    <string name="pref_opds_unpackarchives_title">Ispacheta sos libros cumprimidos</string>
+    <string name="pref_opds_unpackarchives_summary">Ispacheta sos libros cumprimidos a pustis de s\'iscarrigamentu</string>
+
+    <string name="pref_opds_deletearchives_title">Iscantzella sos libros cumprimidos</string>
+    <string name="pref_opds_deletearchives_summary">Iscantzella sos libros cumprimidos a pustis de s\'ispachetamentu</string>
+
+</resources>

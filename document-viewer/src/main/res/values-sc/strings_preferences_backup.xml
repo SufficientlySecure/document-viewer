@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_backup_category">Impostatzione de sa còpia de seguresa e de riprìstinu</string>
+    <string name="pref_backup_category_summary">Preferèntzias de sa còpia de seguresa e de riprìstinu</string>
+
+    <string name="pref_backuponexit_title">Faghe una còpia de seguresa essende dae s\'aplicatzione</string>
+    <string name="pref_backuponexit_summary">Faghe automaticamente una còpia de seguresa de sas preferèntzias essende dae s\'aplicatzione</string>
+
+    <string name="pref_backuponbookclose_title">Còpia de seguresa automàtica a sa serradura de su documentu</string>
+    <string name="pref_backuponbookclose_summary">Faghe una còpia de seguresa de sas preferèntzias cando serras unu documentu</string>
+
+    <string name="pref_maxnumberofautobackups_title">Nùmeru de còpias automàticas</string>
+    <string name="pref_maxnumberofautobackups_summary">Nùmeru màssimu de còpias de seguresa automàticas de mantènnere</string>
+
+    <string name="pref_bookbackuptype_title">Còpia de seguresa de sas impostatziones de su libru</string>
+    <string name="pref_bookbackuptype_summary">Còpia de seguresa de sas impostatziones de su libru</string>
+
+    <string name="list_bookbackuptype_none">Perunu</string>
+    <string name="list_bookbackuptype_recent">Reghentes</string>
+    <string name="list_bookbackuptype_all">Totus</string>
+
+</resources>

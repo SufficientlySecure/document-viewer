@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="pref_browser_category">Navigadore de documentos</string>
+    <string name="pref_browser_category_summary">Impostatziones de sa navigatzione e de sas castas de documentos</string>
+
+    <string name="pref_usebookcase_title">Imprea sas coberteddas</string>
+    <string name="pref_usebookcase_summary">Imprea sa vista cun sa coberteddas in logu de sas listas</string>
+
+    <string name="pref_brautoscandir_title">Cartellas de chirca automàtica</string>
+    <string name="pref_brautoscandir_summary">Cartellas pro sa chirca automàtica de sos documentos</string>
+
+    <string name="pref_autoscanremovable_title">Iscansi automaticamente sos rimovìbiles</string>
+    <string name="pref_autoscanremovable_summary">Iscansi automaticamente sos documentos multimediales rimovìbiles insertados</string>
+
+    <string name="pref_showremovable_title">Ammustra sos rimovìbiles</string>
+    <string name="pref_showremovable_summary">Ammustra sos mèdios rimovìbiles in su menù de archiviatzione</string>
+
+    <string name="pref_showscanning_title">Ammustra sas cartellas de iscansidura</string>
+    <string name="pref_showscanning_summary">Ammustra sas cartellas pro s\'iscansidura automàtica in su menù de archiviatzione</string>
+
+    <string name="pref_shownotifications_title">Ammustra sas notìficas</string>
+    <string name="pref_shownotifications_summary">Ammustra sas notìficas in subra de documentos annànghidos/iscantzellados</string>
+
+    <string name="pref_cachelocation_title">Positzione de sa memòria temporànea</string>
+    <string name="pref_cachelocation_summary">Localización del archivo de caché</string>
+    <string name="list_cachelocation_system">Memòria temporànea de s\'aplicatzione in cussa de sistema</string>
+    <string name="list_cachelocation_custom">Memòria temporànea de s\'apl. in s\'ischeda SD</string>
+
+    <string name="pref_brbrfiletypesscreen_title">Castas de documentu</string>
+    <string name="pref_brbrfiletypesscreen_summary">Castas de documentu de ammustrare in sa biblioteca</string>
+
+    <string name="pref_brfiletypedjvu_title">.djvu</string>
+    <string name="pref_brfiletypedjvu_summary">Ammustra sos documentos DjVu</string>
+
+    <string name="pref_brfiletypedjv_title">.djv</string>
+    <string name="pref_brfiletypedjv_summary">Ammustra sos documentos DjV</string>
+
+    <string name="pref_brfiletypepdf_title">.pdf</string>
+    <string name="pref_brfiletypepdf_summary">Ammustra sos documentos PDF</string>
+
+    <string name="pref_brfiletypexps_title">.xps</string>
+    <string name="pref_brfiletypexps_summary">Ammustra sos documentos XPS</string>
+
+    <string name="pref_brfiletypeoxps_title">.oxps</string>
+    <string name="pref_brfiletypeoxps_summary">Ammustra sos documentos OXPS</string>
+
+    <string name="pref_brfiletypeepub_title">.epub</string>
+    <string name="pref_brfiletypeepub_summary">Ammustra sos documentos EPUB</string>
+
+    <string name="pref_brfiletypecbz_title">.cbz</string>
+    <string name="pref_brfiletypecbz_summary">Ammustra sos documentos CBZ</string>
+
+    <string name="pref_brfiletypecbr_title">.cbr</string>
+    <string name="pref_brfiletypecbr_summary">Ammustra sos documentos CBR</string>
+
+    <string name="pref_brfiletypefb2_title">.fb2</string>
+    <string name="pref_brfiletypefb2_summary">Ammustra sos documentos FB2 </string>
+
+    <string name="pref_brfiletypefb2.zip_title">.fb2.zip</string>
+    <string name="pref_brfiletypefb2.zip_summary">Ammustra sos documentos FB2.ZIP</string>
+
+</resources>

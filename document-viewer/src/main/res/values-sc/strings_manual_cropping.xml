@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="manual_cropping_title">Optziones de ritàlliu personalizadas (bisòngiat de pàginas sìngulas):</string>
+    <string name="manual_cropping_current">Ritàllia sa pàgina atuale ebbia</string>
+    <string name="manual_cropping_even">Ritàllia totu sas immàgines paris (dìspari)</string>
+    <string name="manual_cropping_even_symm">Ritàllia sas immàgines paris e cussas dìspari, simmetricamente</string>
+	<string name="manual_cropping_all">Ritàllia totu sas immàgines</string>
+    <string name="manual_cropping_remove_current">Boga sas impostatziones de ritàlliu dae sa/sas pàgina/as atuale/es</string>
+    <string name="manual_cropping_remove_all">Boga totu sas impostatziones de ritàlliu</string>
+    <string name="manual_cropping_back">Torra a s\'ischertadura de s\'àrea</string>
+
+</resources>

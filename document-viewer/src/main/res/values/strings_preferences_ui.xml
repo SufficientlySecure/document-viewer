@@ -21,6 +21,7 @@
     <string name="list_lang_ko">Korean (한국어)</string>
     <string name="list_lang_eo">Esperanto</string>
     <string name="list_lang_pl">Polish (Polski)</string>
+    <string name="list_lang_sc">Sardinian (Sardu)</string>
     
     <string name="pref_loadrecent_title">Load recent</string>
     <string name="pref_loadrecent_summary">On app start, load last opened book</string>

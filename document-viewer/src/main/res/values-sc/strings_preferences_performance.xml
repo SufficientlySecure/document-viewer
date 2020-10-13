@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="pref_performance_category">Ajustes de rendimiento</string>
-    <string name="pref_performance_category_summary">Mejorar el rendimiento ajustando determinados parámetros</string>
+    <string name="pref_performance_category">Impostatziones de rendimentu</string>
+    <string name="pref_performance_category_summary">Impostatziones de rendimentu</string>
 
-    <string name="pref_pagesinmemory_title">Páginas en memoria</string>
-    <string name="pref_pagesinmemory_summary">Número de páginas a almacenar en memoria</string>
+    <string name="pref_pagesinmemory_title">Pàginas in memòria</string>
+    <string name="pref_pagesinmemory_summary">Nùmeru de pàginas de archiviare in memòria</string>
 
-    <string name="pref_lowlevel_category">Preferencias de bajo nivel</string>
-    <string name="pref_lowlevel_category_summary">Preferencias de bajo nivel para la aplicación (se aplican tras recargar el documento)</string>
+    <string name="pref_lowlevel_category">Preferèntzias de livellu bassu de s\'aplicatzione</string>
+    <string name="pref_lowlevel_category_summary">Preferèntzias de livellu bassu de s\'aplicatzione (depes torrare a abèrrere su documentu pro las aplicare)</string>
 
     <string name="pref_decoding_threads_title">"Nùmeru de filos (threads) de decodìfica"</string>
     <string name="pref_decoding_threads_summary">"Nùmeru de filos (threads) de decodìfica"</string>

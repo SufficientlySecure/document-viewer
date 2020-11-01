@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="app_name" translatable="true">"Document Viewer"</string>
+    <string name="app_name" translatable="true">"文档查看器"</string>
     <string name="confirmclose_title">"关闭…"</string>
     <string name="confirmclose_msg">"确定关闭当前视图？"</string>
     <string name="confirmsave_msg">"您要保存这个文档吗？"</string>

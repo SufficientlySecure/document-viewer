@@ -149,7 +149,7 @@
 
     <string name="font_reminder_title">警告</string>
     <string name="font_reminder">从 1.5 版本开始, PDF 和 FB2 字体不再被嵌入应用，取而代之的是标准的Android字体。如果你希望恢复旧式字体或
-	安装自定义字体，请使用来自 Google Play 市场的字体包安装程序： &lt;ul&gt;&lt;li&gt;&lt;a href=&quot;market://details?id=org.ebookdroid.fontpack.legacy&quot;&gt;Legacy fonts&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;</string>
+    安装自定义字体，请使用来自 Google Play 市场的字体包安装程序： &lt;ul&gt;&lt;li&gt;&lt;a href=&quot;market://details?id=org.ebookdroid.fontpack.legacy&quot;&gt;Legacy fonts&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;</string>
 
     <string name="cache_moving_text">正在移动缓存文件&#8230;</string>
     <string name="cache_moving_progress">正在移动缓存文件 %1$d/%2$d</string>

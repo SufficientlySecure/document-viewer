@@ -1,124 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="app_name" translatable="true">"Document Viewer"</string>
-    <string name="confirmclose_title">"关闭…"</string>
-    <string name="confirmclose_msg">"确定关闭当前视图？"</string>
-    <string name="confirmsave_msg">"您要保存这个文档吗？"</string>
-    <string name="confirmsave_yes_btn">"保存并关闭"</string>
-    <string name="confirmsave_no_btn">"关闭"</string>
-    <string name="error_dlg_title">"应用程序错误"</string>
-    <string name="msg_bad_intent">"错误:\n%s"</string>
-    <string name="msg_no_intent_data">"数据丢失:\n%s"</string>
-    <string name="msg_unknown_intent_data_type">"未知的数据类型:\n%s"</string>
-    <string name="msg_loading_book">"加载书籍： %1$s…"</string>
-    <string name="msg_wrong_password">"密码错误&quot;…"</string>
-    <string name="msg_password_required">"请输入密码…"</string>
-    <string name="msg_unexpected_error">"发生异常:\n%s"</string>
-    <string name="msg_search_text_on_page">"页面 %1$d…"</string>
-    <string name="msg_no_text_found">"没有找到文本"</string>
-    <string name="dialog_title_goto_page">"转至页面"</string>
-    <string name="button_goto_page">"转至页面"</string>
-    <string name="text_page">"页面"</string>
-    <string name="error_close">"关闭"</string>
-    <string name="dialog_backup_name_hint">"进入备份名称…"</string>
-    <string name="dialog_backup_backup">"备份…"</string>
-    <string name="dialog_backup_restore">"恢复…"</string>
-    <string name="dialog_backup_remove">"删除…"</string>
-    <string name="add_bookmark_name">"输入书签描述"</string>
-    <string name="bookmark_start">"启动"</string>
-    <string name="bookmark_current">"当前书签位置"</string>
-    <string name="bookmark_end">"结束"</string>
-    <string name="bookmark_invalid_page">"无效的页码。有效的页码范围是: %1$d-%2$d"</string>
-    <string name="bookmarks_title">"书签"</string>
-    <string name="clear_bookmarks_title">"删除书签"</string>
-    <string name="clear_bookmarks_text">"确定删除所有书签？"</string>
-    <string name="del_bookmark_title">"删除书签"</string>
-    <string name="del_bookmark_text">"确定删除所有书签？"</string>
-    <string name="clear_recent_title">"删除历史记录"</string>
-    <string name="clear_recent_text">"确定删除所有的历史记录？"</string>
-    <string name="bookcase_shelves">"书架"</string>
-    <string name="recent_title">"最近浏览"</string>
-    <string name="list_clear_recent_mode_clear_recent_list">"清除最近的浏览记录"</string>
-    <string name="list_clear_recent_mode_delete_bookmarks">"删除所有书签"</string>
-    <string name="list_clear_recent_mode_delete_book_settings">"删除所有设置"</string>
-    <string name="list_clear_recent_mode_delete_cached_data">"删除所有缓存的数据"</string>
-<!--<string name="about_prefix">"en"</string>-->
-    <string name="about_title">"EBookDroid"</string>
-    <string name="about_commmon_title">"软件信息"</string>
-    <string name="about_fonts_title">"字体"</string>
-    <string name="about_license_title">"版权"</string>
-    <string name="about_3dparty_title">"第三方软件"</string>
-    <string name="about_changelog_title">"修改记录"</string>
-    <string name="about_thanks_title">"致谢"</string>
-    <string name="about_donations">"捐助"</string>
-    <string name="opds">"OPDS 浏览器"</string>
-    <string name="menu_opds">"OPDS 浏览器"</string>
-    <string name="opds_connecting">"连接…"</string>
-    <string name="opds_loading_catalog">"载入目录…"</string>
-    <string name="opds_loading_book">"加载书籍： %1$s/%2$s…"</string>
-    <string name="opds_unpacking_book">"解压书籍：%1$s/%2$s…"</string>
-    <string name="opds_download_complete">"下载完成: %s"</string>
-    <string name="opds_download_error">"下载失败: %s"</string>
-    <string name="opds_add_new_feed">"添加新的订阅地址"</string>
-    <string name="opds_addfeed_title">"添加新的类目"</string>
-    <string name="opds_addfeed_msg">"设置类目别名"</string>
+    <string name="app_name">文档查看器</string>
+
+    <string name="confirmclose_title">正在关闭查看器&#8230;</string>
+    <string name="confirmclose_msg">你真想关闭这个文档吗？</string>
+    <string name="confirmsave_msg">你想保存这个文档吗？</string>
+    <string name="confirmsave_yes_btn">保存并关闭</string>
+    <string name="confirmsave_no_btn">关闭</string>
+
+    <string name="error_dlg_title">应用程序错误</string>
+    <string name="msg_bad_intent">"不良意图或计划：\n%s"</string>
+    <string name="msg_no_intent_data">"无意图数据：\n%s"</string>
+    <string name="msg_unknown_intent_data_type">"未知的意图数据类型：\n%s"</string>
+
+    <string name="msg_loading_book">"加载书籍中： %1$s&#8230;"</string>
+
+    <string name="msg_wrong_password">"错误的密码&#8230;"</string>
+    <string name="msg_password_required">"输入密码&#8230;"</string>
+
+    <string name="msg_unexpected_error">"发生了一个意外错误：\n%s"</string>
+
+    <string name="msg_search_text_on_page">"正在搜索页面 %1$d&#8230;"</string>
+    <string name="msg_no_text_found">"未找到文本"</string>
+
+    <string name="dialog_title_goto_page">转到...</string>
+    <string name="button_goto_page">去</string>
+    <string name="text_page">页</string>
+    <string name="error_close">关闭</string>
+
+    <string name="dialog_backup_name_hint">输入新的备份名&#8230;</string>
+    <string name="dialog_backup_backup">备份名&#8230;</string>
+    <string name="dialog_backup_restore">还原&#8230;</string>
+    <string name="dialog_backup_remove">删除&#8230;</string>
+
+    <string name="add_bookmark_name">输入书籍描述</string>
+    <string name="bookmark_start">开头</string>
+    <string name="bookmark_current">当前位置</string>
+    <string name="bookmark_end">结尾</string>
+    <string name="bookmark_invalid_page">页码超出范围。 无效区间： %1$d-%2$d</string>
+
+    <string name="bookmarks_title">书签</string>
+    <string name="clear_bookmarks_title">清除书签</string>
+    <string name="clear_bookmarks_text">此操作将删除所有来自所选书籍的书签，要继续吗？</string>
+
+    <string name="del_bookmark_title">删除书签</string>
+    <string name="del_bookmark_text">删除该书签？</string>
+
+    <string name="clear_recent_title">清除最近项目</string>
+    <string name="clear_recent_text">此操作将从最近列表中删除所有读过书籍的记录，要继续吗?</string>
+
+    <string name="bookcase_shelves">书架</string>
+    <string name="recent_title">最近看过的书</string>
+
+    <string name="list_clear_recent_mode_clear_recent_list">清除最近看过的书籍列表</string>
+    <string name="list_clear_recent_mode_delete_bookmarks">删除所有书签</string>
+    <string name="list_clear_recent_mode_delete_book_settings">清除所有书籍设置</string>
+    <string name="list_clear_recent_mode_delete_cached_data">从磁盘中删除所有缓存的数据</string>
+
+    <string name="about_prefix">en</string>
+    <string name="about_title">关于 EBookDroid</string>
+    <string name="about_commmon_title">应用程序信息</string>
+    <string name="about_fonts_title">字体</string>
+    <string name="about_license_title">许可</string>
+    <string name="about_3dparty_title">第三方软件</string>
+    <string name="about_changelog_title">变更日志</string>
+    <string name="about_thanks_title">致谢</string>
+    <string name="about_donations">捐赠</string>
+
+    <string name="opds">OPDS 浏览器</string>
+    <string name="menu_opds">OPDS 浏览器</string>
+
+    <string name="opds_connecting">"正在连接&#8230;"</string>
+    <string name="opds_loading_catalog">"正在加载目录&#8230;"</string>
+    <string name="opds_loading_book">"正在加载书籍： %1$s/%2$s&#8230;"</string>
+    <string name="opds_unpacking_book">"正在解包书籍： %1$s/%2$s&#8230;"</string>
+
+    <string name="opds_download_complete">"书籍下载完毕： %1$s"</string>
+    <string name="opds_download_error">"书籍下载失败： %1$s"</string>
+
+    <string name="opds_add_new_feed">添加新源</string>
+    <string name="opds_addfeed_title">"正在添加新目录"</string>
+    <string name="opds_addfeed_msg">"输入目录的别称和 URL"</string>
     <string name="opds_addfeed_ok">"添加"</string>
-    <string name="opds_addfeed_alias">"别名:"</string>
-    <string name="opds_addfeed_url">"网址:"</string>
+    <string name="opds_addfeed_alias">"别称："</string>
+    <string name="opds_addfeed_url">"URL："</string>
     <string name="opds_addfeed_auth">"需要授权"</string>
-    <string name="opds_editfeed_title">"编辑类目"</string>
-    <string name="opds_editfeed_msg">"设置类目别名"</string>
+    <string name="opds_editfeed_title">"编辑目录"</string>
+    <string name="opds_editfeed_msg">"输入这个目录的别称和 URL"</string>
     <string name="opds_editfeed_ok">"保存"</string>
-    <string name="opds_deletefeed_title">"删除类目"</string>
-    <string name="opds_deletefeed_msg">"确定删除类目?"</string>
+    <string name="opds_deletefeed_title">"删除目录"</string>
+    <string name="opds_deletefeed_msg">"你真想删除这个目录吗？"</string>
     <string name="opds_deletefeed_ok">"删除"</string>
     <string name="opds_authfeed_title">"授权"</string>
-    <string name="opds_authfeed_msg">"设置类目用户名和密码"</string>
-    <string name="opds_authfeed_username">"用户名:"</string>
-    <string name="opds_authfeed_password">"密码:"</string>
+    <string name="opds_authfeed_msg">"输入这个目录的用户名和密码"</string>
+    <string name="opds_authfeed_username">"用户名："</string>
+    <string name="opds_authfeed_password">"密码："</string>
     <string name="opds_authfeed_ok">"登录"</string>
-    <string name="opds_error_title">"OPDS错误"</string>
-    <string name="opds_error_msg" translatable="true">"%s"</string>
+    <string name="opds_error_title">"OPDS 错误"</string>
+    <string name="opds_error_msg">"%s"</string>
     <string name="opds_retry_download">"重试"</string>
-    <string name="book_copy_start">"复制…"</string>
-    <string name="book_copy_progress">"复制进度: %1$s/%2$s…"</string>
-    <string name="book_copy_complete">"复制完成: %s"</string>
-    <string name="book_copy_error">"复制失败: %s"</string>
-    <string name="book_move_start">"移动…"</string>
-    <string name="book_move_progress">"移动: %1$s/%2$s…"</string>
-    <string name="book_move_complete">"移动完成: %s"</string>
-    <string name="book_move_error">"移动失败: %s"</string>
-    <string name="book_rename_title">"重命名"</string>
-    <string name="book_rename_msg">"输入新的书名:"</string>
-    <string name="book_delete_title">"删除"</string>
-    <string name="book_delete_msg">"确定要删除本书？"</string>
-    <string name="outline_title">"大纲"</string>
-    <string name="outline_missed">"没有大纲文件"</string>
-    <string name="error_page_out_of_rande">"无效的页码。有效页码范围: 1-%1$d"</string>
-    <string name="msg_loading">"载入中… 请稍候"</string>
-    <string name="msg_getting_page_size">"获取页面大小 %1$d/%2$d"</string>
-    <string name="tap_zones_single_tap">"按一下"</string>
-    <string name="tap_zones_double_tap">"按两下"</string>
-    <string name="tap_zones_long_tap">"长按"</string>
-    <string name="tap_zones_two_finger_tap">"两指轻敲"</string>
-    <string name="tap_zones_reset">"重置"</string>
-    <string name="tap_zones_delete">"删除"</string>
-    <string name="tap_zones_clear">"清空"</string>
-    <string name="search_results_title">"搜索结果"</string>
-    <string name="search_book_dlg_title">"搜索…"</string>
-    <string name="folder_books_count">"书籍数量: %1$d"</string>
-    <string name="copy_book_to_dlg_title">"复制…"</string>
-    <string name="move_book_to_dlg_title">"移动…"</string>
-    <string name="opds_downloading_type_dlg_title">"选择下载的书籍类型"</string>
-    <string name="opds_downloading_dlg_title">"下载…"</string>
-    <string name="opds_downloading_dlg_raw_type">"原始类型"</string>
-    <string name="notification_file_add">"文件已经添加到书库"</string>
-    <string name="notification_file_delete">"文件已经从书库中删除"</string>
-    <string name="font_reminder_title">"提示"</string>
-    <string name="font_reminder">"从1.5版本开始，使用标准的安卓系统字体替换了内嵌的PDF和FB2字体。如果你想恢复原有的字体或者安装新的字体， 请从谷歌网上商店下载字体安装包 : &lt;ul&gt;&lt;li&gt;&lt;a href=&quot;market://details?id=org.ebookdroid.fontpack.legacy&quot;&gt;下载字体&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;"</string>
-    <string name="cache_moving_text">"正在移动缓存文件…"</string>
-    <string name="cache_moving_progress">"正在移动缓存文件 %1$d/%2$d"</string>
-    <string name="error_invalid_view_mode">"该操作只在视图模式下可用 %1$s"</string>
 
+    <string name="book_copy_start">"开始复制书籍&#8230;"</string>
+    <string name="book_copy_progress">"正在复制书籍： %1$s/%2$s&#8230;"</string>
+    <string name="book_copy_complete">"书籍复制完毕： %s"</string>
+    <string name="book_copy_error">"书籍复制失败： %s"</string>
+
+    <string name="book_move_start">"正在移动书籍&#8230;"</string>
+    <string name="book_move_progress">"正在移动书籍： %1$s/%2$s&#8230;"</string>
+    <string name="book_move_complete">"书籍移动完毕： %s"</string>
+    <string name="book_move_error">"书籍移动完毕： %s"</string>
+
+    <string name="book_rename_title">"重命名书籍"</string>
+    <string name="book_rename_msg">"输入新的书籍文件名:"</string>
+
+    <string name="book_delete_title">"删除书籍"</string>
+    <string name="book_delete_msg">"你确定要删除这本书吗？"</string>
+
+    <string name="outline_title">大纲</string>
+    <string name="outline_missed">无大纲可用</string>
+
+    <string name="error_page_out_of_rande">页码超出范围。 无效范围： 1-%1$d</string>
+
+    <string name="msg_loading">正在加载&#8230; 请等待</string>
+    <string name="msg_getting_page_size">正在评估页面尺寸 %1$d/%2$d</string>
+
+    <string name="tap_zones_single_tap">按一次</string>
+    <string name="tap_zones_double_tap">按两次</string>
+    <string name="tap_zones_long_tap">长按</string>
+    <string name="tap_zones_two_finger_tap">两个手指按</string>
+    <string name="tap_zones_reset">重置</string>
+    <string name="tap_zones_delete">删除</string>
+    <string name="tap_zones_clear">清除</string>
+
+    <string name="search_results_title">搜索结果</string>
+    <string name="search_book_dlg_title">搜索&#8230;</string>
+
+    <string name="folder_books_count" >"书籍数“ %1$d"</string>
+    <string name="copy_book_to_dlg_title" >"复制书籍到&#8230;"</string>
+    <string name="move_book_to_dlg_title" >"移动书籍到&#8230;"</string>
+
+    <string name="opds_downloading_type_dlg_title">"选择要下载的书籍类型"</string>
+    <string name="opds_downloading_dlg_title">"正在下载书籍为 &#8230;"</string>
+    <string name="opds_downloading_dlg_raw_type">"原始类型"</string>
+
+    <string name="notification_file_add">"文件已被添加至图书馆"</string>
+    <string name="notification_file_delete">"文件已从图书馆中被移除"</string>
+
+    <string name="font_reminder_title">警告</string>
+    <string name="font_reminder">从 1.5 版本开始, PDF 和 FB2 字体不再被嵌入应用，取而代之的是标准的Android字体。如果你希望恢复旧式字体或
+    安装自定义字体，请使用来自 Google Play 市场的字体包安装程序： &lt;ul&gt;&lt;li&gt;&lt;a href=&quot;market://details?id=org.ebookdroid.fontpack.legacy&quot;&gt;Legacy fonts&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;</string>
+
+    <string name="cache_moving_text">正在移动缓存文件&#8230;</string>
+    <string name="cache_moving_progress">正在移动缓存文件 %1$d/%2$d</string>
+
+    <string name="error_invalid_view_mode">此操作仅在查看模式中可用 %1$s</string>
+
+    <string name="error_write_external_storage_permission">文档查看器需要写入外部存储权限</string>
 </resources>

@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="pref_scroll_category">"触摸和滚动"</string>
-    <string name="pref_scroll_category_summary">"触摸和滚动首选项"</string>
-    <string name="pref_tapsenabled_title">"启用点击"</string>
-    <string name="pref_tapsenabled_summary">"定义使用点击区域和行动"</string>
-    <string name="pref_scroll_title">"滚动高度"</string>
-    <string name="pref_scroll_summary">"设置滚动条的高度"</string>
-    <string name="pref_touchdelay_title">"轻触处理延时"</string>
-    <string name="pref_touchdelay_summary">"触摸处理延时（毫秒）"</string>
-    <string name="pref_animate_scrolling_title">"动画滚动"</string>
-    <string name="pref_animate_scrolling_summary">"动画滚动滚动模式"</string>
+    <string name="pref_scroll_category">点按、滑动和按键</string>
+    <string name="pref_scroll_category_summary">选择设备对点按、滑动和按键的反应</string>
+
+    <string name="pref_tapsenabled_title">启用点按</string>
+    <string name="pref_tapsenabled_summary">使用点按配置来定义点按区域和动作</string>
+
+    <string name="pref_scroll_title">滚动高度</string>
+    <string name="pref_scroll_summary">设置不适合屏幕的页面的滚动高度（默认值：50%%）</string>
+
+    <string name="pref_touchdelay_title">轻触处理延迟</string>
+    <string name="pref_touchdelay_summary">清除处理延迟时间 （单位：毫秒）</string>
+
+    <string name="pref_animate_scrolling_title">动画滚动</string>
+    <string name="pref_animate_scrolling_summary">滚动模式下的动画滚动</string>
+
+    <string name="pref_volumekeyscrolling_title">音量键滚动</string>
+    <string name="pref_volumekeyscrolling_summary">使用音量键滚动页面，而不是调节音量</string>
+
+    <string name="pref_tapfullscreen_title">点按切换全屏</string>
+    <string name="pref_tapfullscreen_summary">通过轻敲一个点按区域或超链接外的任何地方来切换全屏</string>
 
 </resources>

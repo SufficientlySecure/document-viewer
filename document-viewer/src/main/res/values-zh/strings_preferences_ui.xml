@@ -1,49 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="pref_ui_category">"用户界面"</string>
-    <string name="pref_ui_category_summary">"用户界面设置"</string>
-    <string name="pref_lang_title">"语言"</string>
-    <string name="pref_lang_summary">"用户界面语言 (需要重启)"</string>
-    <string name="list_lang_default">"系统默认"</string>
-    <string name="list_lang_en">"英语 (English)"</string>
-    <string name="list_lang_de">"德语 (Deutsch)"</string>
-    <string name="list_lang_es">"西班牙语 (Español)"</string>
-    <string name="list_lang_fr">"法语 (Française)"</string>
-    <string name="list_lang_it">"意大利语 (Italiano)"</string>
-    <string name="list_lang_nl">"荷兰语 (Nederlands)"</string>
-    <string name="list_lang_ru">"俄语 (Русский)"</string>
-    <string name="list_lang_uk">"乌克兰语 (Український)"</string>
-    <string name="list_lang_zh">"中文简体"</string>
-    <string name="list_lang_iw">"希伯来语 (עברית)"</string>
-    <string name="list_lang_ko">"韩语 (한국어)"</string>    
-    <string name="pref_loadrecent_title">"最近加载"</string>
-    <string name="pref_loadrecent_summary">"在应用程序上启动自动加载上次打开的书"</string>
-    <string name="pref_confirmclose_title">"确认关闭"</string>
-    <string name="pref_confirmclose_summary">"问结束确认背上按下"</string>
-    <string name="pref_brightness_title">"亮度"</string>
-    <string name="pref_brightness_summary">"调整设置整体亮度(0–100)"</string>
-    <string name="pref_brightnessnightmodeonly_title">"夜间模式的亮度"</string>
-    <string name="pref_brightnessnightmodeonly_summary">"亮度设置在夜间模式中应用"</string>
-    <string name="pref_keepscreenon_title">"保持屏幕"</string>
-    <string name="pref_keepscreenon_summary">"始终保持屏幕"</string>
-    <string name="pref_fullscreen_title">"全屏幕"</string>
-    <string name="pref_fullscreen_summary">"隐藏状态栏。"</string>
-    <string name="pref_title_title">"显示标题"</string>
-    <string name="pref_title_summary">"显示标题。文件重新打开需要!!!"</string>
-    <string name="pref_pageintitle_title">"在标题页"</string>
-    <string name="pref_pageintitle_summary">"在标题栏中显示的页号"</string>
-    <string name="pref_pagenumbertoastposition_title">"页码自定义位置"</string>
-    <string name="pref_pagenumbertoastposition_summary">"页码自定义位置"</string>
-    <string name="pref_zoomtoastposition_title">"缩放自定义的位置"</string>
-    <string name="pref_zoomtoastposition_summary">"缩放自定义的位置"</string>
-    <string name="list_toastposition_invisible">"不可见"</string>
-    <string name="list_toastposition_lefttop">"左上角"</string>
-    <string name="list_toastposition_righttop">"右上角"</string>
-    <string name="list_toastposition_leftbottom">"左下角"</string>
-    <string name="list_toastposition_bottom">"屏幕底部"</string>
-    <string name="list_toastposition_righbottom">"右下角"</string>
-    <string name="pref_showanimicon_title">"显示动画图标"</string>
-    <string name="pref_showanimicon_summary">"如果启用动画或拖动，显示动画或拖动图标"</string>
+    <string name="pref_ui_category">用户界面</string>
+    <string name="pref_ui_category_summary">用户界面设置</string>
+
+    <string name="pref_lang_title">语言</string>
+    <string name="pref_lang_summary">用户界面语言 （需要重启本应用）</string>
+
+    <string name="list_lang_default">系统值</string>
+    <string name="list_lang_en">英语</string>
+    <string name="list_lang_de">德语</string>
+    <string name="list_lang_es">西班牙语</string>
+    <string name="list_lang_fr">法语</string>
+    <string name="list_lang_it">意大利语</string>
+    <string name="list_lang_nl">荷兰语</string>
+    <string name="list_lang_ru">俄语</string>
+    <string name="list_lang_uk">乌克兰语</string>
+    <string name="list_lang_zh">简体中文</string>
+    <string name="list_lang_iw">希伯来语</string>
+    <string name="list_lang_ko">韩语</string>
+    <string name="list_lang_eo">世界语</string>
+    <string name="list_lang_pl">波兰语</string>
+    
+    <string name="pref_loadrecent_title">加载最近</string>
+    <string name="pref_loadrecent_summary">应用启动时加载最近打开的书籍</string>
+
+    <string name="pref_confirmclose_title">确认关闭</string>
+    <string name="pref_confirmclose_summary">按下返回键后询问是否确实要关闭</string>
+
+    <string name="pref_brightness_title">亮度</string>
+    <string name="pref_brightness_summary">设置总体的图片亮度 (0&#8211;100)</string>
+
+    <string name="pref_brightnessnightmodeonly_title">夜间模式的亮度</string>
+    <string name="pref_brightnessnightmodeonly_summary">只应用于夜间模式的亮度设置</string>
+
+    <string name="pref_keepscreenon_title">保持屏幕开启</string>
+    <string name="pref_keepscreenon_summary">阅读时不要关闭屏幕 （不要休眠）</string>
+
+    <string name="pref_fullscreen_title">全屏</string>
+    <string name="pref_fullscreen_summary">隐藏状态栏</string>
+
+    <string name="pref_title_title">显示标题</string>
+    <string name="pref_title_summary">显示文档标题 （需要重新打开文档）</string>
+
+    <string name="pref_pageintitle_title">标题栏页码</string>
+    <string name="pref_pageintitle_summary">在标题栏显示页码</string>
+
+    <string name="pref_pagenumbertoastposition_title">页码悬浮窗的位置</string>
+    <string name="pref_pagenumbertoastposition_summary">页码悬浮窗的位置</string>
+
+    <string name="pref_zoomtoastposition_title">缩放悬浮窗的位置</string>
+    <string name="pref_zoomtoastposition_summary">缩放悬浮窗的位置</string>
+
+    <string name="list_toastposition_invisible">不显示</string>
+    <string name="list_toastposition_lefttop">左上方</string>
+    <string name="list_toastposition_righttop">右上方</string>
+    <string name="list_toastposition_leftbottom">左下方</string>
+    <string name="list_toastposition_bottom">底部</string>
+    <string name="list_toastposition_righbottom">右下方</string>
+
+    <string name="pref_showanimicon_title">显示动画图标</string>
+    <string name="pref_showanimicon_summary">启用动画或拖动时，显示动画或拖动图标</string>
 
 </resources>

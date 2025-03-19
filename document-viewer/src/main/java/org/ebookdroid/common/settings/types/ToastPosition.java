@@ -1,7 +1,7 @@
 package org.ebookdroid.common.settings.types;
 
 import static android.view.Gravity.*;
-import static org.sufficientlysecure.viewer.R.string.*;
+import org.sufficientlysecure.viewer.R;
 
 import org.ebookdroid.EBookDroidApp;
 
@@ -12,27 +12,27 @@ public enum ToastPosition implements ResourceConstant {
     /**
      * 
      */
-    Invisible(pref_toastposition_invisible, 0),
+    Invisible(R.string.pref_toastposition_invisible, 0),
     /**
      * 
      */
-    LeftTop(pref_toastposition_lefttop, LEFT | TOP),
+    LeftTop(R.string.pref_toastposition_lefttop, LEFT | TOP),
     /**
      * 
      */
-    RightTop(pref_toastposition_righttop, RIGHT | TOP),
+    RightTop(R.string.pref_toastposition_righttop, RIGHT | TOP),
     /**
      * 
      */
-    LeftBottom(pref_toastposition_leftbottom, LEFT | BOTTOM),
+    LeftBottom(R.string.pref_toastposition_leftbottom, LEFT | BOTTOM),
     /**
      * 
      */
-    Bottom(pref_toastposition_bottom, CENTER | BOTTOM),
+    Bottom(R.string.pref_toastposition_bottom, CENTER | BOTTOM),
     /**
      * 
      */
-    RightBottom(pref_toastposition_righbottom, RIGHT | BOTTOM);
+    RightBottom(R.string.pref_toastposition_righbottom, RIGHT | BOTTOM);
 
     public final int position;
     private final String resValue;
